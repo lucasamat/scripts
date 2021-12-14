@@ -966,8 +966,11 @@ class QueryBuilder:
         tableInfo.AddRow(updaterow)
         Sql.Upsert(tableInfo)
        
-        if "AND" in QbWhereCondition:
-            QbWhereCondition =QbWhereCondition.split("AND")
+        if "AND" in QbWhereCondition or "OR" in QbWhereCondition:
+            if "AND" in QbWhereCondition:
+                QbWhereCondition =QbWhereCondition.split("AND")
+            elif "OR" in QbWhereCondition:
+                QbWhereCondition =QbWhereCondition.split("OR")
             l=[]
             count = 0
             for i in QbWhereCondition:
