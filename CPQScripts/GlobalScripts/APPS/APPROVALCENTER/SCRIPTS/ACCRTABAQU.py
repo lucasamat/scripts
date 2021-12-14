@@ -961,6 +961,11 @@ class QueryBuilder:
             "CRITERIA_01": QbJsonData,
             "WHERE_CONDITION_01": QbWhereCondition,
         }
+        
+        Trace.Write(str(updaterow))
+        tableInfo.AddRow(updaterow)
+        Sql.Upsert(tableInfo)
+       
         if "AND" in QbWhereCondition:
             QbWhereCondition =QbWhereCondition.split("AND")
             l=[]
@@ -985,9 +990,6 @@ class QueryBuilder:
                         "TSTOBJ_LABEL":getObjLabel.LABEL,
                         "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
                     }
-        Trace.Write(str(updaterow))
-        tableInfo.AddRow(updaterow)
-        Sql.Upsert(tableInfoACACSF)
         tableInfoACACSF.AddRow(row)
         Sql.Upsert(tableInfoACACSF)
         return True
