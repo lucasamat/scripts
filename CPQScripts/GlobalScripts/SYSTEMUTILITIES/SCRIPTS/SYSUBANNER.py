@@ -2261,35 +2261,20 @@ def Related_Sub_Banner(
         FifthValue = str(SerialNumber)
         SixthLable = "Assembly ID"
         SixthValue = str(AssemblyId)     
-    elif ObjName == "SAQSCO" and subTabName in ("Equipment","Equipment Details") and TreeTopSuperParentParam == "Product Offerings":        
+    elif ObjName == "SAQSCO" and subTabName in ("Equipment") and TreeTopSuperParentParam == "Product Offerings":        
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
-        covered_obj = Sql.GetFirst("select EQUIPMENT_ID from SAQSCO(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND GREENBOOK = '"+str(TreeParam)+"' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(CurrentRecordId)+"'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id))
-        if subTabName == "Equipment Details":
-            PrimaryLable = "Product Offering ID"
-            PrimaryValue = str(TreeParentParam)
-            SecondLable = "Product Offering Description"
-            SecondValue = getService.SERVICE_DESCRIPTION
-            ThirdLable = "Greenbook"
-            ThirdValue = str(TreeParam)
-            FourthLable = "Equipment"
-            FourthValue = covered_obj.EQUIPMENT_ID
-            FifthLable = "Serial No"
-            FifthValue = covered_obj.SERIAL_NO
-            SixthLable = ''
-            SixthValue = ''
-        else:
-            PrimaryLable = "Product Offering ID"
-            PrimaryValue = str(TreeParentParam)
-            SecondLable = "Product Offering Description"
-            SecondValue = getService.SERVICE_DESCRIPTION
-            ThirdLable = "Greenbook"
-            ThirdValue = str(TreeParam)
-            FourthLable = "Equipment"
-            FourthValue = "ALL"	
-            FifthLable = ""
-            FifthValue = ""
-            SixthLable = ''
-            SixthValue = ''
+        PrimaryLable = "Product Offering ID"
+        PrimaryValue = str(TreeParentParam)
+        SecondLable = "Product Offering Description"
+        SecondValue = getService.SERVICE_DESCRIPTION
+        ThirdLable = "Greenbook"
+        ThirdValue = str(TreeParam)
+        FourthLable = "Equipment"
+        FourthValue = "ALL"	
+        FifthLable = ""
+        FifthValue = ""
+        SixthLable = ''
+        SixthValue = ''
     #elif TreeSuperTopParentParam == "Product Offerings" and TreeTopSuperParentParam == "Complementary Products" and (TreeParentParam == "Receiving Equipment" or TreeParentParam == "Sending Equipment") and (ObjName == "SAQSSF" or ObjName == "SAQSSF"):
     #	getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
     #	PrimaryLable = "Product Offering ID"
