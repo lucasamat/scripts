@@ -1330,7 +1330,7 @@ def Related_Sub_Banner(
                             ThirdValue = str(TreeSuperParentParam)
                             FourthLable = " Fab Location ID"
                             FourthValue = TreeParam	
-                if (str(ObjName) == 'SAQSCO' and str(TreeTopSuperParentParam) == "COMPREHENSIVE SERVICES"):
+                if (str(ObjName) == 'SAQSCO' and (str(TreeTopSuperParentParam) == "COMPREHENSIVE SERVICES" or str(TreeSuperParentParam) == "COMPREHENSIVE SERVICES")):
                     Trace.Write("check")
                     get_val = Sql.GetFirst(" SELECT EQUIPMENT_ID,SERIAL_NO FROM SAQSCO WHERE GREENBOOK = '"+str(TreeParam)+"'")
                     FifthLable = "Equipment ID"
