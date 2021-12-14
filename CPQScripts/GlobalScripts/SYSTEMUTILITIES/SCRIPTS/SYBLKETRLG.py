@@ -527,7 +527,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Trace.Write("inside saqrit")
 				Trace.Write("all values---"+str(dict(ALLVALUES)))
 				#A055S000P01-12656 start
-				tax_percent_amt =''
+				tax_percent_amt = commitval = ''
 				net_value_tax  = ''
 				Sql = SQL()
 				get_quote_item_details = Sql.GetList("select * from SAQRIT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
