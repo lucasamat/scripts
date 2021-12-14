@@ -441,7 +441,7 @@ def GSCONTLOOKUPPOPUP(
                 VAL_Obj = Sql.GetList(VAL_Str)
                 count_query=SqlHelper.GetList("SELECT COUNT(*) as cnt FROM cpq_permissions where permission_type ='0'")
             else:
-                Trace.Write('At 437'+str(TABLEID))
+                Trace.Write('At 437'+str(TABLEID)+"tab_Name"+str(tab_Name))
                 if str(where).strip() != "":
                     where = " where " + str(where)
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID) + " " + str(where)
