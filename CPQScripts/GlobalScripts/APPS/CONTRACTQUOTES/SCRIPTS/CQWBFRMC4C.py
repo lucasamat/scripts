@@ -27,6 +27,8 @@ if 'Param' in globals():
         
         ##To update the revision status in cpq based on the status from c4c value....
         Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = '{}' FROM SAQTRV JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID  WHERE OPPORTUNITY_ID = '{}'".format(opportunity_status_dictionary.get(str(opportunity_status)),opportunity_id))
+    else:
+        Log.Info("else condition")
             
             
             
