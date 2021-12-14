@@ -2263,7 +2263,7 @@ def Related_Sub_Banner(
         SixthValue = str(AssemblyId)     
     elif ObjName == "SAQSCO" and subTabName in ("Equipment","Equipment Details") and TreeTopSuperParentParam == "Product Offerings":        
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
-        covered_obj = Sql.GetFirst("select EQUIPMENT_ID from SAQSCO(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND GREENBOOK = '"+str(TreeParam)+"' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(CurrentRecordId)+"'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id))
+        covered_obj = Sql.GetFirst("select EQUIPMENT_ID from SAQSCO(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SERVICE_ID = '"+str(TreeParentParam)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(CurrentRecordId)+"'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = quote_revision_record_id))
         if subTabName == "Equipment Details":
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(TreeParentParam)
