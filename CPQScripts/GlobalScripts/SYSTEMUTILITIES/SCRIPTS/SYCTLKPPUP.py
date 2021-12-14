@@ -393,11 +393,7 @@ def GSCONTLOOKUPPOPUP(
                         "SELECT top 1000 MASTER_TABLE_QUOTE_RECORD_ID,ACCOUNT_NAME FROM SAQTMT"
                     )
                 VAL_Obj = Sql.GetList(VAL_Str)
-            Trace.Write("TABLEID====>>>"+str(TABLEID))  
-            elif str(tab_Name) == "Quote"  and str(TABLEID) == "SYPFTY" and str(TreeParentParam) == "Sales Team":
-                Trace.Write("TABLEID====>>>"+str(TABLEID))
-                VAL_Str = (" SELECT top 1000 PARTNERFUNCTION_RECORD_ID,C4C_PARTNER_FUNCTION,CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION NOT IN(SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
-                VAL_Obj = Sql.GetList(VAL_Str)
+            
 
             elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(TreeParentParam) == "Approval Chain Steps":
                 Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(TRACKEDTESTEDOBJECT))
