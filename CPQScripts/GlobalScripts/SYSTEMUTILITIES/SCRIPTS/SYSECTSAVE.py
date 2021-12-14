@@ -1758,6 +1758,9 @@ elif TreeParentParam == "Questions" and TopSuperParentParam == "Sections":
 elif TreeParentParam == "App Level Permissions":
 	ObjectName = "SYPRAP"
 	TableId = "SYOBJR-93121"
+elif TreeParam == "Quote Documents":
+	ObjectName = "SAQDOC"
+	TableId = " "
 elif TreeParentParam == "Actions" and TopSuperParentParam == "Sections":
 	ObjectName = "SYPRSN"
 	TableId = "SYOBJR-93160"
