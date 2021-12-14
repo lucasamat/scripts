@@ -596,9 +596,6 @@ class AncillaryProductOperation:
 						# 	ent_disp = entitlement_obj.ENTITLEMENT_DISPLAY_VALUE
 						# 	if str(ent_disp).upper() == 'YES':
 						#NewValue = 'Yes'
-					if ent_val_code == '0':
-						ent_val_code = ''
-						ent_disp_val =''
 					insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 					<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
