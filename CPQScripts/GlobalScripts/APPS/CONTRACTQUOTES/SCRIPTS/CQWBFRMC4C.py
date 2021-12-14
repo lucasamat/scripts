@@ -11,10 +11,10 @@ Sql = SQL()
 import sys
 
 if 'Param' in globals():
-    Log.Info("CQWBFRMC4C called.......")	
+    Log.Info("CQWBFRMC4C called......."+str(Param)+"paramsss---"+str(hasattr(Param, 'CPQ_Columns')))	
     if hasattr(Param, 'CPQ_Columns'):
         Log.Info("CQWBFRMC4C called.......inside if")    
-         
+        
         opportunity_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
         opportunity_id = opportunity_data[0]
         opportunity_status = str(opportunity_data[-1]).upper()
