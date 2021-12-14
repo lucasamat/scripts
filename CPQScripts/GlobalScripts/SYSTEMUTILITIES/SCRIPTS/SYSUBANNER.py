@@ -121,7 +121,7 @@ def Related_Sub_Banner(
     if page_details:    
         if ObjName =="SAQDOC":
             get_quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-            Trace.Write("get_quote_status--> "+str(get_quote_status))
+            Trace.Write("get_quote_status--> "+str(get_quote_status.QUOTE_STATUS))
             if str(get_quote_status.QUOTE_STATUS).upper() in  ["APPROVED","BOOKING SUBMITTED"]:
                 dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER  FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND SUBTAB_NAME = '"+str(subTabName)+"' ORDER BY DISPLAY_ORDER ")
                 if not dynamic_Button:
