@@ -119,7 +119,7 @@ def Related_Sub_Banner(
     else:
         page_details = Sql.GetFirst("SELECT RECORD_ID FROM SYPAGE WHERE OBJECT_APINAME = '{}' AND PAGE_TYPE = '{}'".format(str(ObjName),str(page_type)))    
     if page_details:    
-        if ObjectName =="SAQDOC":
+        if ObjName =="SAQDOC":
             get_quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
             Trace.Write("get_quote_status--> "+str(get_quote_status))
             if str(get_quote_status.QUOTE_STATUS).upper() in  ["APPROVED","BOOKING SUBMITTED"]:
