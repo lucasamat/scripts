@@ -4418,8 +4418,26 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				
 				#SAQSGB_start_time = time.time()
 				self._insert_quote_service_greenbook(batch_group_record_id=batch_group_record_id)
-				#SAQSGB_end_time = time.time()				
-				self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
+				#SAQSGB_end_time = time.time()	
+				##To check the PM events Attribute value...
+				##A055S000P01-12518 code starts...
+				import re
+				service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
+				if service_entitlement_obj is not None:
+					updateentXML = service_entitlement_obj.ENTITLEMENT_XML
+					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+					pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
+					pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
+					for value in re.finditer(pattern_tag, updateentXML):
+						sub_string = value.group(1)
+						pm_event_attribute_id =re.findall(pattern_id,sub_string)
+						pm_event_attribute_value =re.findall(pattern_name,sub_string)
+						#Trace.Write("sub_string"+str(sub_string))
+						#Trace.Write("get_ent_id_J "+str(get_ent_id)+"get_ent_name_J "+str(get_ent_name))
+						if pm_event_attribute_id and pm_event_attribute_value:
+							self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
+							break
+				##A055S000P01-12518 code ends...
 				#ENTITLEMENT SV TO CE
 				Entitlement_start_time = time.time()
 				if self.trigger_from == 'PythonScript':
