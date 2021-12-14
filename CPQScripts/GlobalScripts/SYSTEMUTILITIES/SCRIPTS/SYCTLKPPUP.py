@@ -460,6 +460,7 @@ def GSCONTLOOKUPPOPUP(
                     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
                 elif str(TABLEID) == "SYPFTY":
                     Trace.Write("TABLEID====>>>"+str(TABLEID))
+                    ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
                     VAL_Str = (" SELECT top 1000 PARTNERFUNCTION_RECORD_ID,C4C_PARTNER_FUNCTION,CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION NOT IN(SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
                     VAL_Obj = Sql.GetList(VAL_Str)    
                 else:
