@@ -155,7 +155,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
 					{billing_end_date} as BILLING_END_DATE,
 					{BillingDate} as BILLING_START_DATE,
-					SAQRIT.NET_PRICE_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
+					ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0)  AS ANNUAL_BILLING_AMOUNT,
 					ISNULL(SAQRIT.NET_PRICE, 0) / {get_val}  as BILLING_VALUE,
 					ISNULL(SAQRIT.ESTVAL_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
 					'{billing_type}' as BILLING_TYPE,
