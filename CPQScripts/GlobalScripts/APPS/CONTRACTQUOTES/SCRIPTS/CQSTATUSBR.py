@@ -596,8 +596,8 @@ def Dynamic_Status_Bar():
 	# Quote Item Inserts - Ends
 
 	
-	if str(item_covered_obj):       
-		_insert_billing_matrix()
+	#if str(item_covered_obj):       
+		#_insert_billing_matrix()
 	return buttonvisibility,price_bar
 
 ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar())  
