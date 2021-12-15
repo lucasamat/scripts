@@ -697,7 +697,7 @@ def _equp_predefined_value_driver_update(previous_xml):
 			for attr in val_list:
 				if attr in entxmldict.keys() and attr in prev_xml_dict.keys():
 					input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(attr)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', prev_xml_dict[attr], input_xml )
-			Sql.RunQuery("UPDATE SAQSCE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}'".format(quote,revision,get_serviceid,val.EQUIPMENT_ID,val.GREENBOOK))
+			Sql.RunQuery("UPDATE SAQSCE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}'".format(input_xml,quote,revision,get_serviceid,val.EQUIPMENT_ID,val.GREENBOOK))
 						
 ## Entitlement rolldown fn
 def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
@@ -1026,7 +1026,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 				# 	val_list.extend(val_coeff)
 				#Log.Info("val_list--equp-"+str(val_list))
 				
-				get_previous_xml = Sql.GetFirst("SELECT * FROM {} {}".format(obj, where_condition))
+				get_previous_xml = Sql.GetList("SELECT * FROM {} {}".format(obj, where_condition))
 				for value in GetXMLsecField:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
