@@ -462,7 +462,12 @@ def GSCONTLOOKUPPOPUP(
                     Trace.Write("TABLEID====>>>"+str(TABLEID))
                     ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
                     VAL_Str = (" SELECT top 1000 PARTNERFUNCTION_RECORD_ID,C4C_PARTNER_FUNCTION,CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION NOT IN(SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
-                    VAL_Obj = Sql.GetList(VAL_Str)    
+                    VAL_Obj = Sql.GetList(VAL_Str)
+                elif str(TABLEID) == "SAEMPL":
+                    Trace.Write("TABLEID====>>>"+str(TABLEID))
+                    ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
+                    VAL_Str = (" SELECT top 1000 EMPLOYEE_ID,EMPLOYEE_NAME,EMAIL FROM SAEMPL WHERE EMPLOYEE_ID NOT IN(SELECT MEMBER_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    VAL_Obj = Sql.GetList(VAL_Str) 
                 else:
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID)
                     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
@@ -808,6 +813,11 @@ def GSCONTLOOKUPPOPUPFILTER(
                     Trace.Write("TABLEID====>>>"+str(TABLEID))
                     VAL_Str = (" SELECT top 1000 PARTNERFUNCTION_RECORD_ID,C4C_PARTNER_FUNCTION,CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION NOT IN(SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
                     VAL_Obj = Sql.GetList(VAL_Str)
+                elif str(TABLEID) == "SAEMPL":
+                    Trace.Write("TABLEID====>>>"+str(TABLEID))
+                    ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
+                    VAL_Str = (" SELECT top 1000 EMPLOYEE_ID,EMPLOYEE_NAME,EMAIL FROM SAEMPL WHERE EMPLOYEE_ID NOT IN(SELECT MEMBER_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    VAL_Obj = Sql.GetList(VAL_Str) 
                 elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(SegmentsClickParam) == "Approval Chain Status Mappings":
                     Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(MAPPINGSAPPROVALOBJECT))
                     object_name = Header_Obj.OBJECT_NAME
