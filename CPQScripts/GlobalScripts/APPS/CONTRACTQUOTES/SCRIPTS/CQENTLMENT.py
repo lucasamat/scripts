@@ -2392,11 +2392,11 @@ class Entitlements:
 			Trace.Write("tableName---"+str(tableName))
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")
 			
-			# try:			
-			# 	CQENTIFLOW.iflow_entitlement(tableName,where,ancillary_dict)
-			# except Exception as e:
-			# 	#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
-			# 	Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
+			try:			
+				CQENTIFLOW.iflow_entitlement(tableName,where,ancillary_dict)
+			except Exception as e:
+				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
+				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
 			# try:
 			# 	#AttributeList = AttributeList.split(',')
 			# 	Trace.Write('2628---'+str(AttributeList))
