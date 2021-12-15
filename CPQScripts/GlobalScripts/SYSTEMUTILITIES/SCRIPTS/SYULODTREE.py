@@ -2122,7 +2122,7 @@ class TreeView:
                                                 sub_string = j.group(1)
                                                 get_ent_id =re.findall(pattern_id,sub_string)
                                                 get_ent_name=re.findall(pattern_name,sub_string)
-                                                Trace.Write("get_ent_id_J "+str(get_ent_id)+"get_ent_name_J "+str(get_ent_name))
+                                                #Trace.Write("get_ent_id_J "+str(get_ent_id)+"get_ent_name_J "+str(get_ent_name))
                                                 if get_ent_id and get_ent_name:
                                                     flag_excluse=1
                                                     break
