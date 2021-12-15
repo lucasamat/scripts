@@ -457,6 +457,7 @@ def billingmatrix_create():
 					total_months = years * 12 + months
 					Trace.Write('total_months----'+str(total_months))
 					for index in range(0, total_months+1):
+						Trace.Write('billing_month_end--460-----')
 						billing_month_end += 1
 						Trace.Write('billing_month_end----')
 						insert_items_billing_plan(total_months=total_months, 
