@@ -268,7 +268,7 @@ class SyncQuoteAndCustomTables:
 						#Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
 						#Trace.Write("ent_name--"+str(attrs))
 						#9226 starts
-						Log.Info('271--sales--'+str(custom_fields_detail.get("SalesOrgID")))
+						Log.Info('271--sales--')
 						getquote_sales_val = ''
 						getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.QUOTE_RECORD_ID)+"'")
 						if getslaes_value:
