@@ -818,8 +818,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				#Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
 		if obj_name == "SAQRIT":
 			ALLVALUES = eval(ALLVALUES)
-			for x,y in ALLVALUES.items():
-				for i in selected_rows_cpqid:
+			for i in selected_rows_cpqid:
+				for x,y in ALLVALUES.items():
+				
 					Sql.RunQuery("UPDATE SAQRIT SET ESTVAL_INGL_CURR = '{}',COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(x,y,i))
 
 		if obj_name == "SAQSCO":
