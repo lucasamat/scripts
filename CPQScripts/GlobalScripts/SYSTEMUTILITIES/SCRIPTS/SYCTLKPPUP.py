@@ -818,7 +818,18 @@ def GSCONTLOOKUPPOPUPFILTER(
                     Trace.Write("TABLEID====>>>"+str(TABLEID))
                     ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
                     quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-                    VAL_Str = (" SELECT EMPLOYEE_RECORD_ID,EMPLOYEE_ID,EMPLOYEE_NAME,EMAIL FROM SAEMPL WHERE '"+str(ATTRIBUTE_VALUE_STR)+"' AND EMPLOYEE_ID NOT IN(SELECT MEMBER_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    #VAL_Str = (" SELECT EMPLOYEE_RECORD_ID,EMPLOYEE_ID,EMPLOYEE_NAME,EMAIL FROM SAEMPL WHERE '"+str(ATTRIBUTE_VALUE_STR)+"' AND EMPLOYEE_RECORD_ID NOT IN(SELECT MEMBER_RECORD_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    VAL_Str = ("SELECT top 1000 "+ str(COLUMNS_NAME)+ " FROM "
+                        + str(TABLEID)
+                        + " WHERE "
+                        + str(ATTRIBUTE_VALUE_STR)
+                        + " AND MEMBER_RECORD_ID NOT IN(SELECT MEMBER_RECORD_ID FROM SAQDLT(NOLOCK) WHERE QTEREV_RECORD_ID ='"
+                        + str(quote_revision_record_id)
+                        + "' AND QUOTE_RECORD_ID = '"
+                        + str(ContractRecordId)
+                        + "'"
+                        + ")"
+                    )
                     VAL_Obj = Sql.GetList(VAL_Str) 
                 elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(SegmentsClickParam) == "Approval Chain Status Mappings":
                     Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(MAPPINGSAPPROVALOBJECT))
