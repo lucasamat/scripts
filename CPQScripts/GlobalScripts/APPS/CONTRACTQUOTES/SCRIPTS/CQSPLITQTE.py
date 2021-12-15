@@ -64,8 +64,43 @@ def splitserviceinsert():
     ###split the items with new insert and updation:
 
 
+	split_service =Sql.GetFirst("Select * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0105'".format(contract_quote_rec_id,quote_revision_rec_id))
+    splitservice_id = split_service.SERVICE_ID
+    splitservice_name = split_service.SERVICE_DESCRIPTION
+    splitservice_recid = split_service.SERVICE_RECORD_ID
+    cloneobject={
+		"SAQRIT":"QUOTE_REVISION_CONTRACT_ITEM_ID"
+		}
 
-
-
+    for cloneobjectname in cloneobject.keys():
+        insertval = 'INSERT INTO '+ str(cloneobjectname) +'( '
+        selectval = "SELECT "
+        sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
+        insertcols = ''
+        selectcols = ''
+        for col in sqlobj:
+            if col.COLUMN_NAME == cloneobject[cloneobjectname]:
+                insertcols =  str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+                selectcols = "CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
+            elif col.COLUMN_NAME == "SERVICE_ID":
+                insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+                selectcols =  "'{}' AS ".format(str(splitservice_id)) + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", '{}' AS ".format(str(splitservice_id)) + str(col.COLUMN_NAME)
+            elif col.COLUMN_NAME == "SERVICE_DESCRIPTION":
+                insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+                selectcols =  "'{}' AS ".format(str(splitservice_name)) + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", '{}' AS ".format(str(splitservice_name)) + str(col.COLUMN_NAME)
+            elif col.COLUMN_NAME == "SERVICE_RECORD_ID":
+                insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+                selectcols =  "'{}' AS ".format(str(splitservice_recid)) + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", '{}' AS ".format(str(splitservice_recid)) + str(col.COLUMN_NAME)
+            elif col.COLUMN_NAME == "CpqTableEntryId":
+                continue
+            else:
+                insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+                selectcols = str(col.COLUMN_NAME) if selectcols == '' else selectcols + "," + str(col.COLUMN_NAME)
+        insertcols += " )"
+        selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(contract_quote_rec_id))+" AND QTEREV_RECORD_ID='{}'".format(str(quote_revision_rec_id))
+        finalquery=insertval + insertcols +' '+ selectval + selectcols
+        Trace.Write(finalquery)
+        ExecObjQuery = Sql.RunQuery(finalquery)    
+        
 
 splitserviceinsert()
