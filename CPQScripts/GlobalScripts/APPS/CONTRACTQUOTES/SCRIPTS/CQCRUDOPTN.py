@@ -713,7 +713,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
 		self.table_name = kwargs.get('table_name')
-		self.all_values = kwargs.get('all_values')		
+		self.all_values = kwargs.get('all_values')
+		self.new_part = kwargs.get('new_part')
 		self.node_id = ""
 	
 	# def _insert_quote_line_items(self, cart_id, cart_user_id):
@@ -1160,7 +1161,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 												FABLOCATION_NAME,
 												FABLOCATION_RECORD_ID,
 												{UserId} as CPQTABLEENTRYADDEDBY, 
-												GETDATE() as CPQTABLEENTRYDATEADDED
+												GETDATE() as CPQTABLEENTRYDATEADDED,
+												{new_part} as NEW_PART
 											FROM (
 											SELECT 
 												DISTINCT
@@ -1196,7 +1198,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 								BatchGroupRecordId=batch_group_record_id,
 								QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
 								UserId=self.user_id,
-								ParentBasedCondition=parent_based_condition
+								ParentBasedCondition=parent_based_condition,
+								new_part= self.new_part if self.new_part else 0
 							)
 						)
 				
