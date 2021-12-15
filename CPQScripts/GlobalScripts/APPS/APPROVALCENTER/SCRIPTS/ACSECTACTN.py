@@ -409,9 +409,9 @@ class approvalCenter:
 							statusupdate = True
 							not_approved_transaction_obj = Sql.GetFirst(
 								"""SELECT count(CpqTableEntryId) as cnt FROM ACAPTX (NOLOCK)
-								   WHERE APRTRXOBJ_ID = '{QuoteId}' AND ARCHIVED = 0 AND APPROVALSTATUS NOT IN ('APPROVED','APPROVAL NO LONGER REQUIRED')""".format(
-								   QuoteId=str(quote_obj.QUOTE_ID)
-								   )
+								WHERE APRTRXOBJ_ID = '{QuoteId}' AND ARCHIVED = 0 AND APPROVALSTATUS NOT IN ('APPROVED','APPROVAL NO LONGER REQUIRED')""".format(
+								QuoteId=str(quote_obj.QUOTE_ID)
+								)
 							)
 							if not_approved_transaction_obj and not_approved_transaction_obj.cnt > 0:
 								statusupdate = False
@@ -3149,7 +3149,7 @@ class approvalCenter:
 				self.exceptMessage = "ACSECTACTN : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
 				Trace.Write(self.exceptMessage)
 		else:
-    		Trace.Write('CBC MAIL TRIGGER : QUOTE NOT APPROVED YET')
+			Trace.Write('CBC MAIL TRIGGER : QUOTE NOT APPROVED YET')
 		return True
 
 	def mailtrigger(self, Subject, mailBody, recepient):
