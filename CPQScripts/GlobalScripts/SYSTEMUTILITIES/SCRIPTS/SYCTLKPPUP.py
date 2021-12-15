@@ -812,13 +812,13 @@ def GSCONTLOOKUPPOPUPFILTER(
                     ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
                     quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
                     Trace.Write("TABLEID====>>>"+str(TABLEID))
-                    VAL_Str = (" SELECT top 1000 PARTNERFUNCTION_RECORD_ID,C4C_PARTNER_FUNCTION,CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION NOT IN(SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    VAL_Str = (" SELECT top 1000 PARTNERFUNCTION_RECORD_ID,C4C_PARTNER_FUNCTION,CRM_PARTNERFUNCTION FROM SYPFTY WHERE '"+str(ATTRIBUTE_VALUE_STR)+"' AND C4C_PARTNER_FUNCTION NOT IN(SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
                     VAL_Obj = Sql.GetList(VAL_Str)
                 elif str(TABLEID) == "SAEMPL":
                     Trace.Write("TABLEID====>>>"+str(TABLEID))
                     ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
                     quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-                    VAL_Str = (" SELECT EMPLOYEE_RECORD_ID,EMPLOYEE_ID,EMPLOYEE_NAME,EMAIL FROM SAEMPL WHERE EMPLOYEE_ID NOT IN(SELECT MEMBER_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    VAL_Str = (" SELECT EMPLOYEE_RECORD_ID,EMPLOYEE_ID,EMPLOYEE_NAME,EMAIL FROM SAEMPL WHERE '"+str(ATTRIBUTE_VALUE_STR)+"' AND EMPLOYEE_ID NOT IN(SELECT MEMBER_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
                     VAL_Obj = Sql.GetList(VAL_Str) 
                 elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(SegmentsClickParam) == "Approval Chain Status Mappings":
                     Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(MAPPINGSAPPROVALOBJECT))
@@ -908,7 +908,8 @@ def GSCONTLOOKUPPOPUPFILTER(
                     where = " and " + str(where)
                 if str(TABLEID) != "SYOBJD" and str(TABLEID) != "PRTXCL" and str(TABLEID) != "MAFBLC" and str(TABLEID) != "SAQSCO" and str(TABLEID) != "SAEMPL" and str(TABLEID) != "SYPFTY" and (str(TreeParentParam) != "Approval Chain Steps" or str(SegmentsClickParam) == "Approval Chain Steps") and TESTEDOBJECT !="SOURCE ACCOUNT":    
                     VAL_Str = "SELECT top 100 " + COLUMNS_NAME + " FROM " + TABLEID + " where " + ATTRIBUTE_VALUE_STR + where
-                    VAL_Obj = Sql.GetList(VAL_Str) 
+                    VAL_Obj = Sql.GetList(VAL_Str)
+                
 
 
         else:
