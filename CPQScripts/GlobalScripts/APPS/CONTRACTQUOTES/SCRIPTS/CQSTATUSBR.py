@@ -12,6 +12,7 @@ import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 import re
 import datetime
+Param = Param 
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
 try:
@@ -600,5 +601,10 @@ def Dynamic_Status_Bar():
 	#if str(item_covered_obj):       
 		#_insert_billing_matrix()
 	return buttonvisibility,price_bar
+try:
+	quote_item_insert = Param.quote_item_insert
+except:
+	quote_item_insert = ''
 
+Trace.Write("quote_item_insert_J "+str(quote_item_insert))
 ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar())  
