@@ -2686,8 +2686,9 @@ class TreeView:
                                         Product.SetGlobal("ParentNodeLevel",NodeText)
                                         service_id = Product.GetGlobal("SERVICE")
                                         #A055S000P01-9646 CODE STARTS..
-                                        if NodeName == "GREENBOOK":
+                                        if NodeName in ("GREENBOOK"):
                                             Trace.Write("ServiceID===>"+str(service_id))
+                                            Trace.Write("GBK===>GREENBOOK")
                                             Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0046' AND SERVICE_ID != 'Z0101' AND SERVICE_ID = '{}'".format(NodeText,quote_revision_record_id,str(service_id))
                                         else:
                                             Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0046' AND SERVICE_ID != 'Z0101'".format(NodeText,quote_revision_record_id)
