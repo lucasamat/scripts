@@ -525,7 +525,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					Sql.RunQuery(sqlforupdate)
 			elif obj_name == "SAQRIT":
 				Trace.Write("inside saqrit")
-				Trace.Write("all values---"+str(dict(ALLVALUES)))
+				Trace.Write("all values---"+str(eval(ALLVALUES)))
 				#A055S000P01-12656 start
 				tax_percent_amt = commitval = ''
 				net_value_tax  = ''
