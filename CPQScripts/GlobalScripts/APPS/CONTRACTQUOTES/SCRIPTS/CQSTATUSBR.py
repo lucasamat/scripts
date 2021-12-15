@@ -455,7 +455,7 @@ def billingmatrix_create():
 					years, months = int(years), int(remainder // avgmonth)            
 					
 					total_months = years * 12 + months
-					Trace.Write('total_months--458-----'+str(total_months))
+					Trace.Write('total_months--458-----'+str(type(total_months)))
 					for index in range(0, total_months+1):
 						Trace.Write('billing_month_end--460-----')
 						billing_month_end += 1
