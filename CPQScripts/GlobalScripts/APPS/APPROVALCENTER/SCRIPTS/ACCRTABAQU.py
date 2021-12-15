@@ -979,7 +979,7 @@ class QueryBuilder:
                 count += 1
             Trace.Write("LIST---"+str(l))
             
-            for x in range(1,count+1):
+            for x in range(0,count):
                 getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(l[x][0],str(l[x][1]).split("=")[0].strip()))
                 getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(l[x][0]))
                 if getFieldLabel and getObjLabel:
