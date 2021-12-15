@@ -455,9 +455,10 @@ def billingmatrix_create():
 					years, months = int(years), int(remainder // avgmonth)            
 					
 					total_months = years * 12 + months
-				  
+					Trace.Write('total_months----'+str(total_months))
 					for index in range(0, total_months+1):
 						billing_month_end += 1
+						Trace.Write('billing_month_end----'+str(billing_month_end))
 						insert_items_billing_plan(total_months=total_months, 
 												billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 													Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
