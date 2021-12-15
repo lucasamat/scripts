@@ -439,6 +439,7 @@ class approvalCenter:
 								UserName=str(self.UserName),
 							)
 							c = Sql.RunQuery(UpdateApproverv)
+							response = self.cbcmailtrigger()
 							getQuote = Sql.GetFirst(
 								"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
 								+ str(GetCurStatus.APRTRXOBJ_RECORD_ID)
