@@ -456,7 +456,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			cpqid = rec.split("-")[1].lstrip("0")
 			##to update changed value in related tables in tool relcoation matrix
 			selected_rows_cpqid.append(cpqid)
-			Get_recidval = Sql.GetFirst(
+			Get_recidval = SqlHelper.GetFirst(
 				"SELECT {}  FROM {} (NOLOCK) WHERE CpqTableEntryId='{}' ".format(objh_head, obj_name, cpqid)
 			)
 			
@@ -466,7 +466,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			
 
 			#Trace.Write("SELECT * FROM " + str(obj_name) + " (NOLOCK) WHERE " + str(objh_head) + " = '" + str(rec) + "'")
-			sql_obj = Sql.GetFirst("SELECT * FROM  " + str(obj_name) + "  WHERE " + str(objh_head) + " = '" + str(rec) + "'")
+			sql_obj = SqlHelper.GetFirst("SELECT * FROM  " + str(obj_name) + "  WHERE " + str(objh_head) + " = '" + str(rec) + "'")
 			
 			#Trace.Write("111====="+str(sql_obj.QUOTE_ID))
 			if obj_name == 'SAQICO':
@@ -475,7 +475,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			if obj_name == "SYPRAP":
 				
 				tableInfo = Sql.GetTable("SYPRAP")
-				primaryQueryItems = Sql.GetFirst(
+				primaryQueryItems = SqlHelper.GetFirst(
 					"SELECT * FROM " + str(obj_name) + " WHERE " + objh_head + " = '" + str(rec) + "'"
 				)
 				row["CpqTableEntryId"] = primaryQueryItems.CpqTableEntryId
