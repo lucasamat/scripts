@@ -801,6 +801,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				#if float(getPRCFVA.FACTOR_PCTVAR) < discount:
 				#Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
 		if obj_name == "SAQRIT":
+			Sql = SQL()
 			ALLVALUES = eval(ALLVALUES)
 			for i in selected_rows_cpqid:
 				for x in ALLVALUES: 
