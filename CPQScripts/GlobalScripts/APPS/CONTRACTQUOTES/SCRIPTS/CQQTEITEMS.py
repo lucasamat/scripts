@@ -194,10 +194,10 @@ def EditToolIdling():
                         Trace.Write("Idle Exception")
                         sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
                     elif x == "Idle Notice Exception":
-                        sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="number" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
+                        sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="number" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" oninput="this.value|=0">'
                     
                     elif x == "Idle Duration Exception":
-                        sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="number" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
+                        sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="number" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" oninput="this.value|=0">'
                     elif x == "Idling Exception Notes":
                         sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><textarea '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control related_popup_css txtArea light_yellow wid_90" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" maxlength = "255" rows="1" cols="100" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</textarea>'
                     elif x == "Cold Idle Allowed":
@@ -352,7 +352,7 @@ def NoticeOnChange(IdleNotice):
         y = getPRTIAV.TOOLIDLING_NAME
             
         secstr = '<tr id = "notice_onchange" data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style="">'
-        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Notice_Exception" type="number" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
+        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Notice_Exception" type="number" style="color:#1B78D2" data-content="" value="" title="" onchange="" oninput="this.value|=0">'
     return secstr
 def DurationOnChange(IdleDuration):
     if IdleDuration == "Restricted Entry(Days)":
@@ -362,7 +362,7 @@ def DurationOnChange(IdleDuration):
         y = getPRTIAV.TOOLIDLING_NAME
             
         secstr = '<tr id = "duration_onchange" data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style="">'
-        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Duration_Exception" type="number" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
+        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Duration_Exception" type="number" style="color:#1B78D2" data-content="" value="" title="" onchange="" oninput="this.value|=0">'
     return secstr
 def ExceptionOnChange(IdlingException):
     if IdlingException == "Yes":
