@@ -523,7 +523,7 @@ class SyncQuoteAndCustomTables:
 							"LOW":custom_fields_detail.get("LOW")
 							if custom_fields_detail.get("LOW")
 							else 'FALSE',
-							"EXPIRED": "FALSE" ##A055S000P01-12558
+							"EXPIRED": "FALSE" ,##A055S000P01-12558
 							"CONTRACT_VALID_FROM": start_date,
 							"CONTRACT_VALID_TO": end_date,
 							"QUOTE_CREATED_DATE": str(created_date),                            
