@@ -466,7 +466,7 @@ def GSCONTLOOKUPPOPUP(
                 elif str(TABLEID) == "SAEMPL":
                     Trace.Write("TABLEID====>>>"+str(TABLEID))
                     ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
-                    VAL_Str = (" SELECT top 1000 EMPLOYEE_RECORD_ID,EMPLOYEE_ID,EMPLOYEE_NAME,EMAIL FROM SAEMPL WHERE EMPLOYEE_ID NOT IN(SELECT MEMBER_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    VAL_Str = (" SELECT EMPLOYEE_RECORD_ID,EMPLOYEE_ID,EMPLOYEE_NAME,EMAIL FROM SAEMPL WHERE EMPLOYEE_ID NOT IN(SELECT MEMBER_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
                     VAL_Obj = Sql.GetList(VAL_Str) 
                 else:
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID)
