@@ -812,7 +812,18 @@ def GSCONTLOOKUPPOPUPFILTER(
                     ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
                     quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
                     Trace.Write("TABLEID====>>>"+str(TABLEID))
-                    VAL_Str = (" SELECT top 1000 PARTNERFUNCTION_RECORD_ID,C4C_PARTNER_FUNCTION,CRM_PARTNERFUNCTION FROM SYPFTY WHERE '"+str(ATTRIBUTE_VALUE_STR)+"' AND C4C_PARTNER_FUNCTION NOT IN(SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    
+                    VAL_Str = ("SELECT top 1000 "+ str(COLUMNS_NAME)+ " FROM "
+                        + str(TABLEID)
+                        + " WHERE "
+                        + str(ATTRIBUTE_VALUE_STR)
+                        + " AND C4C_PARTNER_FUNCTION NOT IN(SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT(NOLOCK) WHERE QTEREV_RECORD_ID ='"
+                        + str(quote_revision_record_id)
+                        + "' AND QUOTE_RECORD_ID = '"
+                        + str(ContractRecordId)
+                        + "'"
+                        + ")"
+                    )
                     VAL_Obj = Sql.GetList(VAL_Str)
                 elif str(TABLEID) == "SAEMPL":
                     Trace.Write("TABLEID====>>>"+str(TABLEID))
