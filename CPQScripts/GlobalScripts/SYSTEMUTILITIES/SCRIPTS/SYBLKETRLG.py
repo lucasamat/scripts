@@ -819,7 +819,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 		if obj_name == "SAQRIT":
 			ALLVALUES = eval(ALLVALUES)
 			for i in selected_rows_cpqid:
-				for x in ALLVALUES:
+				for x in ALLVALUES: 
 				
 					Sql.RunQuery("UPDATE SAQRIT SET ESTVAL_INGL_CURR = '{}',COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(x,ALLVALUES[x],i))
 
