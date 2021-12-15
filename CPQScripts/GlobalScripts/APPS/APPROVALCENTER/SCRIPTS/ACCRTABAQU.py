@@ -983,6 +983,7 @@ class QueryBuilder:
                 getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(l[x][0],str(l[x][1]).split("=")[0].strip()))
                 getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(l[x][0]))
                 if getFieldLabel and getObjLabel:
+                    row={}
                     row = {
                         "APRCHNSTP_TESTEDFIELD_RECORD_ID":str(Guid.NewGuid()).upper(),
                         "APRCHN_ID":CpqIdQuery.APRCHN_ID,
