@@ -273,6 +273,7 @@ class SyncQuoteAndCustomTables:
 						getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.QUOTE_RECORD_ID)+"'")
 						if getslaes_value:
 							getquote_sales_val = getslaes_value.SALESORG_ID
+						Log.Info('271--getquote_sales_val-----'+str(getquote_sales_val))
 						get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 						get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 						AttributeID_Pass = ''
