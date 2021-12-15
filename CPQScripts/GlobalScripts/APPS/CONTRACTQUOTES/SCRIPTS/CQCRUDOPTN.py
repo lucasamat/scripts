@@ -1188,7 +1188,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						""".format(quote_rec_id= self.contract_quote_record_id, quote_rev_rec_id= self.quote_revision_record_id, treeparam = self.tree_param)
 					)
 
-					
+
+
 					fab_count = Sql.GetFirst("SELECT COUNT(FABLOCATION_ID) AS COUNT from SAQSCO WHERE GREENBOOK = '{}' AND 	SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY FABLOCATION_ID".format(self.tree_param,self.tree_parent_level_0,self.contract_quote_record_id, self.quote_revision_record_id ))
 					for i in range(fab_count.COUNT):
 						self._process_query("""
