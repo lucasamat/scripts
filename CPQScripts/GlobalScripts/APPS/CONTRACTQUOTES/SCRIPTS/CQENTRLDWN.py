@@ -1237,27 +1237,27 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	except Exception:
 		Log.Info("Exception in Quote Item insert") 
 		
-	if ancillary_dict:
-		Log.Info("ancillary_dict--qi-"+str(ancillary_dict)) 
-		for anc_key,anc_val in ancillary_dict.items():
-			#if anc_val == 'INSERT':
-			try:
-				temp_val = "SERVICE_ID = '{}'".format(anc_key)
-				where = re.sub(r'SERVICE_ID\s*\=\s*\'[^>]*?\'', temp_val, where )
-				#where = where.replace('Z0091','{}'.format(anc_key))
-				Log.Info('where--CQINSQTITM-'+str(where)+str(anc_key))
+	# if ancillary_dict:
+	# 	Log.Info("ancillary_dict--qi-"+str(ancillary_dict)) 
+	# 	for anc_key,anc_val in ancillary_dict.items():
+	# 		#if anc_val == 'INSERT':
+	# 		try:
+	# 			temp_val = "SERVICE_ID = '{}'".format(anc_key)
+	# 			where = re.sub(r'SERVICE_ID\s*\=\s*\'[^>]*?\'', temp_val, where )
+	# 			#where = where.replace('Z0091','{}'.format(anc_key))
+	# 			Log.Info('where--CQINSQTITM-'+str(where)+str(anc_key))
 						
-				if where:	
-					where_str = where.replace('SRC','SAQICO')
-					Sql.RunQuery("""UPDATE SAQICO
-										SET
-											SAQICO.STATUS = ''
-										FROM SAQICO	(NOLOCK)								
-										{WhereString}
-										""".format(WhereString=where_str))
-				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS', "EntitlementLevel":objectName})
-			except Exception:
-				Log.Info("Exception in Quote Item insert")
+	# 			if where:	
+	# 				where_str = where.replace('SRC','SAQICO')
+	# 				Sql.RunQuery("""UPDATE SAQICO
+	# 									SET
+	# 										SAQICO.STATUS = ''
+	# 									FROM SAQICO	(NOLOCK)								
+	# 									{WhereString}
+	# 									""".format(WhereString=where_str))
+	# 			data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS', "EntitlementLevel":objectName})
+	# 		except Exception:
+	# 			Log.Info("Exception in Quote Item insert")
 
 
 level = ""
