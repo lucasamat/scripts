@@ -282,7 +282,7 @@ class SyncQuoteAndCustomTables:
 								NewValue = 'Israel'
 							else:
 								NewValue = 'ROW'
-						
+						Log.Info('271---285----'+str(AttributeID_Pass))
 						#9226 end
 						insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -329,7 +329,7 @@ class SyncQuoteAndCustomTables:
 				Sql.RunQuery(insert_qtqtse_query)
 				if AttributeID_Pass:
 					try:
-						Trace.Write('312---NewValue- -'+str(NewValue))
+						Log.Info('312---NewValue- -'+str(NewValue))
 						Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
 						
 						Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
