@@ -390,6 +390,7 @@ class approvalCenter:
 								d = Sql.RunQuery(UpdateTrans)
 								approvetresponse = self.sendmailNotification("Request")
 					else:
+						Trace.Write('###393')
 						GetCurStatus = Sql.GetFirst(
 							"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 								ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL
