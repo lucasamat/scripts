@@ -133,6 +133,7 @@ class SyncQuoteAndCustomTables:
 		return date_str
 
 	def CreateEntitlements(self,quote_record_id):
+		custom_fields_detail = self._get_custom_fields_detail()
 		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 		SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(QuoteRecordId=quote_record_id,quote_revision_record_id=Quote.GetGlobal("quote_revision_record_id")))
 		#Log.Info("quote_record_id---123------"+str(quote_record_id))		
@@ -268,7 +269,7 @@ class SyncQuoteAndCustomTables:
 						#Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
 						#Trace.Write("ent_name--"+str(attrs))
 						#9226 starts
-						Log.Info('271--sales--')
+						Log.Info('271--sales--'+str(custom_fields_detail.get("SalesOrgID")))
 						getquote_sales_val = ''
 						getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.QUOTE_RECORD_ID)+"'")
 						if getslaes_value:
