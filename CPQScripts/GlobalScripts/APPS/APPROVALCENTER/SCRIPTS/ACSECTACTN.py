@@ -3133,15 +3133,12 @@ class approvalCenter:
 				mailCred.UserName = str(LOGIN_CRE.USER_NAME)
 				mailCred.Password = str(LOGIN_CRE.PASSWORD)
 				mailClient.Credentials = mailCred
-				# toEmail = MailAddress(str(MANAGER_DETAILS.EMAIL))
-				toEmail = MailAddress("viknesh.duraisamy@bostonharborconsulting.com")
+				toEmail = MailAddress(str(MANAGER_DETAILS.EMAIL))
 				fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
 				msg = MailMessage(fromEmail, toEmail)
 				msg.Subject = "Clean Booking Checklist Completion"
 				msg.IsBodyHtml = True
 				msg.Body = "<!DOCTYPE HTML><html><p>Hi "+str(MANAGER_DETAILS.MEMBER_NAME)+",</p><p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kindly complete the Clean Booking Checklist of the Quote <b>"+str(MANAGER_DETAILS.QUOTE_ID)+"</b> in order to proceed with the Contract Creation in CRM</p></html>"
-				# copyEmail1 = MailAddress("viknesh.duraisamy@bostonharborconsulting.com")
-				# msg.CC.Add(copyEmail1)
 				mailClient.Send(msg)
 			except Exception as e:
 				self.exceptMessage = "ACSECTACTN : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
