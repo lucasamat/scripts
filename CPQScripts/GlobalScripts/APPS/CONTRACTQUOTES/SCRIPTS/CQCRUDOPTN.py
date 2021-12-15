@@ -1359,6 +1359,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						NewValue = 'Israel'
 					else:
 						NewValue = 'ROW'
+				Log.Info('1362---NewValue--'+str(NewValue))
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
