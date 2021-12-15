@@ -235,7 +235,7 @@ class approvalCenter:
 						"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 								ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL
 								FROM ACACSS (NOLOCK)
-								INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID = SYOBJD.RECORD_ID
+								INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_RECORD_ID = SYOBJD.PARENT_OBJECT_RECORD_ID
 								INNER JOIN SYOBJH ON SYOBJH.OBJECT_NAME = SYOBJD.OBJECT_NAME
 								INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APROBJ_LABEL = SYOBJH.LABEL
 								WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}'
@@ -245,8 +245,8 @@ class approvalCenter:
 					)
 					if GetCurStatus:
 						
-						MainObjUpdateQuery = """UPDATE {ObjName} SET
-							{ApiName} = '{statusUpdate}'
+						MainObjUpdateQuery = """UPDATE SAQTRV SET
+							REVISION_STATUS = 'APPROVED'
 							WHERE {primaryKey} = '{Primaryvalue}' """.format(
 							statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 							ObjName=str(GetCurStatus.OBJECT_NAME),
