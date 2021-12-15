@@ -2439,11 +2439,14 @@ class TreeView:
                                         Subwhere_string = "" + str(where_string) + ""
                                         #Trace.Write('Subwhere_string---'+str(Subwhere_string)) 
                                         Trace.Write('SubNodeName---'+str(SubNodeName))
-                                        Trace.Write('SubNodeTEXT---'+str(NodeText))
                                         addon_obj = None
                                         if NodeText.startswith('Z'):
                                             addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText,quote_revision_record_id))
-                                        
+                                        if SubNodeName == "GREENBOOK":
+                                            serviceid=NodeText.split('>')[1]
+                                            Subwhere_string += " AND SERVICE_ID = '{}' ".format(serviceid)
+                                            Quote.SetGlobal("SERVICE",serviceid)
+                                            
                                         if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG','Z0007_AG'):                                      
                                             Subwhere_string += " AND SERVICE_ID = '{}' ".format(NodeText)
                                             Quote.SetGlobal("SERVICE",NodeText)
@@ -2683,16 +2686,9 @@ class TreeView:
                                         apps = Product.GetGlobal("APPS")
                                         Subwhere_string += " AND APP_ID ='{}'".format(str(apps))                                        
                                     else:
-                                        Trace.Write('elseSubwhere_string-----'+str(NodeText))
                                         Product.SetGlobal("ParentNodeLevel",NodeText)
-                                        service_id = Product.GetGlobal("SERVICE")
                                         #A055S000P01-9646 CODE STARTS..
-                                        if NodeName in ("GREENBOOK"):
-                                            Trace.Write("ServiceID===>"+str(service_id))
-                                            Trace.Write("GBK===>GREENBOOK")
-                                            Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0046' AND SERVICE_ID != 'Z0101' AND SERVICE_ID = '{}'".format(NodeText,quote_revision_record_id,str(service_id))
-                                        else:
-                                            Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0046' AND SERVICE_ID != 'Z0101'".format(NodeText,quote_revision_record_id)
+                                        Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0046' AND SERVICE_ID != 'Z0101'".format(NodeText,quote_revision_record_id)
                                         #A055S000P01-9646 CODE ENDS..
                                 elif NodeText in  ("Pages"):
                                     #Trace.Write("NodeText"+str(NodeText)+"---")
