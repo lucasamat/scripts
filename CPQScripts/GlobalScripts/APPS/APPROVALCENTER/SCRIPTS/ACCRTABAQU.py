@@ -973,6 +973,7 @@ class QueryBuilder:
                 QbWhereCondition =QbWhereCondition.split("OR")
             l=[]
             count = 0
+            Trace.Write("976-"+str(QbWhereCondition))
             for i in QbWhereCondition:
                 l.append(i.split("."))
                 count += 1
