@@ -455,7 +455,7 @@ def billingmatrix_create():
 					years, months = int(years), int(remainder // avgmonth)            
 					
 					total_months = years * 12 + months
-					Trace.Write('total_months----'+str(total_months))
+					Trace.Write('total_months--458-----'+str(total_months))
 					for index in range(0, total_months+1):
 						Trace.Write('billing_month_end--460-----')
 						billing_month_end += 1
@@ -467,6 +467,7 @@ def billingmatrix_create():
 													Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
 													), amount_column="YEAR_"+str((index/12) + 1),
 													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
+					Trace.Write('total_months-470-----'+str(total_months))
 				elif str(get_ent_bill_cycle).upper() == "QUARTELY":
 					Trace.Write('get_ent_val-billicycle--'+str(get_ent_bill_cycle))
 					ct_start_date =contract_start_date
