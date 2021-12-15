@@ -2683,7 +2683,7 @@ class TreeView:
                                         apps = Product.GetGlobal("APPS")
                                         Subwhere_string += " AND APP_ID ='{}'".format(str(apps))                                        
                                     else:
-                                        #Trace.Write('Subwhere_string-----'+str(NodeText))
+                                        Trace.Write('elseSubwhere_string-----'+str(NodeText))
                                         Product.SetGlobal("ParentNodeLevel",NodeText)
                                         service_id = Product.GetGlobal("SERVICE")
                                         #A055S000P01-9646 CODE STARTS..
