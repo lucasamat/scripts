@@ -818,12 +818,12 @@ def GSCONTLOOKUPPOPUPFILTER(
                     Trace.Write("TABLEID====>>>"+str(TABLEID))
                     ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
                     quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-                    #VAL_Str = (" SELECT EMPLOYEE_RECORD_ID,EMPLOYEE_ID,EMPLOYEE_NAME,EMAIL FROM SAEMPL WHERE '"+str(ATTRIBUTE_VALUE_STR)+"' AND EMPLOYEE_RECORD_ID NOT IN(SELECT MEMBER_RECORD_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    
                     VAL_Str = ("SELECT top 1000 "+ str(COLUMNS_NAME)+ " FROM "
                         + str(TABLEID)
                         + " WHERE "
                         + str(ATTRIBUTE_VALUE_STR)
-                        + " AND MEMBER_RECORD_ID NOT IN(SELECT MEMBER_RECORD_ID FROM SAQDLT(NOLOCK) WHERE QTEREV_RECORD_ID ='"
+                        + " AND EMPLOYEE_RECORD_ID NOT IN(SELECT MEMBER_RECORD_ID FROM SAQDLT(NOLOCK) WHERE QTEREV_RECORD_ID ='"
                         + str(quote_revision_record_id)
                         + "' AND QUOTE_RECORD_ID = '"
                         + str(ContractRecordId)
