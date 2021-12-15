@@ -524,7 +524,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ},EXTENDED_UNIT_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER  = '{PN}'".format(AQ =VALUE ,CT = str(ContractRecordId),PN=getpartno)
 					Sql.RunQuery(sqlforupdate)
 			elif obj_name == "SAQRIT":
-				Trace.Write("inside saqrit")
+				Trace.Write("inside saqrit"+str(selected_rows_cpqid))
 				Trace.Write("all values---"+str(eval(ALLVALUES)))
 				#A055S000P01-12656 start
 				tax_percent_amt = commitval = ''
