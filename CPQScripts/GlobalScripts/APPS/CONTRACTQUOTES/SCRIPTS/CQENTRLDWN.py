@@ -692,6 +692,7 @@ def _equp_predefined_value_driver_update(previous_xml):
 				sub_string = m.group(1)
 				#Log.Info('sub_string---'+str(sub_string))
 				x=re.findall(pattern_name,sub_string)
+				entxmldict[x[0]]=sub_string
 				#Log.Info('x---'+str(x))
 			###updating exisitng value for non editable value drivers
 			for attr in val_list:
