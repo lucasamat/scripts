@@ -340,7 +340,7 @@ class SyncQuoteAndCustomTables:
 						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 						result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 					except:
-						Trace.Write('error--296')
+						Log.Info('error--296')
 				#9226 starts
 				if AttributeID_Pass:
 					try:						
