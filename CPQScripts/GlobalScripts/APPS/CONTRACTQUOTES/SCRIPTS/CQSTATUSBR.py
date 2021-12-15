@@ -568,7 +568,8 @@ def Dynamic_Status_Bar():
 			Trace.Write('No button--2')
 			buttonvisibility = "Hide_button"
 	Trace.Write("buttonvisibility=="+str(buttonvisibility))
-
+	if str(item_covered_obj):       
+		_insert_billing_matrix()
 	# Quote Item Inserts - Starts
 	# service_id_query =  Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 	# if service_id_query:
