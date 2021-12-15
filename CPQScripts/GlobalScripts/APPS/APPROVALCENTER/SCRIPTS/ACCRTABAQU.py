@@ -994,8 +994,8 @@ class QueryBuilder:
                         "TSTOBJ_LABEL":getObjLabel.LABEL,
                         "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
                     }
-        tableInfoACACSF.AddRow(row)
-        Sql.Upsert(tableInfoACACSF)
+                    tableInfoACACSF.AddRow(row)
+            Sql.Upsert(tableInfoACACSF)
         return True
 
 
