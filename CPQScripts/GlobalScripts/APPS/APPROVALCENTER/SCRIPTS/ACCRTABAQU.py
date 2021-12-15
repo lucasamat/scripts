@@ -965,7 +965,7 @@ class QueryBuilder:
         Trace.Write(str(updaterow))
         tableInfo.AddRow(updaterow)
         Sql.Upsert(tableInfo)
-       
+        Trace.Write("where-"+str(QbWhereCondition))
         if "AND" in QbWhereCondition or "OR" in QbWhereCondition:
             if "AND" in QbWhereCondition:
                 QbWhereCondition =QbWhereCondition.split("AND")
