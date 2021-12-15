@@ -167,7 +167,6 @@ class approvalCenter:
 			else:
 				UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.COMPLETED_BY = '{UserName}',ACACHR.COMPLETEDBY_RECORD_ID='{UserId}',COMPLETED_DATE = NULL WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
 			Sql.RunQuery(UPDATE_ACACHR)
-			response = self.cbcmailtrigger()
 			if str(Getchaintype.APPROVAL_METHOD).upper() == "PARALLEL STEP APPROVAL":
 				Curapprovestep = Sql.GetFirst(
 					" SELECT ACAPTX.* FROM ACAPTX (NOLOCK) WHERE APPROVAL_TRANSACTION_RECORD_ID = '{getCpqId}' AND ARCHIVED = 0".format(
@@ -267,6 +266,7 @@ class approvalCenter:
 							UserName=str(self.UserName),
 						)
 						c = Sql.RunQuery(UpdateApproverv)
+						response = self.cbcmailtrigger()
 						getQuote = Sql.GetFirst(
 							"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
 							+ str(GetCurStatus.APRTRXOBJ_RECORD_ID)
