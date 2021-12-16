@@ -343,15 +343,15 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 									#Trace.Write('524------'+str(prdvalue["id"]))
 									attributedefaultvalue.append(prdvalue["id"])
 							elif len(prdvalue["values"]) > 1:
-								Trace.Write('else if'+str(prdvalue["id"]))
+								Trace.Write('else if'+str(prdvalue["id"])+'--'+str(prdvalue["values"]))
 								for attribute in prdvalue["values"]:
-									Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
+									Trace.Write('iiiii---'+str(attribute)+'-'+str(prdvalue["id"]) )
 									value_list = [attribute["value"] for attribute in prdvalue["values"]]
 									if attribute["author"] in ("Default","System"):
 										attributedefaultvalue.append(prdvalue["id"])
 									#value_list = str(value_list)
 								attributevalues[str(prdvalue["id"])] = value_list
-								Trace.Write('else if--chkbox--'+str(prdvalue["id"])+'--'+str(attributevalues[str(prdvalue["id"])]))
+								#Trace.Write('else if--chkbox--'+str(prdvalue["id"])+'--'+str(attributevalues[str(prdvalue["id"])]))
 							# else:
 							#     Trace.Write('else'+str(prdvalue["id"]))
 
@@ -389,7 +389,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 					if get_display_val:
 						ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
 				elif PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Check Box') and ent_disp_val and ent_val_code:
-					Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
+					#Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
 					if type(eval(str(ent_val_code))) is list:
 						ent_val = str(tuple(ent_val_code)).replace(',)',')')
 						get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val ) )
