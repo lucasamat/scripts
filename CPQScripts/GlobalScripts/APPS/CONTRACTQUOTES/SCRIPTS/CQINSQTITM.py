@@ -1855,6 +1855,7 @@ class ContractQuoteItem:
 				# Spare Parts Insert/Update
 				self._quote_items_summary_insert()
 				self._quote_items_insert()
+				self._quote_items_object_insert()	
 				self._insert_quote_item_forecast_parts()
 				self._quote_annualized_items_insert()
 			elif self.is_fpm_spare_service == True:				
@@ -1887,6 +1888,7 @@ class ContractQuoteItem:
 						# Spare Parts Insert/Update
 						self._quote_items_summary_insert()
 						self._quote_items_insert()
+						self._quote_items_object_insert()	
 						self._insert_quote_item_forecast_parts()
 						self._quote_annualized_items_insert()
 				##simple product quote item insert
@@ -1914,6 +1916,7 @@ class ContractQuoteItem:
 						# Spare Parts Insert/Update
 						self._quote_items_summary_insert()
 						self._quote_items_insert()
+						self._quote_items_object_insert()	
 						self._insert_quote_item_forecast_parts()
 						self._quote_annualized_items_insert()
 				elif self.is_simple_service == True:
