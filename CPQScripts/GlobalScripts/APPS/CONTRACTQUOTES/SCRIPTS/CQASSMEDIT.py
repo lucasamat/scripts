@@ -187,11 +187,13 @@ def child_ent_request(tableName,where,serviceId):
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+								Trace.Write("auto update---"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( eval(row.ENTITLEMENT_VALUE_CODE)))
 								#Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 								for code in eval(row.ENTITLEMENT_VALUE_CODE):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
 								requestdata +=']},'	
+								Trace.Write("auto update---"+str(requestdata))
 							else:
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 							requestdata += ']}'
@@ -337,7 +339,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 								attributesallowedlst.append(prdvalue['id'])
 							
 							if len(prdvalue["values"]) == 1:
-								Trace.Write('ifffff'+str(prdvalue["id"]))
+								#Trace.Write('ifffff'+str(prdvalue["id"]))
 								attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
 								if prdvalue["values"][0]["author"] in ("Default","System"):
 									#Trace.Write('524------'+str(prdvalue["id"]))
@@ -345,7 +347,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							elif len(prdvalue["values"]) > 1:
 								Trace.Write('else if'+str(prdvalue["id"])+'--'+str(prdvalue["values"]))
 								for attribute in prdvalue["values"]:
-									Trace.Write('iiiii---'+str(attribute)+'-'+str(prdvalue["id"]) )
+									#Trace.Write('iiiii---'+str(attribute)+'-'+str(prdvalue["id"]) )
 									value_list = [attribute["value"] for attribute in prdvalue["values"]]
 									if attribute["author"] in ("Default","System"):
 										attributedefaultvalue.append(prdvalue["id"])
