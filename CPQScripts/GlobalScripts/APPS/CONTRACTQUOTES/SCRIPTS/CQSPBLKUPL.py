@@ -28,13 +28,13 @@ if ACTION == "BULKUPLOADDATA":
                         <div class="partno-lbl col-md-4"><p class="p-0">File Name</p></div>
                         <div class="col-md-1 text-right p-0"><span class="hint_icon_req"><i class="fa fa-info-circle "></i></span></div>
                         <div class="txt-col-sec col-md-4"><input id="uploadsheet" class="light_yellow" style="width: 100%;" disabled></div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="file-input" class="m-0">
                                 <img src="https://sandbox.webcomcpq.com/mt/APPLIEDMATERIALS_TST/Additionalfiles/document_upload_icon.svg" class="wid-6per">
                             </label>
                             <input id="file-input" style="display:none" type="file">
                         </div>
-                        <div class="text-right"><a href="#" onclick="editclick_row(this)" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div>
+                        <div class="text-right class="col-md-1"><a href="#" onclick="editclick_row(this)" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div>
                     </div>
                     <div class="modal-footer col-md-12 pb-10px">
                         <button id="bulkaddpopupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true">CANCEL</button>
