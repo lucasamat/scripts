@@ -264,7 +264,7 @@ def SaveAttachments():
 	CrtId = TagParserProduct.ParseString("<*CTX( Quote.CartId )*>")
 	Ownrid = TagParserProduct.ParseString("<*CTX( Quote.OwnerId )*>")
 
-	docId = SqlHelper.GetFirst("SELECT * from CartAttachments (NOLOCK) where fileName = '"+str(fName)+"' and cart_id = '"+str(CrtId)+"' and owner_id = '"+str(Ownrid)+"'")
+	docId = SqlHelper.GetFirst("SELECT * from CartAttachments (NOLOCK) where fileName = '"+str(DocumentName)+"' and cart_id = '"+str(CrtId)+"' and owner_id = '"+str(Ownrid)+"'")
 	if docId is not None:
 		docattach = Quote.QuoteTables["SAQRAT"]
 		newRow = docattach.AddNewRow()
