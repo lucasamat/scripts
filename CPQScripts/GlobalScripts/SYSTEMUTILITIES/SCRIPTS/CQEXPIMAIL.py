@@ -70,8 +70,8 @@ target_mail_date = str(target_mail_date_obj).split(" ")[0].strip()
 target_mail_date = target_mail_date.replace("-","/")
 
 expired_quotes_query = Sql.GetList("SELECT QUOTE_ID,QUOTE_EXPIRE_DATE FROM SAQTMT where QUOTE_EXPIRE_DATE = '{target_mail_date}'".format(target_mail_date=target_mail_date))
-###A055S000P01-12558
-updatesaqtmtexpire = (""" UPDATE SAQTMT SET EXPIRED = '1' WHERE  QUOTE_EXPIRE_DATE = '{today_current_date}' AND QTEREV_STATUS NOT IN ('SUBMITTED FOR BOOKING') """.format(today_current_date = today_current_date ))
+###A055S000P01-12558 Chaged logic based on Revision table
+updatesaqtmtexpire = (""" UPDATE A SET A.EXPIRED = '1' FROM SAQTMT A INNER JOIN SAQTRV B ON  A.MASTER_TABLE_QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QUOTE_REVISION_RECORD_ID WHERE B.REV_EXPIRE_DATE = '{today_current_date}' AND A.QTEREV_STATUS NOT IN ('SUBMITTED FOR BOOKING') """.format(today_current_date = today_current_date ))
 Sql.RunQuery(updatesaqtmtexpire)
 
 
