@@ -2126,9 +2126,9 @@ class TreeView:
                                     #             if pm_event_attribute_id and pm_event_attribute_value:
                                     #                 subTabName = 'PM Events'
                                     #                 break
-                                    elif subTabName == 'PM Events':
-                                        service_id = NodeText.split('/>')[1]
-                                        Trace.Write("service_id          "+str(service_id))
+                                    # elif subTabName == 'PM Events':
+                                    #     service_id = NodeText.split('/>')[1]
+                                    #     Trace.Write("service_id          "+str(service_id))
                                     elif subTabName == 'New Parts':
                                         subTabName = ""
                                         if str(service_id) == "bar":
