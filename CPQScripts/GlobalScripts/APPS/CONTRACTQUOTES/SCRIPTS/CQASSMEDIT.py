@@ -345,12 +345,13 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							elif len(prdvalue["values"]) > 1:
 								Trace.Write('else if'+str(prdvalue["id"]))
 								for attribute in prdvalue["values"]:
-									#Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
+									Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
 									value_list = [attribute["value"] for attribute in prdvalue["values"]]
 									if attribute["author"] in ("Default","System"):
 										attributedefaultvalue.append(prdvalue["id"])
 									#value_list = str(value_list)
 								attributevalues[str(prdvalue["id"])] = value_list
+								Trace.Write('else if--chkbox--'+str(prdvalue["id"])+'--'+str(attributevalues[str(prdvalue["id"])]))
 							# else:
 							#     Trace.Write('else'+str(prdvalue["id"]))
 
