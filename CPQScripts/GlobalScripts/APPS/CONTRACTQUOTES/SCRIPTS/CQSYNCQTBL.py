@@ -244,17 +244,17 @@ class SyncQuoteAndCustomTables:
 									
 						# else:
 						# 	ent_disp_val = ent_disp_val
-						if ATTRIBUTE_DEFN:
-							if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.upper() == "FAB LOCATION":
-								#Trace.Write(str(attrs)+'--attrs---1118----'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
-								#Trace.Write(str(getquote_sales_val)+'-getquote_sales_val---'+str(get_il_sales_list))
-								AttributeID_Pass = attrs
-								if getquote_sales_val in get_il_sales_list:
-									NewValue = 'Israel'
-								else:
-									NewValue = 'ROW'
-						else:
-							AttributeID_Pass =''
+						# if ATTRIBUTE_DEFN:
+						# 	if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.upper() == "FAB LOCATION":
+						# 		Log.Info(str(attrs)+'--attrs---1118----'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
+						# 		#Trace.Write(str(getquote_sales_val)+'-getquote_sales_val---'+str(get_il_sales_list))
+						# 		AttributeID_Pass = attrs
+						# 		if getquote_sales_val in get_il_sales_list:
+						# 			NewValue = 'Israel'
+						# 		else:
+						# 			NewValue = 'ROW'
+						# else:
+						# 	AttributeID_Pass =''
 						#A055S000P01-7401 START
 						if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.SERVICE_ID) ) and ent_disp_val != '':
 							#Log.Info("ENTERED POA----------->")
@@ -278,6 +278,7 @@ class SyncQuoteAndCustomTables:
 						get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 						get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 						if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.upper() == "FAB LOCATION":
+							Log.Info('281---STANDARD_ATTRIBUTE_NAME---'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
 							AttributeID_Pass = attrs
 							if getquote_sales_val in get_il_sales_list:
 								NewValue = 'Israel'
