@@ -24,12 +24,13 @@ if ACTION == "BULKUPLOADDATA":
                     <div class="col-md-12">
                             <p class="p-0">Please ensure the file you're uploading exactly matches the format of the downloaded parts list.</p>
                     </div>
-                    <div class="col-md-12 d-flex align-items-center borbot1 bortop1">
-                        <div class="partno-lbl col-md-4"><p>File Name</p></div>
+                    <div class="col-md-12 d-flex align-items-center bortop1">
+                        <div class="partno-lbl col-md-4"><p class="pl-0 pr-0 pt-0">File Name</p></div>
+                        <div class="col-md-1 text-right p-0"><span class="hint_icon_req"><i class="fa fa-info-circle "></i></span></div>
                         <div class="txt-col-sec col-md-4"><input id="uploadsheet" class="light_yellow" style="width: 100%;" disabled></div>
                         <div class="col-md-4">
-                            <label for="file-input">
-                                <img src="https://sandbox.webcomcpq.com/mt/APPLIEDMATERIALS_TST/Additionalfiles/document_upload_icon.svg">
+                            <label for="file-input" class="m-0">
+                                <img src="https://sandbox.webcomcpq.com/mt/APPLIEDMATERIALS_TST/Additionalfiles/document_upload_icon.svg" class="wid-9per">
                             </label>
                             <input id="file-input" style="display:none" type="file">
                         </div>
