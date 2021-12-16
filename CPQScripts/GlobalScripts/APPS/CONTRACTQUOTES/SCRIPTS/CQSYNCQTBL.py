@@ -184,7 +184,7 @@ class SyncQuoteAndCustomTables:
 			overallattributeslist = list(set(overallattributeslist))
 			Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
 			HasDefaultvalue=False
-			get_tooltip_desc =""
+			get_tooltip_desc = AttributeID_Pass = ''
 			ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 			if ProductVersionObj is not None:
 				tbrow={}
@@ -277,7 +277,6 @@ class SyncQuoteAndCustomTables:
 						
 						get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 						get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
-						AttributeID_Pass = ''
 						if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.upper() == "FAB LOCATION":
 							AttributeID_Pass = attrs
 							if getquote_sales_val in get_il_sales_list:
