@@ -1359,7 +1359,6 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						NewValue = 'Israel'
 					else:
 						NewValue = 'ROW'
-				Log.Info('1362---NewValue--'+str(NewValue))
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -1401,7 +1400,6 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 			Sql.RunQuery(insert_qtqtse_query)
-			Log.Info('1362---AttributeID_Pass--'+str(AttributeID_Pass))
 			if AttributeID_Pass:
 				Log.Info('1406----')
 				try:
