@@ -1241,6 +1241,10 @@ class Entitlements:
 								count_temp_z0101 += 1
 								if  count_temp_z0101 == 2:
 									ancillary_object_dict['Z0101'] = "DELETE"
+									if self.treesuperparentparam == "Product Offerings":
+										Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_rec_id}' AND SERVICE_ID = 'Z0101'".format(quote_rec_id= self.ContractRecordId, quote_rev_rec_id= self.revision_recordid))
+									elif self.treesupertopparentparam == "Product Offerings":
+										Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_rec_id}' AND SERVICE_ID = 'Z0101' AND GREENBOOK = '{greenbook}'".format(quote_rec_id= self.ContractRecordId, quote_rev_rec_id= self.revision_recordid, greenbook= self.treeparentparam))
 								# if tableName == "SAQTSE":
 								# 	QuoteModule.service_level_entitlement({str(serviceId):1})
 								#ancillary_flag = "DELETE"
