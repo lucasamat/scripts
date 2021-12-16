@@ -1179,7 +1179,7 @@ class Entitlements:
 												FROM
 												SAQSCO (NOLOCK) 
 												WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_rec_id}' AND SERVICE_ID = '{treeparam}' 
-										""".format(quote_rec_id= self.contract_quote_record_id, quote_rev_rec_id= self.revision_recordid, treeparam = self.treeparam)
+										""".format(quote_rec_id= self.ContractRecordId, quote_rev_rec_id= self.revision_recordid, treeparam = self.treeparam)
 									)
 								elif self.treesupertopparentparam == "Product Offerings":
 									Sql.RunQuery(
@@ -1232,7 +1232,7 @@ class Entitlements:
 												FROM
 												SAQSCO (NOLOCK) 
 												WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_rec_id}' AND SERVICE_ID = '{treeparam}' AND GREENBOOK = '{greenbook}' 
-										""".format(quote_rec_id= self.contract_quote_record_id, quote_rev_rec_id= self.revision_recordid, treeparam = self.treeparam, greenbook= self.treeparentparam)
+										""".format(quote_rec_id= self.ContractRecordId, quote_rev_rec_id= self.revision_recordid, treeparam = self.treeparam, greenbook= self.treeparentparam)
 									)
 								# if tableName == "SAQTSE":
 								# 	QuoteModule.service_level_entitlement({str(serviceId):1})
