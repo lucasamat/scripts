@@ -62,45 +62,20 @@ def splitserviceinsert():
                         ) A""".format(description=description, service_id = parservice_values, material_record_id = material_record_id,contract_quote_rec_id = contract_quote_rec_id , quote_revision_rec_id = quote_revision_rec_id ,UserName = user_name, UserId = user_id,splitservice_object = splitservice_object ))
     
     ###split the items with new insert and updation:
-
-
-	split_service =Sql.GetFirst("Select * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0105'".format(contract_quote_rec_id,quote_revision_rec_id))
+    split_service =Sql.GetFirst("Select * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0105'".format(contract_quote_rec_id,quote_revision_rec_id))
     splitservice_id = split_service.SERVICE_ID
     splitservice_name = split_service.SERVICE_DESCRIPTION
     splitservice_recid = split_service.SERVICE_RECORD_ID
-    cloneobject={
-		"SAQRIT":"QUOTE_REVISION_CONTRACT_ITEM_ID"
-		}
-
-    for cloneobjectname in cloneobject.keys():
-        insertval = 'INSERT INTO '+ str(cloneobjectname) +'( '
-        selectval = "SELECT "
-        sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
-        insertcols = ''
-        selectcols = ''
-        for col in sqlobj:
-            if col.COLUMN_NAME == cloneobject[cloneobjectname]:
-                insertcols =  str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
-                selectcols = "CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
-            elif col.COLUMN_NAME == "SERVICE_ID":
-                insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
-                selectcols =  "'{}' AS ".format(str(splitservice_id)) + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", '{}' AS ".format(str(splitservice_id)) + str(col.COLUMN_NAME)
-            elif col.COLUMN_NAME == "SERVICE_DESCRIPTION":
-                insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
-                selectcols =  "'{}' AS ".format(str(splitservice_name)) + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", '{}' AS ".format(str(splitservice_name)) + str(col.COLUMN_NAME)
-            elif col.COLUMN_NAME == "SERVICE_RECORD_ID":
-                insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
-                selectcols =  "'{}' AS ".format(str(splitservice_recid)) + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", '{}' AS ".format(str(splitservice_recid)) + str(col.COLUMN_NAME)
-            elif col.COLUMN_NAME == "CpqTableEntryId":
-                continue
-            else:
-                insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
-                selectcols = str(col.COLUMN_NAME) if selectcols == '' else selectcols + "," + str(col.COLUMN_NAME)
-        insertcols += " )"
-        selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(contract_quote_rec_id))+" AND QTEREV_RECORD_ID='{}'".format(str(quote_revision_rec_id))
-        finalquery=insertval + insertcols +' '+ selectval + selectcols
-        Trace.Write(finalquery)
-        ExecObjQuery = Sql.RunQuery(finalquery)    
+    equipments_count = 0
+    quote_item_obj = SqlHelper.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
+    if quote_item_obj:
+	    equipments_count = int(quote_item_obj.LINE)
+    QueryStatement ="""MERGE SAQRIT SRC USING (SELECT QUOTE_REVISION_CONTRACT_ITEM_ID,CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, ROW_NUMBER()OVER(ORDER BY(SAQRIT.CpqTableEntryId)) + {equipments_count} as LINE2,LINE,OBJECT_ID, OBJECT_TYPE, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR,ESTVAL_INGL_CURR, COMVAL_INGL_CURR, GREENBOOK, GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID,PARQTEITM_LINE FROM SAQRIT where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID  = '{contract_quote_revision_record_id}')
+    TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = 'Z0105')
+    WHEN NOT MATCHED BY TARGET
+    THEN INSERT(QUOTE_REVISION_CONTRACT_ITEM_ID,CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR,ESTVAL_INGL_CURR, COMVAL_INGL_CURR, GREENBOOK, GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID,PARQTEITM_LINE)
+    VALUES (NEWID(),CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID,LINE2, OBJECT_ID, OBJECT_TYPE, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, '{splitservice_recid}', '{splitservice_id}', '{splitservice_name}', PROFIT_CENTER, QUANTITY, QUOTE_ID, '{contract_quote_record_id}', QTEREV_ID, '{contract_quote_revision_record_id}', REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR,ESTVAL_INGL_CURR, COMVAL_INGL_CURR, GREENBOOK, GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID,LINE);""".format(contract_quote_record_id=contract_quote_rec_id,contract_quote_revision_record_id = quote_revision_rec_id,splitservice_recid = splitservice_recid,splitservice_id=splitservice_id,splitservice_name = splitservice_name,equipments_count =equipments_count )
+    Sql.RunQuery(QueryStatement)
         
 
 splitserviceinsert()
