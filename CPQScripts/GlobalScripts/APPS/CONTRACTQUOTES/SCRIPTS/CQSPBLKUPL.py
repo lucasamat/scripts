@@ -34,7 +34,7 @@ if ACTION == "BULKUPLOADDATA":
                             </label>
                             <input id="file-input" style="display:none" type="file">
                         </div>
-                        <div class="text-right class="col-md-1"><a href="#" onclick="editclick_row(this)" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div>
+                        <div class="text-right col-md-1"><a href="#" onclick="editclick_row(this)" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div>
                     </div>
                     <div class="modal-footer col-md-12 pb-10px">
                         <button id="bulkaddpopupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true">CANCEL</button>
