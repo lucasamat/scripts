@@ -1316,8 +1316,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					ent_val_code = ent_val_code
 				if ATTRIBUTE_DEFN:
 					if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.upper() == "FAB LOCATION":
-						#Trace.Write(str(attrs)+'--attrs---1118----'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
-						#Trace.Write(str(getquote_sales_val)+'-getquote_sales_val---'+str(get_il_sales_list))
+						Trace.Write(str(attrs)+'--attrs---1118----'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
+						Trace.Write(str(getquote_sales_val)+'-getquote_sales_val---'+str(get_il_sales_list))
 						AttributeID_Pass = attrs
 						if getquote_sales_val in get_il_sales_list:
 							NewValue = 'Israel'
@@ -1388,16 +1388,16 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 			Sql.RunQuery(insert_qtqtse_query)
 			if AttributeID_Pass:
-				Log.Info('1406----')
+				Trace.Write('1406---AttributeID_Pass---'+str(AttributeID_Pass))
 				try:
-					Log.Info('1408------'+str(NewValue))					
+					Trace.Write('1408--NewValue----'+str(NewValue))					
 					add_where =''
 					ServiceId = OfferingRow_detail.get("SERVICE_ID")
 					whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.get("QUOTE_RECORD_ID"),OfferingRow_detail.get("SERVICE_ID"),self.quote_revision_record_id)
 					ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 					result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 				except:
-					Log.Info('1408------error--')
+					#Log.Info('1408------error--')
 					Trace.Write('error--296')
 			try:
 				if OfferingRow_detail.get("SERVICE_ID") == 'Z0016':
