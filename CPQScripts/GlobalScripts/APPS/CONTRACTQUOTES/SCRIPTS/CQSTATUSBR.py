@@ -571,8 +571,8 @@ def Dynamic_Status_Bar():
 			Trace.Write('No button--2')
 			buttonvisibility = "Hide_button"
 	Trace.Write("buttonvisibility=="+str(buttonvisibility))
-	if str(item_covered_obj):       
-		_insert_billing_matrix()
+	#if str(item_covered_obj):       
+		#_insert_billing_matrix()
 	
 	# Quote Item Inserts - Starts
 	if quote_item_insert == 'yes':
@@ -597,8 +597,8 @@ def Dynamic_Status_Bar():
 	# Quote Item Inserts - Ends
 
 	
-	#if str(item_covered_obj):       
-		#_insert_billing_matrix()
+	if str(item_covered_obj):       
+		_insert_billing_matrix()
 	return buttonvisibility,price_bar
 try:
 	quote_item_insert = Param.quote_item_insert
