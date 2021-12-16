@@ -183,7 +183,7 @@ def ChildEntRequest(config_id,tableName,where):
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
 								#Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
-								for code in eval(row.ENTITLEMENT_VALUE_CODE):
+								for code in row.ENTITLEMENT_VALUE_CODE.split(','):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
 								requestdata +=']},'	
