@@ -2107,25 +2107,25 @@ class TreeView:
                                         subTabName = str(NodeText) + " : " + str(subTabName)
                                     elif getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
                                         subTabName = ""
-                                    elif subTabName == 'PM Events':
-                                        subTabName = ""
-                                        if str(service_id) == "bar":
-                                            service_id = NodeText.split('/>')[1]
-                                        service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id))
-                                        if service_entitlement_obj is not None:
-                                            updateentXML = service_entitlement_obj.ENTITLEMENT_XML
-                                            pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-                                            pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
-                                            pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
-                                            for value in re.finditer(pattern_tag, updateentXML):
-                                                sub_string = value.group(1)
-                                                pm_event_attribute_id =re.findall(pattern_id,sub_string)
-                                                pm_event_attribute_value =re.findall(pattern_name,sub_string)
-                                                #Trace.Write("sub_string"+str(sub_string))
-                                                #Trace.Write("get_ent_id_J "+str(get_ent_id)+"get_ent_name_J "+str(get_ent_name))
-                                                if pm_event_attribute_id and pm_event_attribute_value:
-                                                    subTabName = 'PM Events'
-                                                    break
+                                    # elif subTabName == 'PM Events':
+                                    #     subTabName = ""
+                                    #     if str(service_id) == "bar":
+                                    #         service_id = NodeText.split('/>')[1]
+                                    #     service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id))
+                                    #     if service_entitlement_obj is not None:
+                                    #         updateentXML = service_entitlement_obj.ENTITLEMENT_XML
+                                    #         pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                                    #         pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
+                                    #         pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
+                                    #         for value in re.finditer(pattern_tag, updateentXML):
+                                    #             sub_string = value.group(1)
+                                    #             pm_event_attribute_id =re.findall(pattern_id,sub_string)
+                                    #             pm_event_attribute_value =re.findall(pattern_name,sub_string)
+                                    #             #Trace.Write("sub_string"+str(sub_string))
+                                    #             #Trace.Write("get_ent_id_J "+str(get_ent_id)+"get_ent_name_J "+str(get_ent_name))
+                                    #             if pm_event_attribute_id and pm_event_attribute_value:
+                                    #                 subTabName = 'PM Events'
+                                    #                 break
                                     elif subTabName == 'New Parts':
                                         subTabName = ""
                                         if str(service_id) == "bar":
