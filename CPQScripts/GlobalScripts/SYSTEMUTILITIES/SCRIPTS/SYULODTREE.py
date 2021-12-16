@@ -2204,24 +2204,24 @@ class TreeView:
 									elif (subTabName in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List') :
 										subTabName = ""
 										whr_str_greenbook =""
-										objectname =""
+										ent_table =""
 										Trace.Write("service_id-inclusion-- "+str(NodeText))
 										if subTabName in ("PM Events","New Parts","Service Parts List","Service Inclusions") :
 											service_id = NodeText.split('/>')
 											service_id = service_id[len(service_id) -1]
-											objectname ="SAQTSE"
+											ent_table ="SAQTSE"
 										else:
-											objectname ="SAQSGE"
+											ent_table ="SAQSGE"
 											service_id = Product.GetGlobal("SERVICE")
-											whr_str_greenbook = " AND GREENBOOK = '{NodeText}'"
+											whr_str_greenbook = " AND GREENBOOK = '{}'".format(NodeText)
 												
-										get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {obj} (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' {greenbook} """.format(obj = objectname ,QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id,greenbook = whr_str_greenbook))
+										get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' {whr_str_greenbook}""".format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id,ent_table = ent_table,whr_str_greenbook = whr_str_greenbook ))
 										if get_entitlement_xml :
 											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 											pattern_id =""
 											pattern_name =""
 											subtab_temp =""
-											if subTabName == 'PM Events' and objectname =="SAQTSE":
+											if subTabName == 'PM Events' and ent_table =="SAQTSE":
 												pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
 												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
 												subtab_temp ="PM Events"
