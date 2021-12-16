@@ -1347,7 +1347,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),self.contract_quote_record_id,self.quote_revision_record_id,OfferingRow_detail.get("SERVICE_ID")))
 				#A055S000P01-7401 END
 				getquote_sales_val = NewValue = ''
-				getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.get("QUOTE_RECORD_ID"))+"'")
+				getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.get("QUOTE_RECORD_ID")+"'")
 				if getslaes_value:
 					getquote_sales_val = getslaes_value.SALESORG_ID
 				get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
