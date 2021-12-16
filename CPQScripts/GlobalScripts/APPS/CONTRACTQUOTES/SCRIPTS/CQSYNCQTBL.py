@@ -215,7 +215,7 @@ class SyncQuoteAndCustomTables:
 						#Log.Info(str(OfferingRow_detail.SERVICE_ID)+'---194----attrs--')
 						# if str(attrs) == 'AGS_REL_STDATE' and "Z0007" in OfferingRow_detail.SERVICE_ID:
 						# 	try:
-						# 		#Trace.Write('except-try----date-------')
+						# 		#Trace.Write('except-try----date-----')
 						# 		HasDefaultvalue = True
 						# 		QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
 						# 		ent_disp_val = 	str(QuoteStartDate.strftime("%m/%d/%Y"))
