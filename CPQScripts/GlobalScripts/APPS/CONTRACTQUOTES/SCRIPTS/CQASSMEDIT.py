@@ -187,13 +187,13 @@ def child_ent_request(tableName,where,serviceId):
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-								Trace.Write("auto update---"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( eval(row.ENTITLEMENT_VALUE_CODE)))
+								#Trace.Write("auto update---"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( eval(row.ENTITLEMENT_VALUE_CODE)))
 								#Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 								for code in row.ENTITLEMENT_VALUE_CODE.split(','):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
 								requestdata +=']},'	
-								Trace.Write("auto update---"+str(requestdata))
+								#Trace.Write("auto update---"+str(requestdata))
 							else:
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 							requestdata += ']}'
@@ -345,7 +345,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 									#Trace.Write('524------'+str(prdvalue["id"]))
 									attributedefaultvalue.append(prdvalue["id"])
 							elif len(prdvalue["values"]) > 1:
-								Trace.Write('else if'+str(prdvalue["id"])+'--'+str(prdvalue["values"]))
+								#Trace.Write('else if'+str(prdvalue["id"])+'--'+str(prdvalue["values"]))
 								for attribute in prdvalue["values"]:
 									#Trace.Write('iiiii---'+str(attribute)+'-'+str(prdvalue["id"]) )
 									value_list = [attribute["value"] for attribute in prdvalue["values"]]
@@ -434,7 +434,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
 				#Log.Info('response2--182----342-')
-				Trace.Write('--ent_disp_val--value code-'+str(attrs)+'--'+str(ent_val_code)+'--'+str(ent_disp_val))
+				#Trace.Write('--ent_disp_val--value code-'+str(attrs)+'--'+str(ent_val_code)+'--'+str(ent_disp_val))
 				
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 				<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
