@@ -25,12 +25,18 @@ if ACTION == "BULKUPLOADDATA":
                             <div>Please ensure the file you're uploading exactly matches the format of the downloaded parts list.</div>
                     </div>
                     <div class="col-md-12 d-flex align-items-center">
-                        <div class="partno-lbl col-md-3">File Name</div>
-                        <div class="txt-col-sec col-md-7"><input id="uploadsheet" class="light_yellow" style="width: 100%;"></div>
+                        <div class="partno-lbl col-md-4">File Name</div>
+                        <div class="txt-col-sec col-md-4"><input id="uploadsheet" class="light_yellow" style="width: 100%;"></div>
+                        <div class="col-md-4">
+                            <label for="file-input">
+                                <img src="https://sandbox.webcomcpq.com/mt/APPLIEDMATERIALS_TST/Additionalfiles/document_upload_icon.svg">
+                            </label>
+                            <input id="file-input" style="display:none" type="file">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button id="bulkaddpopupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true">CANCEL</button>
-                        <button onclick="bulkAddSpareParts()" id="bulkaddsave" data-dismiss="modal" class="btn btn-list-cust">SAVE</button>
+                        <button onclick="bulkUploadSave()" id="bulkuploadsave" data-dismiss="modal" class="btn btn-list-cust">SAVE</button>
                     </div> """
     ApiResponse = ApiResponseFactory.JsonResponse([model_html])
 else:
