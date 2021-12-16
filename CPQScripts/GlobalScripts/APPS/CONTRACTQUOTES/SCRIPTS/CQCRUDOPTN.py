@@ -1327,16 +1327,16 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					AttributeID_Pass =''
 					#NewValue = 'ROW'
 					#NewValue = ''
-				# if str(attrs) == 'AGS_CON_DAY' and 'Z0016' in OfferingRow_detail.get("SERVICE_ID"): 
-				# 	try:						
-				# 		QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
-				# 		QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-				# 		contract_days = (QuoteEndDate - QuoteStartDate).days
-				# 		ent_disp_val = 	str(contract_days)
-				# 	except:						
-				# 		ent_disp_val = ent_disp_val	
-				# else:
-				# 	ent_disp_val = ent_disp_val	
+				if str(attrs) == 'AGS_CON_DAY' and 'Z0016' in OfferingRow_detail.get("SERVICE_ID"): 
+					try:						
+						QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
+						QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
+						contract_days = (QuoteEndDate - QuoteStartDate).days
+						ent_disp_val = 	str(contract_days)
+					except:						
+						ent_disp_val = ent_disp_val	
+				else:
+					ent_disp_val = ent_disp_val	
 				#A055S000P01-7401 START
 				if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.get("SERVICE_ID")) ) and ent_disp_val != '':
 					val = ""
@@ -1346,19 +1346,6 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						val = "COMPLEMENTARY PRODUCTS"
 					Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),self.contract_quote_record_id,self.quote_revision_record_id,OfferingRow_detail.get("SERVICE_ID")))
 				#A055S000P01-7401 END
-				getquote_sales_val = NewValue = ''
-				getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.get("QUOTE_RECORD_ID")+"'")
-				if getslaes_value:
-					getquote_sales_val = getslaes_value.SALESORG_ID
-				get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
-				get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
-				AttributeID_Pass = ''
-				if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.upper() == "FAB LOCATION":
-					AttributeID_Pass = attrs
-					if getquote_sales_val in get_il_sales_list:
-						NewValue = 'Israel'
-					else:
-						NewValue = 'ROW'
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
