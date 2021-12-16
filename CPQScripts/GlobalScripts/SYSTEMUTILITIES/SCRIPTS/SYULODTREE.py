@@ -2197,12 +2197,19 @@ class TreeView:
 											#Trace.Write('2101------------')
 											#subTabName = str(getRightView.SUBTAB_NAME)
 										#Trace.Write("**2045 Subtab-->"+str(subTabName))
-									elif subTabName == 'Inclusions':
+									elif subTabName in ('Greenbook Inclusions','Service Inclusions'):
 										subTabName = ""
+										whr_str_greenbook =""
 										Trace.Write("service_id-inclusion-- "+str(NodeText))
-										service_id = NodeText.split('/>')
-										service_id = service_id[len(service_id) -1]
-										service_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id))
+										if subTabName == 'Service Inclusions':
+											service_id = NodeText.split('/>')
+											service_id = service_id[len(service_id) -1]
+										else:
+											service_id = Product.GetGlobal("SERVICE")
+										if subTabName == 'Greenbook Inclusions':
+											whr_str_greenbook = " AND GREENBOOK = '{NodeText}'"
+										
+										service_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' {greenbook} """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id,greenbook = whr_str_greenbook))
 										if service_entitlement_xml and service_id =='Z0091':
 											updateentXML = service_entitlement_xml.ENTITLEMENT_XML
 											flag_excluse=0
