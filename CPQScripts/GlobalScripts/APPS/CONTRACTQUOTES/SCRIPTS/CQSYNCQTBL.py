@@ -269,12 +269,12 @@ class SyncQuoteAndCustomTables:
 						#Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
 						#Trace.Write("ent_name--"+str(attrs))
 						#9226 starts
-						Log.Info('271--sales--'+str(custom_fields_detail.get("SalesOrgID")))
+						
 						getquote_sales_val = ''
 						getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.QUOTE_RECORD_ID)+"'")
 						if getslaes_value:
 							getquote_sales_val = getslaes_value.SALESORG_ID
-						Log.Info('271--getquote_sales_val-----'+str(getquote_sales_val))
+						
 						get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 						get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 						AttributeID_Pass = ''
@@ -441,7 +441,7 @@ class SyncQuoteAndCustomTables:
 				# 	),
 				# )
 				quote_id = self.quote.CompositeNumber
-				Log.Info("quote_id_CHK "+str(quote_id))
+				#Log.Info("quote_id_CHK "+str(quote_id))
 				quote_obj = Sql.GetFirst(
 					"SELECT * FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '{}' AND C4C_QUOTE_ID = '{}'".format(
 						quote_id, self.quote.CompositeNumber
@@ -495,8 +495,6 @@ class SyncQuoteAndCustomTables:
 					#Log.Info("expired"+str(start_date)+"sdate---"+str(created_date))
 					created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 					expired_date = date.today()+ timedelta(days=365)
-					Log.Info("Expiry_Date_Check "+str(expired_date))
-					Log.Info("END DATE TO CONTRACT VALID TO "+str(end_date))
 					#A055S000P01-7866
 					#document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
 					quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
@@ -648,7 +646,6 @@ class SyncQuoteAndCustomTables:
 							if exchange_rate_type_object:								
 								salesorg_data.update({"BANK_ID":exchange_rate_type_object.BANK_ID,"BANK_NAME":exchange_rate_type_object.BANK_NAME,"BANK_RECORD_ID":exchange_rate_type_object.EXCHANGE_RATE_RECORD_ID,"EXCHANGE_RATE_TYPE":exchange_rate_type_object.EXCRATTYP_ID})
 								
-						Log.Info("END DATE TO CONTRACT VALID TO revision "+str(end_date))
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
 													"QTEREV_ID":quote_rev_id })
@@ -751,11 +748,9 @@ class SyncQuoteAndCustomTables:
 								#                     })
 						if str(salesorg_data.get('SALESORG_ID')):							
 							tax_details = Sql.GetFirst("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
-							Log.Info("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
+							
 							if tax_details:
 								salesorg_data.update({"ACCTAXCAT_ID": tax_details.TAXCATEGORY_ID,"ACCTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION, "ACCTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "ACCTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION})
-						Log.Info('salesorg_data---443--'+str(salesorg_data))
-						Log.Info('contract_quote_data---443--'+str(contract_quote_data))
 						##Commented the condition to update the pricing procedure for both spare and tool based quote
 						#if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
 						# Get Pricing Procedure
@@ -1266,7 +1261,7 @@ class SyncQuoteAndCustomTables:
 								}
 								Log.Info("fab_quote_data===> " + str(fab_quote_data))
 								quote_fab_table_info.AddRow(fab_quote_data) """
-					Log.Info("contract_quote_data===> " + str(contract_quote_data))
+					#Log.Info("contract_quote_data===> " + str(contract_quote_data))
 					#Log.Info("quote_involved_party_table_info===> " + str(quote_involved_party_table_info))
 					#Log.Info("contact_Info_update "+str(contact_info_update))
 					quote_salesorg_table_info.AddRow(salesorg_data)
@@ -1283,9 +1278,9 @@ class SyncQuoteAndCustomTables:
 					#Sql.Upsert(quote_fab_table_info)
 
 					##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
-					Log.Info("Revisionstatusdatecapture===> ")
+					#Log.Info("Revisionstatusdatecapture===> ")
 					CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-					Log.Info("Revisionstatusdatecapture===>end ")
+					#Log.Info("Revisionstatusdatecapture===>end ")
 					# Insert SAQCBC while creating quote in c4c - start A055S000P01-11413
 					checklist_desc = ['Signed agreement is current or a temporary extension is approved by legal. If using a quote and PO, they must be valid.','Signed agreement has all of the terms and conditions that would be on a PO. (i.e. ship to, bill to, inco terms, payment terms, etc..). If Std Svc, Proj Eng, & FTS under $1M and booking using a quote and PO, all SOW terms must be listed on the quote and PO must reference quote.','All customer facing agreements require legal review/approval per the SAM (except NDAs) and must receive a Legal Review Mark prior to being signed by Applied. Note: This does not apply to contracts for WEB, Solar products and services, and if booking using a PO and Quote, legal does not need to be reviewed as long as all terms are listed on the quote and a sales order acknowledgement is sent to the customer.','The customer PO and/or any other document (e.g. SOW, CL) or communication relating to the order received does not contain unacceptable commercial terms such as:','- The right to receive Applied’s best pricing for purchased products or services;','- The right to receive better or more favorable pricing compared than other Applied customers;','- Process or method patent infringement indemnification by Applied;','- The customer right to review or audit any Applied sales records','The master agreement is valid for the full duration for the contract booking (Contact the Law Department for expired Master Agreements).','The master agreement is referenced on the PO/Signed Agreement and the Quote.','Terms, Conditions, and Pricing on the Quote, PO, and/or Sales Agreement are per Master Agreement','Approved Deal sheet (Per AGS Order Policy)','Approved SAF (Per AGS Order Policy)','Clarification letters received for any exceptions or non standard approvals (legal entity and dollar amount changes required a change PO, a revised signed agreement, or an ORCA exception).','Delivery Dates and INCO terms on the PO match the signed agreement/quote (do not include POSS cancellation terms with service terms. If multiple cancellation terms for service products, split out).','Proper sizing and billing data available in a PO, the signed agreement, or a clarification letter in order to book for the full duration.For Variable bookings:','- You can only book for the full duration of the deal if the customer is committing to the full $ within the agreement;','- If you do not have commitment for the full duration but you have a customer commitment to a minimum purchase, you can book for the minimum committed $;','- If you have a signed agreement with an estimate $, no commitment from the customer, PO/No PO, you book for $1','Enter 0 if the cancellation/termination for convenience cannot be identified (silent) or if the customer can walk away at any time for the duration of the agreement.','Enter NA if there is a cancellation/termination of convenience clause stating the contract cannot be cancelled.','Enter NA for POES and MEA','When using the Ts&Cs shown on the website link on the bottom of the quote, enter 90 days.','If the agreement with the customer provides a specific number of days to cancel at their convenience, enter that number of days. If there is no cancellation for an initial period of time, enter the total period (i.e. 18 months no cancel + 90 days cancellation = 637 days entered)','All CRM Service Contracts must include equipment numbers. (Excluding FPM)','The Contract/P.O. is made out to the correct Applied Materials entity for the specific delivery location (e.g., Applied Materials, Inc for US delivery locations or Applied Materials South East Asia Pte. Ltd. ALL non US delivery locations)','If any tax is applicable, it is capture at the correct rate on the quote, PO, and/or the signed agreement','If booking using a Quote and PO, the funding amount on PO matches or exceeds the Quote (partial POs require a clarification from the customer on the remaining PO submission)','PO references the Signed Agreement or Quote','If booking with a PO, the terms match the quote. (i.e. ship to, bill to, payment terms, etc)','The start and end dates on each line are accurate against the signed agreement, PO, quote, or CL','The billing amounts for each line are accurate against the signed agreement, PO, quote, or CL','SDA assessment worksheet attached (Display only) and specify RRA CAR/SHPOD','The signed customer spec has been received (if applicable)','If this booking requires an MEA template, obtain a copy of the template from Sales. Attach the template to the booking package and email a copy of the template to regional finance and Judy Mock. If the answer to any of the following questions is "yes", the MEA template is required:','- Does this transaction include deliverables other than a single service? If the answer to this question is Yes but the additional deliverables are for ONLY Services (PMSA, Standard service, Managed Services or Credits) that have amounts which are all priced out then an MEA is not needed and thus the answer to the question should be NA.','- Is this a POSS Deal?','- Are there any deliverables free of charge or not priced out e.g. CSA sold with an NSO at 1 price for both items?']
 					checklist_id=0
