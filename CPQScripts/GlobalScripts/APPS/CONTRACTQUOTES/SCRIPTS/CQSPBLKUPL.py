@@ -24,8 +24,8 @@ if ACTION == "BULKUPLOADDATA":
                     <div class="col-md-12">
                             <p class="p-0">Please ensure the file you're uploading exactly matches the format of the downloaded parts list.</p>
                     </div>
-                    <div class="col-md-12 d-flex align-items-center">
-                        <div class="partno-lbl col-md-4">File Name</div>
+                    <div class="col-md-12 d-flex align-items-center borbot1 bortop1">
+                        <div class="partno-lbl col-md-4"><p>File Name</p></div>
                         <div class="txt-col-sec col-md-4"><input id="uploadsheet" class="light_yellow" style="width: 100%;" disabled></div>
                         <div class="col-md-4">
                             <label for="file-input">
@@ -34,7 +34,7 @@ if ACTION == "BULKUPLOADDATA":
                             <input id="file-input" style="display:none" type="file">
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer col-md-12 pb-10px">
                         <button id="bulkaddpopupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true">CANCEL</button>
                         <button onclick="bulkUploadSave()" id="bulkuploadsave" data-dismiss="modal" class="btn btn-list-cust">SAVE</button>
                     </div> """
