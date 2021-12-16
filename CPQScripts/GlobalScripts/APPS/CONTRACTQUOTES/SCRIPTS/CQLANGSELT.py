@@ -1,3 +1,7 @@
+
+
+
+
 import clr
 #clr.AddReference("System.Net")
 clr.AddReference("IronPython")
@@ -93,7 +97,7 @@ def language_select(TPP):
 	Trace.Write("Inside language select")
 	sec_str =  ''
 	
-	Oppp_SECT = Sql.GetList("SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE PRIMARY_OBJECT_NAME = 'QTQDOC' ORDER BY DISPLAY_ORDER")
+	Oppp_SECT = Sql.GetList("SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE PRIMARY_OBJECT_NAME = 'SAQDOC' ORDER BY DISPLAY_ORDER")
 	for sect in Oppp_SECT:
 		if sect.SECTION_NAME == "BASIC INFORMATION":
 			sec_str += ('<div id="container" class="wdth100 g4 ' + str(sect.RECORD_ID) + ' mt-0">')
