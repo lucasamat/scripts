@@ -13,7 +13,7 @@ except:
 if ACTION == "BULKUPLOADDATA":
     model_html = """ <div class="row modulebnr brdr ma_mar_btm">UPLOAD PARTS LIST<button type="button" class="close flt_rt" onclick="closepopup_scrl()" data-dismiss="modal">X</button></div>
                     <div class="col-md-12 padlftrhtnone">
-                        <div class="row pad-10 bg-lt-wt brdr">
+                        <div class="row pad-10 bg-lt-wt brdr" id="seginnerbnr">
                         <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg">
                         <div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;">
                             <div class="product_txt_child"><abbr title="Upload Parts List">Upload Parts List</abbr></div>
@@ -21,12 +21,12 @@ if ACTION == "BULKUPLOADDATA":
                         </div>
                         </div>
                     </div>
-                    <div class="col-md-12 d-flex align-items-center">
-                            <div>Please ensure the file you're uploading exactly matches the format of the downloaded parts list.</div>
+                    <div class="col-md-12">
+                            <p class="p-0">Please ensure the file you're uploading exactly matches the format of the downloaded parts list.</p>
                     </div>
                     <div class="col-md-12 d-flex align-items-center">
                         <div class="partno-lbl col-md-4">File Name</div>
-                        <div class="txt-col-sec col-md-4"><input id="uploadsheet" class="light_yellow" style="width: 100%;"></div>
+                        <div class="txt-col-sec col-md-4"><input id="uploadsheet" class="light_yellow" style="width: 100%;" disabled></div>
                         <div class="col-md-4">
                             <label for="file-input">
                                 <img src="https://sandbox.webcomcpq.com/mt/APPLIEDMATERIALS_TST/Additionalfiles/document_upload_icon.svg">
