@@ -2197,6 +2197,29 @@ class TreeView:
 											#Trace.Write('2101------------')
 											#subTabName = str(getRightView.SUBTAB_NAME)
 										#Trace.Write("**2045 Subtab-->"+str(subTabName))
+									elif subTabName == 'Inclusions':
+										subTabName = ""
+										Trace.Write("service_id-inclusion-- "+str(NodeText))
+										service_id = NodeText.split('/>')
+										service_id = service_id[len(service_id) -1]
+										service_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id))
+										if service_entitlement_xml and service_id =='Z0091':
+											updateentXML = service_entitlement_xml.ENTITLEMENT_XML
+											flag_excluse=0
+											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+											pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
+											pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
+											for m in re.finditer(pattern_tag, updateentXML):
+												sub_string = m.group(1)
+												get_ent_id =re.findall(pattern_id,sub_string)
+												get_ent_name=re.findall(pattern_name,sub_string)
+												if get_ent_id and get_ent_name:
+													flag_excluse=1
+													break
+											if flag_excluse==1:
+												subTabName = "Inclusions"
+
+
 									# elif subTabName == 'New Parts Only':
 									# 	subTabName = ""
 									# 	Trace.Write(str(service_id)+"---TreeParam-- -"+str(TreeParam)+"----"+str(NodeText))
