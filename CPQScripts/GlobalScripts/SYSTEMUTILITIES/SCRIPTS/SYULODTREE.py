@@ -2205,7 +2205,7 @@ class TreeView:
 										subTabName = ""
 										whr_str_greenbook =""
 										ent_table =""
-										Trace.Write("service_id-inclusion-- "+str(NodeText))
+										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName))
 										if subTabName in ("PM Events","New Parts","Service Parts List","Service Inclusions") :
 											service_id = NodeText.split('/>')
 											service_id = service_id[len(service_id) -1]
