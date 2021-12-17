@@ -50,6 +50,7 @@ class ViolationConditions:
                 "REJECTBTN",
                 "BULKAPPROVE",
                 "BULKREJECT",
+                "CBC_MAIL_TRIGGER"
             ],
             "ProductDetailLoading": ["PoductDetails", "ProductDetail"],
             "QueryBuilder": ["QueryBuilder", "QBSave"],
