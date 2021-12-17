@@ -1178,7 +1178,7 @@ class ContractQuoteItem:
 						MAMSCT.TAXCLASSIFICATION_RECORD_ID,
 						{DynamicNetValues}					
 						{ObjectName}.GREENBOOK,
-						'{billing_type}' as BILLING_TYPE
+						'{billing_type}' as BILLING_TYPE,
 						{ObjectName}.GREENBOOK_RECORD_ID,
 						SAQRIS.QUOTE_REV_ITEM_SUMMARY_RECORD_ID as QTEITMSUM_RECORD_ID
 					FROM {ObjectName} (NOLOCK) 
