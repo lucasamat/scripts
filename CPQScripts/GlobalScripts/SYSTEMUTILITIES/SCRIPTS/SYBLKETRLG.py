@@ -809,7 +809,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Sql.RunQuery("UPDATE SAQRIT SET ESTVAL_INGL_CURR = '{}',COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(x,ALLVALUES[x],selected_rows_cpqid[count]))
 				count += 1
 			#A055S000P01-12656 start
-			tax_percent_amt = commitval = ''
+			tax_percent_amt = commitval = 0
 			net_value_tax  = ''
 			Sql = SQL()
 			get_quote_item_details = Sql.GetList("select * from SAQRIT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
