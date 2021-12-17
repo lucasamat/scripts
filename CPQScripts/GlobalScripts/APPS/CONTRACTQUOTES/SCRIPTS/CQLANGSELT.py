@@ -92,7 +92,7 @@ def _insert_subtotal_by_offerring_quote_table():
 
 def language_select(TPP):
 	#calling subtotal by offering --start
-	_insert_subtotal_by_offerring_quote_table()
+	#_insert_subtotal_by_offerring_quote_table()
 	#calling subtotal by offering --end
 	Trace.Write("Inside language select")
 	sec_str =  ''
@@ -151,8 +151,16 @@ def language_select(TPP):
 	Trace.Write("GSGSG"+str(sec_str)+str(INCLUDESPARE))
 	return sec_str
 
-TPP = Param.TreeParentParam
-Trace.Write("Sssss"+str(TPP))
+try:
+    action_type = Param.LOAD
+except:
+    action_type = ''
 
-ApiResponse = ApiResponseFactory.JsonResponse(language_select(TPP))
+Trace.Write("inside"+str(action_type))
+
+    
+
+if action_type == "DOCUMENT":
+	Trace.Write("inside"+str(action_type))
+	ApiResponse = ApiResponseFactory.JsonResponse(language_select())
 	
