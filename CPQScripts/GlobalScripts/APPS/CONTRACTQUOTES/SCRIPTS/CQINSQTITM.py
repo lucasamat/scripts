@@ -1677,9 +1677,42 @@ class ContractQuoteItem:
 			)
 
 	def _insert_quote_item_forecast_parts(self):
+		##if self.service_id == 'Z0101':
 		Sql.RunQuery("""INSERT SAQRIP (QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE ) 
+		SELECT 
+			CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,
+			'{UserName}' AS CPQTABLEENTRYADDEDBY,
+			GETDATE() as CPQTABLEENTRYDATEADDED,
+			{UserId} as CpqTableEntryModifiedBy,
+			GETDATE() as CpqTableEntryDateModified,
+			SAQRSP.PART_DESCRIPTION,
+			SAQRSP.PART_NUMBER,
+			SAQRSP.PART_RECORD_ID,
+			SAQRSP.SERVICE_DESCRIPTION,
+			SAQRSP.SERVICE_ID,
+			SAQRSP.SERVICE_RECORD_ID,
+			SAQRSP.QUANTITY,
+			SAQRSP.QUOTE_ID,
+			SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,
+			SAQRSP.QUOTE_RECORD_ID,
+			SAQRSP.QTEREV_ID,
+			SAQRSP.QTEREV_RECORD_ID,
+			SAQRIT.LINE
+		FROM SAQRSP (NOLOCK) 
+		JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = SAQRSP.SERVICE_RECORD_ID AND SAQRIT.GREENBOOK_RECORD_ID = SAQRSP.GREENBOOK_RECORD_ID AND SAQRIT.FABLOCATION_RECORD_ID = SAQRSP.FABLOCATION_RECORD_ID 
+		LEFT JOIN SAQRIP (NOLOCK) ON SAQRIP.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND SAQRIP.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID AND SAQRIP.SERVICE_RECORD_ID = SAQRSP.SERVICE_RECORD_ID AND SAQRIP.PART_RECORD_ID = SAQRSP.PART_RECORD_ID 
+
+		WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRSP.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQRIP.PART_RECORD_ID,'') = '' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+
+		
+	def _insert_quote_item_fpm_forecast_parts(self):
+			
+		Sql.RunQuery("DELETE FROM SAQIFP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(
+					QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+		if self.service_id == 'Z0100': 
+			Sql.RunQuery("""INSERT SAQIFP (QUOTE_ITEM_FORECAST_PART_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, ANNUAL_QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, PRICING_STATUS ) 
 			SELECT 
-				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,
+				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_FORECAST_PART_RECORD_ID,
 				'{UserName}' AS CPQTABLEENTRYADDEDBY,
 				GETDATE() as CPQTABLEENTRYDATEADDED,
 				{UserId} as CpqTableEntryModifiedBy,
@@ -1690,25 +1723,21 @@ class ContractQuoteItem:
 				SAQRSP.SERVICE_DESCRIPTION,
 				SAQRSP.SERVICE_ID,
 				SAQRSP.SERVICE_RECORD_ID,
-				SAQRSP.QUANTITY,
+				SAQRSP.CUSTOMER_ANNUAL_QUANTITY,
 				SAQRSP.QUOTE_ID,
 				SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,
 				SAQRSP.QUOTE_RECORD_ID,
 				SAQRSP.QTEREV_ID,
 				SAQRSP.QTEREV_RECORD_ID,
-				SAQRIT.LINE
-			FROM SAQRSP (NOLOCK) 
-			JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = SAQRSP.SERVICE_RECORD_ID AND SAQRIT.GREENBOOK_RECORD_ID = SAQRSP.GREENBOOK_RECORD_ID AND SAQRIT.FABLOCATION_RECORD_ID = SAQRSP.FABLOCATION_RECORD_ID 
-			LEFT JOIN SAQRIP (NOLOCK) ON SAQRIP.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND SAQRIP.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID AND SAQRIP.SERVICE_RECORD_ID = SAQRSP.SERVICE_RECORD_ID AND SAQRIP.PART_RECORD_ID = SAQRSP.PART_RECORD_ID 
-
-			WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRSP.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQRIP.PART_RECORD_ID,'') = '' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-			
-	def _insert_quote_item_fpm_forecast_parts(self):
-			
-		Sql.RunQuery("DELETE FROM SAQIFP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(
-					QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
-		
-		Sql.RunQuery("""INSERT SAQIFP (QUOTE_ITEM_FORECAST_PART_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, ANNUAL_QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, PRICING_STATUS ) 
+				SAQRIT.LINE,
+				'ACQUIRING...' AS PRICING_STATUS
+			FROM SAQRSP (NOLOCK)
+			JOIN SAQSCO (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID AND SAQSCO.SERVICE_RECORD_ID = SAQRSP.SERVICE_RECORD_ID 
+			JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = SAQRSP.SERVICE_RECORD_ID 
+			LEFT JOIN SAQIFP (NOLOCK) ON SAQIFP.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND SAQIFP.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID AND SAQIFP.SERVICE_RECORD_ID = SAQRSP.SERVICE_RECORD_ID AND SAQIFP.PART_RECORD_ID = SAQRSP.PART_RECORD_ID 
+			WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRSP.SERVICE_ID = '{ServiceId}' AND SAQSPT.QUANTITY > 0 AND ISNULL(SAQIFP.PART_RECORD_ID,'') = '' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		else:
+			Sql.RunQuery("""INSERT SAQIFP (QUOTE_ITEM_FORECAST_PART_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, ANNUAL_QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, PRICING_STATUS ) 
 			SELECT 
 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_FORECAST_PART_RECORD_ID,
 				'{UserName}' AS CPQTABLEENTRYADDEDBY,
@@ -1883,8 +1912,7 @@ class ContractQuoteItem:
 				self._quote_items_insert()
 				self._quote_items_object_insert()	
 				self._quote_annualized_items_insert()
-				if self.service_id == 'Z0101':
-					self._insert_quote_item_forecast_parts()
+				self._insert_quote_item_forecast_parts()
 			elif self.is_fpm_spare_service == True:				
 				# Spare Parts Insert/Update (Z0108)...
 				self._simple_quote_items_summary_insert()
@@ -1916,8 +1944,7 @@ class ContractQuoteItem:
 					self._quote_items_insert()
 					self._quote_items_object_insert()	
 					self._quote_annualized_items_insert()
-					if self.service_id == 'Z0101':
-						self._insert_quote_item_forecast_parts()
+					self._insert_quote_item_forecast_parts()
 
 				##simple product quote item insert
 				elif self.is_simple_service == True:
@@ -1945,8 +1972,7 @@ class ContractQuoteItem:
 					self._quote_items_insert()
 					self._quote_items_object_insert()
 					self._quote_annualized_items_insert()
-					if self.service_id == 'Z0101':		
-						self._insert_quote_item_forecast_parts()
+					self._insert_quote_item_forecast_parts()
 						
 				elif self.is_simple_service == True:
 					self._simple_delete_item_related_table_records()
