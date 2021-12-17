@@ -268,9 +268,7 @@ class approvalCenter:
 						c = Sql.RunQuery(UpdateApproverv)
 						response = self.cbcmailtrigger()
 						getQuote = Sql.GetFirst(
-							"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
-							+ str(GetCurStatus.APRTRXOBJ_RECORD_ID)
-							+ "' AND QTEREV_RECORD_ID = '{}'".format(self.quote_revision_record_id)
+							"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE QTEREV_RECORD_ID = '{}'".format(self.quote_revision_record_id)
 						)
 						if getQuote.QUOTE_STATUS == "APPROVED":
 							
