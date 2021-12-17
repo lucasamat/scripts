@@ -8248,6 +8248,12 @@ class SYLDRTLIST:
 						elif str(RECORD_ID) == "SYOBJR-00013":
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00001").GetValue()
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+						elif str(RECORD_ID) == "SYOBJR-98875":
+							quote_item_revision_rec_id = Product.GetGlobal('get_quote_item_service')
+							Trace.Write('quote_item_revision_rec_id----'+str(quote_item_revision_rec_id))
+							get_gb_val = Sql.GetFirst("SELECT GREENBOOK FROM SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID= '"+str(quote_item_revision_rec_id)+"'")
+							if get_gb_val:
+								Qustr += "  where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "'  AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
 						else:
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 				
