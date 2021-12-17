@@ -1125,129 +1125,18 @@ class Entitlements:
 							if tableName == "SAQSGE":
 								Quote.SetGlobal("Greenbook_Entitlement","Yes")
 							Trace.Write("entitlement_value -----"+str(entitlement_value))
-							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes"):
+							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value == "Some Inclusions"):
 								ancillary_object_dict['Z0101'] = "INSERT"
-								# Trace.Write("Params_CHK "+str(self.treesuperparentparam)+" - "+str(self.treesupertopparentparam))
-								# if self.treesuperparentparam == "Product Offerings":
-								# 	Sql.RunQuery(
-								# 		"""
-								# 			INSERT SAQSCO (QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_DESCRIPTION,EQUIPMENT_RECORD_ID,FABLOCATION_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,PARENTEQUIPMENT_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTESRV_RECORD_ID,SERVICE_TYPE,SERVICE_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENTCATEGORY_RECORD_ID,EQUIPMENT_STATUS,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,GREENBOOK,EQUIPMENT_ID,SERIAL_NO,GREENBOOK_RECORD_ID,MNT_PLANT_ID,MNT_PLANT_NAME,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,MNT_PLANT_RECORD_ID,PLATFORM,PAR_SERVICE_RECORD_ID,PBG,WARRANTY_END_DATE,MATERIAL_RECORD_ID,SAP_PART_NUMBER,WARRANTY_START_DATE,CUSTOMER_TOOL_ID,TECHNOLOGY,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_QUANTITY)
-								# 			SELECT 
-								# 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
-								# 				SERVICE_ID,
-								# 				SERVICE_DESCRIPTION,
-								# 				EQUIPMENT_DESCRIPTION,
-								# 				EQUIPMENT_RECORD_ID,
-								# 				FABLOCATION_RECORD_ID,
-								# 				FABLOCATION_ID,
-								# 				FABLOCATION_NAME,
-								# 				PARENTEQUIPMENT_ID,
-								# 				QUOTE_ID,
-								# 				QUOTE_NAME,
-								# 				QUOTE_RECORD_ID,
-								# 				QTESRV_RECORD_ID,
-								# 				SERVICE_TYPE,
-								# 				SERVICE_RECORD_ID,
-								# 				EQUIPMENTCATEGORY_ID,
-								# 				EQUIPMENTCATEGORY_RECORD_ID,
-								# 				EQUIPMENT_STATUS,
-								# 				CPQTABLEENTRYADDEDBY,
-								# 				CPQTABLEENTRYDATEADDED,
-								# 				GREENBOOK,
-								# 				EQUIPMENT_ID,
-								# 				SERIAL_NO,
-								# 				GREENBOOK_RECORD_ID,
-								# 				MNT_PLANT_ID,
-								# 				MNT_PLANT_NAME,
-								# 				PAR_SERVICE_DESCRIPTION,
-								# 				PAR_SERVICE_ID,
-								# 				MNT_PLANT_RECORD_ID,
-								# 				PLATFORM,
-								# 				PAR_SERVICE_RECORD_ID,
-								# 				PBG,
-								# 				WARRANTY_END_DATE,
-								# 				MATERIAL_RECORD_ID,
-								# 				SAP_PART_NUMBER,
-								# 				WARRANTY_START_DATE
-								# 				CUSTOMER_TOOL_ID,
-								# 				TECHNOLOGY,
-								# 				SALESORG_ID,
-								# 				SALESORG_NAME,
-								# 				SALESORG_RECORD_ID,
-								# 				EQUIPMENTCATEGORY_DESCRIPTION,
-								# 				EQUIPMENT_QUANTITY
-								# 				FROM
-								# 				SAQSCO (NOLOCK) 
-								# 				WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_rec_id}' AND SERVICE_ID = '{treeparam}' 
-								# 		""".format(quote_rec_id= self.ContractRecordId, quote_rev_rec_id= self.revision_recordid, treeparam = self.treeparam)
-								# 	)
-								# elif self.treesupertopparentparam == "Product Offerings":
-								# 	Sql.RunQuery(
-								# 		"""
-								# 			INSERT SAQSCO (QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_DESCRIPTION,EQUIPMENT_RECORD_ID,FABLOCATION_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,PARENTEQUIPMENT_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTESRV_RECORD_ID,SERVICE_TYPE,SERVICE_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENTCATEGORY_RECORD_ID,EQUIPMENT_STATUS,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,GREENBOOK,EQUIPMENT_ID,SERIAL_NO,GREENBOOK_RECORD_ID,MNT_PLANT_ID,MNT_PLANT_NAME,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,MNT_PLANT_RECORD_ID,PLATFORM,PAR_SERVICE_RECORD_ID,PBG,WARRANTY_END_DATE,MATERIAL_RECORD_ID,SAP_PART_NUMBER,WARRANTY_START_DATE,CUSTOMER_TOOL_ID,TECHNOLOGY,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_QUANTITY)
-								# 			SELECT 
-								# 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
-								# 				SERVICE_ID,
-								# 				SERVICE_DESCRIPTION,
-								# 				EQUIPMENT_DESCRIPTION,
-								# 				EQUIPMENT_RECORD_ID,
-								# 				FABLOCATION_RECORD_ID,
-								# 				FABLOCATION_ID,
-								# 				FABLOCATION_NAME,
-								# 				PARENTEQUIPMENT_ID,
-								# 				QUOTE_ID,
-								# 				QUOTE_NAME,
-								# 				QUOTE_RECORD_ID,
-								# 				QTESRV_RECORD_ID,
-								# 				SERVICE_TYPE,
-								# 				SERVICE_RECORD_ID,
-								# 				EQUIPMENTCATEGORY_ID,
-								# 				EQUIPMENTCATEGORY_RECORD_ID,
-								# 				EQUIPMENT_STATUS,
-								# 				CPQTABLEENTRYADDEDBY,
-								# 				CPQTABLEENTRYDATEADDED,
-								# 				GREENBOOK,
-								# 				EQUIPMENT_ID,
-								# 				SERIAL_NO,
-								# 				GREENBOOK_RECORD_ID,
-								# 				MNT_PLANT_ID,
-								# 				MNT_PLANT_NAME,
-								# 				PAR_SERVICE_DESCRIPTION,
-								# 				PAR_SERVICE_ID,
-								# 				MNT_PLANT_RECORD_ID,
-								# 				PLATFORM,
-								# 				PAR_SERVICE_RECORD_ID,
-								# 				PBG,
-								# 				WARRANTY_END_DATE,
-								# 				MATERIAL_RECORD_ID,
-								# 				SAP_PART_NUMBER,
-								# 				WARRANTY_START_DATE
-								# 				CUSTOMER_TOOL_ID,
-								# 				TECHNOLOGY,
-								# 				SALESORG_ID,
-								# 				SALESORG_NAME,
-								# 				SALESORG_RECORD_ID,
-								# 				EQUIPMENTCATEGORY_DESCRIPTION,
-								# 				EQUIPMENT_QUANTITY
-								# 				FROM
-								# 				SAQSCO (NOLOCK) 
-								# 				WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_rec_id}' AND SERVICE_ID = '{treeparam}' AND GREENBOOK = '{greenbook}' 
-								# 		""".format(quote_rec_id= self.ContractRecordId, quote_rev_rec_id= self.revision_recordid, treeparam = self.treeparam, greenbook= self.treeparentparam)
-								# 	)
-								# if tableName == "SAQTSE":
-								# 	QuoteModule.service_level_entitlement({str(serviceId):1})
-								#ancillary_flag = "INSERT"
+								
 							else:
 								count_temp_z0101 += 1
 								if  count_temp_z0101 == 3:
 									ancillary_object_dict['Z0101'] = "DELETE"
-									# if self.treesuperparentparam == "Product Offerings":
-									# 	Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_rec_id}' AND SERVICE_ID = 'Z0101'".format(quote_rec_id= self.ContractRecordId, quote_rev_rec_id= self.revision_recordid))
-									# elif self.treesupertopparentparam == "Product Offerings":
-									# 	Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_rec_id}' AND SERVICE_ID = 'Z0101' AND GREENBOOK = '{greenbook}'".format(quote_rec_id= self.ContractRecordId, quote_rev_rec_id= self.revision_recordid, greenbook= self.treeparentparam))
-								# if tableName == "SAQTSE":
-								# 	QuoteModule.service_level_entitlement({str(serviceId):1})
-								#ancillary_flag = "DELETE"
+
+							if serviceId == 'Z0092' and entitlement_value == "Some Inclusions":
+								ancillary_object_dict['Z0100'] = "INSERT"	
+							else:
+								ancillary_object_dict['Z0100'] = "DELETE"	
 
 						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004','Z0009') :
 							#ancillary_object = 'A6200'
