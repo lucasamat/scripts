@@ -85,6 +85,11 @@ try:
 				primaryQueryItems = SqlHelper.GetFirst(
 									""
 									+ str(Parameter1.QUERY_CRITERIA_1)
+									+ "  SAQICO_INBOUND SET LINE = B.LINE FROM SAQICO_INBOUND (NOLOCK) A JOIN SAQRIT B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.REVISION_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.OBJECT_ID WHERE ISNULL(PROCESS_STATUS,'''')='''' AND ISNULL(SESSION_ID,'''')=''"+str(sessiondetail.A)+ "'' '")
+				
+				primaryQueryItems = SqlHelper.GetFirst(
+									""
+									+ str(Parameter1.QUERY_CRITERIA_1)
 									+ "  SAQICO_INBOUND SET TOTAL_COST_WISEEDSTOCK = TOTAL_COST_WOSEEDSTOCK FROM SAQICO_INBOUND (NOLOCK) A WHERE ISNULL(PROCESS_STATUS,'''')='''' AND ISNULL(SESSION_ID,'''')=''"+str(sessiondetail.A)+ "'' AND ISNULL(CONVERT(FLOAT,TOTAL_COST_WISEEDSTOCK),0)<=0 '")
 								
 				Qt_Id = SqlHelper.GetFirst("select QUOTE_ID,REVISION_ID from SAQICO_INBOUND(Nolock) where ISNULL(SESSION_ID,'')='"+str(sessiondetail.A)+ "' ")
@@ -98,7 +103,7 @@ try:
 
 					Emailinfo = SqlHelper.GetFirst("SELECT QUOTE_ID,SSCM,0 as REMANING,QUOTE_RECORD_ID FROM (SELECT SAQICO.QUOTE_ID,COUNT(DISTINCT SAQICO.EQUIPMENT_ID) AS SSCM,SAQICO.QUOTE_RECORD_ID  FROM SAQICO (NOLOCK) WHERE SAQICO.QUOTE_ID = '"+str(Qt_Id.QUOTE_ID)+"' AND SAQICO.QTEREV_ID = '"+str(Qt_Id.REVISION_ID)+"' AND ISNULL(STATUS,'') not in ('','Assembly is missing') group by SAQICO.Quote_ID,SAQICO.QUOTE_RECORD_ID )SUB_SAQICO ")  
 					
-					ToEml = SqlHelper.GetFirst("SELECT ISNULL(OWNER_ID,'X0116959') as OWNER_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.QUOTE_ID = '"+str(Qt_Id.QUOTE_ID)+"'  ")  
+					ToEml = SqlHelper.GetFirst("SELECT ISNULL(OWNER_ID,'X0116954') as OWNER_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.QUOTE_ID = '"+str(Qt_Id.QUOTE_ID)+"'  ")  
 					
 					Emailinfo1 = SqlHelper.GetFirst("SELECT QUOTE_ID,CPQ FROM (SELECT SAQICO_INBOUND.QUOTE_ID,COUNT(DISTINCT SAQICO_INBOUND.EQUIPMENT_ID) AS CPQ FROM SAQICO_INBOUND (NOLOCK) WHERE SAQICO_INBOUND.QUOTE_ID = '"+str(Qt_Id.QUOTE_ID)+"' AND SAQICO_INBOUND.REVISION_ID = '"+str(Qt_Id.REVISION_ID)+"' AND ISNULL(SESSION_ID,'')='"+str(sessiondetail.A)+ "' group by SAQICO_INBOUND.Quote_ID )SUB_SAQICO ")  
 				
@@ -128,14 +133,14 @@ try:
 					mailCred.Password = str(LOGIN_CRE.Password)
 					mailClient.Credentials = mailCred
 
-					UserEmail = SqlHelper.GetFirst("SELECT isnull(email,'INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM') as email FROM saempl (nolock) where employee_id  = '"+str(ToEml.OWNER_ID)+"'")
+					UserEmail = SqlHelper.GetFirst("SELECT isnull(email,'"+str(LOGIN_CRE.Username)+"') as email FROM saempl (nolock) where employee_id  = '"+str(ToEml.OWNER_ID)+"'")
 
 					# Create two mail adresses, one for send from and the another for recipient
 					if UserEmail is None:
 						toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 					else:
 						toEmail = MailAddress(UserEmail.email)
-					fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
+					fromEmail = MailAddress(str(LOGIN_CRE.Username))
 
 					# Create new MailMessage object
 					msg = MailMessage(fromEmail, toEmail)
@@ -149,9 +154,6 @@ try:
 					copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
 					msg.Bcc.Add(copyEmail4)
 
-					copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
-					msg.Bcc.Add(copyEmail1) 
-					
 					copyEmail6 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 					msg.Bcc.Add(copyEmail6) 
 
@@ -310,7 +312,7 @@ try:
 							"sp_executesql @T=N'SELECT * INTO "+str(SAQIEN)+" FROM SAQIEN(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"''  '")
 							
 					start12 = 1
-					end12 = 500
+					end12 = 300
 
 					Check_flag12 = 1
 					while Check_flag12 == 1:
@@ -324,8 +326,8 @@ try:
 						table_ins = SqlHelper.GetFirst(
 							"sp_executesql @T=N'INSERT "+str(CRMTMP)+" SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM (SELECT DISTINCT equipment_id FROM SAQICO_INBOUND (NOLOCK) WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' )A ) A WHERE SNO>= "+str(start12)+" AND SNO<="+str(end12)+"  '")
 							
-						start12 = start12 + 500
-						end12 = end12 + 500
+						start12 = start12 + 300
+						end12 = end12 + 300
 
 						if str(table12) != "None":
 						
@@ -438,16 +440,16 @@ try:
 
 							#Swap Kit AMAT Provided
 							#Z0004
-							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SWAP_KIT=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0004_STT_SWKTAP'',entitlement_xml),charindex (''Swap Kits (Applied provided)</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0004_STT_SWKTAP'',entitlement_xml)+len(''Swap Kits (Applied provided)</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSCE (nolock)a JOIN "+str(CRMTMP)+" C ON a.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID = ''Z0004'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Swap Kits (Applied provided)''  '")
+							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SWAP_KIT=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0004_STT_SWKTAP'',entitlement_xml),charindex (''Swap Kits (Applied provided)</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0004_STT_SWKTAP'',entitlement_xml)+len(''Swap Kits (Applied provided)</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQIEN)+" (nolock)a JOIN "+str(CRMTMP)+" C ON a.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID = ''Z0004'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Swap Kits (Applied provided)''  '")
 							
 							#Z0091
-							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SWAP_KIT=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0091_STT_SWKTAP'',entitlement_xml),charindex (''Swap Kits (Applied provided)</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0091_STT_SWKTAP'',entitlement_xml)+len(''Swap Kits (Applied provided)</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSCE (nolock)a JOIN "+str(CRMTMP)+" C ON A.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID =''Z0091'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Swap Kits (Applied provided)''  '")
+							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SWAP_KIT=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0091_STT_SWKTAP'',entitlement_xml),charindex (''Swap Kits (Applied provided)</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0091_STT_SWKTAP'',entitlement_xml)+len(''Swap Kits (Applied provided)</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQIEN)+" (nolock)a JOIN "+str(CRMTMP)+" C ON A.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID =''Z0091'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Swap Kits (Applied provided)''  '")
 							
 							#Z0009
-							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SWAP_KIT=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0009_STT_SWKTAP'',entitlement_xml),charindex (''Swap Kits (Applied provided)</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0009_STT_SWKTAP'',entitlement_xml)+len(''Swap Kits (Applied provided)</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSCE (nolock)a JOIN "+str(CRMTMP)+" C ON A.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID =''Z0009'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Swap Kits (Applied provided)''  '")
+							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SWAP_KIT=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0009_STT_SWKTAP'',entitlement_xml),charindex (''Swap Kits (Applied provided)</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0009_STT_SWKTAP'',entitlement_xml)+len(''Swap Kits (Applied provided)</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQIEN)+" (nolock)a JOIN "+str(CRMTMP)+" C ON A.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID =''Z0009'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Swap Kits (Applied provided)''  '")
 							
 							#Z0035
-							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SWAP_KIT=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0035_STT_SWKTAP'',entitlement_xml),charindex (''Swap Kits (Applied provided)</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0035_STT_SWKTAP'',entitlement_xml)+len(''Swap Kits (Applied provided)</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSCE (nolock)a JOIN "+str(CRMTMP)+" C ON A.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID =''Z0035'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Swap Kits (Applied provided)''  '")
+							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SWAP_KIT=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0035_STT_SWKTAP'',entitlement_xml),charindex (''Swap Kits (Applied provided)</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0035_STT_SWKTAP'',entitlement_xml)+len(''Swap Kits (Applied provided)</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQIEN)+" (nolock)a JOIN "+str(CRMTMP)+" C ON A.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID =''Z0035'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Swap Kits (Applied provided)''  '")
 							
 							"""#Subfab like SS
 							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SUBFAB_SS=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0004_KPI_PRPFGT'',entitlement_xml),charindex (''Primary KPI. Perf Guarantee</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0004_KPI_PRPFGT'',entitlement_xml)+len(''Primary KPI. Perf Guarantee</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSCE (nolock)a JOIN "+str(CRMTMP)+" C ON B.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID =''Z0004'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Primary KPI. Perf Guarantee''  '")"""
@@ -970,9 +972,13 @@ try:
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
 						+ str(Parameter1.QUERY_CRITERIA_1)
-						+ "  A SET NET_PRICE_INGL_CURR = SALES_PRICE_INGL_CURR - (SALES_PRICE_INGL_CURR * (YEAR_OVER_YEAR/100))  FROM SAQICO (NOLOCK)A JOIN (SELECT DISTINCT QUOTE_ID,SERVICE_ID,EQUIPMENT_ID,REVISION_ID FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"')B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  AND QTEREV_ID = REVISION_ID ' ")
+						+ "  A SET NET_PRICE_INGL_CURR = SALES_PRICE_INGL_CURR - CASE WHEN ISNULL(YEAR_OVER_YEAR,0)=0 THEN 0 ELSE (SALES_PRICE_INGL_CURR * (YEAR_OVER_YEAR/100)) END  FROM SAQICO (NOLOCK)A JOIN (SELECT DISTINCT QUOTE_ID,SERVICE_ID,EQUIPMENT_ID,REVISION_ID FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"')B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  AND QTEREV_ID = REVISION_ID ' ")
 
-					#Contractual Net Price
+					#Contractual Net Price / Cost
+					primaryQueryItems = SqlHelper.GetFirst(
+						""
+						+ str(Parameter1.QUERY_CRITERIA_1)
+						+ "  A SET CNTPRI_INGL_CURR = ((NET_PRICE_INGL_CURR/365) * contractdays) * ISNULL(CONTRACT_PERIOD_FACTOR,1),CNTCST_INGL_CURR = ((TOTAL_COST_WSEEDSTOCK/365) * contractdays) * ISNULL(CONTRACT_PERIOD_FACTOR,1)  FROM SAQICO (NOLOCK)A JOIN (SELECT DISTINCT QUOTE_ID,SERVICE_ID,EQUIPMENT_ID,REVISION_ID,LINE FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"')B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  AND QTEREV_ID = REVISION_ID AND A.LINE = B.LINE JOIN (select line,CONTRACT_PERIOD_FACTOR,SERVICE_ID,QUOTE_ID,datediff(dd,dateadd(dd,-1,CONTRACT_VALID_FROM),CONTRACT_VALID_TO) as contractdays from SAQRIT,PRCTPF WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND datediff(mm,dateadd(dd,-1,CONTRACT_VALID_FROM),CONTRACT_VALID_TO) BETWEEN PERIOD_FROM AND PERIOD_TO)C ON A.QUOTE_ID = C.QUOTE_ID AND A.LINE = C.LINE AND A.SERVICE_ID = C.SERVICE_ID ' ")
 
 					#Item Roll Up
 					primaryQueryItems = SqlHelper.GetFirst(
@@ -1057,16 +1063,7 @@ try:
 						""
 					+ str(Parameter1.QUERY_CRITERIA_1)
 					+ "  SAQTRV SET REVISION_STATUS=''APPROVAL PENDING'' FROM SAQTRV A(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND NOT EXISTS (SELECT ''X'' FROM SAQICO B(NOLOCK)  WHERE  STATUS IN(''PARTIALLY PRICED'',''ERROR'',''ASSEMBLY IS MISSING'') AND QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'') '")
-
-					"""primaryQueryItems = SqlHelper.GetFirst(
-						""
-					+ str(Parameter1.QUERY_CRITERIA_1)
-					+ "  SAQICO SET STATUS=''ON HOLD - PRICING'' FROM SAQICO (NOLOCK) JOIN (SELECT DISTINCT QUOTE_ID,SERVICE_ID,EQUIPMENT_ID,REVISION_ID FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''AVAILABLE'' AND EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''UNAVAILABLE'' ) )SAQICO_INBOUND ON SAQICO.QUOTE_ID = SAQICO_INBOUND.QUOTE_ID AND SAQICO.SERVICE_ID = SAQICO_INBOUND.SERVICE_ID AND SAQICO.EQUIPMENT_ID = SQICO_INBOUND.EQUIPMENT_ID AND SAQICO.QTEREV_ID = SAQICO_INBOUND.REVISION_ID '")
-					primaryQueryItems = SqlHelper.GetFirst(
-						""
-					+ str(Parameter1.QUERY_CRITERIA_1)
-					+ "  SAQITM SET PRICING_STATUS=''ON HOLD - PRICING'' FROM SAQITM (NOLOCK) WHERE QUOTE_ITEM_RECORD_ID IN (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO_INBOUND(NOLOCK)A JOIN SAQICO B(NOLOCK) ON A.QUOTE_ID= B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''UNAVAILABLE'' AND PRICING_STATUS=''ON HOLD - PRICING'') AND PRICING_STATUS <> ''ON HOLD - COSTING'' '")"""
-
+					
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
 					+ str(Parameter1.QUERY_CRITERIA_1)
@@ -1077,16 +1074,6 @@ try:
 					+ str(Parameter1.QUERY_CRITERIA_1)
 					+ "  SAQITM SET STATUS=''PRICED'' FROM SAQRIT SAQITM (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID NOT IN (SELECT QTEITM_RECORD_ID FROM SAQICO B(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND STATUS IN (''PARTIALLY PRICED'',''ERROR'',''ASSEMBLY IS MISSING'')) AND STATUS NOT IN (''ON HOLD - COSTING'',''ON HOLD - PRICING'',''ACQUIRING'',''PARTIALLY PRICED'',''ERROR'',''ASSEMBLY IS MISSING'') '")
 					
-					"""primaryQueryItems = SqlHelper.GetFirst(
-						""
-					+ str(Parameter1.QUERY_CRITERIA_1)
-					+ "  SAQICO SET STATUS=''ON HOLD - PRICING'' FROM SAQICO (NOLOCK) JOIN (SELECT DISTINCT QUOTE_ID,SERVICE_ID,EQUIPMENT_ID,REVISION_ID FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''AVAILABLE'' AND EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''UNAVAILABLE'' ) )SAQICO_INBOUND ON SAQICO.QUOTE_ID = SAQICO_INBOUND.QUOTE_ID AND SAQICO.SERVICE_ID = SAQICO_INBOUND.SERVICE_ID AND SAQICO.EQUIPMENT_ID = SQICO_INBOUND.EQUIPMENT_ID AND SAQICO.QTEREV_ID = SAQICO_INBOUND.REVISION_ID '")
-					
-					primaryQueryItems = SqlHelper.GetFirst(
-						""
-					+ str(Parameter1.QUERY_CRITERIA_1)
-					+ "  SAQITM SET PRICING_STATUS=''ON HOLD - PRICING'' FROM SAQITM (NOLOCK) WHERE QUOTE_ITEM_RECORD_ID IN (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO_INBOUND(NOLOCK)A JOIN SAQICO B(NOLOCK) ON A.QUOTE_ID= B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''UNAVAILABLE'' AND PRICING_STATUS=''ON HOLD - PRICING'') AND PRICING_STATUS <> ''ON HOLD - COSTING'' '")"""
-					
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
 					+ str(Parameter1.QUERY_CRITERIA_1)
@@ -1096,11 +1083,6 @@ try:
 						""
 					+ str(Parameter1.QUERY_CRITERIA_1)
 					+ "  SAQITM SET STATUS=''PRICED'' FROM SAQRIT SAQITM (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID NOT IN (SELECT QTEITM_RECORD_ID FROM SAQICO B(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND STATUS IN (''PARTIALLY PRICED'',''ERROR'',''ASSEMBLY IS MISSING'')) AND STATUS NOT IN (''ON HOLD - COSTING'',''ON HOLD - PRICING'',''ACQUIRING'',''PARTIALLY PRICED'',''ERROR'',''ASSEMBLY IS MISSING'') '")
-
-					"""primaryQueryItems = SqlHelper.GetFirst(
-						""
-					+ str(Parameter1.QUERY_CRITERIA_1)
-					+ "  SAQICO SET PRICING_STATUS=''APPROVAL REQUIRED'',BENCHMARKING_THRESHOLD  = (((ANNUAL_BENCHMARK_BOOKING_PRICE-TARGET_PRICE)/ANNUAL_BENCHMARK_BOOKING_PRICE) * 100) * -1 FROM SAQICO  (NOLOCK) JOIN (SELECT QUOTE_ID,EQUIPMENT_LINE_ID,SERVICE_ID FROM (SELECT QUOTE_ID,EQUIPMENT_LINE_ID,SERVICE_ID,ANNUAL_BENCHMARK_BOOKING_PRICE + (ANNUAL_BENCHMARK_BOOKING_PRICE * 0.25) AS HIGHTARGET,ANNUAL_BENCHMARK_BOOKING_PRICE - (ANNUAL_BENCHMARK_BOOKING_PRICE * 0.25) AS LOWTARGET,TARGET_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_ID=''"+str(Qt_Id)+"'' AND ISNULL(ANNUAL_BENCHMARK_BOOKING_PRICE,0)>0 AND ISNULL(TARGET_PRICE,0) >0)B WHERE (B.TARGET_PRICE < B.LOWTARGET OR B.TARGET_PRICE > B.HIGHTARGET ) )SUB_SAQICO ON SAQICO.QUOTE_ID = SUB_SAQICO.QUOTE_ID AND SAQICO.SERVICE_ID = SUB_SAQICO.SERVICE_ID AND SAQICO.EQUIPMENT_LINE_ID = SUB_SAQICO.EQUIPMENT_LINE_ID  '")"""
 
 					#Status Completed in SYINPL by CPQ Table Entry ID
 					StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SYINPL SET STATUS = ''COMPLETED'' FROM SYINPL (NOLOCK) A WHERE CpqTableEntryId = ''"+str(json_data.CpqTableEntryId)+"'' AND SESSION_ID =''"+str(SYINPL_SESSION.A)+"'' ' ")
@@ -1141,7 +1123,7 @@ try:
 					#Current user email(Toemail)
 					#UserId = User.Id
 					#Log.Info("123 UserId.UserId --->"+str(UserId))
-					UserEmail = SqlHelper.GetFirst("SELECT isnull(email,'INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM') as email FROM saempl (nolock) where employee_id  = '"+str(ToEml.OWNER_ID)+"'")
+					UserEmail = SqlHelper.GetFirst("SELECT isnull(email,'"+str(LOGIN_CRE.Username)+"') as email FROM saempl (nolock) where employee_id  = '"+str(ToEml.OWNER_ID)+"'")
 					#Log.Info("123 UserEmail.email --->"+str(UserEmail.email))
 
 					# Create two mail adresses, one for send from and the another for recipient
@@ -1149,7 +1131,7 @@ try:
 						toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 					else:
 						toEmail = MailAddress(UserEmail.email)
-					fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
+					fromEmail = MailAddress(str(LOGIN_CRE.Username))
 
 					# Create new MailMessage object
 					msg = MailMessage(fromEmail, toEmail)
@@ -1162,9 +1144,6 @@ try:
 					# Bcc Emails	
 					copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
 					msg.Bcc.Add(copyEmail4)
-
-					copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
-					msg.Bcc.Add(copyEmail1) 
 
 					copyEmail6 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 					msg.Bcc.Add(copyEmail6)
@@ -1212,12 +1191,13 @@ try:
 							UserEmail = []
 							if len(Gbk.DISTRIBUTION_EMAIL) > 0:
 								UserEmail = str(Gbk.DISTRIBUTION_EMAIL).split(';')
-							
 
-							# Create two mail adresses, one for send from and the another for recipient
-							toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
+							if len(UserEmail) == 0:
+									toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
+							else:								
+								toEmail = MailAddress(UserEmail[0])
 							
-							fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")	
+							fromEmail = MailAddress(str(LOGIN_CRE.Username))	
 
 							# Create new MailMessage object
 							msg = MailMessage(fromEmail, toEmail)							
@@ -1231,9 +1211,6 @@ try:
 							#Comon CC mails
 							copyEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 							msg.CC.Add(copyEmail)					
-
-							copyEmail3 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
-							msg.CC.Add(copyEmail3) 						
 
 							copyEmail5 = MailAddress("baji.baba@bostonharborconsulting.com")
 							msg.CC.Add(copyEmail5) 
@@ -1333,7 +1310,7 @@ try:
 
 						# Create two mail adresses, one for send from and the another for recipient
 						toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
-						fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
+						fromEmail = MailAddress(str(LOGIN_CRE.Username))
 
 						# Create new MailMessage object
 						msg = MailMessage(fromEmail, toEmail)
@@ -1348,10 +1325,7 @@ try:
 						msg.CC.Add(copyEmail4)
 						
 						copyEmail5 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
-						msg.CC.Add(copyEmail5) 
-
-						copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
-						msg.CC.Add(copyEmail1) 						
+						msg.CC.Add(copyEmail5) 					
 
 						# Send the message
 						mailClient.Send(msg)
@@ -1393,7 +1367,7 @@ except:
 
 	# Create two mail adresses, one for send from and the another for recipient
 	toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
-	fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
+	fromEmail = MailAddress(str(LOGIN_CRE.Username))
 
 	# Create new MailMessage object
 	msg = MailMessage(fromEmail, toEmail)
