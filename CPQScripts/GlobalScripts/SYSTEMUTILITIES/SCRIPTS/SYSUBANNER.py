@@ -3056,22 +3056,25 @@ def Related_Sub_Banner(
             Trace.Write("Involved Parties button")
             if str(multi_buttons) != "":
                 #Trace.Write("add_button_if"+str(add_button))
+                # for btn in multi_buttons:
+                #     entitlement_obj = SqlHelper.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_DISPLAY_VALUE from SAQIAC (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),#quote_revision_record_id))
+                #     if entitlement_obj:
+                #         if entitlement_obj.ENTITLEMENT_DISPLAY_VALUE == "Yes":
+                #             if quote_status.QUOTE_STATUS != 'APPROVED':
+                #                 sec_rel_sub_bnr += (btn)                   
+                #         else:
+                #             if 'SPLIT' not in btn:
+                #                 sec_rel_sub_bnr += (btn)
+                #     else:
+                #         if subTabName =="Items":
+                #             if 'SPLIT' not in btn:
+                #                 sec_rel_sub_bnr += (btn)
+                #         else:
+                #             if quote_status.QUOTE_STATUS != 'APPROVED':
+                #                 sec_rel_sub_bnr += (btn)
                 for btn in multi_buttons:
-                    entitlement_obj = SqlHelper.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_DISPLAY_VALUE from SAQIAC (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-                    if entitlement_obj:
-                        if entitlement_obj.ENTITLEMENT_DISPLAY_VALUE == "Yes":
-                            if quote_status.QUOTE_STATUS != 'APPROVED':
-                                sec_rel_sub_bnr += (btn)                   
-                        else:
-                            if 'SPLIT' not in btn:
-                                sec_rel_sub_bnr += (btn)
-                    else:
-                        if subTabName =="Items":
-                            if 'SPLIT' not in btn:
-                                sec_rel_sub_bnr += (btn)
-                        else:
-                            if quote_status.QUOTE_STATUS != 'APPROVED':
-                                sec_rel_sub_bnr += (btn)
+                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                        sec_rel_sub_bnr += (btn)
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
 try:
