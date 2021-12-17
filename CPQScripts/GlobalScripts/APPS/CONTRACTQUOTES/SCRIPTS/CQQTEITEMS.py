@@ -404,10 +404,24 @@ def HotOnChange(Hot):
             for val in getAllValues:
                 secstr += '<option id="'+x.replace(" ","_")+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
     return secstr
-SubtabName = Param.SUBTAB
-quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
-Action = Param.ACTION
+
+def EditItems():
+    line = []
+    GetLine = Sql.GetList("SELECT LINE FROM SAQRIT(NOLOCK) WHERE BILLING_TYPE ='VARIABLE' AND QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
+    for x in GetLine:
+        line.append(x.LINE)
+    
+    return str(line)
+try:
+    SubtabName = Param.SUBTAB
+except:
+    SubtabName = ""
+quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+try:
+    Action = Param.ACTION
+except:
+    Action = ""
 try:
     Trace.Write("try idle notice")
     IdleNotice = str(Param.IDLENOTICE)
@@ -460,4 +474,6 @@ elif SubtabName == "Summary" and Action == "SAVE":
     VALUES = dict(Param.VALUES)
     Trace.Write("values="+str(VALUES))
     ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
+if SubtabName == "Items" and Action == "Edit":
+    ApiResponse = ApiResponseFactory.JsonResponse(EditItems())
 
