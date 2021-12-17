@@ -1388,49 +1388,13 @@ class SyncQuoteAndCustomTables:
 						##A055S000P01-8690 starts..
 						if payload_json.get('SAEMPL'):
 							employee = payload_json.get('SAEMPL')
-							if type(employee) is dict:
-								employee_obj = Sql.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
-								if employee_obj is None:
-									country_obj = Sql.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
-									salesorg_obj = Sql.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
-									employee_dict = {}
-									employee_dict["EMPLOYEE_RECORD_ID"] = str(Guid.NewGuid()).upper()
-									employee_dict["ADDRESS_1"] = employee.get("ADDRESS1")
-									employee_dict["ADDRESS_2"] = employee.get("ADDRESS2")
-									employee_dict["CITY"] = employee.get("CITY")
-									employee_dict["COUNTRY"] = employee.get("COUNTRY")
-									employee_dict["COUNTRY_RECORD_ID"] = country_obj.COUNTRY_RECORD_ID  if country_obj else ""
-									employee_dict["EMAIL"] = employee.get("EMAIL")
-									employee_dict["EMPLOYEE_ID"] = employee.get("EMPLOYEE_ID")
-									employee_dict["EMPLOYEE_NAME"] = employee.get("EMPLOYEE_NAME")
-									employee_dict["EMPLOYEE_STATUS"] = employee.get("EMPLOYEE_STATUS")
-									employee_dict["FIRST_NAME"] = employee.get("FIRST_NAME")
-									employee_dict["LAST_NAME"] = employee.get("LAST_NAME")
-									employee_dict["PHONE"] = employee.get("PHONE")
-									employee_dict["POSTAL_CODE"] = employee.get("POSTAL_CODE")
-									employee_dict["STATE"] = employee.get("STATE")
-									employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
-									employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
-									employee_dict["C4C_EMPLOYEE_ID"] = employee.get("C4C_EMPLOYEE_ID")
-									employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
-									employee_dict["CpqTableEntryModifiedBy"] = User.Id
-									employee_dict["ADDUSR_RECORD_ID"] = User.Id
-									tableInfo = Sql.GetTable("SAEMPL")
-									tablerow = employee_dict
-									tableInfo.AddRow(tablerow)
-									Sql.Upsert(tableInfo)
-								else:
-									c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
-									Sql.RunQuery(c4c_employee_update)
-								quote_object = Sql.GetFirst("select QUOTE_ID from SAQDLT(NOLOCK) where QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
-								if not quote_object:
-									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
-							else:
-								for employee in payload_json.get('SAEMPL'):
-									employee_obj = SqlHelper.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
+							quote_object = Sql.GetFirst("select QUOTE_ID from SAQDLT(NOLOCK) where QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
+							if not quote_object:
+								if type(employee) is dict:
+									employee_obj = Sql.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
 									if employee_obj is None:
-										country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
-										salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
+										country_obj = Sql.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
+										salesorg_obj = Sql.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
 										employee_dict = {}
 										employee_dict["EMPLOYEE_RECORD_ID"] = str(Guid.NewGuid()).upper()
 										employee_dict["ADDRESS_1"] = employee.get("ADDRESS1")
@@ -1460,9 +1424,43 @@ class SyncQuoteAndCustomTables:
 									else:
 										c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
 										Sql.RunQuery(c4c_employee_update)
-									Log.Info("select QUOTE_ID from SAQDLT(NOLOCK) where QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
-									quote_object = Sql.GetFirst("select QUOTE_ID from SAQDLT(NOLOCK) where QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
-									if not quote_object:
+									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
+								else:
+									for employee in payload_json.get('SAEMPL'):
+										employee_obj = SqlHelper.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
+										if employee_obj is None:
+											country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
+											salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
+											employee_dict = {}
+											employee_dict["EMPLOYEE_RECORD_ID"] = str(Guid.NewGuid()).upper()
+											employee_dict["ADDRESS_1"] = employee.get("ADDRESS1")
+											employee_dict["ADDRESS_2"] = employee.get("ADDRESS2")
+											employee_dict["CITY"] = employee.get("CITY")
+											employee_dict["COUNTRY"] = employee.get("COUNTRY")
+											employee_dict["COUNTRY_RECORD_ID"] = country_obj.COUNTRY_RECORD_ID  if country_obj else ""
+											employee_dict["EMAIL"] = employee.get("EMAIL")
+											employee_dict["EMPLOYEE_ID"] = employee.get("EMPLOYEE_ID")
+											employee_dict["EMPLOYEE_NAME"] = employee.get("EMPLOYEE_NAME")
+											employee_dict["EMPLOYEE_STATUS"] = employee.get("EMPLOYEE_STATUS")
+											employee_dict["FIRST_NAME"] = employee.get("FIRST_NAME")
+											employee_dict["LAST_NAME"] = employee.get("LAST_NAME")
+											employee_dict["PHONE"] = employee.get("PHONE")
+											employee_dict["POSTAL_CODE"] = employee.get("POSTAL_CODE")
+											employee_dict["STATE"] = employee.get("STATE")
+											employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
+											employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
+											employee_dict["C4C_EMPLOYEE_ID"] = employee.get("C4C_EMPLOYEE_ID")
+											employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
+											employee_dict["CpqTableEntryModifiedBy"] = User.Id
+											employee_dict["ADDUSR_RECORD_ID"] = User.Id
+											tableInfo = Sql.GetTable("SAEMPL")
+											tablerow = employee_dict
+											tableInfo.AddRow(tablerow)
+											Sql.Upsert(tableInfo)
+										else:
+											c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
+											Sql.RunQuery(c4c_employee_update)
+										Log.Info("select QUOTE_ID from SAQDLT(NOLOCK) where QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
 										self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 							employee_object = Sql.GetFirst("SELECT FIRST_NAME,LAST_NAME,EMPLOYEE_ID,EMPLOYEE_RECORD_ID FROM SAEMPL WHERE EMPLOYEE_ID = '{employee_id}'".format(employee_id= custom_fields_detail.get('EmployeeResponsibleID')))
 							if employee_object is not None:
