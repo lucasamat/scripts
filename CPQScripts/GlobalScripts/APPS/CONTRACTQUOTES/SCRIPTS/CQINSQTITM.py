@@ -1069,9 +1069,16 @@ class ContractQuoteItem:
 		
 		if self.source_object_name:		
 			equipments_count = 0
+			item_number_start = 0
+			item_number_inc = 0
 			quote_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 			if quote_item_obj:
 				equipments_count = int(quote_item_obj.LINE)
+			
+			doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_START, ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+			if doctype_obj:
+				item_number_start = int(doctype_obj.ITEM_NUMBER_START)
+				item_number_inc = int(doctype_obj.ITEM_NUMBER_INCREMENT)
 					
 			if self.quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
 				#get billing type start
@@ -1095,7 +1102,7 @@ class ContractQuoteItem:
 						null as GL_ACCOUNT_NO,
 						SAQTRV.GLOBAL_CURRENCY,
 						SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-						ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
+						({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * item_number_inc as LINE,
 						SAQSCE.EQUIPMENT_ID as OBJECT_ID,
 						'EQUIPMENT' as OBJECT_TYPE,
 						SAQSCE.FABLOCATION_ID as FABLOCATION_ID,
@@ -1149,7 +1156,7 @@ class ContractQuoteItem:
 						null as GL_ACCOUNT_NO,
 						SAQTRV.GLOBAL_CURRENCY,
 						SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-						ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
+						({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * item_number_inc as LINE,
 						SAQSCE.EQUIPMENT_ID as OBJECT_ID,
 						'EQUIPMENT' as OBJECT_TYPE,
 						SAQSCE.FABLOCATION_ID as FABLOCATION_ID,
@@ -1268,7 +1275,8 @@ class ContractQuoteItem:
 							null as GL_ACCOUNT_NO,
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-							ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
+							--ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
+							({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * item_number_inc as LINE,
 							null as OBJECT_ID,
 							'GREENBOOK' as OBJECT_TYPE,
 							IQ.FABLOCATION_ID as FABLOCATION_ID,
@@ -1332,7 +1340,8 @@ class ContractQuoteItem:
 							null as GL_ACCOUNT_NO,
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-							ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID)) + {EquipmentsCount} as LINE,
+							--ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID)) + {EquipmentsCount} as LINE,
+							({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID))) * item_number_inc as LINE,
 							IQ.PM_ID as OBJECT_ID,
 							'EVENT' as OBJECT_TYPE,
 							IQ.FABLOCATION_ID as FABLOCATION_ID,
@@ -1409,7 +1418,8 @@ class ContractQuoteItem:
 				null as GL_ACCOUNT_NO,
 				SAQTRV.GLOBAL_CURRENCY,
 				SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-				ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK)) + {EquipmentsCount} as LINE,
+				--ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK)) + {EquipmentsCount} as LINE,
+				({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK))) * item_number_inc as LINE,
 				null as OBJECT_ID,
 				'GREENBOOK' as OBJECT_TYPE,
 				OQ.SERVICE_DESCRIPTION,
@@ -1484,7 +1494,8 @@ class ContractQuoteItem:
 			null as GL_ACCOUNT_NO,
 			SAQTRV.GLOBAL_CURRENCY,
 			SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-			ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId)) + {EquipmentsCount} as LINE,
+			--ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId)) + {EquipmentsCount} as LINE,
+			({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId))) * item_number_inc as LINE,
 			null as OBJECT_ID,
 			null as OBJECT_TYPE,
 			SAQSPT.SERVICE_DESCRIPTION,
