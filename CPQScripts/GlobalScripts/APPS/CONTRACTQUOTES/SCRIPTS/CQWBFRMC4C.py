@@ -29,8 +29,8 @@ if 'Param' in globals():
         ##To update the revision status in cpq based on the status from c4c value....
         Log.Info("UPDATE SAQTRV SET REVISION_STATUS = '{}' FROM SAQTRV JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID  WHERE OPPORTUNITY_ID = '{}'".format(opportunity_status_dictionary.get(str(opportunity_status)),opportunity_id))
         Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = '{}' FROM SAQTRV JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID  WHERE OPPORTUNITY_ID = '{}'".format(opportunity_status_dictionary.get(str(opportunity_status)),opportunity_id))
-        Log.Info("SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID FROM SAQTRV JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID  WHERE OPPORTUNITY_ID = '{}'".format(opportunity_status_dictionary.get(str(opportunity_status)),opportunity_id))
-        quote_header_object = Sql.GetFirst("SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID FROM SAQTRV JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID  WHERE OPPORTUNITY_ID = '{}'".format(opportunity_status_dictionary.get(str(opportunity_status)),opportunity_id))
+        Log.Info("SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID FROM SAQTRV JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID  WHERE SAOPQT.OPPORTUNITY_ID = '{}' AND SAQTRV.ACTIVE = 1".format(opportunity_id))
+        quote_header_object = Sql.GetFirst("SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID FROM SAQTRV JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID  WHERE SAOPQT.OPPORTUNITY_ID = '{}' AND SAQTRV.ACTIVE = 1".format(opportunity_id))
         if quote_header_object is not None:
             CQCPQC4CWB.writeback_to_c4c("quote_header",quote_header_object.QUOTE_RECORD_ID,quote_header_object.QTEREV_RECORD_ID)
     else:
