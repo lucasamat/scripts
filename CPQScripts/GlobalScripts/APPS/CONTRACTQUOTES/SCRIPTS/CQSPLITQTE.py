@@ -47,7 +47,7 @@ def splitserviceinsert():
     material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION,MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(splitservice_object))
     service_list=[]
     #NEED TO change Query for SAQRIT
-    #get_existing_record = Sql.GetList("SELECT * FROM SAQIAC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ENTITLEMENT_NAME ='Split Quote' AND ENTITLEMENT_DISPLAY_VALUE = 'Yes'".format(contract_quote_rec_id,quote_revision_rec_id))
+    get_existing_record = Sql.GetList("SELECT SERVICE_ID FROM SAQRIT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SPLIT = 'YES'".format(contract_quote_rec_id,quote_revision_rec_id))
     for i in get_existing_record:
         service_list.append(i.SERVICE_ID)
     parservice_values=tuple(service_list)
