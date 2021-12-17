@@ -751,7 +751,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						get_status = newdict.get("REVISION_STATUS")
 						if sql_cpq.REVISION_STATUS !="APPROVED" and get_status == "APPROVED":
 							Trace.Write('Mail Triggering for Contract Manager')
-							result = ScriptExecutor.ExecuteGlobal("ACSECTACTN", {"ACTION": CBC_MAIL_TRIGGER})
+							result = ScriptExecutor.ExecuteGlobal("ACSECTACTN", {"ACTION": "CBC_MAIL_TRIGGER"})
 						if subtab_name != "Legal SoW":
 							newdict["SLSDIS_PRICE_INGL_CURR"] = re.sub('USD','',newdict["SLSDIS_PRICE_INGL_CURR"])
 							newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
