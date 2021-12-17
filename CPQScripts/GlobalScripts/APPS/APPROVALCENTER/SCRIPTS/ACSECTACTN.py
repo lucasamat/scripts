@@ -2992,31 +2992,31 @@ class approvalCenter:
 						values=str(GETFPM.QUANTITY)
 				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice:
+					if getnetprice.NET_PRICE_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice:
+					if getnetprice.NET_PRICE_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				elif str(eachsplit[1]) == "CREDIT_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT CREDIT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice:
+					if getnetprice.CREDIT_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.CREDIT_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				elif str(eachsplit[1]) == "TAX_AMOUNT_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT TAX_AMOUNT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice:
+					if getnetprice.TAX_AMOUNT_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.TAX_AMOUNT_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				elif str(eachsplit[1]) == "NET_VALUE_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice:
+					if getnetprice.NET_VALUE_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_VALUE_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
