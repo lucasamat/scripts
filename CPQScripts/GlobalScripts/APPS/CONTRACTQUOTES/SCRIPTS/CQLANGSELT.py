@@ -102,7 +102,7 @@ def language_select():
 		#if sect.SECTION_NAME == "BASIC INFORMATION":
 	sec_str += ('<div id="container" class="wdth100 g4  mt-0">')
 	sec_str += (
-				'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_'+str(sect.RECORD_ID)+'" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>Basic Information</div></label></div>'
+				'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>Basic Information</div></label></div>'
 			)
 
 		#Oppp_SEFL = Sql.GetList("SELECT FIELD_LABEL, API_FIELD_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "'")
