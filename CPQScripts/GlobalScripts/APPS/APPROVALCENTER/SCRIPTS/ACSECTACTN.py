@@ -3497,4 +3497,7 @@ elif ACTION in ["APPROVEBTN", "REJECTBTN"]:
 elif ACTION in ["BULKAPPROVE", "BULKREJECT"]:
 	ApproveDesc = Param.ApproveDesc
 	ApiResponse = ApiResponseFactory.JsonResponse(objDef.BulkAction(ACTION, ApproveDesc))
+elif ACTION == "CBC_MAIL_TRIGGER":
+    Trace.Write('ACSECTACTN: CBC_MAIL_TRIGGER')
+    objDef.cbcmailtrigger()
 # A043S001P01-13245 end

@@ -748,6 +748,10 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
 						newdict.update(dictc)
 						tableInfo = Sql.GetTable(str(TableName))
+						get_status = newdict.get("REVISION_STATUS")
+						if sql_cpq.REVISION_STATUS !="APPROVED" and get_status == "APPROVED":
+							Trace.Write('Mail Triggering for Contract Manager')
+							result = ScriptExecutor.ExecuteGlobal("ACSECTACTN", {"ACTION": CBC_MAIL_TRIGGER})
 						if subtab_name != "Legal SoW":
 							newdict["SLSDIS_PRICE_INGL_CURR"] = re.sub('USD','',newdict["SLSDIS_PRICE_INGL_CURR"])
 							newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
@@ -771,7 +775,6 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						getactive = newdict.get("ACTIVE")
 						get_record_val =  newdict.get("QUOTE_REVISION_RECORD_ID")
 						get_rev_val =  newdict.get("QTEREV_ID")
-						get_status = newdict.get("REVISION_STATUS")
 						get_approved_date = newdict.get("REV_APPROVE_DATE")
 						if getactive == 'false':
 							getactive = 0
