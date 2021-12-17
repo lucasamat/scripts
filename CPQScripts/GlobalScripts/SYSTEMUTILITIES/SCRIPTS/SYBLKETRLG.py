@@ -824,7 +824,23 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						net_value_tax = tax_amt_update+commitval
 						net_price_update = "UPDATE SAQRIT SET NET_PRICE = '{commitvalue}',NET_PRICE_INGL_CURR= '{commitvalue}',TAX_AMOUNT ={tax_amt_update},TAX_AMOUNT_INGL_CURR = {tax_amt_update},NET_VALUE = {net_value_tax},NET_VALUE_INGL_CURR={net_value_tax} where QUOTE_RECORD_ID = '{qt_rec}' and QUOTE_REVISION_CONTRACT_ITEM_ID = '{item_rec}' AND QTEREV_RECORD_ID = '{rev_rec_id}'".format(commitvalue = val.COMVAL_INGL_CURR,tax_amt_update=tax_amt_update,qt_rec= Qt_rec_id,item_rec=item_rec,net_value_tax=net_value_tax,rev_rec_id =  Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(net_price_update)
-				#A055S000P01-12656 end
+
+			#update SAQTRV based on commit changes--start
+			Sql.RunQuery("""UPDATE SAQTRV
+						SET 
+						SAQTRV.TAX_AMOUNT_INGL_CURR = IQ.TAX_AMOUNT_INGL_CURR,						
+						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR
+												
+						FROM SAQTRV (NOLOCK)
+						INNER JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,
+									SUM(ISNULL(SAQRIT.TAX_AMOUNT_INGL_CURR, 0)) as TAX_AMOUNT_INGL_CURR,
+									SUM(ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
+									SUM(ISNULL(SAQRIT.NET_VALUE_INGL_CURR, 0)) as NET_VALUE_INGL_CURR
+									FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQRIT.QTEREV_RECORD_ID, SAQRIT.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
+						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(quote_rec_id = Qt_rec_id ,quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id") ) )
+			#update SAQTRV based on commit changes--end
+			#A055S000P01-12656 end
 
 		if obj_name == "SAQSCO":
 			getfab = Sql.GetFirst("SELECT FABLOCATION_NAME, FABLOCATION_RECORD_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),VALUE,quote_revision_record_id))
