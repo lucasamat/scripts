@@ -410,7 +410,7 @@ def EditItems():
     line = []
     GetLine = Sql.GetList("SELECT LINE FROM SAQRIT(NOLOCK) WHERE BILLING_TYPE ='VARIABLE' AND QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
     for x in GetLine:
-        line.append(x.LINE)
+        line.append(str(x.LINE))
     
     return str(line)
 try:
