@@ -2126,6 +2126,12 @@ class SYLDRTLIST:
 						Trace.Write('In 1958---*'+str(Qustr))						
 						if str(RECORD_ID) == "SYOBJR-98874" or str(RECORD_ID) == "SYOBJR-98873":
 							Qustr += " AND LINE = '"+str(line_item)+"'"
+						if str(RECORD_ID) == "SYOBJR-98875":
+							quote_item_revision_rec_id = Product.GetGlobal('get_quote_item_service')
+							Trace.Write('quote_item_revision_rec_id----'+str(quote_item_revision_rec_id))
+							get_gb_val = Sql.GetFirst("SELECT GREENBOOK FROM SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID= '"+str(quote_item_revision_rec_id)+"'")
+							if get_gb_val:
+								Qustr += " AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
 						if str(RECORD_ID) == "SYOBJR-98872":
 							Wh_API_NAMEs +=",LINE"
 						if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825","SYOBJR-00016"):
