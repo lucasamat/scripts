@@ -1390,6 +1390,7 @@ class SyncQuoteAndCustomTables:
 							employee = payload_json.get('SAEMPL')
 							quote_object = Sql.GetFirst("select QUOTE_ID from SAQDLT(NOLOCK) where QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
 							if not quote_object:
+								Log.Info("no new revision")
 								if type(employee) is dict:
 									employee_obj = Sql.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
 									if employee_obj is None:
