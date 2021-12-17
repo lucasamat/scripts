@@ -2468,7 +2468,10 @@ class TreeView:
 											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText,quote_revision_record_id))
 										if SubNodeName == "GREENBOOK":
 											Trace.Write("GREENBOOK NodeText ---"+str(NodeText))
-											serviceid=NodeText.split('>')[1]
+											if '>' in NodeText:
+												serviceid=NodeText.split('>')[1]
+											else:
+												serviceid=NodeText
 											Subwhere_string += " AND SERVICE_ID = '{}' ".format(serviceid)
 											Quote.SetGlobal("SERVICE",serviceid)
 											
