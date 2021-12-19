@@ -1386,7 +1386,7 @@ class ContractQuoteItem:
 					WHERE ISNULL(SAQRIT.OBJECT_ID,'') = ''
 				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns,itemnumberinc=item_number_inc))
 			##ordering line field in saqrit
-			self._ordering_item_line_no()
+			#self._ordering_item_line_no()
 
 			# Item Level entitlement Insert
 			if self.service_id == 'Z0101' or self.quote_service_entitlement_type in ('OFFERING + PM EVENT', 'OFFERING+CONSIGNED+ON REQUEST','OFFERING'):
@@ -1477,7 +1477,7 @@ class ContractQuoteItem:
 			WHERE OQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND OQ.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND OQ.SERVICE_ID = '{ServiceId}'  AND  ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ''""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,itemnumberinc=item_number_inc))
 		
 		##ordering line field in saqrit
-		self._ordering_item_line_no()
+		#self._ordering_item_line_no()
 	
 	def _simple_fpm_quote_items_insert(self):
 		equipments_count = 0
@@ -1550,7 +1550,7 @@ class ContractQuoteItem:
 		WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSPT.SERVICE_ID = '{ServiceId}' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,itemnumberinc=item_number_inc))
 
 		##ordering line field in saqrit
-		self._ordering_item_line_no()
+		#self._ordering_item_line_no()
 
 	def _simple_items_object_insert(self):
 		Sql.RunQuery("""INSERT SAQRIO (CUSTOMER_TOOL_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, KPU, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, SERIAL_NUMBER, TECHNOLOGY, TOOL_CONFIGURATION, WAFER_SIZE, QUOTE_REVISION_ITEM_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
