@@ -1278,6 +1278,7 @@ class SYLDRTLIST:
 					QStrWhere = QStrWhere_Count = ""                   
 					TreeParam = Product.GetGlobal("TreeParam")
 					TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+					TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 					try:
 						CurrentTabName = TestProduct.CurrentTab
 					except:
@@ -1889,7 +1890,7 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					##involved parties source fab ends
 					elif str(RECORD_ID) == "SYOBJR-98859":                        
-						Qustr += " AND SERVICE_ID = '"+str(TreeParentParam)+"' "
+						Qustr += " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' "
 						Qury_str = (
 							"select DISTINCT top "
 							+ str(PerPage)
@@ -2385,7 +2386,6 @@ class SYLDRTLIST:
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 				##involved parties source fab ends
 				elif str(RECORD_ID) == "SYOBJR-98859":
-					Qustr += " AND SERVICE_ID = '"+str(TreeParentParam)+"' "
 					Qury_str = (
 						"select DISTINCT top "
 						+ str(PerPage)
