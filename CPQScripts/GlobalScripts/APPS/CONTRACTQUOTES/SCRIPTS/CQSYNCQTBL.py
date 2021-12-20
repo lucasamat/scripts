@@ -387,7 +387,6 @@ class SyncQuoteAndCustomTables:
 					Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW") 
 				
 				#inseryservice_ent = """INSERT SAQTSE () VALUES ()"""
-				#Log.Info('inseryservice_ent-----columns-----values----'+str(insert_qtqtse_query))
 
 	def create_custom_table_record(self):
 		contract_quote_data = {}		
