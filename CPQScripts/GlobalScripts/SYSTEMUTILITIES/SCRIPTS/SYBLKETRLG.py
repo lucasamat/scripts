@@ -429,7 +429,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 		if (obj_name == "SAQSAP" or obj_name == "SAQRSP" or obj_name == "SAQSPT") and (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeSuperParentParam in ('Comprehensive Services','Complementary Products')):
 			selected_rows = selectPN
 			qury_str = ""
-			Trace.Write('Values-->'+str(A_Values))
+			Trace.Write(str(CLICKEDID)+'--Values-->'+str(A_Values))
 			if A_Keys!="" and A_Values!="":
 				for key,val in zip(A_Keys,A_Values):
 					if(val!=""):
