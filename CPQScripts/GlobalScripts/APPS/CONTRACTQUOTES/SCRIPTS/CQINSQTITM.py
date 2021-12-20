@@ -1794,7 +1794,7 @@ class ContractQuoteItem:
 			Sql.RunQuery(delete_statement)
 		join_condition_string = ''
 		if self.quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
-			join_condition_string = 'AND ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID'
+			join_condition_string = """AND ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID"""
 		# item entitlement delete
 		quote_item_entitlement_delete_statement = """
 				DELETE SAQITE 
