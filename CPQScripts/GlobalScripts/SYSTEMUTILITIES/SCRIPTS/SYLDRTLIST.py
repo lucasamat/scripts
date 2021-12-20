@@ -424,6 +424,7 @@ class SYLDRTLIST:
 						RecAttValue = ""
 			table_id = obj_obj.SAPCPQ_ATTRIBUTE_NAME.replace("-", "_") + "_" + str(Obj_Name).replace("-", "_")
 			table_ids = "#" + str(table_id)
+		Trace.Write("table_id =====>>>>> "+str(table_id))
 		if 'SYOBJR_98797' in table_id:
 			table_header = (
 				'<table id="'
