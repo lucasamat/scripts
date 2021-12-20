@@ -1273,6 +1273,14 @@ class SyncQuoteAndCustomTables:
 					#Sql.Upsert(quote_involved_party_contact_table_info)
 					#Sql.Upsert(quote_fab_table_info)
 
+					#A055S000P01-13524 start(UPDATE SAQSPT)
+					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+					quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+					get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+					for keyobj in get_party_role:
+						account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
+
+					#A055S000P01-13524 end
 					##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
 					#Log.Info("Revisionstatusdatecapture===> ")
 					CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
