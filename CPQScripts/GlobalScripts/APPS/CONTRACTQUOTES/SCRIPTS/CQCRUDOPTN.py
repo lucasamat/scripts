@@ -237,6 +237,7 @@ class ContractQuoteCrudOpertion:
 			common_row_values = {
 				"QUOTE_RECORD_ID": self.contract_quote_record_id,
 				"QUOTE_ID": self.contract_quote_id,
+				"QTEREV_RECORD_ID" : self.quote_revision_record_id
 			}
 			for record_obj in records_obj:
 				row = {data.Key: data.Value for data in record_obj}
