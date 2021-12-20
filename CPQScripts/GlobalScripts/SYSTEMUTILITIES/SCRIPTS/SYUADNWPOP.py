@@ -1643,14 +1643,14 @@ def POPUPLISTVALUEADDNEW(
 			ObjectName = "MAADPR"
 			table_id = "Include_add_on_addnew"
 			Header_details = {
-				"COMP_PRDOFR_RECORD_ID": "KEY",
+				"PO_COMP_RECORD_ID": "KEY",
 				"COMP_PRDOFR_ID":"SERVICE ID",
 				"COMP_PRDOFR_NAME": "SERVICE NAME",
 				"COMP_PRDOFR_TYPE": "TYPE",
 			}
 			ordered_keys = [
 				#"ADD_ON_PRODUCT_RECORD_ID",
-				"COMP_PRDOFR_RECORD_ID",
+				"PO_COMP_RECORD_ID",
 				"COMP_PRDOFR_ID",
 				"COMP_PRDOFR_NAME",
 				"COMP_PRDOFR_TYPE",
@@ -1796,7 +1796,7 @@ def POPUPLISTVALUEADDNEW(
 			#        pagination_condition,
 			#    )
 			#)
-			QueryCountObj = Sql.GetFirst("select count(*) as cnt from MAADPR(NOLOCK) WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
+			QueryCountObj = Sql.GetFirst("select count(*) as cnt from MAADPR(NOLOCK) WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') ")
 
 			if QueryCountObj is not None:
 				QryCount = QueryCountObj.cnt
@@ -1809,7 +1809,7 @@ def POPUPLISTVALUEADDNEW(
 					new_value_dict = {}
 
 					for data in row_data:
-						if str(data.Key) == "COMP_PRDOFR_RECORD_ID":
+						if str(data.Key) == "PO_COMP_RECORD_ID":
 							pop_val = str(data.Value) + "|addonproducts"
 							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 							new_value_dict[data.Key] = cpqidval
