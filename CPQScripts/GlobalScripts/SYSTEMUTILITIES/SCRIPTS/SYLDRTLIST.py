@@ -804,7 +804,8 @@ class SYLDRTLIST:
 						getpagename = gettabval.PAGE_NAME
 					Qustr = " where PAGE_NAME = '" + str(getpagename) + "'"                    
 			
-				else:               
+				else:       
+					Trace.Write('###808')        
 					PLN_ID = Product.GetGlobal("PLN_ID")
 					if PLN_ID != "":
 						PLN_ID = PLN_ID.split("-")[1]
@@ -1210,7 +1211,7 @@ class SYLDRTLIST:
 							)
 					
 					else:
-						
+						Trace.Write('###1214')        
 						if Wh_API_NAME == "FACTOR_ID":
 							dataobjPRICEFACTOR = Sql.GetFirst(
 								"SELECT FACTOR_ID FROM PRCAFC WHERE CALCULATION_FACTORS_RECORD_ID='" + str(RecAttValue) + "'"
@@ -1229,6 +1230,7 @@ class SYLDRTLIST:
 							CommonTreeParentParam = Product.GetGlobal("CommonTreeParentParam")
 							CommonTopTreeSuperParentParam = Product.GetGlobal("CommonTopTreeSuperParentParam")
 							CommonTreeTopSuperParentParam = Product.GetGlobal("CommonTreeTopSuperParentParam")
+							Trace.Write('###1233')        
 							if current_prod.upper() == "SALES" or  current_prod.upper() == "APPROVAL CENTER":
 								if Currenttab == "Contracts":
 									RecAttValue = Quote.GetGlobal("contract_record_id")     
@@ -1242,6 +1244,7 @@ class SYLDRTLIST:
 											Trace.Write("RecAttValue EXCEPT !!!")
 											RecAttValue = ""
 								Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+								Trace.Write('###1247'+str(Qustr))        
 							elif current_prod.upper() == "PRICE MODELS" and TP == "Sales":                                
 								Qustr = " where QUOTE_CURRENCY = '"+str(PR_CURR)+"'"
 							elif current_prod.upper() == "PRICE MODELS" and TP == "Sales Orgs":
