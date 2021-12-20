@@ -1069,16 +1069,17 @@ class ContractQuoteItem:
 		
 		if self.source_object_name:		
 			equipments_count = 0
-			item_number_start = 0
 			item_number_inc = 0
-			#quote_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
-			quote_item_obj = Sql.GetFirst("SELECT COUNT(LINE) as LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
-			if quote_item_obj:
+			validate_axcliary = Sql.GetFirst("SELECT COUNT(SERVICE_ID) AS AXCLIARY_PRODUCT_FLAG from SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID='{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+			if validate_axcliary.AXCLIARY_PRODUCT_FLAG:
+				quote_item_obj = Sql.GetFirst("SELECT COUNT(LINE) as LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 				equipments_count = int(quote_item_obj.LINE)
+			'''
+   			quote_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+			'''	
 			
-			doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_START, ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+			doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 			if doctype_obj:
-				item_number_start = int(doctype_obj.ITEM_NUMBER_START)
 				item_number_inc = int(doctype_obj.ITEM_NUMBER_INCREMENT)
 					
 			if self.quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
@@ -1103,8 +1104,8 @@ class ContractQuoteItem:
 						null as GL_ACCOUNT_NO,
 						SAQTRV.GLOBAL_CURRENCY,
 						SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-						--(({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
-						((ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
+						(({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
+						--((ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
       					SAQSCE.EQUIPMENT_ID as OBJECT_ID,
 						'EQUIPMENT' as OBJECT_TYPE,
 						SAQSCE.FABLOCATION_ID as FABLOCATION_ID,
@@ -1158,8 +1159,8 @@ class ContractQuoteItem:
 						null as GL_ACCOUNT_NO,
 						SAQTRV.GLOBAL_CURRENCY,
 						SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-						--(({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
-						((ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
+						(({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
+						--((ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
 						SAQSCE.EQUIPMENT_ID as OBJECT_ID,
 						'EQUIPMENT' as OBJECT_TYPE,
 						SAQSCE.FABLOCATION_ID as FABLOCATION_ID,
@@ -1217,8 +1218,8 @@ class ContractQuoteItem:
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
 							--ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
-							--({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
-							(ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
+							({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
+							--(ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
 							null as OBJECT_ID,
 							'EQUIPMENT' as OBJECT_TYPE,
 							IQ.FABLOCATION_ID as FABLOCATION_ID,
@@ -1281,8 +1282,8 @@ class ContractQuoteItem:
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
 							--ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
-							--({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
-							(ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
+							({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
+							--(ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
 							null as OBJECT_ID,
 							'GREENBOOK' as OBJECT_TYPE,
 							IQ.FABLOCATION_ID as FABLOCATION_ID,
@@ -1347,8 +1348,8 @@ class ContractQuoteItem:
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
 							--ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID)) + {EquipmentsCount} as LINE,
-							--(({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID))) * {itemnumberinc}) as LINE,
-							((ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID))) * {itemnumberinc}) as LINE,
+							(({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID))) * {itemnumberinc}) as LINE,
+							--((ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID))) * {itemnumberinc}) as LINE,
 							IQ.PM_ID as OBJECT_ID,
 							'EVENT' as OBJECT_TYPE,
 							IQ.FABLOCATION_ID as FABLOCATION_ID,
@@ -1403,18 +1404,20 @@ class ContractQuoteItem:
 	
 	def _simple_quote_items_insert(self):
 		equipments_count = 0
-		item_number_start = 0
 		item_number_inc = 0
-			
+		validate_axcliary = Sql.GetFirst("SELECT COUNT(SERVICE_ID) AS AXCLIARY_PRODUCT_FLAG from SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID='{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+		if validate_axcliary.AXCLIARY_PRODUCT_FLAG:
+			quote_item_obj = Sql.GetFirst("SELECT COUNT(LINE) as LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+			equipments_count = int(quote_item_obj.LINE)
+				
 		#quote_line_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
-		quote_item_obj = Sql.GetFirst("SELECT COUNT(LINE) as LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
-		if quote_line_item_obj:
-			if quote_line_item_obj.LINE:
-				equipments_count = int(quote_line_item_obj.LINE) 
+		#quote_item_obj = Sql.GetFirst("SELECT COUNT(LINE) as LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+		#if quote_line_item_obj:
+		#	if quote_line_item_obj.LINE:
+		#		equipments_count = int(quote_line_item_obj.LINE) 
 
-		doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_START, ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+		doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		if doctype_obj:
-			item_number_start = int(doctype_obj.ITEM_NUMBER_START)
 			item_number_inc = int(doctype_obj.ITEM_NUMBER_INCREMENT)
 			
 		
@@ -1436,8 +1439,8 @@ class ContractQuoteItem:
 				SAQTRV.GLOBAL_CURRENCY,
 				SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
 				--ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK)) + {EquipmentsCount} as LINE,
-				--({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK))) * {itemnumberinc} as LINE,
-				(ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK)) * {itemnumberinc}) as LINE,
+				({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK))) * {itemnumberinc} as LINE,
+				--(ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK)) * {itemnumberinc}) as LINE,
 				null as OBJECT_ID,
 				'GREENBOOK' as OBJECT_TYPE,
 				OQ.SERVICE_DESCRIPTION,
@@ -1489,16 +1492,18 @@ class ContractQuoteItem:
 	
 	def _simple_fpm_quote_items_insert(self):
 		equipments_count = 0
-		item_number_start = 0
 		item_number_inc = 0
-			
-		#quote_line_item_obj = Sql.GetFirst("SELECT COUNT(LINE) AS LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+		validate_axcliary = Sql.GetFirst("SELECT COUNT(SERVICE_ID) AS AXCLIARY_PRODUCT_FLAG from SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID='{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+		if validate_axcliary.AXCLIARY_PRODUCT_FLAG:
+			quote_line_item_obj = Sql.GetFirst("SELECT COUNT(LINE) AS LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+			equipments_count = int(quote_item_obj.LINE)
+		
+		##quote_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		#if quote_line_item_obj:
 		#	equipments_count = int(quote_line_item_obj.LINE)
 		
-		doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_START, ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+		doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		if doctype_obj:
-			item_number_start = int(doctype_obj.ITEM_NUMBER_START)
 			item_number_inc = int(doctype_obj.ITEM_NUMBER_INCREMENT)
 		
 		Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(
@@ -1522,8 +1527,8 @@ class ContractQuoteItem:
 			SAQTRV.GLOBAL_CURRENCY,
 			SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
 			--ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId)) + {EquipmentsCount} as LINE,
-			--({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId))) * {itemnumberinc} as LINE,
-			(ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId)) * {itemnumberinc}) as LINE,null as OBJECT_ID,
+			({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId))) * {itemnumberinc} as LINE,
+			--(ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId)) * {itemnumberinc}) as LINE,null as OBJECT_ID,
 			null as OBJECT_TYPE,
 			SAQSPT.SERVICE_DESCRIPTION,
 			SAQSPT.SERVICE_ID,
