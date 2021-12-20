@@ -1771,7 +1771,7 @@ def POPUPLISTVALUEADDNEW(
 			if SortColumn != '' and SortColumnOrder !='':
 				order_by = "order by "+SortColumn + " " + SortColumnOrder
 			else:
-				order_by = "order by ADNPRDOFR_NAME ASC"
+				order_by = "order by COMP_PRDOFR_NAME ASC"
 
 			pop_val = {}
 			if where_string:
