@@ -1776,6 +1776,8 @@ def POPUPLISTVALUEADDNEW(
 			pop_val = {}
 				
 			if TreeParam == "Add-On Products":
+				if where_string:
+					where_string += " AND"
 				where_string += """ PRDOFR_ID = '{}'  AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeParentParam),contract_quote_record_id,quote_revision_record_id)
 
 			table_data = Sql.GetList(
