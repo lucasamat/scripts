@@ -437,7 +437,7 @@ class SYLDRTLIST:
 				+ table_id
 				+ '" data-pagination="false" data-filter-control="true" class = "items_grid"  data-maintain-selected="true" data-locale = "en-US"><thead>'
 			)
-		elif 'SYOBJR_98789' in table_id:
+		elif 'SYOBJR_00005' in table_id:
 			Trace.Write("table_id 1111=====>>>>> "+str(table_id))
 			table_header = (
 				'<table id="'
