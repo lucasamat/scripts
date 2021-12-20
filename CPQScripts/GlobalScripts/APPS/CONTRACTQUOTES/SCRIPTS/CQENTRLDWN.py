@@ -700,87 +700,6 @@ def _equp_predefined_value_driver_update(previous_xml):
 					input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(attr)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', prev_xml_dict[attr], input_xml )
 			Sql.RunQuery("UPDATE SAQSCE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}'".format(input_xml,quote,revision,get_serviceid,val.EQUIPMENT_ID,val.GREENBOOK))
 
-def split_service_insert():
-	service_entitlement_objs = Sql.GetList("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM  SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}'""".format(contract_quote_rec_id=quote,quote_revision_rec_id=revision) )
-	for service_entitlement_obj in service_entitlement_objs:	
-		quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-		entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obj.SERVICE_ID)+'_PQB_QTITST</ENTITLEMENT_ID>')
-		##getting billing type
-		billing_type_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obj.SERVICE_ID)+'_PQB_BILTYP</ENTITLEMENT_ID>')
-		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-		for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obj.ENTITLEMENT_XML):
-			quote_item_tag_content = quote_item_tag.group(1)
-			entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)	
-			entitlement_billing_id_tag_match = re.findall(billing_type_pattern,quote_item_tag_content)
-			if entitlement_id_tag_match:
-				entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
-				if entitlement_display_value_tag_match:
-					quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
-					if quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
-						Trace.Write("1")
-						saqsce_split_saqrit(service_entitlement_obj.SERVICE_ID)
-					elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART'):
-						Trace.Write("2")
-						saqsge_split_saqrit(service_entitlement_obj.SERVICE_ID)
-					elif quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING+CONSIGNED+ON REQUEST'):
-						Trace.Write("3")
-
-def saqsce_split_saqrit(seid):
-	Trace.Write("99999"+str(seid))
-	#seid ="Z0091"
-	service_entitlement_objas = Sql.GetList("""SELECT SERVICE_ID, ENTITLEMENT_XML ,EQUIPMENT_ID,FABLOCATION_ID,GREENBOOK FROM  SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID ='{seid}' """.format(contract_quote_rec_id=quote,quote_revision_rec_id=revision,seid=seid))
-	for service_entitlement_obja in service_entitlement_objas:
-		pqb_splqte=''
-		service_split_per=''
-		quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-		entitlement_id_tag_pqb = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obja.SERVICE_ID)+'_PQB_SPLQTE</ENTITLEMENT_ID>')
-		entitlement_id_tag_split = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obja.SERVICE_ID)+'_SER_SPLIT_PER</ENTITLEMENT_ID>')
-		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-		for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obja.ENTITLEMENT_XML):
-			quote_item_tag_content = quote_item_tag.group(1)
-			entitlement_id_tag_match_pqb = re.findall(entitlement_id_tag_pqb,quote_item_tag_content)	
-			entitlement_billing_id_tag_match_split = re.findall(entitlement_id_tag_split,quote_item_tag_content)
-			entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
-			if entitlement_id_tag_match_pqb:
-				pqb_splqte = entitlement_display_value_tag_match[0].upper()
-				Trace.Write("11110"+str(pqb_splqte))
-				continue
-			if entitlement_billing_id_tag_match_split:
-				service_split_per = entitlement_display_value_tag_match[0]
-				Trace.Write("22220"+str(service_split_per))
-				continue
-			if pqb_splqte != '' and service_split_per != '':
-				break
-		updatesaqritobjectid = (""" UPDATE SAQRIT SET SPLIT_PERCENT = '{service_split_per}',SPLIT = '{pqb_splqte}' WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND OBJECT_ID ='{eqp}' AND GREENBOOK = '{gb}' AND FABLOCATION_ID ='{fb}' AND SERVICE_ID = '{ser}' """.format(contract_quote_rec_id = quote,quote_revision_rec_id = revision,eqp =service_entitlement_obja.EQUIPMENT_ID,gb = service_entitlement_obja.GREENBOOK , fb = service_entitlement_obja.FABLOCATION_ID,ser = service_entitlement_obja.SERVICE_ID,service_split_per = service_split_per,pqb_splqte = pqb_splqte))
-		Sql.RunQuery(updatesaqritobjectid)	
-def saqsge_split_saqrit(seid):
-	Trace.Write("99999"+str(seid))
-	service_entitlement_objas = Sql.GetList("""SELECT SERVICE_ID, ENTITLEMENT_XML,FABLOCATION_ID,GREENBOOK FROM  SAQSGE (NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID ='{seid}' """.format(contract_quote_rec_id=quote,quote_revision_rec_id=revision,seid=seid))
-	for service_entitlement_obja in service_entitlement_objas:
-		pqb_splqte=''
-		service_split_per=''
-		quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-		entitlement_id_tag_pqb = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obja.SERVICE_ID)+'_PQB_SPLQTE</ENTITLEMENT_ID>')
-		entitlement_id_tag_split = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obja.SERVICE_ID)+'_SER_SPLIT_PER</ENTITLEMENT_ID>')
-		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-		for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obja.ENTITLEMENT_XML):
-			quote_item_tag_content = quote_item_tag.group(1)
-			entitlement_id_tag_match_pqb = re.findall(entitlement_id_tag_pqb,quote_item_tag_content)	
-			entitlement_billing_id_tag_match_split = re.findall(entitlement_id_tag_split,quote_item_tag_content)
-			entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
-			if entitlement_id_tag_match_pqb:
-				pqb_splqte = entitlement_display_value_tag_match[0].upper()
-				Trace.Write("11110"+str(pqb_splqte))
-				continue
-			if entitlement_billing_id_tag_match_split:
-				service_split_per = entitlement_display_value_tag_match[0]
-				Trace.Write("22220"+str(service_split_per))
-				continue
-			if pqb_splqte != '' and service_split_per != '':
-				break
-		updatesaqritobjectid = (""" UPDATE SAQRIT SET SPLIT_PERCENT = '{service_split_per}',SPLIT = '{pqb_splqte}' WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'AND GREENBOOK = '{gb}' AND FABLOCATION_ID ='{fb}' AND SERVICE_ID = '{ser}' """.format(contract_quote_rec_id = quote,quote_revision_rec_id = revision,gb = service_entitlement_obja.GREENBOOK , fb = service_entitlement_obja.FABLOCATION_ID,ser = service_entitlement_obja.SERVICE_ID,service_split_per = service_split_per,pqb_splqte = pqb_splqte))
-		Sql.RunQuery(updatesaqritobjectid)
-
 
 
 
@@ -1267,7 +1186,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		##ancillary_service insert
 		#if 'Z0091' in get_serviceid :
 		ancillary_service_call()
-		split_service_insert()
+		#split_service_insert()
 		try:
 			dividend_critical_price_sumup(ent_temp)
 		except Exception as e:
