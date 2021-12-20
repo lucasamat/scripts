@@ -1643,10 +1643,10 @@ def POPUPLISTVALUEADDNEW(
 			ObjectName = "MAADPR"
 			table_id = "Include_add_on_addnew"
 			Header_details = {
-				"ADD_ON_PRODUCT_RECORD_ID": "KEY",
-				"ADNPRDOFR_ID":"SERVICE ID",
-				"ADNPRDOFR_NAME": "SERVICE NAME",
-				"ADN_TYPE": "TYPE",
+				"COMP_PRDOFR_RECORD_ID": "KEY",
+				"COMP_PRDOFR_ID":"SERVICE ID",
+				"COMP_PRDOFR_NAME": "SERVICE NAME",
+				"COMP_PRDOFR_TYPE": "TYPE",
 			}
 			ordered_keys = [
 				#"ADD_ON_PRODUCT_RECORD_ID",
@@ -1809,7 +1809,7 @@ def POPUPLISTVALUEADDNEW(
 					new_value_dict = {}
 
 					for data in row_data:
-						if str(data.Key) == "ADD_ON_PRODUCT_RECORD_ID":
+						if str(data.Key) == "COMP_PRDOFR_RECORD_ID":
 							pop_val = str(data.Value) + "|addonproducts"
 							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 							new_value_dict[data.Key] = cpqidval
