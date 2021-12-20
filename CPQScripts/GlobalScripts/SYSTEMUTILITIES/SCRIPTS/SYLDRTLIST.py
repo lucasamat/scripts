@@ -436,7 +436,7 @@ class SYLDRTLIST:
 				+ table_id
 				+ '" data-pagination="false" data-filter-control="true" class = "items_grid"  data-maintain-selected="true" data-locale = "en-US"><thead>'
 			)
-		elif table_id == 'SYOBJR-98789':
+		elif 'SYOBJR-98789' in table_id:
 			table_header = (
 				'<table id="'
 				+ table_id
