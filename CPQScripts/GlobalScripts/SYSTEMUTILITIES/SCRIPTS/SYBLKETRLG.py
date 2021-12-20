@@ -804,7 +804,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			Sql = SQL()
 			ALLVALUES = eval(ALLVALUES)
 			count = 0
-			Trace.Write(''+str())
+			Trace.Write('ALLVALUES--'+str(ALLVALUES))
 			for x in ALLVALUES: 
 				Sql.RunQuery("UPDATE SAQRIT SET COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(x,selected_rows_cpqid[count]))
 				count += 1
