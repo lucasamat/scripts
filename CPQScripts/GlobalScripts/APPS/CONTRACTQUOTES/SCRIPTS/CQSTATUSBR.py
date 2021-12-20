@@ -561,14 +561,15 @@ def Dynamic_Status_Bar():
 		#if getsalesorg_ifo and getfab_info:
 		if getsalesorg_ifo:
 			Trace.Write('salesorg--present---')
-			if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '' and complete_status != '':
+			if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '' and complete_status != '' and Text == "COMPLETE STAGE":
 				update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 								
 				Sql.RunQuery(update_workflow_status)
-				get_workflow_status = Sql.GetFirst(" SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-				if get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
-                
-					Trace.Write('No button-2454-')
+
+			get_workflow_status = Sql.GetFirst(" SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+			if get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
+			
+				Trace.Write('No button-2454-')
 				buttonvisibility = "show_button"            
 			else:
 				Trace.Write('No button--1')
@@ -611,5 +612,9 @@ try:
 except:
 	quote_item_insert = ''
 
+try:
+	Text = Param.Text
+except:
+	Text = ""
 Trace.Write("quote_item_insert_J "+str(quote_item_insert))
 ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar())  
