@@ -2082,7 +2082,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"ADNPRDOFR_NAME AS ADNPRD_DESCRIPTION",
 				"ADNPRDOFR_ID AS ADNPRD_ID",
 				"ADNPRDOFR_RECORD_ID AS ADNPRDOFR_RECORD_ID",
-				"ADD_ON_PRODUCT_RECORD_ID AS ADNPRD_RECORD_ID",
+				"PO_COMP_RECORD_ID AS ADNPRD_RECORD_ID",
 				"ADN_TYPE AS ADN_TYPE",
 				#"GETPARENTSERVICE.QUOTE_SERVICE_RECORD_ID AS QTESRV_RECORD_ID",
 				"'TRUE' AS ACTIVE",
@@ -2093,7 +2093,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				# "STATUS AS FABLOCATION_STATUS" 
 			]
 			table_name = "SAQSAO"
-			condition_column = "ADD_ON_PRODUCT_RECORD_ID"
+			condition_column = "PO_COMP_RECORD_ID"
 			row_values = {
 				"QUOTE_NAME": self.contract_quote_name,
 				"SALESORG_ID": self.salesorg_id,
@@ -2105,7 +2105,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			fab_table_info = Sql.GetTable(table_name)
 			if self.all_values:
 				master_fab_obj = self._get_record_obj(
-					columns=["ADD_ON_PRODUCT_RECORD_ID"],
+					columns=["PO_COMP_RECORD_ID"],
 					table_name=master_object_name,
 					table_joins="JOIN SAQTSV (NOLOCK) ON MAADPR.PRDOFR_ID = SAQTSV.SERVICE_ID",
 					where_condition=""" SAQTSV.QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'AND NOT EXISTS (SELECT ADNPRD_ID FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}')""".format(
@@ -2114,7 +2114,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				)
 
 				if master_fab_obj:
-					self.values = [fab_obj.ADD_ON_PRODUCT_RECORD_ID for fab_obj in master_fab_obj]
+					self.values = [fab_obj.PO_COMP_RECORD_ID for fab_obj in master_fab_obj]
 
 			for row_detail in self._add_record(
 				master_object_name=master_object_name,
