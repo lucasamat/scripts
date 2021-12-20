@@ -804,10 +804,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			Sql = SQL()
 			ALLVALUES = eval(ALLVALUES)
 			count = 0
+			Trace.Write(''+str())
 			for x in ALLVALUES: 
-			
-				Sql.RunQuery("UPDATE SAQRIT SET ESTVAL_INGL_CURR = '{}',COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(x,ALLVALUES[x],selected_rows_cpqid[count]))
+				Sql.RunQuery("UPDATE SAQRIT SET COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(x,selected_rows_cpqid[count]))
 				count += 1
+				#Sql.RunQuery("UPDATE SAQRIT SET ESTVAL_INGL_CURR = '{}',COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(x,ALLVALUES[x],selected_rows_cpqid[count]))
+				#count += 1
 			#A055S000P01-12656 start
 			tax_percent_amt = commitval = 0
 			net_value_tax  = ''
