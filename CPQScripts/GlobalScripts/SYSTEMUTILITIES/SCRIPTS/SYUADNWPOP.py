@@ -1752,7 +1752,7 @@ def POPUPLISTVALUEADDNEW(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 			)
 
-			Pagination_M = Sql.GetFirst("select count(MAADPR.CpqTableEntryId) as count from MAADPR WHERE PRDOFR_ID = '"+str(TreeParentParam)+"' AND 	ADNPRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"') ")
+			Pagination_M = Sql.GetFirst("select count(MAADPR.CpqTableEntryId) as count from MAADPR WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND 	COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"') ")
 
 			order_by = "order by MAADPR.ADNPRDOFR_NAME ASC"
 
