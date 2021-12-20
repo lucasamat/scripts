@@ -202,6 +202,7 @@ def POPUPLISTVALUEADDNEW(
 			ObjectName = "SYPRAP"		
 		else:
 			ObjectName = Question_obj.OBJECT_NAME.strip()
+		Trace.Write("OBJ_NAMEE "+str(ObjectName))
 		if str(ObjectName) == "USERS" and str(CurrentTab) == "Profile":
 			D = {}
 			new_value_dict = {}
