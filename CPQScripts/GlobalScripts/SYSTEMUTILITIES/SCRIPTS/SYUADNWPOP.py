@@ -1659,8 +1659,8 @@ def POPUPLISTVALUEADDNEW(
 				+ str(ObjectName)
 				+ "'"
 			)
-			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-			getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV(nolock) where SERVICE_ID = '"+str(TreeParentParam)+"'")
+			TreeSuperParentParam =  Product.GetGlobal("TreeParentLevel1") 
+			getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
 			lookup_disply_list = []
 			if Objd_Obj is not None:
 				attr_list = {}
