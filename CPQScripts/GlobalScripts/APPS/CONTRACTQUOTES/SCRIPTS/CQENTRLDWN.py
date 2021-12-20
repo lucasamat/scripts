@@ -721,7 +721,7 @@ def split_service_insert():
 						saqsce_split_saqrit(service_entitlement_obj.SERVICE_ID)
 					elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART'):
 						Trace.Write("2")
-                        saqsge_split_saqrit(service_entitlement_obj.SERVICE_ID)
+						saqsge_split_saqrit(service_entitlement_obj.SERVICE_ID)
 					elif quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING+CONSIGNED+ON REQUEST'):
 						Trace.Write("3")
 
