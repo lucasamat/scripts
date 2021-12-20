@@ -98,13 +98,13 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
     Qstr = (
         "SELECT DISTINCT TOP "
         + str(PerPage)
-        + " QUOTE_ITEM_FORECAST_PART_RECORD_ID, PRICING_STATUS,SERVICE_ID, PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(orderby) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(ContractRecordId)
+        + " QUOTE_ITEM_FORECAST_PART_RECORD_ID, PRICING_STATUS,SERVICE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(orderby) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(ContractRecordId)
         +"' AND QTEREV_RECORD_ID = '"
         +str(RevisionRecordId)
         +"') m where m.ROW BETWEEN "
         + str(Page_start)
         + " AND "
-        + str(Page_End)+" ORDER BY PART_LINE_ID,PRICING_STATUS ASC"
+        + str(Page_End)+" ORDER BY PRICING_STATUS ASC"
     )
     QueryCount = ""
     QueryCountObj = Sql.GetFirst(
@@ -154,7 +154,7 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
             data_dict["PRICING_STATUS"] = ('<abbr id ="" title="' + str(par.PRICING_STATUS) + '">' + str(acquiring_img_str) +  "</abbr>")
             
         data_dict["SERVICE_ID"] = ('<abbr id ="" title="' + str(par.SERVICE_ID) + '">' + str(par.SERVICE_ID) + "</abbr>")
-        data_dict["PART_LINE_ID"] = ('<abbr id ="" title="' + str(par.PART_LINE_ID) + '">' + str(par.PART_LINE_ID) + "</abbr>")
+        #data_dict["PART_LINE_ID"] = ('<abbr id ="" title="' + str(par.PART_LINE_ID) + '">' + str(par.PART_LINE_ID) + "</abbr>")
         data_dict["PART_NUMBER"] = ('<abbr id ="" title="' + str(par.PART_NUMBER) + '">' + str(par.PART_NUMBER) + "</abbr>")
         data_dict["PART_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.PART_DESCRIPTION) + '">' + str(par.PART_DESCRIPTION) + "</abbr>")
         data_dict["MATPRIGRP_ID"] = ('<abbr id ="" title="' + str(par.MATPRIGRP_ID) + '">' + str(par.MATPRIGRP_ID) + "</abbr>")
