@@ -3057,7 +3057,7 @@ def Related_Sub_Banner(
             if str(multi_buttons) != "":
                 Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
-                    entitlement_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQRIT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SPLIT = 'YES'".format(ContractRecordId,quote_revision_record_id))
+                    entitlement_obj = Sql.GetFirst("SELECT * FROM SAQRIT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SPLIT = 'YES'".format(ContractRecordId,quote_revision_record_id))
                     if entitlement_obj:
                         if entitlement_obj.SPLIT == "YES":
                             if quote_status.QUOTE_STATUS != 'APPROVED':
