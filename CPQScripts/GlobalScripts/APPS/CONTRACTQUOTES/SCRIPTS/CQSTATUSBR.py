@@ -536,7 +536,7 @@ def Dynamic_Status_Bar():
 
 		for configure in quote_ser_level_entitlement_obj:
 			status = configure.CONFIGURATION_STATUS
-			if status == "COMPLETE" and status != "":
+			if status == "COMPLETE" and status != "":				
 				complete_status = 'YES'
 			else:
 				incomplete_status = 'YES'
@@ -561,8 +561,14 @@ def Dynamic_Status_Bar():
 		#if getsalesorg_ifo and getfab_info:
 		if getsalesorg_ifo:
 			Trace.Write('salesorg--present---')
-			if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '' and complete_status != '':                
-				Trace.Write('No button-2454-')
+			if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '' and complete_status != '':
+				update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+								
+				Sql.RunQuery(update_workflow_status)
+				get_workflow_status = Sql.GetFirst(" SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+				if get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
+                
+					Trace.Write('No button-2454-')
 				buttonvisibility = "show_button"            
 			else:
 				Trace.Write('No button--1')
