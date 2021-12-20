@@ -1774,8 +1774,6 @@ def POPUPLISTVALUEADDNEW(
 				order_by = "order by COMP_PRDOFR_NAME ASC"
 
 			pop_val = {}
-			if where_string:
-				where_string += " AND"
 				
 			if TreeParam == "Add-On Products":
 				where_string += """ PRDOFR_ID = '{}'  AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeParentParam),contract_quote_record_id,quote_revision_record_id)
