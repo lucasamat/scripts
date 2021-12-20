@@ -1649,10 +1649,11 @@ def POPUPLISTVALUEADDNEW(
 				"ADN_TYPE": "TYPE",
 			}
 			ordered_keys = [
-				"ADD_ON_PRODUCT_RECORD_ID",
-				"ADNPRDOFR_ID",
-				"ADNPRDOFR_NAME",
-				"ADN_TYPE",
+				#"ADD_ON_PRODUCT_RECORD_ID",
+				"COMP_PRDOFR_RECORD_ID",
+				"COMP_PRDOFR_ID",
+				"COMP_PRDOFR_NAME",
+				"COMP_PRDOFR_TYPE",
 			]
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -1754,7 +1755,7 @@ def POPUPLISTVALUEADDNEW(
 
 			Pagination_M = Sql.GetFirst("select count(MAADPR.CpqTableEntryId) as count from MAADPR WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND 	COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"') ")
 
-			order_by = "order by MAADPR.ADNPRDOFR_NAME ASC"
+			order_by = "order by MAADPR.COMP_PRDOFR_NAME ASC"
 
 			if str(PerPage) == "" and str(PageInform) == "":
 				Page_start = 1
@@ -1777,7 +1778,7 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 				
 			if TreeParam == "Add-On Products":
-				where_string += """ PRDOFR_ID = '{}'  AND ADNPRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeParentParam),contract_quote_record_id,quote_revision_record_id)
+				where_string += """ PRDOFR_ID = '{}'  AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeParentParam),contract_quote_record_id,quote_revision_record_id)
 
 			table_data = Sql.GetList(
 				"select {} from MAADPR (NOLOCK) {} {} {}".format(
