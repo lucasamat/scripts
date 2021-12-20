@@ -278,13 +278,13 @@ class SyncQuoteAndCustomTables:
 						get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 						get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 						if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.upper() == "FAB LOCATION":
-							Log.Info('281---STANDARD_ATTRIBUTE_NAME---'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
+							#Log.Info('281---STANDARD_ATTRIBUTE_NAME---'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
 							AttributeID_Pass = attrs
 							if getquote_sales_val in get_il_sales_list:
 								NewValue = 'Israel'
 							else:
 								NewValue = 'ROW'
-						Log.Info('271---285----'+str(AttributeID_Pass))
+						#Log.Info('271---285----'+str(AttributeID_Pass))
 						#9226 end
 						insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -320,22 +320,15 @@ class SyncQuoteAndCustomTables:
 				tbrow["QTEREV_RECORD_ID"] = Quote.GetGlobal("quote_revision_record_id")
 				tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
 				tbrow["CONFIGURATION_STATUS"] = configuration_status
-				#tbrow["IS_DEFAULT"] = '1'
-				#Trace.Write('254----')
+				#tbrow["IS_DEFAULT"] = '1'			
 				
 				columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 				
-				#Trace.Write('257----')
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
 				if AttributeID_Pass:
-					try:
-						Log.Info('312---NewValue- -'+str(NewValue))
-						Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
-						
-						Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
-						#Trace.Write('312---ServiceId--'+str(ServiceId))
+					try:						
 						add_where =''
 						ServiceId = OfferingRow_detail.SERVICE_ID
 						whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.SERVICE_ID,Quote.GetGlobal("quote_revision_record_id"))
@@ -1656,7 +1649,7 @@ class SyncQuoteAndCustomTables:
 									mamtrl_record = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(product_offering[0])+"'")
 									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = '"+str(mamtrl_record.CLM_CONTRACT_TYPE)+"', CLM_TEMPLATE_NAME = '"+str(mamtrl_record.CLM_TEMPLATE_NAME)+"' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
 									Sql.RunQuery(sow_update_query)
-							Log.Info("product_offering_CHK_J"+str(product_offering))
+							#Log.Info("product_offering_CHK_J"+str(product_offering))
 							if service_ids:
 								
 								SAQTSV_start = time.time()								
