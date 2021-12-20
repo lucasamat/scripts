@@ -328,7 +328,11 @@ class SyncQuoteAndCustomTables:
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
 				if AttributeID_Pass:
-					try:						
+					try:
+						Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
+						
+						Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
+						#Trace.Write('312---ServiceId--'+str(ServiceId))
 						add_where =''
 						ServiceId = OfferingRow_detail.SERVICE_ID
 						whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.SERVICE_ID,Quote.GetGlobal("quote_revision_record_id"))
@@ -1771,11 +1775,9 @@ class SyncQuoteAndCustomTables:
 					violationruleInsert = ACVIORULES.ViolationConditions()
 					header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
 					if header_obj:
-						Log.Info("Starting Approval Trigger--")									
 						violationruleInsert.InsertAction(
 														header_obj.RECORD_ID, quote_revision_id, "SAQTRV"
 														)
-						Log.Info("Ending Approval Trigger--")
 					# Approval Trigger - End
 
 		except Exception:   
