@@ -976,9 +976,10 @@ class QueryBuilder:
                 count = 0
                 for x in QbWhereCondition:
                     if x.find("AND") != -1:
-                        y = x.split("AND").strip().strip("(").strip(")")
+                        y = x.split("AND")
                         Trace.Write("y--->"+str(y))
                         for i in y:
+                            i=i.strip().strip("(").strip(")")
                             l.append(i.split("."))
                             count += 1
                 Trace.Write("L--->"+str(l))
