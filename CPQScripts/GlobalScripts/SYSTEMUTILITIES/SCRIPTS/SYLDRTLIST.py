@@ -8777,7 +8777,7 @@ class SYLDRTLIST:
 				
 				footer_str, footer = "", ""
 				footer_tot = ""
-				if ObjectName == "SAQIBP":
+				if ObjectName == "SAQIBP" and TreeParam != 'Quote Items':
 					ContractRecordId = Product.GetGlobal("contract_quote_record_id")
 					gettotaldateamt = Sql.GetList("SELECT BILLING_VALUE=SUM(BILLING_VALUE),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
 					if gettotaldateamt:
@@ -8795,7 +8795,7 @@ class SYLDRTLIST:
 					
 					
 				for key, col_name in enumerate(list(eval(Columns))):                    
-					if ObjectName == 'SAQIBP' and (col_name in billing_date_column or col_name == 'QUOTE_CURRENCY'):                        
+					if ObjectName == 'SAQIBP' and TreeParam != 'Quote Items' and (col_name in billing_date_column or col_name == 'QUOTE_CURRENCY'):                        
 						try:                            
 							if col_name in billing_date_column:                                                
 								my_format = "{:,." + str(decimal_place) + "f}"
