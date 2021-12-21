@@ -4679,6 +4679,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					try: 
 						ancillary_dict = Quote.GetCustomField('ANCILLARY_DICT').Content
 						ancillary_dict_val = (re.sub(r'^{|}$','',ancillary_dict)).split(':')[0]
+						ancillary_dict_val = (re.sub(r'^{|"}$','',ancillary_dict)).split(': "')[1]
+						ancillary_dict ={}
+						ancillary_dict = eval(ancillary_dict_val)
 						ancillary_dict = ancillary_dict.replace("'",";39;").replace('{',"_;").replace("}","$;").replace(":","=")
 						#Quote.SetGlobal("ancillary_object_dict","")
 					except:
