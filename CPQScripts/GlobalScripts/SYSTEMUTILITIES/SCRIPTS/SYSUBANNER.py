@@ -98,12 +98,8 @@ def Related_Sub_Banner(
             multi_buttons = ''          
     except:
         pass
-    try:
-        if revision_status.REVISION_STATUS == 'APPROVED':
-            add_button = ''
-            multi_buttons = ''          
-    except:
-        pass
+    #if revision_status.REVISION_STATUS == 'APPROVED':
+    
     #elif quote_status.QUOTE_STATUS != 'APPROVED':
     #else:     
     #Trace.Write('status-----')
