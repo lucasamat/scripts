@@ -2144,7 +2144,9 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			get_greenbook = Sql.GetFirst("SELECT BUSINESS_UNITS_RECORD_ID FROM SABUUN WHERE BUSINESSUNIT_ID = '"+str(self.tree_parent_level_0)+"' ")
 			greenbook_values = {
 				"GREENBOOK": self.tree_parent_level_0,
-				"GREENBOOK_RECORD_ID": get_greenbook.BUSINESS_UNITS_RECORD_ID
+				"GREENBOOK_RECORD_ID": get_greenbook.BUSINESS_UNITS_RECORD_ID,
+				"CONTRACT_VALID_FROM": self.contract_start_date,
+				"CONTRACT_VALID_TO": self.contract_end_date
 			}
 
 			fab_table_info = Sql.GetTable(table_name)
@@ -2182,7 +2184,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				condition_column=condition_column,
 				values=self.values,
 			):
-
+				row_detail.update(row_values)	
 				row_detail.update(greenbook_values)				
 				greenbook_table_info.AddRow(row_detail)
 			Sql.Upsert(greenbook_table_info)
