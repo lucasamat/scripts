@@ -601,7 +601,16 @@ def Dynamic_Status_Bar():
 				where = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id,service_id.SERVICE_ID)
 				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Quote.GetGlobal("contract_quote_record_id"), "ContractQuoteRevisionRecordId":quote_revision_record_id, "ServiceId":service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
-		
+		##calling the iflow for pricing..
+		try:
+			contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id")))
+			if contract_quote_obj:
+				contract_quote_id = contract_quote_obj.QUOTE_ID      
+			Log.Info("PART PRICING IFLOW STARTED WHEN USER CLICK COMPLETE STAGE!")
+			CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(contract_quote_id),str(quote_revision_record_id))
+		except:
+			Log.Info("PART PRICING IFLOW ERROR!")
+
 	# Quote Item Inserts - Ends
 
 	
