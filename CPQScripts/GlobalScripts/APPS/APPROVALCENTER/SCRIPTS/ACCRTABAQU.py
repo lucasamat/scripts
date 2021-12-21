@@ -967,7 +967,7 @@ class QueryBuilder:
         Sql.Upsert(tableInfo)
         QbJsonData = QbJsonData.replace("null","None")
         QbJsonData = QbJsonData.replace("true","True")
-        QbJsonData = QbJsonData.replace("false","False")
+        QbJsonData = QbJsonData.replace("false","False") 
         QbJsonData = eval(QbJsonData)
         if "(" in QbWhereCondition:
             if QbJsonData["condition"] == "OR":
