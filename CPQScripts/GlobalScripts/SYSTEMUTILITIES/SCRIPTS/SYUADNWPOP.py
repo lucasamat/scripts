@@ -2068,7 +2068,7 @@ def POPUPLISTVALUEADDNEW(
 							+ "</th>"
 						)
 				sec_str += '</tr></thead><tbody class ="equipments_id" ></tbody></table>'
-				sec_str += '<div id="Include_add_on_addnew_footer"></div>'
+				sec_str += '<div id="add_credits_addnew_footer"></div>'
 				values_list = ""
 				values_lists = ""
 				a_test = []
@@ -2107,7 +2107,7 @@ def POPUPLISTVALUEADDNEW(
 					Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 				)
 
-				# Pagination_M = Sql.GetFirst("select count(MAADPR.CpqTableEntryId) as count from MAADPR WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"') ")
+				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC WHERE ZAFGBOOK = '"+str(TreeParentParam)+"' ")
 
 				# order_by = "order by SACRVC.COMP_PRDOFR_NAME ASC"
 
