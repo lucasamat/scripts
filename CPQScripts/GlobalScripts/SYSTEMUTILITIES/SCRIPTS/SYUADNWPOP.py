@@ -2161,8 +2161,8 @@ def POPUPLISTVALUEADDNEW(
 						new_value_dict = {}
 
 						for data in row_data:
-							if str(data.Key) == "PO_COMP_RECORD_ID":
-								pop_val = str(data.Value) + "|addonproducts"
+							if str(data.Key) == "CREDITVOUCHER_RECORD_ID":
+								pop_val = str(data.Value) + "|addcredits"
 								cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 								new_value_dict[data.Key] = cpqidval
 							else:
