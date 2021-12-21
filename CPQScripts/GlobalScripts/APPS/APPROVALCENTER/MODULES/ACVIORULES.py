@@ -490,6 +490,7 @@ class ViolationConditions:
                     + str(val.APPROVAL_CHAIN_RECORD_ID)
                     + "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER"
                 )
+                Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER")
                 for result in CSSqlObjs:
                     GetObjName = Sql.GetFirst(
                         "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_RECORD_ID) + "'"
@@ -505,6 +506,7 @@ class ViolationConditions:
                     Select_Query = (
                         "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE " + str(result.WHERE_CONDITION_01)
                     )
+                    Log.Info("ACVIORULES--->"+str(Select_Query))
                     TargeobjRelation = Sql.GetFirst(
                         "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
                         + str(ObjectName)
