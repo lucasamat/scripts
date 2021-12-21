@@ -1297,7 +1297,7 @@ class SyncQuoteAndCustomTables:
 					Sql.RunQuery(get_forecast_info)
 					#A055S000P01-13524 end
 					##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
-					#Log.Info("Revisionstatusdatecapture===> ")
+					#Log.Info("Revisionstatusdatecapture==> ")
 					CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 					#Log.Info("Revisionstatusdatecapture===>end ")
 					# Insert SAQCBC while creating quote in c4c - start A055S000P01-11413
