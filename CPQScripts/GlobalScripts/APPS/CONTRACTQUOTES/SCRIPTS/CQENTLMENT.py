@@ -1163,8 +1163,7 @@ class Entitlements:
 									ancillary_object_dict['Z0046'] = "DELETE"
 								#Quote.SetGlobal("ANCILLARY","NO")
 								#ancillary_flag = "DELETE"
-						ancillary_object_dict['SERVICE'] = str(serviceId)
-						Trace.Write("ancillary_object_dict---"+str(type(ancillary_object_dict)))
+						
 						# ##calling script ancillary insert	
 						# if ancillary_flag != "False" and ancillary_object:
 						# 	Trace.Write("vall--"+str(key)+'--'+str(entitlement_value)  )
@@ -1488,7 +1487,8 @@ class Entitlements:
 							<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = key,ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if key in attributedefaultvalue else '0',ent_type = str((dict_val).split("||")[2]),ent_desc=(dict_val).split("||")[3] ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
 						#Trace.Write("updateentXML-970------"+str(updateentXML))
-					
+				ancillary_object_dict['SERVICE'] = str(serviceId)
+				Trace.Write("ancillary_object_dict---"+str(type(ancillary_object_dict)))
 				Quote.GetCustomField('ANCILLARY_DICT').Content = str(ancillary_object_dict)
 				#Quote.SetGlobal("ancillary_object_dict",str(ancillary_object_dict))
 				Trace.Write('ancillary_object_dict----'+str(ancillary_object_dict))
