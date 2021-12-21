@@ -91,13 +91,9 @@ def _insert_subtotal_by_offerring_quote_table():
 
 
 def language_select():
-	#calling subtotal by offering --start
-	#_insert_subtotal_by_offerring_quote_table()
-	#calling subtotal by offering --end
 	Trace.Write("Inside language select")
 	sec_str =  ''
-	get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id)
-    Trace.Write("get_quote_status--> "+str(get_quote_status.REVISION_STATUS))
+	get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 	if str(get_quote_status.REVISION_STATUS).upper() == "APPROVED":
 		Trace.Write("If")
 		sec_str += ('<div id="container">')
