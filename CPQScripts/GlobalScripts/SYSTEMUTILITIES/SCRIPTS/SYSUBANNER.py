@@ -1936,8 +1936,8 @@ def Related_Sub_Banner(
                 SecondValue = getFab.FABLOCATION_NAME
                 ThirdLable = "Greenbook"
                 ThirdValue = str(TreeParam)
-                FourthLable = "Equipment"
-                FourthValue = "All"
+                # FourthLable = "Equipment"
+                # FourthValue = "All"
             
             '''try:
                 FifthLable = ListKey[2]
