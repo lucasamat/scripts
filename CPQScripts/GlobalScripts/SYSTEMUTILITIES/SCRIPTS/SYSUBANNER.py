@@ -92,12 +92,7 @@ def Related_Sub_Banner(
         revision_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
     except:
         revision_status = ''
-    try:
-        if quote_status.QUOTE_STATUS == 'APPROVED':
-            add_button = ''
-            multi_buttons = ''          
-    except:
-        pass
+   
     #if revision_status.REVISION_STATUS == 'APPROVED':
     
     #elif quote_status.QUOTE_STATUS != 'APPROVED':
