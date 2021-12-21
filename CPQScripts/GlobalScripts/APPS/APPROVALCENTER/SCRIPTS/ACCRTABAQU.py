@@ -601,7 +601,7 @@ class QueryBuilder:
             try:
                 if api_response["rules"][index]["rules"]:
                     api_response["rules"][index]["flags"] = RestClient.DeserializeJson(
-                        '{"condition_readonly": false,"no_add_rule": true,"no_add_group": true,"no_delete": true}'
+                        '{"condition_readonly": false}'
                     )
                     self.build_non_editable_json_response(MODE, api_response["rules"][index])
                     continue
