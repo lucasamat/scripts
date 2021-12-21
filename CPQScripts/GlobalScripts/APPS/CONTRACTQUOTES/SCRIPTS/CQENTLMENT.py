@@ -1240,7 +1240,7 @@ class Entitlements:
 							header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
 							if header_obj:
 								violationruleInsert.InsertAction(
-																header_obj.RECORD_ID, quote_revision_record_id, "SAQTRV"
+																header_obj.RECORD_ID, self.revision_recordid, "SAQTRV"
 																)
 							# Approval Trigger - End
 						elif key == "AGS_Z0091_PQB_PPCPRM" and entitlement_value == "Yes":
