@@ -4679,19 +4679,20 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					ancillary_dict = ancillary_dict_val= ""
 					try: 
 						ancillary_dict = Quote.GetCustomField('ANCILLARY_DICT').Content
-						ancillary_dict_val = (re.sub(r'^{|}$','',ancillary_dict)).split(':')[0]
-						ancillary_dict_val = (re.sub(r'^{|"}$','',ancillary_dict)).split(': "')[1]
-						ancillary_dict ={}
-						ancillary_dict = eval(ancillary_dict_val)
+						# ancillary_dict_val = (re.sub(r'^{|}$','',ancillary_dict)).split(':')[0]
+						# ancillary_dict_val = (re.sub(r'^{|"}$','',ancillary_dict)).split(': "')[1]
+						# ancillary_dict ={}
+						# ancillary_dict = eval(ancillary_dict_val)
 						ancillary_dict = ancillary_dict.replace("'",";39;").replace('{',"_;").replace("}","$;").replace(":","=")
 						#Quote.SetGlobal("ancillary_object_dict","")
 					except:
 						ancillary_dict = ""
 					
-					Trace.Write(str(ancillary_dict_val)+"---ancillary_dict--"+str(ancillary_dict))
+					#Trace.Write(str(ancillary_dict_val)+"---ancillary_dict--"+str(ancillary_dict))
 					try:
 						#quote_ent_roll = self.contract_quote_record_id+"=="+str(ancillary_dict)
-						if self.tree_param != 'Receiving Equipment' and str(self.tree_param) == ancillary_dict_val:
+						#and str(self.tree_param) == ancillary_dict_val
+						if self.tree_param != 'Receiving Equipment' :
 							level = "COV OBJ ENTITLEMENT,"+str(self.tree_param)+","+str(self.tree_parent_level_0)+","+str(self.user_id)+","+str(self.quote_revision_record_id)
 							CQVLDRIFLW.iflow_valuedriver_rolldown(self.contract_quote_record_id,level,ancillary_dict)
 							#CQVLDRIFLW.iflow_valuedriver_rolldown(quote_ent_roll,level,str(ancillary_dict))						
