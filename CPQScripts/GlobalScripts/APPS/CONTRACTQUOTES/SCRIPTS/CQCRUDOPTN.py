@@ -4676,11 +4676,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						Log.Info("except renewal one SAQSCE")
 				else:
 					#ENTITLEMENT SV TO CE AND GB
-					ancillary_dict = ancillary_dict_val= ""
+					ancillary_dict = ancillary_dict_val= ancillary_dict_val_serv = ""
 					try: 
 						ancillary_dict = Quote.GetCustomField('ANCILLARY_DICT').Content
 						if ancillary_dict:
-							ancillary_dict_val = (re.sub(r'^{|}$','',ancillary_dict)).split(':')[0]
+							ancillary_dict_val_serv = (re.sub(r'^{|}$','',ancillary_dict)).split(':')[0]
 							ancillary_dict_val = (re.sub(r'^{|"}$','',ancillary_dict)).split(': "')[1]
 							ancillary_dict ={}
 							ancillary_dict = eval(ancillary_dict_val)
