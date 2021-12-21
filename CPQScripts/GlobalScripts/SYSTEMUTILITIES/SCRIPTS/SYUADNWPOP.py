@@ -2134,7 +2134,7 @@ def POPUPLISTVALUEADDNEW(
 				# where_string += """ PRDOFR_ID = '{}' AND PRDOFR_DOCTYP = '{}' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeSuperParentParam),str(getDocType.DOCTYP_ID),contract_quote_record_id,quote_revision_record_id)
 
 				table_data = Sql.GetList(
-					"select {} from SACRVC (NOLOCK)".format(
+					"select {} from SACRVC (NOLOCK) WHERE ZAFGBOOK = '"+str(TreeParentParam)+"' ".format(
 						", ".join(ordered_keys),
 						# "WHERE " + where_string if where_string else "",
 						# order_by,
@@ -2143,11 +2143,11 @@ def POPUPLISTVALUEADDNEW(
 				)
 				
 				table_data = Sql.GetList(
-				   "select {} from SACRVC (NOLOCK) ".format(
+				   "select {} from SACRVC (NOLOCK) WHERE ZAFGBOOK = '"+str(TreeParentParam)+"' ".format(
 				       ", ".join(ordered_keys)
 				   )
 				)
-				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK)")
+				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZAFGBOOK = '"+str(TreeParentParam)+"' ")
 
 				if QueryCountObj is not None:
 					QryCount = QueryCountObj.cnt
