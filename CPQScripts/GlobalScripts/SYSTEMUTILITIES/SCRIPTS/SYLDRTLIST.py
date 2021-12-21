@@ -3326,8 +3326,7 @@ class SYLDRTLIST:
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>") 
 														Trace.Write('At line 2918')
 													# for redirecting the left tree node while viewing record from listgrid - end       
-													elif ObjectName == "SAQSAO":
-														
+													elif ObjectName == "SAQSAO" or ObjectName == "SAQSGB":
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + value1234 + "</abbr>") 
 													else:
 														Trace.Write('At line 2924'+str(value123))
