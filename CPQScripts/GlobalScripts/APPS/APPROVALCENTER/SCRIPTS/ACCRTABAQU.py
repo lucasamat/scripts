@@ -965,6 +965,7 @@ class QueryBuilder:
         Trace.Write(str(updaterow))
         tableInfo.AddRow(updaterow)
         Sql.Upsert(tableInfo)
+        QbJsonData = QbJsonData.replace("null","None")
         QbJsonData = eval(QbJsonData)
         if "(" in QbWhereCondition:
             if QbJsonData["condition"] == "OR":
