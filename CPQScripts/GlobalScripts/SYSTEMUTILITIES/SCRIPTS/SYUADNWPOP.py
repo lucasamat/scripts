@@ -2149,183 +2149,183 @@ def POPUPLISTVALUEADDNEW(
 				#        pagination_condition,
 				#    )
 				#)
-				QueryCountObj = Sql.GetFirst("select count(*) as cnt from MAADPR(NOLOCK) WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') ")
+				# QueryCountObj = Sql.GetFirst("select count(*) as cnt from MAADPR(NOLOCK) WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') ")
 
-				if QueryCountObj is not None:
-					QryCount = QueryCountObj.cnt
+				# if QueryCountObj is not None:
+				# 	QryCount = QueryCountObj.cnt
 
 
-				if table_data is not None :
-					for row_data in table_data:
-						data_id = str(ObjectName)
+				# if table_data is not None :
+				# 	for row_data in table_data:
+				# 		data_id = str(ObjectName)
 
-						new_value_dict = {}
+				# 		new_value_dict = {}
 
-						for data in row_data:
-							if str(data.Key) == "PO_COMP_RECORD_ID":
-								pop_val = str(data.Value) + "|addonproducts"
-								cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
-								new_value_dict[data.Key] = cpqidval
-							else:
-								new_value_dict[data.Key] = data.Value
-							new_value_dict["pop_val"] = pop_val
-						date_field.append(new_value_dict)
-				QueryCount = len(date_field)
+				# 		for data in row_data:
+				# 			if str(data.Key) == "PO_COMP_RECORD_ID":
+				# 				pop_val = str(data.Value) + "|addonproducts"
+				# 				cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
+				# 				new_value_dict[data.Key] = cpqidval
+				# 			else:
+				# 				new_value_dict[data.Key] = data.Value
+				# 			new_value_dict["pop_val"] = pop_val
+				# 		date_field.append(new_value_dict)
+				# QueryCount = len(date_field)
 
-				pagination_total_count = 0
-				if Pagination_M is not None:
-					pagination_total_count = Pagination_M.count
-				if offset_skip_count == 0:
-					records_end = fetch_count
-				Trace.Write('offset cnt '+str(offset_skip_count))
-				records_end = offset_skip_count + fetch_count - 1
-				records_end = pagination_total_count if pagination_total_count < records_end else records_end
-				records_start_and_end = "{} - {} of ".format(offset_skip_count, records_end)
-				disable_next_and_last = ""
-				disable_previous_and_first = ""
-				if records_end == pagination_total_count:
-					disable_next_and_last = "class='btn-is-disabled'"
-				if offset_skip_count == 0:
-					disable_previous_and_first = "class='btn-is-disabled'"
-				current_page = int(math.ceil(offset_skip_count / fetch_count)) + 1
+				# pagination_total_count = 0
+				# if Pagination_M is not None:
+				# 	pagination_total_count = Pagination_M.count
+				# if offset_skip_count == 0:
+				# 	records_end = fetch_count
+				# Trace.Write('offset cnt '+str(offset_skip_count))
+				# records_end = offset_skip_count + fetch_count - 1
+				# records_end = pagination_total_count if pagination_total_count < records_end else records_end
+				# records_start_and_end = "{} - {} of ".format(offset_skip_count, records_end)
+				# disable_next_and_last = ""
+				# disable_previous_and_first = ""
+				# if records_end == pagination_total_count:
+				# 	disable_next_and_last = "class='btn-is-disabled'"
+				# if offset_skip_count == 0:
+				# 	disable_previous_and_first = "class='btn-is-disabled'"
+				# current_page = int(math.ceil(offset_skip_count / fetch_count)) + 1
 
-				Product.SetGlobal("QueryCount", str(QueryCount))
-				pagination_table_id = "pagination_{}".format(table_id)
-				if QueryCount != 0:
-					var_str = """<div id="{Parent_Div_Id}" class="col-md-12 brdr listContStyle padbthgt30">
-										<div class="col-md-4 pager-numberofitem  clear-padding">
-											<span class="pager-number-of-items-item flt_lt_pad2_mar2022" id="RecordsStartAndEnd">{Records_Start_And_End}</span>
-											<span class="pager-number-of-items-item flt_lt_pad2_mar" id="TotalRecordsCount">{Pagination_Total_Count}</span>
-											<div class="clear-padding fltltmrgtp3">
-												<div class="pull-right vralign">
-													<select onchange="ShowResultCountFunc(this, '{ShowResultCountFuncTb}', 'addEquipment', '{TableId}')" id="ShowResultCount" class="form-control selcwdt">
-														<option value="10" {Selected_10}>10</option>
-														<option value="20" {Selected_20}>20</option>
-														<option value="50" {Selected_50}>50</option>
-														<option value="100" {Selected_100}>100</option>
-														<option value="200" {Selected_200}>200</option>
-													</select> 
-												</div>
-											</div>
-										</div>
-										<div class="col-xs-8 col-md-4  clear-padding inpadtex" data-bind="visible: totalItemCount">
-											<div class="clear-padding col-xs-12 col-sm-6 col-md-12 brd0">
-												<ul class="pagination pagination">
-													<li class="disabled">
-														<a onclick="GetFirstResultFunc('{GetFirstResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_First}><i class="fa fa-caret-left fnt14bold"></i><i class="fa fa-caret-left fnt14"></i></a>
-													</li>
-													<li class="disabled"><a onclick="GetPreviuosResultFunc('{GetPreviuosResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Previous}><i class="fa fa-caret-left fnt14"></i>PREVIOUS</a></li>
-													<li class="disabled"><a onclick="GetNextResultFunc('{GetNextResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Next}>NEXT<i class="fa fa-caret-right fnt14"></i></a></li>
-													<li class="disabled"><a onclick="GetLastResultFunc('{GetLastResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Last}><i class="fa fa-caret-right fnt14"></i><i class="fa fa-caret-right fnt14bold"></i></a></li>
-												</ul>
-											</div> 
-										</div> 
-										<div class="col-md-4 pad3"> 
-											<span id="page_count" class="currentPage page_right_content">{Current_Page}</span>
-											<span class="page_right_content padrt2">Page </span>
-										</div>
-									</div>""".format(
-						Parent_Div_Id=pagination_table_id,
-						Records_Start_And_End=records_start_and_end,
-						Pagination_Total_Count=pagination_total_count,
-						ShowResultCountFuncTb=pagination_table_id,
-						Selected_10="selected" if fetch_count == 10 else "",
-						Selected_20="selected" if fetch_count == 20 else "",
-						Selected_50="selected" if fetch_count == 50 else "",
-						Selected_100="selected" if fetch_count == 100 else "",
-						Selected_200="selected" if fetch_count == 200 else "",
-						GetFirstResultFuncTb=pagination_table_id,
-						Disable_First=disable_previous_and_first,
-						GetPreviuosResultFuncTb=pagination_table_id,
-						Disable_Previous=disable_previous_and_first,
-						GetNextResultFuncTb=pagination_table_id,
-						Disable_Next=disable_next_and_last,
-						GetLastResultFuncTb=pagination_table_id,
-						Disable_Last=disable_next_and_last,
-						Current_Page=current_page,
-						TableId=TABLEID,
-					)
-				else:
-					date_field = "NORECORDS"
-					Trace.Write("No Equipment Records")
-				table_ids = "#" + str(table_id)
-				# Filter based on table MultiSelect Dropdown column - Start
+				# Product.SetGlobal("QueryCount", str(QueryCount))
+				# pagination_table_id = "pagination_{}".format(table_id)
+				# if QueryCount != 0:
+				# 	var_str = """<div id="{Parent_Div_Id}" class="col-md-12 brdr listContStyle padbthgt30">
+				# 						<div class="col-md-4 pager-numberofitem  clear-padding">
+				# 							<span class="pager-number-of-items-item flt_lt_pad2_mar2022" id="RecordsStartAndEnd">{Records_Start_And_End}</span>
+				# 							<span class="pager-number-of-items-item flt_lt_pad2_mar" id="TotalRecordsCount">{Pagination_Total_Count}</span>
+				# 							<div class="clear-padding fltltmrgtp3">
+				# 								<div class="pull-right vralign">
+				# 									<select onchange="ShowResultCountFunc(this, '{ShowResultCountFuncTb}', 'addEquipment', '{TableId}')" id="ShowResultCount" class="form-control selcwdt">
+				# 										<option value="10" {Selected_10}>10</option>
+				# 										<option value="20" {Selected_20}>20</option>
+				# 										<option value="50" {Selected_50}>50</option>
+				# 										<option value="100" {Selected_100}>100</option>
+				# 										<option value="200" {Selected_200}>200</option>
+				# 									</select> 
+				# 								</div>
+				# 							</div>
+				# 						</div>
+				# 						<div class="col-xs-8 col-md-4  clear-padding inpadtex" data-bind="visible: totalItemCount">
+				# 							<div class="clear-padding col-xs-12 col-sm-6 col-md-12 brd0">
+				# 								<ul class="pagination pagination">
+				# 									<li class="disabled">
+				# 										<a onclick="GetFirstResultFunc('{GetFirstResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_First}><i class="fa fa-caret-left fnt14bold"></i><i class="fa fa-caret-left fnt14"></i></a>
+				# 									</li>
+				# 									<li class="disabled"><a onclick="GetPreviuosResultFunc('{GetPreviuosResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Previous}><i class="fa fa-caret-left fnt14"></i>PREVIOUS</a></li>
+				# 									<li class="disabled"><a onclick="GetNextResultFunc('{GetNextResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Next}>NEXT<i class="fa fa-caret-right fnt14"></i></a></li>
+				# 									<li class="disabled"><a onclick="GetLastResultFunc('{GetLastResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Last}><i class="fa fa-caret-right fnt14"></i><i class="fa fa-caret-right fnt14bold"></i></a></li>
+				# 								</ul>
+				# 							</div> 
+				# 						</div> 
+				# 						<div class="col-md-4 pad3"> 
+				# 							<span id="page_count" class="currentPage page_right_content">{Current_Page}</span>
+				# 							<span class="page_right_content padrt2">Page </span>
+				# 						</div>
+				# 					</div>""".format(
+				# 		Parent_Div_Id=pagination_table_id,
+				# 		Records_Start_And_End=records_start_and_end,
+				# 		Pagination_Total_Count=pagination_total_count,
+				# 		ShowResultCountFuncTb=pagination_table_id,
+				# 		Selected_10="selected" if fetch_count == 10 else "",
+				# 		Selected_20="selected" if fetch_count == 20 else "",
+				# 		Selected_50="selected" if fetch_count == 50 else "",
+				# 		Selected_100="selected" if fetch_count == 100 else "",
+				# 		Selected_200="selected" if fetch_count == 200 else "",
+				# 		GetFirstResultFuncTb=pagination_table_id,
+				# 		Disable_First=disable_previous_and_first,
+				# 		GetPreviuosResultFuncTb=pagination_table_id,
+				# 		Disable_Previous=disable_previous_and_first,
+				# 		GetNextResultFuncTb=pagination_table_id,
+				# 		Disable_Next=disable_next_and_last,
+				# 		GetLastResultFuncTb=pagination_table_id,
+				# 		Disable_Last=disable_next_and_last,
+				# 		Current_Page=current_page,
+				# 		TableId=TABLEID,
+				# 	)
+				# else:
+				# 	date_field = "NORECORDS"
+				# 	Trace.Write("No Equipment Records")
+				# table_ids = "#" + str(table_id)
+				# # Filter based on table MultiSelect Dropdown column - Start
 
-				for index, col_name in enumerate(ordered_keys):
-					table, api_name = ObjectName, col_name
-					obj_data = Sql.GetFirst(
-						"SELECT API_NAME, DATA_TYPE, PICKLIST FROM  SYOBJD WHERE OBJECT_NAME='"
-						+ str(table)
-						+ "' and API_NAME = '"
-						+ str(api_name)
-						+ "'"
-					)
-					if obj_data is not None:
-						if str(obj_data.PICKLIST).upper() == "TRUE":
-							filter_tag = (
-								'<div id = "'
-								+ str(table_id)
-								+ "_RelatedMutipleCheckBoxDrop_"
-								+ str(index)
-								+ '" class="form-control bootstrap-table-filter-control-'
-								+ str(api_name)
-								+ " RelatedMutipleCheckBoxDrop_"
-								+ str(index)
-								+ ' "></div>'
-							)
-							filter_tags.append(filter_tag)
-							filter_types.append("select")
-							if obj_data.DATA_TYPE == "CHECKBOX":
-								filter_values.append(["True", "False"])
-							else:
-								# Trace.Write("=============$$$$$$$$$$$$$>>>>>>>>>>>>> "+"SELECT DISTINCT {Column} FROM {Table}".format(Column=api_name, Table=table))
-								data_obj = Sql.GetList(
-									"SELECT DISTINCT {Column} FROM {Table}".format(Column=api_name, Table=table)
-								)
-								if data_obj is not None:
-									filter_values.append([row_data.Value for data in data_obj for row_data in data])
-						else:
-							filter_tag = (
-								'<input type="text" class="form-control wth100visble bootstrap-table-filter-control-'
-								+ str(api_name)
-								+ '">'
-							)
-							filter_tags.append(filter_tag)
-							filter_types.append("input")
-							filter_values.append("")
+				# for index, col_name in enumerate(ordered_keys):
+				# 	table, api_name = ObjectName, col_name
+				# 	obj_data = Sql.GetFirst(
+				# 		"SELECT API_NAME, DATA_TYPE, PICKLIST FROM  SYOBJD WHERE OBJECT_NAME='"
+				# 		+ str(table)
+				# 		+ "' and API_NAME = '"
+				# 		+ str(api_name)
+				# 		+ "'"
+				# 	)
+				# 	if obj_data is not None:
+				# 		if str(obj_data.PICKLIST).upper() == "TRUE":
+				# 			filter_tag = (
+				# 				'<div id = "'
+				# 				+ str(table_id)
+				# 				+ "_RelatedMutipleCheckBoxDrop_"
+				# 				+ str(index)
+				# 				+ '" class="form-control bootstrap-table-filter-control-'
+				# 				+ str(api_name)
+				# 				+ " RelatedMutipleCheckBoxDrop_"
+				# 				+ str(index)
+				# 				+ ' "></div>'
+				# 			)
+				# 			filter_tags.append(filter_tag)
+				# 			filter_types.append("select")
+				# 			if obj_data.DATA_TYPE == "CHECKBOX":
+				# 				filter_values.append(["True", "False"])
+				# 			else:
+				# 				# Trace.Write("=============$$$$$$$$$$$$$>>>>>>>>>>>>> "+"SELECT DISTINCT {Column} FROM {Table}".format(Column=api_name, Table=table))
+				# 				data_obj = Sql.GetList(
+				# 					"SELECT DISTINCT {Column} FROM {Table}".format(Column=api_name, Table=table)
+				# 				)
+				# 				if data_obj is not None:
+				# 					filter_values.append([row_data.Value for data in data_obj for row_data in data])
+				# 		else:
+				# 			filter_tag = (
+				# 				'<input type="text" class="form-control wth100visble bootstrap-table-filter-control-'
+				# 				+ str(api_name)
+				# 				+ '">'
+				# 			)
+				# 			filter_tags.append(filter_tag)
+				# 			filter_types.append("input")
+				# 			filter_values.append("")
 
-				filter_drop_down = (
-					"try { if( document.getElementById('"
-					+ str(table_id)
-					+ "') ) { var listws = document.getElementById('"
-					+ str(table_id)
-					+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
-					+ str(table_id)
-					+ "').getElementsByClassName('filter-control')[i].innerHTML = data6[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data8[j]); if(data11[j].length>5){ $('#"
-					+ str(table_id)
-					+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter}); }else{$('#"
-					+ str(table_id)
-					+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter ,autoDropDownHeight: true});} } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
-					+ str(table_id)
-					+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
-					+ str(table_id)
-					+ "').getElementsByClassName('filter-control')[i].innerHTML = data9[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data11[j]); $('#"
-					+ str(table_id)
-					+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, scrollBarSize :10 }); } } }, 5000); }"
-				)
-				dbl_clk_function += (
-					'$("'
-					+ str(table_ids)
-					+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
-					+ str(table_ids)
-					+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
-				)
+				# filter_drop_down = (
+				# 	"try { if( document.getElementById('"
+				# 	+ str(table_id)
+				# 	+ "') ) { var listws = document.getElementById('"
+				# 	+ str(table_id)
+				# 	+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+				# 	+ str(table_id)
+				# 	+ "').getElementsByClassName('filter-control')[i].innerHTML = data6[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data8[j]); if(data11[j].length>5){ $('#"
+				# 	+ str(table_id)
+				# 	+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter}); }else{$('#"
+				# 	+ str(table_id)
+				# 	+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter ,autoDropDownHeight: true});} } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
+				# 	+ str(table_id)
+				# 	+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+				# 	+ str(table_id)
+				# 	+ "').getElementsByClassName('filter-control')[i].innerHTML = data9[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data11[j]); $('#"
+				# 	+ str(table_id)
+				# 	+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, scrollBarSize :10 }); } } }, 5000); }"
+				# )
+				# dbl_clk_function += (
+				# 	'$("'
+				# 	+ str(table_ids)
+				# 	+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+				# 	+ str(table_ids)
+				# 	+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
+				# )
 
-				pagedata = ""
-				if QryCount < int(PerPage):
-					pagedata = str(Page_start) + " - " + str(QryCount) + " of "
-				else:
-					pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
+				# pagedata = ""
+				# if QryCount < int(PerPage):
+				# 	pagedata = str(Page_start) + " - " + str(QryCount) + " of "
+				# else:
+				# 	pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
 
 		elif str(ObjectName) == "SAQTSV" and str(CurrentTab) == "Quotes":
 			Trace.Write('0bi------------')
