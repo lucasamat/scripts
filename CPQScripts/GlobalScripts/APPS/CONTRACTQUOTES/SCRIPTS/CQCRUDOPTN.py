@@ -1844,11 +1844,11 @@ class PartsListModel(ContractQuoteCrudOpertion):
 				# 		spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,get_child_service_id.SERVICE_ID))
 				# 		if spareparts_config_status_count.COUNT > 0:
 				# 			data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":self.contract_quote_record_id, "ContractQuoteRevisionRecordId":self.quote_revision_record_id, "ServiceId":get_child_service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
-			self._process_query(
-						"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-							BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
-						)
-					)
+			# self._process_query(
+			# 			"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+			# 				BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
+			# 			)
+			# 		)
 
 class ToolRelocationModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
