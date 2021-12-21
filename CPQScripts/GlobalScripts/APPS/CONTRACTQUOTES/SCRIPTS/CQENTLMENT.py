@@ -1132,13 +1132,13 @@ class Entitlements:
 								count_temp_z0101 += 1
 								if  count_temp_z0101 == 3:
 									ancillary_object_dict['Z0101'] = "DELETE"
-
-							if serviceId == 'Z0092' and entitlement_value == "Some Inclusions" and key == "AGS_{}_TSC_CONSUM".format(serviceId):
-								Trace.Write("z0092--if--"+str(entitlement_value))
-								ancillary_object_dict['Z0100'] = "INSERT"	
-							else:
-								Trace.Write("z0092---else--"+str(entitlement_value))
-								ancillary_object_dict['Z0100'] = "DELETE"	
+							if  serviceId == 'Z0092'  and key == "AGS_{}_TSC_CONSUM".format(serviceId):
+								if entitlement_value == "Some Inclusions":
+									Trace.Write("z0092--if--"+str(entitlement_value))
+									ancillary_object_dict['Z0100'] = "INSERT"	
+								else:
+									Trace.Write("z0092---else--"+str(entitlement_value))
+									ancillary_object_dict['Z0100'] = "DELETE"	
 
 						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004','Z0009') :
 							#ancillary_object = 'A6200'
