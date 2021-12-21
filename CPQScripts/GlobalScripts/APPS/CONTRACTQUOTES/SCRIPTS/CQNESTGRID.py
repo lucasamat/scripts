@@ -6439,12 +6439,6 @@ def UpdateBreadcrumb():
 			eq_id = str(qry.LINE)
 		else:
 			eq_id = "Line"
-	elif TABLENAME == 'SAQSGB' and "Add" in TreeParam:
-		qry = Sql.GetFirst(
-			"SELECT SERVICE_ID FROM SAQSGB (NOLOCK) WHERE QUOTE_SERVICE_GREENBOOK_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
-		)
-		if qry:
-			eq_id = str(qry.SERVICE_ID)
 	Action_Str = '<li><a onclick="breadCrumb_redirection(this)">'
 	Action_Str += '<abbr title="'+str(eq_id)+'">'
 	Action_Str += str(eq_id)
