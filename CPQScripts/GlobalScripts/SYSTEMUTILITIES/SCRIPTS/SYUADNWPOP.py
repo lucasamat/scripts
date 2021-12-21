@@ -201,7 +201,7 @@ def POPUPLISTVALUEADDNEW(
 		if DIVNAME == "div_CTR_Assigned_Apps":
 			ObjectName = "SYPRAP"		
 		elif str(popup_table_id) == "SYOBJR-98859":
-    		ObjectName = "SAQSAO"
+			ObjectName = "SAQSAO"
 		else:
 			ObjectName = Question_obj.OBJECT_NAME.strip()
 		Trace.Write("OBJ_NAMEE "+str(ObjectName))
