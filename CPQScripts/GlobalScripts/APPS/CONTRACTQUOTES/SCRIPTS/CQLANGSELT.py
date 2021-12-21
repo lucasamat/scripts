@@ -96,14 +96,9 @@ def language_select():
 	#calling subtotal by offering --end
 	Trace.Write("Inside language select")
 	sec_str =  ''
-	
-	#Oppp_SECT = Sql.GetList("SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE PRIMARY_OBJECT_NAME = 'SAQDOC' ORDER BY DISPLAY_ORDER")
-	#for sect in Oppp_SECT:
-		#if sect.SECTION_NAME == "BASIC INFORMATION":
-
-	get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+	get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
     Trace.Write("get_quote_status--> "+str(get_quote_status.REVISION_STATUS))
-    if str(get_quote_status.REVISION_STATUS).upper() == "APPROVED":
+	if str(get_quote_status.REVISION_STATUS).upper() == "APPROVED":
 		sec_str += ('<div id="container">')
 		sec_str += (
 				'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a class="dropdown-item" href="#" onclick="CommonEDIT(this)">EDIT</a></li></ul></div></div>GENERAL SETTINGS</div></label></div>')
@@ -175,9 +170,6 @@ def language_select():
 		"</div>")
 
 		sec_str += '<table class="wth100mrg8"><tbody>'
-
-	
-		return sec_str
 	else:
 		sec_str += ('<div id="container">')
 		sec_str += (
@@ -250,18 +242,13 @@ def language_select():
 		"</div>")
 
 		sec_str += '<table class="wth100mrg8"><tbody>'
+	return sec_str
 
-	
-		return sec_str
-		
 try:
     action_type = Param.LOAD
 except:
     action_type = ''
-try:
-    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-except:
-    quote_revision_record_id = ""
+
 
 Trace.Write("inside"+str(action_type))
 
