@@ -1492,7 +1492,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": self.contract_quote_record_id ,"level":"SERVICE_LEVEL", "treeparam": OfferingRow_detail.get("SERVICE_ID"),"user_id": self.user_id, "quote_rev_id":self.quote_revision_record_id})
 
 			except:
-				Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
+				Trace.Write("EXCEPT---PREDEFINED DRIVER IFLOW")
 			if OfferingRow_detail.get("SERVICE_ID") in ['Z0108','Z0110']:
 				try:
 
