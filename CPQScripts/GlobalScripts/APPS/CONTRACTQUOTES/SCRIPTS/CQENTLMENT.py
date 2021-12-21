@@ -22,6 +22,7 @@ import sys
 from SYDATABASE import SQL
 import datetime
 import CQENTIFLOW
+import ACVIORULES
 #import CQTVLDRIFW
 userId = str(User.Id)
 userName = str(User.UserName)
@@ -1235,7 +1236,7 @@ class Entitlements:
 								Quote.SetGlobal("IdlingAllowed","No")
 								Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
 							# Approval Trigger - Start								
-							import ACVIORULES
+							
 							violationruleInsert = ACVIORULES.ViolationConditions()
 							header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
 							if header_obj:
