@@ -2,6 +2,7 @@ import sys
 import datetime
 import clr
 import System.Net
+import CQCPQC4CWB
 from System.Text.Encoding import UTF8
 from System import Convert
 from SYDATABASE import SQL
@@ -1064,6 +1065,12 @@ try:
 					+ str(Parameter1.QUERY_CRITERIA_1)
 					+ "  SAQTRV SET REVISION_STATUS=''APPROVAL PENDING'' FROM SAQTRV A(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND NOT EXISTS (SELECT ''X'' FROM SAQICO B(NOLOCK)  WHERE  STATUS IN(''PARTIALLY PRICED'',''ERROR'',''ASSEMBLY IS MISSING'') AND QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'') '")
 					
+					quote_revision_object = SqlHelper.GetFirst( "SELECT QUOTE_RECORD_ID, QTEREV_RECORD_ID FROM SAQTRV WHERE QUOTE_ID = '"+str(Qt_Id.QUOTE_ID)+"' AND QTEREV_ID = '"+str(Qt_Id.REVISION_ID)+"' ")
+
+					##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+					CQCPQC4CWB.writeback_to_c4c("quote_header",quote_revision_object.QUOTE_RECORD_ID,quote_revision_object.QTEREV_RECORD_ID)
+					CQCPQC4CWB.writeback_to_c4c("opportunity_header",quote_revision_object.QUOTE_RECORD_ID,quote_revision_object.QTEREV_RECORD_ID)
+
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
 					+ str(Parameter1.QUERY_CRITERIA_1)
