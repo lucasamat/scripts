@@ -721,6 +721,8 @@ class AncillaryProductOperation:
 									AttributeID_Pass = val.ENTITLEMENT_ID
 								elif 'AGS_Z0101' in val.ENTITLEMENT_ID:
 									AttributeID_Pass = val.ENTITLEMENT_ID
+								elif 'AGS_Z0100' in val.ENTITLEMENT_ID:
+									AttributeID_Pass = val.ENTITLEMENT_ID
 							if AttributeID_Pass:
 								ServiceId = 'Z0046'
 							
