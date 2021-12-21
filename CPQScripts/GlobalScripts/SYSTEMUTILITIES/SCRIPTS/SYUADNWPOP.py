@@ -1980,6 +1980,7 @@ def POPUPLISTVALUEADDNEW(
 		elif str(ObjectName) == "SAQRCV" and str(CurrentTab) == "Quotes":
 				where_string = ""
 				TreeParam = Product.GetGlobal("TreeParam")
+				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 				
 				
