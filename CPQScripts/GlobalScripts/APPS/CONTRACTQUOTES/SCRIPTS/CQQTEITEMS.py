@@ -342,6 +342,15 @@ def SaveToolIdling(VALUES):
                 GETDATE() AS CPQTABLEENTRYDATEADDED
                 FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
                 """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,y,x.replace("_"," ")))
+    # Approval Trigger - Start								
+    import ACVIORULES
+    violationruleInsert = ACVIORULES.ViolationConditions()
+    header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+    if header_obj:
+        violationruleInsert.InsertAction(
+                                        header_obj.RECORD_ID, quote_revision_record_id, "SAQTRV"
+                                        )
+    # Approval Trigger - End
     return ""
 
 def NoticeOnChange(IdleNotice):
