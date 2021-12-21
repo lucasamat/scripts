@@ -437,19 +437,21 @@ class SYLDRTLIST:
 				+ table_id
 				+ '" data-pagination="false" data-filter-control="true" class = "items_grid"  data-maintain-selected="true" data-locale = "en-US"><thead>'
 			)
-		elif 'SYOBJR_00005' in table_id:
-			Trace.Write("table_id 1111=====>>>>> "+str(table_id))
-			table_header = (
-				'<table id="'
-				+ table_id
-				+ '" data-pagination="false" data-filter-control="true" data-show-export="true" data-maintain-selected="true" data-locale = "en-US"><thead>'
-			)
 		else:
 			table_header = (
 				'<table id="'
 				+ table_id
 				+ '" data-pagination="false" data-filter-control="true"  data-maintain-selected="true" data-locale = "en-US"><thead>'
 			)
+		"""
+		elif 'SYOBJR_00005' in table_id:			
+			table_header = (
+				'<table id="'
+				+ table_id
+				+ '" data-pagination="false" data-filter-control="true" data-show-export="true" data-maintain-selected="true" data-locale = "en-US"><thead>'
+			)
+		"""
+		
 		related_list_edit_permission = False
 		related_list_delete_permission = False
 		#Realted list permissions start
