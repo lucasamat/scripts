@@ -1163,8 +1163,8 @@ class Entitlements:
 									ancillary_object_dict['Z0046'] = "DELETE"
 								#Quote.SetGlobal("ANCILLARY","NO")
 								#ancillary_flag = "DELETE"
-							
-							
+							ancillary_object_dict[serviceId] = "SERVICE"
+						Trace.Write("ancillary_object_dict---"+str(type(ancillary_object_dict)))
 						# ##calling script ancillary insert	
 						# if ancillary_flag != "False" and ancillary_object:
 						# 	Trace.Write("vall--"+str(key)+'--'+str(entitlement_value)  )
