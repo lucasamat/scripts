@@ -2123,9 +2123,11 @@ class SYLDRTLIST:
 							if TreeSuperParentParam == "Product Offerings":
 								service_id = TreeParam.split('-')[0]	
 								if subTab == "New Parts":	
-									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'True'"	
-								else:
-									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'False'"	
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'True'"
+								elif subTab == "Inclusions":
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'False' AND INCLUDED = 1"	
+								elif subTab == "Exclusions":
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'False' AND INCLUDED = 0"	
 							elif TopTreeSuperParentParam == "Product Offerings":
 								service_id = TreeParentParam.split('-')[0]
 								if subTab == "New Parts":
