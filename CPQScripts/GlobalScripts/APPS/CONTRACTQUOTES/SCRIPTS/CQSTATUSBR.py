@@ -577,7 +577,7 @@ def Dynamic_Status_Bar():
 		else:
 			Trace.Write('No button--2')
 			#buttonvisibility = "Hide_button"
-	Trace.Write("buttonvisibility=="+str(buttonvisibility))
+	#Trace.Write("buttonvisibility=="+str(buttonvisibility))
 	#if str(item_covered_obj):       
 		#_insert_billing_matrix()
 	
