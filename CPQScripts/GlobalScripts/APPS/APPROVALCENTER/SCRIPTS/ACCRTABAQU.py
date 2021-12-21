@@ -981,24 +981,24 @@ class QueryBuilder:
                         for i in y:
                             i=i.strip().strip("(").strip(")")
                             l.append(i.split("."))
-                        for x in range(0,len(l)):
-                            getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(str(l[x][0]).strip(),str(l[x][1]).split("=")[0].strip()))
-                            getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(str(l[x][0]).strip()))
-                            if getFieldLabel and getObjLabel:
-                                row={}
-                                row = {
-                                "APRCHNSTP_TESTEDFIELD_RECORD_ID":str(Guid.NewGuid()).upper(),
-                                "APRCHN_ID":CpqIdQuery.APRCHN_ID,
-                                "APRCHN_RECORD_ID":CpqIdQuery.APRCHN_RECORD_ID,
-                                "APRCHNSTP_NUMBER":CpqIdQuery.APRCHNSTP_NUMBER,
-                                "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
-                                "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
-                                "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
-                                "TSTOBJ_LABEL":getObjLabel.LABEL,
-                                "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
-                                }
-                                tableInfoACACSF.AddRow(row)
-                        Sql.Upsert(tableInfoACACSF)
+                for x in range(0,len(l)):
+                    getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(str(l[x][0]).strip(),str(l[x][1]).split("=")[0].strip()))
+                    getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(str(l[x][0]).strip()))
+                    if getFieldLabel and getObjLabel:
+                        row={}
+                        row = {
+                        "APRCHNSTP_TESTEDFIELD_RECORD_ID":str(Guid.NewGuid()).upper(),
+                        "APRCHN_ID":CpqIdQuery.APRCHN_ID,
+                        "APRCHN_RECORD_ID":CpqIdQuery.APRCHN_RECORD_ID,
+                        "APRCHNSTP_NUMBER":CpqIdQuery.APRCHNSTP_NUMBER,
+                        "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
+                        "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
+                        "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
+                        "TSTOBJ_LABEL":getObjLabel.LABEL,
+                        "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
+                        }
+                        tableInfoACACSF.AddRow(row)
+                Sql.Upsert(tableInfoACACSF)
                 Trace.Write("L--->"+str(l))
             elif QbJsonData["condition"] == "AND":
                 QbWhereCondition = QbWhereCondition.split("AND")
