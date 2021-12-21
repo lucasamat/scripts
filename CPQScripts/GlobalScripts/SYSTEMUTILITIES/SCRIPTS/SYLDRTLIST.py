@@ -2131,9 +2131,9 @@ class SYLDRTLIST:
 								if subTab == "New Parts":
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'True'"	
 								elif subTab == "Inclusions":
-									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 0 AND INCLUDED = 0"
-								else:
-									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'False'"
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 0 AND INCLUDED = 1"
+								elif subTab == "Exclusions":
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'False' AND INCLUDED = 0"
 														
 						Trace.Write('In 1958---*'+str(Qustr))						
 						if str(RECORD_ID) == "SYOBJR-98874" or str(RECORD_ID) == "SYOBJR-98873":
