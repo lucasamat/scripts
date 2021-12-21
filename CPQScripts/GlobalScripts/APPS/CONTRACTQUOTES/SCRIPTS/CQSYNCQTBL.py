@@ -1954,6 +1954,6 @@ if getService is None:
 
 	if getRevision is None:
 		ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':""})
-##A055S000P01-9608 END
+##A055S000P01-9608 END...
 
 
