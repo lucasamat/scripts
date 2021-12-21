@@ -2232,10 +2232,15 @@ class TreeView:
 												pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
 												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
 												subtab_temp ="New Parts"
-											elif subtab_temp_variable in ('Service Parts List','Green Parts List'):
+											elif subtab_temp_variable in ('Service Parts List','Green Parts List') and service_id !='Z0092' :
 												# Trace.Write(" Parts List inside")
 												pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
 												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
+												subtab_temp ="Exclusions"
+											elif subtab_temp_variable in ('Service Parts List','Green Parts List') and service_id =='Z0092' :
+												# Trace.Write(" Parts List inside")
+												pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
 												subtab_temp ="Exclusions"
 											elif subtab_temp_variable in ('Greenbook Inclusions','Service Inclusions') and service_id =='Z0092':
 												# Trace.Write(" Greenbook Inclusions")
