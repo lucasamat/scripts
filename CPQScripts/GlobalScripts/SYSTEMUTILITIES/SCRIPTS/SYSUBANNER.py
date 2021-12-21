@@ -1775,7 +1775,7 @@ def Related_Sub_Banner(
             FourthValue = str(EquipmentId)
             FifthLable = "Serial Number"
             FifthValue = str(SerialNumber)
-        elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers") and subTabName != "Assembly Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
+        elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Credits") and subTabName != "Assembly Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(TreeSuperParentParam)
             SecondLable = "Product Offering Description"
@@ -1783,7 +1783,7 @@ def Related_Sub_Banner(
             #ThirdLable = "Fab Location ID"
             #ThirdValue = str(TreeParentParam)
             ThirdLable = "Greenbook"
-            ThirdValue = str(TreeParam)
+            ThirdValue = str(TreeParentParam) if "Add" in TreeParam else str(TreeParam)
             if subTabName != "Details":
                 FourthLable = "Equipment"
                 FifthValue = "All"
@@ -2209,7 +2209,7 @@ def Related_Sub_Banner(
     elif ObjName == "SAQSGB" and subTabName == "Details":
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '{service_id}'".format(service_id=TreeSuperParentParam if "Add" in TreeParam else TreeParentParam))
         PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeParentParam)
+        PrimaryValue = str(TreeSuperParentParam) if "Add" in TreeParam else str(TreeParentParam)
         SecondLable = "Product Offering Description"
         SecondValue = getService.SERVICE_DESCRIPTION
         ThirdLable = "Greenbook"
