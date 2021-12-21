@@ -560,6 +560,7 @@ def Dynamic_Status_Bar():
 							
 		#if getsalesorg_ifo and getfab_info:
 		if getsalesorg_ifo:
+			buttonvisibility=''
 			Trace.Write('salesorg--present---')
 			if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '' and complete_status != '' and Text == "COMPLETE STAGE":
 				update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
