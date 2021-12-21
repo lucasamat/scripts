@@ -971,7 +971,7 @@ class QueryBuilder:
         QbJsonData = eval(QbJsonData)
         if "(" in QbWhereCondition:
             if QbJsonData["condition"] == "OR":
-                QbWhereCondition = QbWhereCondition.split("OR").strip()
+                QbWhereCondition = QbWhereCondition.split("OR")
                 l = []
                 count = 0
                 for x in QbWhereCondition:
