@@ -1994,7 +1994,7 @@ def POPUPLISTVALUEADDNEW(
 				DIVNAME = "VIEW_DIV_ID"
 				new_value_dict = {}
 				ObjectName = "SACRVC"
-				table_id = "add-credits"
+				table_id = "add_credits_add_new"
 				Header_details = {
 					"CREDITVOUCHER_RECORD_ID": "KEY",
 					"ZAFPLATFORM":"ZAF PLATFORM",
