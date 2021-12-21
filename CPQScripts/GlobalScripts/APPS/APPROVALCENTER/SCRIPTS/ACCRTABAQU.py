@@ -965,38 +965,56 @@ class QueryBuilder:
         Trace.Write(str(updaterow))
         tableInfo.AddRow(updaterow)
         Sql.Upsert(tableInfo)
-        Trace.Write("where-"+str(QbWhereCondition))
-        if "AND" in QbWhereCondition or "OR" in QbWhereCondition:
-            if "AND" in QbWhereCondition:
-                QbWhereCondition =QbWhereCondition.split("AND")
-            elif "OR" in QbWhereCondition:
-                QbWhereCondition =QbWhereCondition.split("OR")
-            l=[]
-            count = 0
-            Trace.Write("976-"+str(QbWhereCondition))
-            for i in QbWhereCondition:
-                l.append(i.split("."))
-                count += 1
-            Trace.Write("LIST---"+str(l))
-            Trace.Write("count---"+str(count))
-            for x in range(0,count):
-                getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(str(l[x][0]).strip(),str(l[x][1]).split("=")[0].strip()))
-                getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(str(l[x][0]).strip()))
-                if getFieldLabel and getObjLabel:
-                    row={}
-                    row = {
-                        "APRCHNSTP_TESTEDFIELD_RECORD_ID":str(Guid.NewGuid()).upper(),
-                        "APRCHN_ID":CpqIdQuery.APRCHN_ID,
-                        "APRCHN_RECORD_ID":CpqIdQuery.APRCHN_RECORD_ID,
-                        "APRCHNSTP_NUMBER":CpqIdQuery.APRCHNSTP_NUMBER,
-                        "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
-                        "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
-                        "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
-                        "TSTOBJ_LABEL":getObjLabel.LABEL,
-                        "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
-                    }
-                    tableInfoACACSF.AddRow(row)
-            Sql.Upsert(tableInfoACACSF) 
+        QbJsonData = eval(QbJsonData)
+        if "(" in QbWhereCondition:
+            if QbJsonData["condition"] == "OR":
+                QbWhereCondition = QbWhereCondition.split("OR").strip()
+                l = []
+                count = 0
+                for x in QbWhereCondition:
+                    if x.find("AND") != -1:
+                        y = x.split("AND").strip().strip("(").strip(")")
+                        Trace.Write("y--->"+str(y))
+                        for i in y:
+                            l.append(i.split("."))
+                            count += 1
+                Trace.Write("L--->"+str(l))
+            elif QbJsonData["condition"] == "AND":
+                QbWhereCondition = QbWhereCondition.split("AND")
+        else:
+
+            Trace.Write("where-"+str(QbWhereCondition))
+            if "AND" in QbWhereCondition or "OR" in QbWhereCondition:
+                if "AND" in QbWhereCondition:
+                    QbWhereCondition =QbWhereCondition.split("AND")
+                elif "OR" in QbWhereCondition:
+                    QbWhereCondition =QbWhereCondition.split("OR")
+                l=[]
+                count = 0
+                Trace.Write("976-"+str(QbWhereCondition))
+                for i in QbWhereCondition:
+                    l.append(i.split("."))
+                    count += 1
+                Trace.Write("LIST---"+str(l))
+                Trace.Write("count---"+str(count))
+                for x in range(0,count):
+                    getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(str(l[x][0]).strip(),str(l[x][1]).split("=")[0].strip()))
+                    getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(str(l[x][0]).strip()))
+                    if getFieldLabel and getObjLabel:
+                        row={}
+                        row = {
+                            "APRCHNSTP_TESTEDFIELD_RECORD_ID":str(Guid.NewGuid()).upper(),
+                            "APRCHN_ID":CpqIdQuery.APRCHN_ID,
+                            "APRCHN_RECORD_ID":CpqIdQuery.APRCHN_RECORD_ID,
+                            "APRCHNSTP_NUMBER":CpqIdQuery.APRCHNSTP_NUMBER,
+                            "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
+                            "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
+                            "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
+                            "TSTOBJ_LABEL":getObjLabel.LABEL,
+                            "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
+                        }
+                        tableInfoACACSF.AddRow(row)
+                Sql.Upsert(tableInfoACACSF) 
         return True
 
 
