@@ -4679,7 +4679,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						#Quote.SetGlobal("ancillary_object_dict","")
 					except:
 						ancillary_dict = ""
-					Trace.Write("ancillary_dict--"+str(ancillary_dict))
+					
+					Trace.Write(str(self.tree_param+"----ancillary_dict--"+str(ancillary_dict))
 					try:
 						#quote_ent_roll = self.contract_quote_record_id+"=="+str(ancillary_dict)
 						if self.tree_param != 'Receiving Equipment':
