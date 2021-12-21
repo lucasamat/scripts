@@ -2129,6 +2129,8 @@ class SYLDRTLIST:
 								service_id = TreeParentParam.split('-')[0]
 								if subTab == "New Parts":
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'True'"	
+								elif subTab == "Inclusions":
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 0 AND INCLUDED = 0"
 								else:
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'False'"
 														
