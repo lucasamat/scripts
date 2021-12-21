@@ -1887,7 +1887,7 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					##involved parties source fab ends
 					elif str(RECORD_ID) == "SYOBJR-98859":                        
-						Qustr += " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' "
+						Qustr += " AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' "
 						Qury_str = (
 							"select DISTINCT top "
 							+ str(PerPage)
@@ -6706,7 +6706,7 @@ class SYLDRTLIST:
 					##involved parties equipmemt ends
 					elif str(RECORD_ID) == "SYOBJR-98859":
 						#"where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"'"
-						Qustr += " where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND  SERVICE_ID = '"+str(TreeParentParam)+"' "
+						Qustr += " where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' "
 						Qury_str = (
 							"select DISTINCT top "
 							+ str(PerPage)
