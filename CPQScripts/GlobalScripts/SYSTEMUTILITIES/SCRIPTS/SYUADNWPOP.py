@@ -1627,6 +1627,7 @@ def POPUPLISTVALUEADDNEW(
 		elif str(ObjectName) == "SAQSAO" and str(CurrentTab) == "Quotes":
 			where_string = ""
 			TreeParam = Product.GetGlobal("TreeParam")
+			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			
 			
@@ -1754,7 +1755,7 @@ def POPUPLISTVALUEADDNEW(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 			)
 
-			Pagination_M = Sql.GetFirst("select count(MAADPR.CpqTableEntryId) as count from MAADPR WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"') ")
+			Pagination_M = Sql.GetFirst("select count(MAADPR.CpqTableEntryId) as count from MAADPR WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSGB where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' ) ")
 
 			order_by = "order by MAADPR.COMP_PRDOFR_NAME ASC"
 
@@ -1778,7 +1779,7 @@ def POPUPLISTVALUEADDNEW(
 				
 			if where_string:
 				where_string += " AND"
-			where_string += """ PRDOFR_ID = '{}' AND PRDOFR_DOCTYP = '{}' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeSuperParentParam),str(getDocType.DOCTYP_ID),contract_quote_record_id,quote_revision_record_id)
+			where_string += """ PRDOFR_ID = '{}' AND PRDOFR_DOCTYP = '{}' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSGB where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' )""".format(str(TreeSuperParentParam),str(getDocType.DOCTYP_ID),contract_quote_record_id,quote_revision_record_id,TreeParentParam)
 
 			table_data = Sql.GetList(
 				"select {} from MAADPR (NOLOCK) {} {} {}".format(
@@ -1796,7 +1797,7 @@ def POPUPLISTVALUEADDNEW(
 			#        pagination_condition,
 			#    )
 			#)
-			QueryCountObj = Sql.GetFirst("select count(*) as cnt from MAADPR(NOLOCK) WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') ")
+			QueryCountObj = Sql.GetFirst("select count(*) as cnt from MAADPR(NOLOCK) WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSGB where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND GREENBOOK = '"+str(TreeParentParam)+"') ")
 
 			if QueryCountObj is not None:
 				QryCount = QueryCountObj.cnt
