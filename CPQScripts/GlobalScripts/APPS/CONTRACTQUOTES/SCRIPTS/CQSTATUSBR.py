@@ -12,6 +12,7 @@ import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 import re
 import datetime
+import CQPARTIFLW
 Param = Param 
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
