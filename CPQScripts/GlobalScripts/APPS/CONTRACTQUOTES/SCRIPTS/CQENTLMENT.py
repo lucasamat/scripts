@@ -1134,8 +1134,10 @@ class Entitlements:
 									ancillary_object_dict['Z0101'] = "DELETE"
 
 							if serviceId == 'Z0092' and entitlement_value == "Some Inclusions":
+								Trace.Write("z0092--if--"+str(entitlement_value))
 								ancillary_object_dict['Z0100'] = "INSERT"	
 							else:
+								Trace.Write("z0092---else--"+str(entitlement_value))
 								ancillary_object_dict['Z0100'] = "DELETE"	
 
 						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004','Z0009') :
