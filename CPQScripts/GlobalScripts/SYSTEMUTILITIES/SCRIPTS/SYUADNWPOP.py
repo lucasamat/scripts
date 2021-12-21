@@ -2143,7 +2143,7 @@ def POPUPLISTVALUEADDNEW(
 				)
 				
 				table_data = Sql.GetList(
-				   "select {} from SACRVC (NOLOCK) WHERE ZAFGBOOK = '{}}' ".format(
+				   "select {} from SACRVC (NOLOCK) WHERE ZAFGBOOK = '{}' ".format(
 				       ", ".join(ordered_keys), str(TreeParentParam)
 				   )
 				)
