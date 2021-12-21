@@ -1830,7 +1830,7 @@ def POPUPLISTVALUEADDNEW(
 			Trace.Write('offset cnt '+str(offset_skip_count))
 			records_end = offset_skip_count + fetch_count
 			records_end = pagination_total_count if pagination_total_count < records_end else records_end
-			records_start_and_end = "{} - {} of ".format(offset_skip_count+1, records_end)
+			records_start_and_end = "{} - {} of ".format(offset_skip_count+1 if offset_skip_count==0 else offset_skip_count, records_end)
 			disable_next_and_last = ""
 			disable_previous_and_first = ""
 			if records_end == pagination_total_count:
