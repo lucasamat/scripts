@@ -45,7 +45,7 @@ user_name = str(User.UserName)
 def splitserviceinsert():
     splitservice_object = 'Z0105'
     material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION,MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(splitservice_object))
-    #service_list=[]
+    service_list=[]
     #NEED TO change Query for SAQRIT
     get_existing_record = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id =quote_revision_rec_id))
     for i in get_existing_record:
