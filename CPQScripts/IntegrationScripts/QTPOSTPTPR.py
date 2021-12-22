@@ -36,7 +36,7 @@ try:
 		
 			rebuilt_data = {}
 			primaryQueryItems = SqlHelper.GetFirst("SELECT NEWID() AS A")
-			Log.Info("Param.CPQ_Column----"+str(Param.CPQ_Column))
+			#Log.Info("Param.CPQ_Column----"+str(Param.CPQ_Column))
 			for table_dict in Param.CPQ_Columns: 
 				tbl = str(table_dict.Key)
 				
