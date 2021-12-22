@@ -1374,7 +1374,8 @@ class SyncQuoteAndCustomTables:
 						payload_json = payload_json.get('CPQ_Columns')
 						Log.Info("payload_json----->"+str(payload_json))
 						if payload_json.get('OPPORTUNITY_ID'):
-							contract_quote_obj = Sql.GetFirst("SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID, SAQTMT.CONTRACT_VALID_FROM, SAQTMT.CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))							
+							contract_quote_obj = Sql.GetFirst("SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID, SAQTMT.CONTRACT_VALID_FROM, SAQTMT.CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
+							Log.Info("SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID, SAQTMT.CONTRACT_VALID_FROM, SAQTMT.CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))							
 						if payload_json.get('C4C_Opportunity_Object_ID'):
 							c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')
 							#Log.Info("c4c_opppbj_id====="+str(c4c_opppbj_id))
