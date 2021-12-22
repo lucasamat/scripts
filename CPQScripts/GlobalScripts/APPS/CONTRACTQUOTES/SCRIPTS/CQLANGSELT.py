@@ -44,6 +44,14 @@ def _insert_subtotal_by_offerring_quote_table():
 	return True
 #Document XML end
 
+
+#generate documnet start
+gen_doc = Quote.GenerateDocument('AMAT_SUBTOTAL_OFFERING', GenDocFormat.PDF)
+fileName = Quote.GetLatestGeneratedDocumentFileName()
+GDB = Quote.GetLatestGeneratedDocumentInBytes()
+List = Quote.GetGeneratedDocumentList('AMAT_SUBTOTAL_OFFERING')
+#generate documnet end
+
 get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 #Quote=QuoteHelper.Edit(get_quote_details.C4C_QUOTE_ID)
 saqdoc_output_insert="""INSERT SAQDOC (
@@ -86,7 +94,6 @@ saqdoc_output_insert="""INSERT SAQDOC (
 #Log.Info(qtqdoc)
 Sql.RunQuery(saqdoc_output_insert)
 _insert_subtotal_by_offerring_quote_table()
-
 
 
 
