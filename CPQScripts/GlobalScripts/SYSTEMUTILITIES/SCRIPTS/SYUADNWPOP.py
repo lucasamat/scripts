@@ -2064,16 +2064,22 @@ def POPUPLISTVALUEADDNEW(
 						)
 					else:
 						Trace.Write("qstring"+str(qstring))
-						
-						sec_str += (
-							'<th data-field="'
-							+ invs
-							+ '" data-title-tooltip="'
-							+ str(qstring)
-							+ '" data-sortable="true" data-filter-control="input">'
-							+ str(qstring)
-							+ "</th>"
-						)
+						if qstring == "APPLIED CREDIT":
+							sec_str += (
+								'<input type="text" class="form-control wth100visble bootstrap-table-filter-control-'
+								+ str(qstring)
+								+ '">'
+							)
+						else:
+							sec_str += (
+								'<th data-field="'
+								+ invs
+								+ '" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-sortable="true" data-filter-control="input">'
+								+ str(qstring)
+								+ "</th>"
+							)
 				sec_str += '</tr></thead><tbody class ="equipments_id" ></tbody></table>'
 				sec_str += '<div id="add_credits_addnew_footer"></div>'
 				values_list = ""
