@@ -1799,7 +1799,7 @@ def POPUPLISTVALUEADDNEW(
 			#        pagination_condition,
 			#    )
 			#)
-			QueryCountObj = Sql.GetFirst("select count(*) as cnt from MAADPR(NOLOCK) WHERE PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT SERVICE_ID FROM SAQSGB where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND GREENBOOK = '"+str(TreeParentParam)+"') ")
+			QueryCountObj = Sql.GetFirst("select count(*) as cnt from MAADPR(NOLOCK) WHERE "+str(pagination_where)+" PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT SERVICE_ID FROM SAQSGB where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND GREENBOOK = '"+str(TreeParentParam)+"') ")
 
 			if QueryCountObj is not None:
 				QryCount = QueryCountObj.cnt
