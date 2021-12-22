@@ -2039,8 +2039,6 @@ def POPUPLISTVALUEADDNEW(
 					getService.SERVICE_DESCRIPTION,getService.SERVICE_DESCRIPTION
 
 				)
-
-
 				sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
 				sec_str += (
 					'<table id="'
