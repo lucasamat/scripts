@@ -2358,6 +2358,27 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 		elif self.action_type == "ADD_CREDIT":			
 			where_condition=""
 			master_object_name = "SACRVC"
+			try:
+				APPLIED_CREDITS = Param.APPLIED_CREDITS
+			except:
+				APPLIED_CREDITS = ''
+			try:
+				CREDIT_AMOUNTS = Param.CREDIT_AMOUNTS
+			except:
+				CREDIT_AMOUNTS = ''
+			for key,val in enumerate(list(self.values)):
+				val = re.sub("[^0-9]","",val)
+				id = val.lstrip("0")
+				if APPLIED_CREDITS!='' and CREDIT_AMOUNTS!='':
+					try:
+						unapplied = CREDIT_AMOUNTS[key]-APPLIED_CREDITS[key] if APPLIED_CREDITS[key]!='' and CREDIT_AMOUNTS[key] else CREDIT_AMOUNTS[key]
+						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(APPLIED_CREDITS[key],unapplied,id))
+					except:
+						Trace.Write('Value not given for Credits')
+				else:
+					unapplied = CREDIT_AMOUNTS[key] if CREDIT_AMOUNTS[key]!='' else ''
+					Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(APPLIED_CREDITS[key],unapplied,id))
+    					
 			GETPARENTSERVICE= Sql.GetFirst("SELECT QUOTE_SERVICE_RECORD_ID FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1))
 			columns = [
 				"CREDITVOUCHER_RECORD_ID",
@@ -2393,7 +2414,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				)
 
 				if master_credit_obj:
-					self.values = [credit_obj.QUOTE_REV_CREDIT_VOUCHER_RECORD_ID for credit_obj in master_credit_obj]
+					self.values = [credit_obj.CREDITVOUCHER_RECORD_ID for credit_obj in master_credit_obj]
 
 			for row_detail in self._add_record(
 				master_object_name=master_object_name,
