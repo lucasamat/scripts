@@ -2392,11 +2392,11 @@ class Entitlements:
 		if ENT_IP_DICT != '':
 			
 			ancillary_dict = Quote.GetCustomField('ANCILLARY_DICT').Content
-			ancillary_dict_val = (re.sub(r'^{|"}$','',ancillary_dict)).split(': "')[1]
-			ancillary_dict ={}
-			ancillary_dict = eval(ancillary_dict_val)
-			Trace.Write('ancillary_dict_val--'+str(type(ancillary_dict)))
-			Trace.Write("ancillary_dict--"+str(ancillary_dict))
+			# ancillary_dict_val = (re.sub(r'^{|"}$','',ancillary_dict)).split(': "')[1]
+			# ancillary_dict ={}
+			# ancillary_dict = eval(ancillary_dict_val)
+			#Trace.Write('ancillary_dict_val--'+str(type(ancillary_dict)))
+			#Trace.Write("ancillary_dict--"+str(ancillary_dict))
 			#Trace.Write("inside Attr List-----> "+str(AttributeList))
 			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)
