@@ -287,7 +287,14 @@ except:
     action_type = ''
 
 
-Trace.Write("inside"+str(action_type))
+
+try:
+    parts_list = Param.parts_list
+except:
+    parts_list = ''
+
+
+Trace.Write("parts_list---"+str(parts_list)+"--parts_list---inside"+str(action_type))
 
     
 
