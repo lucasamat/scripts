@@ -139,114 +139,25 @@ def splitserviceinsert():
 def servicelevel_split_equip(seid):
     Trace.Write("SAQSCE_SPLIT"+str(seid))
     #seid ="Z0091"
-    service_entitlement_objas = Sql.GetList("""SELECT SERVICE_ID, ENTITLEMENT_XML ,EQUIPMENT_ID,FABLOCATION_ID,GREENBOOK FROM  SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID ='{seid}' """.format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id,seid=seid))
-    for service_entitlement_obja in service_entitlement_objas:
-        pqb_splqte=''
-        service_split_per=''
-        quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-        entitlement_id_tag_pqb = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obja.SERVICE_ID)+'_PQB_SPLQTE</ENTITLEMENT_ID>')
-        entitlement_id_tag_split = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obja.SERVICE_ID)+'_SER_SPLIT_PER</ENTITLEMENT_ID>')
-        entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-        for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obja.ENTITLEMENT_XML):
-            quote_item_tag_content = quote_item_tag.group(1)
-            entitlement_id_tag_match_pqb = re.findall(entitlement_id_tag_pqb,quote_item_tag_content)	
-            entitlement_billing_id_tag_match_split = re.findall(entitlement_id_tag_split,quote_item_tag_content)
-            entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
-            if entitlement_id_tag_match_pqb:
-                pqb_splqte = entitlement_display_value_tag_match[0].upper()
-                Trace.Write("11110"+str(pqb_splqte))
-                continue
-            if entitlement_billing_id_tag_match_split:
-                service_split_per = entitlement_display_value_tag_match[0]
-                Trace.Write("22220"+str(service_split_per))
-                continue
-            if pqb_splqte != '' and service_split_per != '':
-                break
-        ##INSERT SAQRIT FOR Z0105
-        split_service =Sql.GetFirst("Select * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0105'".format(contract_quote_rec_id,quote_revision_rec_id))
-        splitservice_id = split_service.SERVICE_ID
-        splitservice_name = split_service.SERVICE_DESCRIPTION
-        splitservice_recid = split_service.SERVICE_RECORD_ID
-        equipments_count = 0
-        item_number_saqrit_start = 0
-        item_number_saqrit_inc = 0
-        quote_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
-        if quote_item_obj:
-            equipments_count = int(quote_item_obj.LINE)
-        doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_START, ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
-        if doctype_obj:
-            item_number_saqrit_start = int(doctype_obj.ITEM_NUMBER_START)
-            item_number_saqrit_inc = int(doctype_obj.ITEM_NUMBER_INCREMENT)
-        sparesplit = 100 - int(service_split_per) 
-        Trace.Write(sparesplit)
-        Sql.RunQuery("""INSERT SAQRIT (CONTRACT_VALID_FROM,CONTRACT_VALID_TO,DOC_CURRENCY,DOCURR_RECORD_ID,EXCHANGE_RATE,EXCHANGE_RATE_DATE,EXCHANGE_RATE_RECORD_ID,GL_ACCOUNT_NO,GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID,LINE,OBJECT_ID,OBJECT_TYPE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,PROFIT_CENTER,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,REF_SALESORDER,STATUS,TAX_PERCENTAGE,TAX_AMOUNT,TAX_AMOUNT_INGL_CURR,TAXCLASSIFICATION_DESCRIPTION,TAXCLASSIFICATION_ID,TAXCLASSIFICATION_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,NET_PRICE,NET_PRICE_INGL_CURR,PLANT_ID,PLANT_NAME,PLANT_RECORD_ID,COMVAL_INGL_CURR,ESTVAL_INGL_CURR,NET_VALUE,NET_VALUE_INGL_CURR,UNIT_PRICE,UNIT_PRICE_INGL_CURR,YEAR_1,YEAR_1_INGL_CURR,YEAR_2,YEAR_2_INGL_CURR,YEAR_3,YEAR_3_INGL_CURR,YEAR_4,YEAR_4_INGL_CURR,YEAR_5,YEAR_5_INGL_CURR,QTEITMSUM_RECORD_ID,MODULE_ID,MODULE_NAME,MODULE_RECORD_ID,PARQTEITM_LINE,PARQTEITM_LINE_RECORD_ID,BILLING_TYPE,COMMITTED_VALUE,ESTIMATED_VALUE,SPLIT_PERCENT,SPLIT,QUOTE_REVISION_CONTRACT_ITEM_ID) 
-        SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_CONTRACT_ITEM_ID FROM (
-        SELECT DISTINCT CONTRACT_VALID_FROM,CONTRACT_VALID_TO,DOC_CURRENCY,DOCURR_RECORD_ID,EXCHANGE_RATE,EXCHANGE_RATE_DATE,EXCHANGE_RATE_RECORD_ID,GL_ACCOUNT_NO,GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID,(({equipments_count} + ROW_NUMBER()OVER(ORDER BY(SAQRIT.CpqTableEntryId))) * {item_number_saqrit_inc}) AS LINE,OBJECT_ID,OBJECT_TYPE,'{splitservice_name}' as SERVICE_DESCRIPTION,'{splitservice_id}' as SERVICE_ID,'{splitservice_recid}' as SERVICE_RECORD_ID,PROFIT_CENTER,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,REF_SALESORDER,'ACQUIRING' as STATUS,TAX_PERCENTAGE,TAX_AMOUNT,TAX_AMOUNT_INGL_CURR,TAXCLASSIFICATION_DESCRIPTION,TAXCLASSIFICATION_ID,TAXCLASSIFICATION_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,((NET_PRICE * {sparesplit})/100) as NET_PRICE ,NET_PRICE_INGL_CURR,PLANT_ID,PLANT_NAME,PLANT_RECORD_ID,COMVAL_INGL_CURR,ESTVAL_INGL_CURR,(((NET_PRICE * {sparesplit})/100)+TAX_AMOUNT) AS NET_VALUE,NET_VALUE_INGL_CURR,UNIT_PRICE,UNIT_PRICE_INGL_CURR,YEAR_1,YEAR_1_INGL_CURR,YEAR_2,YEAR_2_INGL_CURR,YEAR_3,YEAR_3_INGL_CURR,YEAR_4,YEAR_4_INGL_CURR,YEAR_5,YEAR_5_INGL_CURR,QTEITMSUM_RECORD_ID,MODULE_ID,MODULE_NAME,MODULE_RECORD_ID,LINE AS PARQTEITM_LINE,QUOTE_REVISION_CONTRACT_ITEM_ID AS PARQTEITM_LINE_RECORD_ID,BILLING_TYPE,COMMITTED_VALUE,ESTIMATED_VALUE,'{sparesplit}' as SPLIT_PERCENT,'{pqb_splqte}' AS SPLIT FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND OBJECT_ID ='{eqp}' AND GREENBOOK = '{gb}' AND FABLOCATION_ID ='{fb}' AND SERVICE_ID = '{ser}' AND QUOTE_REVISION_CONTRACT_ITEM_ID NOT IN(SELECT PARQTEITM_LINE_RECORD_ID FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND OBJECT_ID ='{eqp}' AND GREENBOOK = '{gb}' AND FABLOCATION_ID ='{fb}') )A""".format(contract_quote_rec_id = contract_quote_rec_id , quote_revision_rec_id = quote_revision_rec_id,item_number_saqrit_inc =item_number_saqrit_inc,equipments_count =equipments_count,splitservice_recid = splitservice_recid,splitservice_id=splitservice_id,splitservice_name = splitservice_name,sparesplit =sparesplit,eqp =service_entitlement_obja.EQUIPMENT_ID,gb = service_entitlement_obja.GREENBOOK ,fb = service_entitlement_obja.FABLOCATION_ID,ser = service_entitlement_obja.SERVICE_ID,pqb_splqte = pqb_splqte))
-        Trace.Write("aa"+str(service_entitlement_obja.EQUIPMENT_ID))
-        
-        ## UPDATE PARENT 
-        updatesaqritobjectid ="""UPDATE A SET A.SPLIT_PERCENT = '{service_split_per}',A.NET_PRICE = ((A.NET_PRICE * {service_split_per})/100),A.NET_VALUE = (((NET_PRICE * {service_split_per})/100)+TAX_AMOUNT),A.SPLIT ='{pqb_splqte}' FROM SAQRIT A INNER JOIN SAQRIT B on A.OBJECT_ID = B.OBJECT_ID and A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_RECORD_ID =B.QTEREV_RECORD_ID AND A.GREENBOOK = B.GREENBOOK AND A.FABLOCATION_ID = B.FABLOCATION_ID AND A.SERVICE_ID = B.SERVICE_ID WHERE A.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND A.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND A.OBJECT_ID ='{eqp}' AND A.GREENBOOK = '{gb}' AND A.FABLOCATION_ID ='{fb}' AND A.SERVICE_ID = '{ser}' AND A.OBJECT_ID IN(SELECT OBJECT_ID FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND OBJECT_ID ='{eqp}' AND GREENBOOK = '{gb}' AND FABLOCATION_ID ='{fb}' AND SERVICE_ID = '{splitservice_id}' AND STATUS = 'ACQUIRING')  """.format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,eqp =service_entitlement_obja.EQUIPMENT_ID,gb = service_entitlement_obja.GREENBOOK , fb = service_entitlement_obja.FABLOCATION_ID,ser = service_entitlement_obja.SERVICE_ID,service_split_per = service_split_per,pqb_splqte = pqb_splqte,splitservice_id =splitservice_id)
-        Trace.Write("wwwwwwww"+str(updatesaqritobjectid))
-        Sql.RunQuery(updatesaqritobjectid)
-        ## update child status
-        updatesaqritchild =""" UPDATE SAQRIT SET STATUS ='ACQUIRED' where QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND OBJECT_ID ='{eqp}' AND GREENBOOK = '{gb}' AND FABLOCATION_ID ='{fb}' AND SERVICE_ID = '{splitservice_id}'""".format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,eqp =service_entitlement_obja.EQUIPMENT_ID,gb = service_entitlement_obja.GREENBOOK , fb = service_entitlement_obja.FABLOCATION_ID,splitservice_id =splitservice_id)
-        Sql.RunQuery(updatesaqritchild)
+    where_condition = "WHERE SERVICE_ID = ''"+str(seid)+"'' AND QUOTE_RECORD_ID = ''"+str(contract_quote_rec_id)+"'' and QTEREV_RECORD_ID = ''"+str(quote_revision_rec_id)+"''  "
+    get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id =contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id))
+    ent_temp = "ENT_SPLIT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
+
+    Trace.Write("aaaaaaa"+str(ent_temp))
+    ent_child_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+
+    SqlHelper.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><FABLOCATION_ID>''+FABLOCATION_ID+''</FABLOCATION_ID><GREENBOOK>''+GREENBOOK+''</GREENBOOK><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(replace(replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; '' ),'' > '','' &gt; '' ),''_>'',''_&gt;''),''_<'',''_&lt;''),''&'','';#38''),''<10%'',''&lt;10%'')  as entitlement_xml from SAQSCE(nolock) "+str(where_condition)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_PRICE_IMPACT,IS_DEFAULT,ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CALCULATION_FACTOR INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',FABLOCATION_ID VARCHAR(100) ''FABLOCATION_ID'',GREENBOOK VARCHAR(100) ''GREENBOOK'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',PRICE_METHOD VARCHAR(100) ''PRICE_METHOD'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'') ; exec sys.sp_xml_removedocument @H; '")
+
+    #a = SqlHelper.GetList("select * from ENT_SPLIT_BKP_3050008527 where ENTITLEMENT_ID  ='AGS_Z0091_SER_SPLIT_PER'")
+    updatesaqritchild ="""UPDATE A SET A.SPLIT_PERCENT =  B.ENTITLEMENT_DISPLAY_VALUE  FROM SAQRIT A JOIN {ent_temp} B ON A.QUOTE_RECORD_ID =B.QUOTE_RECORD_ID  AND A.QTEREV_RECORD_ID  =B.QTEREV_RECORD_ID AND A.SERVICE_ID =B.SERVICE_ID AND A.FABLOCATION_ID  = B.FABLOCATION_ID AND A.GREENBOOK  = B.GREENBOOK AND A.OBJECT_ID = B.EQUIPMENT_ID WHERE  A.QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND A.QTEREV_RECORD_ID='{quote_revision_rec_id}' AND A.SERVICE_ID ='Z0091' AND B.ENTITLEMENT_ID  ='AGS_Z0091_SER_SPLIT_PER'""".format(contract_quote_rec_id =contract_quote_rec_id,quote_revision_rec_id =quote_revision_rec_id,ent_temp = ent_temp)
+    Sql.RunQuery(updatesaqritchild)
+
+
+    
+    #ent_child_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 
 
 
 def servicelevel_split_green(seid):
-    Trace.Write("SAQSGE_SPLIT"+str(seid))
-    service_entitlement_objas = Sql.GetList("""SELECT SERVICE_ID, ENTITLEMENT_XML,FABLOCATION_ID,GREENBOOK FROM  SAQSGE (NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID ='{seid}' """.format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id,seid=seid))
-    for service_entitlement_obja in service_entitlement_objas:
-        pqb_splqte=''
-        service_split_per=''
-        quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-        entitlement_id_tag_pqb = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obja.SERVICE_ID)+'_PQB_SPLQTE</ENTITLEMENT_ID>')
-        entitlement_id_tag_split = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obja.SERVICE_ID)+'_SER_SPLIT_PER</ENTITLEMENT_ID>')
-        entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-        for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obja.ENTITLEMENT_XML):
-            quote_item_tag_content = quote_item_tag.group(1)
-            entitlement_id_tag_match_pqb = re.findall(entitlement_id_tag_pqb,quote_item_tag_content)	
-            entitlement_billing_id_tag_match_split = re.findall(entitlement_id_tag_split,quote_item_tag_content)
-            entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
-            if entitlement_id_tag_match_pqb:
-                pqb_splqte = entitlement_display_value_tag_match[0].upper()
-                Trace.Write("11110"+str(pqb_splqte))
-                continue
-            if entitlement_billing_id_tag_match_split:
-                service_split_per = entitlement_display_value_tag_match[0]
-                Trace.Write("22220"+str(service_split_per))
-                continue
-            if pqb_splqte != '' and service_split_per != '':
-                break
-        split_service =Sql.GetFirst("Select * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0105'".format(contract_quote_rec_id,quote_revision_rec_id))
-        splitservice_id = split_service.SERVICE_ID
-        splitservice_name = split_service.SERVICE_DESCRIPTION
-        splitservice_recid = split_service.SERVICE_RECORD_ID
-        equipments_count = 0
-        item_number_saqrit_start = 0
-        item_number_saqrit_inc = 0
-        quote_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
-        if quote_item_obj:
-            equipments_count = int(quote_item_obj.LINE)
-        doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_START, ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
-        if doctype_obj:
-            item_number_saqrit_start = int(doctype_obj.ITEM_NUMBER_START)
-            item_number_saqrit_inc = int(doctype_obj.ITEM_NUMBER_INCREMENT)
-        sparesplit = 100 - int(service_split_per) 
-        Trace.Write(sparesplit)
-        Sql.RunQuery("""INSERT SAQRIT (CONTRACT_VALID_FROM,CONTRACT_VALID_TO,DOC_CURRENCY,DOCURR_RECORD_ID,EXCHANGE_RATE,EXCHANGE_RATE_DATE,EXCHANGE_RATE_RECORD_ID,GL_ACCOUNT_NO,GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID,LINE,OBJECT_ID,OBJECT_TYPE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,PROFIT_CENTER,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,REF_SALESORDER,STATUS,TAX_PERCENTAGE,TAX_AMOUNT,TAX_AMOUNT_INGL_CURR,TAXCLASSIFICATION_DESCRIPTION,TAXCLASSIFICATION_ID,TAXCLASSIFICATION_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,NET_PRICE,NET_PRICE_INGL_CURR,PLANT_ID,PLANT_NAME,PLANT_RECORD_ID,COMVAL_INGL_CURR,ESTVAL_INGL_CURR,NET_VALUE,NET_VALUE_INGL_CURR,UNIT_PRICE,UNIT_PRICE_INGL_CURR,YEAR_1,YEAR_1_INGL_CURR,YEAR_2,YEAR_2_INGL_CURR,YEAR_3,YEAR_3_INGL_CURR,YEAR_4,YEAR_4_INGL_CURR,YEAR_5,YEAR_5_INGL_CURR,QTEITMSUM_RECORD_ID,MODULE_ID,MODULE_NAME,MODULE_RECORD_ID,PARQTEITM_LINE,PARQTEITM_LINE_RECORD_ID,BILLING_TYPE,COMMITTED_VALUE,ESTIMATED_VALUE,SPLIT_PERCENT,SPLIT,QUOTE_REVISION_CONTRACT_ITEM_ID) 
-        SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_CONTRACT_ITEM_ID FROM (
-        SELECT DISTINCT CONTRACT_VALID_FROM,CONTRACT_VALID_TO,DOC_CURRENCY,DOCURR_RECORD_ID,EXCHANGE_RATE,EXCHANGE_RATE_DATE,EXCHANGE_RATE_RECORD_ID,GL_ACCOUNT_NO,GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID,(({equipments_count} + ROW_NUMBER()OVER(ORDER BY(SAQRIT.CpqTableEntryId))) * {item_number_saqrit_inc}) AS LINE,OBJECT_ID,OBJECT_TYPE,'{splitservice_name}' as SERVICE_DESCRIPTION,'{splitservice_id}' as SERVICE_ID,'{splitservice_recid}' as SERVICE_RECORD_ID,PROFIT_CENTER,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,REF_SALESORDER,'ACQUIRING' as STATUS,TAX_PERCENTAGE,TAX_AMOUNT,TAX_AMOUNT_INGL_CURR,TAXCLASSIFICATION_DESCRIPTION,TAXCLASSIFICATION_ID,TAXCLASSIFICATION_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,((NET_PRICE * {sparesplit})/100) as NET_PRICE ,NET_PRICE_INGL_CURR,PLANT_ID,PLANT_NAME,PLANT_RECORD_ID,COMVAL_INGL_CURR,ESTVAL_INGL_CURR,(((NET_PRICE * {sparesplit})/100)+TAX_AMOUNT) AS NET_VALUE   ,NET_VALUE_INGL_CURR,UNIT_PRICE,UNIT_PRICE_INGL_CURR,YEAR_1,YEAR_1_INGL_CURR,YEAR_2,YEAR_2_INGL_CURR,YEAR_3,YEAR_3_INGL_CURR,YEAR_4,YEAR_4_INGL_CURR,YEAR_5,YEAR_5_INGL_CURR,QTEITMSUM_RECORD_ID,MODULE_ID,MODULE_NAME,MODULE_RECORD_ID,LINE AS PARQTEITM_LINE,QUOTE_REVISION_CONTRACT_ITEM_ID AS PARQTEITM_LINE_RECORD_ID,BILLING_TYPE,COMMITTED_VALUE,ESTIMATED_VALUE,'{sparesplit}' as SPLIT_PERCENT,'{pqb_splqte}' AS SPLIT FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND GREENBOOK = '{gb}' AND FABLOCATION_ID ='{fb}' AND SERVICE_ID = '{ser}' AND QUOTE_REVISION_CONTRACT_ITEM_ID NOT IN(SELECT PARQTEITM_LINE_RECORD_ID FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND GREENBOOK = '{gb}' AND FABLOCATION_ID ='{fb}') )A""".format(contract_quote_rec_id = contract_quote_rec_id , quote_revision_rec_id = quote_revision_rec_id,item_number_saqrit_inc =item_number_saqrit_inc,equipments_count =equipments_count,splitservice_recid = splitservice_recid,splitservice_id=splitservice_id,splitservice_name = splitservice_name,sparesplit =sparesplit,gb = service_entitlement_obja.GREENBOOK ,fb = service_entitlement_obja.FABLOCATION_ID,ser = service_entitlement_obja.SERVICE_ID,pqb_splqte =pqb_splqte))
-        Trace.Write("aa"+str(service_entitlement_obja.EQUIPMENT_ID))
-        ## UPDATE PARENT 
-        updatesaqritobjectid ="""UPDATE A SET A.SPLIT_PERCENT = '{service_split_per}',A.NET_PRICE = ((A.NET_PRICE * {service_split_per})/100),A.NET_VALUE = (((NET_PRICE * {sparesplit})/100)+TAX_AMOUNT),A.SPLIT ='{pqb_splqte}' FROM SAQRIT A INNER JOIN SAQRIT B on A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_RECORD_ID =B.QTEREV_RECORD_ID AND A.GREENBOOK = B.GREENBOOK AND A.FABLOCATION_ID = B.FABLOCATION_ID AND A.SERVICE_ID = B.SERVICE_ID WHERE A.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND A.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND A.GREENBOOK = '{gb}' AND A.FABLOCATION_ID ='{fb}' AND A.SERVICE_ID = '{ser}' AND A.GREENBOOK IN(SELECT GREENBOOK FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND GREENBOOK = '{gb}' AND FABLOCATION_ID ='{fb}' AND SERVICE_ID = '{splitservice_id}' AND STATUS = 'ACQUIRING')  """.format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,gb = service_entitlement_obja.GREENBOOK,fb = service_entitlement_obja.FABLOCATION_ID,ser = service_entitlement_obja.SERVICE_ID,service_split_per = service_split_per,pqb_splqte = pqb_splqte,splitservice_id =splitservice_id)
-        Trace.Write("wwwwwwww"+str(updatesaqritobjectid))
-        Sql.RunQuery(updatesaqritobjectid)
-        ## update child status
-        updatesaqritchild =""" UPDATE SAQRIT SET STATUS ='ACQUIRED' where QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND GREENBOOK = '{gb}' AND FABLOCATION_ID ='{fb}' AND SERVICE_ID = '{splitservice_id}'""".format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,gb = service_entitlement_obja.GREENBOOK,fb = service_entitlement_obja.FABLOCATION_ID,splitservice_id =splitservice_id)
-        Sql.RunQuery(updatesaqritchild)
-
-
-
+    Trace.Write("thisgreen service"+str(seid))
 splitserviceinsert()
