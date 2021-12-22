@@ -101,8 +101,9 @@ ancillary_part_query =""
 part_query = SqlHelper.GetList("SELECT DISTINCT PART_NUMBER, ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQIFP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND PRICING_STATUS = 'ACQUIRING...' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
 if not part_query:
 	ancillary_part_query = Sql.GetFirst("SELECT DISTINCT PART_NUMBER, QUANTITY as ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQRSP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND INCLUDED =1  )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+" ")
-
-if part_query or ancillary_part_query:
+if not part_query:
+    fpm_part_query = Sql.GetFirst("SELECT DISTINCT PART_NUMBER, CUSTOMER_ANNUAL_QUANTITY as ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, CUSTOMER_ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQSPT (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND INCLUDED =0  )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+" ")
+if part_query or ancillary_part_query or fpm_part_query:
 
 	while L == 1:
 		#Log.Info("Looping Count ==> "+str(n))
@@ -111,6 +112,9 @@ if part_query or ancillary_part_query:
 			get_part_query = SqlHelper.GetList("SELECT DISTINCT PART_NUMBER, ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQIFP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND PRICING_STATUS = 'ACQUIRING...' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
 		if ancillary_part_query:
 			get_part_query = SqlHelper.GetList("SELECT DISTINCT PART_NUMBER, QUANTITY as ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQRSP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND INCLUDED = 1 AND UNIT_PRICE IS NULL )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
+		if fpm_part_query:
+			get_part_query = SqlHelper.GetList("SELECT DISTINCT PART_NUMBER, CUSTOMER_ANNUAL_QUANTITY as ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, CUSTOMER_ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQSPT (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND INCLUDED = 0 AND UNIT_PRICE IS NULL )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
+		
 		partids = quantity = li = []
 		s = ""
 		if get_part_query:      
