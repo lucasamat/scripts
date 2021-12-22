@@ -3052,7 +3052,7 @@ def Related_Sub_Banner(
                 Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
                     if 'SPLIT' in btn and subTabName =='Items':
-                        get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(contract_quote_rec_id =contract_quote_rec_id,quote_revision_rec_id =quote_revision_rec_id))
+                        get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
                         if get_entitlement_xml:
                             for get_service in get_entitlement_xml:
                                 entitlement_service = get_service.ENTITLEMENT_XML
