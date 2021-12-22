@@ -2114,7 +2114,7 @@ def POPUPLISTVALUEADDNEW(
 					Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 				)
 
-				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC WHERE ZUONR = '"+str(account_id)+"' ")
+				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC WHERE ZUONR = '"+str(account_id)+"' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '"+str(TreeParentParam)+"' AND SERVICE_ID = '"+str(ADDON_PRD_ID)+"' )")
 
 				# order_by = "order by SACRVC.COMP_PRDOFR_NAME ASC"
 
@@ -2150,11 +2150,11 @@ def POPUPLISTVALUEADDNEW(
 				)
 				
 				table_data = Sql.GetList(
-				   "select {} from SACRVC (NOLOCK) WHERE ZUONR = '{}' ".format(
-				       ", ".join(ordered_keys), str(account_id)
+				   "select {} from SACRVC (NOLOCK) WHERE ZUONR = '{}' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '{}' AND SERVICE_ID = '{}' ) ".format(
+				       ", ".join(ordered_keys), str(account_id),str(TreeParentParam),str(ADDON_PRD_ID)
 				   )
 				)
-				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZUONR = '"+str(account_id)+"'")
+				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZUONR = '"+str(account_id)+"' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '"+str(TreeParentParam)+"' AND SERVICE_ID = '"+str(ADDON_PRD_ID)+"' )")
 
 				if QueryCountObj is not None:
 					QryCount = QueryCountObj.cnt
@@ -6151,6 +6151,10 @@ try:
 	AwdRecordID = Param.AwdRecordID
 except:
 	AwdRecordID = ""
+try:
+	ADDON_PRD_ID = Param.ADDON_PRD_ID
+except:
+	ADDON_PRD_ID = ""
 NEWVALUE = Param.NEWVALUE
 Trace.Write("NEWVALUE -----"+str(NEWVALUE))
 LOOKUPOBJ = Param.LOOKUPOBJ
