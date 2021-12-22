@@ -2002,16 +2002,16 @@ def POPUPLISTVALUEADDNEW(
 				table_id = "add_credits_add_new"
 				Header_details = {
 					"CREDITVOUCHER_RECORD_ID": "KEY",
-					"ZAFPLATFORM":"ZAF PLATFORM",
-					"ZAFTYPE": "ZAF TYPE",
-					"ZAFGBOOK": "ZAF GREEN BOOK",
+					"ZAFTYPE":"ZAF TYPE",
+					"WRBTR": "CREDIT AMOUNT",
+					"CREDIT_APPLIED": "APPLIED CREDIT",
 				}
 				ordered_keys = [
 					#"ADD_ON_PRODUCT_RECORD_ID",
 					"CREDITVOUCHER_RECORD_ID",
-					"ZAFPLATFORM",
 					"ZAFTYPE",
-					"ZAFGBOOK",
+					"WRBTR",
+					"CREDIT_APPLIED",
 				]
 				Objd_Obj = Sql.GetList(
 					"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
