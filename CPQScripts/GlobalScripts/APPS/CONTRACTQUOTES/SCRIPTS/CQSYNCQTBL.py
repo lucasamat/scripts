@@ -1599,7 +1599,7 @@ class SyncQuoteAndCustomTables:
 								Sql.RunQuery(Opportunity_obj)
 						#Log.Info("fab_location_ids ===> "+str(fab_location_ids))
 						#Log.Info("service_ids ===> "+str(service_ids)+"QUOTE ID----->"+str(contract_quote_data.get("QUOTE_ID")))	
-						#Log.Info("CHECKING_TOOL_CONDTN_J "+str(contract_quote_obj)+" | "+str(payload_json.get('SalesType'))+" | "+str(payload_json.get('OpportunityType')))
+						Log.Info("CHECKING_TOOL_CONDTN_J "+str(contract_quote_obj)+" | "+str(payload_json.get('SalesType'))+" | "+str(payload_json.get('OpportunityType')))
 
 						if  str(payload_json.get('SalesType')) == 'Z19':
 							# Log.Info("CHKNG_J "+str(billtocustomer_quote_data))
