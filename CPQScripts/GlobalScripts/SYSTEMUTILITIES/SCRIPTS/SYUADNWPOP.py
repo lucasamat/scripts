@@ -1756,7 +1756,7 @@ def POPUPLISTVALUEADDNEW(
 			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
 				Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count
 			)
-			pagination_where = where_string + " ÄND" if where_string!="" else ""
+			pagination_where = where_string + " AND" if where_string!="" else ""
 			Pagination_M = Sql.GetFirst("select count(MAADPR.CpqTableEntryId) as count from MAADPR WHERE "+str(pagination_where)+" PRDOFR_ID = '"+str(TreeSuperParentParam)+"' AND PRDOFR_DOCTYP = '"+str(getDocType.DOCTYP_ID)+"' AND COMP_PRDOFR_ID NOT IN (SELECT SERVICE_ID FROM SAQSGB where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' ) ")
 
 			order_by = "order by MAADPR.COMP_PRDOFR_NAME ASC"
