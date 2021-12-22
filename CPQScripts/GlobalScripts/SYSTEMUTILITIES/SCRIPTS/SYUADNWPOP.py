@@ -2063,6 +2063,8 @@ def POPUPLISTVALUEADDNEW(
 							+ "</th>"
 						)
 					else:
+						Trace.Write("qstring"+str(qstring))
+						
 						sec_str += (
 							'<th data-field="'
 							+ invs
