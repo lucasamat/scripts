@@ -2404,9 +2404,12 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				values=self.values,
 			):
 
-				row_detail.update(row_values)				
+				row_detail.update(row_values)		
+				Trace.Write('row_detail-->'+str(row_detail))		
 				mylist.append(row_detail)
+				Trace.Write('mylist-->'+str(mylist))
 				credit_table_info.AddRow(row_detail)
+			Trace.Write('credit_table_info-->'+str(credit_table_info))
 			Sql.Upsert(credit_table_info)
 			# QueryStatement ="""UPDATE SAQSAO SET QTESRV_RECORD_ID ='{id}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'  """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1,id = str(GETPARENTSERVICE.QUOTE_SERVICE_RECORD_ID) )
 			# Sql.RunQuery(QueryStatement)
