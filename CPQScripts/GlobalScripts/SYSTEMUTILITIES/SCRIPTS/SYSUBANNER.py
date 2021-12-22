@@ -3051,9 +3051,8 @@ def Related_Sub_Banner(
             if str(multi_buttons) != "":
                 Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
-                    #entitlement_obj = Sql.GetFirst("SELECT * FROM SAQRIT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SPLIT = 'YES'".format(ContractRecordId,quote_revision_record_id))
-                    entitlement_obj = SqlHelper.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = 'Z0091' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME  ='Split Quote'".format('SAQTSE',contract_quote_rec_id,quote_revision_rec_id))
-                    if entitlement_obj and subTabName =="Items":
+                    entitlement_obj = Sql.GetFirst("SELECT * FROM SAQRIT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SPLIT = 'YES'".format(ContractRecordId,quote_revision_record_id))
+                    if entitlement_obj:
                         if entitlement_obj.ENTITLEMENT_DISPLAY_VALUE.upper() == "YES":
                             if quote_status.QUOTE_STATUS != 'APPROVED':
                                 sec_rel_sub_bnr += (btn)                   
