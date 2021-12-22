@@ -1984,6 +1984,7 @@ def POPUPLISTVALUEADDNEW(
 				TreeParam = Product.GetGlobal("TreeParam")
 				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+				account_id = Product.GetGlobal("stp_account_id")
 				
 				
 				if A_Keys != "" and A_Values != "":
