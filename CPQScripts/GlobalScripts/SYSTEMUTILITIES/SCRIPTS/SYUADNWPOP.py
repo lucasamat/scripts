@@ -2160,7 +2160,7 @@ def POPUPLISTVALUEADDNEW(
 				       ", ".join(ordered_keys), str(account_id)
 				   )
 				)
-				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZAFGBOOK = 'WHERE ZUONR = '"+str(account_id)+"'")
+				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZUONR = '"+str(account_id)+"'")
 
 				if QueryCountObj is not None:
 					QryCount = QueryCountObj.cnt
