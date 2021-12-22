@@ -41,7 +41,7 @@ else:
 update_rev_expire_date  = "UPDATE SAQTRV SET REV_EXPIRE_DATE = CONVERT(date,DATEADD(DAY, 90, GETDATE())) where QUOTE_RECORD_ID ='{quote_record_id}'".format(quote_record_id=contract_quote_record_id)
 Sql.RunQuery(update_rev_expire_date)
 get_rev_details=Sql.GetFirst("select EXCHANGE_RATE,PAYMENTTERM_NAME from SAQTRV where QUOTE_RECORD_ID='"+str(contract_quote_record_id)+"'")
-
+Quote.GetCustomField('QUOTE_EXCHANGE_RATE').Content = get_rev_details.EXCHANGE_RATE
 #A055S000P01-10549-end
 def _insert_subtotal_by_offerring_quote_table():
 	
