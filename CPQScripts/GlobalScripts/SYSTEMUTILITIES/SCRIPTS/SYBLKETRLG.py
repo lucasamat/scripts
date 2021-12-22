@@ -348,7 +348,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							if k:
 								key = str(k.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID)
 						elif obj_obj == 'SAQRSP':
-							if str(TreeSuperParentParam)!="Product Offerings":
+							if (str(TreeSuperParentParam)!="Product Offerings" and TreeParam !='Z0092')or (str(TreeSuperParentParam)=="Product Offerings" and TreeParam =='Z0092') :
 								if TITLE=="QUANTITY":
 									field = "Enter Updated Target Quantity to add to your Parts List..."
 									label = "UPDATED TARGET QUANTITY" 
