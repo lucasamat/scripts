@@ -2304,7 +2304,7 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_id)
 					+ "') ) { var listws = document.getElementById('"
 					+ str(table_id)
-					+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+					+ "').getElementsByClassName('filter-control'); Console.log('Calling'); for (i = 0; i < listws.length; i++) { document.getElementById('"
 					+ str(table_id)
 					+ "').getElementsByClassName('filter-control')[i].innerHTML = data6[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data8[j]); if(data11[j].length>5){ $('#"
 					+ str(table_id)
