@@ -1499,14 +1499,15 @@ class ContractQuoteItem:
 	def _simple_fpm_quote_items_insert(self):
 		equipments_count = 0
 		item_number_inc = 0
+		'''
 		validate_axcliary = Sql.GetFirst("SELECT COUNT(SERVICE_ID) AS AXCLIARY_PRODUCT_FLAG from SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID='{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		if validate_axcliary.AXCLIARY_PRODUCT_FLAG:
 			quote_line_item_obj = Sql.GetFirst("SELECT COUNT(LINE) AS LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 			equipments_count = int(quote_item_obj.LINE)
-		
-		##quote_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
-		#if quote_line_item_obj:
-		#	equipments_count = int(quote_line_item_obj.LINE)
+		'''
+		quote_line_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+		if quote_line_item_obj:
+			equipments_count = int(quote_line_item_obj.LINE)
 		
 		doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		if doctype_obj:
@@ -1557,7 +1558,8 @@ class ContractQuoteItem:
 		FROM SAQSPT (NOLOCK) 
 		JOIN (
 			SELECT SAQSPT.QUOTE_RECORD_ID, SAQSPT.SERVICE_RECORD_ID, MAX(CpqTableEntryId) as CpqTableEntryId, CAST(ROW_NUMBER()OVER(ORDER BY SAQSPT.SERVICE_RECORD_ID) + {EquipmentsCount} AS DECIMAL(5,1)) AS LINE_ITEM_ID FROM SAQSPT (NOLOCK) 
-			WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSPT.CUSTOMER_ANNUAL_QUANTITY > 0
+			WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID ='{QuoteRevisionRecordId}'
+   			--AND SAQSPT.CUSTOMER_ANNUAL_QUANTITY > 0
 			GROUP BY SAQSPT.QUOTE_RECORD_ID, SAQSPT.SERVICE_RECORD_ID
 		) AS IQ ON IQ.CpqTableEntryId = SAQSPT.CpqTableEntryId
 		JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID  AND SAQTMT.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID            
@@ -1940,6 +1942,7 @@ class ContractQuoteItem:
 				self._insert_quote_item_forecast_parts()
 			elif self.is_fpm_spare_service == True:				
 				# Spare Parts Insert/Update (Z0108)...
+				Log.Info("===> _do_opertion z0108 z0110 for testing")	
 				self._simple_quote_items_summary_insert()
 				self._simple_fpm_quote_items_insert()
 				self._insert_quote_item_fpm_forecast_parts()
