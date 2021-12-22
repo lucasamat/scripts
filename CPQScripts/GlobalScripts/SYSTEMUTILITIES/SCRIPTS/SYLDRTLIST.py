@@ -3139,9 +3139,15 @@ class SYLDRTLIST:
 							)
 						else:
 							Trace.Write('At line 2805 ---2960----- Else'+str(value123))
-							# Trace.Write(' - '+str(value1234))
+							Trace.Write(' - '+str(value1234))
 							imgValue = ''
 							if str(ObjectName) == "SAQRIT":
+								if value1234 != "":
+									imgValue = str(value1234).split(">")[0]
+									imgValue = str(imgValue)+">"
+								else:
+									imgValue = ""
+							elif str(ObjectName) == "SAQDOC":
 								if value1234 != "":
 									imgValue = str(value1234).split(">")[0]
 									imgValue = str(imgValue)+">"
