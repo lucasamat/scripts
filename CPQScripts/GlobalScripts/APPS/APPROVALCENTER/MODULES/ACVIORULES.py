@@ -529,6 +529,7 @@ class ViolationConditions:
                     Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
                     Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                     SqlQuery = Sql.GetFirst(Select_Query)
+                    Log.Info("@532")
                     if SqlQuery:
                         Log.Info("Inside the approval heaeder "+str(method)+" -index- "+str(index))
                         '"+str(Objh_Id)+"'
@@ -757,7 +758,8 @@ class ViolationConditions:
                     else:
                         Log.Info("else @758")
         except Exception as e:
-            Trace.Write(str(e))
+            Log.Info(str(e))
+            
         return True
 
     def AutoApproval(self, revisionId, segmentId):
