@@ -18,6 +18,7 @@ import re
 from datetime import timedelta , date
 import CQCPQC4CWB
 import CQREVSTSCH
+import CQPARTIFLW
 #from datetime import datetime, timedelta
 
 Sql = SQL()
@@ -1302,6 +1303,13 @@ class SyncQuoteAndCustomTables:
 						Sql.RunQuery(update_customer_pn)
 					except:
 						Trace.Write('error=--1304--')
+					##calling the iflow for pricing..
+					try:
+						Log.Info("PART PRICING IFLOW STARTED!")
+						CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(contract_quote_record_id),str(quote_revision_record_id))
+					except:
+						Log.Info("PART PRICING IFLOW ERROR!")
+
 					#A055S000P01-13524 end
 					##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
 					#Log.Info("Revisionstatusdatecapture==> ")
