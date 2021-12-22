@@ -5290,7 +5290,7 @@ def POPUPLISTVALUEADDNEW(
 											for keys, Names_dict in enumerate(dep_list):
 												if keys != 1:
 													table_header += (
-														'<td align="left" ><input  onclick="edit_credits();" id="'
+														'<td align="left" ><input id="'
 														+ str(inx)
 														+ '" type="checkbox" value="'
 														+ inx
