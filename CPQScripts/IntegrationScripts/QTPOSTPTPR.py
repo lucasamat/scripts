@@ -176,7 +176,9 @@ try:
 			getpartsdata = Sql.GetFirst("select * from SAQIFP where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
 			if not getpartsdata:
 				get_ancillary_spare = Sql.GetFirst("SELECT * FROM SAQRIP WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
-			
+			if not getpartsdata and  not get_ancillary_spare:
+				getpartsdata = Sql.GetFirst("select * from SAQSPT where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+				
 			if getpartsdata or get_ancillary_spare:
 				Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE) VALUES {}".format(', '.join(map(str, insert_data))))			
 				#Log.Info('getpartsdata -->'+str(getpartsdata.PART_NUMBER))
