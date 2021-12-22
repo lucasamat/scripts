@@ -821,7 +821,7 @@ class ContractQuoteItem:
 				)
 
 		##update quantity in SAQRIT
-		if self.quote_service_entitlement_type != "OFFERING + EQUIPMENT":
+		if self.quote_service_entitlement_type not in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT'):
 			self._quote_item_qty_update()
 
 	def _quote_items_entitlement_insert(self, update=False):		
