@@ -1220,10 +1220,10 @@ def Related_Sub_Banner(
                         SecondValue = get_val.FABLOCATION_NAME
                         ThirdLable = "Greenbook"
                         ThirdValue = str(TreeParam)
-                        # FourthLable = "Equipment ID"
-                        # FourthValue = get_val.EQUIPMENT_ID
-                        # FifthLable = "Serial Number"
-                        # FifthValue = get_val.SERIAL_NUMBER 
+                        FourthLable = "Equipment ID"
+                        FourthValue = get_val.EQUIPMENT_ID
+                        FifthLable = "Serial Number"
+                        FifthValue = get_val.SERIAL_NUMBER 
                         
                     else:
                         Trace.Write("Fab24")				
