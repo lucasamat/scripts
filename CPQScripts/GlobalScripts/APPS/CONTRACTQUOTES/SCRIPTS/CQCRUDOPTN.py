@@ -2358,18 +2358,19 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			columns = [
 				"CREDITVOUCHER_RECORD_ID",
 				"CREDIT_APPILED AS CREDIT_APPLIED_INGL_CURR",
-				"CREDIT_APPILED AS CREDIT_APPLIED_INVC_CURR",
-				# "SERVICE_DESCRIPTION",
-				# "SERVICE_ID",
-				# "SERVICE_RECORD_ID"
+				"CREDIT_APPILED AS CREDIT_APPLIED_INVC_CURR"
 			]
 			table_name = "SAQRCV"
 			condition_column = "QUOTE_REV_CREDIT_VOUCHER_RECORD_ID"
 			get_greenbook = Sql.GetFirst("SELECT BUSINESS_UNITS_RECORD_ID FROM SABUUN WHERE BUSINESSUNIT_ID = '"+str(self.tree_parent_level_0)+"' ")
+			get_addon = Sql.GetFirst("SELECT SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1))
 			row_values = {
 				"QUOTE_NAME": self.contract_quote_name,
 				"GREENBOOK": self.tree_parent_level_0,
 				"GREENBOOK_RECORD_ID": get_greenbook.BUSINESS_UNITS_RECORD_ID,
+				"SERVICE_DESCRIPTION":get_addon.SERVICE_DESCRIPTION,
+				"SERVICE_ID":ADDON_PRD_ID,
+				"SERVICE_RECORD_ID": get_addon.SERVICE_RECORD_ID
 			}
 			credit_table_info = Sql.GetTable(table_name)
 			if self.all_values:
@@ -2384,10 +2385,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				master_credit_obj = self._get_record_obj(
 					columns=["QUOTE_REV_CREDIT_VOUCHER_RECORD_ID"],
 					table_name=master_object_name,
-					table_joins="JOIN SAQTSV (NOLOCK) ON MAADPR.PRDOFR_ID = SAQTSV.SERVICE_ID",
-					where_condition=""" {} SAQTSV.QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'AND NOT EXISTS (SELECT ADNPRD_ID FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}')""".format(qury_str,
-						self.contract_quote_record_id,self.quote_revision_record_id, self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1, single_record=False,
-					),
+					table_joins="",
+					where_condition=""" {} ZUONR = '{}' """.format(qury_str,Quote.GetCustomField('STPAccountID').Content,single_record=False)
 				)
 
 				if master_credit_obj:
@@ -5472,6 +5471,10 @@ else:
 		except:
 			A_Keys = ""
 			A_Values = ""
+		try:
+			ADDON_PRD_ID = Param.ADDON_PRD_ID
+		except:
+			ADDON_PRD_ID = ""
 		try:
 			all_values = Param.AllValues
 		except Exception:
