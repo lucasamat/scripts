@@ -3071,7 +3071,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								ON MAEQUP.EQUIPMENTCATEGORY_ID = MAEQCT.EQUIPMENTCATEGORY_ID JOIN MAEQTY (NOLOCK)
 								ON MAEQTY.EQUIPMENT_TYPE_ID = MAEQUP.EQUIPMENTTYPE_ID
 								WHERE 
-								SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}'
+								SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND MAEQTY.COSTING_RELEVANT = 'True'
 								AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
 						""".format(
 						treeparam=self.tree_param,
