@@ -3051,21 +3051,9 @@ def Related_Sub_Banner(
             if str(multi_buttons) != "":
                 Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
-                    entitlement_obj = Sql.GetFirst("SELECT * FROM SAQRIT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SPLIT = 'YES'".format(ContractRecordId,quote_revision_record_id))
-                    if entitlement_obj:
-                        if entitlement_obj.ENTITLEMENT_DISPLAY_VALUE.upper() == "YES":
-                            if quote_status.QUOTE_STATUS != 'APPROVED':
-                                sec_rel_sub_bnr += (btn)                   
-                        else:
-                            if 'SPLIT' not in btn:
-                                sec_rel_sub_bnr += (btn)
-                    else:
-                        if subTabName =="Items":
-                            if 'SPLIT' not in btn:
-                                sec_rel_sub_bnr += (btn)
-                        else:
-                            if quote_status.QUOTE_STATUS != 'APPROVED':
-                                sec_rel_sub_bnr += (btn)
+                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                        sec_rel_sub_bnr += (btn)
+        
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
 try:
