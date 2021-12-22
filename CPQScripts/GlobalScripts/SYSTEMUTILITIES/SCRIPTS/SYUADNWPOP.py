@@ -1984,8 +1984,9 @@ def POPUPLISTVALUEADDNEW(
 				TreeParam = Product.GetGlobal("TreeParam")
 				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-				account_id = Product.GetGlobal("stp_account_id")
 				
+				account_id_query = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID= '{}' AND QTEREV_RECORD_ID = '{}'".format(str(contract_quote_record_id),str(quote_revision_record_id)))
+				account_id = account_id_query.ACCOUNT_ID
 				
 				if A_Keys != "" and A_Values != "":
 					A_Keys = list(A_Keys)
