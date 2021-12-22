@@ -1972,7 +1972,9 @@ def POPUPLISTVALUEADDNEW(
 			)
 
 			pagedata = ""
-			if QryCount < int(PerPage):
+			if QryCount==0:
+				pagedata = str(QryCount) + " - " + str(QryCount) + " of "
+			elif QryCount < int(PerPage):
 				pagedata = str(Page_start) + " - " + str(QryCount) + " of "
 			else:
 				pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
