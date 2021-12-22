@@ -488,7 +488,7 @@ class SyncQuoteAndCustomTables:
 							# 	}
 							# )
 					# self.quote.OrderStatus.Name
-					#Log.Info("expired"+str(start_date)+"sdate---"+str(created_date))
+					Log.Info("expired"+str(start_date)+"sdate---"+str(end_date))
 					created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 					expired_date = date.today()+ timedelta(days=365)
 					#A055S000P01-7866
