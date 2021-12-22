@@ -2110,7 +2110,7 @@ def POPUPLISTVALUEADDNEW(
 					Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 				)
 
-				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC WHERE ZAFGBOOK = '"+str(TreeParentParam)+"' ")
+				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC WHERE ZUONR = '"+str(account_id)+"' ")
 
 				# order_by = "order by SACRVC.COMP_PRDOFR_NAME ASC"
 
@@ -2137,8 +2137,8 @@ def POPUPLISTVALUEADDNEW(
 				# where_string += """ PRDOFR_ID = '{}' AND PRDOFR_DOCTYP = '{}' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeSuperParentParam),str(getDocType.DOCTYP_ID),contract_quote_record_id,quote_revision_record_id)
 
 				table_data = Sql.GetList(
-					"select {} from SACRVC (NOLOCK) WHERE ZAFGBOOK = '{}' ".format(
-						", ".join(ordered_keys),str(TreeParentParam)
+					"select {} from SACRVC (NOLOCK) WHERE ZUONR = '{}' ".format(
+						", ".join(ordered_keys),str(account_id)
 						# "WHERE " + where_string if where_string else "",
 						# order_by,
 						# pagination_condition,
@@ -2146,11 +2146,11 @@ def POPUPLISTVALUEADDNEW(
 				)
 				
 				table_data = Sql.GetList(
-				   "select {} from SACRVC (NOLOCK) WHERE ZAFGBOOK = '{}' ".format(
-				       ", ".join(ordered_keys), str(TreeParentParam)
+				   "select {} from SACRVC (NOLOCK) WHERE ZUONR = '{}' ".format(
+				       ", ".join(ordered_keys), str(account_id)
 				   )
 				)
-				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZAFGBOOK = 'WHERE ZAFGBOOK = '"+str(TreeParentParam)+"'")
+				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZAFGBOOK = 'WHERE ZUONR = '"+str(account_id)+"'")
 
 				if QueryCountObj is not None:
 					QryCount = QueryCountObj.cnt
