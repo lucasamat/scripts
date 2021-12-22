@@ -4177,7 +4177,7 @@ class SYLDRTLIST:
 								+ str(invs)
 								+ '" data-filter-control="input" class="cust_billing_name" data-title-tooltip="'
 								+ str(qstring)
-								+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
+								+ '" onclick="downloadExcelConfiguration(this)" data-sortable="true" '
 								+ rowspan
 								+'>'
 								+ str(qstring)
