@@ -36,6 +36,11 @@ else:
 	add_style = "display:none"
 
 #Document XML
+#A055S000P01-10549- start
+update_rev_expire_date  = "UPDATE SAQTRV SET REV_EXPIRE_DATE = CONVERT(date,DATEADD(DAY, 90, GETDATE())) where QUOTE_RECORD_ID ='{quote_record_id}'".format(quote_record_id=contract_quote_record_id)
+Sql.RunQuery(update_rev_expire_date)
+
+#A055S000P01-10549-end
 def _insert_subtotal_by_offerring_quote_table():
 	
 	c4c_quote_id = gettoolquote.QUOTE_ID
