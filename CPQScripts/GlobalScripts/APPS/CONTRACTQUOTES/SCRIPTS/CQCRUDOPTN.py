@@ -2357,11 +2357,11 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			GETPARENTSERVICE= Sql.GetFirst("SELECT QUOTE_SERVICE_RECORD_ID FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1))
 			columns = [
 				"CREDITVOUCHER_RECORD_ID",
-				"CREDIT_APPILED AS CREDIT_APPLIED_INGL_CURR",
-				"CREDIT_APPILED AS CREDIT_APPLIED_INVC_CURR"
+				"CREDIT_APPLIED AS CREDIT_APPLIED_INGL_CURR",
+				"CREDIT_APPLIED AS CREDIT_APPLIED_INVC_CURR"
 			]
 			table_name = "SAQRCV"
-			condition_column = "QUOTE_REV_CREDIT_VOUCHER_RECORD_ID"
+			condition_column = "CREDITVOUCHER_RECORD_ID"
 			get_greenbook = Sql.GetFirst("SELECT BUSINESS_UNITS_RECORD_ID FROM SABUUN WHERE BUSINESSUNIT_ID = '"+str(self.tree_parent_level_0)+"' ")
 			get_addon = Sql.GetFirst("SELECT SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1))
 			row_values = {
@@ -2378,12 +2378,12 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				if A_Keys!="" and A_Values!="":
 					for key,val in zip(A_Keys,A_Values):
 						if(val!=""):
-							if key=="QUOTE_REV_CREDIT_VOUCHER_RECORD_ID":
+							if key=="CREDITVOUCHER_RECORD_ID":
 								key="CpqTableEntryId"
 								val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 							qury_str+=" "+key+" LIKE '%"+val+"%' AND "
 				master_credit_obj = self._get_record_obj(
-					columns=["QUOTE_REV_CREDIT_VOUCHER_RECORD_ID"],
+					columns=["CREDITVOUCHER_RECORD_ID"],
 					table_name=master_object_name,
 					table_joins="",
 					where_condition=""" {} ZUONR = '{}' """.format(qury_str,Quote.GetCustomField('STPAccountID').Content,single_record=False)
