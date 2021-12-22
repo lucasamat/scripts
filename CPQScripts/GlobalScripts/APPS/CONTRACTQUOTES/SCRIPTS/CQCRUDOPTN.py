@@ -2373,8 +2373,10 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					try:
 						unapplied = CREDIT_AMOUNTS[key]-APPLIED_CREDITS[key] if APPLIED_CREDITS[key]!='' and CREDIT_AMOUNTS[key] else CREDIT_AMOUNTS[key]
 						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(APPLIED_CREDITS[key],unapplied,id))
-					except:
-						Trace.Write('Value not given for Credits')
+					except Exception,e:
+						Trace.Write('EXCEPTION: '+str(e))
+						Trace.Write('APPLIED_CREDITS'+str(APPLIED_CREDITS))
+						Trace.Write('CREDIT_AMOUNTS'+str(CREDIT_AMOUNTS))
 				else:
 					unapplied = CREDIT_AMOUNTS[key] if CREDIT_AMOUNTS[key]!='' else ''
 					Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(APPLIED_CREDITS[key],unapplied,id))
