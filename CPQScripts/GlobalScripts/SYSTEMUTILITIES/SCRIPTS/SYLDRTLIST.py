@@ -2256,7 +2256,7 @@ class SYLDRTLIST:
 						+"') m where m.ROW BETWEEN "
 						+ str(Page_start)
 						+ " AND "
-						+ str(Page_End)+" ORDER BY PART_LINE_ID,PRICING_STATUS ASC"
+						+ str(Page_End)+" ORDER BY PRICING_STATUS ASC"
 					)
 					QuryCount_str = (
 						"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQIFP (nolock) WHERE QUOTE_RECORD_ID = '"
