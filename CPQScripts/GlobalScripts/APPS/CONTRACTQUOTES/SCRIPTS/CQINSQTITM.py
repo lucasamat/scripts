@@ -1939,8 +1939,7 @@ class ContractQuoteItem:
 				self._quote_items_insert()
 				self._quote_items_object_insert()	
 				self._quote_annualized_items_insert()
-				if self.service_id == 'Z0101':
-					self._insert_quote_item_forecast_parts()
+				self._insert_quote_item_forecast_parts()
 			elif self.is_fpm_spare_service == True:				
 				# Spare Parts Insert/Update (Z0108)...
 				self._simple_quote_items_summary_insert()
@@ -1972,8 +1971,7 @@ class ContractQuoteItem:
 					self._quote_items_insert()
 					self._quote_items_object_insert()	
 					self._quote_annualized_items_insert()
-					if self.service_id == 'Z0101':
-						self._insert_quote_item_forecast_parts()
+					self._insert_quote_item_forecast_parts()
 
 				##simple product quote item insert
 				elif self.is_simple_service == True:
@@ -2001,8 +1999,7 @@ class ContractQuoteItem:
 					self._quote_items_insert()
 					self._quote_items_object_insert()
 					self._quote_annualized_items_insert()
-					if self.service_id == 'Z0101':		
-						self._insert_quote_item_forecast_parts()
+					self._insert_quote_item_forecast_parts()
 						
 				elif self.is_simple_service == True:
 					self._simple_delete_item_related_table_records()
