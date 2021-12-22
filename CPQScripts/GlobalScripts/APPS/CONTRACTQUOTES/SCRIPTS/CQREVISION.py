@@ -165,6 +165,7 @@ def create_new_revision(Opertion,cartrev):
 
 		quote_revision_table_info.AddRow(quote_rev_data)
 		Sql.Upsert(quote_revision_table_info)
+		Quote.GetCustomField('QUOTE_REVISION_DESC').Content  = get_rev_details.DESCRIPTION
 		#create new revision -SAQTRV - update-end
 		#get quote data for update in SAQTMT start
 
