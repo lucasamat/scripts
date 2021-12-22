@@ -121,10 +121,10 @@ def splitserviceinsert():
                     quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
                     if quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
                         Trace.Write("1")
-                        saqsce_split_saqrit(service_entitlement_obj.SERVICE_ID)
+                        servicelevel_split_equip(service_entitlement_obj.SERVICE_ID)
                     elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART'):
                         Trace.Write("2")
-                        saqsge_split_saqrit(service_entitlement_obj.SERVICE_ID)
+                        servicelevel_split_green(service_entitlement_obj.SERVICE_ID)
                     elif quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING+CONSIGNED+ON REQUEST'):
                         Trace.Write("3")
     ##insert for saqico from SAQICO WITH SAQRIT
@@ -136,7 +136,7 @@ def splitserviceinsert():
     #Sql.RunQuery(QueryStatement)   
 
 
-def saqsce_split_saqrit(seid):
+def servicelevel_split_equip(seid):
     Trace.Write("SAQSCE_SPLIT"+str(seid))
     #seid ="Z0091"
     service_entitlement_objas = Sql.GetList("""SELECT SERVICE_ID, ENTITLEMENT_XML ,EQUIPMENT_ID,FABLOCATION_ID,GREENBOOK FROM  SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID ='{seid}' """.format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id,seid=seid))
@@ -194,7 +194,7 @@ def saqsce_split_saqrit(seid):
 
 
 
-def saqsge_split_saqrit(seid):
+def servicelevel_split_green(seid):
     Trace.Write("SAQSGE_SPLIT"+str(seid))
     service_entitlement_objas = Sql.GetList("""SELECT SERVICE_ID, ENTITLEMENT_XML,FABLOCATION_ID,GREENBOOK FROM  SAQSGE (NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID ='{seid}' """.format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id,seid=seid))
     for service_entitlement_obja in service_entitlement_objas:
