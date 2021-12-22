@@ -2032,7 +2032,7 @@ def POPUPLISTVALUEADDNEW(
 					]
 					lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 					sec_str = '<div class="row modulebnr brdr ma_mar_btm">ADD CREDITS<button type="button" id = "Include_add_on" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
-					sec_str += '<div class="col-md-12 padlftrhtnone" id="btnhide"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Credits">Credits</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="credit grid">Use the grid below to add credits to this offerings</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" id = "Include_add_on" onclick="closepopup_scrl(this)">CANCEL</button><button type="button" id="add-equipment" class="btnconfig" onclick="addon_products()" data-dismiss="modal">ADD</button></div></div>'.format(
+					sec_str += '<div class="col-md-12 padlftrhtnone" id="btnhide"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Credits">Credits</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="credit grid">Use the grid below to add credits to this offerings</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" id = "Include_add_on" onclick="closepopup_scrl(this)">CANCEL</button><button type="button" id="add-equipment" class="btnconfig" onclick="addCredits()" data-dismiss="modal">ADD</button></div></div>'.format(
 					Product.GetGlobal("TreeParentLevel1"),Product.GetGlobal("TreeParentLevel1"),
 					getService.SERVICE_DESCRIPTION,getService.SERVICE_DESCRIPTION
 
@@ -2054,7 +2054,7 @@ def POPUPLISTVALUEADDNEW(
 						sec_str += (
 							'<th data-field="'
 							+ str(invs)
-							+ '" data-formatter="add_on_prdListKeyHyperLink" data-sortable="true" data-title-tooltip="'
+							+ '" data-formatter="creditListKeyHyperLink" data-sortable="true" data-title-tooltip="'
 							+ str(qstring)
 							+ '" data-filter-control="input">'
 							+ str(qstring)
