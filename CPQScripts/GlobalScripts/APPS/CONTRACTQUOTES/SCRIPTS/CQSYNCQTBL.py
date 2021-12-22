@@ -1676,7 +1676,7 @@ class SyncQuoteAndCustomTables:
 									mamtrl_record = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(product_offering[0])+"'")
 									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = '"+str(mamtrl_record.CLM_CONTRACT_TYPE)+"', CLM_TEMPLATE_NAME = '"+str(mamtrl_record.CLM_TEMPLATE_NAME)+"' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
 									Sql.RunQuery(sow_update_query)
-							#Log.Info("product_offering_CHK_J"+str(product_offering))
+							Log.Info("product_offering_CHK_J11"+str(start_date))
 							Log.Info("product_offering_CHK_J"+str(contract_quote_obj.CONTRACT_VALID_FROM))
 							if service_ids:
 								
