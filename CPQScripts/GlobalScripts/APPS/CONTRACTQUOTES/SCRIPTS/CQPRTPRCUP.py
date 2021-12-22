@@ -122,7 +122,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 		s = ""
 		if get_part_query:      
 			partids = [p.PART_NUMBER for p in get_part_query]
-			quantity = [float(q.ANNUAL_QUANTITY) for q in get_part_query]  
+			quantity = [q.ANNUAL_QUANTITY for q in get_part_query]  
 			start = start + 1000
 			end = end + 1000
 			for currencies in ('docCurrency','globalCurrency'):
