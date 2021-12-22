@@ -42,7 +42,8 @@ Request_URL="https://cpservices-pricing.cfapps.us10.hana.ondemand.com/api/v1/sta
 webclient.Headers[System.Net.HttpRequestHeader.Authorization] ="Bearer "+str(response['access_token'])
 
 Log.Info("654 response['access_token'] --->"+str(response['access_token']))
-
+Log.Info("revision_CUP==>"+str(revision))
+Log.Info("QUOTE_CUP==>"+str(QUOTE))
 
 x = datetime.datetime.today()
 x= str(x)
