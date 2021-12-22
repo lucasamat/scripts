@@ -283,7 +283,9 @@ class SYLDRTLIST:
 							Trace.Write("else quote type111")
 							rem_list_sp = ["NEW_PART"]
 							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-							eval(Columns).extend(['UNIT_PRICE','EXTENDED_PRICE'])
+							Columns = eval(Columns)
+							Columns = str(Columns.extend(['UNIT_PRICE','EXTENDED_PRICE']))
+							Trace.Write("else quote type"+str(Columns))
 
 			
 			#Hide columns in Related list based on Quote type End
