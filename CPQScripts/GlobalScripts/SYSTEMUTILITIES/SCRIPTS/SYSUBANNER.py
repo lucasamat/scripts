@@ -819,7 +819,8 @@ def Related_Sub_Banner(
                 Trace.Write("760")
                 if subTabName == '':
                     getChain = Sql.GetFirst("SELECT APRCHN_ID FROM ACAPMA (NOLOCK) WHERE APRTRXOBJ_RECORD_ID = '{}' ORDER BY APRCHN_ID ASC".format(quote_revision_record_id))
-                    subTabName = getChain.APRCHN_ID
+                    if getChain:
+                        subTabName = getChain.APRCHN_ID
                 contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                 getval = Sql.GetFirst(" select DISTINCT TOP 10 APRCHN_ID, APRCHN_NAME, APPROVAL_METHOD FROM ACAPCH (nolock) WHERE APRCHN_ID = '"+str(subTabName)+"'")
                 getown = Sql.GetFirst(" select DISTINCT TOP 10 OWNER_NAME from SAQTMT(nolock) where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
