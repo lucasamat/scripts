@@ -2319,7 +2319,7 @@ def POPUPLISTVALUEADDNEW(
 					+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, scrollBarSize :10 }); } } }, 5000); }"
 				)
 				dbl_clk_function += (
-					'console.log("checking--select");$("'
+					'console.log("selecting---"); $("'
 					+ str(table_ids)
 					+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
 					+ str(table_ids)
