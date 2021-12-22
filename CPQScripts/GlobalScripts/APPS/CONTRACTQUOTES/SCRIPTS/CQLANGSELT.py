@@ -175,7 +175,7 @@ def language_select():
 		#Appendixes
 		sec_str += ('<div id="container">')
 		sec_str += (
-				'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a  class="dropdown-item" href="#" onclick="CommonEDIT(this)">EDIT</a></li></ul></div></div>APPENDIXES</div></label></div>')
+				'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>APPENDIXES</div></label></div>')
 
 		sec_str += ('<div id="sec_LANG" class= sec_LANG>')
  		#Checkbox 4
@@ -210,7 +210,7 @@ def language_select():
 		Trace.Write("Else")
 		sec_str += ('<div id="container">')
 		sec_str += (
-				'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a class="dropdown-item" href="#" onclick="CommonEDIT(this)">EDIT</a></li></ul></div></div>GENERAL SETTINGS</div></label></div>')
+				'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>GENERAL SETTINGS</div></label></div>')
 
 	
 		sec_str += ('<div id="sec_LANG" class= sec_LANG>')
@@ -248,7 +248,7 @@ def language_select():
 		#Appendixes
 		sec_str += ('<div id="container">')
 		sec_str += (
-				'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a  class="dropdown-item" href="#" onclick="CommonEDIT(this)">EDIT</a></li></ul></div></div>APPENDIXES</div></label></div>')
+				'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>APPENDIXES</div></label></div>')
 
 		sec_str += ('<div id="sec_LANG" class= sec_LANG>')
  		#Checkbox 4
