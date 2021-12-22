@@ -165,7 +165,7 @@ def create_new_revision(Opertion,cartrev):
 
 		quote_revision_table_info.AddRow(quote_rev_data)
 		Sql.Upsert(quote_revision_table_info)
-		Quote.GetCustomField('QUOTE_REVISION_DESC').Content  = get_previous_rev_data.DESCRIPTION
+		Quote.GetCustomField('QUOTE_REVISION_DESC').Content  = get_previous_rev_data.REVISION_DESCRIPTION
 		Quote.GetCustomField('QUOTE_EXCHANGE_RATE').Content = get_previous_rev_data.EXCHANGE_RATE
 		Quote.GetCustomField('QUOTE_PAYMENT_TERM').Content = get_previous_rev_data.PAYMENTTERM_NAME
 		#create new revision -SAQTRV - update-end
