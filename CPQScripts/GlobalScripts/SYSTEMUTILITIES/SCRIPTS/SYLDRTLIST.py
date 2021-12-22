@@ -282,9 +282,9 @@ class SYLDRTLIST:
 						if RECORD_ID == "SYOBJR-00029" and SubTab.upper() =='INCLUSIONS':
 							Trace.Write("else quote type111")
 							rem_list_sp = ["NEW_PART"]
-							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-							Columns = eval(Columns)
-							Columns = str(Columns.extend(['UNIT_PRICE','EXTENDED_PRICE']))
+							Columns = [ele for ele in  eval(Columns) if ele not in rem_list_sp]
+							Columns.extend(['UNIT_PRICE','EXTENDED_PRICE'])
+							Columns = str(Columns)
 							Trace.Write("else quote type"+str(Columns))
 
 			
