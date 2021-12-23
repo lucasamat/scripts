@@ -78,7 +78,7 @@ class ContractQuoteDownloadTableData:
 			columns = related_list_obj.COLUMNS.replace("'","")[1:-1]			
 			self.object_name = related_list_obj.OBJECT_NAME
 			total_count_obj = Sql.GetFirst("""
-											SELECT COUNT(*)
+											SELECT COUNT(*) as count
 											FROM {TableName} (NOLOCK)
 											WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'""".format(TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.tree_param))
 			if total_count_obj:
