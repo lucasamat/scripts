@@ -962,16 +962,16 @@ try:
 	doc_rec_id = Param.doc_rec_id
 except:
 	doc_rec_id = ""
-if 'ENGLISH DOC' in language:
-	ApiResponse = ApiResponseFactory.JsonResponse(englishdoc())
-elif 'CHINESE DOC' in language:
-	ApiResponse = ApiResponseFactory.JsonResponse(chinesedoc())
-elif 'FPM DOC' in language:
-	ApiResponse = ApiResponseFactory.JsonResponse(fpmdoc())
-elif ACTION == 'POPUP':
-	ApiResponse = ApiResponseFactory.JsonResponse(popup())
-elif ACTION == 'WARNING':
-	ApiResponse = ApiResponseFactory.JsonResponse(warning())
-elif ACTION == 'SUBMIT_TO_CUSTOMER':
-	ApiResponse = ApiResponseFactory.JsonResponse(submit_to_customer(doc_rec_id))
+# if 'ENGLISH DOC' in language:
+# 	ApiResponse = ApiResponseFactory.JsonResponse(englishdoc())
+# elif 'CHINESE DOC' in language:
+# 	ApiResponse = ApiResponseFactory.JsonResponse(chinesedoc())
+# elif 'FPM DOC' in language:
+# 	ApiResponse = ApiResponseFactory.JsonResponse(fpmdoc())
+# elif ACTION == 'POPUP':
+# 	ApiResponse = ApiResponseFactory.JsonResponse(popup())
+# elif ACTION == 'WARNING':
+# 	ApiResponse = ApiResponseFactory.JsonResponse(warning())
+# elif ACTION == 'SUBMIT_TO_CUSTOMER':
+# 	ApiResponse = ApiResponseFactory.JsonResponse(submit_to_customer(doc_rec_id))
 
