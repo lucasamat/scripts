@@ -277,16 +277,12 @@ class SYLDRTLIST:
 						Columns = obj_obj.COLUMNS
 						if RECORD_ID == "SYOBJR-98869":                                
 							rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
-							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-						Trace.Write("else quote type")
-						if RECORD_ID == "SYOBJR-00029" and SubTab.upper() =='INCLUSIONS':
-							Trace.Write("else quote type111")
+							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])						
+						if RECORD_ID == "SYOBJR-00029" and SubTab.upper() =='INCLUSIONS':							
 							rem_list_sp = ["NEW_PART"]
 							Columns = [ele for ele in  eval(Columns) if ele not in rem_list_sp]
 							Columns.extend(['UNIT_PRICE','EXTENDED_PRICE'])
 							Columns = str(Columns)
-							Trace.Write("else quote type"+str(Columns))
-
 			
 			#Hide columns in Related list based on Quote type End
 			Obj_Name = obj_obj.OBJ_REC_ID            
@@ -294,8 +290,7 @@ class SYLDRTLIST:
 			objsk_permiss = Sql.GetFirst(
 				"SELECT CAN_ADD, CAN_EDIT, CAN_DELETE FROM SYOBJR  WHERE SAPCPQ_ATTRIBUTE_NAME = '" + str(RECORD_ID) + "'"
 			)
-			PARENT_LOOKUP_REC_ID = obj_obj.PARENT_LOOKUP_REC_ID
-			
+			PARENT_LOOKUP_REC_ID = obj_obj.PARENT_LOOKUP_REC_ID			
 			if objsk_permiss:
 				if str(objsk_permiss.CAN_EDIT).upper() == "TRUE":
 					Action_permission["Edit"] = obj_obj.CAN_EDIT                    
@@ -304,8 +299,7 @@ class SYLDRTLIST:
 				if str(objsk_permiss.CAN_DELETE).upper() == "TRUE":
 					Action_permission["Delete"] = obj_obj.CAN_DELETE                    
 				else:
-					Action_permission["Delete"] = objsk_permiss.CAN_DELETE
-			
+					Action_permission["Delete"] = objsk_permiss.CAN_DELETE			
 			objd_where_obj = Sql.GetFirst("select * from  SYOBJD (NOLOCK) where RECORD_ID = '" + str(COLUMN_REC_ID) + "'")
 			
 			if objd_where_obj is not None:
@@ -354,8 +348,7 @@ class SYLDRTLIST:
 			# 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 				
 			# Billing Matrix - Pivot - Start
-			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':
-				Trace.Write('452----TreeParam-----'+str(TreeParam))
+			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':				
 				try:
 					if SubTab:
 						# item_billing_plan_obj = Sql.GetFirst("""SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID""".format(contract_quote_record_id,quote_revision_record_id))
@@ -371,15 +364,12 @@ class SYLDRTLIST:
 						# 		if YearCount:
 						# 			end = int(YearCount.split(' ')[-1]) * 12
 						# 			start = end - 12 + 1
-						#commented for loading grid in billing plan 
-						Trace.Write('SubTab----'+str(SubTab))
+						#commented for loading grid in billing plan 						
 						end = int(SubTab.split(' ')[-1]) * 12
 						start = end - 12 + 1
 				except:
 					end = ""
-					start = ""
-					Trace.Write('452----TreeParentLevel0----')		
-				Trace.Write('452----TreeParentLevel0----'+str(TreeParentParam))
+					start = ""					
 				if str(TreeParam) == "Billing":
 					item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
 									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
@@ -406,9 +396,7 @@ class SYLDRTLIST:
 			if CurrentObj is not None:
 				CurrentObj_Recordno = CurrentObj.API_NAME
 				CurrentObj_Name = CurrentObj.OBJECT_NAME
-			CurrentObj2 = Sql.GetFirst(
-				"select OBJECT_NAME from  SYOBJD (NOLOCK) where PARENT_OBJECT_RECORD_ID = '" + str(Obj_Name) + "' "
-			)
+			
 			Qstn_where_obj = Sql.GetFirst(
 				"select QN.* from SYSEFL (NOLOCK) QN INNER JOIN SYSECT (nolock) SE on SE.RECORD_ID = QN.SECTION_RECORD_ID INNER JOIN SYPAGE (nolock) PG on SE.PAGE_RECORD_ID = PG.RECORD_ID where QN.API_NAME = '"
 				+ str(CurrentObj_Name)
@@ -433,7 +421,7 @@ class SYLDRTLIST:
 						RecAttValue = ""
 			table_id = obj_obj.SAPCPQ_ATTRIBUTE_NAME.replace("-", "_") + "_" + str(Obj_Name).replace("-", "_")
 			table_ids = "#" + str(table_id)
-		Trace.Write("table_id =====>>>>> "+str(table_id))
+		
 		if 'SYOBJR_98797' in table_id:
 			table_header = (
 				'<table id="'
@@ -576,7 +564,6 @@ class SYLDRTLIST:
 				if len(list(eval(Columns))) > 1:
 					lookup_disply_list123 = list(eval(Columns))[0]
 			obj_str = ",".join(list(eval(Columns)))
-			Trace.Write("Chkng_tracez"+str(obj_str)+" - "+str(lookup_str))
 			if lookup_str != "":
 				select_obj_str = str(obj_str) + "," + str(lookup_str)
 			else:
@@ -715,15 +702,12 @@ class SYLDRTLIST:
 					)
 					
 				
-				elif RECORD_ID == "SYOBJR-94441":
-					Trace.Write('94441###------')                    
+				elif RECORD_ID == "SYOBJR-94441":					            
 					RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00152").GetValue()
 					Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 				
-				elif RECORD_ID == "SYOBJR-94587" and TreeParam =="Section Actions" :
-					Trace.Write("sectio111----------")
-					RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00154").GetValue()
-					
+				elif RECORD_ID == "SYOBJR-94587" and TreeParam =="Section Actions" :					
+					RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00154").GetValue()					
 					tabRecord = ""
 					gettabres = Sql.GetFirst(
 						"Select TB.RECORD_ID,TB.PAGE_NAME,SE.SECTION_NAME from SYTABS (NOLOCK)TB INNER JOIN SYPAGE (NOLOCK) PG ON PG.TAB_RECORD_ID = TB.RECORD_ID INNER JOIN SYSECT (NOLOCK) SE ON SE.PAGE_RECORD_ID = PG.RECORD_ID where TB.TAB_LABEL = '" + str(TreeSecondSuperTopParentParam) + "'AND SE.SECTION_NAME = '"+str(TreeParentParam)+"'"
@@ -771,8 +755,6 @@ class SYLDRTLIST:
 					
 					Qustr = " where SECTION_RECORD_ID = '" + str(tabRecord) + "'"                    
 				elif RECORD_ID == "SYOBJR-98782":
-					getsectvalue = ""
-
 					GetappValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00154").GetValue()
 					
 					gettabval = Sql.GetFirst(
@@ -802,8 +784,7 @@ class SYLDRTLIST:
 					)
 					
 				
-				elif RECORD_ID == "SYOBJR-94587" and TreeParam =="Section Actions":
-					Trace.Write("sectio----------")
+				elif RECORD_ID == "SYOBJR-94587" and TreeParam =="Section Actions":					
 					gettabval = ""
 
 					GetappValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00154").GetValue()
@@ -1077,8 +1058,7 @@ class SYLDRTLIST:
 							+ str(sectrecid)
 							+ "'"
 						)
-					elif RECORD_ID == "SYOBJR-94441":
-						Trace.Write('94441------')
+					elif RECORD_ID == "SYOBJR-94441":						
 						RECORD_ID = Product.GetGlobal("RecordNo")                        
 						if RECORD_ID != "":
 							Qury_str = (
@@ -1139,8 +1119,7 @@ class SYLDRTLIST:
 						gettabval= Sql.GetFirst(
 							"Select RECORD_ID,ACTION_NAME from SYPSAC where SECTION_NAME = '" + str(TreeParentParam) + "'"
 						)
-					elif RECORD_ID == "SYOBJR-98869":
-						Trace.Write('1196---contract_quote_record_id-------'+str(contract_quote_record_id))
+					elif RECORD_ID == "SYOBJR-98869":						
 						RecAttValue = contract_quote_record_id
 						#Trace.Write('1196---RecAttValue--RecAttValue-----'+str(RecAttValue))
 						Qury_str = ("select DISTINCT TOP "
@@ -1196,7 +1175,6 @@ class SYLDRTLIST:
 								+ "'"
 							)
 						else:
-
 							Qury_str = (
 								"select top "
 								+ str(PerPage)
@@ -1217,10 +1195,8 @@ class SYLDRTLIST:
 								+ "' and OBJECT_NAME='"
 								+ str(CommonTreeParentParam)
 								+ "'"
-							)
-					
-					else:
-						
+							)					
+					else:						
 						if Wh_API_NAME == "FACTOR_ID":
 							dataobjPRICEFACTOR = Sql.GetFirst(
 								"SELECT FACTOR_ID FROM PRCAFC WHERE CALCULATION_FACTORS_RECORD_ID='" + str(RecAttValue) + "'"
@@ -1249,7 +1225,6 @@ class SYLDRTLIST:
 										if str(current_tab).upper() == "APPROVAL CHAIN":
 											RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00001").GetValue()
 										else:
-											Trace.Write("RecAttValue EXCEPT !!!")
 											RecAttValue = ""
 								Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 							elif current_prod.upper() == "PRICE MODELS" and TP == "Sales":                                
@@ -1275,14 +1250,10 @@ class SYLDRTLIST:
 								TreeParentParam = Product.GetGlobal("TreeParentLevel0") 
 								Wh_API_NAMEs = "PAGE_NAME"                       
 								Qustr =  " where PAGE_NAME = '" + str(TreeParentParam) + "'"         
-							else:    
-								Trace.Write("check1234")                         
+							else:    								                  
 								Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
-								Trace.Write("Qustr"+str(Qustr))
-				
 
-				if str(Qury_str) == "" and str(QuryCount_str) == "":                    
-					QStrWhere = QStrWhere_Count = ""                   
+				if str(Qury_str) == "" and str(QuryCount_str) == "":
 					TreeParam = Product.GetGlobal("TreeParam")
 					TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 					TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
@@ -1292,9 +1263,7 @@ class SYLDRTLIST:
 						CurrentTabName = "Quotes"
 					if str(RECORD_ID) == "SYOBJR-98795":                                           
 						qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
-						Serv_id = SqlHelper.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")    
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")						  
 						LineAndEquipIDList = TreeParam.split(' - ')
 						
 						if getyears == 1:
@@ -1333,8 +1302,7 @@ class SYLDRTLIST:
 						elif getyears == 4:
 							col_year =  'YEAR_1,YEAR_2,YEAR_3,YEAR_4'
 						else:
-							col_year = 'YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5'    
-						Trace.Write("TP "+str(TreeParam)+"TPP "+str(TreeParentParam)+"TSP "+str(Product.GetGlobal("TreeParentLevel1")))
+							col_year = 'YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5'
 						if Product.GetGlobal("TreeParentLevel2") == "Quote Items":                            
 							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 							acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
@@ -1342,8 +1310,7 @@ class SYLDRTLIST:
 							error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
 							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-							TreeParentParam = Product.GetGlobal("TreeParentLevel1")
-							
+							TreeParentParam = Product.GetGlobal("TreeParentLevel1")							
 							try:
 								if str(TreeParentParam.split("-")[4]):
 									ServiceId = TreeParentParam.split("-")[-3].strip()
@@ -1351,8 +1318,7 @@ class SYLDRTLIST:
 									ServiceId = TreeParentParam.split("-")[1].strip() 
 							except:
 								ServiceId = TreeParentParam.split("-")[1].strip()
-							fab_location_id = Product.GetGlobal("TreeParentLevel0")                    
-							Trace.Write("ServiceID :: {}".format(str(ServiceId)))
+							fab_location_id = Product.GetGlobal("TreeParentLevel0")
 							Qury_str = (
 									"SELECT DISTINCT TOP "
 									+ str(PerPage)
@@ -1414,8 +1380,7 @@ class SYLDRTLIST:
 								)
 							#A055S000P01-4578 starts
 							elif TreeParam == "Quote Items":
-								saqico_cols =""
-								Trace.Write('column---'+str(Columns)+str(type(Columns)))
+								#saqico_cols =""								
 								#pricing_curr = pricing_picklist_value
 									
 								# if pricing_picklist_value == 'Document Currency':
@@ -6139,9 +6104,7 @@ class SYLDRTLIST:
 						TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
-						Serv_id = SqlHelper.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")    
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")						
 						LineAndEquipIDList = TreeParam.split(' - ')                        
 						if getyears == 1:
 							col_year =  'YEAR_1'
@@ -7545,9 +7508,7 @@ class SYLDRTLIST:
 							TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 							qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-								contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
-							Serv_id = SqlHelper.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")    
+								contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")							  
 							LineAndEquipIDList = TreeParam.split(' - ')
 							
 							if getyears == 1:
@@ -8291,7 +8252,6 @@ class SYLDRTLIST:
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 						elif str(RECORD_ID) == "SYOBJR-98875":
 							quote_item_revision_rec_id = Product.GetGlobal('get_quote_item_service')
-							Trace.Write('quote_item_revision_rec_id----'+str(quote_item_revision_rec_id))
 							get_gb_val = Sql.GetFirst("SELECT GREENBOOK FROM SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID= '"+str(quote_item_revision_rec_id)+"'")
 							if get_gb_val:
 								Qustr += "  where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "'  AND QTEITM_RECORD_ID = '"+str(quote_item_revision_rec_id)+"' AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
@@ -8795,10 +8755,6 @@ class SYLDRTLIST:
 													else:
 														#Trace.Write("value1234"+str(value1234)+"key_value"+str(key_value)+"value123"+str(value123))
 														new_dict[value123] = value1234
-
-
-
-
 					
 					new_dict["ACTIONS"] = Action_str       
 					new_dict["ids"] = ids
@@ -8824,8 +8780,7 @@ class SYLDRTLIST:
 						footer_tot += '<th colspan="1" class="text-right">{}</th>'.format(gettotalamt)
 						for val in gettotaldateamt:
 							getamt = str(my_format.format(round(float(val.BILLING_VALUE), int(decimal_place))))
-							footer_tot += '<th class="text-right">{}</th>'.format(getamt)
-					
+							footer_tot += '<th class="text-right">{}</th>'.format(getamt)					
 					
 				for key, col_name in enumerate(list(eval(Columns))):                    
 					if ObjectName == 'SAQIBP' and TreeParam != 'Quote Items' and (col_name in billing_date_column or col_name == 'QUOTE_CURRENCY'):                        
@@ -8838,8 +8793,7 @@ class SYLDRTLIST:
 								for data in table_list:                                    
 									tovalue += float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0].replace(",",""))
 									getamt = str(my_format.format(round(float(tovalue), int(decimal_place))))                               
-								footer += '<th class="text-right">{}</th>'.format(getamt)
-							
+								footer += '<th class="text-right">{}</th>'.format(getamt)							
 							else:
 								if table_list:
 									currency_obj = re.search(r'>(.+?)<', table_list[0].get(col_name))
