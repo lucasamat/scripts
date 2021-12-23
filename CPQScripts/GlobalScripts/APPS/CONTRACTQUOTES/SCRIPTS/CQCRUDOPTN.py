@@ -2369,8 +2369,10 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			for key,val in enumerate(list(self.values)):
 				val = re.sub("[^0-9]","",val)
 				id = val.lstrip("0")
+				Trace.Write('key-->'+str(key))
+				Trace.Write('val-->'+str(val))
 				if APPLIED_CREDITS!='' and CREDIT_AMOUNTS!='':
-    				Trace.Write('APPLIED_CREDITS'+str(list(APPLIED_CREDITS)))
+					Trace.Write('APPLIED_CREDITS'+str(list(APPLIED_CREDITS)))
 					Trace.Write('CREDIT_AMOUNTS'+str(list(CREDIT_AMOUNTS)))
 					unapplied = CREDIT_AMOUNTS[key]-APPLIED_CREDITS[key] if APPLIED_CREDITS[key]!='' and CREDIT_AMOUNTS[key] else CREDIT_AMOUNTS[key]
 					Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(APPLIED_CREDITS[key],unapplied,id))
