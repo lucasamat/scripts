@@ -1785,9 +1785,9 @@ def Related_Sub_Banner(
             #ThirdValue = str(TreeParentParam)
             ThirdLable = "Greenbook"
             ThirdValue = str(TreeParentParam) if "Add" in TreeParam else str(TreeParam)
-            if subTabName != "Details":
-                FourthLable = "Equipment"
-                FifthValue = "All"
+            # if subTabName != "Details":
+            #     FourthLable = "Equipment"
+            #     FifthValue = "All"
         elif subTabName == "Details":			
             PrimaryLable = ListKey[0]
             PrimaryValue = PrimaryValue
