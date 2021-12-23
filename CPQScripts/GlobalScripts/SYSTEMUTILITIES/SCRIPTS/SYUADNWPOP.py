@@ -2112,7 +2112,7 @@ def POPUPLISTVALUEADDNEW(
 						+ str(table_ids)
 						+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); $("#noRecDisp").remove() } else{ var date_field = [];$("'
 						+ str(table_ids)
-						+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#Include_add_on_addnew").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
+						+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true);  $("#add_credits_add_new > tbody").html("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
 						+ str(table_ids)
 						+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); } else{ $("'
 						+ str(table_ids)
@@ -2120,9 +2120,7 @@ def POPUPLISTVALUEADDNEW(
 					)
 					
 
-				pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
-					Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
-				)
+				pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count)
 
 				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC WHERE ZUONR = '"+str(account_id)+"' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '"+str(TreeParentParam)+"' AND SERVICE_ID = '"+str(ADDON_PRD_ID)+"' )")
 
@@ -2193,9 +2191,9 @@ def POPUPLISTVALUEADDNEW(
 				if offset_skip_count == 0:
 					records_end = fetch_count
 				Trace.Write('offset cnt '+str(offset_skip_count))
-				records_end = offset_skip_count + fetch_count - 1
+				records_end = offset_skip_count + fetch_count
 				records_end = pagination_total_count if pagination_total_count < records_end else records_end
-				records_start_and_end = "{} - {} of ".format(offset_skip_count, records_end)
+				records_start_and_end = "{} - {} of ".format(offset_skip_count+1 if offset_skip_count==0 else offset_skip_count, records_end)
 				disable_next_and_last = ""
 				disable_previous_and_first = ""
 				if records_end == pagination_total_count:
@@ -2348,7 +2346,9 @@ def POPUPLISTVALUEADDNEW(
 				)
 
 				pagedata = ""
-				if QryCount < int(PerPage):
+				if QryCount==0:
+					pagedata = str(QryCount) + " - " + str(QryCount) + " of "
+				elif QryCount < int(PerPage):
 					pagedata = str(Page_start) + " - " + str(QryCount) + " of "
 				else:
 					pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
