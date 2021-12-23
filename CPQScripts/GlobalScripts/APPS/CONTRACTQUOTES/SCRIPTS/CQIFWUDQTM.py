@@ -40,6 +40,7 @@ def quoteiteminsert(Qt_id):
 	# items_data = {}
 	
 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
+	get_exch_rate = Sql.GetFirst("SELECT * FROM SAQTRV where QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(Qt_id,get_rev_rec_id.QTEREV_RECORD_ID))
 	# get_curr = get_rev_rec_id.QUOTE_CURRENCY
 	# items_obj = Sql.GetList("SELECT SERVICE_ID, LINE,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE, ISNULL(MODEL_PRICE, 0) as MODEL_PRICE, ISNULL(CEILING_PRICE, 0) as CEILING_PRICE, ISNULL(SALES_DISCOUNT_PRICE, 0) as SALES_DISCOUNT_PRICE, ISNULL(BD_PRICE, 0) as BD_PRICE,ISNULL(BD_PRICE_MARGIN, 0) as BD_PRICE_MARGIN, ISNULL(NET_PRICE, 0) as NET_PRICE, ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, ISNULL(NET_VALUE, 0) as NET_VALUE, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_id,get_rev_rec_id.QTEREV_RECORD_ID))
 	# if items_obj:
@@ -131,6 +132,17 @@ def quoteiteminsert(Qt_id):
 	
 
 	#Quote.Save()
+	get_exch_rate = get_exch_rate.EXCHANGE_RATE
+	Sql.RunQuery("""UPDATE SAQRIT 
+				SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0) 
+				FROM SAQRIT (NOLOCK)
+					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' """.format(QuoteRecordId=get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID,rev =get_rev_rec_id.QTEREV_RECORD_ID ))
+	Sql.RunQuery("""UPDATE SAQRIT 
+		SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(get_exch_rate)+""" , 
+		NET_VALUE_INGL_CURR = NET_VALUE*"""+str(get_exch_rate)+""",
+		UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(get_exch_rate)+"""
+		FROM SAQRIT (NOLOCK)
+			WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' """.format(QuoteRecordId=get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID, rev =get_rev_rec_id.QTEREV_RECORD_ID))
 	##updating saqris
 	Sql.RunQuery("""UPDATE SAQRIS 
 							SET UNIT_PRICE_INGL_CURR = IQ.UNIT_PRICE_INGL_CURR, 
