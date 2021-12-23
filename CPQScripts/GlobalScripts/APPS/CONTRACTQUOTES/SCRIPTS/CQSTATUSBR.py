@@ -527,6 +527,7 @@ def Dynamic_Status_Bar():
 	
 	if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
 		#Trace.Write('sales11=======')
+		item_covered_obj =""
 		getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		#getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -608,6 +609,8 @@ def Dynamic_Status_Bar():
 				where = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id,service_id.SERVICE_ID)
 				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Quote.GetGlobal("contract_quote_record_id"), "ContractQuoteRevisionRecordId":quote_revision_record_id, "ServiceId":service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
+		if str(item_covered_obj):       
+			_insert_billing_matrix()
 		##calling the iflow for pricing..
 		try:
 			contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id")))
@@ -618,11 +621,10 @@ def Dynamic_Status_Bar():
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
 
-	# Quote Item Inserts - Ends
+		# Quote Item Inserts - Ends
 
 	
-	if str(item_covered_obj):       
-		_insert_billing_matrix()
+		
 	return status
 try:
 	quote_item_insert = Param.quote_item_insert
