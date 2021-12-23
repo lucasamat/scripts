@@ -48,7 +48,7 @@ class ContractQuoteDownloadTableData:
 		#for offset_skip_count in range(1, table_total_rows, 1000):
 		start = 1
 		end = 1000
-		while end <= table_total_rows:
+		while start < table_total_rows:
 			query_string_with_pagination = """
 							SELECT DISTINCT {Columns} FROM (
 								SELECT DISTINCT {Columns}, ROW_NUMBER()OVER(ORDER BY CpqTableEntryId) AS SNO FROM (
