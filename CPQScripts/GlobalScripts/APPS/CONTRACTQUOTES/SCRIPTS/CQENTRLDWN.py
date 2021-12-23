@@ -943,7 +943,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						Sql.RunQuery(UpdateEntitlement)
 					
 				else:
-					Log.Info('durga---844--where_cond--'+str(where_cond))
+					
 					get_value_query = Sql.GetList("select GREENBOOK,count(*) as cnt from SAQSCO {} group by GREENBOOK ".format(where_cond ))			
 					##value driver
 					val_list = []
