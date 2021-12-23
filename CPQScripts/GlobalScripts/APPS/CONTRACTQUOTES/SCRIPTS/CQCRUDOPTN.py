@@ -2315,13 +2315,13 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							#NewValue = ''
 						
 						#A055S000P01-7401 START
-						if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.get("ADNPRD_ID")) ) and ent_disp_val != '':
+						if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.ADNPRD_ID) ) and ent_disp_val != '':
 							val = ""
 							if str(ent_disp_val) == 'Comprehensive':
 								val = "COMPREHENSIVE SERVICES"
 							elif str(ent_disp_val) == 'Complementary':
 								val = "COMPLEMENTARY PRODUCTS"
-							Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),self.contract_quote_record_id,self.quote_revision_record_id,OfferingRow_detail.get("ADNPRD_ID")))
+							Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),self.contract_quote_record_id,self.quote_revision_record_id,OfferingRow_detail.ADNPRD_ID))
 						#A055S000P01-7401 END
 						DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 						insertservice += """<QUOTE_ITEM_ENTITLEMENT>
@@ -2340,18 +2340,18 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					insertservice = insertservice.encode('ascii', 'ignore').decode('ascii')
 					
 					tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
-					tbrow["QUOTE_ID"]=OfferingRow_detail.get("QUOTE_ID")
+					tbrow["QUOTE_ID"]=OfferingRow_detail.QUOTE_ID
 					tbrow["ENTITLEMENT_XML"]=insertservice
-					tbrow["QUOTE_NAME"]=OfferingRow_detail.get("QUOTE_NAME")
-					tbrow["QUOTE_RECORD_ID"]=OfferingRow_detail.get("QUOTE_RECORD_ID")
-					tbrow["QTESRV_RECORD_ID"]=OfferingRow_detail.get("QUOTE_SERVICE_RECORD_ID")
-					tbrow["SERVICE_RECORD_ID"]=OfferingRow_detail.get("SERVICE_RECORD_ID")
-					tbrow["SERVICE_ID"]=OfferingRow_detail.get("ADNPRD_ID")
-					tbrow["SERVICE_DESCRIPTION"]=OfferingRow_detail.get("ADNPRD_DESCRIPTION")
+					tbrow["QUOTE_NAME"]=OfferingRow_detail.QUOTE_NAME
+					tbrow["QUOTE_RECORD_ID"]=OfferingRow_detail.QUOTE_RECORD_ID
+					tbrow["QTESRV_RECORD_ID"]=OfferingRow_detail.QUOTE_SERVICE_RECORD_ID
+					tbrow["SERVICE_RECORD_ID"]=OfferingRow_detail.SERVICE_RECORD_ID
+					tbrow["SERVICE_ID"]=OfferingRow_detail.ADNPRD_ID
+					tbrow["SERVICE_DESCRIPTION"]=OfferingRow_detail.ADNPRD_DESCRIPTION
 					tbrow["CPS_CONFIGURATION_ID"]=Fullresponse['id']
-					tbrow["SALESORG_RECORD_ID"]=OfferingRow_detail.get("SALESORG_RECORD_ID")
-					tbrow["SALESORG_ID"]=OfferingRow_detail.get("SALESORG_ID")
-					tbrow["SALESORG_NAME"]=OfferingRow_detail.get("SALESORG_NAME")
+					tbrow["SALESORG_RECORD_ID"]=OfferingRow_detail.SALESORG_RECORD_ID
+					tbrow["SALESORG_ID"]=OfferingRow_detail.SALESORG_ID
+					tbrow["SALESORG_NAME"]=OfferingRow_detail.SALESORG_NAME
 					tbrow["CPS_MATCH_ID"] = 1
 					tbrow["CPQTABLEENTRYADDEDBY"] = self.user_id
 					tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
@@ -2369,15 +2369,15 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						try:
 							Trace.Write('1408--NewValue----'+str(NewValue))					
 							add_where =''
-							ServiceId = OfferingRow_detail.get("SERVICE_ID")
-							whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.get("QUOTE_RECORD_ID"),OfferingRow_detail.get("SERVICE_ID"),self.quote_revision_record_id)
+							ServiceId = OfferingRow_detail.SERVICE_ID
+							whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.SERVICE_ID,self.quote_revision_record_id)
 							ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 							result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 						except:
 							#Log.Info('1408------error--')
 							Trace.Write('error--296')
 					try:
-						if OfferingRow_detail.get("SERVICE_ID") == 'Z0016':
+						if OfferingRow_detail.SERVICE_ID == 'Z0016':
 							try:
 								QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
 								QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
