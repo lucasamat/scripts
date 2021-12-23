@@ -334,7 +334,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					{UserId} as CPQTABLEENTRYADDEDBY, 
 					GETDATE() as CPQTABLEENTRYDATEADDED
 				FROM  SAQRIT (NOLOCK) 
-				WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND  and NET_PRICE > 0 QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{service_id}' AND (OBJECT_ID  IS NULL OR OBJECT_ID = '')""".format(
+				WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND  and NET_PRICE > 0 AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{service_id}' AND (OBJECT_ID  IS NULL OR OBJECT_ID = '')""".format(
 					UserId=user_id, QuoteRecordId=contract_quote_rec_id,
 					RevisionRecordId=quote_revision_rec_id,
 					BillingDate=billing_date,billing_end_date=billing_end_date,
