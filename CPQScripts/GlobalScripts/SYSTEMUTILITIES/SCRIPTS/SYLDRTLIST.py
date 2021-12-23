@@ -3094,8 +3094,7 @@ class SYLDRTLIST:
 								try:
 									value1234 = value1234[1]
 								except:
-									value1234 = value1234
-								
+									value1234 = value1234								
 							else:
 								value1234 = value1234.replace('"', "&quot;")
 								value1234 = value1234.replace("<p>", " ")
@@ -3112,8 +3111,6 @@ class SYLDRTLIST:
 							if value123 in img_list:
 								new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
 							else:
-								Trace.Write('At line 2832-- second else')
-
 								new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + str(value1234) + '">' + str(value1234) + "</abbr>")  
 								#new_dict[value123] = value1234                           
 						## addon product hyperlink starts
@@ -3163,8 +3160,7 @@ class SYLDRTLIST:
 										if str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'NET_PRICE':							
 											new_dict[value123] = (
 												'<input id ="' + key_value + '" value="' + value1234 + '" style="border: 0px solid;" disabled> </input>'
-											)
-										
+											)										
 										#the Billing Matrix based on the Warranty Date  start
 										if str(value123) == "WARRANTY_END_DATE" and RECORD_ID != "SYOBJR-00009":
 											#Trace.Write('getindication--3075---'+str(getindication))
@@ -3181,11 +3177,9 @@ class SYLDRTLIST:
 												+ " = '"
 												+ str(contract_quote_record_id)
 												+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) "
-											)
-											concatedata = ""
+											)											
 											if curr_symbol_obj:
-												curr_symbol = curr_symbol_obj.CURRENCY
-												
+												curr_symbol = curr_symbol_obj.CURRENCY												
 												try:
 													decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES								
 													my_format = "{:,." + str(decimal_place) + "f}"
@@ -8580,8 +8574,7 @@ class SYLDRTLIST:
 										+ " = '"
 										+ str(contract_quote_record_id)
 										+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') "
-									)
-									concatedata = ""
+									)									
 									if curr_symbol_obj:
 										curr_symbol = curr_symbol_obj.CURRENCY                                            
 										try:
