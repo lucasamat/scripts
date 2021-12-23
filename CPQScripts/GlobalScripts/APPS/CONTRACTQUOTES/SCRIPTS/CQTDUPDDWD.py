@@ -20,7 +20,8 @@ class ContractQuoteDownloadTableData:
 		self.user_id = str(User.Id)
 		self.user_name = str(User.UserName)		
 		self.datetime_value = datetime.datetime.now()		
-		self.action_type = kwargs.get('action_type')		
+		self.action_type = kwargs.get('action_type')	
+		self.related_list_attr_name = kwargs.get('related_list_attr_name')	
 		self.source_object_name = ''	
 		self.set_contract_quote_related_details()
 		
@@ -33,7 +34,7 @@ class ContractQuoteDownloadTableData:
 			self.contract_quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 		except Exception:
 			self.contract_quote_revision_record_id = ''
-		contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, SALE_TYPE, C4C_QUOTE_ID, QTEREV_ID, QUOTE_CURRENCY, QUOTE_CURRENCY_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
+		contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, QTEREV_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
 		if contract_quote_obj:
 			self.contract_quote_id = contract_quote_obj.QUOTE_ID
 			self.contract_quote_revision_id = contract_quote_obj.QTEREV_ID				
@@ -41,3 +42,19 @@ class ContractQuoteDownloadTableData:
 			self.contract_quote_id = ''
 			self.contract_quote_revision_id = ''
 		return True
+	
+	def _do_opertion(self):
+		related_list_obj = Sql.GetFirst(
+			"""SELECT SYOBJR.RECORD_ID, SYOBJR.SAPCPQ_ATTRIBUTE_NAME, SYOBJR.PARENT_LOOKUP_REC_ID, SYOBJR.OBJ_REC_ID,
+										SYOBJR.NAME, SYOBJR.COLUMN_REC_ID, SYOBJR.COLUMNS, SYOBJH.OBJECT_NAME
+				FROM SYOBJR (NOLOCK) 
+				INNER JOIN SYOBJH (NOLOCK) ON SYOBJH.RECORD_ID = SYOBJR.OBJ_REC_ID
+				WHERE SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{AttributeName}'
+				""".format(	AttributeName=self.related_list_attr_name)
+		)
+		if related_list_obj:
+			pass
+
+parameters = {'related_list_attr_name':Param.RelatedListAttributeName, 'action_type':Param.ActionType}
+contract_quote_download_table_data_obj = ContractQuoteDownloadTableData(**parameters)
+contract_quote_download_table_data_obj._do_opertion()
