@@ -162,13 +162,24 @@ def quoteiteminsert(Qt_id):
 						WHERE SAQRIS.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIS.QTEREV_RECORD_ID='{rev}' """.format( QuoteRecordId= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,rev =get_rev_rec_id.QTEREV_RECORD_ID))
 						
 	##updating quote summary values in saqtrv
-	
+	get_saqtrv_price = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'".format(QuoteRecordId=get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID,rev =get_rev_rec_id.QTEREV_RECORD_ID))
+	net_price_ingl = 0
+	net_value_ingl = 0
+	tax_amt_ingl = 0
+	#net_price = 0
+	if get_saqtrv_price:
+		if get_saqtrv_price.NET_PRICE_INGL_CURR:
+			net_price_ingl = get_saqtrv_price.NET_PRICE_INGL_CURR
+		if get_saqtrv_price.NET_VALUE_INGL_CURR:
+			net_value_ingl = get_saqtrv_price.NET_VALUE_INGL_CURR
+		if get_saqtrv_price.TAX_AMOUNT_INGL_CURR:
+			tax_amt_ingl = get_saqtrv_price.TAX_AMOUNT_INGL_CURR
 
 	Sql.RunQuery("""UPDATE SAQTRV
 						SET 
-						SAQTRV.TAX_AMOUNT_INGL_CURR = IQ.TAX_AMOUNT_INGL_CURR,						
-						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
-						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR
+						SAQTRV.TAX_AMOUNT_INGL_CURR = IQ.TAX_AMOUNT_INGL_CURR+"""+str(tax_amt_ingl)+""",						
+						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR+"""+str(net_price_ingl)+""",
+						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR+"""+str(net_value_ingl)+"""
 												
 						FROM SAQTRV (NOLOCK)
 						INNER JOIN (SELECT SAQRIS.QUOTE_RECORD_ID, SAQRIS.QTEREV_RECORD_ID,
