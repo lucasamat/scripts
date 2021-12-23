@@ -2346,8 +2346,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					tbrow["QUOTE_RECORD_ID"]=OfferingRow_detail.get("QUOTE_RECORD_ID")
 					tbrow["QTESRV_RECORD_ID"]=OfferingRow_detail.get("QUOTE_SERVICE_RECORD_ID")
 					tbrow["SERVICE_RECORD_ID"]=OfferingRow_detail.get("SERVICE_RECORD_ID")
-					tbrow["SERVICE_ID"]=OfferingRow_detail.ADNPRD_ID
-					tbrow["SERVICE_DESCRIPTION"]=OfferingRow_detail.get("SERVICE_DESCRIPTION")
+					tbrow["SERVICE_ID"]=OfferingRow_detail.get("ADNPRD_ID")
+					tbrow["SERVICE_DESCRIPTION"]=OfferingRow_detail.get("ADNPRD_DESCRIPTION")
 					tbrow["CPS_CONFIGURATION_ID"]=Fullresponse['id']
 					tbrow["SALESORG_RECORD_ID"]=OfferingRow_detail.get("SALESORG_RECORD_ID")
 					tbrow["SALESORG_ID"]=OfferingRow_detail.get("SALESORG_ID")
