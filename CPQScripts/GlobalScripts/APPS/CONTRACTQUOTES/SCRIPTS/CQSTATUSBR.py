@@ -560,25 +560,30 @@ def Dynamic_Status_Bar():
 			price_bar = "no_quote_items"
 							
 		#if getsalesorg_ifo and getfab_info:
-		if getsalesorg_ifo:
-			buttonvisibility=''
+		if getsalesorg_ifo:			
 			Trace.Write('salesorg--present---')
 			if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '' and complete_status != '' and Text == "COMPLETE STAGE":
+				Trace.Write('stage--1')
 				update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 								
 				Sql.RunQuery(update_workflow_status)
 
-			get_workflow_status = Sql.GetFirst(" SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-			if get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
-			
+			if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '' and complete_status != '' and price_bar == 'not_acquired_status' and Text == "COMPLETE STAGE":
+				Trace.Write('stage--2')
+				update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING REVIEW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+								
+				Sql.RunQuery(update_workflow_status)
+
+			get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+			if get_workflow_status:			
 				Trace.Write('No button-2454-')
-				buttonvisibility = "show_button"            
+				status = get_workflow_status.WORKFLOW_STATUS           
 			else:
 				Trace.Write('No button--1')
-				#buttonvisibility = "Hide_button"
+				status = ""
 		else:
 			Trace.Write('No button--2')
-			#buttonvisibility = "Hide_button"
+			status = ""
 	#Trace.Write("buttonvisibility=="+str(buttonvisibility))
 	#if str(item_covered_obj):       
 		#_insert_billing_matrix()
@@ -617,7 +622,7 @@ def Dynamic_Status_Bar():
 	
 	if str(item_covered_obj):       
 		_insert_billing_matrix()
-	return buttonvisibility,price_bar
+	return status
 try:
 	quote_item_insert = Param.quote_item_insert
 except:
