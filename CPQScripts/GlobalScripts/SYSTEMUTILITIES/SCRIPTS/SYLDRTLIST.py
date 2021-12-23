@@ -2149,6 +2149,8 @@ class SYLDRTLIST:
 						Trace.Write('In 1958---*'+str(Qustr))						
 						if str(RECORD_ID) == "SYOBJR-98874" or str(RECORD_ID) == "SYOBJR-98873":
 							Qustr += " AND LINE = '"+str(line_item)+"'"
+						if str(RECORD_ID) == "SYOBJR-98880":
+							Qustr += " AND GREENBOOK = '"+str(TreeParentParam)+"'"
 						if str(RECORD_ID) == "SYOBJR-98875":
 							quote_item_revision_rec_id = Product.GetGlobal('get_quote_item_service')
 							Trace.Write('quote_item_revision_rec_id----'+str(quote_item_revision_rec_id))
