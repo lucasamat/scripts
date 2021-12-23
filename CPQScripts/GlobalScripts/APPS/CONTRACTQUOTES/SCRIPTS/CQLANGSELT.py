@@ -114,7 +114,7 @@ saqdoc_output_insert="""INSERT SAQDOC (
 					'{qt_rev_rec_id}' as QTEREV_RECORD_ID
 					FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(doc_id='Pending',doc_name='',quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=contract_quote_record_id,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
 	#Log.Info(qtqdoc)
-Sql.RunQuery(saqdoc_output_insert)
+#Sql.RunQuery(saqdoc_output_insert)
 _insert_subtotal_by_offerring_quote_table()
 gen_doc = Quote.GenerateDocument('AMAT_SUBTOTAL_OFFERING', GenDocFormat.PDF)
 fileName = Quote.GetLatestGeneratedDocumentFileName()
