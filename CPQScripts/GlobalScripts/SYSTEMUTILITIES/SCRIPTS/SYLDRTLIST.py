@@ -279,7 +279,7 @@ class SYLDRTLIST:
 							rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
 							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])						
 						if RECORD_ID == "SYOBJR-00029" and SubTab.upper() =='INCLUSIONS':							
-							rem_list_sp = ["NEW_PART"]
+							rem_list_sp = ["NEW_PART",'FABLOCATION_ID','GREENBOOK']
 							Columns = [ele for ele in  eval(Columns) if ele not in rem_list_sp]
 							Columns.extend(['UNIT_PRICE','EXTENDED_PRICE'])
 							Columns = str(Columns)
