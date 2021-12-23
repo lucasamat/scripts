@@ -958,7 +958,10 @@ try:
 	ACTION = Param.ACTION
 except:
 	ACTION = ""
-
+try:
+	doc_rec_id = Param.doc_rec_id
+except:
+	doc_rec_id = ""
 if 'ENGLISH DOC' in language:
 	ApiResponse = ApiResponseFactory.JsonResponse(englishdoc())
 elif 'CHINESE DOC' in language:
