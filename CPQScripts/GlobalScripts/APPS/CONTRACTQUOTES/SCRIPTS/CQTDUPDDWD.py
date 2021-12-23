@@ -49,7 +49,7 @@ class ContractQuoteDownloadTableData:
 			query_string_with_pagination = """
 							SELECT DISTINCT {Columns} FROM (
 								SELECT DISTINCT {Columns}, ROW_NUMBER()OVER(ORDER BY CpqTableEntryId) AS SNO FROM (
-									SELECT DISTINCT {Columns}
+									SELECT DISTINCT {Columns}, CpqTableEntryId
 									FROM {TableName} (NOLOCK)
 									WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'
 									) IQ)OQ
