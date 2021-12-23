@@ -320,7 +320,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					QTEREV_RECORD_ID,
 					{BillingDate} as BILLING_DATE,						
 					0 as BILLING_YEAR,
-					''.EQUIPMENT_DESCRIPTION,
+					'' as EQUIPMENT_DESCRIPTION,
 					'' as EQUIPMENT_ID,									
 					'' as EQUIPMENT_RECORD_ID,						
 					'' as QTEITMCOB_RECORD_ID,
