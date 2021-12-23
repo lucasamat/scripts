@@ -44,8 +44,7 @@ class ContractQuoteDownloadTableData:
 			self.contract_quote_revision_id = ''
 		return True
 
-	def get_results(self, table_total_rows=0, colums='*'):
-		#for offset_skip_count in range(1, table_total_rows, 1000):
+	def get_results(self, table_total_rows=0, colums='*'):		
 		start = 1
 		end = 1000
 		while start < table_total_rows:
@@ -66,11 +65,9 @@ class ContractQuoteDownloadTableData:
 					data = [row_obj.Value for row_obj in row_data]					
 					yield data
 			start += 1000		
-			end += 1000
-			Trace.Write(str(table_total_rows)+" table_total_rows===> End "+str(end))
+			end += 1000			
 			if end > table_total_rows:
-				end = table_total_rows
-			Trace.Write(str(start)+" Start===> End "+str(end))
+				end = table_total_rows			
 
 	def _do_opertion(self):
 		table_columns = []
