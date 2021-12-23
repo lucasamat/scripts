@@ -2230,45 +2230,55 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			y = x.split(" ")
 			for OfferingRow_detail in SAQTSVObj:
 				Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
-				
-				Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.ADNPRD_ID,'request_url':Request_URL,'request_type':"New"})
+						
+				Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.get("SERVICE_ID"),'request_url':Request_URL,'request_type':"New"})
 				Fullresponse=str(Fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
 				Fullresponse= eval(Fullresponse)
-
+				##getting configuration_status status
+				if Fullresponse['complete'] == 'true':
+					configuration_status = 'COMPLETE'
+				elif Fullresponse['complete'] == 'false':
+					configuration_status = 'INCOMPLETE'
+				else:
+					configuration_status = 'ERROR'
 				attributesdisallowedlst=[]
 				attributeReadonlylst=[]
 				attributesallowedlst=[]
-				attributevalues={}
 				attributedefaultvalue = []
+				overall_att_list_sub =[]
 				overallattributeslist =[]
+				attributevalues={}
+				get_toolptip= ''
+				#getquote_sales_val = AttributeID_Pass = ''
 				for rootattribute, rootvalue in Fullresponse.items():
 					if rootattribute=="rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute=="characteristics":
 								for prdvalue in Productvalue:
 									overallattributeslist.append(prdvalue['id'])
+									if prdvalue['id'].startswith('AGS_Z0046_'):
+										overall_att_list_sub.append(prdvalue['id'])
 									if prdvalue['visible'] =='false':
 										attributesdisallowedlst.append(prdvalue['id'])
-									else:
-										
+									else:								
 										attributesallowedlst.append(prdvalue['id'])
 									if prdvalue['readOnly'] =='true':
 										attributeReadonlylst.append(prdvalue['id'])
-									for attribute in prdvalue['values']:
-										
+									for attribute in prdvalue['values']:								
 										attributevalues[str(prdvalue['id'])]=attribute['value']
-										if attribute["author"] in ("Default"):
-											Trace.Write('524------'+str(prdvalue["id"]))
+										if attribute["author"] in ('Default','System'):
+											#Trace.Write('prdvalue---1554-----'+str(prdvalue['id']))
 											attributedefaultvalue.append(prdvalue["id"])
-				
 				attributesallowedlst = list(set(attributesallowedlst))
-				overallattributeslist = list(set(overallattributeslist))
+				overallattributeslist = list(set(overallattributeslist))		
 				HasDefaultvalue=False
+
 				ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 
 				is_default = ent_val_code = ''
 				AttributeID_Pass =""
 				get_toolptip = ""
+
 				if ProductVersionObj:
 					insertservice = ""
 					tbrow={}	
