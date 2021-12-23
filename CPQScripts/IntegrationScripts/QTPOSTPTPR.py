@@ -115,7 +115,7 @@ try:
 				contract_quote_record_id = None		
 				Taxrate = ''
 				Taxvalue = ''		
-				GetPricingProcedure = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE,DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, GLOBAL_CURRENCY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}'".format(QUOTE))
+				GetPricingProcedure = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE,DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, GLOBAL_CURRENCY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID,EXCHANGE_RATE FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}'".format(QUOTE))
 				getservicerecord = Sql.GetFirst("select QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
 				if GetPricingProcedure is not None:
 					#PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
@@ -127,6 +127,7 @@ try:
 					exch = GetPricingProcedure.EXCHANGE_RATE_TYPE
 					contract_quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
 					revision_rec_id = GetPricingProcedure.QTEREV_RECORD_ID
+					exch_rate = GetPricingProcedure.EXCHANGE_RATE
 				#Log.Info("123 i[conditions] -->"+str(type(i['conditions'])))
 				Taxrate = '0.00'
 				getuomrec_val =''
@@ -236,9 +237,9 @@ try:
 										FROM SAQRIT (NOLOCK)
 											WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = get_ancillary_spare.SERVICE_ID ))
 						Sql.RunQuery("""UPDATE SAQRIT 
-								SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(exch)+""" , 
-								NET_VALUE_INGL_CURR = NET_VALUE*"""+str(exch)+""",
-								UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(exch)+"""
+								SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(exch_rate)+""" , 
+								NET_VALUE_INGL_CURR = NET_VALUE*"""+str(exch_rate)+""",
+								UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(exch_rate)+"""
 								FROM SAQRIT (NOLOCK)
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}'""".format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = get_ancillary_spare.SERVICE_ID ))
 	
