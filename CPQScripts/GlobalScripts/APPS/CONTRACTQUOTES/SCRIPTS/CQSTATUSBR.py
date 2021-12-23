@@ -105,7 +105,7 @@ def _insert_billing_matrix():
 def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date ='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
 	Trace.Write('104----')
 	get_val =get_billing_cycle = get_billing_type = ''
-	Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
+	#Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
 	Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
 	for data,val in get_billling_data_dict.items():
 		if 'AGS_'+str(service_id)+'_PQB_BILCYC' in data:
@@ -113,7 +113,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 		elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
 			get_billing_type =val
 	Trace.Write('get_billing_cycle---'+str(get_billing_cycle))
-	Trace.Write('get_billing_type---'+str(get_billing_type))
+	Trace.Write(str(service_id)+'get_billing_type---'+str(get_billing_type))
 	if get_billing_cycle == "Monthly":
 		year = int(amount_column.split('_')[-1])
 		remaining_months = (total_months + 1) - (year*12)		
