@@ -1745,7 +1745,7 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("#Include_add_on_addnew_footer").html(data[6]);$("button#country_save").attr("disabled",false); $("#noRecDisp").remove() } else{ var date_field = [];$("'
 					+ str(table_ids)
-					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#Include_add_on_addnew").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); $("#Include_add_on_addnew_footer").html(data[6]);} } catch(err) { if(date_field.length > 0) { $("'
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#Include_add_on_addnew > tbody").html("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); $("#Include_add_on_addnew_footer").html(data[6]);} } catch(err) { if(date_field.length > 0) { $("'
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); } else{ $("'
 					+ str(table_ids)
@@ -1963,6 +1963,17 @@ def POPUPLISTVALUEADDNEW(
 				+ str(table_id)
 				+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, scrollBarSize :10 }); } } }, 5000); }"
 			)
+			dbl_clk_function += (
+					' $("'
+					+ str(table_ids)
+					+ "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
+					+ str(table_id)
+					+ "_SortColumn', name); localStorage.setItem('"
+					+ str(table_id)
+					+ "_SortColumnOrder', order); ATTRIBUTE_VALUEList = []; "+str(values_lists)+" AddNewContainerSorting(name, order, '"
+					+ str(table_id)
+					+ "',"+str(a_test)+",ATTRIBUTE_VALUEList,'"+str(TABLEID)+"','"+str(RECORDID)+"','"+str(RECORDFEILD)+"'); }); "
+					)
 			dbl_clk_function += (
 				'$("'
 				+ str(table_ids)
@@ -2317,6 +2328,17 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_id)
 					+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, scrollBarSize :10 }); } } }, 5000); }"
 				)
+				dbl_clk_function += (
+					' $("'
+					+ str(table_ids)
+					+ "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
+					+ str(table_id)
+					+ "_SortColumn', name); localStorage.setItem('"
+					+ str(table_id)
+					+ "_SortColumnOrder', order); ATTRIBUTE_VALUEList = []; "+str(values_lists)+" AddNewContainerSorting(name, order, '"
+					+ str(table_id)
+					+ "',"+str(a_test)+",ATTRIBUTE_VALUEList,'"+str(TABLEID)+"','"+str(RECORDID)+"','"+str(RECORDFEILD)+"'); }); "
+					)
 				dbl_clk_function += (
 					'console.log("selecting---"); $("'
 					+ str(table_ids)
