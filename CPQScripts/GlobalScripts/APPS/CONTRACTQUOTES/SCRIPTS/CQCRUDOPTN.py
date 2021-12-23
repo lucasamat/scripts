@@ -2263,6 +2263,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				overallattributeslist = list(set(overallattributeslist))
 				HasDefaultvalue=False
 				ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
+				
 				if ProductVersionObj is not None:
 					tbrow={}
 					insertservice = ""
