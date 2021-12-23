@@ -41,6 +41,7 @@ else:
 update_rev_expire_date  = "UPDATE SAQTRV SET REV_EXPIRE_DATE = CONVERT(date,DATEADD(DAY, 90, GETDATE())) where QUOTE_RECORD_ID ='{quote_record_id}'".format(quote_record_id=contract_quote_record_id)
 Sql.RunQuery(update_rev_expire_date)
 
+
 #A055S000P01-10549-end
 def _insert_subtotal_by_offerring_quote_table():
 	
@@ -72,66 +73,66 @@ def _insert_subtotal_by_offerring_quote_table():
 
 get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 
+if str(parts_list) == 'True':
 
-
-
-saqdoc_output_insert="""INSERT SAQDOC (
-					QUOTE_DOCUMENT_RECORD_ID,
-					DOCUMENT_ID,
-					DOCUMENT_NAME,
-					DOCUMENT_PATH,
-					QUOTE_ID,
-					QUOTE_NAME,
-					QUOTE_RECORD_ID,
-					LANGUAGE_ID,
-					LANGUAGE_NAME,
-					LANGUAGE_RECORD_ID,
-					CPQTABLEENTRYADDEDBY,
-					CPQTABLEENTRYDATEADDED,
-					CpqTableEntryModifiedBy,
-					CpqTableEntryDateModified,
-					STATUS,
-					QTEREV_ID,
-					QTEREV_RECORD_ID
-					)SELECT
-					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_DOCUMENT_RECORD_ID,
-					'{doc_id}' AS DOCUMENT_ID,
-					'{doc_name}' AS DOCUMENT_NAME,
-					'' AS DOCUMENT_PATH,
-					'{quoteid}' AS QUOTE_ID,
-					'{quotename}' AS QUOTE_NAME,
-					'{quoterecid}' AS QUOTE_RECORD_ID,
-					'EN' AS LANGUAGE_ID,
-					'English' AS LANGUAGE_NAME,
-					MALANG.LANGUAGE_RECORD_ID AS LANGUAGE_RECORD_ID,
-					'{UserName}' as CPQTABLEENTRYADDEDBY,
-					'{dateadded}' as CPQTABLEENTRYDATEADDED,
-					'{UserId}' as CpqTableEntryModifiedBy,
-					'{date}' as CpqTableEntryDateModified,
-					'PENDING' as STATUS,
-					'{qt_revid}' as QTEREV_ID,
-					'{qt_rev_rec_id}' as QTEREV_RECORD_ID
-					FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(doc_id='Pending',doc_name='',quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=contract_quote_record_id,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
-	#Log.Info(qtqdoc)
-Sql.RunQuery(saqdoc_output_insert)
-_insert_subtotal_by_offerring_quote_table()
-gen_doc = Quote.GenerateDocument('AMAT_SUBTOTAL_OFFERING', GenDocFormat.PDF)
-fileName = Quote.GetLatestGeneratedDocumentFileName()
-GDB = Quote.GetLatestGeneratedDocumentInBytes()
-List = Quote.GetGeneratedDocumentList('AMAT_SUBTOTAL_OFFERING')
-for doc in List:
-	doc_id = doc.Id
-	doc_name = doc.FileName
-	if fileName==doc_name:
-		quote_id = gettoolquote.QUOTE_ID
-		#added_by = audit_fields.USERNAME
-		#modified_by = audit_fields.CpqTableEntryModifiedBy
-		#modified_date = audit_fields.CpqTableEntryDateModified
-		guid = str(Guid.NewGuid()).upper()
-		qt_rec_id = contract_quote_record_id
-		date_added = doc.DateCreated
-		update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND STATUS = 'PENDING' AND QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=contract_quote_record_id,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)
-		Sql.RunQuery(update_query)
+	Trace.Write('include spare aprts----')
+	saqdoc_output_insert="""INSERT SAQDOC (
+						QUOTE_DOCUMENT_RECORD_ID,
+						DOCUMENT_ID,
+						DOCUMENT_NAME,
+						DOCUMENT_PATH,
+						QUOTE_ID,
+						QUOTE_NAME,
+						QUOTE_RECORD_ID,
+						LANGUAGE_ID,
+						LANGUAGE_NAME,
+						LANGUAGE_RECORD_ID,
+						CPQTABLEENTRYADDEDBY,
+						CPQTABLEENTRYDATEADDED,
+						CpqTableEntryModifiedBy,
+						CpqTableEntryDateModified,
+						STATUS,
+						QTEREV_ID,
+						QTEREV_RECORD_ID
+						)SELECT
+						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_DOCUMENT_RECORD_ID,
+						'{doc_id}' AS DOCUMENT_ID,
+						'{doc_name}' AS DOCUMENT_NAME,
+						'' AS DOCUMENT_PATH,
+						'{quoteid}' AS QUOTE_ID,
+						'{quotename}' AS QUOTE_NAME,
+						'{quoterecid}' AS QUOTE_RECORD_ID,
+						'EN' AS LANGUAGE_ID,
+						'English' AS LANGUAGE_NAME,
+						MALANG.LANGUAGE_RECORD_ID AS LANGUAGE_RECORD_ID,
+						'{UserName}' as CPQTABLEENTRYADDEDBY,
+						'{dateadded}' as CPQTABLEENTRYDATEADDED,
+						'{UserId}' as CpqTableEntryModifiedBy,
+						'{date}' as CpqTableEntryDateModified,
+						'PENDING' as STATUS,
+						'{qt_revid}' as QTEREV_ID,
+						'{qt_rev_rec_id}' as QTEREV_RECORD_ID
+						FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(doc_id='Pending',doc_name='',quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=contract_quote_record_id,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
+		#Log.Info(qtqdoc)
+	Sql.RunQuery(saqdoc_output_insert)
+	_insert_subtotal_by_offerring_quote_table()
+	gen_doc = Quote.GenerateDocument('AMAT_SUBTOTAL_OFFERING', GenDocFormat.PDF)
+	fileName = Quote.GetLatestGeneratedDocumentFileName()
+	GDB = Quote.GetLatestGeneratedDocumentInBytes()
+	List = Quote.GetGeneratedDocumentList('AMAT_SUBTOTAL_OFFERING')
+	for doc in List:
+		doc_id = doc.Id
+		doc_name = doc.FileName
+		if fileName==doc_name:
+			quote_id = gettoolquote.QUOTE_ID
+			#added_by = audit_fields.USERNAME
+			#modified_by = audit_fields.CpqTableEntryModifiedBy
+			#modified_date = audit_fields.CpqTableEntryDateModified
+			guid = str(Guid.NewGuid()).upper()
+			qt_rec_id = contract_quote_record_id
+			date_added = doc.DateCreated
+			update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND STATUS = 'PENDING' AND QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=contract_quote_record_id,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)
+			Sql.RunQuery(update_query)
 
 
 
