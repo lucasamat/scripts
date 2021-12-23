@@ -43,6 +43,7 @@ user_name = str(User.UserName)
 
 #A055S000P01-3924-billing matrix creation start
 def _insert_billing_matrix():
+
 	Sql.RunQuery("""
 			INSERT SAQRIB (
 			QUOTE_BILLING_PLAN_RECORD_ID,
@@ -86,8 +87,8 @@ def _insert_billing_matrix():
 			FROM SAQTMT (NOLOCK) JOIN SAQTSV on SAQTSV.QUOTE_ID = SAQTMT.QUOTE_ID
 			
 			WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTMT.QTEREV_RECORD_ID = '{RevisionRecordId}'
-			AND SAQTSV.SERVICE_ID NOT IN('Z0101','A6200')
-			AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')											
+			AND SAQTSV.SERVICE_ID NOT IN ('Z0101','A6200') AND SAQTSV.SERVICE_ID NOT IN (SELECT PRDOFR_ID FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')
+													
 	""".format(                        
 		QuoteRecordId= contract_quote_rec_id,
 		RevisionRecordId=quote_revision_rec_id,
