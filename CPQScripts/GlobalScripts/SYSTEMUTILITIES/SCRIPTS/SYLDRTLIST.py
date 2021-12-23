@@ -2806,9 +2806,11 @@ class SYLDRTLIST:
 								docnode_action_btn = SqlHelper.GetFirst("SELECT DATE_SUBMITTED FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id))
 								#for date_value in docnode_action_btn:
 								if docnode_action_btn:
+									Trace.Write("docnode=====")
 									Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_accepted(this)">CUSTOMER ACCEPTED</a></li>'
 									Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_rejected(this)">CUSTOMER REJECTED</a></li>'
-								else:										
+								else:
+									Trace.Write("docnode111=====")									
 									Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'     
 							elif ObjectName == "SAQDLT":
 								Action_str += (
