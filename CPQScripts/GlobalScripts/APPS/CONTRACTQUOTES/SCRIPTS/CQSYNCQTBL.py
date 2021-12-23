@@ -1702,7 +1702,7 @@ class SyncQuoteAndCustomTables:
 							Log.Info("product_offering_CHK_J11"+str(start_date))
 							Log.Info("product_offering_CHK_J"+str(contract_quote_obj.CONTRACT_VALID_FROM))
 							if service_ids:
-								
+								Log.Info('service_ids----1705----'+str(service_ids))
 								SAQTSV_start = time.time()								
 								service_insert = Sql.RunQuery("""
 																INSERT
