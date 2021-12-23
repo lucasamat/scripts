@@ -65,12 +65,13 @@ class ContractQuoteDownloadTableData:
 				for row_data in table_data:
 					data = [row_obj.Value for row_obj in row_data]					
 					yield data
-			start += 1000			
+			start += 1000		
+			Trace.Write(str(table_total_rows)+" table_total_rows===> End "+str(end))
 			if end > table_total_rows:
 				end = table_total_rows
 			else:
 				end += 1000
-			Trace.Write(str(start)+" Start===> End"+str(end))
+			Trace.Write(str(start)+" Start===> End "+str(end))
 
 	def _do_opertion(self):
 		table_columns = []
