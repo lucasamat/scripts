@@ -580,10 +580,10 @@ def Dynamic_Status_Bar():
 				status = get_workflow_status.WORKFLOW_STATUS           
 			else:
 				Trace.Write('No button--1')
-				status = ""
+				status = "IN-COMPLETE"
 		else:
 			Trace.Write('No button--2')
-			status = ""
+			status = "IN-COMPLETE"
 	#Trace.Write("buttonvisibility=="+str(buttonvisibility))
 	#if str(item_covered_obj):       
 		#_insert_billing_matrix()
