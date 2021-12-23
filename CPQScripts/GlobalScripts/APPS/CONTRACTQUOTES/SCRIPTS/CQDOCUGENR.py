@@ -10,6 +10,7 @@ import clr
 import System.Net
 import sys
 import datetime
+from datetime import date
 from SYDATABASE import SQL
 
 Sql = SQL()
@@ -936,7 +937,7 @@ def submit_to_customer(doc_rec_id):
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 
-	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_SUBMITTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")))
+	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_SUBMITTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y")))
 	Sql.RunQuery(update_submitted_date)
 	
 	return True
@@ -959,7 +960,7 @@ def customer_rejected(doc_rec_id):
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 
-	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_REJECTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")))
+	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_REJECTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y")))
 	Sql.RunQuery(update_submitted_date)
 	
 	return True
