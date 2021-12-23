@@ -2371,6 +2371,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				id = val.lstrip("0")
 				Trace.Write('key-->'+str(key))
 				Trace.Write('val-->'+str(val))
+				key = int(key)
 				if APPLIED_CREDITS!='' and CREDIT_AMOUNTS!='':
 					Trace.Write('APPLIED_CREDITS'+str(list(APPLIED_CREDITS)))
 					Trace.Write('CREDIT_AMOUNTS'+str(list(CREDIT_AMOUNTS)))
