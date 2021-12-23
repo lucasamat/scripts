@@ -979,7 +979,9 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				#	document_type_obj = Sql.GetFirst("select DOCTYP_ID from MAMADT where SAP_PART_NUMBER = '{}'".format(service_obj.SERVICE_ID))
 				#	if document_type_obj is not None:
 				#		self._process_query("UPDATE SAQTMT SET DOCUMENT_TYPE = '{}' WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(document_type_obj.DOCTYP_ID,self.contract_quote_record_id))
+				Trace.Write("row_detail__JJ "+str(row_detail))
 				self.CreateEntitlements(row_detail)
+				
 			##A055S000P01-8740 code starts...
 			#ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':self.contract_quote_record_id,'QTEREV_RECORD_ID':self.quote_revision_record_id})
 			##A055S000P01-8740 code ends...
@@ -2263,7 +2265,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				overallattributeslist = list(set(overallattributeslist))
 				HasDefaultvalue=False
 				ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
-				
+
 				if ProductVersionObj is not None:
 					tbrow={}
 					insertservice = ""
