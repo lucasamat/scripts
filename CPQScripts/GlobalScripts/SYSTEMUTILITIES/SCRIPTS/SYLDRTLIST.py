@@ -4045,6 +4045,18 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)
+							elif ObjectName == "SAQDOC":
+								table_header += (
+									'<th  data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-title-tooltip="'
+									+ str(qstring)
+									+ '" data-formatter="" data-sortable="true" '
+									+ rowspan
+									+'>'
+									+ str(qstring)
+									+ "</th>"
+								)
 							else:
 								table_header += (
 									'<th  data-field="'
