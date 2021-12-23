@@ -300,7 +300,7 @@ except:
     parts_list = ''
 
 if str(parts_list) == True:
-	Trace.Write('303----')
+	Trace.Write('303-303-------')
 Trace.Write("parts_list---"+str(parts_list)+"--parts_list---inside"+str(action_type))
 
     
