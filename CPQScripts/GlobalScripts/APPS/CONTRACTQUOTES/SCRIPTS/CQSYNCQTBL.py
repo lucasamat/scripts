@@ -1278,7 +1278,8 @@ class SyncQuoteAndCustomTables:
 					#Sql.Upsert(quote_fab_table_info)
 
 					#A055S000P01-13524 start(UPDATE SAQSPT)
-					Log.Info("LISTOFSERVICEIDS===>"+str(payload_json.get('SERVICE_IDS')))
+					#Log.Info("LISTOFSERVICEIDS===>"+str(payload_json.get('SERVICE_IDS')))
+					Trace.Write("LISTOFSERVICEIDS===>"+str(payload_json.get('SERVICE_IDS')))
 					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 					quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 					get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
