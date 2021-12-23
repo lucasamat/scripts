@@ -2294,23 +2294,12 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
 							get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 							ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
-						
-						getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.get("QUOTE_RECORD_ID"))+"'")
+						getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.ADNPRD_ID)+"'")
 						if getslaes_value:
 							getquote_sales_val = getslaes_value.SALESORG_ID
 						get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 						get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
-						if str(attrs) == 'AGS_REL_STDATE' and 'Z0007' in OfferingRow_detail.get("SERVICE_ID"):
-							try:						
-								QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-								ent_disp_val = 	str(QuoteStartDate)
-								ent_val_code = ''					
-							except:						
-								ent_disp_val = ent_disp_val
-								ent_val_code = ''
-						else:
-							ent_disp_val = ent_disp_val
-							ent_val_code = ent_val_code
+						
 						if ATTRIBUTE_DEFN:
 							if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.upper() == "FAB LOCATION":
 								Trace.Write(str(attrs)+'--attrs---1118----'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
@@ -2324,24 +2313,15 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							AttributeID_Pass =''
 							#NewValue = 'ROW'
 							#NewValue = ''
-						if str(attrs) == 'AGS_CON_DAY' and 'Z0016' in OfferingRow_detail.get("SERVICE_ID"): 
-							try:						
-								QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
-								QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-								contract_days = (QuoteEndDate - QuoteStartDate).days
-								ent_disp_val = 	str(contract_days)
-							except:						
-								ent_disp_val = ent_disp_val	
-						else:
-							ent_disp_val = ent_disp_val	
+						
 						#A055S000P01-7401 START
-						if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.get("SERVICE_ID")) ) and ent_disp_val != '':
-							val = ""
-							if str(ent_disp_val) == 'Comprehensive':
-								val = "COMPREHENSIVE SERVICES"
-							elif str(ent_disp_val) == 'Complementary':
-								val = "COMPLEMENTARY PRODUCTS"
-							Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),self.contract_quote_record_id,self.quote_revision_record_id,OfferingRow_detail.get("SERVICE_ID")))
+						# if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.get("SERVICE_ID")) ) and ent_disp_val != '':
+						# 	val = ""
+						# 	if str(ent_disp_val) == 'Comprehensive':
+						# 		val = "COMPREHENSIVE SERVICES"
+						# 	elif str(ent_disp_val) == 'Complementary':
+						# 		val = "COMPLEMENTARY PRODUCTS"
+						# 	Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),self.contract_quote_record_id,self.quote_revision_record_id,OfferingRow_detail.get("SERVICE_ID")))
 						#A055S000P01-7401 END
 						DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 						insertservice += """<QUOTE_ITEM_ENTITLEMENT>
@@ -2366,7 +2346,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					tbrow["QUOTE_RECORD_ID"]=OfferingRow_detail.get("QUOTE_RECORD_ID")
 					tbrow["QTESRV_RECORD_ID"]=OfferingRow_detail.get("QUOTE_SERVICE_RECORD_ID")
 					tbrow["SERVICE_RECORD_ID"]=OfferingRow_detail.get("SERVICE_RECORD_ID")
-					tbrow["SERVICE_ID"]=OfferingRow_detail.get("SERVICE_ID")
+					tbrow["SERVICE_ID"]=OfferingRow_detail.ADNPRD_ID
 					tbrow["SERVICE_DESCRIPTION"]=OfferingRow_detail.get("SERVICE_DESCRIPTION")
 					tbrow["CPS_CONFIGURATION_ID"]=Fullresponse['id']
 					tbrow["SALESORG_RECORD_ID"]=OfferingRow_detail.get("SALESORG_RECORD_ID")
