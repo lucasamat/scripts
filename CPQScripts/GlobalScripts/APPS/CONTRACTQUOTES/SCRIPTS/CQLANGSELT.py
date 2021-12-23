@@ -75,7 +75,7 @@ get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE
 
 #if str(parts_list) == 'True':
 
-Trace.Write('include spare aprts----')
+Log.Info('SAQDOC---documents-')
 saqdoc_output_insert="""INSERT SAQDOC (
 					QUOTE_DOCUMENT_RECORD_ID,
 					DOCUMENT_ID,
