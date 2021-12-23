@@ -57,7 +57,7 @@ class ContractQuoteDownloadTableData:
 									WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'
 									) IQ)OQ
 							WHERE SNO>={Skip_Count} AND SNO<={Fetch_Count}              
-							""".format(Columns=colums, TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param, Skip_Count=start, Fetch_Count=1000)
+							""".format(Columns=colums, TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param, Skip_Count=start, Fetch_Count=end)
 
 			table_data = Sql.GetList(query_string_with_pagination)
 
@@ -65,9 +65,12 @@ class ContractQuoteDownloadTableData:
 				for row_data in table_data:
 					data = [row_obj.Value for row_obj in row_data]					
 					yield data
-			start += 1000
-			end += 1000
-	
+			start += 1000			
+			if end > table_total_rows:
+				end = table_total_rows
+			else:
+				end += 1000
+
 	def _do_opertion(self):
 		table_columns = []
 		table_records = []
