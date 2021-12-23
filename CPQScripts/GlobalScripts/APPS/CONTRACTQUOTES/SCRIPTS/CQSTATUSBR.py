@@ -575,7 +575,7 @@ def Dynamic_Status_Bar():
 				Sql.RunQuery(update_workflow_status)
 
 			get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-			if get_workflow_status.WORKFLOW_STATUS != "":			
+			if get_workflow_status.WORKFLOW_STATUS:			
 				Trace.Write('No button-2454-')
 				status = get_workflow_status.WORKFLOW_STATUS           
 			else:
