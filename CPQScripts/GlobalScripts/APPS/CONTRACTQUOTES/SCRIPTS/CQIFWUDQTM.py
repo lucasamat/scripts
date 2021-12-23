@@ -133,16 +133,18 @@ def quoteiteminsert(Qt_id):
 
 	#Quote.Save()
 	get_exch_rate = get_exch_rate.EXCHANGE_RATE
-	Sql.RunQuery("""UPDATE SAQRIT 
-				SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0) 
-				FROM SAQRIT (NOLOCK)
-					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' """.format(QuoteRecordId=get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID,rev =get_rev_rec_id.QTEREV_RECORD_ID ))
-	Sql.RunQuery("""UPDATE SAQRIT 
-		SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(get_exch_rate)+""" , 
-		NET_VALUE_INGL_CURR = NET_VALUE*"""+str(get_exch_rate)+""",
-		UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(get_exch_rate)+"""
-		FROM SAQRIT (NOLOCK)
-			WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' """.format(QuoteRecordId=get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID, rev =get_rev_rec_id.QTEREV_RECORD_ID))
+	# Sql.RunQuery("""UPDATE SAQRIT 
+	# 			SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0) 
+	# 			FROM SAQRIT (NOLOCK)
+	# 				WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' """.format(QuoteRecordId=get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID,rev =get_rev_rec_id.QTEREV_RECORD_ID ))
+	# Sql.RunQuery("""UPDATE SAQRIT 
+	# 	SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(get_exch_rate)+""" , 
+	# 	NET_VALUE_INGL_CURR = NET_VALUE*"""+str(get_exch_rate)+""",
+	# 	UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(get_exch_rate)+"""
+	# 	FROM SAQRIT (NOLOCK)
+	# 		WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' """.format(QuoteRecordId=get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID, rev =get_rev_rec_id.QTEREV_RECORD_ID))
+	
+	
 	##updating saqris
 	Sql.RunQuery("""UPDATE SAQRIS 
 							SET UNIT_PRICE_INGL_CURR = IQ.UNIT_PRICE_INGL_CURR, 

@@ -231,6 +231,18 @@ try:
 						Log.Info("QTPOSTPTPR TOTAL111 ==> "+str(GetSum.TOTAL_UNIT))
 						Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE = {total_unit}, NET_PRICE ={total_net}  FROM SAQRIT
 							WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{SERVICE_ID}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=get_ancillary_spare.SERVICE_ID))
+						Sql.RunQuery("""UPDATE SAQRIT 
+										SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0) 
+										FROM SAQRIT (NOLOCK)
+											WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = get_ancillary_spare.SERVICE_ID ))
+						Sql.RunQuery("""UPDATE SAQRIT 
+								SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(exch)+""" , 
+								NET_VALUE_INGL_CURR = NET_VALUE*"""+str(exch)+""",
+								UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(exch)+"""
+								FROM SAQRIT (NOLOCK)
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}'""".format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = get_ancillary_spare.SERVICE_ID ))
+	
+	
 					
 					
 					###calling script for saqris,saqtrv insert
