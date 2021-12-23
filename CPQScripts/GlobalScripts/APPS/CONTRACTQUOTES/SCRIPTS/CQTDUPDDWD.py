@@ -68,7 +68,10 @@ class ContractQuoteDownloadTableData:
 											WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' FOR JSON AUTO""".format(Columns=columns, TableName=related_list_obj.OBJECT_NAME, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.tree_param))
 			if records_json_obj:
 				for record_json_obj in records_json_obj:
-					table_records = eval(record_json_obj.Value)
+					try:
+						table_records = eval(record_json_obj.Value)
+					except Exception:
+						table_records = record_json_obj.Value
 		return table_columns, table_records		
 
 parameters = {'related_list_attr_name':Param.RelatedListAttributeName, 'action_type':Param.ActionType}
