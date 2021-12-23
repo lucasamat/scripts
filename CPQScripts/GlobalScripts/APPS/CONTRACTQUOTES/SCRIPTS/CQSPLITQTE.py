@@ -47,7 +47,7 @@ def splitserviceinsert():
     material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION,MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(splitservice_object))
     #delete Z0105
     Sql.RunQuery("DELETE FROM SAQTSV WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID LIKE '{ServiceId}%'".format(
-			contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id,ServiceId=splitservice_object))
+            contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id,ServiceId=splitservice_object))
     service_list=[]
     #NEED TO change Query for SAQRIT
     get_existing_record = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id =quote_revision_rec_id))
