@@ -941,6 +941,30 @@ def submit_to_customer(doc_rec_id):
 	
 	return True
 
+def customer_accepted(doc_rec_id):
+	Trace.Write("cm to this acceptedfunction=====")
+	submitted_date = ""
+	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+
+	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET ACCEPTED = 'TRUE' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+	Sql.RunQuery(update_submitted_date)
+	
+	return True
+
+def customer_rejected(doc_rec_id):
+	Trace.Write("cm to this rejectedfunction=====")
+	submitted_date = ""
+	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+
+	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_REJECTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")))
+	Sql.RunQuery(update_submitted_date)
+	
+	return True
+
 try:
 	recid = Param.CPQ_Columns['Quote']
 	language = Param.CPQ_Columns['Language']
@@ -972,6 +996,12 @@ except:
 # 	ApiResponse = ApiResponseFactory.JsonResponse(popup())
 # elif ACTION == 'WARNING':
 # 	ApiResponse = ApiResponseFactory.JsonResponse(warning())
-# elif ACTION == 'SUBMIT_TO_CUSTOMER':
-# 	ApiResponse = ApiResponseFactory.JsonResponse(submit_to_customer(doc_rec_id))
+if ACTION == 'SUBMIT_TO_CUSTOMER':
+	ApiResponse = ApiResponseFactory.JsonResponse(submit_to_customer(doc_rec_id))
+elif ACTION == 'CUSTOMER_ACCEPTED':
+	ApiResponse = ApiResponseFactory.JsonResponse(customer_accepted(doc_rec_id))
+elif ACTION == 'CUSTOMER_REJECTED':
+	ApiResponse = ApiResponseFactory.JsonResponse(customer_rejected(doc_rec_id))
+
+
 
