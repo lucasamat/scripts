@@ -2801,7 +2801,15 @@ class SYLDRTLIST:
 									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
 
 							elif ObjectName == "SAQDOC":
-								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'     
+								contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+								quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+								docnode_action_btn = SqlHelper.GetList("SELECT DATE_SUBMITTED FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id))
+								for date_value in docnode_action_btn:
+									if date_value.DATE_SUBMITTED:
+										Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_accepted(this)">CUSTOMER ACCEPTED</a></li>'
+										Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_rejected(this)">CUSTOMER REJECTED</a></li>'
+									else:										
+										Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'     
 							elif ObjectName == "SAQDLT":
 								Action_str += (
 									'<li><a class="dropdown-item" href="#" onclick="replace_cont_manager(this)">REPLACE</a></li>'
