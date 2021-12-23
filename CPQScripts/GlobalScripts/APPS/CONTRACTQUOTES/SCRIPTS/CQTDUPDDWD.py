@@ -23,6 +23,7 @@ class ContractQuoteDownloadTableData:
 		self.action_type = kwargs.get('action_type')	
 		self.related_list_attr_name = kwargs.get('related_list_attr_name')	
 		self.source_object_name = ''	
+		self.tree_param = Quote.GetGlobal("TreeParam")
 		self.set_contract_quote_related_details()
 		
 	def set_contract_quote_related_details(self):
@@ -44,17 +45,32 @@ class ContractQuoteDownloadTableData:
 		return True
 	
 	def _do_opertion(self):
+		table_columns = []
+		table_records = []
 		related_list_obj = Sql.GetFirst(
-			"""SELECT SYOBJR.RECORD_ID, SYOBJR.SAPCPQ_ATTRIBUTE_NAME, SYOBJR.PARENT_LOOKUP_REC_ID, SYOBJR.OBJ_REC_ID,
-										SYOBJR.NAME, SYOBJR.COLUMN_REC_ID, SYOBJR.COLUMNS, SYOBJH.OBJECT_NAME
+			"""SELECT SYOBJR.RECORD_ID, SYOBJR.SAPCPQ_ATTRIBUTE_NAME, SYOBJR.PARENT_LOOKUP_REC_ID, SYOBJR.OBJ_REC_ID, SYOBJR.NAME, SYOBJR.COLUMN_REC_ID, SYOBJR.COLUMNS, SYOBJH.OBJECT_NAME
 				FROM SYOBJR (NOLOCK) 
 				INNER JOIN SYOBJH (NOLOCK) ON SYOBJH.RECORD_ID = SYOBJR.OBJ_REC_ID
 				WHERE SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{AttributeName}'
 				""".format(	AttributeName=self.related_list_attr_name)
 		)
 		if related_list_obj:
-			pass
+			Trace.Write("==========>>>>")
+			table_columns = eval(related_list_obj.COLUMNS)
+			columns = related_list_obj.COLUMNS.replace("'","")[1:-1]
+			Trace.Write("""
+						SELECT {Columns}
+						FROM {TableName} (NOLOCK)
+						WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' FOR JSON AUTO""".format(Columns=columns, TableName=related_list_obj.OBJECT_NAME, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.tree_param))
+			records_json_obj = Sql.RunQuery("""
+											SELECT {Columns}
+											FROM {TableName} (NOLOCK)
+											WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' FOR JSON AUTO""".format(Columns=columns, TableName=related_list_obj.OBJECT_NAME, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.tree_param))
+			if records_json_obj:
+				for record_json_obj in records_json_obj:
+					table_records = eval(record_json_obj.Value)
+		return table_columns, table_records		
 
 parameters = {'related_list_attr_name':Param.RelatedListAttributeName, 'action_type':Param.ActionType}
 contract_quote_download_table_data_obj = ContractQuoteDownloadTableData(**parameters)
-contract_quote_download_table_data_obj._do_opertion()
+ApiResponse = ApiResponseFactory.JsonResponse(contract_quote_download_table_data_obj._do_opertion())
