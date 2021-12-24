@@ -125,6 +125,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 			quantity = [q.ANNUAL_QUANTITY for q in get_part_query]  
 			start = start + 1000
 			end = end + 1000
+			requestdata = ''
 			for currencies in ('docCurrency','globalCurrency'):
 				if len(partids) == 1:
 					Log.Info("**Single-Partids**")
@@ -156,21 +157,21 @@ if part_query or ancillary_part_query or fpm_part_query:
 				Log.Info("requestdata==>"+str(requestdata))
 				#response1 = webclient.UploadString(Request_URL,str(requestdata))
 				
-				LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
-				Login_Username = str(LOGIN_CREDENTIALS.Username)
-				Login_Password = str(LOGIN_CREDENTIALS.Password)
-				authorization = Login_Username + ":" + Login_Password
-				binaryAuthorization = UTF8.GetBytes(authorization)
-				authorization = Convert.ToBase64String(binaryAuthorization)
-				authorization = "Basic " + authorization
-				webclient = System.Net.WebClient()
-				webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
-				webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
-				#Log.Info("Looping Count ==> ")
-				
-				response1 = webclient.UploadString("https://e250404-iflmap.hcisbt.us3.hana.ondemand.com/cxf/CPQ_CPS",str(requestdata))
-				Log.Info("response1data==>"+str(response1))
-				end_time = time.time()
+			LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+			Login_Username = str(LOGIN_CREDENTIALS.Username)
+			Login_Password = str(LOGIN_CREDENTIALS.Password)
+			authorization = Login_Username + ":" + Login_Password
+			binaryAuthorization = UTF8.GetBytes(authorization)
+			authorization = Convert.ToBase64String(binaryAuthorization)
+			authorization = "Basic " + authorization
+			webclient = System.Net.WebClient()
+			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
+			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
+			#Log.Info("Looping Count ==> ")
+			
+			response1 = webclient.UploadString("https://e250404-iflmap.hcisbt.us3.hana.ondemand.com/cxf/CPQ_CPS",str(requestdata))
+			Log.Info("response1data==>"+str(response1))
+			end_time = time.time()
 			#Log.Info("QUOTE ID---> "+str(QUOTE)+"loop---"+str(loop_count)+ "---time"+str(end_time - start_time))
 		else:
 			L=0
