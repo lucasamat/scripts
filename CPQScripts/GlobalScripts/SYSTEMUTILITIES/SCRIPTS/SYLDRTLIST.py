@@ -2889,8 +2889,8 @@ class SYLDRTLIST:
 						value123 = a[0].replace("[", "").lstrip()
 						valu = ",".join(a[1:])
 						value1234 = valu.replace("]", "").lstrip()
-						if value1234 == "ACQUIRED":
-							value1234 = value1234.replace("ACQUIRED","<img title='Acquired' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Green_Tick.svg> ACQUIRED")
+						if value1234 == "ACQUIRED" or value1234 == "PRICED":
+							value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Green_Tick.svg> "+str(value1234))
 						if value1234 == "APPROVAL REQUIRED":
 							value1234 = value1234.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
 						if value1234 == "ACQUIRING":                        
@@ -2901,7 +2901,7 @@ class SYLDRTLIST:
 							value1234 = value1234.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
 						if value1234 == "PARTIALLY PRICED":
 							value1234 = value1234.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-						if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING":                        
+						if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
 							value1234 = value1234
 						if value123 == objRecName:
 							current_rec_id = value1234
@@ -4513,6 +4513,7 @@ class SYLDRTLIST:
 						string_value = string
 					StringValue_lists.append(string_value)
 				DropDownList.append(StringValue_lists)
+				Trace.Write("DropDownList--"+str(DropDownList))
 				
 			elif col_name in checkbox_list:
 				DropDownList.append(["True", "False"])
