@@ -496,7 +496,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 	filter_control_function += (
 	'$("'
 	+ filter_class
-	+ '").click( function(){ var table_id = $(this).closest("table").attr("id"); ATTRIBUTE_VALUEList = []; '
+	+ '").click( function(){ var table_id = $(this).closest("table").attr("id"); REC_ID = $(this).closest("tr").find("td:nth-child(4)").text(); ATTRIBUTE_VALUEList = []; '
 	+ str(values_list)
 	+ ' var attribute_value = $(this).val(); cpq.server.executeScript("CQNESTGRID", {"TABNAME":"Equipment Parent", "ACTION":"PRODUCT_ONLOAD_FILTER", "ATTRIBUTE_NAME": '
 	+ str(list(Columns))
