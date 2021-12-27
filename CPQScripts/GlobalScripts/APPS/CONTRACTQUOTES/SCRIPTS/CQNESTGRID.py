@@ -2021,7 +2021,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	filter_control_function += (
 		'$("'
 		+ filter_class
-		+ '").click( function(){ var table_id = $(this).closest("table").attr("id"); ATTRIBUTE_VALUEList = []; '
+		+ '").click( function(){ debugger; var table_id = $(this).closest("table").attr("id"); ATTRIBUTE_VALUEList = []; '
 		+ str(values_list)
 		+ ' var attribute_value = $(this).val(); cpq.server.executeScript("CQNESTGRID", {"TABNAME":"Equipments child", "ACTION":"PRODUCT_ONLOAD_FILTER", "ATTRIBUTE_NAME": '
 		+ str(list(Columns))
