@@ -212,15 +212,8 @@ try:
 											SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0) 
 											FROM SAQRIT (NOLOCK)
 												WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = getpartsdata.SERVICE_ID ))
-							Log.Info("exch_rate----"+str(exch_rate)+'--'+str(QUOTE))
-							Sql.RunQuery("""UPDATE SAQRIT 
-									SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(exch_rate)+""" , 
-									NET_VALUE_INGL_CURR = NET_VALUE*"""+str(exch_rate)+""",
-									UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(exch_rate)+"""
-									FROM SAQRIT (NOLOCK)
-										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}'""".format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = getpartsdata.SERVICE_ID ))
-		
-								###calling script for saqris,saqtrv insert
+							
+						###calling script for saqris,saqtrv insert
 						CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
 						
 					else:
@@ -244,20 +237,13 @@ try:
 						if GetEquipment_count:
 							GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE)/"+str(GetEquipment_count.CNT)+" AS TOTAL_UNIT, SUM(EXTENDED_UNIT_PRICE)/"+str(GetEquipment_count.CNT)+"  AS TOTAL_EXT FROM SAQSPT WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format( QUOTE,revision_rec_id, getpartsdata.SERVICE_ID))
 							Log.Info("QTPOSTPTPR TOTAL111 ==> "+str(GetSum.TOTAL_UNIT))
-							Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE = {total_unit}, NET_PRICE ={total_net}  FROM SAQRIT
+							Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = {total_unit}, NET_PRICE_INGL_CURR ={total_net}  FROM SAQRIT
 								WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{SERVICE_ID}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=getpartsdata.SERVICE_ID))
 							Sql.RunQuery("""UPDATE SAQRIT 
-											SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0) 
+											SET NET_VALUE_INGL_CURR = NET_PRICE_INGL_CURR + ISNULL(TAX_AMOUNT, 0) 
 											FROM SAQRIT (NOLOCK)
 												WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = getpartsdata.SERVICE_ID ))
-							Log.Info("exch_rate----"+str(exch_rate)+'--'+str(QUOTE))
-							Sql.RunQuery("""UPDATE SAQRIT 
-									SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(exch_rate)+""" , 
-									NET_VALUE_INGL_CURR = NET_VALUE*"""+str(exch_rate)+""",
-									UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(exch_rate)+"""
-									FROM SAQRIT (NOLOCK)
-										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}'""".format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = getpartsdata.SERVICE_ID ))
-		
+							
 						###calling script for saqris,saqtrv insert
 						CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
 						
