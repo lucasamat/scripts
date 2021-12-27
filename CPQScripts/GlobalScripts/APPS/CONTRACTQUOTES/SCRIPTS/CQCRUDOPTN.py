@@ -2239,7 +2239,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			x= str(x)
 			y = x.split(" ")
 			for OfferingRow_detail in service_addon_object:
-				addon_entitlement_object = Sql.GetFirst("select SAQTSE.PAR_SERVICE_ID from SAQTSE(nolock) inner join SAQSAO on SAQTSE.SERVICE_ID = SAQSAO.ADNPRD_ID AND SAQTSE.PAR_SERVICE_ID = SAQSAO.SERVICE_ID WHERE SAQTSE.PAR_SERVICE_ID = '{}' AND SAQTSE.QUOTE_RECORD_ID = '{}' and SAQTSE.QTEREV_RECORD_ID = '{}'".format(self.tree_parent_level_1,QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+				addon_entitlement_object = Sql.GetFirst("select SAQTSE.PAR_SERVICE_ID from SAQTSE(nolock) inner join SAQSAO on SAQTSE.SERVICE_ID = SAQSAO.ADNPRD_ID AND SAQTSE.PAR_SERVICE_ID = SAQSAO.SERVICE_ID WHERE SAQTSE.PAR_SERVICE_ID = '{}' AND SAQTSE.QUOTE_RECORD_ID = '{}' and SAQTSE.QTEREV_RECORD_ID = '{}'".format(self.tree_parent_level_1,self.contract_quote_record_id,self.quote_revision_record_id))
 				if addon_entitlement_object is None:
 					CQADDONPRD.addon_service_level_entitlement(OfferingRow_detail,self.tree_parent_level_0)
 				CQADDONPRD.addon_greenbook_level_entitlement(OfferingRow_detail.SERVICE_ID)
