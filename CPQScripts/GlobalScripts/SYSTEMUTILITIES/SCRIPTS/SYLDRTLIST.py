@@ -4493,9 +4493,10 @@ class SYLDRTLIST:
 				StringValue_lists=[]
 				
 				for string in StringValue_list:
+					string_value =""
 					Trace.Write("string--"+str(string))
 					if string == "ACQUIRED" or string == "PRICED":
-						#Trace.Write("priced status--"+str(string_value))
+						Trace.Write("priced status--"+str(string))
 						string_value = string.replace(string,"<img title='"+str(string).title()+"' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg> "+str(string))
 						Trace.Write("string_value--"+str(string_value))
 					if string == "APPROVAL REQUIRED":
