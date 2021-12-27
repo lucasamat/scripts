@@ -2813,7 +2813,7 @@ class SYLDRTLIST:
 									Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_accepted(this)">CUSTOMER ACCEPTED</a></li>'
 									Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_rejected(this)">CUSTOMER REJECTED</a></li>'
 
-								if docnode_action_btn.DATE_SUBMITTED == '' or ISNULL(docnode_action_btn.DATE_SUBMITTED,0) == 0:
+								if docnode_action_btn.DATE_SUBMITTED == '':
 									Trace.Write("action_btn===")
 									Action_str += ''
 								else:
