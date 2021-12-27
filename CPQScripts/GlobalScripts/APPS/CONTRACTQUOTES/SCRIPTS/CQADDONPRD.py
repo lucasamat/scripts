@@ -13,7 +13,7 @@ import sys
 def addon_service_level_entitlement(OfferingRow_detail,greenbook):
     Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 						
-    Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':service_id,'request_url':Request_URL,'request_type':"New"})
+    Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.SERVICE_ID,'request_url':Request_URL,'request_type':"New"})
     Fullresponse=str(Fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
     Fullresponse= eval(Fullresponse)
     ##getting configuration_status status
