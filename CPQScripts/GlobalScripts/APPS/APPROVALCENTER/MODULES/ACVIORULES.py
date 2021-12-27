@@ -504,7 +504,7 @@ class ViolationConditions:
                     #     + str(result.WHERE_CONDITION_01)
                     # )
                     Select_Query = (
-                        "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE " + str(result.WHERE_CONDITION_01)
+                        "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE (" + str(result.WHERE_CONDITION_01) + ")"
                     )
                     Log.Info("ACVIORULES--->"+str(Select_Query))
                     TargeobjRelation = Sql.GetFirst(
