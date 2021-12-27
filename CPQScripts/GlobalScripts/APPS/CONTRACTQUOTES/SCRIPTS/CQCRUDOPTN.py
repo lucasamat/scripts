@@ -13,6 +13,7 @@ import re
 import System.Net
 import SYCNGEGUID as CPQID
 import CQPARTIFLW
+import CQADDONPRD
 from SYDATABASE import SQL
 #from datetime import datetime
 #from datetime import datetime
@@ -2223,19 +2224,24 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				CQVLDRIFLW.iflow_valuedriver_rolldown(self.contract_quote_record_id,level,ancillary_dict)
 			except:
 				Trace.Write("Except for SAQSGE")
+
 			#insert in Greenbook table
 			# Sql.RunQuery(""" INSERT SAQSGB(
 			# QUOTE_SERVICE_GREENBOOK_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,UOM_ID,UOM_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,GREENBOOK,GREENBOOK_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 			# SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID,SAQSAO.QUOTE_ID,SAQSAO.QUOTE_NAME,SAQSAO.QUOTE_RECORD_ID,SAQSAO.QTEREV_ID,SAQSAO.QTEREV_RECORD_ID,SAQSAO.ADNPRD_ID,SAQSAO.ADNPRD_DESCRIPTION,SAQSAO.ADNPRDOFR_RECORD_ID,MAMTRL.UNIT_OF_MEASURE,MAMTRL.UOM_RECORD_ID,SAQSAO.SALESORG_ID,SAQSAO.SALESORG_NAME,SAQSAO.SALESORG_RECORD_ID,SAQSAO.SERVICE_DESCRIPTION,SAQSAO.SERVICE_ID,SAQSAO.SERVICE_RECORD_ID,'6/14/2022 12:00:00 AM' as CONTRACT_VALID_FROM,'12/24/2020 12:00:00 AM' as CONTRACT_VALID_TO,SABUUN.BUSINESSUNIT_ID as GREENBOOK,SABUUN.BUSINESS_UNITS_RECORD_ID as GREENBOOK_RECORD_ID,'X0116961' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, 133 as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM SAQSAO
 			# INNER JOIN MAMTRL ON SAQSAO.ADNPRD_ID = MAMTRL.SAP_PART_NUMBER INNER JOIN SABUUN ON SABUUN.BUSINESSUNIT_ID = '{greenbook}' Where QUOTE_RECORD_ID ='{quote_record_id}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}' AND SAQSAO.ACTIVE ='TRUE' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQSGB WHERE QUOTE_RECORD_ID ='{quote_record_id}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSGB.SERVICE_ID=SAQSAO.ADNPRD_ID) """.format(quote_record_id=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,treeparam = self.tree_parent_level_1,greenbook=self.tree_parent_level_0,UserId=self.user_id,UserName=self.user_name,startdate = self.contract_start_date,enddate = self.contract_end_date ))
 			#insert in entitlement table based on add on products
-			SAQTSVObj=Sql.GetList("Select SAQSAO.*,SAQTSV.QUOTE_SERVICE_RECORD_ID from SAQSAO (nolock) inner join SAQTSV on SAQTSV.QUOTE_RECORD_ID=SAQSAO.QUOTE_RECORD_ID and SAQTSV.QTEREV_RECORD_ID=SAQSAO.QTEREV_RECORD_ID and SAQTSV.SERVICE_ID = SAQSAO.SERVICE_ID where SAQSAO.QUOTE_RECORD_ID= '{QuoteRecordId}' AND SAQSAO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSAO.ACTIVE ='TRUE' AND SAQSAO.SERVICE_ID NOT IN (SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID=SAQSAO.ADNPRD_ID)".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+			service_addon_object =Sql.GetList("Select SAQSAO.*,SAQTSV.QUOTE_SERVICE_RECORD_ID from SAQSAO (nolock) inner join SAQTSV on SAQTSV.QUOTE_RECORD_ID=SAQSAO.QUOTE_RECORD_ID and SAQTSV.QTEREV_RECORD_ID=SAQSAO.QTEREV_RECORD_ID and SAQTSV.SERVICE_ID = SAQSAO.SERVICE_ID where SAQSAO.QUOTE_RECORD_ID= '{QuoteRecordId}' AND SAQSAO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSAO.ACTIVE ='TRUE' AND SAQSAO.SERVICE_ID NOT IN (SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID=SAQSAO.ADNPRD_ID)".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 			#tableInfo = SqlHelper.GetTable("SAQTSE")
 			x = datetime.datetime.today()
 			x= str(x)
 			y = x.split(" ")
-			for OfferingRow_detail in SAQTSVObj:
-				Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
+			for OfferingRow_detail in service_addon_object:
+				addon_entitlement_object = Sql.GetFirst("select SAQTSE.PAR_SERVICE_ID from SAQTSE(nolock) inner join SAQSAO on SAQTSE.SERVICE_ID = SAQSAO.ADNPRD_ID AND SAQTSE.PAR_SERVICE_ID = SAQSAO.SERVICE_ID WHERE SAQTSE.PAR_SERVICE_ID = '{}' AND SAQTSE.QUOTE_RECORD_ID = '{}' and SAQTSE.QTEREV_RECORD_ID = '{}'".format(self.tree_parent_level_1,QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+				if addon_entitlement_object is None:
+					CQADDONPRD.addon_service_level_entitlement(OfferingRow_detail,self.tree_parent_level_0)
+				CQADDONPRD.addon_greenbook_level_entitlement(OfferingRow_detail.SERVICE_ID)
+				'''Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 						
 				Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.SERVICE_ID,'request_url':Request_URL,'request_type':"New"})
 				Fullresponse=str(Fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
@@ -2374,7 +2380,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": self.contract_quote_record_id ,"level":"SERVICE_LEVEL", "treeparam": OfferingRow_detail.get("SERVICE_ID"),"user_id": self.user_id, "quote_rev_id":self.quote_revision_record_id})
 
 					except:
-						Trace.Write("EXCEPT---PREDEFINED DRIVER IFLOW")
+						Trace.Write("EXCEPT---PREDEFINED DRIVER IFLOW")'''
 					
 		elif self.action_type == "ADD_CREDIT":			
 			where_condition=""
