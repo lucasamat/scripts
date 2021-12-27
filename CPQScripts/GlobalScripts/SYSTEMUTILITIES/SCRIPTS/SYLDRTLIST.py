@@ -4494,7 +4494,8 @@ class SYLDRTLIST:
 				
 				for string in StringValue_list:
 					if string in ("ACQUIRED","PRICED"):
-						string_value = string.replace("ACQUIRED","<img title='Acquired' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg> ACQUIRED")
+						Trace.Write("priced status")
+						string_value = string.replace(string,"<img title='Acquired' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg> "+str(string))
 					if string == "APPROVAL REQUIRED":
 						string_value = string.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
 					if string == "ACQUIRING":                        
