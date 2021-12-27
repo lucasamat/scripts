@@ -273,12 +273,7 @@ try:
 							# 		UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(exch_rate)+"""
 							# 		FROM SAQRIT (NOLOCK)
 							# 			WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}'""".format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = get_ancillary_spare.SERVICE_ID ))
-							Sql.RunQuery("""UPDATE SAQRIT 
-									SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(exch_rate)+""" , 
-									NET_VALUE_INGL_CURR = NET_VALUE*"""+str(exch_rate)+""",
-									UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(exch_rate)+"""
-									FROM SAQRIT (NOLOCK)
-									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}'""".format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = get_ancillary_spare.SERVICE_ID ))
+							
 		
 		
 					else:
