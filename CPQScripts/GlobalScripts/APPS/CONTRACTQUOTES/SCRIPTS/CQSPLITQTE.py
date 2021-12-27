@@ -105,7 +105,7 @@ def _insert_service_level_entitlement(par_service=''):
 		attributesallowedlst = list(set(attributesallowedlst))
 		overallattributeslist = list(set(overallattributeslist))
 		if ProductVersionObj and get_existing_record.cnt == 0:
-			get_service_values = Sql.GetFirst("SELECT * FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}' AND SERVICE_ID ='Z0105'".format(contract_quote_rec_id, quote_revision_rec_id ,par_service))
+			get_service_values = Sql.GetFirst("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}' AND SERVICE_ID ='Z0105'".format(contract_quote_rec_id, quote_revision_rec_id ,par_service))
 			insertservice = ""
 			for attrs in overallattributeslist:
 				if attrs in attributevalues:
