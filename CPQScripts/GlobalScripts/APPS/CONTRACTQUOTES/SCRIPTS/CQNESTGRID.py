@@ -3738,7 +3738,7 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
 	else:
 		#Trace.Write("conditional search --->")
 		Trace.Write("ATTRIBUTE_VALUE_STR_J "+str(ATTRIBUTE_VALUE_STR))
-		if TreeParentParam == "Fab Locations":
+		if TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Fab Locations":
 			if ATTRIBUTE_VALUE_STR.startswith("ASSEMBLYTYPE_ID"):
 				ATTRIBUTE_VALUE_STR = str(ATTRIBUTE_VALUE_STR).replace('ASSEMBLYTYPE_ID','EQUIPMENTTYPE_ID')
 		child_obj_recid = Sql.GetList(
