@@ -2017,6 +2017,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		values_list += "ATTRIBUTE_VALUEList.push(" + str(invs) + "); "
 		Trace.Write('invs----'+str(values_list))
 	filter_class = "#Act_" + str(table_id)
+	Trace.Write("recid__J"+str(recid))
 	filter_control_function += (
 		'$("'
 		+ filter_class
