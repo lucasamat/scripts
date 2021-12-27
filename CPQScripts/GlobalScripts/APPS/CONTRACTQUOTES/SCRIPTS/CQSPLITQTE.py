@@ -134,7 +134,7 @@ def servicelevel_split_equip(seid):
     Sql.RunQuery(updatesaqritchild)
     ent_child_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
     ##INSERTING CHILD TO PARENT SERVICE.
-    split_service =Sql.GetFirst("Select * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0105'".format(contract_quote_rec_id,quote_revision_rec_id))
+    split_service =Sql.GetFirst("Select * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0105' AND PAR_SERVICE_ID = '{}'".format(contract_quote_rec_id,quote_revision_rec_id,seid))
     splitservice_id = split_service.SERVICE_ID
     splitservice_name = split_service.SERVICE_DESCRIPTION
     splitservice_recid = split_service.SERVICE_RECORD_ID
