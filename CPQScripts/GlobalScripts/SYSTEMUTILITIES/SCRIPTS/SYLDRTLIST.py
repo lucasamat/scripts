@@ -2806,11 +2806,11 @@ class SYLDRTLIST:
 							elif ObjectName == "SAQDOC":
 								contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
 								quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-								docnode_action_btn = Sql.GetFirst("SELECT DATE_SUBMITTED FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id))
-								Trace.Write("----"+str(Sql.GetFirst("SELECT DATE_SUBMITTED FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND DATE_SUBMITTED != '' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id))))
+								docnode_action_btn = Sql.GetFirst("SELECT DATE_SUBMITTED FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id))								
 								#for date_value in docnode_action_btn:
-								if docnode_action_btn:								
-									if docnode_action_btn.DATE_SUBMITTED:
+								if docnode_action_btn:
+									Trace.Write("act_btn=="+str(docnode_action_btn.DATE_SUBMITTED))						
+									if str(docnode_action_btn.DATE_SUBMITTED) != "":
 										Trace.Write("docnode=====")
 										Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_accepted(this)">CUSTOMER ACCEPTED</a></li>'
 										Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_rejected(this)">CUSTOMER REJECTED</a></li>'
