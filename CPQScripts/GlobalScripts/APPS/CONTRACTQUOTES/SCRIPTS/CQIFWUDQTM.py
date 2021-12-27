@@ -181,13 +181,13 @@ def quoteiteminsert(Qt_id):
 	net_value_ingl = 0
 	tax_amt_ingl = 0
 	#net_price = 0
-	if get_saqtrv_price:
-		if get_saqtrv_price.NET_PRICE_INGL_CURR:
-			net_price_ingl = get_saqtrv_price.NET_PRICE_INGL_CURR
-		if get_saqtrv_price.NET_VALUE_INGL_CURR:
-			net_value_ingl = get_saqtrv_price.NET_VALUE_INGL_CURR
-		if get_saqtrv_price.TAX_AMOUNT_INGL_CURR:
-			tax_amt_ingl = get_saqtrv_price.TAX_AMOUNT_INGL_CURR
+	# if get_saqtrv_price:
+	# 	if get_saqtrv_price.NET_PRICE_INGL_CURR:
+	# 		net_price_ingl = get_saqtrv_price.NET_PRICE_INGL_CURR
+	# 	if get_saqtrv_price.NET_VALUE_INGL_CURR:
+	# 		net_value_ingl = get_saqtrv_price.NET_VALUE_INGL_CURR
+	# 	if get_saqtrv_price.TAX_AMOUNT_INGL_CURR:
+	# 		tax_amt_ingl = get_saqtrv_price.TAX_AMOUNT_INGL_CURR
 
 	Sql.RunQuery("""UPDATE SAQTRV
 						SET 
