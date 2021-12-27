@@ -42,7 +42,7 @@ quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 user_id = str(User.Id)
 user_name = str(User.UserName) 
 
-def _insert_equipment_entitlement(par_service):
+def _insert_equipment_entitlement():
 	qtqsce_anc_query="""
 					INSERT SAQSCE
 					(KB_VERSION,ENTITLEMENT_XML,CONFIGURATION_STATUS,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,PAR_SERVICE_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,QTESRVCOB_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) 
@@ -54,7 +54,7 @@ def _insert_equipment_entitlement(par_service):
 					
 					JOIN SAQSCE ON SAQTSE.PAR_SERVICE_ID = SAQSCE.SERVICE_ID AND SAQSCO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID  AND SAQSCO.EQUIPMENT_ID = SAQSCE.EQUIPMENT_ID
 
-					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS,'') = 'COMPLETE' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.PAR_SERVICE_ID = '{par_service_id}' AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'   AND QTEREV_RECORD_ID = '{revision_rec_id}' AND SERVICE_ID = SAQTSE.SERVICE_ID AND PAR_SERVICE_ID = '{par_service_id}')) IQ""".format(UserId=user_id, QuoteRecordId=contract_quote_rec_id, ServiceId='Z0105', revision_rec_id = quote_revision_rec_id,par_service_id = par_service)
+					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS,'') = 'COMPLETE' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.PAR_SERVICE_ID = '{par_service_id}' AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'   AND QTEREV_RECORD_ID = '{revision_rec_id}' AND SERVICE_ID = SAQTSE.SERVICE_ID AND PAR_SERVICE_ID = '{par_service_id}')) IQ""".format(UserId=user_id, QuoteRecordId=contract_quote_rec_id, revision_rec_id = quote_revision_rec_id,par_service_id = par_service)
 	Log.Info('@qtqsce_anc_query-renewal----179=---Qt_rec_id--'+str(qtqsce_anc_query))
 	Sql.RunQuery(qtqsce_anc_query)
 
@@ -183,8 +183,6 @@ def _insert_service_level_entitlement(par_service=''):
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 			Sql.RunQuery(insert_qtqtse_query)
 
-			##equipment insert
-			_insert_equipment_entitlement(par_service)
 
 			
 			
@@ -220,6 +218,8 @@ def splitserviceinsert():
 			Trace.Write("service_list---"+str(service_list))
 			for par_service in service_list:
 				_insert_service_level_entitlement(par_service)
+			##equipment level entitlement insert
+			_insert_equipment_entitlement()
 	
 	###split the items with new insert and updation:
 	split_service =Sql.GetFirst("Select * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0105'".format(contract_quote_rec_id,quote_revision_rec_id))
