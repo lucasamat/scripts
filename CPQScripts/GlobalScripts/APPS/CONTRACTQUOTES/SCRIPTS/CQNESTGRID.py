@@ -10677,8 +10677,11 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
 		ApiResponse = ApiResponseFactory.JsonResponse(QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,ASSEMBLYID,EQUIPMENTID,KITID,KITNUMBER,SortPerPage,SortPageInform))        
 	elif TABNAME == "Equipments child": 
 		Trace.Write("111111111")
-		REC_ID = Param.REC_ID
-		RECID = REC_ID.split("_")[-1]
+		try:
+			REC_ID = Param.REC_ID
+			RECID = REC_ID.split("_")[-1]
+		except:
+			RECID = ""
 		Trace.Write("123 RECID --->"+str(RECID))
 		ApiResponse = ApiResponseFactory.JsonResponse(GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,SortPerPage,SortPageInform))
 	elif TABNAME == "Assemblies Child":
