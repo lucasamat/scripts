@@ -4496,7 +4496,7 @@ class SYLDRTLIST:
 					Trace.Write("string--"+str(string))
 					if string == "ACQUIRED" or string == "PRICED":
 						Trace.Write("priced status--"+str(string_value))
-						string_value = string.replace(string,"<img title='Acquired' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg> "+str(string))
+						string_value = string.replace(string,"<img title='"+str(string).title()+"' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg> "+str(string))
 						Trace.Write("string_value--"+str(string_value))
 					if string == "APPROVAL REQUIRED":
 						string_value = string.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
@@ -4508,7 +4508,7 @@ class SYLDRTLIST:
 						string_value = string.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
 					if string == "PARTIALLY PRICED":
 						string_value = string.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-					if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "PARTIALLY PRICED" and string != "ACQUIRING":                        
+					if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "PARTIALLY PRICED" and string != "ACQUIRING" and string != "PRICED":                        
 						string_value = string
 					StringValue_lists.append(string_value)
 				DropDownList.append(StringValue_lists)
