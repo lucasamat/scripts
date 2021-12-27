@@ -4493,7 +4493,7 @@ class SYLDRTLIST:
 				StringValue_lists=[]
 				
 				for string in StringValue_list:
-					if string == "ACQUIRED":
+					if string in ("ACQUIRED","PRICED"):
 						string_value = string.replace("ACQUIRED","<img title='Acquired' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg> ACQUIRED")
 					if string == "APPROVAL REQUIRED":
 						string_value = string.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
