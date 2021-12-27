@@ -4493,7 +4493,8 @@ class SYLDRTLIST:
 				StringValue_lists=[]
 				
 				for string in StringValue_list:
-					if string in ("ACQUIRED","PRICED"):
+					Trace.Write("string--"+str(string))
+					if string == "ACQUIRED" or string == "PRICED":
 						Trace.Write("priced status--"+str(string_value))
 						string_value = string.replace(string,"<img title='Acquired' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg> "+str(string))
 						Trace.Write("string_value--"+str(string_value))
