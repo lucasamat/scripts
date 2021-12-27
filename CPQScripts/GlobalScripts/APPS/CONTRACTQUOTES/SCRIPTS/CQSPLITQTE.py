@@ -18,9 +18,9 @@ Sql = SQL()
 
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
 try:
-	contract_quote_record_id = Quote.QuoteId
+	contract_quote_rec_id = Quote.QuoteId
 except:
-	contract_quote_record_id = ''
+	contract_quote_rec_id = ''
 
 try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
@@ -37,7 +37,7 @@ try:
 except:
 	TabName = "Quotes"
 
-contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+contract_quote_rec_id = Quote.GetGlobal("contract_quote_rec_id")
 quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 user_id = str(User.Id)
 user_name = str(User.UserName) 
@@ -186,6 +186,54 @@ def _insert_service_level_entitlement(par_service=''):
 
 			
 			
+def _quote_items_entitlement_insert():
+	service_id = 'Z0105'
+	source_object_name = 'SAQSCE'
+	join_condition_string = ''
+	dynamic_group_id_value = 'null as ENTITLEMENT_GROUP_ID'
+	dynamic_is_changed_value = 'null as IS_CHANGED'
+	join_condition_string = ' AND SAQRIT.FABLOCATION_RECORD_ID = {ObjectName}.FABLOCATION_RECORD_ID AND SAQRIT.OBJECT_ID = {ObjectName}.EQUIPMENT_ID'.format(ObjectName=source_object_name)
+	dynamic_group_id_value = '{ObjectName}.ENTITLEMENT_GROUP_ID'.format(ObjectName=source_object_name)
+	dynamic_is_changed_value = '{ObjectName}.IS_CHANGED'.format(ObjectName=source_object_name)
+	#if update: # need to verify one more time
+	Sql.RunQuery("DELETE SAQITE FROM SAQITE WHERE SAQITE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQITE.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=contract_quote_rec_id, QuoteRevisionRecordId=quote_revision_rec_id, ServiceId=service_id))
+	
+	Sql.RunQuery("""INSERT SAQITE (QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CPS_CONFIGURATION_ID, CPS_MATCH_ID, ENTITLEMENT_COST_IMPACT, ENTITLEMENT_GROUP_ID, ENTITLEMENT_GROUP_XML, ENTITLEMENT_PRICE_IMPACT, ENTITLEMENT_XML, IS_CHANGED, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID)
+				SELECT
+					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID,
+					'{UserName}' AS CPQTABLEENTRYADDEDBY,
+					GETDATE() as CPQTABLEENTRYDATEADDED,
+					{UserId} as CpqTableEntryModifiedBy,
+					GETDATE() as CpqTableEntryDateModified,
+					{ObjectName}.CPS_CONFIGURATION_ID,
+					{ObjectName}.CPS_MATCH_ID,
+					null as ENTITLEMENT_COST_IMPACT,
+					{dynamic_group_id_value},
+					null as ENTITLEMENT_GROUP_XML,
+					null as ENTITLEMENT_PRICE_IMPACT,
+					{ObjectName}.ENTITLEMENT_XML,
+					{dynamic_is_changed_value},
+					SAQRIT.LINE,						
+					SAQRIT.SERVICE_DESCRIPTION,
+					SAQRIT.SERVICE_ID,
+					SAQRIT.SERVICE_RECORD_ID,
+					SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,						
+					SAQRIT.QUOTE_ID,
+					SAQRIT.QUOTE_RECORD_ID,
+					SAQRIT.QTEREV_ID,
+					SAQRIT.QTEREV_RECORD_ID,						
+					SAQRIT.GREENBOOK,
+					SAQRIT.GREENBOOK_RECORD_ID
+				FROM {ObjectName} (NOLOCK) 
+				JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID
+											AND SAQRIT.SERVICE_RECORD_ID = {ObjectName}.SERVICE_RECORD_ID
+											AND SAQRIT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID	
+											AND ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL({ObjectName}.GREENBOOK_RECORD_ID,'')
+											{JoinConditionString}			
+				WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE'			
+			""".format(UserId=user_id, UserName=user_name, ObjectName=source_object_name, QuoteRecordId=contract_quote_rec_id, QuoteRevisionRecordId=quote_revision_rec_id, ServiceId=service_id, JoinConditionString=join_condition_string, dynamic_is_changed_value = dynamic_is_changed_value, dynamic_group_id_value = dynamic_group_id_value))
+	return True
+
 			
 	
 
@@ -278,7 +326,9 @@ def splitserviceinsert():
 						Trace.Write("2")
 						servicelevel_split_green(service_entitlement_obj.SERVICE_ID)
 					elif quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING+CONSIGNED+ON REQUEST'):
-						Trace.Write("3")    
+						Trace.Write("3")   
+					##saqite insert
+					_quote_items_entitlement_insert() 
 
 
 def servicelevel_split_equip(seid):
@@ -334,6 +384,7 @@ def servicelevel_split_equip(seid):
 	VALUES (NEWID(),CUSTOMER_TOOL_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,KPU,LINE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUOTE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERIAL_NUMBER,TECHNOLOGY,TOOL_CONFIGURATION,WAFER_SIZE);""".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id )
 	Sql.RunQuery(saqrioinsert)
 	#CQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":get_c4c_quote_id.QUOTE_ID})
+
 
 def servicelevel_split_green(seid):
 	Trace.Write("thisgreen service"+str(seid))
