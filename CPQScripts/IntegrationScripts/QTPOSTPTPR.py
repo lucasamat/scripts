@@ -248,7 +248,8 @@ try:
 						###calling script for saqris,saqtrv insert
 						CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
 						
-				elif get_ancillary_spare:	
+				elif get_ancillary_spare:
+					Log.Info("currencyType---"+str(currencyType))	
 					if currencyType == 'docCurrency':
 						Sql.RunQuery("""UPDATE SAQRSP SET UNIT_PRICE = SYSPBT.UNIT_PRICE ,EXTENDED_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQRSP 				
 								JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQRSP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID
