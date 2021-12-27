@@ -2207,7 +2207,7 @@ class TreeView:
 										whr_str_greenbook =""
 										ent_table =""
 										subTabName =""
-										if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Service Inclusions") :
+										if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText :
 											service_id = NodeText.split('/>')
 											service_id = service_id[len(service_id) -1]
 											ent_table ="SAQTSE"
