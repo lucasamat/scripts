@@ -569,6 +569,8 @@ class SYLDRTLIST:
 			else:
 				select_obj_str = str(obj_str)
 			#select_obj_str = select_obj_str.replace("PRIMARY","[PRIMARY]")
+			Trace.Write('obj_str-->'+str(obj_str))
+			Trace.Write('select_obj_str-->'+str(select_obj_str))
 			name = select_obj_str.split(",")
 			for text in name:                
 				s = Sql.GetList(
