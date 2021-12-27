@@ -156,7 +156,7 @@ def _insert_service_level_entitlement(par_service=''):
 
 			insertservice = insertservice.encode('ascii', 'ignore').decode('ascii')
 			tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
-			tbrow["QUOTE_ID"]= contract_quote_rec_id
+			tbrow["QUOTE_ID"]= get_service_values.QUOTE_ID
 			tbrow["ENTITLEMENT_XML"]= insertservice
 			tbrow["QUOTE_NAME"]=get_service_values.QUOTE_NAME
 			tbrow["QUOTE_RECORD_ID"]=contract_quote_rec_id
