@@ -215,7 +215,7 @@ try:
 												WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = getpartsdata.SERVICE_ID ))
 							
 						###calling script for saqris,saqtrv insert
-						CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
+						#CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
 						
 					else:
 						Sql.RunQuery("""UPDATE SAQSPT SET UNIT_PRICE = SYSPBT.UNIT_PRICE ,EXTENDED_UNIT_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQSPT 				
@@ -246,7 +246,7 @@ try:
 												WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = getpartsdata.SERVICE_ID ))
 							
 						###calling script for saqris,saqtrv insert
-						CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
+						#CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
 						
 				elif get_ancillary_spare:
 					Log.Info("currencyType---"+str(currencyType))	
@@ -295,8 +295,8 @@ try:
 											FROM SAQRIT (NOLOCK)
 												WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = get_ancillary_spare.SERVICE_ID ))
 
-					###calling script for saqris,saqtrv insert
-					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
+				###calling script for saqris,saqtrv insert
+				CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
 				Sql.RunQuery(
 							"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
 								BatchGroupRecordId=batch_group_record_id
