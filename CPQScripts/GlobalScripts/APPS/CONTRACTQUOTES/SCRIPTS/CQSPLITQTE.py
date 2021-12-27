@@ -37,7 +37,7 @@ try:
 except:
 	TabName = "Quotes"
 
-contract_quote_rec_id = Quote.GetGlobal("contract_quote_rec_id")
+contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 user_id = str(User.Id)
 user_name = str(User.UserName) 
@@ -57,7 +57,6 @@ def _insert_equipment_entitlement(par_service):
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS,'') = 'COMPLETE' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.SERVICE_ID = 'Z0105' AND SAQTSE.PAR_SERVICE_ID = '{par_service_id}' AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'   AND QTEREV_RECORD_ID = '{revision_rec_id}' AND SERVICE_ID = SAQTSE.SERVICE_ID AND PAR_SERVICE_ID = '{par_service_id}' AND SAQTSE.SERVICE_ID = 'Z0105')) IQ""".format(UserId=user_id, QuoteRecordId=contract_quote_rec_id, revision_rec_id = quote_revision_rec_id,par_service_id = par_service)
 	Log.Info('@qtqsce_anc_query-renewal----179=---Qt_rec_id--'+str(qtqsce_anc_query))
 	Sql.RunQuery(qtqsce_anc_query)
-
 
 def _insert_service_level_entitlement(par_service=''):
 	splitservice_object = 'Z0105'
@@ -181,10 +180,7 @@ def _insert_service_level_entitlement(par_service=''):
 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
-			Sql.RunQuery(insert_qtqtse_query)
-
-
-			
+			Sql.RunQuery(insert_qtqtse_query)			
 			
 def _quote_items_entitlement_insert():
 	service_id = 'Z0105'
@@ -233,10 +229,6 @@ def _quote_items_entitlement_insert():
 				WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE'			
 			""".format(UserId=user_id, UserName=user_name, ObjectName=source_object_name, QuoteRecordId=contract_quote_rec_id, QuoteRevisionRecordId=quote_revision_rec_id, ServiceId=service_id, JoinConditionString=join_condition_string, dynamic_is_changed_value = dynamic_is_changed_value, dynamic_group_id_value = dynamic_group_id_value))
 	return True
-
-			
-	
-
 	
 def splitserviceinsert():
 	splitservice_object = 'Z0105'
