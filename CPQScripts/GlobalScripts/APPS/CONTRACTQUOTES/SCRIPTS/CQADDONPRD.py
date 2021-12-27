@@ -9,7 +9,8 @@ from SYDATABASE import SQL
 Sql = SQL()
 import sys
 import datetime
-
+User_name = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
+User_Id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
 def addon_service_level_entitlement(OfferingRow_detail,greenbook):
     Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 						
@@ -148,7 +149,7 @@ def addon_service_level_entitlement(OfferingRow_detail,greenbook):
         tbrow["SALESORG_ID"]=OfferingRow_detail.SALESORG_ID
         tbrow["SALESORG_NAME"]=OfferingRow_detail.SALESORG_NAME
         tbrow["CPS_MATCH_ID"] = 1
-        tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
+        tbrow["CPQTABLEENTRYADDEDBY"] = User_Id
         tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
         tbrow["QTEREV_RECORD_ID"] = OfferingRow_detail.QTEREV_RECORD_ID
         tbrow["QTEREV_ID"] = OfferingRow_detail.QTEREV_ID
