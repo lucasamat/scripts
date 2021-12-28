@@ -1803,6 +1803,7 @@ class SyncQuoteAndCustomTables:
 									quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 									Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
 									##Calling the script to insert SAQSCO,SAQSCA,SAQSFB,SAQSGB,SAQSAP and SAQSKP table data......
+									Log.Info("quote_fab_equipments_record_id ---->"+str(quote_fab_equipments_record_id)+"service_id---"+str(service_id)+"serveice_type--->"+str(service_type))
 									ScriptExecutor.ExecuteGlobal(
 															"CQCRUDOPTN",
 														{
