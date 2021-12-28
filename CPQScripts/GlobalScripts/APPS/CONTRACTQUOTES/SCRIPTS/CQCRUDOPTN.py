@@ -163,12 +163,12 @@ class ContractQuoteCrudOpertion:
 			#self.sale_type = None
 		return True
 
-	def _get_record_obj(self, columns=["*"], table_name=None, where_condition="", table_joins="", single_record=False):	
+	def _get_record_obj(self, columns=["*"], table_name=None, where_condition="", table_joins="", single_record=False,action_type = ""):	
 		if table_name and self.tree_param != 'Approval Chain Steps' and str(current_prod).upper() not in ("SYSTEM ADMIN","APPROVAL CENTER"):
 			
 			if where_condition:
 				where_condition = "WHERE {}".format(where_condition)			
-				if self.action_type == "ADD_ON_PRODUCTS":
+				if action_type == "ADD_ON_PRODUCTS":
 					where_condition += " AND COMP_PRDOFR_ID NOT EXISTS (SELECT ADNPRD_ID AS COMP_PRDOFR_ID FROM SAQSAO WHERE SERVICE_ID = '"+str(self.tree_parent_level_1)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ) "
 			Trace.Write('###230 -->'+str(where_condition))
 			if single_record:
@@ -227,7 +227,7 @@ class ContractQuoteCrudOpertion:
 				where_conditon = "%s = '%s'" % (condition_column, record_ids[0],)
 			else:
 				where_conditon = "%s in %s" % (condition_column, tuple(record_ids),)
-		records_obj = self._get_record_obj(columns=columns, table_name=master_object_name, where_condition=where_conditon)
+		records_obj = self._get_record_obj(columns=columns, table_name=master_object_name, where_condition=where_conditon,action_type = self.action_type)
 		if records_obj:
 			auto_number_column_name_obj = self._get_record_obj(
 				columns=["API_NAME"],
