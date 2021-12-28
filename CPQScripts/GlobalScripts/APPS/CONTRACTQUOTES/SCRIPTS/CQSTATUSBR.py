@@ -531,7 +531,7 @@ def billingmatrix_create():
 													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 				#self.insert_quote_items_billing_plan()
 #A055S000P01-3924-billing matrix creation end			
-def Dynamic_Status_Bar(quote_item_insert):
+def Dynamic_Status_Bar(quote_item_insert,Text):
 	
 	if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
 		#Trace.Write('sales11=======')
@@ -645,4 +645,4 @@ try:
 except:
 	Text = ""
 Trace.Write("quote_item_insert_J "+str(quote_item_insert))
-ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar(quote_item_insert))  
+ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar(quote_item_insert,Text))  
