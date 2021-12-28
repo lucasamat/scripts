@@ -218,6 +218,7 @@ class EntitlementView():
 				par_service_val = self.treesuperparentparam
 				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'")
 				where = " QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'"
+				ProductPartnumber = TableObj.SERVICE_ID
 			else:
 				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'")
 				where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbook_val)+"'"
