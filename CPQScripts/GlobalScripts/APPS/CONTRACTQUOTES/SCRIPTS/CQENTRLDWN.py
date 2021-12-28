@@ -40,8 +40,11 @@ quote = objItems[2].split(",")[1]
 revision =  objItems[2].split(",")[2]
 Log.Info("QUOTE--------->"+str(quote)+'---'+str(revision))
 userid = objItems[2].split(",")[0]
+get_serviceid = SAQITMWhere.split('SERVICE_ID = ')
+get_serviceid = get_serviceid[len(get_serviceid)-1].replace("'","")
 try:
 	ancillary_dict = eval(str(ancillary_dict.replace("&#39;","'")))
+	ancillary_dict = eval(ancillary_dict[get_serviceid])
 except Exception as e:
 	Log.Info("error on ancillary--"+str(e))
 	ancillary_dict = ""
@@ -49,8 +52,7 @@ try:
 	attributeList = objItems[1].split(",")
 except:
 	attributeList = ""
-get_serviceid = SAQITMWhere.split('SERVICE_ID = ')
-get_serviceid = get_serviceid[len(get_serviceid)-1].replace("'","")
+
 Log.Info("script called..40-----"+str(objectName)+" - "+str(where)+" - "+str(SAQITMWhere)+"---140------- "+str(attributeList)+'--24------'+str(get_serviceid))
 Log.Info("ancillary_dict--"+str(ancillary_dict))
 #Log.Info("attributeList--"+str(attributeList))
