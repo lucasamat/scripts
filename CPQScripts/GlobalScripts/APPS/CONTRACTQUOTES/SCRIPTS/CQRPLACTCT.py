@@ -104,7 +104,7 @@ def add_contact(values,allvalues):
     SACONT.POSTAL_CODE
     FROM SACONT (NOLOCK)
     WHERE
-    SACONT.CONTACT_RECORD_ID IN {val}
+    SACONT.CONTACT_RECORD_ID IN ({val})
     """.format(val = val,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
 
     return  True
