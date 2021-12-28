@@ -2158,8 +2158,8 @@ def POPUPLISTVALUEADDNEW(
 				)
 				
 				table_data = Sql.GetList(
-				   "select {} from SACRVC (NOLOCK) WHERE ZUONR = '{}' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '{}' AND SERVICE_ID = '{}' ) ".format(
-				       ", ".join(ordered_keys), str(account_id),str(TreeParentParam),str(ADDON_PRD_ID)
+				   "select {} from SACRVC (NOLOCK) WHERE ZUONR = '{}' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '{}' AND SERVICE_ID = '{}' AND QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' ) ".format(
+				       ", ".join(ordered_keys), str(account_id),str(TreeParentParam),str(ADDON_PRD_ID), contract_quote_record_id,quote_revision_record_id
 				   )
 				)
 				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZUONR = '"+str(account_id)+"' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '"+str(TreeParentParam)+"' AND SERVICE_ID = '"+str(ADDON_PRD_ID)+"' )")
