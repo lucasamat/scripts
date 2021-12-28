@@ -960,7 +960,7 @@ class ContractQuoteItem:
 							self.source_object_name = 'SAQSCE'
 						elif self.quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART','OFFERING+FAB+GREENBOOK+CREDIT'):
 							self.source_object_name = 'SAQSGE'
-						elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING+CONSIGNED+ON REQUEST'):
+						elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING+CONSIGNED+ON REQUEST','OFFERING'):
 							self.source_object_name = 'SAQTSE'
 						break
 				elif entitlement_billing_id_tag_match:
