@@ -3808,103 +3808,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-
-
-
-
-
-
-
-
-				##A055S000P01-4401 
-				##cost grouping
-				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 					
-				# 	align = ''
-				# 	if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				# 		rowspan_level1 = 'rowspan="2"'
-				# 	else:
-				# 		rowspan_level1 = ""
-				# 	if not table_group_columns2:
-				# 		table_header += '<th colspan="2" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost-column-toggle" onclick="line_item_column_toggle(this)"></button>COST</div></th>'
-				# 	if str(invs) in right_align_list:
-				# 		align = 'right'
-				# 	elif str(invs) in center_align_list:
-				# 		align = 'center'
-				# 	table_group_columns2 += (
-				# 				'<th data-toggle="bootstrap-table" data-field="'
-				# 				+ str(invs)
-				# 				+ '" data-filter-control="input" data-align="'
-				# 				+ str(align)
-				# 				+'" data-title-tooltsip="'
-				# 				+ str(qstring)
-				# 				+ '" data-sortable="true">'
-				# 				+ str(qstring)
-				# 				+ "</th>"
-				# 			)           
-				# 	continue
-				# ##price grouping
-				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-					
-				# 	align = ''
-					
-				# 	if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				# 		rowspan_level1 = 'rowspan="2"'
-				# 	else:
-				# 		rowspan_level1 = ""
-				# 	if not table_group_columns3:
-				# 		table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-column-toggle" onclick="line_item_column_toggle(this)"></button>PRICE</div></th>'
-				# 	if str(invs) in right_align_list:
-				# 		align = 'right'
-				# 	elif str(invs) in center_align_list:
-				# 		align = 'center'
-				# 	table_group_columns3 += (
-				# 				'<th data-toggle="bootstrap-table" data-field="'
-				# 				+ str(invs)
-				# 				+ '" data-filter-control="input" data-align="'
-				# 				+ str(align)
-				# 				+'" data-title-tooltsip="'
-				# 				+ str(qstring)
-				# 				+ '" data-sortable="true">'
-				# 				+ str(qstring)
-				# 				+ "</th>"
-				# 			)           
-				# 	continue
-				# ##Line summary grouping
-				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-					
-				# 	align = ''
-					
-				# 	if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				# 		rowspan_level1 = 'rowspan="2"'
-				# 	else:
-				# 		rowspan_level1 = ""
-				# 	if not table_group_columns4:
-				# 		table_header += '<th colspan="4" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="linesummary-column-toggle" onclick="line_item_column_toggle(this)"></button>LINE SUMMARY</div></th>'
-				# 	if str(invs) in right_align_list:
-				# 		align = 'right'
-				# 	elif str(invs) in center_align_list:
-				# 		align = 'center'
-				# 	table_group_columns4 += (
-				# 				'<th data-toggle="bootstrap-table" data-field="'
-				# 				+ str(invs)
-				# 				+ '" data-filter-control="input" data-align="'
-				# 				+ str(align)
-				# 				+'" data-title-tooltsip="'
-				# 				+ str(qstring)
-				# 				+ '" data-sortable="true">'
-				# 				+ str(qstring)
-				# 				+ "</th>"
-				# 			)           
-				# 	continue
-				
-
-				# elif RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items" and invs == "ENTITLEMENT_CATEGORY":
-				# 	Trace.Write('3 tier header')
-				# 	if header1:
-				# 		table_header += header1
-
-				# 	continue
 				elif len(cell_api) > 0 and invs in cell_api:
 					table_header += (
 						'<th  data-field="'
@@ -4174,26 +4078,8 @@ class SYLDRTLIST:
 							)
 			table_header += "</tr>"
 		if RECORD_ID == 'SYOBJR-00009':
-			#A055S000P01-4401 Pricing view
-			# if header2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-			# 	Trace.Write('header2---'+str(header2))
-			# 	table_header += '<tr>{}</tr>'.format(header2)
 			grouping_columns = ""
-			# #entitlement category header 
-			# if pricing_picklist_value == 'Pricing' and header3 and str(TreeParam) == "Quote Items":
-			# 	grouping_columns += header3
-			# #cost header
-			# if table_group_columns2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-			# 	grouping_columns += table_group_columns2
-			# #price header
-			# if table_group_columns3 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-			# 	grouping_columns += table_group_columns3
-			# #line summary header
-			# if table_group_columns4 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-			# 	grouping_columns += table_group_columns4
-			#benchmark header
 			if table_group_columns:
-				#Trace.Write('table_group_columns---'+str(table_group_columns))
 				grouping_columns += table_group_columns
 			if table_group_columns2:
 				grouping_columns += table_group_columns2
