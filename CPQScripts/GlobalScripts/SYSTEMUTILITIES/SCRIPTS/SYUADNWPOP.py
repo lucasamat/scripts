@@ -2162,7 +2162,7 @@ def POPUPLISTVALUEADDNEW(
 				       ", ".join(ordered_keys), str(account_id),str(TreeParentParam),str(ADDON_PRD_ID), contract_quote_record_id,quote_revision_record_id
 				   )
 				)
-				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZUONR = '"+str(account_id)+"' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '"+str(TreeParentParam)+"' AND SERVICE_ID = '"+str(ADDON_PRD_ID)+"' )")
+				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZUONR = '"+str(account_id)+"' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '"+str(TreeParentParam)+"' AND SERVICE_ID = '"+str(ADDON_PRD_ID)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' )")
 
 				if QueryCountObj is not None:
 					QryCount = QueryCountObj.cnt
