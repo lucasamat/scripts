@@ -220,7 +220,7 @@ class EntitlementView():
 			if TableObj is not None:
 				RECORD_ID = str(TableObj.SERVICE_RECORD_ID)
 			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"'"
-			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"'"
+			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbook_val)+"'"
 			
 		elif EntitlementType == "ASSEMBLY":
 			# TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
