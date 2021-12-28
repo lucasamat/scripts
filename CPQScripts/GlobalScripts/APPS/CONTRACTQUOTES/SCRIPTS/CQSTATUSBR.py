@@ -131,7 +131,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 		if remaining_months < 0:
 			divide_by = 12 + remaining_months
 		get_val = 4
-	else:
+	elif str(get_billing_cycle).upper() == "ANNUALLY":
 		year = int(amount_column.split('_')[-1])
 		remaining_months = (total_months + 1) - (year*12)		
 		divide_by = 12
@@ -139,6 +139,14 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 		if remaining_months < 0:
 			divide_by = 12 + remaining_months
 		get_val = 1
+	else:
+		year = int(amount_column.split('_')[-1])
+		remaining_months = (total_months + 1) - (year*12)		
+		divide_by = 12
+		
+		if remaining_months < 0:
+			divide_by = 12 + remaining_months
+		get_val =12
 	#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5
 	object_name = join_condition = ''
 	if str(get_billing_type).upper() == "FIXED":
