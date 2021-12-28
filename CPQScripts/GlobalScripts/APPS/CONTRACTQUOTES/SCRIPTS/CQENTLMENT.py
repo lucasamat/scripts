@@ -1502,7 +1502,13 @@ class Entitlements:
 				# #ancillary_object_dict = {}
 				# ancillary_object_dict[str(serviceId)] = get_anc_dict
 				# Trace.Write("ancillary_object_dict---"+str(ancillary_object_dict))
-				Quote.GetCustomField('ANCILLARY_DICT').Content = str(ancillary_object_dict)
+				ancillary_service_dict = {}
+				if Quote.GetCustomField('ANCILLARY_DICT').Content:
+					ancillary_service_dict = eval(Quote.GetCustomField('ANCILLARY_DICT').Content)
+				Trace.Write("get_anc_dict-----"+str(ancillary_service_dict))
+
+				ancillary_service_dict[serviceId] = str(ancillary_object_dict)
+				Quote.GetCustomField('ANCILLARY_DICT').Content = str(ancillary_service_dict)
 				#Quote.SetGlobal("ancillary_object_dict",str(ancillary_object_dict))
 				Trace.Write('ancillary_object_dict----'+str(ancillary_object_dict))
 				updateentXML = updateentXML.encode('ascii', 'ignore').decode('ascii')
