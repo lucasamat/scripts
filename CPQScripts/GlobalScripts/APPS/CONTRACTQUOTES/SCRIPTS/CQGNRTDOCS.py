@@ -263,6 +263,7 @@ def SaveAttachments():
 	getrevdetails = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '{rec_id}' ".format(rec_id=Quote.GetGlobal("quote_revision_record_id")))
 	Sql.RunQuery("INSERT INTO SAQRAT(QUOTE_REV_ATTACHMENT_RECORD_ID,ATTACH_FILE_FORMAT,ATTACH_FILE_NAME,ATTACH_FILE_PATH,ATTACH_TYPE,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID) VALUES (CONVERT(VARCHAR(4000), NEWID()),'{}','{}','{}','{}','{}','{}','{}','{}')".format(FileFormat,DocumentName,"",FileFormat,getrevdetails.QUOTE_ID,Quote.GetGlobal("contract_quote_record_id"),getrevdetails.QTEREV_ID,Quote.GetGlobal("quote_revision_record_id")))		
 	Trace.Write("Save Success")
+	return ""
 	
 
 try:
