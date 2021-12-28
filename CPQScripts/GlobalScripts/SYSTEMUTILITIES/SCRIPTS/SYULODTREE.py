@@ -2201,7 +2201,7 @@ class TreeView:
 									# 			subTabName = "Exclusions"
 									# 	Trace.Write("subTabName Green service list---"+str(subTabName))
 									
-									elif (subTabName in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Inclusions','Service Parts List','New Parts') :
+									elif (subTabName in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','New Parts') :
 										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName))
 										subtab_temp_variable = subTabName 
 										whr_str_greenbook =""
