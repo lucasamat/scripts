@@ -9448,6 +9448,7 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
 		)
 		data_dict["EQUIPMENT_ID"] = str(par.EQUIPMENT_ID)
 		data_dict["ASSEMBLY_ID"] = str(par.ASSEMBLY_ID)
+		data_dict["EQUIPMENTTYPE_ID"] = str(par.EQUIPMENTTYPE_ID)
 		data_dict["ASSEMBLY_DESCRIPTION"] = str(par.ASSEMBLY_DESCRIPTION)
 		data_dict["EQUIPMENT_DESCRIPTION"] = str(par.EQUIPMENT_DESCRIPTION)
 		data_dict["GOT_CODE"] = str(par.GOT_CODE)
