@@ -1717,10 +1717,8 @@ class SyncQuoteAndCustomTables:
 									Trace.Write('error=--1304--')
 								##calling the iflow for pricing..
 								try:
-									contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID,QUOTE_NAME,ACCOUNT_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=contract_quote_record_id))
-									if contract_quote_obj:
-										contract_quote_id = contract_quote_obj.QUOTE_ID      
-									Log.Info("PART PRICING IFLOW STARTED WHEN USER CLICK COMPLETE STAGE!")
+									contract_quote_id = contract_quote_obj.QUOTE_ID      
+									#Log.Info("PART PRICING IFLOW STARTED WHEN USER CLICK COMPLETE STAGE!")
 									CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(contract_quote_id),str(quote_revision_record_id))
 								except:
 									Log.Info("PART PRICING IFLOW ERROR!")
