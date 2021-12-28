@@ -965,6 +965,16 @@ def customer_rejected(doc_rec_id):
 	
 	return True
 
+def save_document_description(doc_desc_val,doc_rec_id):
+	Trace.Write("cm to this savefunction=====")
+	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+	document_record_info = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id)")
+	update_document_description = Sql.RunQuery("""UPDATE SAQDOC SET DOCUMENT_DESCRIPTION = '{description}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,description = doc_desc_val))
+	Sql.RunQuery(update_document_description)
+
+	return True
+
 try:
 	recid = Param.CPQ_Columns['Quote']
 	language = Param.CPQ_Columns['Language']
@@ -986,6 +996,10 @@ try:
 	doc_rec_id = Param.doc_rec_id
 except:
 	doc_rec_id = ""
+try:
+	doc_desc_val = Param.doc_desc_val
+except:
+	doc_desc_val = ""
 # if 'ENGLISH DOC' in language:
 # 	ApiResponse = ApiResponseFactory.JsonResponse(englishdoc())
 # elif 'CHINESE DOC' in language:
@@ -1002,6 +1016,8 @@ elif ACTION == 'CUSTOMER_ACCEPTED':
 	ApiResponse = ApiResponseFactory.JsonResponse(customer_accepted(doc_rec_id))
 elif ACTION == 'CUSTOMER_REJECTED':
 	ApiResponse = ApiResponseFactory.JsonResponse(customer_rejected(doc_rec_id))
+elif ACTION == 'SAVE_DESC':
+	ApiResponse = ApiResponseFactory.JsonResponse(save_document_description(doc_desc_val,doc_rec_id))
 
 
 
