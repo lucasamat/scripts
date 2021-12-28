@@ -169,7 +169,7 @@ class ContractQuoteCrudOpertion:
 			if where_condition:
 				where_condition = "WHERE {}".format(where_condition)			
 				if action_type == "ADD_ON_PRODUCTS":
-					where_condition += " AND COMP_PRDOFR_ID NOT EXISTS (SELECT ADNPRD_ID AS COMP_PRDOFR_ID FROM SAQSAO WHERE SERVICE_ID = '"+str(self.tree_parent_level_1)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ) "
+					where_condition += " AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID AS COMP_PRDOFR_ID FROM SAQSAO WHERE SERVICE_ID = '"+str(self.tree_parent_level_1)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ) "
 			Trace.Write('###230 -->'+str(where_condition))
 			if single_record:
 				return Sql.GetFirst("SELECT {Columns} FROM {ObjectName} (NOLOCK) {Joins} {WhereCondition}".format(
