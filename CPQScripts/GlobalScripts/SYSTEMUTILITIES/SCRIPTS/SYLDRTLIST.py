@@ -3403,9 +3403,9 @@ class SYLDRTLIST:
 			# Item Covered Object Column Grouping - Start
 			table_group_columns = ''
 			table_group_columns2 = ''
-			table_group_columns3 = ''
-			table_group_columns4 = ''
-			table_group_columns5 = ''
+			#table_group_columns3 = ''
+			#table_group_columns4 = ''
+			#table_group_columns5 = ''
 			#A055S000P01-4401 pricing view
 			##cost grouping
 			# ##price grouping
@@ -3602,11 +3602,174 @@ class SYLDRTLIST:
 				# 				+ "</th>"
 				# 			)           
 				# 	continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','PM_ID','PM_LABOR_LEVEL','KIT_NAME','KIT_NUMBER','TOOL_CONFIGURATION'):
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','PM_ID','PM_LABOR_LEVEL','KIT_NAME','KIT_NUMBER','TOOL_CONFIGURATION'):
+				# 	align = ''
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns:
+				# 		table_header += '<th colspan="6" '+rowspan_level1+'  data-align="center"><div>OBJECT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	table_group_columns += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
+				# 	continue
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','PM_COUNT_YEAR','PER_EVENT_PMSA_COST','ANNUAL_PMSA_COST'):
+				# 	align = ''
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns2:
+				# 		table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div>EVENT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="event_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	table_group_columns2 += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
+				# 	continue
+				# ##annulaized cost
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('LABOR_COST','GREATER_THAN_QTLY_PM_COST','LESS_THAN_QTLY_PM_COST','CM_PART_COST','PM_PART_COST','REPLACE_COST','REFURB_COST','CLEANING_COST','METROLOGY_COST','KPI_COST','SEEDSTOCK_COST','FAILURE_COST','LOGISTICS_COST','OUTSOURCE_COST','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','ENTITLEMENT_COST_IMPACT','ADD_COST_IMPACT'):	
+				# 	align = ''
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns3:
+				# 		table_header += '<th colspan="18" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED COSTS<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	if str(invs) == 'ADD_COST_IMPACT':
+				# 		table_group_columns3 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-formatter="cost_impact_edit_link" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)
+				# 	else:
+				# 		table_group_columns3 += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)		           
+				# 	continue
+				
+				# ##annulaized price
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('ENTPRCIMP_INGL_CURR','ADD_PRICE_IMPACT','PER_EVENT_PMSA_PRICE','ANNUAL_PMSA_PRICE','CEILING_PRICE_MARGIN','TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','DISCOUNT','SALES_PRICE_INGL_CURR'):
+				# 	align = ''
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns4:
+				# 		table_header += '<th colspan="9" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	if str(invs) == 'ADD_PRICE_IMPACT':
+				# 		table_group_columns4 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-formatter="price_impact_edit_link" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)
+				# 	elif str(invs) == 'DISCOUNT':
+				# 		table_group_columns4 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-formatter="discount_edit_link" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)   
+				# 	else:
+				# 		table_group_columns4 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)
+				# 	continue
+				
+				# ##contractual cost and price
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('YEAR','YEAR_OVER_YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE','CNTCST_INGL_CURR','CNTPRI_INGL_CURR'):
+				# 	align = ''
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns5:
+				# 		table_header += '<th colspan="8" '+rowspan_level1+'  data-align="center"><div>CONTRACTUAL COSTS AND PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	if str(invs) == 'YEAR_OVER_YEAR':
+				# 		table_group_columns5 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-formatter="yoy_edit_link" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)
+				# 	else:	
+				# 		table_group_columns5 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)
+				# 	continue
+				
+				#normal+Collapsaible+normal
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','GOT_CODE','ASSEMBLY_ID','PM_ID','PM_LABOR_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOOL_CONFIGURATION','EQUIPMENT_QUANTITY','SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','CEILING_PRICE_INGL_CURR'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns:
-						table_header += '<th colspan="6" '+rowspan_level1+'  data-align="center"><div>OBJECT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+						table_header += '<th colspan="13" '+rowspan_level1+'  data-align="center"><div>CEILING PRICE<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="celing_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
@@ -3623,11 +3786,12 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','PM_COUNT_YEAR','PER_EVENT_PMSA_COST','ANNUAL_PMSA_COST'):
+
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE','CNTCST_INGL_CURR','CNTPRI_INGL_CURR'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns2:
-						table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div>EVENT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="event_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+						table_header += '<th colspan="7" '+rowspan_level1+'  data-align="center"><div>CONTRACTUAL PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
@@ -3644,126 +3808,14 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				##annulaized cost
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('LABOR_COST','GREATER_THAN_QTLY_PM_COST','LESS_THAN_QTLY_PM_COST','CM_PART_COST','PM_PART_COST','REPLACE_COST','REFURB_COST','CLEANING_COST','METROLOGY_COST','KPI_COST','SEEDSTOCK_COST','FAILURE_COST','LOGISTICS_COST','OUTSOURCE_COST','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','ENTITLEMENT_COST_IMPACT','ADD_COST_IMPACT'):	
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns3:
-						table_header += '<th colspan="18" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED COSTS<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					if str(invs) == 'ADD_COST_IMPACT':
-						table_group_columns3 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-formatter="cost_impact_edit_link" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)
-					else:
-						table_group_columns3 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)		           
-					continue
-				
-				##annulaized price
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('ENTPRCIMP_INGL_CURR','ADD_PRICE_IMPACT','PER_EVENT_PMSA_PRICE','ANNUAL_PMSA_PRICE','CEILING_PRICE_MARGIN','TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','DISCOUNT','SALES_PRICE_INGL_CURR'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns4:
-						table_header += '<th colspan="9" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					if str(invs) == 'ADD_PRICE_IMPACT':
-						table_group_columns4 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-formatter="price_impact_edit_link" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)
-					elif str(invs) == 'DISCOUNT':
-						table_group_columns4 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-formatter="discount_edit_link" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)   
-					else:
-						table_group_columns4 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)
-					continue
-				
-				##contractual cost and price
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('YEAR','YEAR_OVER_YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE','CNTCST_INGL_CURR','CNTPRI_INGL_CURR'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns5:
-						table_header += '<th colspan="8" '+rowspan_level1+'  data-align="center"><div>CONTRACTUAL COSTS AND PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					if str(invs) == 'YEAR_OVER_YEAR':
-						table_group_columns5 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-formatter="yoy_edit_link" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)
-					else:	
-						table_group_columns5 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)
-					continue
-				
+
+
+
+
+
+
+
+
 				##A055S000P01-4401 
 				##cost grouping
 				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
@@ -4145,12 +4197,12 @@ class SYLDRTLIST:
 				grouping_columns += table_group_columns
 			if table_group_columns2:
 				grouping_columns += table_group_columns2
-			if table_group_columns3:
-				grouping_columns += table_group_columns3
-			if table_group_columns4:
-				grouping_columns += table_group_columns4
-			if table_group_columns5:
-				grouping_columns += table_group_columns5 
+			# if table_group_columns3:
+			# 	grouping_columns += table_group_columns3
+			# if table_group_columns4:
+			# 	grouping_columns += table_group_columns4
+			# if table_group_columns5:
+			# 	grouping_columns += table_group_columns5 
 			table_header += "<tr >{}</tr>".format(grouping_columns)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
