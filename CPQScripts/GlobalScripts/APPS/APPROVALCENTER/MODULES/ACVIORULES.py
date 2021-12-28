@@ -609,8 +609,9 @@ class ViolationConditions:
                                 Select_Query = (
                                     "SELECT * FROM "
                                     + str(GetObjName.OBJECT_NAME)
-                                    + " (NOLOCK) WHERE "
+                                    + " (NOLOCK) WHERE ("
                                     + str(result.WHERE_CONDITION_01)
+                                    + ") "
                                 )
                                 TargeobjRelation = Sql.GetFirst(
                                     "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
