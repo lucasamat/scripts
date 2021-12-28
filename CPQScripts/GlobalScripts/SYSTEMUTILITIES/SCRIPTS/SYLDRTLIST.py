@@ -3402,7 +3402,7 @@ class SYLDRTLIST:
 		
 			# Item Covered Object Column Grouping - Start
 			table_group_columns = ''
-			#table_group_columns2 = ''
+			table_group_columns2 = ''
 			table_group_columns3 = ''
 			table_group_columns4 = ''
 			table_group_columns5 = ''
@@ -3623,27 +3623,27 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','PM_COUNT_YEAR','PER_EVENT_PMSA_COST','ANNUAL_PMSA_COST'):
-				# 	align = ''
-				# 	rowspan_level1 = ""
-				# 	if not table_group_columns2:
-				# 		table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div>EVENT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="event_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-				# 	if str(invs) in right_align_list:
-				# 		align = 'right'
-				# 	elif str(invs) in center_align_list:
-				# 		align = 'center'
-				# 	table_group_columns2 += (
-				# 				'<th data-toggle="bootstrap-table" data-field="'
-				# 				+ str(invs)
-				# 				+ '" data-filter-control="input" data-align="'
-				# 				+ str(align)
-				# 				+'" data-title-tooltsip="'
-				# 				+ str(qstring)
-				# 				+ '" data-sortable="true">'
-				# 				+ str(qstring)
-				# 				+ "</th>"
-				# 			)           
-				# 	continue
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','PM_COUNT_YEAR','PER_EVENT_PMSA_COST','ANNUAL_PMSA_COST'):
+					align = ''
+					rowspan_level1 = ""
+					if not table_group_columns2:
+						table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div>EVENT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="event_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns2 += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
 				##annulaized cost
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('LABOR_COST','GREATER_THAN_QTLY_PM_COST','LESS_THAN_QTLY_PM_COST','CM_PART_COST','PM_PART_COST','REPLACE_COST','REFURB_COST','CLEANING_COST','METROLOGY_COST','KPI_COST','SEEDSTOCK_COST','FAILURE_COST','LOGISTICS_COST','OUTSOURCE_COST','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','ENTITLEMENT_COST_IMPACT','ADD_COST_IMPACT'):	
 					align = ''
@@ -4143,8 +4143,8 @@ class SYLDRTLIST:
 			if table_group_columns:
 				#Trace.Write('table_group_columns---'+str(table_group_columns))
 				grouping_columns += table_group_columns
-			#if table_group_columns2:
-				#grouping_columns += table_group_columns2
+			if table_group_columns2:
+				grouping_columns += table_group_columns2
 			if table_group_columns3:
 				grouping_columns += table_group_columns3
 			if table_group_columns4:
