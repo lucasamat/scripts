@@ -58,7 +58,7 @@ def add_contact(values,allvalues):
                 ]
     Trace.Write("inside"+str(record_ids))
 
-    val= ",".join(record_ids)
+    val= "','".join(record_ids)
 
     #record_ids = str(str(record_ids)[1:-1].replace("'",""))
     getquotedetails = SqlHelper.GetFirst("SELECT * FROM SAQTMT  (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id))
@@ -104,7 +104,7 @@ def add_contact(values,allvalues):
     SACONT.POSTAL_CODE
     FROM SACONT (NOLOCK)
     WHERE
-    SACONT.CONTACT_RECORD_ID IN ({val})
+    SACONT.CONTACT_RECORD_ID IN ('{val}')
     """.format(val = val,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
 
     return  True
