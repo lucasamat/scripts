@@ -969,7 +969,7 @@ class QueryBuilder:
         QbJsonData = QbJsonData.replace("true","True")
         QbJsonData = QbJsonData.replace("false","False") 
         QbJsonData = eval(QbJsonData)
-        Trace.Write(str(QbWhereCondition))
+        Trace.Write(str(QbJsonData))
         if "(" in QbWhereCondition:
             if QbJsonData["condition"] == "OR":
                 QbWhereCondition = QbWhereCondition.split("OR")
