@@ -260,30 +260,8 @@ def attachments():
 
 def SaveAttachments():
 	FileFormat = DocumentName.split(".")[1]
-	#Sql.RunQuery("INSERT INTO SAQRAT(QUOTE_REV_ATTACHMENT_RECORD_ID,ATTACH_FILE_FORMAT,ATTACH_FILE_NAME,ATTACH_FILE_PATH,ATTACH_TYPE,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES(CONVERT(VARCHAR(4000), NEWID()),'{}','{}','{}','{}','{}','{}','{}','{}')".format(FileFormat,DocumentName,"","","",Quote.GetGlobal("contract_quote_record_id"),"",Quote.GetGlobal("quote_revision_record_id")))
-	CrtId = TagParserProduct.ParseString("<*CTX( Quote.CartId )*>")
-	Ownrid = TagParserProduct.ParseString("<*CTX( Quote.OwnerId )*>")
-
-	docId = SqlHelper.GetFirst("SELECT * from CartAttachments (NOLOCK) where fileName = '"+str(DocumentName)+"' and cart_id = '"+str(CrtId)+"' and owner_id = '"+str(Ownrid)+"'")
-	if docId is not None:
-		docattach = Quote.QuoteTables["SAQRAT"]
-		newRow = docattach.AddNewRow()
-		newRow['QUOTE_REV_ATTACHMENT_RECORD_ID'] = (CONVERT(VARCHAR(4000)))
-		newRow['ATTACH_FILE_NAME'] = (docId.fileName)
-		newRow['ATTACH_TYPE'] = (FileFormat)
-		#Trace.Write("inside_forloop--")
-		#newRow['DATE_CREATED'] = (docId.dateCreated)
-		#newRow['CART_ID'] = (CrtId)
-		#newRow['OWNER_ID'] = (Ownrid)
-		newRow['CPQTABLEENTRYADDEDBY'] = (User.UserName)
-		#newRow["CPQTABLEENTRYDATEADDED"]= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-		newRow['CPQTABLEENTRYMODIFIEDBY'] = (User.UserName)
-		#newRow["CPQTABLEENTRYDATEMODIFIED"]= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-		#newRow['DOCUMENT_ID'] = docId.id
-		docattach.Save()
-
-	Quote.RefreshActions()
-	Quote.Save()
+	getrevdetails = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '{rec_id}' ".format(rec_id=Quote.GetGlobal("quote_revision_record_id")))
+	Sql.RunQuery("INSERT INTO SAQRAT(QUOTE_REV_ATTACHMENT_RECORD_ID,ATTACH_FILE_FORMAT,ATTACH_FILE_NAME,ATTACH_FILE_PATH,ATTACH_TYPE,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID) VALUES (CONVERT(VARCHAR(4000), NEWID()),'{}','{}','{}','{}','{}','{}','{}','{}')".format(FileFormat,DocumentName,"",FileFormat,getrevdetails.QUOTE_ID,Quote.GetGlobal("contract_quote_record_id"),getrevdetails.QTEREV_ID,Quote.GetGlobal("quote_revision_record_id")))		
 	Trace.Write("Save Success")
 	
 
