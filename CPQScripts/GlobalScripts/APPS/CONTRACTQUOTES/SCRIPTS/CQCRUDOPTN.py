@@ -4800,7 +4800,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					#ENTITLEMENT SV TO CE AND GB
 					ancillary_dict =  ""
 					try: 
-						ancillary_dict = Quote.GetCustomField('ANCILLARY_DICT').Content
+						if Quote.GetCustomField('ANCILLARY_DICT').Content:
+							ancillary_dict = eval(Quote.GetCustomField('ANCILLARY_DICT').Content)
 						ancillary_dict = eval(ancillary_dict[self.tree_param])
 						# if ancillary_dict:
 						# 	ancillary_dict_val_serv = (re.sub(r'^{|}$','',ancillary_dict)).split(':')[0]
