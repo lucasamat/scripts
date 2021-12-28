@@ -1774,6 +1774,7 @@ class approvalCenter:
 					##Max_Round is commented and added below to get max round for particular chain
 					#Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}'".format(quote_record = quote_record.QUOTE_ID))
 				for i in range(1, int(GetMaxQuery.MaxStep) + 1):
+					Trace.Write("VALUE OF i="+str(i))
 					if i > 1:
 						if str(FromSeg) == "True":
 							Htmlstr += '<div class="row dispflex">'
