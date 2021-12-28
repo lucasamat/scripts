@@ -168,7 +168,9 @@ class ContractQuoteCrudOpertion:
 			
 			if where_condition:
 				where_condition = "WHERE {}".format(where_condition)			
-			Trace.Write('###171-->'+str(where_condition))
+				if self.action_type == "ADD_ON_PRODUCTS":
+					where_condition += " AND COMP_PRDOFR_ID NOT EXISTS (SELECT ADNPRD_ID AS COMP_PRDOFR_ID FROM SAQSAO WHERE SERVICE_ID = '"+str(self.tree_parent_level_1)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ) "
+			Trace.Write('###230 -->'+str(where_condition))
 			if single_record:
 				return Sql.GetFirst("SELECT {Columns} FROM {ObjectName} (NOLOCK) {Joins} {WhereCondition}".format(
 						Columns=",".join(columns), ObjectName=table_name, Joins=table_joins, WhereCondition=where_condition
@@ -179,7 +181,6 @@ class ContractQuoteCrudOpertion:
 						Columns=",".join(columns), ObjectName=table_name, Joins=table_joins, WhereCondition=where_condition
 					)
 				)
-			Trace.Write('##get record obj end')
 		return None
 
 	def _process_query(self, query_string):
@@ -226,9 +227,6 @@ class ContractQuoteCrudOpertion:
 				where_conditon = "%s = '%s'" % (condition_column, record_ids[0],)
 			else:
 				where_conditon = "%s in %s" % (condition_column, tuple(record_ids),)
-		if self.action_type == "ADD_ON_PRODUCTS":
-			where_condition += " ADNPRD_ID NOT EXISTS (SELECT ADNPRD_ID FROM SAQSAO WHERE SERVICE_ID = '"+str(self.tree_parent_level_1)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ) "
-			Trace.Write('###230 -->'+str(where_condition))
 		records_obj = self._get_record_obj(columns=columns, table_name=master_object_name, where_condition=where_conditon)
 		if records_obj:
 			auto_number_column_name_obj = self._get_record_obj(
