@@ -4802,7 +4802,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					try: 
 						if Quote.GetCustomField('ANCILLARY_DICT').Content:
 							ancillary_dict = eval(Quote.GetCustomField('ANCILLARY_DICT').Content)
-						ancillary_dict = eval(ancillary_dict[self.tree_param])
+							ancillary_dict = str(ancillary_dict[self.tree_param])
 						# if ancillary_dict:
 						# 	ancillary_dict_val_serv = (re.sub(r'^{|}$','',ancillary_dict)).split(':')[0]
 						# 	ancillary_dict_val = (re.sub(r'^{|"}$','',ancillary_dict)).split(': "')[1]
