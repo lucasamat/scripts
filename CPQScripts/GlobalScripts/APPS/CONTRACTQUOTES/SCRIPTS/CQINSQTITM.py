@@ -1945,7 +1945,8 @@ class ContractQuoteItem:
 			elif self.is_fpm_spare_service == True:				
 				# Spare Parts Insert/Update (Z0108)...
 				Log.Info("===> _do_opertion z0108 z0110 for testing")	
-				self._simple_quote_items_summary_insert()
+				# self._simple_quote_items_summary_insert()
+				self._quote_items_summary_insert()
 				self._simple_fpm_quote_items_insert()
 				self._insert_quote_item_fpm_forecast_parts()
 				self._simple_quote_annualized_items_insert()
