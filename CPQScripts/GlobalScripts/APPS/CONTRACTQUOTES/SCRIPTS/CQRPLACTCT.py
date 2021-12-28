@@ -57,7 +57,9 @@ def add_contact(values,allvalues):
                     for value in values
                 ]
     Trace.Write("inside"+str(record_ids))
-    val= tuple(record_ids)
+
+    val= ",".join(record_ids)
+
     #record_ids = str(str(record_ids)[1:-1].replace("'",""))
     getquotedetails = SqlHelper.GetFirst("SELECT * FROM SAQTMT  (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id))
     Sql.RunQuery ("""
