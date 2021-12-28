@@ -971,6 +971,7 @@ class QueryBuilder:
         QbJsonData = eval(QbJsonData)
         Trace.Write(str(QbJsonData))
         Trace.Write("--"+str(QbJsonData['rules'][0]['rules'][0]['values']['id']))
+        objName = str(QbJsonData['rules'][0]['rules'][0]['values']['id']).split(".")[0]
         if "(" in QbWhereCondition:
             if QbJsonData["condition"] == "OR":
                 QbWhereCondition = QbWhereCondition.split("OR")
@@ -982,10 +983,10 @@ class QueryBuilder:
                         Trace.Write("y--->"+str(y))
                         for i in y:
                             i=i.strip().strip("(").strip(")")
-                            l.append(i.split("."))
+                            l.append(i.split(objName+"."))
                 for x in range(0,len(l)):
-                    getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(str(l[x][0]).strip(),str(l[x][1]).split("=")[0].strip()))
-                    getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(str(l[x][0]).strip()))
+                    getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(objName.strip(),str(l[x][1]).split(" '")[0].strip("=").strip("<").strip(">").strip("!=").strip("") ))
+                    getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(objName.strip()))
                     if getFieldLabel and getObjLabel:
                         row={}
                         row = {
