@@ -526,6 +526,7 @@ class Entitlements:
 		# else:
 		# 	defaultval = '0'
 		attr_level_pricing = []
+		get_conflict_message = ''
 		dropdownallowlist = []
 		dropdownallowlist_selected = []
 		dropdowndisallowlist = []
@@ -573,6 +574,13 @@ class Entitlements:
 					characteristics_attr_values = []
 					#dropdownallow = {}
 					for rootattribute, rootvalue in Fullresponse.items():
+						if rootattribute == "conflicts":
+							for conflict in rootvalue:
+								Trace.Write('88----'+str(conflict))
+								for val,key in conflict.items():
+									if str(val) == "explanation":
+										Trace.Write(str(key)+'--88----'+str(val))
+										get_conflict_message = str(val)
 						if rootattribute == "rootItem":
 							for Productattribute, Productvalue in rootvalue.items():
 								if Productattribute == "characteristicGroups":
@@ -807,6 +815,13 @@ class Entitlements:
 				characteristics_attr_values = []
 				#dropdownallow = {}
 				for rootattribute, rootvalue in Fullresponse.items():
+					if rootattribute == "conflicts":
+						for conflict in rootvalue:
+							Trace.Write('88----'+str(conflict))
+							for val,key in conflict.items():
+								if str(val) == "explanation":
+									Trace.Write(str(key)+'--88----'+str(val))
+									get_conflict_message = str(val)
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristicGroups":
@@ -1020,7 +1035,7 @@ class Entitlements:
 			# to insert new input column value and price factor, cost impact for manual input Start 
 			getvalue = insertservice =""
 			Fullresponse = Product.GetGlobal('Fullresponse')
-			configuration_status =""
+			configuration_status = get_conflict_message = ""
 			if Fullresponse:
 				Fullresponse = eval(Fullresponse)
 				##getting configuration_status status
@@ -1031,6 +1046,13 @@ class Entitlements:
 				else:
 					configuration_status = 'ERROR'
 				for rootattribute, rootvalue in Fullresponse.items():
+					if rootattribute == "conflicts":
+						for conflict in rootvalue:
+							Trace.Write('88----'+str(conflict))
+							for val,key in conflict.items():
+								if str(val) == "explanation":
+									Trace.Write(str(key)+'--88----'+str(val))
+									get_conflict_message = str(val)
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristicGroups":
@@ -1861,7 +1883,7 @@ class Entitlements:
 			else:
 				Trace.Write("---------------------------111111111"+str(ENT_IP_DICT))
 				# to insert  input column value  start
-				getvalue = ""
+				getvalue = get_conflict_message = ""
 				updateentXML = getcostbaborimpact = getpriceimpact = ""
 				
 				for key,val in ENT_IP_DICT.items():
@@ -1913,6 +1935,13 @@ class Entitlements:
 							Sql.RunQuery(Updatecps)
 							characteristics_attr_values = []
 							for rootattribute, rootvalue in Fullresponse.items():
+								if rootattribute == "conflicts":
+									for conflict in rootvalue:
+										Trace.Write('88----'+str(conflict))
+										for val,key in conflict.items():
+											if str(val) == "explanation":
+												Trace.Write(str(key)+'--88----'+str(val))
+												get_conflict_message = str(val)
 								if rootattribute == "rootItem":
 									for Productattribute, Productvalue in rootvalue.items():
 										if Productattribute == "variantConditions":
@@ -2155,8 +2184,16 @@ class Entitlements:
 				attributeEditonlylst = []
 				attributedefaultvalue = []
 				attriburesrequired_list =[]
-				attributevalues = {}			
+				attributevalues = {}
+				get_conflict_message = ''		
 				for rootattribute, rootvalue in Fullresponse.items():
+					if rootattribute == "conflicts":
+						for conflict in rootvalue:
+							Trace.Write('88----'+str(conflict))
+							for val,key in conflict.items():
+								if str(val) == "explanation":
+									Trace.Write(str(key)+'--88----'+str(val))
+									get_conflict_message = str(val)
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristics":
