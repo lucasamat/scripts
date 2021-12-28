@@ -2238,7 +2238,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				addon_entitlement_object = Sql.GetFirst("select SAQTSE.PAR_SERVICE_ID from SAQTSE(nolock) inner join SAQSAO on SAQTSE.SERVICE_ID = SAQSAO.ADNPRD_ID AND SAQTSE.PAR_SERVICE_ID = SAQSAO.SERVICE_ID AND SAQTSE.QUOTE_RECORD_ID = SAQSAO.QUOTE_RECORD_ID and SAQTSE.QTEREV_RECORD_ID = SAQSAO.QTEREV_RECORD_ID WHERE SAQTSE.PAR_SERVICE_ID = '{}' AND SAQSAO.QUOTE_RECORD_ID = '{}' and SAQSAO.QTEREV_RECORD_ID = '{}'".format(self.tree_parent_level_1,self.contract_quote_record_id,self.quote_revision_record_id))
 				if addon_entitlement_object is None:
 					CQADDONPRD.addon_service_level_entitlement(OfferingRow_detail,self.tree_parent_level_0)
-				CQADDONPRD.addon_greenbook_level_entitlement(OfferingRow_detail,self.tree_parent_level_0)
+				#CQADDONPRD.addon_greenbook_level_entitlement(OfferingRow_detail,self.tree_parent_level_0)
 				'''Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 						
 				Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.SERVICE_ID,'request_url':Request_URL,'request_type':"New"})
