@@ -2396,8 +2396,11 @@ class Entitlements:
 			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'get_selected_value':get_selected_dict,'uptime_list':uptime_list,'get_ent_type_val':get_ent_type_val})
 	
 		if ENT_IP_DICT != '':
-			
-			ancillary_dict = Quote.GetCustomField('ANCILLARY_DICT').Content
+			ancillary_dict = ''
+			if Quote.GetCustomField('ANCILLARY_DICT').Content:
+				ancillary_dict = eval(Quote.GetCustomField('ANCILLARY_DICT').Content)
+			if ancillary_dict:
+				ancillary_dict = str(ancillary_dict[serviceId])
 			# ancillary_dict_val = (re.sub(r'^{|"}$','',ancillary_dict)).split(': "')[1]
 			# ancillary_dict ={}
 			# ancillary_dict = eval(ancillary_dict_val)
