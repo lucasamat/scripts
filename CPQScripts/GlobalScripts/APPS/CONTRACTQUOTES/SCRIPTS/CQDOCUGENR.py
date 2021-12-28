@@ -948,7 +948,7 @@ def customer_accepted(doc_rec_id):
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 
-	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET ACCEPTED = 'TRUE' AND DATE_ACCEPTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(submitted_date = date.today().strftime("%m/%d/%Y"),Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET ACCEPTED = 'TRUE' AND DATE_ACCEPTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y"),))
 	Sql.RunQuery(update_submitted_date)
 	
 	return True
@@ -969,7 +969,7 @@ def save_document_description(doc_desc_val,doc_rec_id):
 	Trace.Write("cm to this savefunction=====")
 	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-	document_record_info = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id)")
+	document_record_info = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 	update_document_description = Sql.RunQuery("""UPDATE SAQDOC SET DOCUMENT_DESCRIPTION = '{description}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,description = doc_desc_val))
 	Sql.RunQuery(update_document_description)
 
