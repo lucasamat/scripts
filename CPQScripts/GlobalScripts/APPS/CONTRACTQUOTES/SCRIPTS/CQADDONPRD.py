@@ -149,15 +149,15 @@ def addon_service_level_entitlement(OfferingRow_detail,greenbook):
 		insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 		Sql.RunQuery(insert_qtqtse_query)
 		
-		try:
-			Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
-			where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(self.contract_quote_record_id, self.quote_revision_record_id, OfferingRow_detail.get("SERVICE_ID"))
-			# CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
+		# try:
+		# 	Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
+		# 	where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(OfferingRow_detail.QUOTE_RECORD_ID, OfferingRow_detail.QTEREV_RECORD_ID, OfferingRow_detail.ADNPRD_ID)
+		# 	# CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
 			
-			predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": self.contract_quote_record_id ,"level":"SERVICE_LEVEL", "treeparam": OfferingRow_detail.get("SERVICE_ID"),"user_id": self.user_id, "quote_rev_id":self.quote_revision_record_id})
+		# 	predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": OfferingRow_detail.QUOTE_RECORD_ID ,"level":"SERVICE_LEVEL", "treeparam":OfferingRow_detail.ADNPRD_ID,"user_id": user_id, "quote_rev_id":OfferingRow_detail.QTEREV_RECORD_ID})
 
-		except:
-			Trace.Write("EXCEPT---PREDEFINED DRIVER IFLOW")
+		# except:
+		# 	Trace.Write("EXCEPT---PREDEFINED DRIVER IFLOW")
 
 def addon_greenbook_level_entitlement(OfferingRow_detail,greenbook):
 	Sql.RunQuery("""INSERT SAQSGE (KB_VERSION,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,	
