@@ -168,7 +168,7 @@ class ContractQuoteCrudOpertion:
 			
 			if where_condition:
 				where_condition = "WHERE {}".format(where_condition)			
-			
+			Trace.Write('###171-->'+str(where_condition))
 			if single_record:
 				return Sql.GetFirst("SELECT {Columns} FROM {ObjectName} (NOLOCK) {Joins} {WhereCondition}".format(
 						Columns=",".join(columns), ObjectName=table_name, Joins=table_joins, WhereCondition=where_condition
@@ -179,6 +179,7 @@ class ContractQuoteCrudOpertion:
 						Columns=",".join(columns), ObjectName=table_name, Joins=table_joins, WhereCondition=where_condition
 					)
 				)
+			Trace.Write('##get record obj end')
 		return None
 
 	def _process_query(self, query_string):
