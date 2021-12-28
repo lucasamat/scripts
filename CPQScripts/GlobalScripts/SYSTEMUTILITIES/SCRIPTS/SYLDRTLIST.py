@@ -8302,8 +8302,9 @@ class SYLDRTLIST:
 
 				elif str(current_tab).upper() == "ROLE":                    
 					Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW<a><li>'  
-				else:              
-					if ObjectName != "SAQIBP" and ObjectName != "SAQTRV":
+				else: 
+					             
+					if ObjectName != "SAQIBP" and ObjectName != "SAQTRV" and ObjectName != "SAQDOC":
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 
 					elif ObjectName == "SAQTRV" :
