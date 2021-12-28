@@ -95,7 +95,10 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 			level_name = 'OFFERING LEVEL'
 		#condition based on quote item strcuture end
 	elif ent_level_table == "SAQSGE":
-		get_clicked_greenbook = Product.GetGlobal('TreeParam')
+		if Product.GetGlobal('TreeParam') == 'Add-On Products' and Product.GetGlobal("TreeParentLevel3") == 'Product Offerings':
+			get_clicked_greenbook = Product.GetGlobal("TreeParentLevel0")
+		else:
+			get_clicked_greenbook = Product.GetGlobal('TreeParam')
 		level_name = 'OFFERING FAB GREENBOOK LEVEL'
 	elif ent_level_table == "SAQSCE":
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
