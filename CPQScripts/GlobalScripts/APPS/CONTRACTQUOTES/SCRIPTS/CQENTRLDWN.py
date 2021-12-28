@@ -44,7 +44,7 @@ get_serviceid = SAQITMWhere.split('SERVICE_ID = ')
 get_serviceid = get_serviceid[len(get_serviceid)-1].replace("'","")
 try:
 	ancillary_dict = eval(str(ancillary_dict.replace("&#39;","'")))
-	ancillary_dict = eval(ancillary_dict[get_serviceid])
+	
 except Exception as e:
 	Log.Info("error on ancillary--"+str(e))
 	ancillary_dict = ""
