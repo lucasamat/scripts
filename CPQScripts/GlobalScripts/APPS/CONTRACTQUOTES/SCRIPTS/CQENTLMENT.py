@@ -817,7 +817,7 @@ class Entitlements:
 				for rootattribute, rootvalue in Fullresponse.items():
 					if rootattribute == "conflicts":
 						for conflict in rootvalue:
-							Trace.Write('88----'+str(conflict))
+							Trace.Write('88--820---'+str(conflict))
 							for val,key in conflict.items():
 								if str(val) == "explanation":
 									Trace.Write(str(key)+'--88----'+str(val))
@@ -1048,10 +1048,10 @@ class Entitlements:
 				for rootattribute, rootvalue in Fullresponse.items():
 					if rootattribute == "conflicts":
 						for conflict in rootvalue:
-							Trace.Write('88----'+str(conflict))
+							Trace.Write('88---1052---'+str(conflict))
 							for val,key in conflict.items():
 								if str(val) == "explanation":
-									Trace.Write(str(key)+'--88----'+str(val))
+									Trace.Write(str(key)+'--88--1054--'+str(val))
 									get_conflict_message = str(val)
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
@@ -1937,10 +1937,10 @@ class Entitlements:
 							for rootattribute, rootvalue in Fullresponse.items():
 								if rootattribute == "conflicts":
 									for conflict in rootvalue:
-										Trace.Write('88----'+str(conflict))
+										Trace.Write('88---1940-'+str(conflict))
 										for val,key in conflict.items():
 											if str(val) == "explanation":
-												Trace.Write(str(key)+'--88----'+str(val))
+												Trace.Write(str(key)+'--1943-----'+str(val))
 												get_conflict_message = str(val)
 								if rootattribute == "rootItem":
 									for Productattribute, Productvalue in rootvalue.items():
@@ -2189,10 +2189,10 @@ class Entitlements:
 				for rootattribute, rootvalue in Fullresponse.items():
 					if rootattribute == "conflicts":
 						for conflict in rootvalue:
-							Trace.Write('88----'+str(conflict))
+							Trace.Write('88---2191-'+str(conflict))
 							for val,key in conflict.items():
 								if str(val) == "explanation":
-									Trace.Write(str(key)+'--88----'+str(val))
+									Trace.Write(str(key)+'-2195---'+str(val))
 									get_conflict_message = str(val)
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
