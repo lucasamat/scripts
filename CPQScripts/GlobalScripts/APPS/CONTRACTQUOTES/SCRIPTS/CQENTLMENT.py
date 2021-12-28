@@ -580,7 +580,7 @@ class Entitlements:
 								for val,key in conflict.items():
 									if str(val) == "explanation":
 										Trace.Write(str(key)+'--88----'+str(val))
-										get_conflict_message = str(val)
+										get_conflict_message = str(key)
 						if rootattribute == "rootItem":
 							for Productattribute, Productvalue in rootvalue.items():
 								if Productattribute == "characteristicGroups":
@@ -1052,7 +1052,7 @@ class Entitlements:
 							for val,key in conflict.items():
 								if str(val) == "explanation":
 									Trace.Write(str(key)+'--88--1054--'+str(val))
-									get_conflict_message = str(val)
+									get_conflict_message = str(key)
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristicGroups":
@@ -1941,7 +1941,7 @@ class Entitlements:
 										for val,key in conflict.items():
 											if str(val) == "explanation":
 												Trace.Write(str(key)+'--1943-----'+str(val))
-												get_conflict_message = str(val)
+												get_conflict_message = str(key)
 								if rootattribute == "rootItem":
 									for Productattribute, Productvalue in rootvalue.items():
 										if Productattribute == "variantConditions":
@@ -2193,7 +2193,7 @@ class Entitlements:
 							for val,key in conflict.items():
 								if str(val) == "explanation":
 									Trace.Write(str(key)+'-2195---'+str(val))
-									get_conflict_message = str(val)
+									get_conflict_message = str(key)
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristics":
