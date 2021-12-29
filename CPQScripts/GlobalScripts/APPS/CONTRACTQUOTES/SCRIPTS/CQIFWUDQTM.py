@@ -189,7 +189,7 @@ def quoteiteminsert(Qt_id):
 	# 	if get_saqtrv_price.TAX_AMOUNT_INGL_CURR:
 	# 		tax_amt_ingl = get_saqtrv_price.TAX_AMOUNT_INGL_CURR
 	total_credit = 0
-	get_credit_val = Sql.GetFirst("""SELECT * FROM SAQRIS WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID='Z0116' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
+	get_credit_val = Sql.GetFirst("""SELECT * FROM SAQRIS WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID='Z0116' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
 	if get_credit_val:
 		if get_credit_val.NET_PRICE_INGL_CURR:
 			total_credit = get_credit_val.NET_PRICE_INGL_CURR
