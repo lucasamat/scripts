@@ -1517,7 +1517,7 @@ class SyncQuoteAndCustomTables:
 								for employee in payload_json.get('SAQICT'):									
 									contact_master_table_update = {
 										"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
-										"ADDRESS": employee_obj.ADDRESS_1 or "",
+										"ADDRESS": employee_obj.ADDRESS_1 or " ",
 										"CITY": employee_obj.CITY,
 										"CONTACT_ID": str(custom_fields_detail.get("PrimaryContactId")),
 										"CONTACT_NAME": str(custom_fields_detail.get("PrimaryContactName")),
@@ -1525,7 +1525,7 @@ class SyncQuoteAndCustomTables:
 										"COUNTRY": employee_obj.COUNTRY,
 										"COUNTRY_RECORD_ID": employee_obj.COUNTRY_RECORD_ID,
 										"DEPARTMENT": "",
-										"EMAIL": employee_obj.EMAIL or "",
+										"EMAIL": employee_obj.EMAIL or " ",
 										"EXTERNAL_ID": employee.get("PRIMARY_CONTACT_ID"),
 										"FAX": "",
 										"FUNCTION": "",
