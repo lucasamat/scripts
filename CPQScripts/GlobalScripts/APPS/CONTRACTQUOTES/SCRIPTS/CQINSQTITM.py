@@ -1453,7 +1453,7 @@ class ContractQuoteItem:
 				Sql.RunQuery("""UPDATE SAQRIT 
 								SET NET_VALUE_INGL_CURR = NET_PRICE_INGL_CURR + ISNULL(TAX_AMOUNT, 0) 
 								FROM SAQRIT (NOLOCK)
-									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=self.contract_quote_record_id ,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' """.format(QuoteRecordId=self.contract_quote_record_id ,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 
 			##ordering line field in saqrit
 			self._ordering_item_line_no()
