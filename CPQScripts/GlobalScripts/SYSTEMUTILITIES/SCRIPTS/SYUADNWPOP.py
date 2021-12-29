@@ -2122,7 +2122,7 @@ def POPUPLISTVALUEADDNEW(
 
 				pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count)
 
-				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC WHERE ZUONR = '"+str(account_id)+"' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '"+str(TreeParentParam)+"' AND SERVICE_ID = '"+str(ADDON_PRD_ID)+"' )")
+				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC WHERE ZUONR = '"+str(account_id)+"'")
 
 				# order_by = "order by SACRVC.COMP_PRDOFR_NAME ASC"
 
@@ -2162,7 +2162,7 @@ def POPUPLISTVALUEADDNEW(
 				       ", ".join(ordered_keys), str(account_id),str(TreeParentParam),str(ADDON_PRD_ID), contract_quote_record_id,quote_revision_record_id
 				   )
 				)
-				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZUONR = '"+str(account_id)+"' AND NOT EXISTS (SELECT CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE GREENBOOK = '"+str(TreeParentParam)+"' AND SERVICE_ID = '"+str(ADDON_PRD_ID)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' )")
+				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZUONR = '"+str(account_id)+"'")
 
 				if QueryCountObj is not None:
 					QryCount = QueryCountObj.cnt
