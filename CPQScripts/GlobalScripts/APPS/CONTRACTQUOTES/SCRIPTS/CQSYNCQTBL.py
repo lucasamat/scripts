@@ -1525,7 +1525,7 @@ class SyncQuoteAndCustomTables:
 										"COUNTRY": employee_obj.COUNTRY,
 										"COUNTRY_RECORD_ID": employee_obj.COUNTRY_RECORD_ID,
 										"DEPARTMENT": "",
-										"EMAIL": employee_obj.EMAIL,
+										"EMAIL": employee_obj.EMAIL or "",
 										"EXTERNAL_ID": employee.get("PRIMARY_CONTACT_ID"),
 										"FAX": "",
 										"FUNCTION": "",
