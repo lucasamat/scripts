@@ -1387,7 +1387,7 @@ class EntitlementView():
 									else:
 										new_value_dicta["VALUE"] = str(sec_str_ipp)
 										#Trace.Write("@3323-----"+str(attrSysId))
-									new_value_dicta["VALIDATION"]=str("<abbr class = 'wid90_per requ_validation' title='"+str(sec_validation)+"'>"+str(sec_validation)+"</abbr>")+str(edit_pencil_icon)
+									new_value_dicta["VALIDATION"]=str("<abbr id ='"+ str(attrSysId)+"'  class = 'wid90_per requ_validation' title='"+str(sec_validation)+"'>"+str(sec_validation)+"</abbr>")+str(edit_pencil_icon)
 									new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>") 
 									new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str(sec_str_primp)
 									new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")						
