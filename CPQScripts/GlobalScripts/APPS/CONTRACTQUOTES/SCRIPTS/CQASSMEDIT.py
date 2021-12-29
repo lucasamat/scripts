@@ -181,7 +181,7 @@ def child_ent_request(tableName,where,serviceId):
 					webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
 						
 					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
-						#Trace.Write('row--'+str(row.ENTITLEMENT_ID))
+						Trace.Write('row--'+str(row.ENTITLEMENT_ID))
 						try:
 							requestdata = '{"characteristics":['
 							
@@ -198,7 +198,7 @@ def child_ent_request(tableName,where,serviceId):
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 							requestdata += ']}'
 							requestdata = requestdata.replace('},]','}]')
-							#Log.Info("requestdata--child-- " + str(requestdata))
+							Trace.Write("requestdata--child-- " + str(requestdata))
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 							#cpsmatchID = cpsmatchID + 1			
 							cpsmatchID = webclient.ResponseHeaders["Etag"]
