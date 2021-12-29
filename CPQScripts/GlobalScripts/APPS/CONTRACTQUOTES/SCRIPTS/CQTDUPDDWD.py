@@ -139,9 +139,11 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		ContractQuoteSpareOpertion.__init__(self,  **kwargs)
 	
 	def _do_opertion(self):
-		Trace.Write("data ==> "+str(type(self.upload_data)))
-		for data in self.upload_data:
-			Trace.Write("====>>> "+str(data))
+		Trace.Write("upload_data ==> "+str(type(self.upload_data)))
+		for sheet_name, sheet_data in self.upload_data:
+			Trace.Write("sheet_data ====>>> "+str(sheet_data))
+			for data in sheet_data:
+				Trace.Write("data ====>>> "+str(data))
 		return "Import Success"
 
 
