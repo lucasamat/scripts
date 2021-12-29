@@ -297,7 +297,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 					requestdata += '{"value":"' + NewValue + '","selected":true}'
 		else:
 			Trace.Write("elseee----field type--"+str(AttributeID))
-			requestdata += '{"value":"' + AttributeID + '","selected":true}'
+			requestdata += '{"value":"' + NewValue + '","selected":true}'
 		
 		requestdata += ']}]}'
 		requestdata = requestdata.replace(',]}]}',']}]}')
