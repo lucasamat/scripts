@@ -143,7 +143,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		for sheet_data in self.upload_data:
 			Trace.Write(str(sheet_data.Key)+" sheet_data ====>>> "+str(sheet_data.Value))
 			for data in sheet_data.Value:
-				Trace.Write("data ====>>> "+str(data))
+				Trace.Write("data ====>>> "+str(list(data)))
 		return "Import Success"
 
 
