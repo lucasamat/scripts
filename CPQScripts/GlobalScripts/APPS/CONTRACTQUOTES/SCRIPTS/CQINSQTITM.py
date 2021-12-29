@@ -1074,22 +1074,9 @@ class ContractQuoteItem:
 		
 		if self.source_object_name:		
 			equipments_count = 0
-			item_number_inc = 0
-			validate_axcliary = Sql.GetFirst("SELECT COUNT(SERVICE_ID) AS AXCLIARY_PRODUCT_FLAG from SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID='{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
-			'''
-			if validate_axcliary.AXCLIARY_PRODUCT_FLAG:
-				quote_item_obj = Sql.GetFirst("SELECT COUNT(LINE) as LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
-				equipments_count = int(quote_item_obj.LINE)
 			quote_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 			if quote_item_obj:
 				equipments_count = int(quote_item_obj.LINE)
-			'''	
-			quote_item_obj = Sql.GetFirst("SELECT COUNT(LINE) as LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
-			equipments_count = int(quote_item_obj.LINE)
-			
-			doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
-			if doctype_obj:
-				item_number_inc = int(doctype_obj.ITEM_NUMBER_INCREMENT)
 					
 			if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT'):
 				#get billing type start
@@ -1113,8 +1100,7 @@ class ContractQuoteItem:
 						null as GL_ACCOUNT_NO,
 						SAQTRV.GLOBAL_CURRENCY,
 						SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-						(({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
-						--((ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
+						ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
 						SAQSCE.EQUIPMENT_ID as OBJECT_ID,
 						'EQUIPMENT' as OBJECT_TYPE,
 						SAQSCE.FABLOCATION_ID as FABLOCATION_ID,
@@ -1148,7 +1134,7 @@ class ContractQuoteItem:
 					) IQ
 					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQRIT.FABLOCATION_RECORD_ID = IQ. FABLOCATION_RECORD_ID AND ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(IQ.GREENBOOK_RECORD_ID,'') AND ISNULL(SAQRIT.OBJECT_ID,'') = IQ.OBJECT_ID
 					WHERE ISNULL(SAQRIT.OBJECT_ID,'') = ''			
-				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns,itemnumberinc=item_number_inc)))
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns)))
 				Log.Info("SAQRIT=== 1")
 				Sql.RunQuery("""INSERT SAQRIT (QUOTE_REVISION_CONTRACT_ITEM_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,{DynamicColumnNames} GREENBOOK,BILLING_TYPE,GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID)
 					SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_CONTRACT_ITEM_ID,
@@ -1169,8 +1155,7 @@ class ContractQuoteItem:
 						null as GL_ACCOUNT_NO,
 						SAQTRV.GLOBAL_CURRENCY,
 						SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-						(({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
-						--((ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc}) as LINE,
+						ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
 						SAQSCE.EQUIPMENT_ID as OBJECT_ID,
 						'EQUIPMENT' as OBJECT_TYPE,
 						SAQSCE.FABLOCATION_ID as FABLOCATION_ID,
@@ -1205,7 +1190,7 @@ class ContractQuoteItem:
 					) IQ
 					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQRIT.FABLOCATION_RECORD_ID = IQ. FABLOCATION_RECORD_ID AND ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(IQ.GREENBOOK_RECORD_ID,'') AND ISNULL(SAQRIT.OBJECT_ID,'') = IQ.OBJECT_ID
 					WHERE ISNULL(SAQRIT.OBJECT_ID,'') = ''			
-				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicNetValues=dynamic_global_curr_columns,billing_type=self.get_billing_type_val,DynamicColumnNames=dynamic_columns,itemnumberinc=item_number_inc))
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicNetValues=dynamic_global_curr_columns,billing_type=self.get_billing_type_val,DynamicColumnNames=dynamic_columns))
 			elif self.quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART'):
 				Log.Info("===> INSERT SAQRIT 111111 ===> "+str("""INSERT SAQRIT (QUOTE_REVISION_CONTRACT_ITEM_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,{DynamicColumnNames} GREENBOOK, GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID)
 					SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_CONTRACT_ITEM_ID,
@@ -1227,9 +1212,7 @@ class ContractQuoteItem:
 							null as GL_ACCOUNT_NO,
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-							--ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
-							({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
-							--(ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
+							ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
 							null as OBJECT_ID,
 							'EQUIPMENT' as OBJECT_TYPE,
 							IQ.FABLOCATION_ID as FABLOCATION_ID,
@@ -1270,7 +1253,7 @@ class ContractQuoteItem:
 					) OQ
 					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID  AND SAQRIT.GREENBOOK_RECORD_ID = OQ.GREENBOOK_RECORD_ID
 					WHERE ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ''
-				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns,itemnumberinc=item_number_inc)))
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns)))
 				Log.Info("SAQRIT=== 2")
 				Sql.RunQuery("""INSERT SAQRIT (QUOTE_REVISION_CONTRACT_ITEM_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,{DynamicColumnNames} GREENBOOK,BILLING_TYPE,GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID)
 					SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_CONTRACT_ITEM_ID,
@@ -1292,9 +1275,7 @@ class ContractQuoteItem:
 							null as GL_ACCOUNT_NO,
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-							--ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
-							({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
-							--(ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
+							ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
 							null as OBJECT_ID,
 							'GREENBOOK' as OBJECT_TYPE,
 							IQ.FABLOCATION_ID as FABLOCATION_ID,
@@ -1336,7 +1317,7 @@ class ContractQuoteItem:
 					) OQ
 					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID  AND SAQRIT.GREENBOOK_RECORD_ID = OQ.GREENBOOK_RECORD_ID
 					WHERE ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ''
-				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns,itemnumberinc=item_number_inc))
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns))
 			elif self.quote_service_entitlement_type == "OFFERING + PM EVENT":
 				Log.Info("SAQRIT=== 3")
 				Sql.RunQuery("""INSERT SAQRIT (QUOTE_REVISION_CONTRACT_ITEM_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,{DynamicColumnNames} GREENBOOK,BILLING_TYPE,GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID)
@@ -1359,9 +1340,7 @@ class ContractQuoteItem:
 							null as GL_ACCOUNT_NO,
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-							--ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID)) + {EquipmentsCount} as LINE,
-							(({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID))) * {itemnumberinc}) as LINE,
-							--((ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID))) * {itemnumberinc}) as LINE,
+							ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID)) + {EquipmentsCount} as LINE,
 							IQ.PM_ID as OBJECT_ID,
 							'EVENT' as OBJECT_TYPE,
 							IQ.FABLOCATION_ID as FABLOCATION_ID,
@@ -1403,7 +1382,7 @@ class ContractQuoteItem:
 					) OQ
 					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID  AND SAQRIT.OBJECT_ID = OQ.OBJECT_ID
 					WHERE ISNULL(SAQRIT.OBJECT_ID,'') = ''
-				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns,itemnumberinc=item_number_inc))
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns))
 			
 			elif self.quote_service_entitlement_type == 'OFFERING+FAB+GREENBOOK+CREDIT':
 				Sql.RunQuery("""INSERT SAQRIT (QUOTE_REVISION_CONTRACT_ITEM_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,{DynamicColumnNames} GREENBOOK,BILLING_TYPE,GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID)
@@ -1426,9 +1405,7 @@ class ContractQuoteItem:
 							null as GL_ACCOUNT_NO,
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-							--ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
-							({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
-							--(ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId))) * {itemnumberinc} as LINE,
+							ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
 							null as OBJECT_ID,
 							'GREENBOOK' as OBJECT_TYPE,
 							null as FABLOCATION_ID,
@@ -1470,7 +1447,7 @@ class ContractQuoteItem:
 					) OQ
 					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID  AND SAQRIT.GREENBOOK_RECORD_ID = OQ.GREENBOOK_RECORD_ID
 					WHERE ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ''
-				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns,itemnumberinc=item_number_inc))
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns))
 
 			##ordering line field in saqrit
 			self._ordering_item_line_no()
@@ -1518,9 +1495,7 @@ class ContractQuoteItem:
 				null as GL_ACCOUNT_NO,
 				SAQTRV.GLOBAL_CURRENCY,
 				SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-				--ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK)) + {EquipmentsCount} as LINE,
-				({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK))) * {itemnumberinc} as LINE,
-				--(ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK)) * {itemnumberinc}) as LINE,
+				ROW_NUMBER()OVER(ORDER BY(OQ.GREENBOOK)) + {EquipmentsCount} as LINE,
 				null as OBJECT_ID,
 				'GREENBOOK' as OBJECT_TYPE,
 				OQ.SERVICE_DESCRIPTION,
@@ -1565,30 +1540,18 @@ class ContractQuoteItem:
 			JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = OQ.SERVICE_ID 
 			LEFT JOIN MAMSCT (NOLOCK) ON MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID = SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID AND MAMSCT.COUNTRY_RECORD_ID = SAQTRV.COUNTRY_RECORD_ID AND MAMSCT.DIVISION_ID = SAQTRV.DIVISION_ID AND MAMSCT.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER
 			LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID AND ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(OQ.GREENBOOK_RECORD_ID,'')
-			WHERE OQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND OQ.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND OQ.SERVICE_ID = '{ServiceId}'  AND  ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ''""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,itemnumberinc=item_number_inc))
+			WHERE OQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND OQ.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND OQ.SERVICE_ID = '{ServiceId}'  AND  ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ''""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count))
 		
 		##ordering line field in saqrit
 		self._ordering_item_line_no()
 	
 	def _simple_fpm_quote_items_insert(self):
 		equipments_count = 0
-		item_number_inc = 0
-		'''
-		validate_axcliary = Sql.GetFirst("SELECT COUNT(SERVICE_ID) AS AXCLIARY_PRODUCT_FLAG from SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID='{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
-		if validate_axcliary.AXCLIARY_PRODUCT_FLAG:
-			quote_line_item_obj = Sql.GetFirst("SELECT COUNT(LINE) AS LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
-			equipments_count = int(quote_item_obj.LINE)
-		'''
-		Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(
-			QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+		#Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		
 		quote_line_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		if quote_line_item_obj:
 			equipments_count = int(quote_line_item_obj.LINE)
-		
-		doctype_obj = Sql.GetFirst("SELECT ITEM_NUMBER_INCREMENT FROM SAQTRV LEFT JOIN SADOTY ON SADOTY.DOCTYPE_ID=SAQTRV.DOCTYP_ID WHERE SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
-		if doctype_obj:
-			item_number_inc = int(doctype_obj.ITEM_NUMBER_INCREMENT)
 		
 		Log.Info("SAQRIT=== 5")
 		Sql.RunQuery("""INSERT SAQRIT (QUOTE_REVISION_CONTRACT_ITEM_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID,NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR) 
@@ -1608,10 +1571,8 @@ class ContractQuoteItem:
 			null as GL_ACCOUNT_NO,
 			SAQTRV.GLOBAL_CURRENCY,
 			SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-			--ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId)) + {EquipmentsCount} as LINE,
-			--({EquipmentsCount} + ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId))) * {itemnumberinc} as LINE,
-			(ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId)) * {itemnumberinc}) as LINE,
-   			null as OBJECT_ID,
+			ROW_NUMBER()OVER(ORDER BY(SAQSPT.CpqTableEntryId)) + {EquipmentsCount} as LINE,
+			null as OBJECT_ID,
 			null as OBJECT_TYPE,
 			SAQSPT.SERVICE_DESCRIPTION,
 			SAQSPT.SERVICE_ID,
@@ -1644,7 +1605,7 @@ class ContractQuoteItem:
 		LEFT JOIN MAMSCT (NOLOCK) ON SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID = MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID AND SAQTRV.COUNTRY_RECORD_ID = MAMSCT.COUNTRY_RECORD_ID AND SAQTRV.DIVISION_ID = MAMSCT.DIVISION_ID  
 		LEFT JOIN MAMSOP (NOLOCK) ON MAMSOP.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER AND MAMSOP.SALESORG_ID = SAQSPT.SALESORG_ID		
 		--LEFT JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQSPT.SERVICE_ID AND PRCFVA.FACTOR_ID = 'YOYDIS'
-		WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSPT.SERVICE_ID = '{ServiceId}' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,itemnumberinc=item_number_inc))
+		WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSPT.SERVICE_ID = '{ServiceId}' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count))
 
 		##ordering line field in saqrit
 		self._ordering_item_line_no()
