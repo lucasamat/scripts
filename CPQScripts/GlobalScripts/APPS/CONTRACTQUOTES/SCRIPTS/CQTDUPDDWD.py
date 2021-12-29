@@ -158,6 +158,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			data = list(sheet_data.Value)
 			if data:
 				self.columns = ",".join(data[0])
+				Trace.Write("data ==>>> "+str((data[1:]))
 				self.records = ",".join(data[1:])
 			# for index, data in enumerate(list(sheet_data.Value)):
 			# 	if index == 0:
