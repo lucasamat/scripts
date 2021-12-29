@@ -140,9 +140,9 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 	
 	def _do_opertion(self):
 		Trace.Write("upload_data ==> "+str(type(self.upload_data)))
-		for sheet_name, sheet_data in self.upload_data:
-			Trace.Write("sheet_data ====>>> "+str(sheet_data))
-			for data in sheet_data:
+		for sheet_data in self.upload_data:
+			Trace.Write(str(sheet_data.Key)+" sheet_data ====>>> "+str(sheet_data.Value))
+			for data in sheet_data.Value:
 				Trace.Write("data ====>>> "+str(data))
 		return "Import Success"
 
