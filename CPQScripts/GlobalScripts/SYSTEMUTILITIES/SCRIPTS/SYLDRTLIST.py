@@ -3131,7 +3131,7 @@ class SYLDRTLIST:
 						## addon product hyperlink starts
 						if str(RECORD_ID) == "SYOBJR-98859" and value123 == 'SERVICE_ID':
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-							get_key_value = Sql.GetFirst("SELECT {} AS VAL from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}' and SERVICE_ID = '{}' and PAR_SERVICE_ID = '{}'".format(str(objRecName),str(ObjectName),contract_quote_record_id,quote_revision_record_id,str(value1234),str(TreeSuperParentParam)))
+							get_key_value = Sql.GetFirst("SELECT {} AS VAL from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}' and SERVICE_ID = '{}' AND GREENBOOK = '{}' and PAR_SERVICE_ID = '{}'".format(str(objRecName),str(ObjectName),contract_quote_record_id,quote_revision_record_id,str(value1234),str(TreeParentParam), str(TreeSuperParentParam)))
 							key_value = get_key_value.VAL
 						## addon product hyperlink ends
 						if value123 in edit_field:
