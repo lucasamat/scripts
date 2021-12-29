@@ -10,7 +10,7 @@ import clr
 import System.Net
 import sys
 import re
-import datetime
+from datetime import datetime
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 from SYDATABASE import SQL
