@@ -34,7 +34,7 @@ class EntitlementView():
 		EntitlementType
 	):
 		quoteid = self.contract_quote_record_id
-		cpsConfigID = get_last_secid = get_tooltip = get_conflict_message = ''
+		cpsConfigID = get_last_secid = get_tooltip = get_conflict_message = get_conflict_message_id = ''
 		msg_txt = insertservice  = sec_str_boot = sec_bnr = imgstr = dbl_clk_function = getprevdicts = sec_str_cf = sec_str1 = getTlab = getquote_sales_val = ent_temp = ""
 		tablistnew =  []
 		TableObj = ""
@@ -287,6 +287,7 @@ class EntitlementView():
 							if str(val) == "explanation":
 								Trace.Write(str(key)+'-2195---'+str(val))
 								get_conflict_message = str(key)
+								get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
 				if rootattribute == "rootItem":
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristicGroups":
