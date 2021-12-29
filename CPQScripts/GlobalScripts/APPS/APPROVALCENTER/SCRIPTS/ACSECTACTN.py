@@ -1773,6 +1773,7 @@ class approvalCenter:
 					quote_record = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id = self.quote_revision_record_id))
 					##Max_Round is commented and added below to get max round for particular chain
 					#Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}'".format(quote_record = quote_record.QUOTE_ID))
+				Trace.Write("max="+str(GetMaxQuery.MaxStep))
 				for i in range(1, int(GetMaxQuery.MaxStep) + 1):
 					Trace.Write("VALUE OF i="+str(i))
 					if i > 1:
