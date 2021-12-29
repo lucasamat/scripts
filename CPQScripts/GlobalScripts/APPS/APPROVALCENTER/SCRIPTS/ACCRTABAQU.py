@@ -971,8 +971,9 @@ class QueryBuilder:
         QbJsonData = eval(QbJsonData)
         Trace.Write(str(QbJsonData))
         Trace.Write("--"+str(QbJsonData['rules'][0]['rules'][0]['values']['id']))
-        objName = str(QbJsonData['rules'][0]['rules'][0]['values']['id']).split(".")[0]
+        
         if "(" in QbWhereCondition:
+            objName = str(QbJsonData['rules'][0]['rules'][0]['values']['id']).split(".")[0]
             if QbJsonData["condition"] == "OR":
                 QbWhereCondition = QbWhereCondition.split("OR")
                 l = []
