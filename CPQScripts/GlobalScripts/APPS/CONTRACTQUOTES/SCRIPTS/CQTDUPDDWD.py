@@ -15,7 +15,8 @@ from SYDATABASE import SQL
 
 Sql = SQL()
 
-class ContractQuoteDownloadTableData:
+class ContractQuoteSpareOpertion:
+
 	def __init__(self, **kwargs):		
 		self.user_id = str(User.Id)
 		self.user_name = str(User.UserName)		
@@ -43,6 +44,12 @@ class ContractQuoteDownloadTableData:
 			self.contract_quote_id = ''
 			self.contract_quote_revision_id = ''
 		return True
+
+
+class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):	
+
+	def __init__(self, **kwargs):
+		ContractQuoteSpareOpertion.__init__(self,  **kwargs)
 
 	def get_results(self, table_total_rows=0, colums='*'):		
 		start = 1
@@ -125,6 +132,24 @@ class ContractQuoteDownloadTableData:
 	# 					table_records = record_json_obj.Value
 	# 	return table_columns, table_records		
 
+class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):	
+
+	def __init__(self, **kwargs):
+		ContractQuoteSpareOpertion.__init__(self,  **kwargs)
+	
+	def _do_opertion(self):
+		return "Import Success"
+
+
+def Factory(node=None):
+	"""Factory Method"""
+	models = {
+		"Download": ContractQuoteDownloadTableData,		
+		"Upload": ContractQuoteUploadTableData,
+	}
+	return models[node]
+
 parameters = {'related_list_attr_name':Param.RelatedListAttributeName, 'action_type':Param.ActionType}
-contract_quote_download_table_data_obj = ContractQuoteDownloadTableData(**parameters)
-ApiResponse = ApiResponseFactory.JsonResponse(contract_quote_download_table_data_obj._do_opertion())
+process_object = Factory(parameters.get('action_type'))(**parameters)
+#contract_quote_download_table_data_obj = ContractQuoteDownloadTableData(**parameters)
+ApiResponse = ApiResponseFactory.JsonResponse(process_object._do_opertion())
