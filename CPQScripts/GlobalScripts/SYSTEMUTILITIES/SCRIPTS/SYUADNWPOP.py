@@ -1741,11 +1741,11 @@ def POPUPLISTVALUEADDNEW(
 					+ str(RECORDID)
 					+ "\", 'RECORDFEILD':  \""
 					+ str(RECORDFEILD)
-					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; try { console.log('date-field-->'+date_field);if(date_field.length > 0) { $(\""
+					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; try { console.log('date-field-->'+date_field);if(date_field!='NORECORDS') { $(\""
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("#Include_add_on_addnew_footer").html(data[6]);$("button#country_save").attr("disabled",false); $("#noRecDisp").remove() } else{ var date_field = [];$("'
 					+ str(table_ids)
-					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#Include_add_on_addnew > tbody").html("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); $("#Include_add_on_addnew_footer").html(data[6]);} } catch(err) { if(date_field.length > 0) { $("'
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#Include_add_on_addnew > tbody").html("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); $("#Include_add_on_addnew_footer").html(data[6]);} } catch(err) { if(date_field!="NORECORDS") { $("'
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); } else{ $("'
 					+ str(table_ids)
@@ -2108,11 +2108,11 @@ def POPUPLISTVALUEADDNEW(
 						+ str(RECORDID)
 						+ "\", 'RECORDFEILD':  \""
 						+ str(RECORDFEILD)
-						+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; try { if(date_field.length > 0) { $(\""
+						+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; try { if(date_field!='NORECORDS') { $(\""
 						+ str(table_ids)
 						+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); $("#noRecDisp").remove() } else{ var date_field = [];$("'
 						+ str(table_ids)
-						+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true);  $("#add_credits_add_new > tbody").html("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
+						+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true);  $("#add_credits_add_new > tbody").html("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field!="NORECORDS") { $("'
 						+ str(table_ids)
 						+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); } else{ $("'
 						+ str(table_ids)
