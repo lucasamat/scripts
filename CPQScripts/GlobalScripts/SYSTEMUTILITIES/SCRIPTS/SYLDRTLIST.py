@@ -2731,7 +2731,9 @@ class SYLDRTLIST:
 							quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 							docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))
 							if str(docnode_action_btn.DOCUMENT_DESCRIPTION) == "":
-								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'		 
+								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'
+							else:
+								Action_str += ''										 
 						
 						# elif str(current_tab).upper() == "APP" and str(ObjectName)=="SYTABS":                    
 						#     Action_str += '<li><a class="dropdown-item" href="#" onclick="Move_to_parent_obj(this)">VIEW<a><li>'  
@@ -8273,7 +8275,9 @@ class SYLDRTLIST:
 						quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 						docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))
 						if str(docnode_action_btn.DOCUMENT_DESCRIPTION) == "":
-							Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'    
+							Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'
+						else:
+							Action_str += ''    
 
 				if str(Action_permission.get("Edit")).upper() == "TRUE":
 					if ObjectName == "SAQTRV":
