@@ -1040,6 +1040,25 @@ class QueryBuilder:
                         }
                         tableInfoACACSF.AddRow(row)
                 Sql.Upsert(tableInfoACACSF) 
+            else:
+                objName = QbWhereCondition.split(".")[0].strip()
+                getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(objName,QbWhereCondition.split(".")[1].split(" '")[0].strip("=").strip("<").strip(">").strip("!=").strip("")))
+                getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(objName))
+                if getFieldLabel and getObjLabel:
+                    row={}
+                    row = {
+                        "APRCHNSTP_TESTEDFIELD_RECORD_ID":str(Guid.NewGuid()).upper(),
+                        "APRCHN_ID":CpqIdQuery.APRCHN_ID,
+                        "APRCHN_RECORD_ID":CpqIdQuery.APRCHN_RECORD_ID,
+                        "APRCHNSTP_NUMBER":CpqIdQuery.APRCHNSTP_NUMBER,
+                        "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
+                        "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
+                        "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
+                        "TSTOBJ_LABEL":getObjLabel.LABEL,
+                        "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
+                    }
+                    tableInfoACACSF.AddRow(row)
+                    Sql.Upsert(tableInfoACACSF)
         return True
 
 
