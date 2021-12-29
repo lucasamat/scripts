@@ -526,7 +526,7 @@ class Entitlements:
 		# else:
 		# 	defaultval = '0'
 		attr_level_pricing = []
-		get_conflict_message = ''
+		get_conflict_message = get_conflict_message_id = ''
 		dropdownallowlist = []
 		dropdownallowlist_selected = []
 		dropdowndisallowlist = []
@@ -581,6 +581,7 @@ class Entitlements:
 									if str(val) == "explanation":
 										Trace.Write(str(key)+'--88----'+str(val))
 										get_conflict_message = str(key)
+										get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
 						if rootattribute == "rootItem":
 							for Productattribute, Productvalue in rootvalue.items():
 								if Productattribute == "characteristicGroups":
@@ -822,6 +823,7 @@ class Entitlements:
 								if str(val) == "explanation":
 									Trace.Write(str(key)+'--88----'+str(val))
 									get_conflict_message = str(key)
+									get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristicGroups":
@@ -1035,7 +1037,7 @@ class Entitlements:
 			# to insert new input column value and price factor, cost impact for manual input Start 
 			getvalue = insertservice =""
 			Fullresponse = Product.GetGlobal('Fullresponse')
-			configuration_status = get_conflict_message = ""
+			configuration_status = get_conflict_message = get_conflict_message_id =""
 			if Fullresponse:
 				Fullresponse = eval(Fullresponse)
 				##getting configuration_status status
@@ -1053,6 +1055,7 @@ class Entitlements:
 								if str(val) == "explanation":
 									Trace.Write(str(key)+'--88--1054--'+str(val))
 									get_conflict_message = str(key)
+									get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristicGroups":
@@ -1883,7 +1886,7 @@ class Entitlements:
 			else:
 				Trace.Write("---------------------------111111111"+str(ENT_IP_DICT))
 				# to insert  input column value  start
-				getvalue = get_conflict_message = ""
+				getvalue = get_conflict_message = get_conflict_message_id =""
 				updateentXML = getcostbaborimpact = getpriceimpact = ""
 				
 				for key,val in ENT_IP_DICT.items():
@@ -1942,6 +1945,7 @@ class Entitlements:
 											if str(val) == "explanation":
 												Trace.Write(str(key)+'--1943-----'+str(val))
 												get_conflict_message = str(key)
+												get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
 								if rootattribute == "rootItem":
 									for Productattribute, Productvalue in rootvalue.items():
 										if Productattribute == "variantConditions":
@@ -2185,7 +2189,7 @@ class Entitlements:
 				attributedefaultvalue = []
 				attriburesrequired_list =[]
 				attributevalues = {}
-				get_conflict_message = ''		
+				get_conflict_message = get_conflict_message_id= ''		
 				for rootattribute, rootvalue in Fullresponse.items():
 					if rootattribute == "conflicts":
 						for conflict in rootvalue:
@@ -2194,6 +2198,7 @@ class Entitlements:
 								if str(val) == "explanation":
 									Trace.Write(str(key)+'-2195---'+str(val))
 									get_conflict_message = str(key)
+									get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristics":
