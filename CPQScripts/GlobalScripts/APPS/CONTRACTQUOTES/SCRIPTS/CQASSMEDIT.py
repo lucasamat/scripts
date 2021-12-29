@@ -265,7 +265,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 			if get_datatype.ATT_DISPLAY_DESC:
 				field_type = get_datatype.ATT_DISPLAY_DESC
 		requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
-		if field_type != 'input':
+		if field_type not in ('input','Free Input, no Matching'):
 			STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{}' AND PA.PRODUCT_ID ={} ".format(AttributeID,product_obj.PRD_ID))
 			if STANDARD_ATTRIBUTE_VALUES:
 			
