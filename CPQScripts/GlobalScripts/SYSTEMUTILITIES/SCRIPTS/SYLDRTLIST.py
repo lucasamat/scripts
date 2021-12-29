@@ -2824,11 +2824,9 @@ class SYLDRTLIST:
 									Trace.Write("act_btn=="+str(docnode_action_btn.DATE_SUBMITTED))						
 									if str(docnode_action_btn.DATE_SUBMITTED) != "":
 										Trace.Write("docnode=====")
-										if str(docnode_action_btn.DATE_ACCEPTED) == "":
+										if str(docnode_action_btn.DATE_ACCEPTED) == "" and str(docnode_action_btn.DATE_REJECTED) == "":
 											Trace.Write("2222222222222")
-											Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_accepted(this)">CUSTOMER ACCEPTED</a></li>'
-										if str(docnode_action_btn.DATE_REJECTED) == "":
-											Trace.Write("333333")
+											Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_accepted(this)">CUSTOMER ACCEPTED</a></li>'									
 											Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_rejected(this)">CUSTOMER REJECTED</a></li>'
 									else:
 										Trace.Write("docnode111=====")									
