@@ -10,7 +10,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import System.Net
 from datetime import datetime
 from SYDATABASE import SQL
-
+import re
 Sql = SQL()
 userId = str(User.Id)
 #userName = str(User.UserName)
