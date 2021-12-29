@@ -2668,14 +2668,14 @@ class SYLDRTLIST:
 					pop_val = {}
 					list_lineup = []
 					list_lineup1 = []
-					if ObjectName == "SAQDOC":
-						Action_str = ""
-						contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
-						quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-						docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))
-						if str(docnode_action_btn.DATE_SUBMITTED) and str(docnode_action_btn.DOCUMENT_DESCRIPTION) and str(docnode_action_btn.DATE_REJECTED) and str(docnode_action_btn.DATE_ACCEPTED) == "":
-							Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
-					elif ObjectName != 'SAQIBP' and ObjectName != 'SAQDOC':
+					# if ObjectName == "SAQDOC":
+					# 	Action_str = ""
+					# 	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+					# 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+					# 	docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))
+					# 	if str(docnode_action_btn.DATE_SUBMITTED) and str(docnode_action_btn.DOCUMENT_DESCRIPTION) and str(docnode_action_btn.DATE_REJECTED) and str(docnode_action_btn.DATE_ACCEPTED) == "":
+					# 		Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
+					if ObjectName != 'SAQIBP':
 						Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
 					else:
 						Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" style="display: none;" aria-labelledby="dropdownMenuButton">'
@@ -8212,17 +8212,17 @@ class SYLDRTLIST:
 					OBJ_CpqTableEntryId_New = str(ik.CpqTableEntryId)
 				except:
 					pass
-				if ObjectName == "SAQDOC":
-					Action_str = ""
-					contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
-					quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-					docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))
-					if str(docnode_action_btn.DATE_SUBMITTED) and str(docnode_action_btn.DOCUMENT_DESCRIPTION) and str(docnode_action_btn.DATE_REJECTED) and str(docnode_action_btn.DATE_ACCEPTED) == "":
-						Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
-				elif ObjectName != "SAQDOC":
-					Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
-				else:
-					Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" style="display: none;" aria-labelledby="dropdownMenuButton">'
+				# if ObjectName == "SAQDOC":
+				# 	Action_str = ""
+				# 	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+				# 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+				# 	docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))
+				# 	if str(docnode_action_btn.DATE_SUBMITTED) and str(docnode_action_btn.DOCUMENT_DESCRIPTION) and str(docnode_action_btn.DATE_REJECTED) and str(docnode_action_btn.DATE_ACCEPTED) == "":
+				# 		Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
+				# elif ObjectName != "SAQDOC":
+				Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
+				# else:
+				# 	Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" style="display: none;" aria-labelledby="dropdownMenuButton">'
 				for inm in ik:                
 					value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 					value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
