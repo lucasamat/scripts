@@ -1375,6 +1375,8 @@ def Related_Sub_Banner(
                         SixthLable = "Configuration Status"
                     else:
                         FourthLable = "Configuration Status"
+                        FifthLable  = ""
+                        FifthValue = ""
                     if status_image:
                         if ObjName == "SAQSPT":
                             SixthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
