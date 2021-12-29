@@ -3136,8 +3136,8 @@ class SYLDRTLIST:
 							else:
 								if not re.match(r'[A-Za-z0-9]',value1234):
 									Trace.Write("encode character")
-									Trace.Write(value1234.encode('utf-8'))
-									Trace.Write(value1234.decode('utf-8'))
+									# Trace.Write(value1234.encode('utf-8'))
+									# Trace.Write(value1234.decode('utf-8'))
 									Trace.Write(value1234.encode('utf-8').decode('utf-8'))
 									new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234.encode('utf-8').decode('utf-8') + '">' + value1234.encode('utf-8').decode('utf-8') + "</abbr>")
 								else:
