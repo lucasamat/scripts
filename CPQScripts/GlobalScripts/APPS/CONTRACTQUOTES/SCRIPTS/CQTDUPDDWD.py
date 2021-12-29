@@ -25,6 +25,7 @@ class ContractQuoteSpareOpertion:
 		self.related_list_attr_name = kwargs.get('related_list_attr_name')	
 		self.object_name = ''	
 		self.tree_param = Quote.GetGlobal("TreeParam")
+		self.upload_data = kwargs.get('upload_data')
 		self.set_contract_quote_related_details()
 		
 	def set_contract_quote_related_details(self):
@@ -138,6 +139,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		ContractQuoteSpareOpertion.__init__(self,  **kwargs)
 	
 	def _do_opertion(self):
+		Trace.Write("data ==> "+str(self.upload_data))
 		return "Import Success"
 
 
@@ -150,6 +152,10 @@ def Factory(node=None):
 	return models[node]
 
 parameters = {'related_list_attr_name':Param.RelatedListAttributeName, 'action_type':Param.ActionType}
+try:
+	parameters['upload_data'] = Param.UploadData
+except Exception:
+	parameters['upload_data'] = []
 process_object = Factory(parameters.get('action_type'))(**parameters)
 #contract_quote_download_table_data_obj = ContractQuoteDownloadTableData(**parameters)
 ApiResponse = ApiResponseFactory.JsonResponse(process_object._do_opertion())
