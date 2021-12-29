@@ -2398,20 +2398,20 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				val = re.sub("[^0-9]","",val)
 				id = val.lstrip("0")
 				key = int(key)
-				if APPLIED_CREDITS!='' and CREDIT_AMOUNTS!='':
+				credit_details = Sql.GetFirst("SELECT WRBTR,CREDIT_APPLIED,UNAPPLIED_BALANCE FROM SACRVC WHERE CpqTableEntryId = '"+str(id)+"' ")
+				if APPLIED_CREDITS!='':
 					try:
-						if int(CREDIT_AMOUNTS[key]) < 0:
-							unapplied = int(CREDIT_AMOUNTS[key])+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' and CREDIT_AMOUNTS[key] else int(CREDIT_AMOUNTS[key])
+						if float(credit_details.UNAPPLIED_BALANCE)==0 or float(credit_details.UNAPPLIED_BALANCE)=='':
+							unapplied = float(credit_details.WRBTR)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.WRBTR)
 						else:
-							unapplied = int(CREDIT_AMOUNTS[key])-int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' and CREDIT_AMOUNTS[key] else int(CREDIT_AMOUNTS[key])
-						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(APPLIED_CREDITS[key],unapplied,id))
+							unapplied = float(credit_details.UNAPPLIED_BALANCE)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.UNAPPLIED_BALANCE)
+						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CREDIT_APPLIED)+ int(APPLIED_CREDITS[key]),unapplied,id))
 					except Exception as e:
 						Trace.Write('EXCEPTION: '+str(e))
 						Trace.Write('APPLIED_CREDITS'+str(APPLIED_CREDITS))
 						Trace.Write('CREDIT_AMOUNTS'+str(CREDIT_AMOUNTS))
 				else:
-					unapplied = CREDIT_AMOUNTS[key] if CREDIT_AMOUNTS[key]!='' else ''
-					Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(APPLIED_CREDITS[key],unapplied,id))
+					Trace.Write('###---No Credits Applied')
     					
 			GETPARENTSERVICE= Sql.GetFirst("SELECT QUOTE_SERVICE_RECORD_ID FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1))
 			columns = [
