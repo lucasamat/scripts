@@ -3134,8 +3134,9 @@ class SYLDRTLIST:
 							if value123 in img_list:
 								new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
 							else:
-								if re.match(r'\W',value1234):
-									Trace.Write("value1234 "+str(value1234))
+								if not re.match(r'[A-Za-z0-9]',value1234):
+									Trace.Write("encode character")
+									Trace.Write(value1234)
 								new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + str(value1234) + '">' + str(value1234) + "</abbr>")  
 								#new_dict[value123] = value1234                           
 						## addon product hyperlink starts
