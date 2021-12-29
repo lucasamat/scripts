@@ -3051,23 +3051,28 @@ def Related_Sub_Banner(
             if str(multi_buttons) != "":
                 Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
-                    if 'SPLIT' in btn and subTabName =='Items':
-                        get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
-                        if get_entitlement_xml:
-                            for get_service in get_entitlement_xml:
-                                entitlement_service = get_service.ENTITLEMENT_XML
-                                quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-                                split_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
-                                split_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
-                                for m in re.finditer(quote_item_tag, entitlement_service):
-                                    sub_string = m.group(1)
-                                    split_1 =re.findall(split_pattern,sub_string)
-                                    split_2 = re.findall(split_value,sub_string)
-                                    if split_1 and split_2:
-                                        Trace.Write("a"+str(get_service.SERVICE_ID))
-                                        sec_rel_sub_bnr += (btn)
-                                        break
-                    if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn:
+                    if ('SPLIT' in btn or 'EDIT' in btn) and subTabName =='Items':
+                        if 'SPLIT' in btn:   
+                            get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
+                            if get_entitlement_xml:
+                                for get_service in get_entitlement_xml:
+                                    entitlement_service = get_service.ENTITLEMENT_XML
+                                    quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                                    split_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
+                                    split_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
+                                    for m in re.finditer(quote_item_tag, entitlement_service):
+                                        sub_string = m.group(1)
+                                        split_1 =re.findall(split_pattern,sub_string)
+                                        split_2 = re.findall(split_value,sub_string)
+                                        if split_1 and split_2:
+                                            Trace.Write("a"+str(get_service.SERVICE_ID))
+                                            sec_rel_sub_bnr += (btn)
+                                            break
+                        if 'EDIT' in btn:
+                            billing_variable_visible = Sql.GetFirst("SELECT BILLING_TYPE FROM SAQRIT WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'")  
+                            if str(billing_variable_visible.BILLING_TYPE).upper() == 'VARIABLE':
+                                sec_rel_sub_bnr += (btn)
+                    if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn:
                         sec_rel_sub_bnr += (btn)
         
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
