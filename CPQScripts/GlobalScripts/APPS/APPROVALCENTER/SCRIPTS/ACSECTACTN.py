@@ -1564,7 +1564,7 @@ class approvalCenter:
 				approval_chain = Param.approval_chain
 			except:
 				approval_chain = ""
-			
+			Trace.Write("Approval Chain---> "+str(approval_chain))
 			##approval image based on chain step ends
 			Trace.Write("CurrentTabName_J "+str(CurrentTabName))
 			Trace.Write("From Seg "+str(FromSeg))
