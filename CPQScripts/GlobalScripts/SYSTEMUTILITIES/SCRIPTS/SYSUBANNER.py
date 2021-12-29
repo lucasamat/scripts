@@ -1389,9 +1389,7 @@ def Related_Sub_Banner(
                         FourthLable = ""
                         FourthValue = ""
                     covered_obj = Sql.GetFirst("select EQUIPMENT_ID from SAQSCO(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id))
-                    if covered_obj is not None and (subTabName == "Equipment" or subTabName == 'Entitlements' or subTabName == 'Service Fab Value Drivers' or subTabName == 'Service Cost and Value Drivers' or subTabName == 'Customer Value Drivers' or subTabName == 'Product Value Drivers'):
-                        #FourthLable = "Greenbooks"
-                        #FourthValue = "All"
+                    if covered_obj is not None and (subTabName == "Equipment" or subTabName == 'Entitlements' or subTabName == 'Service Fab Value Drivers' or subTabName == 'Service Cost and Value Drivers' or subTabName == 'Customer Value Drivers' or subTabName == 'Product Value Drivers'):                        
                         FourthLable = "Equipment"
                         FourthValue = "All"
                         ##adding configuration status in offering subtab
