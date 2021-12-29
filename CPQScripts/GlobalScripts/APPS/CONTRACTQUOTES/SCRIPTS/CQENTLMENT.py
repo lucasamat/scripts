@@ -28,6 +28,7 @@ userId = str(User.Id)
 userName = str(User.UserName)
 Sql = SQL()
 import time
+import re
 gettodaydate = datetime.datetime.now().strftime("%Y-%m-%d")
 GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
 if GetActiveRevision:
