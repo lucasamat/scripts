@@ -1538,6 +1538,7 @@ class SyncQuoteAndCustomTables:
 										"FIRST_NAME": employee.get("FIRST_NAME"),
 										"LAST_NAME": employee.get("LAST_NAME"),
 									}
+									Log.Info("contact_master_table_update---"+str(contact_master_table_update))
 									tableInfo = Sql.GetTable("SACONT")
 									tablerow = contact_master_table_update
 									tableInfo.AddRow(tablerow)									
