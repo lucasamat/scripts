@@ -1520,7 +1520,7 @@ class SyncQuoteAndCustomTables:
 										"ADDRESS": employee_obj.ADDRESS_1 or " ",
 										"CITY": employee_obj.CITY,
 										"CONTACT_ID": str(custom_fields_detail.get("PrimaryContactId")),
-										"CONTACT_NAME": str(custom_fields_detail.get("PrimaryContactName")),
+										"CONTACT_NAME": 'N'+str(custom_fields_detail.get("PrimaryContactName")),
 										"CONTACT_TYPE": "",
 										"COUNTRY": employee_obj.COUNTRY,
 										"COUNTRY_RECORD_ID": employee_obj.COUNTRY_RECORD_ID,
