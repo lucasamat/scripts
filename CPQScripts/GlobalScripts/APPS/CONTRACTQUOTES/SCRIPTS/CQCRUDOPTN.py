@@ -2394,30 +2394,9 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				CREDIT_AMOUNTS = Param.CREDIT_AMOUNTS
 			except:
 				CREDIT_AMOUNTS = ''
-			for key,val in enumerate(list(self.values)):
-				val = re.sub("[^0-9]","",val)
-				id = val.lstrip("0")
-				key = int(key)
-				credit_details = Sql.GetFirst("SELECT WRBTR,CREDIT_APPLIED,UNAPPLIED_BALANCE FROM SACRVC WHERE CpqTableEntryId = '"+str(id)+"' ")
-				if APPLIED_CREDITS!='':
-					try:
-						if float(credit_details.UNAPPLIED_BALANCE)==0 or float(credit_details.UNAPPLIED_BALANCE)=='':
-							unapplied = float(credit_details.WRBTR)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.WRBTR)
-						else:
-							unapplied = float(credit_details.UNAPPLIED_BALANCE)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.UNAPPLIED_BALANCE)
-						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CREDIT_APPLIED)+ int(APPLIED_CREDITS[key]),unapplied,id))
-					except Exception as e:
-						Trace.Write('EXCEPTION: '+str(e))
-						Trace.Write('APPLIED_CREDITS'+str(APPLIED_CREDITS))
-						Trace.Write('CREDIT_AMOUNTS'+str(CREDIT_AMOUNTS))
-				else:
-					Trace.Write('###---No Credits Applied')
-						
 			GETPARENTSERVICE= Sql.GetFirst("SELECT QUOTE_SERVICE_RECORD_ID FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1))
 			columns = [
-				"CREDITVOUCHER_RECORD_ID",
-				"CREDIT_APPLIED AS CREDIT_APPLIED_INGL_CURR",
-				"CREDIT_APPLIED AS CREDIT_APPLIED_INVC_CURR"
+				"CREDITVOUCHER_RECORD_ID"
 			]
 			table_name = "SAQRCV"
 			condition_column = "CREDITVOUCHER_RECORD_ID"
@@ -2431,6 +2410,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"SERVICE_RECORD_ID": get_addon.SERVICE_RECORD_ID
 			}
 			credit_table_info = Sql.GetTable(table_name)
+			saqrcv_ids = []
 			if self.all_values:
 				qury_str=""
 				if A_Keys!="" and A_Values!="":
@@ -2462,8 +2442,28 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				Trace.Write('###row_details-->'+str(row_detail))
 				mylist.append(row_detail)
 				credit_table_info.AddRow(row_detail)
+				saqrcv_ids.append(row_detail["QUOTE_REV_CREDIT_VOUCHER_RECORD_ID"])
 			Trace.Write('###credit_table_info-->'+str(credit_table_info))
 			Sql.Upsert(credit_table_info)
+			for key,val in enumerate(list(self.values)):
+				val = re.sub("[^0-9]","",val)
+				id = val.lstrip("0")
+				key = int(key)
+				credit_details = Sql.GetFirst("SELECT WRBTR,CREDIT_APPLIED,UNAPPLIED_BALANCE FROM SACRVC WHERE CpqTableEntryId = '"+str(id)+"' ")
+				if APPLIED_CREDITS!='':
+					try:
+						if float(credit_details.UNAPPLIED_BALANCE)==0 or float(credit_details.UNAPPLIED_BALANCE)=='':
+							unapplied = float(credit_details.WRBTR)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.WRBTR)
+						else:
+							unapplied = float(credit_details.UNAPPLIED_BALANCE)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.UNAPPLIED_BALANCE)
+						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CREDIT_APPLIED)+ int(APPLIED_CREDITS[key]),unapplied,id))
+					except Exception as e:
+						Trace.Write('EXCEPTION: '+str(e))
+						Trace.Write('APPLIED_CREDITS'+str(APPLIED_CREDITS))
+						Trace.Write('CREDIT_AMOUNTS'+str(CREDIT_AMOUNTS))
+					Sql.RunQuery(" UPDATE SAQRCV CREDIT_APPLIED_INGL_CURR = '"+str(APPLIED_CREDITS[key])+"',CREDIT_APPLIED_INVC_CURR = '"+str(APPLIED_CREDITS[key])+"' WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID = '"+str(saqrcv_ids[key])+"' ")
+				else:
+					Trace.Write('###---No Credits Applied')
 			# QueryStatement ="""UPDATE SAQSAO SET QTESRV_RECORD_ID ='{id}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'  """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1,id = str(GETPARENTSERVICE.QUOTE_SERVICE_RECORD_ID) )
 			# Sql.RunQuery(QueryStatement)
 			# Sql.RunQuery(""" INSERT SAQTSV(QUOTE_SERVICE_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,SERVICE_TYPE,UOM_ID,UOM_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,QTEPARSRV_RECORD_ID,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID,SAQSAO.QUOTE_ID,SAQSAO.QUOTE_NAME,SAQSAO.QUOTE_RECORD_ID,SAQSAO.QTEREV_ID,SAQSAO.QTEREV_RECORD_ID,SAQSAO.ADNPRD_ID,SAQSAO.ADNPRD_DESCRIPTION,SAQSAO.ADNPRDOFR_RECORD_ID,MAMTRL.PRODUCT_TYPE,MAMTRL.UNIT_OF_MEASURE,MAMTRL.UOM_RECORD_ID,SAQSAO.SALESORG_ID,SAQSAO.SALESORG_NAME,SAQSAO.SALESORG_RECORD_ID,SAQSAO.SERVICE_DESCRIPTION,SAQSAO.SERVICE_ID,SAQSAO.SERVICE_RECORD_ID,SAQSAO.QTESRV_RECORD_ID,'{startdate}' as CONTRACT_VALID_FROM,'{enddate}' as CONTRACT_VALID_TO,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM SAQSAO INNER JOIN MAMTRL ON SAQSAO.ADNPRD_ID = MAMTRL.SAP_PART_NUMBER Where QUOTE_RECORD_ID ='{quote_record_id}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}' AND ACTIVE ='TRUE'AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='{quote_record_id}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID=SAQSAO.ADNPRD_ID) """.format(quote_record_id=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,treeparam = self.tree_parent_level_1,UserId=self.user_id,UserName=self.user_name,startdate = self.contract_start_date,enddate = self.contract_end_date ))
