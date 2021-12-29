@@ -188,13 +188,18 @@ def quoteiteminsert(Qt_id):
 	# 		net_value_ingl = get_saqtrv_price.NET_VALUE_INGL_CURR
 	# 	if get_saqtrv_price.TAX_AMOUNT_INGL_CURR:
 	# 		tax_amt_ingl = get_saqtrv_price.TAX_AMOUNT_INGL_CURR
-
+	total_credit = 0
+	get_credit_val = Sql.GetFirst("""SELECT * FROM SAQRIS WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID='Z0116' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
+	if get_credit_val:
+		if get_credit_val.NET_PRICE_INGL_CURR:
+			total_credit = get_credit_val.NET_PRICE_INGL_CURR
+	
 	Sql.RunQuery("""UPDATE SAQTRV
 						SET 
 						SAQTRV.TAX_AMOUNT_INGL_CURR = IQ.TAX_AMOUNT_INGL_CURR,						
 						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
-						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR - IQ.TOTAL_CREDIT,
-						SAQTRV.CREDIT_INGL_CURR	= IQ.TOTAL_CREDIT
+						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR - """+str(total_credit)+""",
+						SAQTRV.CREDIT_INGL_CURR	= """+str(total_credit)+"""
 									
 						FROM SAQTRV (NOLOCK)
 						INNER JOIN (SELECT SAQRIS.QUOTE_RECORD_ID, SAQRIS.QTEREV_RECORD_ID,
@@ -203,8 +208,7 @@ def quoteiteminsert(Qt_id):
 									SUM(ISNULL(SAQRIS.NET_PRICE, 0)) as NET_PRICE,
 									SUM(ISNULL(SAQRIS.NET_VALUE, 0)) as NET_VALUE,
 									SUM(ISNULL(SAQRIS.NET_VALUE_INGL_CURR, 0)) as NET_VALUE_INGL_CURR,
-									SUM(ISNULL(SAQRIS.TAX_AMOUNT, 0)) as TAX_AMOUNT,
-									CASE WHEN SERVICE_ID = 'Z0116' THEN ISNULL(SAQRIS.NET_PRICE_INGL_CURR, 0) ELSE 0 as TOTAL_CREDIT
+									SUM(ISNULL(SAQRIS.TAX_AMOUNT, 0)) as TAX_AMOUNT
 									FROM SAQRIS (NOLOCK) WHERE SAQRIS.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIS.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQRIS.QTEREV_RECORD_ID, SAQRIS.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
 						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ) )
 
