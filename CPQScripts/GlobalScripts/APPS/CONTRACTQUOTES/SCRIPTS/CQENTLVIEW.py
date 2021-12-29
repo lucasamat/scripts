@@ -34,7 +34,7 @@ class EntitlementView():
 		EntitlementType
 	):
 		quoteid = self.contract_quote_record_id
-		cpsConfigID = get_last_secid = get_tooltip = ''
+		cpsConfigID = get_last_secid = get_tooltip = get_conflict_message = ''
 		msg_txt = insertservice  = sec_str_boot = sec_bnr = imgstr = dbl_clk_function = getprevdicts = sec_str_cf = sec_str1 = getTlab = getquote_sales_val = ent_temp = ""
 		tablistnew =  []
 		TableObj = ""
@@ -280,6 +280,13 @@ class EntitlementView():
 			# where = ""
 			Product.SetGlobal('Fullresponse_load',str(Fullresponse))
 			for rootattribute, rootvalue in Fullresponse.items():
+				if rootattribute == "conflicts":
+					for conflict in rootvalue:
+						Trace.Write('88---2191-'+str(conflict))
+						for val,key in conflict.items():
+							if str(val) == "explanation":
+								Trace.Write(str(key)+'-2195---'+str(val))
+								get_conflict_message = str(key)
 				if rootattribute == "rootItem":
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristicGroups":
