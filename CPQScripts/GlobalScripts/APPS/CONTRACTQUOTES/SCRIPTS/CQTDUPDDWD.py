@@ -137,13 +137,35 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 
 	def __init__(self, **kwargs):
 		ContractQuoteSpareOpertion.__init__(self,  **kwargs)
+		self.columns = ""
+		self.records = ""
+
+	def _insert_spare_parts(self):
+		Sql.RunQuery("""INSERT SAQSPT ({DynamicColumns}, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUOTE_SERVICE_PART_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
+				SELECT OQ.*, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, '{QuoteRevisionId}' as QTEREV_ID, '{QuoteRevisionRecordId}' as QTEREV_RECORD_ID, '{ServiceDescription}' as SERVICE_DESCRIPTION, '{ServiceId}' as SERVICE_ID, '{ServiceRecordId}' as SERVICE_RECORD_ID, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+				SELECT DISTINCT					
+						{DynamicColumns}	
+				FROM 
+					(VALUES {Records}) AS Temp({DynamicColumns})					
+				) OQ
+				""".format(UserId=self.user_id, UserName=self.user_name, QuoteId=self.contract_quote_id, QuoteName='', QuoteRecordId=self.contract_quote_record_id, QuoteRevisionId=self.contract_quote_revision_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceDescription='', ServiceId=self.tree_param, ServiceRecordId='', DynamicColumns=self.columns, Records=self.records)
+			)
 	
 	def _do_opertion(self):
-		Trace.Write("upload_data ==> "+str(type(self.upload_data)))
-		for sheet_data in self.upload_data:
-			Trace.Write(str(sheet_data.Key)+" sheet_data ====>>> "+str(sheet_data.Value))
-			for data in sheet_data.Value:
-				Trace.Write("data ====>>> "+str(list(data)))
+		for sheet_data in self.upload_data:	
+			if not sheet_data.Value:	
+				break	
+			data = list(sheet_data.Value)
+			if data:
+				self.columns = ",".join(data[0])
+				self.records = ",".join(data[1:])
+			# for index, data in enumerate(list(sheet_data.Value)):
+			# 	if index == 0:
+			# 		self.columns = ",".join(data)
+			# 		continue
+			# 	self.records.append(tuple(data))
+			# 	Trace.Write("data ====>>> "+str(list(data)))
+		self._insert_spare_parts()
 		return "Import Success"
 
 
