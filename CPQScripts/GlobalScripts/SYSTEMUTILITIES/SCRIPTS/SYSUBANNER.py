@@ -1390,15 +1390,15 @@ def Related_Sub_Banner(
                         FourthValue = ""
                     covered_obj = Sql.GetFirst("select EQUIPMENT_ID from SAQSCO(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id))
                     if covered_obj is not None and (subTabName == "Equipment" or subTabName == 'Entitlements' or subTabName == 'Service Fab Value Drivers' or subTabName == 'Service Cost and Value Drivers' or subTabName == 'Customer Value Drivers' or subTabName == 'Product Value Drivers'):
-                        FourthLable = "Greenbooks"
+                        #FourthLable = "Greenbooks"
+                        #FourthValue = "All"
+                        FourthLable = "Equipment"
                         FourthValue = "All"
-                        FifthLable = "Equipment"
-                        FifthValue = "All"
                         ##adding configuration status in offering subtab
                         Trace.Write('status_image--'+str(status_image))
-                        SixthLable = "Configuration Status"
+                        FifthLable = "Configuration Status"
                         if status_image:
-                            SixthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
+                            FifthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
                         # contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                         # where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, TreeParam )
                         # try:
