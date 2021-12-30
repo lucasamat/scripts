@@ -802,8 +802,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 		if obj_name == "SAQRIT":
 			Trace.Write("@802")
 			Sql = SQL()
-			ALLVALUES = eval(ALLVALUES)
-			ALLVALUES1 = eval(ALLVALUES)
+			ALLVALUES = list(ALLVALUES)
+			ALLVALUES1 = list(ALLVALUES)
 			count = 0
 			Trace.Write('ALLVALUES--'+str(ALLVALUES))
 			for x,y in zip(ALLVALUES,ALLVALUES1):
