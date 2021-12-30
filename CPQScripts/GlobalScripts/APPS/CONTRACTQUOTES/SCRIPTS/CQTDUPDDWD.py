@@ -11,6 +11,7 @@ import sys
 import datetime
 import Webcom.Configurator.Scripting.Test.TestProduct
 import System.Net
+import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 
 Sql = SQL()
