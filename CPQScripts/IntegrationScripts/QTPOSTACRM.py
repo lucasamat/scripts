@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO SEND QUOTE INFROMATION FROM CPQ TO CRM in ASYNC
 #   __primary_author__ : BAJI
 #   __create_date :
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import clr
 import System.Net
@@ -38,6 +38,7 @@ try:
 			
 			
 	def cpq_to_sscm(Qt_id,Rev_id):
+		Log.Info("28/12 --SSCM PRICING HITTING ---->"+str(Qt_id))
 		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
 		if LOGIN_CREDENTIALS is not None:
 			Login_Username = str(LOGIN_CREDENTIALS.Username)
