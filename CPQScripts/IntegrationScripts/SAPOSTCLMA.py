@@ -5,6 +5,17 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import sys
+import clr
+import System.Net
+from System.Text.Encoding import UTF8
+from System import Convert
+from System.Net import HttpWebRequest, NetworkCredential
+from System.Net import *
+from System.Net import CookieContainer
+from System.Net import Cookie
+from System.Net import WebRequest
+from System.Net import HttpWebResponse
 
 try:
 	Quote_Id = Param.QUOTE_ID #'3050000339'
@@ -15,7 +26,7 @@ try:
 	dt={}  
 
 	for data in CLMQuery:
-
+		
 		dt['ContractTypeName'] = data.ContractTypeName
 		dt['StatementOfWorkType'] = data.StatementOfWorkType
 		dt['CorrelationID'] = ''
@@ -37,17 +48,33 @@ try:
 		dt['ContractExpirationDate'] = data.ContractExpirationDate
 		dt['ContractEffectiveDate'] = ''
 		dt['LegalPerson'] = ''
-
-
+		
+	Timestamp = SqlHelper.GetFirst("select Getdate() as date")
 	result = {
 
 	  "EventType": "Agreement",
 	  "Action": "Create",
-	  "TimeStamp": "2021-11-21T06:06:33",
-	  "CorrelationID" : "",
+	  "TimeStamp": str(Timestamp.date),
 	  "Data":dt}
 	Result = result
-	Log.Info("22222 result --->"+str(result))
+	#Log.Info("22222 result --->"+str(result))
+	LOGIN_CRE = SqlHelper.GetFirst("SELECT  URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_CLM'")
+	Oauth_info = SqlHelper.GetFirst("SELECT  DOMAIN,URL FROM SYCONF where EXTERNAL_TABLE_NAME ='OAUTH'")
+
+	requestdata =Oauth_info.DOMAIN
+	webclient = System.Net.WebClient()
+	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+	response = webclient.UploadString(Oauth_info.URL,str(requestdata))
+
+	response = eval(response)
+	access_token = response['access_token']
+
+	authorization = "Bearer " + access_token
+	webclient = System.Net.WebClient()
+	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;	
+	clm_response = webclient.UploadString(str(LOGIN_CRE.URL),str(result))	
+	Log.Info("28/12 clm_response --->"+str(clm_response))
 except:
     Log.Info("SAPOSTCLMA ERROR---->:" + str(sys.exc_info()[1]))
-    Log.Info("SAPOSTCLMA ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno)) 
+    Log.Info("SAPOSTCLMA ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
