@@ -69,9 +69,11 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 			table_data = Sql.GetList(query_string_with_pagination)
 
 			if table_data is not None:
-				for row_data in table_data:
-					data = [row_obj.Value for row_obj in row_data]					
-					yield data
+				source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))
+				if source_object_primary_key_column_obj:
+					for row_data in table_data:
+						data = [CPQID.KeyCPQId.GetCPQId(self.object_name, str(row_obj.Value)) if row_obj.Key == source_object_primary_key_column_obj.RECORD_NAME else row_obj.Value for row_obj in row_data ]					
+						yield data
 			start += 1000		
 			end += 1000			
 			if end > table_total_rows:
