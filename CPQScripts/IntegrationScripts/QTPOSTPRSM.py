@@ -27,6 +27,7 @@ import time
 input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
 input_data = [input_data]
 sess = SqlHelper.GetFirst("select left(convert(varchar(100),newid()),5) as sess  ")
+Log.Info("28/12  input_data --->"+str(input_data))
 
 try:
 
@@ -35,7 +36,7 @@ try:
 		Qt_id = crmifno[0]
 		REVISION_ID = crmifno[-1]
 		
-		Log.Info("QTPOSTPRSM Start ---->"+str(Qt_id))
+		Log.Info("28/12 QTPOSTPRSM Qt_id ---->"+str(Qt_id))
 		
 		sessionid = SqlHelper.GetFirst("SELECT NEWID() AS A")
 		timestamp_sessionid = "'" + str(sessionid.A) + "'"
@@ -226,9 +227,9 @@ try:
 			webclient = System.Net.WebClient()
 			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;	
-
+			Log.Info("28/12 sscm tiggerd --->")
 			crm_response = webclient.UploadString(str(LOGIN_CRE.URL),str(table.RESULT))	
-			Log.Info("789 crm_response --->"+str(crm_response))
+			Log.Info("28/12 sscm_response --->"+str(crm_response))
 		
 		if "Status: 200" in crm_response:
 
@@ -299,8 +300,8 @@ try:
 
 			# Bcc Emails			
 
-			#copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
-			#msg.Bcc.Add(copyEmail4)
+			copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
+			msg.Bcc.Add(copyEmail4)
 
 			copyEmail5 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 			msg.Bcc.Add(copyEmail5)
