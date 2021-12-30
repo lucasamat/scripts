@@ -266,7 +266,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				Trace.Write("====> "+str(header))
 				
 				self.columns = ",".join(header)
-				self.records = ', '.join(map(str, [str(tuple(list(spare_record)+[self.contract_quote_record_id, self.contract_quote_revision_record_id])) for spare_record in xls_spare_records[1:]])).replace("None","null")
+				self.records = ', '.join(map(str, [str(tuple(list(spare_record)+[self.contract_quote_record_id, self.contract_quote_revision_record_id])) for spare_record in xls_spare_records[1:]])).replace("None","null").replace("'","''")
 				
 			# for index, data in enumerate(list(sheet_data.Value)):
 			# 	if index == 0:
