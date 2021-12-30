@@ -2176,8 +2176,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								key="CpqTableEntryId"
 								val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 							qury_str+=" "+key+" LIKE '%"+val+"%' AND "
-				document_Type = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
-				doc_type = str(document_Type.QUOTE_TYPE).split("-")[0].strip()
+				document_Type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+				doc_type = str(document_Type.DOCTYP_ID)
 				master_fab_obj = self._get_record_obj(
 					columns=["PO_COMP_RECORD_ID"],
 					table_name=master_object_name,
