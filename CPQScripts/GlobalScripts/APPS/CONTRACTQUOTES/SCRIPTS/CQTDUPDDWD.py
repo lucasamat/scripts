@@ -100,7 +100,6 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 											WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'""".format(TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.tree_param))
 			if total_count_obj:
 				table_total_rows = total_count_obj.count
-
 				if table_total_rows:
 					table_records = [data for data in self.get_results(table_total_rows, columns)]
 				
