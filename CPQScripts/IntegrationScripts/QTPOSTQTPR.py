@@ -100,7 +100,10 @@ try:
 				if Saqicoquery.cnt >0:
 					Saqico_Flag = 1
 				
-				if Check_flag == 1 and Saqico_Flag == 1:  
+				if Check_flag == 1 and Saqico_Flag == 1:
+					
+					Log.Info("456 Qt_Id.QUOTE_ID  --->"+str(Qt_Id.QUOTE_ID))
+					Log.Info("456 Qt_Id.REVISION_ID  --->"+str(Qt_Id.REVISION_ID))
 
 					Emailinfo = SqlHelper.GetFirst("SELECT QUOTE_ID,SSCM,0 as REMANING,QUOTE_RECORD_ID FROM (SELECT SAQICO.QUOTE_ID,COUNT(DISTINCT SAQICO.EQUIPMENT_ID) AS SSCM,SAQICO.QUOTE_RECORD_ID  FROM SAQICO (NOLOCK) WHERE SAQICO.QUOTE_ID = '"+str(Qt_Id.QUOTE_ID)+"' AND SAQICO.QTEREV_ID = '"+str(Qt_Id.REVISION_ID)+"' AND ISNULL(STATUS,'') not in ('','Assembly is missing') group by SAQICO.Quote_ID,SAQICO.QUOTE_RECORD_ID )SUB_SAQICO ")  
 					
@@ -152,8 +155,8 @@ try:
 					msg.Body = Error_Info
 
 					# Bcc Emails	
-					#copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
-					#msg.Bcc.Add(copyEmail4)
+					copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
+					msg.Bcc.Add(copyEmail4)
 
 					copyEmail6 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 					msg.Bcc.Add(copyEmail6) 
@@ -985,7 +988,7 @@ try:
 					primaryQueryItems = SqlHelper.GetFirst(
 					""
 					+ str(Parameter1.QUERY_CRITERIA_1)
-					+ "  SAQITM SET TAX_AMOUNT_INGL_CURR = ROUND((SUB_SAQITM.SALES_PRICE_INGL_CURR * (ISNULL(SAQITM.TAX_PERCENTAGE,0)/100)),CONVERT(INT,"+str(roundcurr.DECIMAL_PLACES)+"),CONVERT(INT,"+str(roundcurr.ROUNDING_METHOD)+")) ,NET_PRICE_INGL_CURR = SUB_SAQITM.CNTPRI_INGL_CURR,UNIT_PRICE_INGL_CURR = SUB_SAQITM.SALES_PRICE_INGL_CURR,ESTVAL_INGL_CURR = SUB_SAQITM.ESTVAL_INGL_CURR FROM SAQRIT SAQITM(NOLOCK) JOIN(SELECT SUM(SAQICO.ESTVAL_INGL_CURR) AS ESTVAL_INGL_CURR,SUM(SAQICO.NET_PRICE_INGL_CURR) AS NET_PRICE_INGL_CURR,SUM(ISNULL(CNTPRI_INGL_CURR,0)) AS CNTPRI_INGL_CURR,SUM(SALES_PRICE_INGL_CURR) AS SALES_PRICE_INGL_CURR,SAQICO.QTEREV_ID,LINE,SAQICO.QUOTE_ID,SAQICO.SERVICE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' GROUP BY SAQICO.QUOTE_ID,SAQICO.SERVICE_ID,SAQICO.QTEREV_ID,SAQICO.LINE) SUB_SAQITM  ON SAQITM.QUOTE_ID = SUB_SAQITM.QUOTE_ID AND SAQITM.SERVICE_ID = SUB_SAQITM.SERVICE_ID AND SUB_SAQITM.QTEREV_ID = SAQITM.QTEREV_ID  AND SAQITM.LINE = SUB_SAQITM.LINE ' ")
+					+ "  SAQITM SET TAX_AMOUNT_INGL_CURR = ROUND((SUB_SAQITM.SALES_PRICE_INGL_CURR * (ISNULL(SAQITM.TAX_PERCENTAGE,0)/100)),CONVERT(INT,"+str(roundcurr.DECIMAL_PLACES)+"),CONVERT(INT,"+str(roundcurr.ROUNDING_METHOD)+")) ,NET_PRICE_INGL_CURR = SUB_SAQITM.CNTPRI_INGL_CURR,UNIT_PRICE_INGL_CURR = SUB_SAQITM.SALES_PRICE_INGL_CURR,ESTVAL_INGL_CURR = SUB_SAQITM.ESTVAL_INGL_CURR FROM SAQRIT SAQITM(NOLOCK) JOIN(SELECT SUM(SAQICO.ESTVAL_INGL_CURR) AS ESTVAL_INGL_CURR,SUM(SAQICO.NET_PRICE_INGL_CURR) AS NET_PRICE_INGL_CURR,SUM(ISNULL(CNTPRI_INGL_CURR,0)) AS CNTPRI_INGL_CURR,SUM(SALES_PRICE_INGL_CURR) AS SALES_PRICE_INGL_CURR,SAQICO.QTEREV_ID,LINE,SAQICO.QUOTE_ID,SAQICO.SERVICE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' GROUP BY SAQICO.QUOTE_ID,SAQICO.SERVICE_ID,SAQICO.QTEREV_ID,SAQICO.LINE) SUB_SAQITM  ON SAQITM.QUOTE_ID = SUB_SAQITM.QUOTE_ID AND SAQITM.SERVICE_ID = SUB_SAQITM.SERVICE_ID  AND SAQITM.SERVICE_ID <> ''Z0116'' AND SUB_SAQITM.QTEREV_ID = SAQITM.QTEREV_ID  AND SAQITM.LINE = SUB_SAQITM.LINE ' ")
 
 					#Item Roll Up Year 1
 					primaryQueryItems = SqlHelper.GetFirst(
@@ -1149,8 +1152,8 @@ try:
 					msg.Body = Error_Info
 
 					# Bcc Emails	
-					#copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
-					#msg.Bcc.Add(copyEmail4)
+					copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
+					msg.Bcc.Add(copyEmail4)
 
 					copyEmail6 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 					msg.Bcc.Add(copyEmail6)
@@ -1219,8 +1222,8 @@ try:
 							copyEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 							msg.CC.Add(copyEmail)					
 
-							#copyEmail5 = MailAddress("baji.baba@bostonharborconsulting.com")
-							#msg.CC.Add(copyEmail5) 
+							copyEmail5 = MailAddress("baji.baba@bostonharborconsulting.com")
+							msg.CC.Add(copyEmail5) 
 
 							# Bcc Emails	
 							if len(UserEmail) > 0:
