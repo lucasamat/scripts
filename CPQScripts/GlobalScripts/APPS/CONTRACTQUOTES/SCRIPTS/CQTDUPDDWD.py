@@ -240,7 +240,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 									TempTable=spare_parts_temp_table_name,
 									ServiceId=self.tree_param,									
 									QuoteRecordId=self.contract_quote_record_id,
-									RevisionRecordId=self.quote_revision_record_id,
+									RevisionRecordId=self.contract_quote_revision_record_id,
 									UserId=self.user_id
 								)
 		)
