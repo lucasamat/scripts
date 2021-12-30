@@ -2669,10 +2669,12 @@ class SYLDRTLIST:
 					list_lineup = []
 					list_lineup1 = []
 					
-					if ObjectName != 'SAQIBP':
-						Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
-					else:
+					if ObjectName == 'SAQIBP':
+						Trace.Write("dropdown11===")
 						Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" style="display: none;" aria-labelledby="dropdownMenuButton">'
+					else:
+						Trace.Write("dropdown===")
+						Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
 					#Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
 					
 					for inm in ik:
