@@ -3138,6 +3138,7 @@ class SYLDRTLIST:
 							else:
 								if not re.match(r'[A-Za-z0-9]',value1234):
 									Trace.Write("encode character")
+									Trace.Write("key_value ---"+str(key_value))
 									# Trace.Write(value1234.encode('utf-8'))
 									# Trace.Write(value1234.decode('utf-8'))
 									Trace.Write(value1234.encode('utf-8').decode('utf-8'))
