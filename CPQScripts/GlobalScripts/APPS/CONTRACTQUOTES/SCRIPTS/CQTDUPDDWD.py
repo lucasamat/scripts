@@ -11,7 +11,7 @@ import sys
 import datetime
 import Webcom.Configurator.Scripting.Test.TestProduct
 import System.Net
-import SYCNGEGUID as CPQID
+#import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 
 Sql = SQL()
@@ -56,6 +56,8 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 	def get_results(self, table_total_rows=0, colums='*'):		
 		start = 1
 		end = 1000
+		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))
+				
 		while start < table_total_rows:
 			query_string_with_pagination = """
 							SELECT DISTINCT {Columns} FROM (
@@ -69,12 +71,10 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 
 			table_data = Sql.GetList(query_string_with_pagination)
 
-			if table_data is not None:
-				source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))
-				if source_object_primary_key_column_obj:
-					for row_data in table_data:
-						data = [CPQID.KeyCPQId.GetCPQId(self.object_name, str(row_obj.Value)) if row_obj.Key == source_object_primary_key_column_obj.RECORD_NAME else row_obj.Value for row_obj in row_data ]					
-						yield data
+			if table_data is not None:				
+				for row_data in table_data:
+					data = [row_obj.Value for row_obj in row_data]					
+					yield data
 			start += 1000		
 			end += 1000			
 			if end > table_total_rows:
@@ -91,8 +91,8 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 				""".format(	AttributeName=self.related_list_attr_name)
 		)
 		if related_list_obj:			
-			table_columns = eval(related_list_obj.COLUMNS)
-			columns = related_list_obj.COLUMNS.replace("'","")[1:-1]			
+			table_columns = eval(related_list_obj.COLUMNS)[1:]
+			columns = ",".join(table_columns)		
 			self.object_name = related_list_obj.OBJECT_NAME
 			total_count_obj = Sql.GetFirst("""
 											SELECT COUNT(*) as count
