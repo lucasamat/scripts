@@ -1197,12 +1197,12 @@ except:
 	SELECTALL = None
 try:
 	ALLVALUES = Param.ALLVALUES
-	Trace.Write("allvalues--"+str(ALLVALUES))
+	Trace.Write("allvalues--"+str(list(ALLVALUES)))
 except:
 	ALLVALUES = None
 try:
 	ALLVALUES1 = Param.ALLVALUES1
-	Trace.Write("allvalues1--"+str(ALLVALUES1))
+	Trace.Write("allvalues1--"+str(list(ALLVALUES1)))
 except:
 	ALLVALUES1 = None
 try:
