@@ -43,7 +43,7 @@ try:
 		check_flag1 = 1
 		while check_flag1 == 1:
 
-			req_input = '{"query":"select * from (select  KUNNR as ACCOUNT_ID,POSTX as CUSTOMER_PART_DESC,KDMAT as CUSTOMER_PART_NUMBER,VTWEG as DISTRIBUTIONCHANNEL_ID,VKORG as SALESORG_ID,MATNR as SAP_PART_NUMBER,row_number () over (order by KUNNR) as sno from KNMT)a where sno>='+str(start)+' and sno<='+str(end)+'"}'
+			req_input = '{"query":"select * from (select  KUNNR as ACCOUNT_ID,POSTX as CUSTOMER_PART_DESC,KDMAT as CUSTOMER_PART_NUMBER,VTWEG as DISTRIBUTIONCHANNEL_ID,VKORG as SALESORG_ID,MATNR as SAP_PART_NUMBER,row_number () over (order by KUNNR) as sno from KNMT where to_date(erdat)> add_days(current_date,-1) )a where sno>='+str(start)+' and sno<='+str(end)+'"}'
 
 			response2 = webclient.UploadString(str(LOGIN_CREDENTIALS.URL), str(req_input))
 
@@ -68,16 +68,16 @@ try:
 			else:
 				check_flag1 = 0
 
-
+		
+		S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE MAMSAC_INBOUND set ACCOUNT_ID = convert(bigint,ACCOUNT_ID)  where isnumeric(ACCOUNT_ID)=1  ' ")
+		
+		S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE MAMSAC_INBOUND set ACCOUNT_ID = convert(bigint,SAP_PART_NUMBER)  where isnumeric(SAP_PART_NUMBER)=1  ' ")
+		
 		AccountupdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  MAMSAC_INBOUND set MAMSAC_INBOUND.ACCOUNT_NAME= SAACNT.ACCOUNT_NAME,MAMSAC_INBOUND.ACCOUNT_RECORD_ID= SAACNT.ACCOUNT_RECORD_ID FROM MAMSAC_INBOUND(NOLOCK)  JOIN SAACNT(NOLOCK) ON MAMSAC_INBOUND.ACCOUNT_ID= SAACNT.ACCOUNT_ID  ' ")
 		
 		MaterialupdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  MAMSAC_INBOUND set MAMSAC_INBOUND.MATERIAL_NAME= MAMTRL.SAP_DESCRIPTION,MAMSAC_INBOUND.MATERIAL_RECORD_ID= MAMTRL.MATERIAL_RECORD_ID FROM MAMSAC_INBOUND(NOLOCK)  JOIN MAMTRL(NOLOCK) ON MAMSAC_INBOUND.SAP_PART_NUMBER= MAMTRL.SAP_PART_NUMBER  ' ")
 		
 		AccountupdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  MAMSAC_INBOUND set MAMSAC_INBOUND.SALESORG_NAME= SASORG.SALESORG_NAME,MAMSAC_INBOUND.SALESORG_RECORD_ID= SASORG.SALES_ORG_RECORD_ID,MAMSAC_INBOUND.DISTRIBUTIONCHANNEL_RECORD_ID = SADSCH.DISTRIBUTION_CHANNEL_RECORD_ID,MAMSAC_INBOUND.SORACC_RECORD_ID = SASOAC.SALESORG_ACCOUNTS_RECORD_ID FROM MAMSAC_INBOUND(NOLOCK) JOIN SASORG(NOLOCK) ON MAMSAC_INBOUND.SALESORG_ID= SASORG.SALESORG_ID LEFT JOIN SADSCH(NOLOCK) ON  MAMSAC_INBOUND.DISTRIBUTIONCHANNEL_ID	= SADSCH.DISTRIBUTIONCHANNEL_ID LEFT JOIN SASOAC(NOLOCK) ON MAMSAC_INBOUND.ACCOUNT_ID = SASOAC.ACCOUNT_ID AND MAMSAC_INBOUND.SALESORG_ID = SASOAC.SALESORG_ID' ")
-		
-		S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE MAMSAC_INBOUND set ACCOUNT_ID = convert(bigint,ACCOUNT_ID)  where isnumeric(ACCOUNT_ID)=1  ' ")
-		
-		S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE MAMSAC_INBOUND set ACCOUNT_ID = convert(bigint,SAP_PART_NUMBER)  where isnumeric(SAP_PART_NUMBER)=1  ' ")
 		
 		AccountupdateQuery = SqlHelper.GetFirst(""+ str(Parameter2.QUERY_CRITERIA_1)+ "  FROM MAMSAC_INBOUND WHERE ISNULL(ACCOUNT_RECORD_ID,'''')='''' OR ISNULL(MATERIAL_RECORD_ID,'''')='''' OR ISNULL(SALESORG_RECORD_ID,'''')='''' OR ISNULL(DISTRIBUTIONCHANNEL_RECORD_ID,'''')='''' ' ")
 		
@@ -104,4 +104,4 @@ try:
 except:     
 	Log.Info("MAGETCUSPT ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("MAGETCUSPT ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
+	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]}) 
