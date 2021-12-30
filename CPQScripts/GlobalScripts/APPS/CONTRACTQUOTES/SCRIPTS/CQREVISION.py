@@ -274,6 +274,10 @@ def create_new_revision(Opertion,cartrev):
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 		Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
 		Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
+		##newrevision edot active for expiry Quote:
+		updatesaqtmtexpire = (""" UPDATE SAQTMT SET EXPIRED = '0' FROM SAQTMT INNER JOIN SAQTRV ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE  SAQTRV.REV_EXPIRE_DATE = '{current_date}' AND SAQTRV.QTEREV_RECORD_ID ='{quote_revision_record_id}' AND SAQTRV.QUOTE_RECORD_ID = '{contract_quote_record_id}' """.format(current_date = current_date,quote_revision_record_id=get_quote_info_details.QTEREV_RECORD_ID,contract_quote_record_id =get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID))
+		Sql.RunQuery(updatesaqtmtexpire)
+	
 	return True
 
 
