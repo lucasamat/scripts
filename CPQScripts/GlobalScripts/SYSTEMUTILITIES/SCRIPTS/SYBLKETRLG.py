@@ -814,7 +814,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Trace.Write("y="+str(y))
 				#Sql.RunQuery("UPDATE SAQRIT SET COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(x,selected_rows_cpqid[count]))
 				#count += 1
-				Sql.RunQuery("UPDATE SAQRIT SET ESTVAL_INGL_CURR = '{}',COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(float(str(x).replace("USD","").replace(" ","").replace("'","").replace('"','')),float(str(y).replace("USD","").replace(" ","").replace("'","").replace('"','')),selected_rows_cpqid[count]))
+				Sql.RunQuery("UPDATE SAQRIT SET ESTVAL_INGL_CURR = '{}',COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(float(str(x).replace("USD","").replace(" ","").replace("'","").replace('"','')),float(str(y).replace("USD","").replace(" ","").replace("'","").replace('"','').replace("''","").replace('""','')),selected_rows_cpqid[count]))
 				count += 1
 			#A055S000P01-12656 start
 			tax_percent_amt = commitval = 0
