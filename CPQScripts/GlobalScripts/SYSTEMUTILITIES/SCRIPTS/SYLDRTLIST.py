@@ -2735,6 +2735,10 @@ class SYLDRTLIST:
 							docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))
 							if str(docnode_action_btn.DOCUMENT_DESCRIPTION) == "":
 								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'
+
+							else:
+								Trace.Write("drop===")
+								Action_str += 'id="ctr_drop" style="display: none;"'								
 																	 
 						
 						# elif str(current_tab).upper() == "APP" and str(ObjectName)=="SYTABS":                    
@@ -2824,6 +2828,10 @@ class SYLDRTLIST:
 											Trace.Write("2222222222222")
 											Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_accepted(this)">CUSTOMER ACCEPTED</a></li>'									
 											Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_rejected(this)">CUSTOMER REJECTED</a></li>'
+									elif str(docnode_action_btn.DATE_SUBMITTED) and str(docnode_action_btn.DOCUMENT_DESCRIPTION) and (str(docnode_action_btn.DATE_REJECTED) or str(docnode_action_btn.DATE_ACCEPTED)) != "":
+										Trace.Write("drop22===")
+										Action_str += 'id="ctr_drop" style="display: none;"'
+
 									else:
 										Trace.Write("docnode111=====")									
 										Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'     
