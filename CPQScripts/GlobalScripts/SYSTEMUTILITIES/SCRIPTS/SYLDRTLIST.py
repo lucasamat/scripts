@@ -2739,7 +2739,7 @@ class SYLDRTLIST:
 							if docnode_action_btn:
 								if str(docnode_action_btn.DOCUMENT_DESCRIPTION) == "" or docnode_action_btn.DOCUMENT_DESCRIPTION == "":
 									Trace.Write("edit=====")
-									Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'													
+									Action_str += '<li><a id = "" class="dropdown-item" href="#" onclick="doc_edit_desc(this)">EDIT DESC</a></li>'													
 																	 
 						
 						# elif str(current_tab).upper() == "APP" and str(ObjectName)=="SYTABS":                    
