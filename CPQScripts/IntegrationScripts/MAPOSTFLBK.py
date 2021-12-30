@@ -243,6 +243,16 @@ try:
 		+ str(timestamp_sessionid)
 		+ "' AND ISNULL(INTEGRATION_STATUS,'''')='''' '"
 	)
+
+	primaryQueryItems = SqlHelper.GetFirst(
+                        ""
+                        + str(Parameter1.QUERY_CRITERIA_1)
+                        + "  A SET CRM_FABLOCATION_ID = ACCOUNT_ID FROM MAFBLC A(NOLOCK) JOIN SAACNT B (NOLOCK) ON A.FAB_LOCATION_ID = B.LEGACY_FBL_ID WHERE ACCOUNTGROUP_ID = ''ZFAB'' ' ")
+	
+	primaryQueryItems = SqlHelper.GetFirst(
+                        ""
+                        + str(Parameter1.QUERY_CRITERIA_1)
+                        + "  A SET ACCOUNT_ID = B.ACCOUNT_ID,ACCOUNT_RECORD_ID = B.ACCOUNT_RECORD_ID,ACCOUNT_NAME = B.ACCOUNT_NAME FROM MAEQUP (NOLOCK) A JOIN MAFBLC B(NOLOCK) ON A.FABLOCATION_ID = B.FAB_LOCATION_ID WHERE ISNULL(A.ACCOUNT_ID,'''')='''' ' ")
 	
 	# ERROR MESSAGE SAVING IN SYELOG
 	Error_list = []
