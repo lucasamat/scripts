@@ -2180,8 +2180,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					columns=["PO_COMP_RECORD_ID"],
 					table_name=master_object_name,
 					table_joins="JOIN SAQTSV (NOLOCK) ON MAADPR.PRDOFR_ID = SAQTSV.SERVICE_ID",
-					where_condition=""" {} SAQTSV.QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'AND NOT EXISTS (SELECT ADNPRD_ID FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}')""".format(qury_str,
-						self.contract_quote_record_id,self.quote_revision_record_id, self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1, single_record=False,
+					where_condition=""" {} SAQTSV.QUOTE_RECORD_ID = '{}' AND COMP_PRDOFR_DOCTYP = '{}' AND QTEREV_RECORD_ID = '{}'AND NOT EXISTS (SELECT ADNPRD_ID FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}')""".format(qury_str,
+						self.contract_quote_record_id,"",self.quote_revision_record_id, self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_1, single_record=False,
 					),
 				)
 
