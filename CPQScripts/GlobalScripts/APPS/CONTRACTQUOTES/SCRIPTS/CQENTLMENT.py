@@ -384,7 +384,7 @@ class Entitlements:
 			# 	parentObj = 'SAQTSE'
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				tableName = 'SAQSGE'
 				serviceId = self.treetopsuperparentparam
 				parentObj = 'SAQTSE'
@@ -2080,14 +2080,14 @@ class Entitlements:
 			# 	parentObj = 'SAQTSE'
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				tableName = 'SAQSGE'
 				serviceId = self.treetopsuperparentparam
 				parentObj = 'SAQTSE'
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,self.treeparentparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
 				Trace.Write('331----treesuperparentparam----'+str(self.treesuperparentparam))
 				Trace.Write('331----treetopsuperparentparam----'+str(self.treetopsuperparentparam))
 				tableName = 'SAQSCE'
@@ -2362,11 +2362,11 @@ class Entitlements:
 			# 	objName = 'SAQSFE'
 			# 	serviceId = self.treesuperparentparam 
 			# 	where = " WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid, serviceId, self.treeparam)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				objName = 'SAQSGE'
 				serviceId = self.treetopsuperparentparam
 				where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND  SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId, self.treeparam,self.treeparentparam)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
 				Trace.Write('331----treesuperparentparam----'+str(self.treesuperparentparam))
 				Trace.Write('331----treetopsuperparentparam----'+str(self.treetopsuperparentparam))
 				objName = 'SAQSCE'
