@@ -5043,6 +5043,15 @@ class SYLDRTLIST:
 						lookup_disply_list.remove("QUOTE_REVISION_CONTRACT_ITEM_ID")
 					except:
 						pass
+				elif "QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID_LINE" in lookup_disply_list and ObjectName == "SAQGIS":
+					try:
+						lookup_disply_list.remove("QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID_LINE")
+						lookup_disply_list.remove("CONTRACT_VALID_FROM")
+						lookup_disply_list.remove("CONTRACT_VALID_TO")
+						lookup_disply_list.remove("GREENBOOK")
+
+					except:
+						pass
 				
 				elif "QUOTE_REV_DEAL_TEAM_MEMBER_ID" in lookup_disply_list and ObjectName == "SAQDLT":
 					try:
