@@ -3066,9 +3066,9 @@ def Related_Sub_Banner(
                                 sec_rel_sub_bnr += (btn)
                     if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn:
                         sec_rel_sub_bnr += (btn)
-                    else:
-                        Trace.Write("btn222"+str(btn))
-                        sec_rel_sub_bnr += (btn)
+                    # else: commented because of duplicate button
+                    #     Trace.Write("btn222"+str(btn))
+                    #     sec_rel_sub_bnr += (btn)
         
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
