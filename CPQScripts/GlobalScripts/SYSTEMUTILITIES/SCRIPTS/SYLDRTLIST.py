@@ -5044,11 +5044,13 @@ class SYLDRTLIST:
 					except:
 						pass
 				elif "QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID_LINE" in lookup_disply_list and ObjectName == "SAQGIS":
+					Trace.Write("lOOKUP---- ")
 					try:
 						lookup_disply_list.remove("QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID_LINE")
 						lookup_disply_list.remove("CONTRACT_VALID_FROM")
 						lookup_disply_list.remove("CONTRACT_VALID_TO")
 						lookup_disply_list.remove("GREENBOOK")
+						Trace.Write("lookup_disply_list---- "+str(lookup_disply_list))
 
 					except:
 						pass
