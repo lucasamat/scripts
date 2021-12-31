@@ -545,7 +545,7 @@ class AncillaryProductOperation:
 			attributesallowedlst = list(set(attributesallowedlst))
 			overallattributeslist = list(set(overallattributeslist))
 								
-			
+			Trace.Write("attributevalues----"+str(attributevalues))
 			if ProductVersionObj and get_existing_record.cnt == 0:
 				insertservice = ""
 				for attrs in overallattributeslist:
@@ -555,7 +555,8 @@ class AncillaryProductOperation:
 						ent_disp_val = attributevalues[attrs]
 						ent_val_code = attributevalues[attrs]
 						#Log.Info("ent_disp_val----"+str(ent_disp_val))
-					else:					
+					else:	
+						Trace.Write("else----"+str(attributevalues[attrs]))				
 						HasDefaultvalue=False
 						ent_disp_val = ""
 						ent_val_code = ""
