@@ -287,7 +287,10 @@ class EntitlementView():
 							if str(val) == "explanation":
 								Trace.Write(str(key)+'-2195---'+str(val))
 								get_conflict_message = str(key)
-								get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
+								try:
+									get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
+								except:
+									get_conflict_message_id = ''
 				if rootattribute == "rootItem":
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristicGroups":
