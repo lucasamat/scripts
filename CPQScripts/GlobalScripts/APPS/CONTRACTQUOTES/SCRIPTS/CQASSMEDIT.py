@@ -273,15 +273,10 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 					checkbox_dict = NewValue.split(',')
 				for val in STANDARD_ATTRIBUTE_VALUES:
 					#if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
-					if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL.upper() == str(NewValue).upper()):
+					if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in checkbox_dict) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL.upper() == str(NewValue).upper()):
 						#if field_type == 'Check Box' and checkbox_dict:
-						if val.STANDARD_ATTRIBUTE_DISPLAY_VAL in checkbox_dict:
-							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
-							requestdata +=','
-						else:
-							Trace.Write("inside_J_else2_checkbox")
-							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
-							requestdata +=','
+						requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
+						requestdata +=','
 						
 						#NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
 						Trace.Write('NewValue-iff--254----'+str(NewValue))
