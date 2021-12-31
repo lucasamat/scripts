@@ -3181,9 +3181,14 @@ class SYLDRTLIST:
 										+ "</a>"
 									)
 								else:
-									value1234 = str(value1234).replace('"', "&quot;")
-									value1234 = str(value1234).replace("<p>", " ")
-									value1234 = str(value1234).replace("</p>", " ")
+									if not re.match(r'[A-Za-z0-9]',value1234):
+										value1234 = value1234.replace('"', "&quot;")
+										value1234 = value1234.replace("<p>", " ")
+										value1234 = value1234.replace("</p>", " ")
+									else:
+										value1234 = str(value1234).replace('"', "&quot;")
+										value1234 = str(value1234).replace("<p>", " ")
+										value1234 = str(value1234).replace("</p>", " ")
 									#Trace.Write(str(value123)+'3107--3051---'+str(value1234))
 									if value123 in [
 										"ERROR",
