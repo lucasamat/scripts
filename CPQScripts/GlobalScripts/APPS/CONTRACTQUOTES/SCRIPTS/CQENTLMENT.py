@@ -386,19 +386,19 @@ class Entitlements:
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				tableName = 'SAQSGE'
-				serviceId = self.treetopsuperparentparam
+				serviceId = self.treesuperparentparam
 				parentObj = 'SAQTSE'
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,self.treeparentparam)
+				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
 				Trace.Write('331----treesuperparentparam----'+str(self.treesuperparentparam))
 				Trace.Write('331----treetopsuperparentparam----'+str(self.treetopsuperparentparam))
 				tableName = 'SAQSCE'
 				#serviceId = self.treesuperparentparam
-				serviceId = self.treetopsuperparentparam
+				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSGE'
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam,self.treeparentparam)
+				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)	
 		###tool relocation receiving entitilement ends
 		else:
@@ -2082,19 +2082,19 @@ class Entitlements:
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				tableName = 'SAQSGE'
-				serviceId = self.treetopsuperparentparam
+				serviceId = self.treesuperparentparam
 				parentObj = 'SAQTSE'
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,self.treeparentparam)
+				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
 				Trace.Write('331----treesuperparentparam----'+str(self.treesuperparentparam))
 				Trace.Write('331----treetopsuperparentparam----'+str(self.treetopsuperparentparam))
 				tableName = 'SAQSCE'
 				#serviceId = self.treesuperparentparam
-				serviceId = self.treetopsuperparentparam
+				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSGE'
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam,self.treeparentparam)
+				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 		###tool relocation receiving entitilement ends
 		else:
@@ -2364,16 +2364,16 @@ class Entitlements:
 			# 	where = " WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid, serviceId, self.treeparam)
 			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				objName = 'SAQSGE'
-				serviceId = self.treetopsuperparentparam
-				where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND  SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId, self.treeparam,self.treeparentparam)
+				serviceId = self.treesuperparentparam
+				where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND  SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid, serviceId, self.treeparam)
 			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
 				Trace.Write('331----treesuperparentparam----'+str(self.treesuperparentparam))
 				Trace.Write('331----treetopsuperparentparam----'+str(self.treetopsuperparentparam))
 				objName = 'SAQSCE'
 				#serviceId = self.treesuperparentparam
-				serviceId = self.treetopsuperparentparam
+				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSGE'
-				where = " WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam,self.treeparentparam)
+				where = " WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND  QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 		###tool relocation receiving entitilement ends
 		else:
