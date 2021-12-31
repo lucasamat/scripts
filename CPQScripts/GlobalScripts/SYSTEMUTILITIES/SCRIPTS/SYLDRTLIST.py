@@ -5045,7 +5045,7 @@ class SYLDRTLIST:
 						lookup_disply_list.remove("QUOTE_REVISION_CONTRACT_ITEM_ID")
 					except:
 						pass
-				elif "QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID" in lookup_disply_list and ObjectName == "SAQGIS":
+				elif "QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID" in lookup_disply_list and ObjectName == "SAQIGS":
 					Trace.Write("lOOKUP---- ")
 					try:
 						lookup_disply_list.remove("QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID_LINE")
