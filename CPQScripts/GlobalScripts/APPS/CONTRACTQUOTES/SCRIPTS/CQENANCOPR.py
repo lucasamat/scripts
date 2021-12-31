@@ -556,7 +556,7 @@ class AncillaryProductOperation:
 						ent_val_code = attributevalues[attrs]
 						#Log.Info("ent_disp_val----"+str(ent_disp_val))
 					else:	
-						Trace.Write("else----"+str(attributevalues[attrs]))				
+						#Trace.Write("else----"+str(attributevalues[attrs]))				
 						HasDefaultvalue=False
 						ent_disp_val = ""
 						ent_val_code = ""
