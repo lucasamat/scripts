@@ -710,9 +710,9 @@ def _equp_predefined_value_driver_update(previous_xml):
 def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	is_changed = False
 	Log.Info('604--objectName----'+str(objectName))
-	if 'Z0007' in get_serviceid:
-		objectName = 'SAQSCE'
-		obj_list = ['SAQTSE','SAQSGE','SAQSAE']
+	# if 'Z0007' in get_serviceid:
+	# 	objectName = 'SAQSCE'
+	# 	obj_list = ['SAQTSE','SAQSGE','SAQSAE']
 	if objectName == 'SAQTSE':
 		obj_list = ['SAQSCE','SAQSGE','SAQSAE']
 	# elif objectName == 'SAQSFE':
@@ -721,7 +721,8 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	elif objectName == 'SAQSGE':
 		obj_list = ['SAQSCE','SAQSAE']
 		is_changed = True
-	elif objectName == 'SAQSCE' and 'Z0007' not in get_serviceid:
+	#and 'Z0007' not in get_serviceid
+	elif objectName == 'SAQSCE' :
 		obj_list = ['SAQSAE']
 		is_changed = True
 	datetimenow = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p") 
