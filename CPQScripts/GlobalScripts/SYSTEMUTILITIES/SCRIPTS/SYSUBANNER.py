@@ -2998,88 +2998,80 @@ def Related_Sub_Banner(
 						'<button id="ADDNEW__SYOBJR_98798_7F4F4C8D_73C7_4779_9BE5_38C695" onclick="cont_openaddnew(this, \'div_CTR_Involved_Parties\')" class="btnconfig addNewRel HideAddNew">ADD NEW</button>'
 					)
 
-		elif str(TreeParam).upper() == "QUOTE INFORMATION" and subTabName == "Source Fab Location" and TabName == "Quotes":
-			sec_rel_sub_bnr += (
-						'<button id="ADDNEW__SYOBJR_98857_SYOBJ_01033" onclick="cont_openaddnew(this, \'div_CTR_Source_Fab_Locations\')" class="btnconfig addNewRel HideAddNew">ADD NEW</button>'
-					)
-		elif str(TreeParam).upper() == "QUOTE INFORMATION" and subTabName == "Equipment" and TabName == "Quote":
-			sec_rel_sub_bnr += (
-						'<button id="ADDNEW__SYOBJR_98858_SYOBJ_01034" onclick="cont_openaddnew(this, \'div_CTR_Involved_Parties_Equipments\')" class="btnconfig addNewRel">ADD EQUIPMENT</button>'
-					)
-
-		elif  (str(TreeParentParam).upper() == "FAB LOCATIONS" or str(TreeParam).upper() == "QUOTE INFORMATION" or str(TreeSuperParentParam).upper() == "FAB LOCATIONS" )  and TabName == "Quotes":
-			
-			sec_rel_sub_bnr += ('<button id="fablocate_save" onclick="fablocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fablocate_cancel" onclick="fablocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
-		elif str(TreeParam) == "Quote Information" and TabName == "Quotes":
-			Trace.Write("@@@2473")
-			sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>') 
-		# elif str(TreeParentParam) == "Comprehensive Services" and TabName == "Quotes" and subTabName == "Parts List":
-		#     Trace.Write("@@@2473")
-		#     sec_rel_sub_bnr += ('<button id="delete_parts" onclick="bulk_del_yes()"  class="btnconfig" disabled = "">DELETE</button>') 
-		elif  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions" and str(subTabName)!= "New Parts Only":     
-			sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig hidebtn">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig hidebtn">CANCEL</button>'  )    
-			Trace.Write('### _ Multi_buttons'+str(multi_buttons))
-			if str(subTabName)=="PM Events" and revision_status.REVISION_STATUS != 'APPROVED':
-				sec_rel_sub_bnr += str(add_button)
-			elif str(subTabName)=="Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APPROVED':
-				if str(multi_buttons) != "":
-					for btn in multi_buttons:
-						sec_rel_sub_bnr += (btn)
-				else:
-					sec_rel_sub_bnr += str(add_button)
-		elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
-			sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
-			if str(subTabName)=="PM Events" and revision_status.REVISION_STATUS != 'APPROVED':
-				sec_rel_sub_bnr += str(add_button)
-		elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and (subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
-			if str(subTabName)=="PM Events":
-				sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_00011_SYOBJ_00974" onclick="PM_FrequencyInlineEdit()" class="btnconfig" >INLINE EDIT</button>')
-			elif 'Add-On Products' in str(TreeParam) and ("INCLUDE ADD-ON PRODUCTS" not in sec_rel_sub_bnr) and ("ADD CREDITS" not in sec_rel_sub_bnr):
-				sec_rel_sub_bnr+= str(add_button)
-			else:
-				if str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
-					sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
-		# elif str(TreeParam) == "Quote Items" and TabName == "Quotes" and subTabName == "Summary":
-		#     sec_rel_sub_bnr =''
-		#     sec_rel_sub_bnr += ('<div class="product_tab_icon"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"/></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Quote Items">Quote Items</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><div class="segment_part_number_child secondary_highlight subellipsisdot" style="display: block;"><div class="segment_part_number_heading_child"><abbr title="Product Offering ID">Product Offering ID</abbr></div><div class="segment_part_number_text_child"><abbr title="ALL">ALL</abbr></div></div><button id="generate-line-items" onclick="generateLineItems()"  class="btnconfig"style="display: none;">UPDATE LINES</button>')
-		elif str(TreeParam) == "Fab Locations" and TabName =="Quotes" and subTabName =="Fab Locations":
-			sec_rel_sub_bnr += ""
-		else:
-			Trace.Write("TreeParam-->"+str(TreeParam))
-			Trace.Write("TabName-->"+str(TabName))
-			Trace.Write("subTabName-->"+str(subTabName))
-			Trace.Write("Involved Parties button")
-			if str(multi_buttons) != "":
-				Trace.Write("add_button_if"+str(add_button))
-				for btn in multi_buttons:
-					if ('SPLIT' in btn or 'EDIT' in btn) and subTabName =='Items':
-						if 'SPLIT' in btn:   
-							get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
-							if get_entitlement_xml:
-								for get_service in get_entitlement_xml:
-									entitlement_service = get_service.ENTITLEMENT_XML
-									quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-									split_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
-									split_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
-									for m in re.finditer(quote_item_tag, entitlement_service):
-										sub_string = m.group(1)
-										split_1 =re.findall(split_pattern,sub_string)
-										split_2 = re.findall(split_value,sub_string)
-										if split_1 and split_2:
-											Trace.Write("a"+str(get_service.SERVICE_ID))
-											sec_rel_sub_bnr += (btn)
-											break
-						if 'EDIT' in btn:
-							billing_variable_visible = Sql.GetFirst("""SELECT BILLING_TYPE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND BILLING_TYPE in ('VARIABLE','Variable')""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
-							if billing_variable_visible:
-								sec_rel_sub_bnr += (btn)
-					if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn:
-						sec_rel_sub_bnr += (btn)
-					else:
-						sec_rel_sub_bnr += (btn)
-		
-		Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
-	return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
+        elif  (str(TreeParentParam).upper() == "FAB LOCATIONS" or str(TreeParam).upper() == "QUOTE INFORMATION" or str(TreeSuperParentParam).upper() == "FAB LOCATIONS" )  and TabName == "Quotes":
+            
+            sec_rel_sub_bnr += ('<button id="fablocate_save" onclick="fablocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fablocate_cancel" onclick="fablocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
+        elif str(TreeParam) == "Quote Information" and TabName == "Quotes":
+            Trace.Write("@@@2473")
+            sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>') 
+        # elif str(TreeParentParam) == "Comprehensive Services" and TabName == "Quotes" and subTabName == "Parts List":
+        #     Trace.Write("@@@2473")
+        #     sec_rel_sub_bnr += ('<button id="delete_parts" onclick="bulk_del_yes()"  class="btnconfig" disabled = "">DELETE</button>') 
+        elif  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions" and str(subTabName)!= "New Parts Only":     
+            sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig hidebtn">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig hidebtn">CANCEL</button>'  )    
+            Trace.Write('### _ Multi_buttons'+str(multi_buttons))
+            if str(subTabName)=="PM Events" and revision_status.REVISION_STATUS != 'APPROVED':
+                sec_rel_sub_bnr += str(add_button)
+            elif str(subTabName)=="Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APPROVED':
+                if str(multi_buttons) != "":
+                    for btn in multi_buttons:
+                        sec_rel_sub_bnr += (btn)
+                else:
+                    sec_rel_sub_bnr += str(add_button)
+        elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
+            sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
+            if str(subTabName)=="PM Events" and revision_status.REVISION_STATUS != 'APPROVED':
+                sec_rel_sub_bnr += str(add_button)
+        elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and (subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
+            if str(subTabName)=="PM Events":
+                sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_00011_SYOBJ_00974" onclick="PM_FrequencyInlineEdit()" class="btnconfig" >INLINE EDIT</button>')
+            elif 'Add-On Products' in str(TreeParam) and ("INCLUDE ADD-ON PRODUCTS" not in sec_rel_sub_bnr) and ("ADD CREDITS" not in sec_rel_sub_bnr):
+                sec_rel_sub_bnr+= str(add_button)
+            else:
+                if str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
+                    sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
+        # elif str(TreeParam) == "Quote Items" and TabName == "Quotes" and subTabName == "Summary":
+        #     sec_rel_sub_bnr =''
+        #     sec_rel_sub_bnr += ('<div class="product_tab_icon"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"/></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Quote Items">Quote Items</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><div class="segment_part_number_child secondary_highlight subellipsisdot" style="display: block;"><div class="segment_part_number_heading_child"><abbr title="Product Offering ID">Product Offering ID</abbr></div><div class="segment_part_number_text_child"><abbr title="ALL">ALL</abbr></div></div><button id="generate-line-items" onclick="generateLineItems()"  class="btnconfig"style="display: none;">UPDATE LINES</button>')
+        elif str(TreeParam) == "Fab Locations" and TabName =="Quotes" and subTabName =="Fab Locations":
+            sec_rel_sub_bnr += ""
+        else:
+            Trace.Write("TreeParam-->"+str(TreeParam))
+            Trace.Write("TabName-->"+str(TabName))
+            Trace.Write("subTabName-->"+str(subTabName))
+            Trace.Write("Involved Parties button")
+            if str(multi_buttons) != "":
+                Trace.Write("add_button_if"+str(add_button))
+                for btn in multi_buttons:
+                    if ('SPLIT' in btn or 'EDIT' in btn) and subTabName =='Items':
+                        if 'SPLIT' in btn:   
+                            get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
+                            if get_entitlement_xml:
+                                for get_service in get_entitlement_xml:
+                                    entitlement_service = get_service.ENTITLEMENT_XML
+                                    quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                                    split_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
+                                    split_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
+                                    for m in re.finditer(quote_item_tag, entitlement_service):
+                                        sub_string = m.group(1)
+                                        split_1 =re.findall(split_pattern,sub_string)
+                                        split_2 = re.findall(split_value,sub_string)
+                                        if split_1 and split_2:
+                                            Trace.Write("a"+str(get_service.SERVICE_ID))
+                                            sec_rel_sub_bnr += (btn)
+                                            break
+                        if 'EDIT' in btn:
+                            billing_variable_visible = Sql.GetFirst("""SELECT BILLING_TYPE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND BILLING_TYPE in ('VARIABLE','Variable')""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
+                            if billing_variable_visible:
+                                sec_rel_sub_bnr += (btn)
+                    if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn:
+                        sec_rel_sub_bnr += (btn)
+                    else:
+                        Trace.Write("btn222"+str(btn))
+                        sec_rel_sub_bnr += (btn)
+        
+        Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
+    return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
 try:
 	CurrentRecordId = Param.CurrentRecordId
 	Trace.Write('CurrentRecordId111'+str(CurrentRecordId))
