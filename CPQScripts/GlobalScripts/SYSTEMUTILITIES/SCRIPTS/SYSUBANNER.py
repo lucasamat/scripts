@@ -839,7 +839,7 @@ def Related_Sub_Banner(
                     SecondLable = ""
                     SecondValue = ""                 
             elif (TreeParam.startswith('Sending') or TreeParam.startswith('Receiving')):
-                
+                Trace.Write("TreeParam--"+str(TreeParam))
                 if subTabName == "Details" and TreeParam.startswith('Sending Account'):
                     account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%SENDING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     PrimaryLable = "Sending Account ID"
