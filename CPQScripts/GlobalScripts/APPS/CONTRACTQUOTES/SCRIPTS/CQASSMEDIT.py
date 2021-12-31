@@ -213,7 +213,7 @@ def child_ent_request(tableName,where,serviceId):
 			updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
 	except Exception:
 		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
-	#ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 	return newConfigurationid,cpsmatchID
 
 
@@ -261,6 +261,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 												
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
 		field_type = ""
+		checkbox_dict =""
 		if get_datatype:
 			if get_datatype.ATT_DISPLAY_DESC:
 				field_type = get_datatype.ATT_DISPLAY_DESC
@@ -268,12 +269,19 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		if field_type not in ('input','Free Input, no Matching'):
 			STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{}' AND PA.PRODUCT_ID ={} ".format(AttributeID,product_obj.PRD_ID))
 			if STANDARD_ATTRIBUTE_VALUES:
-			
+				if field_type == 'Check Box':
+					checkbox_dict = NewValue.split(',')
 				for val in STANDARD_ATTRIBUTE_VALUES:
 					#if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
 					if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL.upper() == str(NewValue).upper()):
-						requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
-						requestdata +=','
+						#if field_type == 'Check Box' and checkbox_dict:
+						if val.STANDARD_ATTRIBUTE_DISPLAY_VAL in checkbox_dict:
+							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
+							requestdata +=','
+						else:
+							Trace.Write("inside_J_else2_checkbox")
+							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
+							requestdata +=','
 						
 						#NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
 						Trace.Write('NewValue-iff--254----'+str(NewValue))
@@ -435,7 +443,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
 				#Log.Info('response2--182----342-')
-				#Trace.Write('--ent_disp_val--value code-'+str(attrs)+'--'+str(ent_val_code)+'--'+str(ent_disp_val))
+				Trace.Write('--ent_disp_val--value code-'+str(attrs)+'--'+str(ent_val_code)+'--'+str(ent_disp_val))
 				
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 				<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
