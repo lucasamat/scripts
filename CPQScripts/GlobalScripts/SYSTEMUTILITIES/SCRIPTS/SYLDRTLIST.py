@@ -5028,6 +5028,8 @@ class SYLDRTLIST:
 							if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
 						]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+				Trace.Write("lookup_disply_list---- "+str(lookup_disply_list))
+				Trace.Write("ObjectName---- "+str(ObjectName))
 				if "QUOTE_REV_PO_PRODUCT_LIST_ID" in lookup_disply_list and ObjectName == "SAQRSP":
 					try:
 						lookup_disply_list.remove("QUOTE_REV_PO_PRODUCT_LIST_ID")
