@@ -181,13 +181,13 @@ def child_ent_request(tableName,where,serviceId):
 					webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
 						
 					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
-						Trace.Write('row--'+str(row.ENTITLEMENT_ID))
+						#Trace.Write('row--'+str(row.ENTITLEMENT_ID))
 						try:
 							requestdata = '{"characteristics":['
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-								Trace.Write("auto update---"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( row.ENTITLEMENT_ID))
+								#Trace.Write("auto update---"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( row.ENTITLEMENT_ID))
 								#Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 								for code in row.ENTITLEMENT_VALUE_CODE.split(','):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
@@ -366,7 +366,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		overallattributeslist = list(set(overallattributeslist))
 		HasDefaultvalue=False
 		#Log.Info('response2--182----315---'+str(attributesallowedlst))
-		Trace.Write(str(overallattributeslist)+'--attributevalues--182----315---'+str(attributevalues))
+		#Trace.Write(str(overallattributeslist)+'--attributevalues--182----315---'+str(attributevalues))
 		ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 		if ProductVersionObj is not None:
 			insertservice = ""
@@ -415,7 +415,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
 							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
 				else:
-					Trace.Write(str(AttributeID)+'---369--attrs---'+str(attrs))
+					#Trace.Write(str(AttributeID)+'---369--attrs---'+str(attrs))
 					Trace.Write('369-NewValue-370----'+str(attrs)+'-----'+str(NewValue)+str(ent_val_code))
 					if attrs == AttributeID:
 						Trace.Write(str(NewValue)+'---372--'+str(attrs)+'372---ent_val_code----'+str(ent_val_code))
@@ -438,7 +438,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
 				#Log.Info('response2--182----342-')
-				Trace.Write('--ent_disp_val--value code-'+str(attrs)+'--'+str(ent_val_code)+'--'+str(ent_disp_val))
+				#Trace.Write('--ent_disp_val--value code-'+str(attrs)+'--'+str(ent_val_code)+'--'+str(ent_disp_val))
 				
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 				<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
