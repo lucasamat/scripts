@@ -149,7 +149,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		
 		Trace.Write("_insert_spare_parts ====>>>> 1111"+str(spare_parts_temp_table_name))
 		spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
-		Trace.Write(str(self.columns)+"_insert_spare_parts ====>>>> 2222"+str(spare_parts_temp_table_name))
+		Trace.Write(str(self.columns)+"_insert_spare_parts ====>>>> 2222"+str(self.records))
 		spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
 		Trace.Write("_insert_spare_parts ====>>>> 3333"+str(spare_parts_temp_table_name))
 		spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' ' ")
