@@ -336,30 +336,36 @@ def splitserviceinsert():
 	
 	#INSERT FOR SAQRIT
 	service_entitlement_objs = Sql.GetList("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM  SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}'""".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id) )
-	for service_entitlement_obj in service_entitlement_objs:	
+	for service_entitlement_obj in service_entitlement_objs:
+		entitlement_display_value_tag_match = ''
+		split_entitlement_display_value = ''
 		quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 		entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obj.SERVICE_ID)+'_PQB_QTITST</ENTITLEMENT_ID>')
 		##getting billing type
 		billing_type_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obj.SERVICE_ID)+'_PQB_BILTYP</ENTITLEMENT_ID>')
 		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+		entitlement_split_id = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obj.SERVICE_ID)+'_PQB_SPLQTE</ENTITLEMENT_ID>')
 		for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obj.ENTITLEMENT_XML):
 			quote_item_tag_content = quote_item_tag.group(1)
 			entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)	
 			entitlement_billing_id_tag_match = re.findall(billing_type_pattern,quote_item_tag_content)
+			entitlement_split_match_id = re.findall(entitlement_split_id,quote_item_tag_content)
 			if entitlement_id_tag_match:
 				entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
-				if entitlement_display_value_tag_match:
-					quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
-					if quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
-						Trace.Write("1")
-						servicelevel_split_equip(service_entitlement_obj.SERVICE_ID)
-					elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART'):
-						Trace.Write("2")
-						servicelevel_split_green(service_entitlement_obj.SERVICE_ID)
-					elif quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING+CONSIGNED+ON REQUEST'):
-						Trace.Write("3")   
-					##saqite insert
-					_quote_items_entitlement_insert() 
+			if entitlement_split_match_id:
+				split_entitlement_display_value = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
+			if entitlement_display_value_tag_match and split_entitlement_display_value:
+				quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
+				if quote_service_entitlement_type == 'OFFERING + EQUIPMENT' and split_entitlement_display_value == "Yes":
+					Trace.Write("1")
+					servicelevel_split_equip(service_entitlement_obj.SERVICE_ID)
+				elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART') and split_entitlement_display_value == "Yes":
+					Trace.Write("2")
+					servicelevel_split_green(service_entitlement_obj.SERVICE_ID)
+				elif quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING+CONSIGNED+ON REQUEST') and split_entitlement_display_value == "Yes":
+					Trace.Write("3")   
+				##saqite insert
+				_quote_items_entitlement_insert() 
 
 
 def servicelevel_split_equip(seid):
