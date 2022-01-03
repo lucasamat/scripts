@@ -202,7 +202,145 @@ def _insert_billing_matrix():
 	billingmatrix_create()
 	#BM_line_item_end_time = time.time()		
 	return True	
-			
+
+def billingmatrix_create():
+	#Trace.Write('4739---------------')
+	#_quote_items_greenbook_summary_insert()
+	billing_plan_obj = Sql.GetList("SELECT DISTINCT PRDOFR_ID,BILLING_START_DATE,BILLING_END_DATE,BILLING_DAY FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,Qt_rec_id))
+	quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,Qt_rec_id))
+	get_billling_data_dict = {}
+	contract_start_date = quotedetails.CONTRACT_VALID_FROM
+	contract_end_date = quotedetails.CONTRACT_VALID_TO
+	get_ent_val = get_ent_bill_type = get_ent_billing_type_value = get_ent_bill_cycle = ''
+	if contract_start_date and contract_end_date and billing_plan_obj:
+		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=ContractRecordId,RevisionRecordId=Qt_rec_id))
+		#Trace.Write('4739---------4744------')
+		for val in billing_plan_obj:
+			if billing_plan_obj:				
+				contract_start_date = val.BILLING_START_DATE
+				contract_end_date = val.BILLING_END_DATE				
+				start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
+				#start_date = str(contract_start_date).split(' ')[0]
+				billing_day = int(val.BILLING_DAY)
+				get_service_val = val.PRDOFR_ID
+				get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =ContractRecordId,qt_rev_id=Qt_rec_id,get_service = str(get_service_val).strip()))
+				if get_billing_cycle:
+					Trace.Write('get_service_val-32--')
+					updateentXML = get_billing_cycle.ENTITLEMENT_XML
+					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+					pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILCYC|AGS_'+str(get_service_val)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
+					#pattern_id_billing_type = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILTYP|AGS_'+str(get_service_val)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
+					pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+					for m in re.finditer(pattern_tag, updateentXML):
+						sub_string = m.group(1)
+						get_ent_id = re.findall(pattern_id,sub_string)
+						#get_ent_bill_type = re.findall(pattern_id_billing_type,sub_string)
+						get_ent_val= re.findall(pattern_name,sub_string)
+						if get_ent_id:
+							get_ent_val = str(get_ent_val[0])
+							get_billling_data_dict[get_ent_id[0]] = str(get_ent_val)
+							#get_ent_bill_cycle = str(get_ent_val)
+							for data,val in get_billling_data_dict.items():
+								if 'AGS_'+str(get_service_val)+'_PQB_BILCYC' in data:
+									get_ent_bill_cycle = val
+								elif 'AGS_'+str(get_service_val)+'_PQB_BILTYP' in data:
+									get_billing_type =val
+							# if 	'AGS_'+str(get_service_val)+'_PQB_BILCYC' == str(get_ent_id[0]):
+							# 	get_ent_val = str(get_ent_val)
+							# 	Trace.Write(str(get_ent_val)+'---get_ent_name---'+str(get_ent_id[0]))
+							# 	#get_ent_bill_cycle = get_ent_val
+							# else:
+							# 	get_ent_billing_type_value = str(get_ent_val)
+				Trace.Write(str(get_billling_data_dict)+'--dict----get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
+				billing_month_end = 0
+				entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =ContractRecordId,RevisionRecordId=Qt_rec_id))
+				if str(get_ent_bill_cycle).upper() == "MONTHLY":
+					Trace.Write('billing_day----'+str(billing_day))
+					Trace.Write('start_date----'+str(start_date))
+					if billing_day in (29,30,31):
+						if start_date.month == 2:
+							isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
+							end_day = 29 if isLeap(start_date.year) else 28
+							start_date = start_date.replace(day=end_day)
+						elif start_date.month in (4, 6, 9, 11) and billing_day == 31:
+							start_date = start_date.replace(day=30)
+						else:
+							start_date = start_date.replace(day=billing_day)
+					else:
+						start_date = start_date.replace(day=billing_day)
+					end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
+					#end_date = str(contract_end_date).split(' ')[0]
+					diff1 = end_date - start_date
+
+					avgyear = 365.2425        # pedants definition of a year length with leap years
+					avgmonth = 365.2425/12.0  # even leap years have 12 months
+					years, remainder = divmod(diff1.days, avgyear)
+					years, months = int(years), int(remainder // avgmonth)            
+					
+					total_months = years * 12 + months
+					Trace.Write('total_months--458-----'+str(type(total_months)))
+					for index in range(0, total_months+1):
+						Trace.Write('billing_month_end--460-----')
+						billing_month_end += 1
+						Trace.Write('billing_month_end----')
+						insert_items_billing_plan(total_months=total_months, 
+												billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+													Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
+													),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+													Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
+													), amount_column="YEAR_"+str((index/12) + 1),
+													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
+					Trace.Write('total_months-470-----'+str(total_months))
+				elif str(get_ent_bill_cycle).upper() == "QUARTELY":
+					Trace.Write('get_ent_val-billicycle--'+str(get_ent_bill_cycle))
+					ct_start_date =contract_start_date
+					ct_end_date =contract_end_date
+					if ct_start_date>ct_end_date:
+						ct_start_date,ct_end_date=ct_end_date,ct_start_date
+					m1=ct_start_date.Year*12+ct_start_date.Month  
+					m2=ct_end_date.Year*12+ct_end_date.Month  
+					months=m2-m1
+					Trace.Write('months---'+str(months))
+					months=months/3
+					Trace.Write('months-646----'+str(months))
+					for index in range(0, months):
+						billing_month_end += 1
+						insert_items_billing_plan(total_months=months, 
+												billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+													Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
+													),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+													Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
+													),amount_column="YEAR_"+str((index/4) + 1),
+													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value=get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
+				else:
+					Trace.Write('get_ent_val---'+str(get_ent_bill_cycle))
+					if billing_day in (29,30,31):
+						if start_date.month == 2:
+							isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
+							end_day = 29 if isLeap(start_date.year) else 28
+							start_date = start_date.replace(day=end_day)
+						elif start_date.month in (4, 6, 9, 11) and billing_day == 31:
+							start_date = start_date.replace(day=30)
+						else:
+							start_date = start_date.replace(day=billing_day)
+					else:
+						start_date = start_date.replace(day=billing_day)
+					end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')			
+					diff1 = end_date - start_date
+
+					avgyear = 365.2425        # pedants definition of a year length with leap years
+					avgmonth = 365.2425/12.0  # even leap years have 12 months
+					years, remainder = divmod(diff1.days, avgyear)
+					years, months = int(years), int(remainder // avgmonth)
+					for index in range(0, years+1):
+						billing_month_end += 1
+						insert_items_billing_plan(total_months=years, 
+												billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+													Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
+													),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+													Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
+													),amount_column="YEAR_"+str((index) + 1),
+													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)			
 			
 def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	TreeParam = Product.GetGlobal("TreeParam")
@@ -932,7 +1070,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 									SUM(ISNULL(SAQRIT.TAX_AMOUNT, 0)) as TAX_AMOUNT
 									FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQRIT.QTEREV_RECORD_ID, SAQRIT.QUOTE_RECORD_ID,SAQRIT.SERVICE_ID) IQ ON SAQRIS.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQRIS.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID
 						WHERE SAQRIS.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIS.QTEREV_RECORD_ID = '{quote_revision_rec_id}' 	""".format(quote_rec_id = Qt_rec_id ,quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id") ) )
-
+			_insert_billing_matrix()
 			#update SAQRIS end
 			#A055S000P01-12656 end
 
