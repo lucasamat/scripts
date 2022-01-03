@@ -142,7 +142,66 @@ def getting_cps_tax(quote_id = None,quote_record_id = None,item_lines_record_ids
 			# Sql.RunQuery(quote_line_items_covered_obj)
 			# quote_line_item_obj ="""UPDATE a SET aTOTAL_COST.TOTAL_COST = b.,a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.TAX_PERCENTAGE = b.TAX_PERCENTAGE,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= Quote.GetGlobal("contract_quote_record_id"))
 			# Sql.RunQuery(quote_line_item_obj)
-	
+def _insert_billing_matrix():
+
+	Sql.RunQuery("""
+			INSERT SAQRIB (
+			QUOTE_BILLING_PLAN_RECORD_ID,
+			BILLING_END_DATE,
+			BILLING_DAY,
+			BILLING_START_DATE,
+			QUOTE_ID,
+			QUOTE_NAME,
+			QUOTE_RECORD_ID,
+			QTEREV_ID,
+			QTEREV_RECORD_ID,
+			CPQTABLEENTRYADDEDBY,
+			CPQTABLEENTRYDATEADDED,
+			CpqTableEntryModifiedBy,
+			CpqTableEntryDateModified,
+			SALESORG_ID,
+			SALESORG_NAME,
+			SALESORG_RECORD_ID,
+			PRDOFR_ID,
+			PRDOFR_RECORD_ID
+			) 
+			SELECT 
+			CONVERT(VARCHAR(4000),NEWID()) as QUOTE_BILLING_PLAN_RECORD_ID,
+			SAQTMT.CONTRACT_VALID_TO as BILLING_END_DATE,
+			30 as BILLING_DAY,
+			SAQTMT.CONTRACT_VALID_FROM as BILLING_START_DATE,
+			SAQTMT.QUOTE_ID,
+			SAQTMT.QUOTE_NAME,
+			SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
+			SAQTMT.QTEREV_ID as QTEREV_ID,
+			SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
+			'{UserName}' AS CPQTABLEENTRYADDEDBY,
+			GETDATE() as CPQTABLEENTRYDATEADDED,
+			{UserId} as CpqTableEntryModifiedBy,
+			GETDATE() as CpqTableEntryDateModified,
+			SAQTSV.SALESORG_ID,
+			SAQTSV.SALESORG_NAME,
+			SAQTSV.SALESORG_RECORD_ID,
+			SAQTSV.SERVICE_ID,
+			SAQTSV.SERVICE_RECORD_ID                   
+			FROM SAQTMT (NOLOCK) JOIN SAQTSV on SAQTSV.QUOTE_ID = SAQTMT.QUOTE_ID
+			
+			WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTMT.QTEREV_RECORD_ID = '{RevisionRecordId}'
+			AND SAQTSV.SERVICE_ID NOT IN ('Z0101','A6200') AND SAQTSV.SERVICE_ID NOT IN (SELECT PRDOFR_ID FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')
+													
+	""".format(                        
+		QuoteRecordId= ContractRecordId,
+		RevisionRecordId=Qt_rec_id,
+		UserId=userId,
+		UserName=userName
+	))
+	#Not required right now for SAQTBP.
+	#AND JQ.ENTITLEMENT_NAME IN ('FIXED_PRICE_PER_RESOU_EVENT_91','FIXED_PRICE_PER_RESOU_EVENT_92') 
+	#AND JQ.ENTITLEMENT_VALUE_CODE = 'FIXED PRICE'
+	#BM_line_item_start_time = time.time()
+	billingmatrix_create()
+	#BM_line_item_end_time = time.time()		
+	return True	
 			
 			
 def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
