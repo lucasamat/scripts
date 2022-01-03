@@ -474,4 +474,21 @@ def servicelevel_split_green(seid):
 	VALUES (NEWID(),CUSTOMER_TOOL_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,KPU,LINE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUOTE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERIAL_NUMBER,TECHNOLOGY,TOOL_CONFIGURATION,WAFER_SIZE,'{UserName}','{datetimenow}','{UserId}','{datetimenow}');""".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id,UserId=user_id,UserName=user_name,datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
 	Sql.RunQuery(saqrioinsert)
 	#CQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":get_c4c_quote_id.QUOTE_ID}) 
+
+
+##To update the SAQTRV table after clicking the split button..
+##adding the pricing column  values from SAQRIS table...
+Sql.RunQuery("""UPDATE SAQTRV
+						SET
+						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR
+						FROM SAQTRV (NOLOCK)
+						INNER JOIN (SELECT SAQRIS.QUOTE_RECORD_ID, SAQRIS.QTEREV_RECORD_ID,
+									SUM(ISNULL(SAQRIS.NET_PRICE, 0)) as NET_PRICE,
+									SUM(ISNULL(SAQRIS.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
+									SUM(ISNULL(SAQRIS.NET_VALUE, 0)) as NET_VALUE,
+									SUM(ISNULL(SAQRIS.NET_VALUE_INGL_CURR, 0)) as NET_VALUE_INGL_CURR
+									FROM SAQRIS (NOLOCK) WHERE SAQRIS.QUOTE_RECORD_ID = '{}' AND SAQRIS.QTEREV_RECORD_ID = '{}' GROUP BY SAQRIS.QUOTE_RECORD_ID,SAQRIS.QTEREV_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
+						WHERE SAQTRV.QUOTE_RECORD_ID = '{}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{}' """.format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id) )
+
 splitserviceinsert()
