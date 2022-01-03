@@ -594,7 +594,7 @@ class AncillaryProductOperation:
 							sub_string = m.group(1)
 							get_ent_id = re.findall(pattern_id,sub_string)
 							get_ent_val= re.findall(pattern_name,sub_string)
-							#Trace.Write('---get_ent_name---'+str(get_ent_id))
+							#Trace.Write('----get_ent_name---'+str(get_ent_id))
 							if get_ent_id and get_ent_val[0] == 'Yes':
 								
 								AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
