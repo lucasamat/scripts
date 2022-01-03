@@ -260,7 +260,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				header = list(xls_spare_records[0]) + ['QUOTE_RECORD_ID','QTEREV_RECORD_ID']
 				self.columns = ",".join(header)
 				self.records = ', '.join(map(str, [str(tuple(list(spare_record)+[self.contract_quote_record_id, self.contract_quote_revision_record_id])) for spare_record in xls_spare_records[1:]])).replace("None","null").replace("'","''")
-				
+				self.records = self.records.replace("True","1").replace("False","0")
 			# for index, data in enumerate(list(sheet_data.Value)):
 			# 	if index == 0:
 			# 		self.columns = ",".join(data)
