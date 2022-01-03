@@ -1191,6 +1191,7 @@ class EntitlementView():
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(attr_code = attribute_code )  )
 										if standard_attr_values and val.ENTITLEMENT_ID == str(attrSysId):
 											try:
+												Trace.Write("ENTITLEMENT_DISPLAY_VALUE--chkbox-"+str(val.ENTITLEMENT_DISPLAY_VALUE))
 												display_value_arr = eval(val.ENTITLEMENT_DISPLAY_VALUE)
 											except Exception as e:
 												Trace.Write('except checkbox'+str(e))
