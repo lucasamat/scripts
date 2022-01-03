@@ -416,10 +416,10 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 						
 						get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 						if get_display_val:
-							ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
-							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
-							ent_disp_val = ','.join(ent_disp_val)
-							ent_val_code = ','.join(ent_val_code)
+							#ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
+							#ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
+							ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL
+							#ent_val_code = ','.join(ent_val_code)
 							Trace.Write('ent_val_code--'+str(ent_disp_val)+'---'+str(ent_val_code))
 				else:
 					#Trace.Write(str(AttributeID)+'---369--attrs---'+str(attrs))
