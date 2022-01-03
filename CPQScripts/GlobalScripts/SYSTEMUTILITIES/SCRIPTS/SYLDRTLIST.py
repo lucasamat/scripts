@@ -3431,6 +3431,7 @@ class SYLDRTLIST:
 		
 			# Item Covered Object Column Grouping - Start
 			table_group_columns = ''
+			table_group_columns1 = ''
 			table_group_columns2 = ''
 			#table_group_columns3 = ''
 			#table_group_columns4 = ''
