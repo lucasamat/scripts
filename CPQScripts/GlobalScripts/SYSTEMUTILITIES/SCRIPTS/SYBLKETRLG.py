@@ -818,7 +818,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Sql.RunQuery("UPDATE SAQRIT SET ESTVAL_INGL_CURR = '{}',COMVAL_INGL_CURR='{}' WHERE CpqTableEntryId = '{}'".format(float(str(x).replace("USD","").replace(" ","").replace("'","").replace('"','')),float(str(y).replace("USD","").replace(" ","").replace("'","").replace('"','').replace("''","").replace('""','')),selected_rows_cpqid[count]))
 				count += 1
 			#A055S000P01-12656 start
-			tax_percent_amt = commitval = 0
+			tax_percent_amt = commitval = exc_rate = 0
 			net_value_tax  = ''
 			Sql = SQL()
 			get_quote_item_details = Sql.GetList("select * from SAQRIT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
@@ -827,11 +827,14 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					item_rec = val.QUOTE_REVISION_CONTRACT_ITEM_ID
 					if val.TAX_PERCENTAGE:
 						tax_percent_amt = val.TAX_PERCENTAGE
+					if val.EXCHANGE_RATE:
+						exc_rate = val.EXCHANGE_RATE
 					if val.COMVAL_INGL_CURR:
 						commitval = val.COMVAL_INGL_CURR
+						net_price_with_exc_rate= float(commitval) * float(exc_rate)
 						tax_amt_update  = float(commitval) * float(tax_percent_amt)
-						net_value_tax = tax_amt_update+commitval
-						net_price_update = "UPDATE SAQRIT SET NET_PRICE = '{commitvalue}',NET_PRICE_INGL_CURR= '{commitvalue}',TAX_AMOUNT ={tax_amt_update},TAX_AMOUNT_INGL_CURR = {tax_amt_update},NET_VALUE = {net_value_tax},NET_VALUE_INGL_CURR={net_value_tax} where QUOTE_RECORD_ID = '{qt_rec}' and QUOTE_REVISION_CONTRACT_ITEM_ID = '{item_rec}' AND QTEREV_RECORD_ID = '{rev_rec_id}'".format(commitvalue = val.COMVAL_INGL_CURR,tax_amt_update=tax_amt_update,qt_rec= Qt_rec_id,item_rec=item_rec,net_value_tax=net_value_tax,rev_rec_id =  Quote.GetGlobal("quote_revision_record_id"))
+						net_value_tax = tax_amt_update + commitval
+						net_price_update = "UPDATE SAQRIT SET NET_PRICE = '{net_pr_exc}',NET_PRICE_INGL_CURR= '{commitvalue}',TAX_AMOUNT ={tax_amt_update},TAX_AMOUNT_INGL_CURR = {tax_amt_update},NET_VALUE = {net_value_tax},NET_VALUE_INGL_CURR={net_value_tax} where QUOTE_RECORD_ID = '{qt_rec}' and QUOTE_REVISION_CONTRACT_ITEM_ID = '{item_rec}' AND QTEREV_RECORD_ID = '{rev_rec_id}'".format(net_pr_exc = net_price_with_exc_rate,commitvalue = val.COMVAL_INGL_CURR,tax_amt_update=tax_amt_update,qt_rec= Qt_rec_id,item_rec=item_rec,net_value_tax=net_value_tax,rev_rec_id =  Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(net_price_update)
 
 			#update SAQTRV based on commit changes--start
