@@ -359,11 +359,9 @@ def splitserviceinsert():
 				if quote_service_entitlement_type == 'OFFERING + EQUIPMENT' and split_entitlement_display_value == ["Yes"]:
 					Trace.Write("1")
 					servicelevel_split_equip(service_entitlement_obj.SERVICE_ID)
-				elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART') and split_entitlement_display_value == "Yes":
+				elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART') and split_entitlement_display_value == ["Yes"]:
 					Trace.Write("2")
-					servicelevel_split_green(service_entitlement_obj.SERVICE_ID)
-				elif quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING+CONSIGNED+ON REQUEST') and split_entitlement_display_value == "Yes":
-					Trace.Write("3")   
+					servicelevel_split_green(service_entitlement_obj.SERVICE_ID)   
 				##saqite insert
 				_quote_items_entitlement_insert() 
 
