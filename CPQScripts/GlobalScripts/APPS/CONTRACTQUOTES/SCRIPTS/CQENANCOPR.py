@@ -584,13 +584,26 @@ class AncillaryProductOperation:
 					
 					#ancillary insert based on aprent insert end
 					# entitlement_obj = Sql.GetFirst("select ENTITLEMENT_ID,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {table_name} (nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' and SERVICE_ID = '{service_id}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where  ( ENTITLEMENT_ID like '{att_id}')".format(table_name = 'SAQTSE' ,contract_quote_record_id = self.contract_quote_record_id,quote_revision_record_id = self.contract_quote_revision_record_id,service_id = 'Z0091',att_id = 'AGS_'+str(addon.PAR_SERVICE_ID)+'_KPI_BPTKPI'))
-					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS & PENALTY TIED TO KPI":
-						if str(addon.PAR_SERVICE_ID) == "Z0091":
-							AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
-							# if entitlement_obj:
-							# 	ent_disp = entitlement_obj.ENTITLEMENT_DISPLAY_VALUE
-							# 	if str(ent_disp).upper() == 'YES':
-							NewValue = 'Yes'
+					service_entitlement_obj =Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{par_service}' ".format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,par_service= self.service_id))
+					if service_entitlement_obj is not None:
+						updateentXML = service_entitlement_obj.ENTITLEMENT_XML
+						pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+						pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_Z0046_PQB_PPCPRM</ENTITLEMENT_ID>')
+						pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+						for m in re.finditer(pattern_tag, updateentXML):
+							sub_string = m.group(1)
+							get_ent_id = re.findall(pattern_id,sub_string)
+							get_ent_val= re.findall(pattern_name,sub_string)
+							Trace.Write('---get_ent_name---'+str(get_ent_id))
+							if get_ent_id:
+								break
+							AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
+							NewValue = 'Yes'	
+					# if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS & PENALTY TIED TO KPI":
+					# 	if str(addon.PAR_SERVICE_ID) == "Z0091":
+					# 		AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
+						
+					# 		NewValue = 'Yes'
 					# entitlement_obj = Sql.GetFirst("select ENTITLEMENT_ID,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {table_name} (nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' and SERVICE_ID = '{service_id}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where  ( ENTITLEMENT_ID like '{att_id}')".format(table_name = 'SAQTSE' ,contract_quote_record_id = self.contract_quote_record_id,quote_revision_record_id = self.contract_quote_revision_record_id,service_id = 'Z0091',att_id = 'AGS_'+str(addon.PAR_SERVICE_ID)+'_PQB_PPCPRM'))
 					#if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "PRICE PER CRITICAL PARAMETER":
 						#AttributeID_Pass = 'AGS_'+str(addon.PAR_SERVICE_ID)+'_PQB_PPCPRM'
