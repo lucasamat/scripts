@@ -113,8 +113,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 			get_billing_cycle = val
 		elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
 			get_billing_type =val
-	Trace.Write('get_billing_cycle---'+str(get_billing_cycle))
-	Trace.Write(str(service_id)+'get_billing_type---'+str(get_billing_type))
+	#Trace.Write('get_billing_cycle---'+str(get_billing_cycle))
+	Trace.Write(str(service_id)+'get_billing_type---'+str(get_billing_type)+'--CYCLE---'+str(get_billing_cycle)
 	if get_billing_cycle == "Monthly":
 		year = int(amount_column.split('_')[-1])
 		remaining_months = (total_months + 1) - (year*12)		
