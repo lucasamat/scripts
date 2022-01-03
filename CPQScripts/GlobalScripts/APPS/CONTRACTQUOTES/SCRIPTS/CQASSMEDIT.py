@@ -181,19 +181,19 @@ def child_ent_request(tableName,where,serviceId):
 					webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
 						
 					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
-						#Trace.Write('row--'+str(row.ENTITLEMENT_ID))
+						Trace.Write('row--'+str(row.ENTITLEMENT_ID))
 						try:
 							requestdata = '{"characteristics":['
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-								#Trace.Write("auto update---"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( row.ENTITLEMENT_ID))
+								Trace.Write("auto update---"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( row.ENTITLEMENT_ID))
 								#Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 								for code in row.ENTITLEMENT_VALUE_CODE.split(','):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
 								requestdata +=']},'	
-								#Trace.Write("auto update---"+str(requestdata))
+								Trace.Write("auto update---"+str(requestdata))
 							else:
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 							requestdata += ']}'
