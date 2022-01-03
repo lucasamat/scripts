@@ -3816,27 +3816,6 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				'''elif RECORD_ID == 'SYOBJR-00009' and invs in ('TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','SALES_PRICE_INGL_CURR','DISCOUNT'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns1:
-						table_header += '<th data-align="center"><div>CEILING PRICE<button style="border:none;"  id="table_group_columns1"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns1 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue'''
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE','CNTCST_INGL_CURR','CNTPRI_INGL_CURR'):
 					align = ''
 					rowspan_level1 = ""
