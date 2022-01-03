@@ -334,7 +334,7 @@ def splitserviceinsert():
 	_insert_equipment_entitlement()
 
 	
-	#INSERT FOR SAQRIT
+	##INSERT FOR SAQRIT
 	service_entitlement_objs = Sql.GetList("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM  SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}'""".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id) )
 	for service_entitlement_obj in service_entitlement_objs:
 		entitlement_display_value_tag_match = ''
