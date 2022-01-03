@@ -181,6 +181,7 @@ def _insert_service_level_entitlement(par_service=''):
 			Sql.RunQuery(insert_qtqtse_query)			
 			
 def _quote_items_entitlement_insert():
+	Trace.Write("Insert saqite")
 	service_id = 'Z0105'
 	source_object_name = 'SAQSCE'
 	join_condition_string = ''
@@ -359,13 +360,13 @@ def splitserviceinsert():
 				if quote_service_entitlement_type == 'OFFERING + EQUIPMENT' and split_entitlement_display_value == ["Yes"]:
 					Trace.Write("1")
 					servicelevel_split_equip(service_entitlement_obj.SERVICE_ID)
-					#break
+					break
 				elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART') and split_entitlement_display_value == ["Yes"]:
 					Trace.Write("2")
 					servicelevel_split_green(service_entitlement_obj.SERVICE_ID)
-					#break
-				##saqite insert
-				_quote_items_entitlement_insert() 
+					break
+		##saqite insert
+		_quote_items_entitlement_insert() 
 
 
 def servicelevel_split_equip(seid):
