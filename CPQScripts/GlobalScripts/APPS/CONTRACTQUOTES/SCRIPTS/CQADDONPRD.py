@@ -126,7 +126,7 @@ def addon_service_level_entitlement(OfferingRow_detail,greenbook):
 		tbrow["QUOTE_NAME"]=OfferingRow_detail.QUOTE_NAME
 		tbrow["QUOTE_RECORD_ID"]=OfferingRow_detail.QUOTE_RECORD_ID
 		tbrow["QTESRV_RECORD_ID"]=OfferingRow_detail.QUOTE_SERVICE_RECORD_ID
-		tbrow["SERVICE_RECORD_ID"]=OfferingRow_detail.ADNPRD_RECORD_ID
+		tbrow["SERVICE_RECORD_ID"]=OfferingRow_detail.ADNPRDOFR_RECORD_ID
 		tbrow["SERVICE_ID"]=OfferingRow_detail.ADNPRD_ID
 		tbrow["SERVICE_DESCRIPTION"]=OfferingRow_detail.ADNPRD_DESCRIPTION
 		tbrow["PAR_SERVICE_RECORD_ID"]=OfferingRow_detail.SERVICE_RECORD_ID
