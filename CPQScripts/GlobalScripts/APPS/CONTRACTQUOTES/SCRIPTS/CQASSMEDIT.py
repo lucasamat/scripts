@@ -189,7 +189,11 @@ def child_ent_request(tableName,where,serviceId):
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
 								Trace.Write("auto update---"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( row.ENTITLEMENT_ID))
 								#Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
-								for code in row.ENTITLEMENT_VALUE_CODE.split(','):
+								code_list = []
+								if row.ENTITLEMENT_VALUE_CODE :
+									code_list = eval(row.ENTITLEMENT_VALUE_CODE)
+								Trace.Write('code_list---'+str(code_list))
+								for code in code_list:
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
 								requestdata +=']},'	
