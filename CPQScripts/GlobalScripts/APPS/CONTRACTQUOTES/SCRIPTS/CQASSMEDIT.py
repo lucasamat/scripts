@@ -399,7 +399,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 					if get_display_val:
 						ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
 				elif PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Check Box') and ent_disp_val and ent_val_code:
-					#Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
+					Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
 					if type(eval(str(ent_val_code))) is list:
 						ent_val = str(tuple(ent_val_code)).replace(',)',')')
 						get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val ) )
@@ -411,7 +411,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							ent_val_code = ','.join(ent_val_code)
 						else:
 							ent_disp_val = ent_val_code =''
-						#Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
+						Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
 					
 					else:
 						get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
