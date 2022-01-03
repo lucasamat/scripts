@@ -143,9 +143,11 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		self.records = ""
 
 	def _insert_spare_parts(self):
+		Trace.Write("_insert_spare_parts ====>>>>")
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
 		spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.contract_quote_id, datetime_string)		
 		try:
+			Trace.Write("_insert_spare_parts ====>>>> 1111")
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
 			
 			spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
@@ -245,9 +247,11 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			)
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
 		except Exception:
+			Trace.Write("_insert_spare_parts ====>>>> 222")
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")		
 	
 	def _do_opertion(self):
+		Trace.Write("self.upload_data ===> "+str(self.upload_data))
 		for sheet_data in self.upload_data:	
 			if not sheet_data.Value:	
 				break	
