@@ -3820,13 +3820,13 @@ class SYLDRTLIST:
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns1:
-						table_header += '<th></th>'
+						table_header += '<th data-align="center"><div>CEILING PRICE<button style="border:none;"  id="table_group_columns1"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
 					table_group_columns1 += (
-								'<th rowspan= "2" data-toggle="bootstrap-table" data-field="'
+								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="'
 								+ str(align)
