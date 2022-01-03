@@ -2407,7 +2407,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							unapplied = float(credit_details.WRBTR)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.WRBTR)
 						else:
 							unapplied = float(credit_details.UNAPPLIED_BALANCE)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.UNAPPLIED_BALANCE)
-						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}',GL_ACCOUNT_NO = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CREDIT_APPLIED)+ int(APPLIED_CREDITS[key]), unapplied, credit_details.HKONT if credit_details.HKONT else '', id))
+						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CREDIT_APPLIED)+ int(APPLIED_CREDITS[key]), unapplied, id))
 					except Exception as e:
 						Trace.Write('EXCEPTION: '+str(e))
 						Trace.Write('APPLIED_CREDITS'+str(APPLIED_CREDITS))
@@ -2427,7 +2427,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"GREENBOOK_RECORD_ID": get_greenbook.BUSINESS_UNITS_RECORD_ID,
 				"SERVICE_DESCRIPTION":get_addon.SERVICE_DESCRIPTION,
 				"SERVICE_ID":ADDON_PRD_ID,
-				"SERVICE_RECORD_ID": get_addon.SERVICE_RECORD_ID
+				"SERVICE_RECORD_ID": get_addon.SERVICE_RECORD_ID,
+				"GL_ACCOUNT_NO": credit_details.HKONT if credit_details.HKONT else ''
 			}
 			credit_table_info = Sql.GetTable(table_name)
 			saqrcv_ids = []
