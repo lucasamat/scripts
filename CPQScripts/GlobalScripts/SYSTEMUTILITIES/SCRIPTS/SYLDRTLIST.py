@@ -2740,7 +2740,7 @@ class SYLDRTLIST:
 								if str(docnode_action_btn.DOCUMENT_DESCRIPTION) == "" or docnode_action_btn.DOCUMENT_DESCRIPTION == "":
 									Trace.Write("edit=====")
 									Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'													
-																	 
+																	
 						
 						# elif str(current_tab).upper() == "APP" and str(ObjectName)=="SYTABS":                    
 						#     Action_str += '<li><a class="dropdown-item" href="#" onclick="Move_to_parent_obj(this)">VIEW<a><li>'  
@@ -3815,7 +3815,27 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','SALES_PRICE_INGL_CURR','DISCOUNT'):
+					align = ''
+					rowspan_level1 = ""
+					if not table_group_columns1:
+						table_header += '<th></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns1 += (
+								'<th rowspan= "2" data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE','CNTCST_INGL_CURR','CNTPRI_INGL_CURR'):
 					align = ''
 					rowspan_level1 = ""
@@ -4110,6 +4130,8 @@ class SYLDRTLIST:
 			grouping_columns = ""
 			if table_group_columns:
 				grouping_columns += table_group_columns
+			if table_group_columns1:
+				grouping_columns += table_group_columns1
 			if table_group_columns2:
 				grouping_columns += table_group_columns2
 			# if table_group_columns3:
