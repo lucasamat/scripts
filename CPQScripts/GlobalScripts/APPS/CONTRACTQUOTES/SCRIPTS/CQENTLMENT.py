@@ -1509,7 +1509,7 @@ class Entitlements:
 						# 		ent_disp_val = attributevalues.get(key)
 
 						# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
-						Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
+						Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key)+str(ent_val_code))
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 							<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -1539,6 +1539,7 @@ class Entitlements:
 				#Quote.SetGlobal("ancillary_object_dict",str(ancillary_object_dict))
 				Trace.Write('ancillary_object_dict----'+str(ancillary_object_dict))
 				updateentXML = updateentXML.encode('ascii', 'ignore').decode('ascii')
+				Trace.Write('updateentXML--1542-------'+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE(),CONFIGURATION_STATUS = '{}' WHERE  {} ".format(tableName, updateentXML,userId,configuration_status,whereReq)
 				###to update match id at all level while saving starts
 				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
