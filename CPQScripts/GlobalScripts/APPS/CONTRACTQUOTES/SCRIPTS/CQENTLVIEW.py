@@ -1192,7 +1192,7 @@ class EntitlementView():
 										if standard_attr_values and val.ENTITLEMENT_ID == str(attrSysId):
 											try:
 												Trace.Write("ENTITLEMENT_DISPLAY_VALUE--chkbox-"+str(val.ENTITLEMENT_DISPLAY_VALUE))
-												display_value_arr = eval(val.ENTITLEMENT_DISPLAY_VALUE)
+												display_value_arr = val.ENTITLEMENT_DISPLAY_VALUE.split(',')
 											except Exception as e:
 												Trace.Write('except checkbox'+str(e))
 												try:
