@@ -3816,7 +3816,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','SALES_PRICE_INGL_CURR','DISCOUNT'):
+				'''elif RECORD_ID == 'SYOBJR-00009' and invs in ('TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','SALES_PRICE_INGL_CURR','DISCOUNT'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns1:
@@ -3836,7 +3836,7 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)           
-					continue
+					continue'''
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE','CNTCST_INGL_CURR','CNTPRI_INGL_CURR'):
 					align = ''
 					rowspan_level1 = ""
@@ -4131,8 +4131,6 @@ class SYLDRTLIST:
 			grouping_columns = ""
 			if table_group_columns:
 				grouping_columns += table_group_columns
-			if table_group_columns1:
-				grouping_columns += table_group_columns1
 			if table_group_columns2:
 				grouping_columns += table_group_columns2
 			# if table_group_columns3:
