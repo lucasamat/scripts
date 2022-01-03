@@ -736,7 +736,7 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	CQREVSTSCH.Revisionstatusdatecapture(Quote,quote_revision_record_id)
 
 	#Added query and condition to restrict calling contract creation webservice based on document type = ZWK1(Scripting logic to prevent ZWK1 quote from being pushed to CRM) - start
-	revision_document_type_object = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id)")
+	revision_document_type_object = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	if revision_document_type_object:
 		if revision_document_type_object.DOCTYP_ID != "ZWK1":
 			Trace.Write("doc_type=====")
