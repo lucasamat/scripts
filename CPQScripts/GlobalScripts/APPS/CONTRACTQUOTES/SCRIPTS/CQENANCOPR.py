@@ -594,11 +594,12 @@ class AncillaryProductOperation:
 							sub_string = m.group(1)
 							get_ent_id = re.findall(pattern_id,sub_string)
 							get_ent_val= re.findall(pattern_name,sub_string)
-							Trace.Write('---get_ent_name---'+str(get_ent_id))
-							if get_ent_id:
-								break
-							AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
-							NewValue = 'Yes'	
+							#Trace.Write('---get_ent_name---'+str(get_ent_id))
+							if get_ent_id and get_ent_val[0] == 'Yes':
+								
+								AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
+								NewValue = 'Yes'
+								break	
 					# if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS & PENALTY TIED TO KPI":
 					# 	if str(addon.PAR_SERVICE_ID) == "Z0091":
 					# 		AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
