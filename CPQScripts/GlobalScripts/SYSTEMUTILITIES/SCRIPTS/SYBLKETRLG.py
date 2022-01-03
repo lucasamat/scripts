@@ -27,7 +27,13 @@ except:
 userId = str(User.Id)
 userName = str(User.UserName)
 
-
+try:
+	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+except:
+	Trace.Write("EXCEPT: GetActiveRevision ")
+	GetActiveRevision = ""
+if GetActiveRevision:
+	qt_rev_id = str(GetActiveRevision.QUOTE_REVISION_RECORD_ID)
 
 def getting_cps_tax(quote_id = None,quote_record_id = None,item_lines_record_ids=None):		
 	Log.Info("getting_cps_tax function"+str(item_lines_record_ids))
@@ -191,7 +197,7 @@ def _insert_billing_matrix():
 													
 	""".format(                        
 		QuoteRecordId= ContractRecordId,
-		RevisionRecordId=Qt_rec_id,
+		RevisionRecordId=qt_rev_id,
 		UserId=userId,
 		UserName=userName
 	))
@@ -206,14 +212,14 @@ def _insert_billing_matrix():
 def billingmatrix_create():
 	#Trace.Write('4739---------------')
 	#_quote_items_greenbook_summary_insert()
-	billing_plan_obj = Sql.GetList("SELECT DISTINCT PRDOFR_ID,BILLING_START_DATE,BILLING_END_DATE,BILLING_DAY FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,Qt_rec_id))
-	quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,Qt_rec_id))
+	billing_plan_obj = Sql.GetList("SELECT DISTINCT PRDOFR_ID,BILLING_START_DATE,BILLING_END_DATE,BILLING_DAY FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,qt_rev_id))
+	quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,qt_rev_id))
 	get_billling_data_dict = {}
 	contract_start_date = quotedetails.CONTRACT_VALID_FROM
 	contract_end_date = quotedetails.CONTRACT_VALID_TO
 	get_ent_val = get_ent_bill_type = get_ent_billing_type_value = get_ent_bill_cycle = ''
 	if contract_start_date and contract_end_date and billing_plan_obj:
-		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=ContractRecordId,RevisionRecordId=Qt_rec_id))
+		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=ContractRecordId,RevisionRecordId=qt_rev_id))
 		#Trace.Write('4739---------4744------')
 		for val in billing_plan_obj:
 			if billing_plan_obj:				
@@ -223,7 +229,7 @@ def billingmatrix_create():
 				#start_date = str(contract_start_date).split(' ')[0]
 				billing_day = int(val.BILLING_DAY)
 				get_service_val = val.PRDOFR_ID
-				get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =ContractRecordId,qt_rev_id=Qt_rec_id,get_service = str(get_service_val).strip()))
+				get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =ContractRecordId,qt_rev_id=qt_rev_id,get_service = str(get_service_val).strip()))
 				if get_billing_cycle:
 					Trace.Write('get_service_val-32--')
 					updateentXML = get_billing_cycle.ENTITLEMENT_XML
@@ -253,7 +259,7 @@ def billingmatrix_create():
 							# 	get_ent_billing_type_value = str(get_ent_val)
 				Trace.Write(str(get_billling_data_dict)+'--dict----get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
 				billing_month_end = 0
-				entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =ContractRecordId,RevisionRecordId=Qt_rec_id))
+				entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =ContractRecordId,RevisionRecordId=qt_rev_id))
 				if str(get_ent_bill_cycle).upper() == "MONTHLY":
 					Trace.Write('billing_day----'+str(billing_day))
 					Trace.Write('start_date----'+str(start_date))
