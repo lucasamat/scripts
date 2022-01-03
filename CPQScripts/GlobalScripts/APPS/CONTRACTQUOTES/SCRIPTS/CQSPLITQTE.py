@@ -356,7 +356,7 @@ def splitserviceinsert():
 				split_entitlement_display_value = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
 			if entitlement_display_value_tag_match and split_entitlement_display_value:
 				quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
-				if quote_service_entitlement_type == 'OFFERING + EQUIPMENT' and split_entitlement_display_value == "Yes":
+				if quote_service_entitlement_type == 'OFFERING + EQUIPMENT' and split_entitlement_display_value == ["Yes"]:
 					Trace.Write("1")
 					servicelevel_split_equip(service_entitlement_obj.SERVICE_ID)
 				elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART') and split_entitlement_display_value == "Yes":
