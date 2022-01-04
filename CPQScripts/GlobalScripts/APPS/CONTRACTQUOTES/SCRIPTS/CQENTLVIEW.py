@@ -854,6 +854,7 @@ class EntitlementView():
 			Product.SetGlobal("previous_entitlement_xml", str(previous_entitlement_xml.ENTITLEMENT_XML) )
 			Product.SetGlobal("previous_cps_macth_id", str(previous_entitlement_xml.CPS_MATCH_ID) )
 			Product.SetGlobal("previous_config_id", str(previous_entitlement_xml.CPS_CONFIGURATION_ID) )
+			Product.SetGlobal("previous_config_status", str(previous_entitlement_xml.CONFIGURATION_STATUS ) )
 			## set entitlement_xml for cancel fn A055S000P01-3157 ends
 			list_of_tabs = []
 			getprevdicts +=   ("var dict_new = {};var list_new = [];")	

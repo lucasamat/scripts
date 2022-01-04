@@ -2064,8 +2064,9 @@ class Entitlements:
 		#prev_dict = Product.GetGlobal('previous_entitlement_xml') 
 		## set entitlement_xml for cancel fn A055S000P01-3157
 		cpsmatc_incr = Product.GetGlobal('previous_cps_macth_id') 
-		configuration_status = Product.GetGlobal('previous_config_id') 
+		get_prev_config_id = Product.GetGlobal('previous_config_id') 
 		getprevent_xml = Product.GetGlobal('previous_entitlement_xml') 
+		configuration_status = Product.GetGlobal('previous_config_status')
 		# except Exception as e:
 		# 	Trace.Write('error---'+str(e))
 
@@ -2293,8 +2294,8 @@ class Entitlements:
 				## set entitlement_xml for cancel fn A055S000P01-3157 starts
 		'''
 		if getprevent_xml:
-			UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML = '{}',CPS_MATCH_ID ={},CONFIGURATION_STATUS = '{}' WHERE {}  ".format(
-					tableName,getprevent_xml,cpsmatc_incr,configuration_status,whereReq
+			UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML = '{}',CPS_MATCH_ID ={},CONFIGURATION_STATUS = '{}', CPS_CONFIGURATION_ID = '{}' WHERE {}  ".format(
+					tableName,getprevent_xml,cpsmatc_incr,configuration_status,get_prev_config_id,whereReq
 				)
 			#Trace.Write("UpdateEntitlement--"+ str(UpdateEntitlement))
 			Sql.RunQuery(UpdateEntitlement)	
