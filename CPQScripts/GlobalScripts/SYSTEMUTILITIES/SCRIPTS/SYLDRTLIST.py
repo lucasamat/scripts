@@ -14,6 +14,7 @@ import time
 
 Sql = SQL()
 get_user_id = User.Id
+current_date = datetime.now()
 productAttributesGetByName = lambda productAttribute: Product.Attributes.GetByName(productAttribute) or ""
 try:
 	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
@@ -2811,8 +2812,11 @@ class SYLDRTLIST:
 							elif ObjectName == "SAQTRV":
 								quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 								get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
+								get_expire_rev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =0  AND REV_EXPIRE_DATE = '"+str(current_date)+"'and CpqTableEntryId = '"+str(value1234)+"'")
 								if get_activerev:
 									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" style="display: none;" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
+								elif get_expire_rev:
+									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" style="display: none;" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'	
 								else:
 									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
 
@@ -8302,7 +8306,10 @@ class SYLDRTLIST:
 				if str(Action_permission.get("Edit")).upper() == "TRUE":
 					if ObjectName == "SAQTRV":
 						get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
+						get_expire_rev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =0  AND REV_EXPIRE_DATE = '"+str(current_date)+"'and CpqTableEntryId = '"+str(value1234)+"'")
 						if get_activerev:
+							Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" style="display: none;" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
+						elif get_expire_rev:
 							Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" style="display: none;" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
 						else:
 							Action_str += '<li><a class="dropdown-item" href="#" onclick="set_as_active(this)" >SET AS ACTIVE</a></li>'
