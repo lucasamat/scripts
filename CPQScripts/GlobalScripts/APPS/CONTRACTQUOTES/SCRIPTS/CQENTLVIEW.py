@@ -10,7 +10,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import System.Net
 from datetime import datetime
 from SYDATABASE import SQL
-
+import re
 Sql = SQL()
 userId = str(User.Id)
 #userName = str(User.UserName)
@@ -34,7 +34,7 @@ class EntitlementView():
 		EntitlementType
 	):
 		quoteid = self.contract_quote_record_id
-		cpsConfigID = get_last_secid = get_tooltip = ''
+		cpsConfigID = get_last_secid = get_tooltip = get_conflict_message = get_conflict_message_id = ''
 		msg_txt = insertservice  = sec_str_boot = sec_bnr = imgstr = dbl_clk_function = getprevdicts = sec_str_cf = sec_str1 = getTlab = getquote_sales_val = ent_temp = ""
 		tablistnew =  []
 		TableObj = ""
@@ -211,11 +211,21 @@ class EntitlementView():
 					
 		elif EntitlementType == "BUSINESSUNIT":
 			#TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"'")
-			TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "'  AND GREENBOOK = '"+str(self.treeparam)+"'")
+			greenbook_val = self.treeparam
+			service_val = self.treeparentparam
+			if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
+				greenbook_val = self.treeparentparam
+				par_service_val = self.treesuperparentparam
+				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'")
+				where = " QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'"
+				ProductPartnumber = TableObj.SERVICE_ID
+			else:
+				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'")
+				where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbook_val)+"'"
 			if TableObj is not None:
 				RECORD_ID = str(TableObj.SERVICE_RECORD_ID)
 			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"'"
-			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"'"
+			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbook_val)+"'"
 			
 		elif EntitlementType == "ASSEMBLY":
 			# TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
@@ -238,7 +248,7 @@ class EntitlementView():
 		try:
 			get_configuration_status = Sql.GetFirst("SELECT MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(ProductPartnumber))
 			if get_configuration_status:
-				if get_configuration_status.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL':
+				if get_configuration_status.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL' or ProductPartnumber == 'Z0101':
 					EntitlementType = "NO_ENTITLEMENT"
 		except:
 			Trace.Write('Treeparam--'+str(self.treeparam))
@@ -270,6 +280,17 @@ class EntitlementView():
 			# where = ""
 			Product.SetGlobal('Fullresponse_load',str(Fullresponse))
 			for rootattribute, rootvalue in Fullresponse.items():
+				if rootattribute == "conflicts":
+					for conflict in rootvalue:
+						Trace.Write('88---2191-'+str(conflict))
+						for val,key in conflict.items():
+							if str(val) == "explanation":
+								Trace.Write(str(key)+'-2195---'+str(val))
+								get_conflict_message = str(key)
+								try:
+									get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
+								except:
+									get_conflict_message_id = ''
 				if rootattribute == "rootItem":
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristicGroups":
@@ -333,7 +354,7 @@ class EntitlementView():
 													LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
 													
 													WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId}
-													ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))
+													ORDER BY TAB_PRODUCTS.RANK,PRODUCT_ATTRIBUTES.ATT_SUBRANK""".format(ProductId = product_obj.PRD_ID))
 			tabwise_product_attributes = {}
 			#overall_attribute_list = []	
 			if product_attributes_obj:
@@ -833,7 +854,7 @@ class EntitlementView():
 			if str(self.treeparentparam).upper() == "ADD-ON PRODUCTS":
 				self.treesuperparentparam = ""
 			Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
-			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber or self.treeparam == "Quote Items":	
+			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber or self.treeparam in ("Quote Items",'Add-On Products' ) :	
 				#Trace.Write("@2756------->"+str(self.treeparentparam))
 				
 				for product_tab_obj in product_tabs_obj:
@@ -1170,7 +1191,8 @@ class EntitlementView():
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(attr_code = attribute_code )  )
 										if standard_attr_values and val.ENTITLEMENT_ID == str(attrSysId):
 											try:
-												display_value_arr = eval(val.ENTITLEMENT_DISPLAY_VALUE)
+												Trace.Write("ENTITLEMENT_DISPLAY_VALUE--chkbox-"+str(val.ENTITLEMENT_DISPLAY_VALUE))
+												display_value_arr = val.ENTITLEMENT_DISPLAY_VALUE.split(',')
 											except Exception as e:
 												Trace.Write('except checkbox'+str(e))
 												try:
@@ -1370,7 +1392,7 @@ class EntitlementView():
 									else:
 										new_value_dicta["VALUE"] = str(sec_str_ipp)
 										#Trace.Write("@3323-----"+str(attrSysId))
-									new_value_dicta["VALIDATION"]=str("<abbr class = 'wid90_per requ_validation' title='"+str(sec_validation)+"'>"+str(sec_validation)+"</abbr>")+str(edit_pencil_icon)
+									new_value_dicta["VALIDATION"]=str("<abbr id ='"+ str(attrSysId)+"'  class = 'wid90_per requ_validation' title='"+str(sec_validation)+"'>"+str(sec_validation)+"</abbr>")+str(edit_pencil_icon)
 									new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>") 
 									new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str(sec_str_primp)
 									new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")						

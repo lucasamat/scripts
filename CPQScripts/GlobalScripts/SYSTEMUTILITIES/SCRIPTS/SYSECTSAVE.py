@@ -771,8 +771,11 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						getactive = newdict.get("ACTIVE")
 						get_record_val =  newdict.get("QUOTE_REVISION_RECORD_ID")
 						get_rev_val =  newdict.get("QTEREV_ID")
-						get_status = newdict.get("REVISION_STATUS")
 						get_approved_date = newdict.get("REV_APPROVE_DATE")
+						get_status = newdict.get("REVISION_STATUS")
+						if sql_cpq.REVISION_STATUS !="APPROVED" and get_status == "APPROVED":
+							Trace.Write('Mail Triggering for Contract Manager')
+							result = ScriptExecutor.ExecuteGlobal("ACSECTACTN", {"ACTION": "CBC_MAIL_TRIGGER"})
 						if getactive == 'false':
 							getactive = 0
 						else:
@@ -1758,6 +1761,9 @@ elif TreeParentParam == "Questions" and TopSuperParentParam == "Sections":
 elif TreeParentParam == "App Level Permissions":
 	ObjectName = "SYPRAP"
 	TableId = "SYOBJR-93121"
+elif TreeParam == "Quote Documents":
+	ObjectName = "SAQDOC"
+	TableId = " "
 elif TreeParentParam == "Actions" and TopSuperParentParam == "Sections":
 	ObjectName = "SYPRSN"
 	TableId = "SYOBJR-93160"

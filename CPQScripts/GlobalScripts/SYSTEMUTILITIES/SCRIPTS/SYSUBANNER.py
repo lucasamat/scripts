@@ -92,18 +92,9 @@ def Related_Sub_Banner(
         revision_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
     except:
         revision_status = ''
-    try:
-        if quote_status.QUOTE_STATUS == 'APPROVED':
-            add_button = ''
-            multi_buttons = ''          
-    except:
-        pass
-    try:
-        if revision_status.REVISION_STATUS == 'APPROVED':
-            add_button = ''
-            multi_buttons = ''          
-    except:
-        pass
+
+    #if revision_status.REVISION_STATUS == 'APPROVED':
+    
     #elif quote_status.QUOTE_STATUS != 'APPROVED':
     #else:     
     #Trace.Write('status-----')
@@ -119,10 +110,20 @@ def Related_Sub_Banner(
     else:
         page_details = Sql.GetFirst("SELECT RECORD_ID FROM SYPAGE WHERE OBJECT_APINAME = '{}' AND PAGE_TYPE = '{}'".format(str(ObjName),str(page_type)))    
     if page_details:
-        dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER  FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND SUBTAB_NAME = '"+str(subTabName)+"' ORDER BY DISPLAY_ORDER ")
-        Trace.Write('dynamic btn based on subtab====')
-        if not dynamic_Button: 
-            dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND ISNULL(SUBTAB_NAME,'')='' ORDER BY DISPLAY_ORDER")
+        if ObjName =="SAQDOC":
+            get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+            Trace.Write("get_quote_status--> "+str(get_quote_status.REVISION_STATUS))
+            if str(get_quote_status.REVISION_STATUS).upper() == "APPROVED":
+                dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER  FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND SUBTAB_NAME = '"+str(subTabName)+"' ORDER BY DISPLAY_ORDER ")
+                if not dynamic_Button:
+                    dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND ISNULL(SUBTAB_NAME,'')='' ORDER BY DISPLAY_ORDER")
+            else:
+                dynamic_Button = ""
+        else:
+            dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER  FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND SUBTAB_NAME = '"+str(subTabName)+"' ORDER BY DISPLAY_ORDER ")
+            Trace.Write('dynamic btn based on subtab====133')
+            if not dynamic_Button: 
+                dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND ISNULL(SUBTAB_NAME,'')='' ORDER BY DISPLAY_ORDER")
         
     # if str(ObjName) == "SYOBJC":
     #     if page_details:
@@ -565,7 +566,7 @@ def Related_Sub_Banner(
                 PrimaryLable = "Sales Team"
                 PrimaryValue = "Use the Sale Team functionality to manage all contributors to your Quote..."
             elif TreeParam == "Quote Items" and str(subTabName)=="Entitlements" and str(CurrentRecordId) == "SYOBJR-00010":
-                query_result = Sql.GetFirst("select * from SAQRIT (nolock) where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
+                query_result = Sql.GetFirst("select * from SAQRIT (nolock) where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"' ")                
                 PrimaryLable = "Product Offering ID"
                 PrimaryValue = str(query_result.SERVICE_ID)
                 SecondLable = "Product Offering Description"
@@ -650,7 +651,7 @@ def Related_Sub_Banner(
                 else:                
                     PrimaryLable = "Dynamic Document Generator"
                     PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"  
-             
+            
                     
 
             elif subTabName == "Equipment" and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products" and sec_rel_sub_bnr == "") and CurrentTab == 'Quotes':		
@@ -818,7 +819,8 @@ def Related_Sub_Banner(
                 Trace.Write("760")
                 if subTabName == '':
                     getChain = Sql.GetFirst("SELECT APRCHN_ID FROM ACAPMA (NOLOCK) WHERE APRTRXOBJ_RECORD_ID = '{}' ORDER BY APRCHN_ID ASC".format(quote_revision_record_id))
-                    subTabName = getChain.APRCHN_ID
+                    if getChain:
+                        subTabName = getChain.APRCHN_ID
                 contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                 getval = Sql.GetFirst(" select DISTINCT TOP 10 APRCHN_ID, APRCHN_NAME, APPROVAL_METHOD FROM ACAPCH (nolock) WHERE APRCHN_ID = '"+str(subTabName)+"'")
                 getown = Sql.GetFirst(" select DISTINCT TOP 10 OWNER_NAME from SAQTMT(nolock) where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
@@ -837,17 +839,18 @@ def Related_Sub_Banner(
                     SecondLable = ""
                     SecondValue = ""                 
             elif (TreeParam.startswith('Sending') or TreeParam.startswith('Receiving')):
-                
+                Trace.Write("TreeParam--"+str(TreeParam))
                 if subTabName == "Details" and TreeParam.startswith('Sending Account'):
-                    account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%SENDING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                    account_name = Sql.GetFirst("SELECT PARTY_NAME,PARTY_ID  FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%SENDING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     PrimaryLable = "Sending Account ID"
-                    PrimaryValue = str(TreeParam).split("-")[1].strip()
+                    #PrimaryValue = str(TreeParam).split("-")[1].strip()
+                    PrimaryValue = account_name.PARTY_ID
                     SecondLable = "Sending Account Name"
                     SecondValue = account_name.PARTY_NAME
                 elif subTabName == "Details" and TreeParam.startswith('Receiving Account'):
-                    account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%RECEIVING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                    account_name = Sql.GetFirst("SELECT PARTY_NAME,PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%RECEIVING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     PrimaryLable = "Receiving Account ID"
-                    PrimaryValue = str(TreeParam).split("-")[1].strip()
+                    PrimaryValue = account_name.PARTY_ID
                     SecondLable = "Receiving Account Name"
                     SecondValue = account_name.PARTY_NAME
                 elif (subTabName == "Sending Equipment" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Entitlements") and TreeParam.startswith("Sending Equipment"):
@@ -1330,7 +1333,7 @@ def Related_Sub_Banner(
                             ThirdValue = str(TreeSuperParentParam)
                             FourthLable = " Fab Location ID"
                             FourthValue = TreeParam	
-                if (str(ObjName) == 'SAQSCO' and str(TreeTopSuperParentParam) == "COMPREHENSIVE SERVICES"):
+                if (str(ObjName) == 'SAQSCO' and (str(TreeTopSuperParentParam) == "COMPREHENSIVE SERVICES" or str(TreeSuperParentParam) == "COMPREHENSIVE SERVICES")):
                     Trace.Write("check")
                     get_val = Sql.GetFirst(" SELECT EQUIPMENT_ID,SERIAL_NO FROM SAQSCO WHERE GREENBOOK = '"+str(TreeParam)+"'")
                     FifthLable = "Equipment ID"
@@ -1373,6 +1376,8 @@ def Related_Sub_Banner(
                         SixthLable = "Configuration Status"
                     else:
                         FourthLable = "Configuration Status"
+                        FifthLable  = ""
+                        FifthValue = ""
                     if status_image:
                         if ObjName == "SAQSPT":
                             SixthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
@@ -1387,16 +1392,14 @@ def Related_Sub_Banner(
                         FourthLable = ""
                         FourthValue = ""
                     covered_obj = Sql.GetFirst("select EQUIPMENT_ID from SAQSCO(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id))
-                    if covered_obj is not None and (subTabName == "Equipment" or subTabName == 'Entitlements' or subTabName == 'Service Fab Value Drivers' or subTabName == 'Service Cost and Value Drivers' or subTabName == 'Customer Value Drivers' or subTabName == 'Product Value Drivers'):
-                        FourthLable = "Greenbooks"
+                    if covered_obj is not None and (subTabName == "Equipment" or subTabName == 'Entitlements' or subTabName == 'Service Fab Value Drivers' or subTabName == 'Service Cost and Value Drivers' or subTabName == 'Customer Value Drivers' or subTabName == 'Product Value Drivers'):                        
+                        FourthLable = "Equipment"
                         FourthValue = "All"
-                        FifthLable = "Equipment"
-                        FifthValue = "All"
                         ##adding configuration status in offering subtab
                         Trace.Write('status_image--'+str(status_image))
-                        SixthLable = "Configuration Status"
+                        FifthLable = "Configuration Status"
                         if status_image:
-                            SixthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
+                            FifthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
                         # contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                         # where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, TreeParam )
                         # try:
@@ -1774,7 +1777,7 @@ def Related_Sub_Banner(
             FourthValue = str(EquipmentId)
             FifthLable = "Serial Number"
             FifthValue = str(SerialNumber)
-        elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers") and subTabName != "Assembly Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
+        elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Credits") and subTabName != "Assembly Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(TreeSuperParentParam)
             SecondLable = "Product Offering Description"
@@ -1782,10 +1785,10 @@ def Related_Sub_Banner(
             #ThirdLable = "Fab Location ID"
             #ThirdValue = str(TreeParentParam)
             ThirdLable = "Greenbook"
-            ThirdValue = str(TreeParam)
-            if subTabName != "Details":
-                FourthLable = "Equipment"
-                FifthValue = "All"
+            ThirdValue = str(TreeParentParam) if "Add" in TreeParam else str(TreeParam)
+            # if subTabName != "Details":
+            #     FourthLable = "Equipment"
+            #     FifthValue = "All"
         elif subTabName == "Details":			
             PrimaryLable = ListKey[0]
             PrimaryValue = PrimaryValue
@@ -1884,10 +1887,10 @@ def Related_Sub_Banner(
                 PrimaryValue = str(TreeParentParam)
                 SecondLable = "Fab Location Name"
                 SecondValue = getFab.FABLOCATION_NAME
-                ThirdLable = "Greenbook"
-                ThirdValue = str(TreeParam)
-                FourthLable = "Equipment"
-                FourthValue = "All"
+                # ThirdLable = "Greenbook"
+                # ThirdValue = str(TreeParam)
+                # FourthLable = "Equipment"
+                # FourthValue = "All"
             
             '''try:
                 FifthLable = ListKey[2]
@@ -1926,8 +1929,8 @@ def Related_Sub_Banner(
                 SecondValue = getFab.FABLOCATION_NAME
                 ThirdLable = "Greenbook"
                 ThirdValue = str(TreeParam)
-                FourthLable = "Equipment"
-                FourthValue = "All"
+                # FourthLable = "Equipment"
+                # FourthValue = "All"
             
             '''try:
                 FifthLable = ListKey[2]
@@ -1936,7 +1939,7 @@ def Related_Sub_Banner(
                 FifthLable = ""
                 FifthValue = ""
             Trace.Write("4 th "+str(FourthLable) + "4 th val" +str(FourthValue) + " 5 th " +str(FifthLable) + "5 th val" +str(FifthValue))'''
-           	
+            
     elif TreeSuperParentParam == "Fab Locations" and ObjName == 'CTCFEQ':
         getFab = Sql.GetFirst("select FABLOCATION_NAME from CTCFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")        
         PrimaryLable = "Fab Location ID"
@@ -2025,7 +2028,7 @@ def Related_Sub_Banner(
     item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
     if item_detail:
         #if subTabName == "Details" or subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module" and ObjName == "SAQRIT":
-        if subTabName == "Details" or subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module":
+        if subTabName == "Details" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module":
             Trace.Write("SAQRIT-DETAIL222===")
             valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
             Trace.Write("valid_from===="+str(valid_from))
@@ -2039,6 +2042,19 @@ def Related_Sub_Banner(
             ThirdValue = valid_from
             FourthLable = "Contract End Date"
             FourthValue = valid_date
+
+        elif subTabName == "Entitlements":
+            Trace.Write("entitlements===")
+            PrimaryLable = "Product Offering ID"
+            PrimaryValue = str(item_detail.SERVICE_ID)
+            SecondLable = "Product Offering Description"
+            SecondValue = str(item_detail.SERVICE_DESCRIPTION)
+            ThirdLable = "Fab Location ID"
+            ThirdValue = str(item_detail.FABLOCATION_ID)
+            FourthLable = "Greenbook"
+            FourthValue =  str(item_detail.GREENBOOK)
+            FifthLable = "Equipment ID"
+            FifthValue = str(item_detail.OBJECT_ID)
         # if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module":
         #     Trace.Write("SAQRIT-DETAIL333===")            
         #     if item_detail:
@@ -2193,13 +2209,13 @@ def Related_Sub_Banner(
         SixthLable = ''
         SixthValue = ''
     elif ObjName == "SAQSGB" and subTabName == "Details":
-        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
+        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '{service_id}'".format(service_id=TreeSuperParentParam if "Add" in TreeParam else TreeParentParam))
         PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeParentParam)
+        PrimaryValue = str(TreeSuperParentParam) if "Add" in TreeParam else str(TreeParentParam)
         SecondLable = "Product Offering Description"
         SecondValue = getService.SERVICE_DESCRIPTION
         ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
+        ThirdValue = str(TreeParentParam) if "Add" in TreeParam else str(TreeParam)
         FourthLable = ''
         FourthValue = ''
         FifthLable = ''
@@ -2248,20 +2264,34 @@ def Related_Sub_Banner(
         FifthValue = str(SerialNumber)
         SixthLable = "Assembly ID"
         SixthValue = str(AssemblyId)     
-    elif ObjName == "SAQSCO" and subTabName in ("Equipment","Equipment Details") and TreeTopSuperParentParam == "Product Offerings":
-        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeParentParam)
-        SecondLable = "Product Offering Description"
-        SecondValue = getService.SERVICE_DESCRIPTION
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Equipment"
-        FourthValue = "ALL"	
-        FifthLable = ""
-        FifthValue = ""
-        SixthLable = ''
-        SixthValue = ''
+    elif ObjName == "SAQSCO" and subTabName in ("Equipment","Equipment Details") and TreeTopSuperParentParam == "Product Offerings":        
+        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")        
+        if subTabName == "Equipment Details":
+            PrimaryLable = "Product Offering ID"
+            PrimaryValue = str(TreeParentParam)
+            SecondLable = "Product Offering Description"
+            SecondValue = getService.SERVICE_DESCRIPTION
+            ThirdLable = "Greenbook"
+            ThirdValue = str(TreeParam)
+            FourthLable = "Equipment"
+            FourthValue = str(EquipmentId)
+            FifthLable = "Serial No"
+            FifthValue = str(SerialNumber)
+            SixthLable = ''
+            SixthValue = ''
+        else:
+            PrimaryLable = "Product Offering ID"
+            PrimaryValue = str(TreeParentParam)
+            SecondLable = "Product Offering Description"
+            SecondValue = getService.SERVICE_DESCRIPTION
+            ThirdLable = "Greenbook"
+            ThirdValue = str(TreeParam)
+            FourthLable = "Equipment"
+            FourthValue = "ALL"	
+            FifthLable = ""
+            FifthValue = ""
+            SixthLable = ''
+            SixthValue = ''
     #elif TreeSuperTopParentParam == "Product Offerings" and TreeTopSuperParentParam == "Complementary Products" and (TreeParentParam == "Receiving Equipment" or TreeParentParam == "Sending Equipment") and (ObjName == "SAQSSF" or ObjName == "SAQSSF"):
     #	getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
     #	PrimaryLable = "Product Offering ID"
@@ -2599,11 +2629,13 @@ def Related_Sub_Banner(
                         sec_rel_sub_bnr += ""
                     elif TreeParam == "Sales Team":
                         Trace.Write("sales===")
-                        contract_manager_info = Sql.GetFirst("SELECT COUNT(DISTINCT MEMBER_ID) as MEMBER_ID from SAQDLT where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-                        if contract_manager_info is None:
-                            sec_rel_sub_bnr += (str(add_button))
-                        else:
+                        contract_manager_info = Sql.GetFirst("SELECT  * from SAQDLT where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))                       
+                        if contract_manager_info:
+                            Trace.Write("sales==btn===")
                             sec_rel_sub_bnr += ""
+                        else:
+                            Trace.Write("sales==btn===>>")
+                            sec_rel_sub_bnr += (str(add_button))
 
                     # Removed Add New Button suppress functionality
                     
@@ -2621,7 +2653,7 @@ def Related_Sub_Banner(
                     else:
                         Trace.Write('elseeee11')
                         if str(TabName) == 'Quotes':
-                            if quote_status.QUOTE_STATUS != 'APPROVED':
+                            if quote_status.QUOTE_STATUS != 'APPROVED' and subTabName != 'Items':
                                 sec_rel_sub_bnr += (str(add_button))
                         else:
                             Trace.Write("add###---")                                        
@@ -2688,7 +2720,7 @@ def Related_Sub_Banner(
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
                                         Trace.Write('add_button->unmapped--'+str(add_button))
                                         sec_rel_sub_bnr += str(btn)
-                                   
+                                
 
 
 
@@ -2966,15 +2998,6 @@ def Related_Sub_Banner(
                         '<button id="ADDNEW__SYOBJR_98798_7F4F4C8D_73C7_4779_9BE5_38C695" onclick="cont_openaddnew(this, \'div_CTR_Involved_Parties\')" class="btnconfig addNewRel HideAddNew">ADD NEW</button>'
                     )
 
-        elif str(TreeParam).upper() == "QUOTE INFORMATION" and subTabName == "Source Fab Location" and TabName == "Quotes":
-            sec_rel_sub_bnr += (
-                        '<button id="ADDNEW__SYOBJR_98857_SYOBJ_01033" onclick="cont_openaddnew(this, \'div_CTR_Source_Fab_Locations\')" class="btnconfig addNewRel HideAddNew">ADD NEW</button>'
-                    )
-        elif str(TreeParam).upper() == "QUOTE INFORMATION" and subTabName == "Equipment" and TabName == "Quote":
-            sec_rel_sub_bnr += (
-                        '<button id="ADDNEW__SYOBJR_98858_SYOBJ_01034" onclick="cont_openaddnew(this, \'div_CTR_Involved_Parties_Equipments\')" class="btnconfig addNewRel">ADD EQUIPMENT</button>'
-                    )
-
         elif  (str(TreeParentParam).upper() == "FAB LOCATIONS" or str(TreeParam).upper() == "QUOTE INFORMATION" or str(TreeSuperParentParam).upper() == "FAB LOCATIONS" )  and TabName == "Quotes":
             
             sec_rel_sub_bnr += ('<button id="fablocate_save" onclick="fablocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fablocate_cancel" onclick="fablocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
@@ -3002,6 +3025,8 @@ def Related_Sub_Banner(
         elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and (subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
             if str(subTabName)=="PM Events":
                 sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_00011_SYOBJ_00974" onclick="PM_FrequencyInlineEdit()" class="btnconfig" >INLINE EDIT</button>')
+            elif 'Add-On Products' in str(TreeParam) and ("INCLUDE ADD-ON PRODUCTS" not in sec_rel_sub_bnr) and ("ADD CREDITS" not in sec_rel_sub_bnr):
+                sec_rel_sub_bnr+= str(add_button)
             else:
                 if str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
                     sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
@@ -3016,11 +3041,35 @@ def Related_Sub_Banner(
             Trace.Write("subTabName-->"+str(subTabName))
             Trace.Write("Involved Parties button")
             if str(multi_buttons) != "":
-                #Trace.Write("add_button_if"+str(add_button))
+                Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
-                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                    if ('SPLIT' in btn or 'EDIT' in btn) and subTabName =='Items':
+                        if 'SPLIT' in btn:   
+                            get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
+                            if get_entitlement_xml:
+                                for get_service in get_entitlement_xml:
+                                    entitlement_service = get_service.ENTITLEMENT_XML
+                                    quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                                    split_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
+                                    split_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
+                                    for m in re.finditer(quote_item_tag, entitlement_service):
+                                        sub_string = m.group(1)
+                                        split_1 =re.findall(split_pattern,sub_string)
+                                        split_2 = re.findall(split_value,sub_string)
+                                        if split_1 and split_2:
+                                            Trace.Write("a"+str(get_service.SERVICE_ID))
+                                            sec_rel_sub_bnr += (btn)
+                                            break
+                        if 'EDIT' in btn:
+                            billing_variable_visible = Sql.GetFirst("""SELECT BILLING_TYPE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND BILLING_TYPE in ('VARIABLE','Variable')""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
+                            if billing_variable_visible:
+                                sec_rel_sub_bnr += (btn)
+                    if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn:
                         sec_rel_sub_bnr += (btn)
-            
+                    # else: commented because of duplicate button
+                    #     Trace.Write("btn222"+str(btn))
+                    #     sec_rel_sub_bnr += (btn)
+        
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
 try:

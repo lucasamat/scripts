@@ -113,7 +113,7 @@ def create_new_revision(Opertion,cartrev):
 				"QUOTE_RECORD_ID": quote_contract_recordId,
 				"ACTIVE":1,
 				"REV_CREATE_DATE":current_date.strftime('%m/%d/%Y'),
-				"REV_EXPIRE_DATE":end_date.strftime('%m/%d/%Y'),
+				"REV_EXPIRE_DATE":'',
 				"REVISION_STATUS":"PREPARING REVISION",
 				"QTEREV_ID":newrev_inc,
 				"QTEREV_RECORD_ID":quote_revision_id, 
@@ -154,7 +154,7 @@ def create_new_revision(Opertion,cartrev):
 				"PRICINGPROCEDURE_ID" : get_previous_rev_data.PRICINGPROCEDURE_ID,
 				"PRICINGPROCEDURE_NAME" : get_previous_rev_data.PRICINGPROCEDURE_NAME,
 				"PRICINGPROCEDURE_RECORD_ID" :get_previous_rev_data.PRICINGPROCEDURE_RECORD_ID,
-				"CANCELLATION_PERIOD":"90 DAYS",
+				"CANCELLATION_PERIOD":"89 DAYS",
 				"CONTRACT_VALID_FROM":get_previous_rev_data.CONTRACT_VALID_FROM,
 				"CONTRACT_VALID_TO":get_previous_rev_data.CONTRACT_VALID_TO,
 				"COMPANY_ID":get_previous_rev_data.COMPANY_ID,
@@ -165,6 +165,9 @@ def create_new_revision(Opertion,cartrev):
 
 		quote_revision_table_info.AddRow(quote_rev_data)
 		Sql.Upsert(quote_revision_table_info)
+		Quote.GetCustomField('QUOTE_REVISION_DESC').Content  = get_previous_rev_data.REVISION_DESCRIPTION
+		Quote.GetCustomField('QUOTE_EXCHANGE_RATE').Content = get_previous_rev_data.EXCHANGE_RATE
+		Quote.GetCustomField('QUOTE_PAYMENT_TERM').Content = get_previous_rev_data.PAYMENTTERM_NAME
 		#create new revision -SAQTRV - update-end
 		#get quote data for update in SAQTMT start
 
@@ -271,6 +274,9 @@ def create_new_revision(Opertion,cartrev):
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 		Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
 		Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
+		##newrevision edot active for expiry Quote:A055S000P01-14308
+		updatesaqtmtexpire = (""" UPDATE SAQTMT SET EXPIRED = 0 FROM SAQTMT INNER JOIN SAQTRV ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE  SAQTRV.REV_CREATE_DATE = '{current_date}' AND SAQTRV.QTEREV_RECORD_ID ='{quote_revision_record_id}' AND SAQTRV.QUOTE_RECORD_ID = '{contract_quote_record_id}'  AND ACTIVE = '1' """.format(current_date = current_date,quote_revision_record_id=get_quote_info_details.QTEREV_RECORD_ID,contract_quote_record_id =get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID))
+		Sql.RunQuery(updatesaqtmtexpire)
 	return True
 
 

@@ -10,6 +10,7 @@ import clr
 import System.Net
 import sys
 import datetime
+from datetime import date
 from SYDATABASE import SQL
 
 Sql = SQL()
@@ -929,7 +930,50 @@ def warning():
 	sec_str = ""
 	sec_str += """<div id="Headerbnr" class="mart_col_back disp_blk"><div class="col-md-12" id="PageAlert"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert_notifcatio6" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down"></i><i class="pull-right fa fa-chevron-up"></i></div><div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-warning"><label title=" Warning: Please select a valid document language from the list before generating."><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Info"> Warning: Please select a valid document language from the list before generating.</label></div></div></div></div>"""
 	return sec_str
+def submit_to_customer(doc_rec_id):
+	Trace.Write("cm to this function=====")
+	submitted_date = ""
+	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 
+	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_SUBMITTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y")))
+	Sql.RunQuery(update_submitted_date)
+	
+	return True
+
+def customer_accepted(doc_rec_id):
+	Trace.Write("cm to this acceptedfunction=====")	
+	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+
+	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET ACCEPTED = 'TRUE', DATE_ACCEPTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y"),))
+	Sql.RunQuery(update_submitted_date)
+	
+	return True
+
+def customer_rejected(doc_rec_id):
+	Trace.Write("cm to this rejectedfunction=====")
+	submitted_date = ""
+	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+
+	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_REJECTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y")))
+	Sql.RunQuery(update_submitted_date)
+	
+	return True
+
+def save_document_description(doc_desc_val,doc_rec_id):
+	Trace.Write("cm to this savefunction=====")
+	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+	document_record_info = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+	update_document_description = Sql.RunQuery("""UPDATE SAQDOC SET DOCUMENT_DESCRIPTION = '{description}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,description = doc_desc_val))
+	Sql.RunQuery(update_document_description)
+
+	return True
 
 try:
 	recid = Param.CPQ_Columns['Quote']
@@ -948,15 +992,32 @@ try:
 	ACTION = Param.ACTION
 except:
 	ACTION = ""
+try:
+	doc_rec_id = Param.doc_rec_id
+except:
+	doc_rec_id = ""
+try:
+	doc_desc_val = Param.doc_desc_val
+except:
+	doc_desc_val = ""
+# if 'ENGLISH DOC' in language:
+# 	ApiResponse = ApiResponseFactory.JsonResponse(englishdoc())
+# elif 'CHINESE DOC' in language:
+# 	ApiResponse = ApiResponseFactory.JsonResponse(chinesedoc())
+# elif 'FPM DOC' in language:
+# 	ApiResponse = ApiResponseFactory.JsonResponse(fpmdoc())
+# elif ACTION == 'POPUP':
+# 	ApiResponse = ApiResponseFactory.JsonResponse(popup())
+# elif ACTION == 'WARNING':
+# 	ApiResponse = ApiResponseFactory.JsonResponse(warning())
+if ACTION == 'SUBMIT_TO_CUSTOMER':
+	ApiResponse = ApiResponseFactory.JsonResponse(submit_to_customer(doc_rec_id))
+elif ACTION == 'CUSTOMER_ACCEPTED':
+	ApiResponse = ApiResponseFactory.JsonResponse(customer_accepted(doc_rec_id))
+elif ACTION == 'CUSTOMER_REJECTED':
+	ApiResponse = ApiResponseFactory.JsonResponse(customer_rejected(doc_rec_id))
+elif ACTION == 'SAVE_DESC':
+	ApiResponse = ApiResponseFactory.JsonResponse(save_document_description(doc_desc_val,doc_rec_id))
 
-if 'ENGLISH DOC' in language:
-	ApiResponse = ApiResponseFactory.JsonResponse(englishdoc())
-elif 'CHINESE DOC' in language:
-	ApiResponse = ApiResponseFactory.JsonResponse(chinesedoc())
-elif 'FPM DOC' in language:
-	ApiResponse = ApiResponseFactory.JsonResponse(fpmdoc())
-elif ACTION == 'POPUP':
-	ApiResponse = ApiResponseFactory.JsonResponse(popup())
-elif ACTION == 'WARNING':
-	ApiResponse = ApiResponseFactory.JsonResponse(warning())
+
 

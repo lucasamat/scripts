@@ -2017,10 +2017,11 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		values_list += "ATTRIBUTE_VALUEList.push(" + str(invs) + "); "
 		Trace.Write('invs----'+str(values_list))
 	filter_class = "#Act_" + str(table_id)
+	Trace.Write("recid__J"+str(recid))
 	filter_control_function += (
 		'$("'
 		+ filter_class
-		+ '").click( function(){ var table_id = $(this).closest("table").attr("id"); ATTRIBUTE_VALUEList = []; '
+		+ '").click( function(){ debugger; var table_id = $(this).closest("table").attr("id"); ATTRIBUTE_VALUEList = []; '
 		+ str(values_list)
 		+ ' var attribute_value = $(this).val(); cpq.server.executeScript("CQNESTGRID", {"TABNAME":"Equipments child", "ACTION":"PRODUCT_ONLOAD_FILTER", "ATTRIBUTE_NAME": '
 		+ str(list(Columns))
@@ -3737,7 +3738,7 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
 	else:
 		#Trace.Write("conditional search --->")
 		Trace.Write("ATTRIBUTE_VALUE_STR_J "+str(ATTRIBUTE_VALUE_STR))
-		if TreeSuperParentParam == "Fab Locations":
+		if TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Fab Locations":
 			if ATTRIBUTE_VALUE_STR.startswith("ASSEMBLYTYPE_ID"):
 				ATTRIBUTE_VALUE_STR = str(ATTRIBUTE_VALUE_STR).replace('ASSEMBLYTYPE_ID','EQUIPMENTTYPE_ID')
 		child_obj_recid = Sql.GetList(
@@ -9292,7 +9293,7 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
 		Trace.Write("empty search")
 		if TreeSuperParentParam == "Product Offerings":
 			parent_obj = Sql.GetList(
-				"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(
+				"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENTTYPE_ID, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, treeparam=TreeParam,ord_by = orderby
 				)
 			)
@@ -9308,7 +9309,7 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
 		else:
 			if TreeTopSuperParentParam == "Product Offerings":
 				parent_obj = Sql.GetList(
-					"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(
+					"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENTTYPE_ID, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(
 						ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, treeparam=TreeParentParam,ord_by = orderby
 					)
 				)
@@ -9323,7 +9324,7 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
 			else:
 				Trace.Write("5 level empty search --->")
 				parent_obj = Sql.GetList(
-					"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where   QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and FABLOCATION_ID = '{fablocation_id}' ORDER BY {ord_by} ".format(
+					"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENTTYPE_ID, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where   QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and FABLOCATION_ID = '{fablocation_id}' ORDER BY {ord_by} ".format(
 						ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
 						RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 						recid=RECID,
@@ -9348,7 +9349,7 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
 		Trace.Write("search with condition")
 		if TreeSuperParentParam == "Product Offerings":
 			parent_obj = Sql.GetList(
-				"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where  "
+				"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENTTYPE_ID, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where  "
 				+ str(ATTRIBUTE_VALUE_STR)
 				+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'  and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, treeparam=TreeParam,ord_by = orderby
@@ -9366,7 +9367,7 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
 		else:
 			if TreeTopSuperParentParam == "Product Offerings":
 				parent_obj = Sql.GetList(
-					"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where  "
+					"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENTTYPE_ID, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where  "
 					+ str(ATTRIBUTE_VALUE_STR)
 					+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by}".format(
 						ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
@@ -9391,7 +9392,7 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
 			else:   
 				Trace.Write("5 level coditional search --->")
 				parent_obj = Sql.GetList(
-					"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where  "
+					"select top "+str(PerPage)+"  QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENTTYPE_ID, EQUIPMENT_DESCRIPTION, MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where  "
 					+ str(ATTRIBUTE_VALUE_STR)
 					+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and FABLOCATION_ID = '{fablocation_id}' ORDER BY {ord_by}".format(
 						ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
@@ -9447,6 +9448,7 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
 		)
 		data_dict["EQUIPMENT_ID"] = str(par.EQUIPMENT_ID)
 		data_dict["ASSEMBLY_ID"] = str(par.ASSEMBLY_ID)
+		data_dict["EQUIPMENTTYPE_ID"] = str(par.EQUIPMENTTYPE_ID)
 		data_dict["ASSEMBLY_DESCRIPTION"] = str(par.ASSEMBLY_DESCRIPTION)
 		data_dict["EQUIPMENT_DESCRIPTION"] = str(par.EQUIPMENT_DESCRIPTION)
 		data_dict["GOT_CODE"] = str(par.GOT_CODE)
@@ -10460,6 +10462,7 @@ Trace.Write('TABNAME###==='+str(TABNAME))
 ACTION = Param.ACTION
 try:
 	TABLENAME = Param.TABLENAME
+	TABLENAME = TABLENAME.strip()
 except:
 	TABLENAME = ""
 ##PM EVENTS PARAM STARTS..
@@ -10676,8 +10679,11 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
 		ApiResponse = ApiResponseFactory.JsonResponse(QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,ASSEMBLYID,EQUIPMENTID,KITID,KITNUMBER,SortPerPage,SortPageInform))        
 	elif TABNAME == "Equipments child": 
 		Trace.Write("111111111")
-		REC_ID = Param.REC_ID
-		RECID = REC_ID.split("_")[-1]
+		try:
+			REC_ID = Param.REC_ID
+			RECID = REC_ID.split("_")[-1]
+		except:
+			RECID = Param.REC_ID
 		Trace.Write("123 RECID --->"+str(RECID))
 		ApiResponse = ApiResponseFactory.JsonResponse(GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,SortPerPage,SortPageInform))
 	elif TABNAME == "Assemblies Child":

@@ -537,6 +537,8 @@ def CommonTreeViewHTMLDetail(
 
 						cancel_save = '<div  class="g4 sec_' + str(SECTION_EDIT) + ' collapse in except_sec removeHorLine iconhvr sec_edit_sty">'+ str(cancel_btn) + str(save_btn) +'</div>'
 						Trace.Write("cancel_savecancel_save_J"+str(cancel_save))
+						Trace.Write("@540"+str(sec_str))
+
 					
 
 					if Product.GetGlobal("TreeParentLevel0") == 'Quote Items':
@@ -938,18 +940,27 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 				Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
 				if current_prod == "Sales" and ObjectName != "ACAPMA" and ObjectName != "ACAPTX" and ObjectName != "ACACHR":
-					script = (
-						"SELECT "
-						+ str(API_NAMES)
-						+ " FROM "
-						+ str(ObjectName)
-						+ " (NOLOCK) WHERE "
-						+ str(autoNumber)
-						+ " = '"
-						+ str(RECORD_ID)
-						+ "'"
-						+ " AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
-					)
+					if ObjectName == "SAQDOC":
+    						script = (
+							"SELECT "
+							+ str(API_NAMES)
+							+ " FROM "
+							+ str(ObjectName)
+							+ " (NOLOCK) WHERE QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
+						)
+					else:
+						script = (
+							"SELECT "
+							+ str(API_NAMES)
+							+ " FROM "
+							+ str(ObjectName)
+							+ " (NOLOCK) WHERE "
+							+ str(autoNumber)
+							+ " = '"
+							+ str(RECORD_ID)
+							+ "'"
+							+ " AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
+						)
 				else:
 					script = (
 						"SELECT "

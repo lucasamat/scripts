@@ -72,7 +72,7 @@ class AncillaryProductOperation:
 			description = material_obj.SAP_DESCRIPTION
 			material_record_id = material_obj.MATERIAL_RECORD_ID
 
-			Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID,UOM_RECORD_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, PAR_SERVICE_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_RECORD_ID,SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+			Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID,UOM_RECORD_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, PAR_SERVICE_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_RECORD_ID,SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID,QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 							SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 							SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID,UOM_RECORD_ID, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, '{ancillary_object}' AS SERVICE_ID,SERVICE_ID as PAR_SERVICE_ID,SERVICE_DESCRIPTION AS PAR_SERVICE_DESCRIPTION,QUOTE_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID, '{material_record_id}' AS SERVICE_RECORD_ID, '' AS SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
 							WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' 
@@ -545,7 +545,7 @@ class AncillaryProductOperation:
 			attributesallowedlst = list(set(attributesallowedlst))
 			overallattributeslist = list(set(overallattributeslist))
 								
-			
+			Trace.Write("attributevalues----"+str(attributevalues))
 			if ProductVersionObj and get_existing_record.cnt == 0:
 				insertservice = ""
 				for attrs in overallattributeslist:
@@ -555,7 +555,8 @@ class AncillaryProductOperation:
 						ent_disp_val = attributevalues[attrs]
 						ent_val_code = attributevalues[attrs]
 						#Log.Info("ent_disp_val----"+str(ent_disp_val))
-					else:					
+					else:	
+						#Trace.Write("else----"+str(attributevalues[attrs]))				
 						HasDefaultvalue=False
 						ent_disp_val = ""
 						ent_val_code = ""
@@ -566,6 +567,7 @@ class AncillaryProductOperation:
 						if PRODUCT_ATTRIBUTES.ATTRDESC:
 							get_tooltip = PRODUCT_ATTRIBUTES.ATTRDESC
 						if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
+							Trace.Write("else------"+str(attrs)+"-"+str(attributevalues[attrs]))
 							get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 							ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
 							
@@ -582,12 +584,11 @@ class AncillaryProductOperation:
 					
 					#ancillary insert based on aprent insert end
 					# entitlement_obj = Sql.GetFirst("select ENTITLEMENT_ID,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {table_name} (nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' and SERVICE_ID = '{service_id}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where  ( ENTITLEMENT_ID like '{att_id}')".format(table_name = 'SAQTSE' ,contract_quote_record_id = self.contract_quote_record_id,quote_revision_record_id = self.contract_quote_revision_record_id,service_id = 'Z0091',att_id = 'AGS_'+str(addon.PAR_SERVICE_ID)+'_KPI_BPTKPI'))
+					
 					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS & PENALTY TIED TO KPI":
 						if str(addon.PAR_SERVICE_ID) == "Z0091":
 							AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
-							# if entitlement_obj:
-							# 	ent_disp = entitlement_obj.ENTITLEMENT_DISPLAY_VALUE
-							# 	if str(ent_disp).upper() == 'YES':
+						
 							NewValue = 'Yes'
 					# entitlement_obj = Sql.GetFirst("select ENTITLEMENT_ID,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {table_name} (nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' and SERVICE_ID = '{service_id}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where  ( ENTITLEMENT_ID like '{att_id}')".format(table_name = 'SAQTSE' ,contract_quote_record_id = self.contract_quote_record_id,quote_revision_record_id = self.contract_quote_revision_record_id,service_id = 'Z0091',att_id = 'AGS_'+str(addon.PAR_SERVICE_ID)+'_PQB_PPCPRM'))
 					#if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "PRICE PER CRITICAL PARAMETER":
@@ -596,7 +597,6 @@ class AncillaryProductOperation:
 						# 	ent_disp = entitlement_obj.ENTITLEMENT_DISPLAY_VALUE
 						# 	if str(ent_disp).upper() == 'YES':
 						#NewValue = 'Yes'
-
 					insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 					<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -639,16 +639,18 @@ class AncillaryProductOperation:
 				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
-				
+				Log.Info('656---verify ancillary insert--')
 				if addon.PAR_SERVICE_ID and NewValue == "Yes":
 					#ancillary insert based on aprent insert start
 					try:						
 						add_where =''
+						Log.Info('656--661---verify ancillary insert--')
 						ServiceId = addon.SERVICE_ID
 						whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(addon.QUOTE_RECORD_ID,addon.SERVICE_ID,self.contract_quote_revision_record_id)
 						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 						result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 					except:
+						Log.Info('656--661---eroror--')
 						Trace.Write('error--296')
 				# else:
 				# 	try:
@@ -719,11 +721,16 @@ class AncillaryProductOperation:
 								value_application = 'YES'
 							else:
 								if 'AGS_Z0046' in val.ENTITLEMENT_ID:
+									ServiceId = 'Z0046'
 									AttributeID_Pass = val.ENTITLEMENT_ID
 								elif 'AGS_Z0101' in val.ENTITLEMENT_ID:
+									ServiceId = 'Z0101'
+									AttributeID_Pass = val.ENTITLEMENT_ID
+								elif 'AGS_Z0100' in val.ENTITLEMENT_ID:
+									ServiceId = 'Z0100'
 									AttributeID_Pass = val.ENTITLEMENT_ID
 							if AttributeID_Pass:
-								ServiceId = 'Z0046'
+								#ServiceId = 'Z0046'
 							
 								whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,ServiceId,self.contract_quote_revision_record_id)
 								ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
@@ -924,6 +931,7 @@ class AncillaryProductOperation:
 	def _delete_operation(self):
 		self._set_quote_service_entitlement_type()
 		delete_obj_list = []
+
 		if self.tablename == "SAQTSE": 
 			delete_obj_list = ["SAQTSV","SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQTSE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
 		# elif self.tablename == "SAQSFE":
@@ -946,6 +954,8 @@ class AncillaryProductOperation:
 			addtional_where += " AND EQUIPMENT_ID = '{}'".format(self.equipment_id)
 		if self.assembly:
 			addtional_where += " AND ASSEMBLY_ID = '{}'".format(self.assembly)
+		if self.ancillary_obj in ('Z0101','Z0100'):
+			delete_obj_list.append('SAQRIP')
 		for obj in delete_obj_list:
 			#Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(obj, self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
 			
@@ -954,8 +964,8 @@ class AncillaryProductOperation:
 				ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 			if obj == 'SAQRIO':
 				ancillary_where = re.sub(r'AND FABLOCATION_ID\s*\=\s*\'[^>]*?\'', '', ancillary_where )
-			if obj in ('SAQICO','SAQRIT','SAQRIO'):
-				ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
+			# if obj in ('SAQICO','SAQRIT','SAQRIO'):
+			# 	ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 			if obj == 'SAQRIT' and 'EQUIPMENT_ID' in ancillary_where:
 				if self.quote_service_entitlement_type != "OFFERING + EQUIPMENT":
 					ancillary_where = re.sub(r'AND EQUIPMENT_ID\s*\=\s*\'[^>]*?\'', '', ancillary_where )

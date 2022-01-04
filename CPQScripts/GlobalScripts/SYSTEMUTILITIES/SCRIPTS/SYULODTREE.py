@@ -2059,25 +2059,6 @@ class TreeView:
 									get_service_name_bill = Sql.GetFirst("SELECT * FROM SAQTSV WHERE {} AND SERVICE_ID = '{}'".format(where_string,NodeText) )
 									if get_service_name_bill:
 										NodeText_temp = NodeText +' - '+ get_service_name_bill.SERVICE_DESCRIPTION
-								# elif (str(ObjName).strip() == 'SAQTSV' or str(ObjName).strip() == 'SAQITM') and 'SERVICE_ID' in str(NodeName): 
-								# 	try:
-								# 		if str(ObjName).strip() == 'SAQTSV':
-								# 			service_id_temp =  NodeText.split('>')
-								# 			service_id_temp = service_id_temp[len(service_id_temp) -1]
-								# 		elif str(ObjName).strip() == 'SAQITM':
-								# 			service_id_temp = NodeText.split('-')[1].strip()+'- BASE'
-								# 	except:
-								# 		service_id_temp = NodeText
-								# 	get_service_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND SERVICE_ID = '{}'".format(ObjName, where_string,service_id_temp ) )
-								# 	if get_service_name:
-								# 		#Trace.Write("get_service_name---"+str(get_service_name.SERVICE_ID))
-								# 		if ObjName == 'SAQITM':
-											
-								# 			NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
-								# 			#Trace.Write("NodeText_temp-saqitm-"+str(NodeText_temp))
-								# 		else:
-								# 			NodeText_temp = NodeText
-								# 			NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
 								if NodeText_temp:
 									ChildDict["text"] = NodeText_temp
 								else:
@@ -2107,133 +2088,183 @@ class TreeView:
 										subTabName = str(NodeText) + " : " + str(subTabName)
 									elif getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
 										subTabName = ""
-									elif subTabName == 'New Parts':
-										subTabName = ""
-										if str(service_id) == "bar":
-											service_id = NodeText.split('/>')[1]
-										service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = service_id))
-										if service_entitlement_obj is not None:
-											updateentXML = service_entitlement_obj.ENTITLEMENT_XML
-											flag_excluse=0
-											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-											pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
-											pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
-											for j in re.finditer(pattern_tag, updateentXML):
-												sub_string = j.group(1)
-												get_ent_id =re.findall(pattern_id,sub_string)
-												get_ent_name=re.findall(pattern_name,sub_string)
-												Trace.Write("get_ent_id_J "+str(get_ent_id)+"get_ent_name_J "+str(get_ent_name))
-												if get_ent_id and get_ent_name:
-													flag_excluse=1
-													break
-											Trace.Write("flag_excluse_J"+str(flag_excluse))
-											if flag_excluse==1:
-												subTabName = "New Parts"
-									elif subTabName == 'Service Parts List':
-										subTabName = ""
-										Trace.Write(str(service_id)+"---TreeParam-- -"+str(TreeParam)+"----"+str(NodeText))
-										if str(service_id) == "bar":
-											service_id = NodeText.split('/>')[1]
-											Product.SetGlobal('service_id_for_parts_list',str(service_id))
-										table_name = "SAQTSE"
-										service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = service_id))
-										if service_entitlement_obj is not None:
-											updateentXML = service_entitlement_obj.ENTITLEMENT_XML
-											flag_excluse=0
-											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-											pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
-											pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
-											for m in re.finditer(pattern_tag, updateentXML):
-												sub_string = m.group(1)
-												get_ent_id =re.findall(pattern_id,sub_string)
-												get_ent_name=re.findall(pattern_name,sub_string)
-												if get_ent_id and get_ent_name:
-													flag_excluse=1
-													break
-											if flag_excluse==1:
-												subTabName = "Exclusions"
-										#if entitlement_obj_temp:
-										#entitlement_obj = Sql.GetFirst("select ENTITLEMENT_ID,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML from {table_name} (nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' and SERVICE_ID = '{service_id}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_DISPLAY_VALUE IN ('Some Exclusions','Some Inclusions') AND ( ENTITLEMENT_ID like 'AGS_%TSC_NONCNS' OR ENTITLEMENT_ID like 'AGS_%TSC_CONSUM' OR ENTITLEMENT_ID like 'AGS_%NON_CONSUMABLE')".format(table_name = table_name ,contract_quote_record_id = contract_quote_record_id,quote_revision_record_id = quote_revision_record_id,service_id = service_id))
-										#if entitlement_obj is not None and entitlement_obj.ENTITLEMENT_DISPLAY_VALUE == "Some Exclusions":
-											#Trace.Write('2101------------')
-											#subTabName = str(getRightView.SUBTAB_NAME)
-										#Trace.Write("**2045 Subtab-->"+str(subTabName))
-									# elif subTabName == 'New Parts Only':
+									# elif subTabName == 'PM Events' and '/>Z' in NodeText:
 									# 	subTabName = ""
-									# 	Trace.Write(str(service_id)+"---TreeParam-- -"+str(TreeParam)+"----"+str(NodeText))
-									# 	#if TreeParam is not None:
-									# 	#service_id = TreeParam
+									# 	Trace.Write("service_id          "+str(NodeText))
+									# 	if '/>Z' in NodeText:
+									# 		service_id = NodeText.split('/>')[1]
+									# 	service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id))
+									# 	if service_entitlement_obj is not None:
+									# 		updateentXML = service_entitlement_obj.ENTITLEMENT_XML
+									# 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+									# 		pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
+									# 		pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
+									# 		for value in re.finditer(pattern_tag, updateentXML):
+									# 			sub_string = value.group(1)
+									# 			pm_event_attribute_id =re.findall(pattern_id,sub_string)
+									# 			pm_event_attribute_value =re.findall(pattern_name,sub_string)
+									# 			if pm_event_attribute_id and pm_event_attribute_value:
+									# 				subTabName = 'PM Events'
+									# 				break   
+									# elif subTabName == 'New Parts':
+									# 	subTabName = ""
 									# 	if str(service_id) == "bar":
 									# 		service_id = NodeText.split('/>')[1]
-									# 		#service_id = TreeParam
-
-									# 	table_name = "SAQTSE"
-									# 	entitlement_obj = Sql.GetFirst("select ENTITLEMENT_ID,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML from {table_name} (nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' and SERVICE_ID = '{service_id}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_DISPLAY_VALUE IN ('Yes') AND ( ENTITLEMENT_ID like 'AGS_%TSC_RPPNNW')".format(table_name = table_name ,contract_quote_record_id = contract_quote_record_id,quote_revision_record_id = quote_revision_record_id,service_id = service_id))
-									# 	if entitlement_obj is not None and entitlement_obj.ENTITLEMENT_DISPLAY_VALUE == "Yes":
-									# 		subTabName = str(getRightView.SUBTAB_NAME)
-										#Trace.Write("**2045 Subtab-->"+str(subTabName))
-									# elif subTabName == 'Spare Parts':
-									# 	Trace.Write("NodeText spare parts"+str(NodeText))
+									# 	service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = service_id))
+									# 	if service_entitlement_obj is not None:
+									# 		updateentXML = service_entitlement_obj.ENTITLEMENT_XML
+									# 		flag_excluse=0
+									# 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+									# 		pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
+									# 		pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
+									# 		for j in re.finditer(pattern_tag, updateentXML):
+									# 			sub_string = j.group(1)
+									# 			get_ent_id =re.findall(pattern_id,sub_string)
+									# 			get_ent_name=re.findall(pattern_name,sub_string)
+									# 			if get_ent_id and get_ent_name:
+									# 				flag_excluse=1
+									# 				break
+									# 		Trace.Write("flag_excluse_J"+str(flag_excluse))
+									# 		if flag_excluse==1:
+									# 			subTabName = "New Parts"
+									# elif subTabName == 'Service Parts List':
 									# 	subTabName = ""
-									# 	if NodeText:
-									# 		service_id = NodeText.split('-')[1].strip()
-									# 		spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIFP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id,service_id))
-									# 		if spare_parts_object is not None:
-									# 			if spare_parts_object.cnt > 0:
-									# 				subTabName = str(getRightView.SUBTAB_NAME)
-									elif subTabName == 'Fab Parts List':
-										subTabName = ""
-										Trace.Write("fab service list---"+str(NodeText))
-										#Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
-										entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
-										if entitlement_obj is None:
-											entitlement_obj=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{fablocation_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),fablocation_id = Product.GetGlobal('fablocation_id_for_parts_list'),NodeText = NodeText))
-										if entitlement_obj is not None:
-											updateentXML = entitlement_obj.ENTITLEMENT_XML
-											flag_excluse=0
+									# 	Trace.Write(str(service_id)+"---TreeParam-- -"+str(TreeParam)+"----"+str(NodeText))
+									# 	if str(service_id) == "bar":
+									# 		service_id = NodeText.split('/>')[1]
+									# 		Product.SetGlobal('service_id_for_parts_list',str(service_id))
+									# 	table_name = "SAQTSE"
+									# 	service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = service_id))
+									# 	if service_entitlement_obj is not None:
+									# 		updateentXML = service_entitlement_obj.ENTITLEMENT_XML
+									# 		flag_excluse=0
+									# 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+									# 		pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+									# 		pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
+									# 		for m in re.finditer(pattern_tag, updateentXML):
+									# 			sub_string = m.group(1)
+									# 			get_ent_id =re.findall(pattern_id,sub_string)
+									# 			get_ent_name=re.findall(pattern_name,sub_string)
+									# 			if get_ent_id and get_ent_name:
+									# 				flag_excluse=1
+									# 				break
+									# 		if flag_excluse==1:
+									# 			subTabName = "Exclusions"
+									# elif subTabName in ('Greenbook Inclusions','Service Inclusions'):
+									# 	subTabName = ""
+									# 	whr_str_greenbook =""
+									# 	Trace.Write("service_id-inclusion-- "+str(NodeText))
+									# 	if subTabName == 'Service Inclusions':
+									# 		service_id = NodeText.split('/>')
+									# 		service_id = service_id[len(service_id) -1]
+									# 	else:
+									# 		service_id = Product.GetGlobal("SERVICE")
+									# 	if subTabName == 'Greenbook Inclusions':
+									# 		whr_str_greenbook = " AND GREENBOOK = '{NodeText}'"
+										
+									# 	service_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' {greenbook} """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id,greenbook = whr_str_greenbook))
+									# 	if service_entitlement_xml and service_id =='Z0091':
+									# 		updateentXML = service_entitlement_xml.ENTITLEMENT_XML
+									# 		flag_excluse=0
+									# 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+									# 		pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
+									# 		pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
+									# 		for m in re.finditer(pattern_tag, updateentXML):
+									# 			sub_string = m.group(1)
+									# 			get_ent_id =re.findall(pattern_id,sub_string)
+									# 			get_ent_name=re.findall(pattern_name,sub_string)
+									# 			if get_ent_id and get_ent_name:
+									# 				flag_excluse=1
+									# 				break
+									# 		if flag_excluse==1:
+									# 			subTabName = "Inclusions"
+									# elif subTabName == 'Green Parts List':
+									# 	Trace.Write("Green service list---"+str(NodeText))
+									# 	subTabName = ""
+									# 	service_id = Product.GetGlobal("SERVICE")
+									# 	greenbook_entitlement_object=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
+									# 	if greenbook_entitlement_object is not None:
+									# 		updateentXML = greenbook_entitlement_object.ENTITLEMENT_XML
+									# 		flag_excluse=0
+									# 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+									# 		pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW)</ENTITLEMENT_ID>')
+									# 		pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions|Yes)</ENTITLEMENT_DISPLAY_VALUE>')
+									# 		for m in re.finditer(pattern_tag, updateentXML):
+									# 			sub_string = m.group(1)
+									# 			get_ent_id =re.findall(pattern_id,sub_string)
+									# 			get_ent_name=re.findall(pattern_name,sub_string)
+									# 			if get_ent_id and get_ent_name:
+									# 				flag_excluse=1
+									# 				Trace.Write("Green flag_excluse11111111"+str(flag_excluse))
+									# 				break
+									# 		if flag_excluse==1:
+									# 			subTabName = "Exclusions"
+									# 	Trace.Write("subTabName Green service list---"+str(subTabName))
+									
+									elif (subTabName in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','New Parts') :
+										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName))
+										subtab_temp_variable = subTabName 
+										whr_str_greenbook =""
+										ent_table =""
+										subTabName =""
+										if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText :
+											service_id = NodeText.split('/>')
+											service_id = service_id[len(service_id) -1]
+											ent_table ="SAQTSE"
+										else:
+											ent_table ="SAQSGE"
+											service_id = Product.GetGlobal("SERVICE")
+											whr_str_greenbook = " AND GREENBOOK = '{}'".format(NodeText)
+												
+										get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' {whr_str_greenbook}""".format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id,ent_table = ent_table,whr_str_greenbook = whr_str_greenbook ))
+										if get_entitlement_xml :
 											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-											pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW)</ENTITLEMENT_ID>')
-											pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions|Yes)</ENTITLEMENT_DISPLAY_VALUE>')
-											for m in re.finditer(pattern_tag, updateentXML):
-												sub_string = m.group(1)
-												get_ent_id =re.findall(pattern_id,sub_string)
-												get_ent_name=re.findall(pattern_name,sub_string)
-												if get_ent_id and get_ent_name:
-													flag_excluse=1
-													Trace.Write("fab flag_excluse11111111"+str(flag_excluse))
-													break
-											if flag_excluse==1:
-												subTabName = "Parts List"
-										#subTabName = "Parts List"
-										Trace.Write("subTabName fab service list---"+str(subTabName))
-									elif subTabName == 'Green Parts List':
-										Trace.Write("Green service list---"+str(NodeText))
-										subTabName = ""
-										service_id = Product.GetGlobal("SERVICE")
-										#CQQTMODULE.entitlement_service_dictonary
-										# if	entitlement_service_dictonary.get(service_id) == 1:
-										# 	subTabName = "Parts List"
-										# if	entitlement_service_dictonary.get(service_id) == 0:
-										# 	subTabName = " "
-										# if	Quote.GetGlobal("Greenbook_Entitlement") == "Yes":
-										greenbook_entitlement_object=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
-										if greenbook_entitlement_object is not None:
-											updateentXML = greenbook_entitlement_object.ENTITLEMENT_XML
-											flag_excluse=0
-											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-											pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW)</ENTITLEMENT_ID>')
-											pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions|Yes)</ENTITLEMENT_DISPLAY_VALUE>')
-											for m in re.finditer(pattern_tag, updateentXML):
-												sub_string = m.group(1)
-												get_ent_id =re.findall(pattern_id,sub_string)
-												get_ent_name=re.findall(pattern_name,sub_string)
-												if get_ent_id and get_ent_name:
-													flag_excluse=1
-													Trace.Write("Green flag_excluse11111111"+str(flag_excluse))
-													break
-											if flag_excluse==1:
-												subTabName = "Exclusions"
-										Trace.Write("subTabName Green service list---"+str(subTabName))
+											pattern_id =""
+											pattern_name =""
+											subtab_temp =""
+											if subtab_temp_variable == 'PM Events' and ent_table =="SAQTSE":
+												# Trace.Write(" PM Events")
+												pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
+												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
+												subtab_temp ="PM Events"
+											elif subtab_temp_variable == 'New Parts':
+												Trace.Write(" New Parts inside")
+												
+												pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
+												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
+												subtab_temp ="New Parts"
+											elif subtab_temp_variable in ('Service Parts List','Green Parts List') and service_id !='Z0092' :
+												# Trace.Write(" Parts List inside")
+												pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
+												subtab_temp ="Exclusions"
+											elif subtab_temp_variable in ('Service Parts List','Green Parts List') and service_id =='Z0092' :
+												# Trace.Write(" Parts List inside")
+												pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
+												subtab_temp ="Exclusions"
+											elif subtab_temp_variable in ('Greenbook Inclusions','Service Inclusions') and service_id =='Z0092':
+												Trace.Write(" Greenbook Inclusions")
+												pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
+												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
+												subtab_temp ="Inclusions"
+											if pattern_id and pattern_name:
+												Trace.Write("inside ent tabs"+str(subtab_temp))
+												updateentXML = get_entitlement_xml.ENTITLEMENT_XML
+												flag_excluse=0
+												
+												for m in re.finditer(pattern_tag, updateentXML):
+													sub_string = m.group(1)
+													get_ent_id =re.findall(pattern_id,sub_string)
+													get_ent_name=re.findall(pattern_name,sub_string)
+													if get_ent_id and get_ent_name:
+														flag_excluse=1
+														break
+												if flag_excluse==1 and subtab_temp:
+													Trace.Write("subtab_temp_j"+str(subtab_temp))
+													subTabName = subtab_temp
+									
+
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 										Trace.Write("NodeText spare parts"+str(NodeText))
 										subTabName = ""
@@ -2442,7 +2473,15 @@ class TreeView:
 										addon_obj = None
 										if NodeText.startswith('Z'):
 											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText,quote_revision_record_id))
-										
+										if SubNodeName == "GREENBOOK":
+											Trace.Write("GREENBOOK NodeText ---"+str(NodeText))
+											if '>' in NodeText:
+												serviceid=NodeText.split('>')[1]
+											else:
+												serviceid=NodeText
+											Subwhere_string += " AND SERVICE_ID = '{}' ".format(serviceid)
+											Quote.SetGlobal("SERVICE",serviceid)
+											
 										if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG','Z0007_AG'):                                      
 											Subwhere_string += " AND SERVICE_ID = '{}' ".format(NodeText)
 											Quote.SetGlobal("SERVICE",NodeText)
@@ -2682,7 +2721,6 @@ class TreeView:
 										apps = Product.GetGlobal("APPS")
 										Subwhere_string += " AND APP_ID ='{}'".format(str(apps))                                        
 									else:
-										#Trace.Write('Subwhere_string-----'+str(NodeText))
 										Product.SetGlobal("ParentNodeLevel",NodeText)
 										#A055S000P01-9646 CODE STARTS..
 										Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0046' AND SERVICE_ID != 'Z0101'".format(NodeText,quote_revision_record_id)
@@ -2921,39 +2959,10 @@ class TreeView:
 								RelatedName = getRightView.RELATED_LIST_NAME
 								# ChildDict["id"] = RelatedId
 								Trace.Write("Service Parts List-----"+str(subTabName))
-								if subTabName == 'Fab Parts List':
-									subTabName = ""
-									Trace.Write("fab service list---"+str(NodeText))
-									#Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
-									entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
-									if entitlement_obj is None: 
-										entitlement_obj=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{fablocation_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),fablocation_id = Product.GetGlobal('fablocation_id_for_parts_list'),NodeText = NodeText))
-									if entitlement_obj is not None:
-										updateentXML = entitlement_obj.ENTITLEMENT_XML
-										flag_excluse=0
-										pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-										pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW)</ENTITLEMENT_ID>')
-										pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions|Yes)</ENTITLEMENT_DISPLAY_VALUE>')
-										for m in re.finditer(pattern_tag, updateentXML):
-											sub_string = m.group(1)
-											get_ent_id =re.findall(pattern_id,sub_string)
-											get_ent_name=re.findall(pattern_name,sub_string)
-											if get_ent_id and get_ent_name:
-												flag_excluse=1
-												Trace.Write("fab flag_excluse11111111"+str(flag_excluse))
-												break
-										if flag_excluse==1:
-											subTabName = "Parts List"
-								elif subTabName == 'Green Parts List':
+								if subTabName == 'Green Parts List':
 									Trace.Write("Green service list---"+str(NodeText))
 									subTabName = ""
 									service_id = Product.GetGlobal("SERVICE")
-									#CQQTMODULE.entitlement_service_dictonary
-									# if	entitlement_service_dictonary.get(service_id) == 1:
-									# 	subTabName = "Parts List"
-									# if	entitlement_service_dictonary.get(service_id) == 0:
-									# 	subTabName = " "
-									# if	Quote.GetGlobal("Greenbook_Entitlement") == "Yes":
 									greenbook_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
 									if greenbook_entitlement_object is not None:
 										updateentXML = greenbook_entitlement_object.ENTITLEMENT_XML

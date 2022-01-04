@@ -167,7 +167,6 @@ class approvalCenter:
 			else:
 				UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.COMPLETED_BY = '{UserName}',ACACHR.COMPLETEDBY_RECORD_ID='{UserId}',COMPLETED_DATE = NULL WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
 			Sql.RunQuery(UPDATE_ACACHR)
-
 			if str(Getchaintype.APPROVAL_METHOD).upper() == "PARALLEL STEP APPROVAL":
 				Curapprovestep = Sql.GetFirst(
 					" SELECT ACAPTX.* FROM ACAPTX (NOLOCK) WHERE APPROVAL_TRANSACTION_RECORD_ID = '{getCpqId}' AND ARCHIVED = 0".format(
@@ -235,7 +234,7 @@ class approvalCenter:
 						"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 								ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL
 								FROM ACACSS (NOLOCK)
-								INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID = SYOBJD.RECORD_ID
+								INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_RECORD_ID = SYOBJD.PARENT_OBJECT_RECORD_ID
 								INNER JOIN SYOBJH ON SYOBJH.OBJECT_NAME = SYOBJD.OBJECT_NAME
 								INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APROBJ_LABEL = SYOBJH.LABEL
 								WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}'
@@ -245,8 +244,8 @@ class approvalCenter:
 					)
 					if GetCurStatus:
 						
-						MainObjUpdateQuery = """UPDATE {ObjName} SET
-							{ApiName} = '{statusUpdate}'
+						MainObjUpdateQuery = """UPDATE SAQTRV SET
+							REVISION_STATUS = 'APPROVED'
 							WHERE {primaryKey} = '{Primaryvalue}' """.format(
 							statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 							ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -267,10 +266,9 @@ class approvalCenter:
 							UserName=str(self.UserName),
 						)
 						c = Sql.RunQuery(UpdateApproverv)
+						response = self.cbcmailtrigger()
 						getQuote = Sql.GetFirst(
-							"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
-							+ str(GetCurStatus.APRTRXOBJ_RECORD_ID)
-							+ "' AND QTEREV_RECORD_ID = '{}'".format(self.quote_revision_record_id)
+							"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE QTEREV_RECORD_ID = '{}'".format(self.quote_revision_record_id)
 						)
 						if getQuote.QUOTE_STATUS == "APPROVED":
 							
@@ -390,11 +388,12 @@ class approvalCenter:
 								d = Sql.RunQuery(UpdateTrans)
 								approvetresponse = self.sendmailNotification("Request")
 					else:
+						Trace.Write('###393')
 						GetCurStatus = Sql.GetFirst(
 							"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 								ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL
 								FROM ACACSS (NOLOCK)
-								INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID = SYOBJD.RECORD_ID
+								INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_RECORD_ID = SYOBJD.PARENT_OBJECT_RECORD_ID
 								INNER JOIN SYOBJH ON SYOBJH.OBJECT_NAME = SYOBJD.OBJECT_NAME
 								INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APROBJ_LABEL = SYOBJH.LABEL
 								WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}'
@@ -408,16 +407,16 @@ class approvalCenter:
 							statusupdate = True
 							not_approved_transaction_obj = Sql.GetFirst(
 								"""SELECT count(CpqTableEntryId) as cnt FROM ACAPTX (NOLOCK)
-								   WHERE APRTRXOBJ_ID = '{QuoteId}' AND ARCHIVED = 0 AND APPROVALSTATUS NOT IN ('APPROVED','APPROVAL NO LONGER REQUIRED')""".format(
-								   QuoteId=str(quote_obj.QUOTE_ID)
-								   )
+								WHERE APRTRXOBJ_ID = '{QuoteId}' AND ARCHIVED = 0 AND APPROVALSTATUS NOT IN ('APPROVED','APPROVAL NO LONGER REQUIRED')""".format(
+								QuoteId=str(quote_obj.QUOTE_ID)
+								)
 							)
 							if not_approved_transaction_obj and not_approved_transaction_obj.cnt > 0:
 								statusupdate = False
 							
 							if statusupdate == True:
-								MainObjUpdateQuery = """UPDATE {ObjName} SET
-									{ApiName} = '{statusUpdate}'
+								MainObjUpdateQuery = """UPDATE SAQTRV SET
+									REVISION_STATUS = 'APPROVED' 
 									WHERE {primaryKey} = '{Primaryvalue}' """.format(
 									statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 									ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -439,10 +438,9 @@ class approvalCenter:
 								UserName=str(self.UserName),
 							)
 							c = Sql.RunQuery(UpdateApproverv)
+							response = self.cbcmailtrigger()
 							getQuote = Sql.GetFirst(
-								"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
-								+ str(GetCurStatus.APRTRXOBJ_RECORD_ID)
-								+ "' AND QTEREV_RECORD_ID = '{}'".format(self.quote_revision_record_id)
+								"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE QTEREV_RECORD_ID = '{}'".format(self.quote_revision_record_id)
 							)
 							if getQuote.QUOTE_STATUS == "APPROVED":
 								
@@ -1566,7 +1564,7 @@ class approvalCenter:
 				approval_chain = Param.approval_chain
 			except:
 				approval_chain = ""
-			
+			Trace.Write("Approval Chain---> "+str(approval_chain))
 			##approval image based on chain step ends
 			Trace.Write("CurrentTabName_J "+str(CurrentTabName))
 			Trace.Write("From Seg "+str(FromSeg))
@@ -1667,8 +1665,8 @@ class approvalCenter:
 								"""select max(ACAPTX.APRCHNSTP_ID) as MaxStep, max(ACAPTX.APPROVAL_ROUND) as appround,ACAPTX.APRCHN_ID,ACAPTX.REQUESTOR_COMMENTS 
 									from ACAPTX (nolock)
 									inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
-									where ACAPMA.APRTRXOBJ_RECORD_ID = '{revision_rec_id}' AND ACAPMA.APRCHN_RECORD_ID = '{chain_rec_id}' GROUP BY ACAPTX.APRCHN_ID,ACAPTX.REQUESTOR_COMMENTS""".format(
-									revision_rec_id=  self.quote_revision_record_id,chain_rec_id = GetMaxStep.APRCHN_RECORD_ID
+									where ACAPMA.APRTRXOBJ_RECORD_ID = '{revision_rec_id}' AND ACAPMA.APRCHN_ID = '{chain_rec_id}' GROUP BY ACAPTX.APRCHN_ID,ACAPTX.REQUESTOR_COMMENTS""".format(
+									revision_rec_id=  self.quote_revision_record_id,chain_rec_id = approval_chain
 								)
 							)
 						get_chain_max_rounds.append(GetMaxQuery)   ##to get max rounds of all chains
@@ -1775,7 +1773,9 @@ class approvalCenter:
 					quote_record = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id = self.quote_revision_record_id))
 					##Max_Round is commented and added below to get max round for particular chain
 					#Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}'".format(quote_record = quote_record.QUOTE_ID))
+				Trace.Write("max="+str(GetMaxQuery.MaxStep))
 				for i in range(1, int(GetMaxQuery.MaxStep) + 1):
+					Trace.Write("VALUE OF i="+str(i))
 					if i > 1:
 						if str(FromSeg) == "True":
 							Htmlstr += '<div class="row dispflex">'
@@ -2992,31 +2992,31 @@ class approvalCenter:
 						values=str(GETFPM.QUANTITY)
 				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice:
+					if getnetprice.NET_PRICE_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice:
+					if getnetprice.NET_PRICE_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				elif str(eachsplit[1]) == "CREDIT_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT CREDIT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice:
+					if getnetprice.CREDIT_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.CREDIT_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				elif str(eachsplit[1]) == "TAX_AMOUNT_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT TAX_AMOUNT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice:
+					if getnetprice.TAX_AMOUNT_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.TAX_AMOUNT_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				elif str(eachsplit[1]) == "NET_VALUE_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice:
+					if getnetprice.NET_VALUE_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_VALUE_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
@@ -3118,6 +3118,35 @@ class approvalCenter:
 		#    )
 		#    Trace.Write(self.exceptMessage)
 		return True
+	
+	def cbcmailtrigger(self):
+		revision_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+		if revision_status.REVISION_STATUS=="APPROVED":
+			try:
+				LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
+				MANAGER_DETAILS=Sql.GetFirst("SELECT EMAIL,MEMBER_NAME,QUOTE_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' ")
+				mailClient = SmtpClient()
+				mailClient.Host = "smtp.gmail.com"
+				mailClient.Port = 587
+				mailClient.EnableSsl = "true"
+				mailCred = NetworkCredential()
+				mailCred.UserName = str(LOGIN_CRE.USER_NAME)
+				mailCred.Password = str(LOGIN_CRE.PASSWORD)
+				mailClient.Credentials = mailCred
+				toEmail = MailAddress(str(MANAGER_DETAILS.EMAIL))
+				fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
+				msg = MailMessage(fromEmail, toEmail)
+				msg.Subject = "Clean Booking Checklist Completion"
+				msg.IsBodyHtml = True
+				msg.Body = "<!DOCTYPE HTML><html><p>Hi "+str(MANAGER_DETAILS.MEMBER_NAME)+",</p><p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kindly complete the Clean Booking Checklist of the Quote <b>"+str(MANAGER_DETAILS.QUOTE_ID)+"</b> in order to proceed with the Contract Creation in CRM</p></html>"
+				mailClient.Send(msg)
+			except Exception as e:
+				self.exceptMessage = "ACSECTACTN : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
+				Trace.Write(self.exceptMessage)
+		else:
+			Trace.Write('CBC MAIL TRIGGER : QUOTE NOT APPROVED YET')
+		return True
+
 	def mailtrigger(self, Subject, mailBody, recepient):
 		try:
 			LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
@@ -3468,4 +3497,7 @@ elif ACTION in ["APPROVEBTN", "REJECTBTN"]:
 elif ACTION in ["BULKAPPROVE", "BULKREJECT"]:
 	ApproveDesc = Param.ApproveDesc
 	ApiResponse = ApiResponseFactory.JsonResponse(objDef.BulkAction(ACTION, ApproveDesc))
+elif ACTION == "CBC_MAIL_TRIGGER":
+    Trace.Write('ACSECTACTN: CBC_MAIL_TRIGGER')
+    objDef.cbcmailtrigger()
 # A043S001P01-13245 end

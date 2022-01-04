@@ -36,6 +36,7 @@ try:
 		
 			rebuilt_data = {}
 			primaryQueryItems = SqlHelper.GetFirst("SELECT NEWID() AS A")
+			#Log.Info("Param.CPQ_Column----"+str(Param.CPQ_Column))
 			for table_dict in Param.CPQ_Columns: 
 				tbl = str(table_dict.Key)
 				
@@ -96,7 +97,7 @@ try:
 							price = root1[inv]			 
 							break
 					
-			insert_data = []
+			
 			batch_group_record_id = str(Guid.NewGuid()).upper()
 			contract_quote_record_id = None				
 
@@ -106,7 +107,8 @@ try:
 				#Log.Info("type condition--->")
 				price = [price]
 			#Log.Info("456789 type(price) --->"+str(type(price)))
-			for i in price:		
+			for i in price:	
+				insert_data = []	
 				Itemidinfo = str(i["itemId"]).split(";")
 				Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
 				QUOTE = str(Itemidinfo[1])
@@ -114,7 +116,7 @@ try:
 				contract_quote_record_id = None		
 				Taxrate = ''
 				Taxvalue = ''		
-				GetPricingProcedure = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE,DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, GLOBAL_CURRENCY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}'".format(QUOTE))
+				GetPricingProcedure = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE,DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, GLOBAL_CURRENCY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID,EXCHANGE_RATE FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}'".format(QUOTE))
 				getservicerecord = Sql.GetFirst("select QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
 				if GetPricingProcedure is not None:
 					#PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
@@ -125,6 +127,8 @@ try:
 					div = GetPricingProcedure.DIVISION_ID
 					exch = GetPricingProcedure.EXCHANGE_RATE_TYPE
 					contract_quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
+					revision_rec_id = GetPricingProcedure.QTEREV_RECORD_ID
+					exch_rate = GetPricingProcedure.EXCHANGE_RATE
 				#Log.Info("123 i[conditions] -->"+str(type(i['conditions'])))
 				Taxrate = '0.00'
 				getuomrec_val =''
@@ -167,96 +171,189 @@ try:
 				'''
 				
 				insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate)))
-			
-			#Log.Info("4521 batch_group_record_id --->"+str(batch_group_record_id))
-			#Log.Info("4521 contract_quote_record_id --->"+str(contract_quote_record_id))
-			getpartsdata = Sql.GetFirst("select * from SAQIFP where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
-			if getpartsdata:
-				Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE) VALUES {}".format(', '.join(map(str, insert_data))))			
-				Log.Info('getpartsdata -->'+str(getpartsdata.PART_NUMBER))
-
-				if currencyType == 'docCurrency':
-					Sql.RunQuery("""UPDATE SAQIFP
-							SET PRICING_STATUS = 'ACQUIRED',TAX = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)- ((SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))),TAX_PERCENTAGE = convert(decimal(13,5),CASE WHEN ISNULL(SYSPBT.TAXRATE,'')='' THEN NULL ELSE SYSPBT.TAXRATE END) ,EXTENDED_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY,UNIT_PRICE = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))
-							FROM SAQIFP 				
-							JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQIFP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID
-							WHERE SAQIFP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
-						""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
-					GetSum = SqlHelper.GetFirst( "SELECT SUM(UNIT_PRICE_INGL_CURR) AS TOTAL FROM SAQIFP WHERE QUOTE_ID = '{}' ".format(QUOTE))
-					Log.Info("QTPOSTPTPR TOTAL ==> "+str(GetSum.TOTAL))					
-					Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = SAQIFP.UNIT_PRICE, NET_PRICE_INGL_CURR={total} FROM SAQRIT
-					JOIN SAQIFP (NOLOCK) ON SAQIFP.PART_NUMBER = SAQRIT.OBJECT_ID AND SAQIFP.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' SAQRIT.OBJECT_ID='{PartNo}'""".format(total=GetSum.TOTAL, QuoteRecordId=contract_quote_record_id,PartNo=getpartsdata.PART_NUMBER))
+				Log.Info("UNIT_PRICE---22---"+str(insert_data))
+				#Log.Info("4521 batch_group_record_id --->"+str(batch_group_record_id))
+				#Log.Info("4521 contract_quote_record_id --->"+str(contract_quote_record_id))
+				getpartsdata =''
+				get_ancillary_spare = ''
+				getpartsdata = Sql.GetFirst("select * from SAQIFP where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+				if not getpartsdata:
+					get_ancillary_spare = Sql.GetFirst("SELECT * FROM SAQRIP WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+				if not getpartsdata and  not get_ancillary_spare:
+					getpartsdata = Sql.GetFirst("select * from SAQSPT where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
 					
-				else:
-					Sql.RunQuery("""UPDATE SAQIFP
-							SET PRICING_STATUS = 'ACQUIRED',TAX_AMOUNT_INGL_CURR = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)- ((SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))),UNIT_PRICE_INGL_CURR = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))
-							FROM SAQIFP 				
-							JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQIFP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID
-							WHERE SAQIFP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
-						""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
-					
-					GetSum = SqlHelper.GetFirst( "SELECT SUM(UNIT_PRICE_INGL_CURR) AS TOTAL FROM SAQIFP WHERE QUOTE_ID = '{}' ".format(QUOTE))
-					Log.Info("QTPOSTPTPR TOTAL ==> "+str(GetSum.TOTAL))
-					Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = SAQIFP.UNIT_PRICE, NET_PRICE_INGL_CURR={total} FROM SAQRIT
-					JOIN SAQIFP (NOLOCK) ON SAQIFP.PART_NUMBER = SAQRIT.OBJECT_ID AND SAQIFP.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' SAQRIT.OBJECT_ID='{PartNo}'""".format(total=GetSum.TOTAL, QuoteRecordId=contract_quote_record_id,PartNo=getpartsdata.PART_NUMBER))
-					
+				if getpartsdata or get_ancillary_spare:
+					Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE) VALUES {}".format(', '.join(map(str, insert_data))))			
+					#Log.Info('getpartsdata -->'+str(getpartsdata.PART_NUMBER))
 				
-				Sql.RunQuery(
-							"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-								BatchGroupRecordId=batch_group_record_id
+					if getpartsdata:
+						if currencyType == 'docCurrency':
+							Sql.RunQuery("""UPDATE SAQSPT SET UNIT_PRICE = SYSPBT.UNIT_PRICE ,EXTENDED_UNIT_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQSPT 				
+									JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID
+									WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
+								""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
+							Sql.RunQuery("""UPDATE SAQIFP
+									SET PRICING_STATUS = 'ACQUIRED',TAX = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)- ((SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))),TAX_PERCENTAGE = convert(decimal(13,5),CASE WHEN ISNULL(SYSPBT.TAXRATE,'')='' THEN NULL ELSE SYSPBT.TAXRATE END) ,EXTENDED_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY,UNIT_PRICE = SYSPBT.UNIT_PRICE
+									FROM SAQIFP 				
+									JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQIFP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID
+									WHERE SAQIFP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
+								""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
+							#UNIT_PRICE = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100)
+							#GetSum = SqlHelper.GetFirst( "SELECT SUM(UNIT_PRICE_INGL_CURR) AS TOTAL FROM SAQIFP WHERE QUOTE_ID = '{}' ".format(QUOTE))
+							#Log.Info("QTPOSTPTPR TOTAL ==> "+str(GetSum.TOTAL))					
+							#Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = SAQIFP.UNIT_PRICE, NET_PRICE_INGL_CURR={total} FROM SAQRIT
+							#JOIN SAQIFP (NOLOCK) ON SAQIFP.PART_NUMBER = SAQRIT.OBJECT_ID AND SAQIFP.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' SAQRIT.OBJECT_ID='{PartNo}'""".format(total=GetSum.TOTAL, QuoteRecordId=contract_quote_record_id,PartNo=getpartsdata.PART_NUMBER))
+							##net price update
+							GetEquipment_count = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) AS CNT FROM SAQRIT WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev}' AND SERVICE_ID = '{SERVICE_ID}'".format(QuoteRecordId = contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=getpartsdata.SERVICE_ID))
+							if GetEquipment_count:
+								GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE)/"+str(GetEquipment_count.CNT)+" AS TOTAL_UNIT, SUM(EXTENDED_UNIT_PRICE)/"+str(GetEquipment_count.CNT)+"  AS TOTAL_EXT FROM SAQSPT WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND (CUSTOMER_ANNUAL_QUANTITY IS NOT NULL AND CUSTOMER_ANNUAL_QUANTITY > 0) ".format( QUOTE,revision_rec_id, getpartsdata.SERVICE_ID))
+								Log.Info("QTPOSTPTPR TOTAL111 ==> "+str(GetSum.TOTAL_UNIT))
+								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE = {total_unit}, NET_PRICE ={total_net} , YEAR_1 ={total_net} FROM SAQRIT
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{SERVICE_ID}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=getpartsdata.SERVICE_ID))
+								Sql.RunQuery("""UPDATE SAQRIT 
+												SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0) 
+												FROM SAQRIT (NOLOCK)
+													WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = getpartsdata.SERVICE_ID ))
+								
+							###calling script for saqris,saqtrv insert
+							#CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
+							
+						else:
+							Sql.RunQuery("""UPDATE SAQSPT SET UNIT_PRICE = SYSPBT.UNIT_PRICE ,EXTENDED_UNIT_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQSPT 				
+									JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID
+									WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
+								""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
+							Sql.RunQuery("""UPDATE SAQIFP
+									SET PRICING_STATUS = 'ACQUIRED',TAX_AMOUNT_INGL_CURR = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)- ((SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))),UNIT_PRICE_INGL_CURR = SYSPBT.UNIT_PRICE,EXTPRI_INGL_CURR = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY
+									FROM SAQIFP 				
+									JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQIFP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID
+									WHERE SAQIFP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
+								""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
+							#,UNIT_PRICE_INGL_CURR = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))
+							#GetSum = SqlHelper.GetFirst( "SELECT SUM(UNIT_PRICE_INGL_CURR) AS TOTAL FROM SAQIFP WHERE QUOTE_ID = '{}' ".format(QUOTE))
+							#Log.Info("QTPOSTPTPR TOTAL ==> "+str(GetSum.TOTAL))
+							#Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = SAQIFP.UNIT_PRICE, NET_PRICE_INGL_CURR={total} FROM SAQRIT
+							#JOIN SAQIFP (NOLOCK) ON SAQIFP.PART_NUMBER = SAQRIT.OBJECT_ID AND SAQIFP.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' SAQRIT.OBJECT_ID='{PartNo}'""".format(total=GetSum.TOTAL, QuoteRecordId=contract_quote_record_id,PartNo=getpartsdata.PART_NUMBER))
+							##net price update
+							GetEquipment_count = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) AS CNT FROM SAQRIT WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev}' AND SERVICE_ID = '{SERVICE_ID}'".format(QuoteRecordId = contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=getpartsdata.SERVICE_ID))
+							if GetEquipment_count:
+								GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE)/"+str(GetEquipment_count.CNT)+" AS TOTAL_UNIT, SUM(EXTENDED_UNIT_PRICE)/"+str(GetEquipment_count.CNT)+"  AS TOTAL_EXT FROM SAQSPT WHERE  QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND (CUSTOMER_ANNUAL_QUANTITY IS NOT NULL AND CUSTOMER_ANNUAL_QUANTITY > 0)".format( QUOTE,revision_rec_id, getpartsdata.SERVICE_ID))
+								Log.Info("QTPOSTPTPR TOTAL111 ==> "+str(GetSum.TOTAL_UNIT))
+								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = {total_unit}, NET_PRICE_INGL_CURR ={total_net}, YEAR_1_INGL_CURR={total_net}  FROM SAQRIT
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{SERVICE_ID}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=getpartsdata.SERVICE_ID))
+								Sql.RunQuery("""UPDATE SAQRIT 
+												SET NET_VALUE_INGL_CURR = NET_PRICE_INGL_CURR + ISNULL(TAX_AMOUNT, 0) 
+												FROM SAQRIT (NOLOCK)
+													WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = getpartsdata.SERVICE_ID ))
+								
+							###calling script for saqris,saqtrv insert
+							#CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
+							
+					elif get_ancillary_spare:
+						Log.Info("currencyType---"+str(currencyType))	
+						if currencyType == 'docCurrency':
+							Sql.RunQuery("""UPDATE SAQRSP SET UNIT_PRICE = SYSPBT.UNIT_PRICE ,EXTENDED_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQRSP 				
+									JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQRSP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID
+									WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
+								""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
+			
+							##net price update
+							GetEquipment_count = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) AS CNT FROM SAQRIT WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev}' AND SERVICE_ID = '{SERVICE_ID}'".format(QuoteRecordId = contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=get_ancillary_spare.SERVICE_ID))
+							if GetEquipment_count:
+								GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE)/"+str(GetEquipment_count.CNT)+" AS TOTAL_UNIT, SUM(EXTENDED_PRICE)/"+str(GetEquipment_count.CNT)+"  AS TOTAL_EXT FROM SAQRSP WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format( QUOTE,revision_rec_id, get_ancillary_spare.SERVICE_ID))
+								Log.Info("QTPOSTPTPR TOTAL111 ==> "+str(GetSum.TOTAL_UNIT))
+								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE = {total_unit}, NET_PRICE ={total_net}  FROM SAQRIT
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{SERVICE_ID}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=get_ancillary_spare.SERVICE_ID))
+								Sql.RunQuery("""UPDATE SAQRIT 
+												SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0) 
+												FROM SAQRIT (NOLOCK)
+													WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = get_ancillary_spare.SERVICE_ID ))
+								#Log.Info("exch_rate----"+str(exch_rate)+'--'+str(QUOTE))
+								# Sql.RunQuery("""UPDATE SAQRIT 
+								# 		SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(exch_rate)+""" , 
+								# 		NET_VALUE_INGL_CURR = NET_VALUE*"""+str(exch_rate)+""",
+								# 		UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(exch_rate)+"""
+								# 		FROM SAQRIT (NOLOCK)
+								# 			WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}'""".format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = get_ancillary_spare.SERVICE_ID ))
+								
+			
+			
+						else:
+							Sql.RunQuery("""UPDATE SAQRSP SET UNIT_PRICE_INGL_CURR = SYSPBT.UNIT_PRICE ,EXTENDED_PRICE_INGL_CURR = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQRSP 				
+									JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQRSP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID
+									WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
+								""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
+			
+							##net price update
+							GetEquipment_count = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) AS CNT FROM SAQRIT WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev}' AND SERVICE_ID = '{SERVICE_ID}'".format(QuoteRecordId = contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=get_ancillary_spare.SERVICE_ID))
+							if GetEquipment_count:
+								GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE_INGL_CURR)/"+str(GetEquipment_count.CNT)+" AS TOTAL_UNIT, SUM(EXTENDED_PRICE_INGL_CURR)/"+str(GetEquipment_count.CNT)+"  AS TOTAL_EXT FROM SAQRSP WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format( QUOTE,revision_rec_id, get_ancillary_spare.SERVICE_ID))
+								Log.Info("QTPOSTPTPR TOTAL111222 ==> "+str(GetSum.TOTAL_UNIT))
+								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = {total_unit}, NET_PRICE_INGL_CURR ={total_net}  FROM SAQRIT
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{SERVICE_ID}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=get_ancillary_spare.SERVICE_ID))
+								Sql.RunQuery("""UPDATE SAQRIT 
+												SET NET_VALUE_INGL_CURR = NET_PRICE_INGL_CURR + ISNULL(TAX_AMOUNT, 0) 
+												FROM SAQRIT (NOLOCK)
+													WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id, service_id = get_ancillary_spare.SERVICE_ID ))
+
+						
+					Sql.RunQuery(
+								"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+									BatchGroupRecordId=batch_group_record_id
+								)
 							)
-						)
-				end_time = time.time() 
-				Log.Info("CPS PRICING end==> "+str(end_time - start_time) +" QUOTE REC ID----"+str(contract_quote_record_id))
-				'''
-				#UPDATE QUOTE TABLE SAQIFP
+					end_time = time.time() 
+					Log.Info("CPS PRICING end==> "+str(end_time - start_time) +" QUOTE REC ID----"+str(contract_quote_record_id))
+					'''
+					#UPDATE QUOTE TABLE SAQIFP
+					try:
+						update_quote = """UPDATE QT__QTQIFP SET UNIT_PRICE = SAQIFP.UNIT_PRICE, EXTENDED_UNIT_PRICE = SAQIFP.EXTENDED_PRICE,TAX =SAQIFP.TAX  FROM SAQIFP INNER JOIN QT__QTQIFP ON  SAQIFP.PART_NUMBER = QT__QTQIFP.PART_NUMBER AND SAQIFP.QUOTE_ID = QT__QTQIFP.QUOTE_ID WHERE SAQIFP.QUOTE_ID = '{quote}'""".format(quote=QUOTE)
+						Sql.RunQuery(update_quote)
+					except:
+						Log.Info("EXCEPT ERROR QUOTE TABLE UPDATE")
+					#UPDATE SAQITM
+					'''
+				'''	
 				try:
-					update_quote = """UPDATE QT__QTQIFP SET UNIT_PRICE = SAQIFP.UNIT_PRICE, EXTENDED_UNIT_PRICE = SAQIFP.EXTENDED_PRICE,TAX =SAQIFP.TAX  FROM SAQIFP INNER JOIN QT__QTQIFP ON  SAQIFP.PART_NUMBER = QT__QTQIFP.PART_NUMBER AND SAQIFP.QUOTE_ID = QT__QTQIFP.QUOTE_ID WHERE SAQIFP.QUOTE_ID = '{quote}'""".format(quote=QUOTE)
-					Sql.RunQuery(update_quote)
-				except:
-					Log.Info("EXCEPT ERROR QUOTE TABLE UPDATE")
-				#UPDATE SAQITM
-				'''
-			'''	
-			try:
-				total = 0.00
-				onsite = 0.00
-				ext_itm = 0.00
-				tax = 0.00
-				GetQuoteType = SqlHelper.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT WHERE QUOTE_ID = '{}'".format(QUOTE))
-				if  "TOOL" in str(GetQuoteType.QUOTE_TYPE):
-					
-					GetSum = SqlHelper.GetFirst( "SELECT SUM(EXTENDED_PRICE) AS PRICE FROM SAQIFP WHERE QUOTE_ID = '{}' AND SERVICE_ID = 'Z0091'".format(QUOTE))
-					
-					GetTax = SqlHelper.GetFirst("SELECT SUM(TAX) AS TAX FROM SAQIFP WHERE QUOTE_ID = '{}' AND SERVICE_ID = 'Z0091'".format(QUOTE))
-					
-					# Sql.RunQuery("UPDATE SAQITM SET EXTENDED_PRICE = {}, TOTAL_COST = {}, TAX = {}, PRICING_STATUS = 'ACQUIRED' WHERE SAQITM.QUOTE_ID = '{}' AND SAQITM.SERVICE_ID LIKE '%Z0091%'".format(GetSum.PRICE,GetSum.PRICE,GetTax.TAX,QUOTE))
-				Obj_Qty_query = SqlHelper.GetFirst("select count(*) as cnt from SAQIFP(NOLOCK) WHERE  QUOTE_ID = '"+str(QUOTE)+"' ")
+					total = 0.00
+					onsite = 0.00
+					ext_itm = 0.00
+					tax = 0.00
+					GetQuoteType = SqlHelper.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT WHERE QUOTE_ID = '{}'".format(QUOTE))
+					if  "TOOL" in str(GetQuoteType.QUOTE_TYPE):
+						
+						GetSum = SqlHelper.GetFirst( "SELECT SUM(EXTENDED_PRICE) AS PRICE FROM SAQIFP WHERE QUOTE_ID = '{}' AND SERVICE_ID = 'Z0091'".format(QUOTE))
+						
+						GetTax = SqlHelper.GetFirst("SELECT SUM(TAX) AS TAX FROM SAQIFP WHERE QUOTE_ID = '{}' AND SERVICE_ID = 'Z0091'".format(QUOTE))
+						
+						# Sql.RunQuery("UPDATE SAQITM SET EXTENDED_PRICE = {}, TOTAL_COST = {}, TAX = {}, PRICING_STATUS = 'ACQUIRED' WHERE SAQITM.QUOTE_ID = '{}' AND SAQITM.SERVICE_ID LIKE '%Z0091%'".format(GetSum.PRICE,GetSum.PRICE,GetTax.TAX,QUOTE))
+					Obj_Qty_query = SqlHelper.GetFirst("select count(*) as cnt from SAQIFP(NOLOCK) WHERE  QUOTE_ID = '"+str(QUOTE)+"' ")
 
-				#Log.Info('03-03-2021---QT_SAQITM---')
-				update_quote_price = "UPDATE QT__QTQITM SET FORECAST_VALUE = {total}, EXTENDED_UNIT_PRICE = {ext},TAX = {tax} WHERE QT__QTQITM.QUOTE_ID ='{quote}'".format(
-					total=total,
-					ext=ext_itm,
-					quote=QUOTE,
-					tax = tax
-						)
-				Sql.RunQuery(update_quote_price) 
-				Status_query = SqlHelper.GetFirst("select count(*) as cnt from SAQIFP(NOLOCK) WHERE PRICING_STATUS = 'ACQUIRING...'  AND QUOTE_ID = '"+str(QUOTE)+"' ")
+					#Log.Info('03-03-2021---QT_SAQITM---')
+					update_quote_price = "UPDATE QT__QTQITM SET FORECAST_VALUE = {total}, EXTENDED_UNIT_PRICE = {ext},TAX = {tax} WHERE QT__QTQITM.QUOTE_ID ='{quote}'".format(
+						total=total,
+						ext=ext_itm,
+						quote=QUOTE,
+						tax = tax
+							)
+					Sql.RunQuery(update_quote_price) 
+					Status_query = SqlHelper.GetFirst("select count(*) as cnt from SAQIFP(NOLOCK) WHERE PRICING_STATUS = 'ACQUIRING...'  AND QUOTE_ID = '"+str(QUOTE)+"' ")
 
-				if str(Status_query.cnt) == '0':
+					if str(Status_query.cnt) == '0':
 
-					#Log.Info("456789 if QUOTE --->"+str(QUOTE))
+						#Log.Info("456789 if QUOTE --->"+str(QUOTE))
 
-					Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
-					# primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A set PRICING_STATUS = ''ACQUIRED'' FROM SAQITM a where a.QUOTE_ID = ''"+str(QUOTE)+"'' ' ")
+						Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
+						# primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A set PRICING_STATUS = ''ACQUIRED'' FROM SAQITM a where a.QUOTE_ID = ''"+str(QUOTE)+"'' ' ")
 
 
-				ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Part Pricing data succussfully updated."}]})
-			except: 
-				Log.Info("QTPOSTPTPR ERROR---->:" + str(sys.exc_info()[1]))
-				Log.Info("QTPOSTPTPR ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-		'''
-
+					ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Part Pricing data succussfully updated."}]})
+				except: 
+					Log.Info("QTPOSTPTPR ERROR---->:" + str(sys.exc_info()[1]))
+					Log.Info("QTPOSTPTPR ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
+			'''
+			###calling script for saqris,saqtrv insert
+			CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})
 
 except:
 	Log.Info("QTPOSTPTPR ERROR---->:" + str(sys.exc_info()[1]))

@@ -97,7 +97,7 @@ def LoadSummary():
     sec_str += "</div>"
     #Trace.Write("sec_str --->"+str(sec_str))
     
-    getRevisionDetails = Sql.GetFirst("SELECT ISNULL(DISCOUNT_AMOUNT_INGL_CURR,0.00) AS DISCOUNT_AMOUNT_INGL_CURR,ISNULL(TAX_AMOUNT_INGL_CURR,0.00) AS TAX_AMOUNT_INGL_CURR,ISNULL(DISCOUNT_PERCENT,0.00) AS DISCOUNT_PERCENT, ISNULL(SALES_PRICE_INGL_CURR,0.00) AS SALES_PRICE_INGL_CURR,GLOBAL_CURRENCY,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR,ISNULL(CREDIT_INGL_CURR,0.00) AS CREDIT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
+    getRevisionDetails = Sql.GetFirst("SELECT ISNULL(DISCOUNT_AMOUNT_INGL_CURR,0.00) AS DISCOUNT_AMOUNT_INGL_CURR,ISNULL(TAX_AMOUNT_INGL_CURR,0.00) AS TAX_AMOUNT_INGL_CURR,ISNULL(DISCOUNT_PERCENT,0.00) AS DISCOUNT_PERCENT, ISNULL(SALES_PRICE_INGL_CURR,0.00) AS SALES_PRICE_INGL_CURR,GLOBAL_CURRENCY,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR,ISNULL(NET_VALUE_INGL_CURR,0.00) AS NET_VALUE_INGL_CURR,ISNULL(CREDIT_INGL_CURR,0.00) AS CREDIT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
     
     if getRevisionDetails:
         curr = str(getRevisionDetails.GLOBAL_CURRENCY)
@@ -194,10 +194,10 @@ def EditToolIdling():
                         Trace.Write("Idle Exception")
                         sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
                     elif x == "Idle Notice Exception":
-                        sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="number" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
+                        sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="number" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" oninput="this.value|=0">'
                     
                     elif x == "Idle Duration Exception":
-                        sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="number" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
+                        sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="number" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" oninput="this.value|=0">'
                     elif x == "Idling Exception Notes":
                         sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><textarea '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control related_popup_css txtArea light_yellow wid_90" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" maxlength = "255" rows="1" cols="100" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</textarea>'
                     elif x == "Cold Idle Allowed":
@@ -342,6 +342,15 @@ def SaveToolIdling(VALUES):
                 GETDATE() AS CPQTABLEENTRYDATEADDED
                 FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
                 """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,y,x.replace("_"," ")))
+    # Approval Trigger - Start								
+    import ACVIORULES
+    violationruleInsert = ACVIORULES.ViolationConditions()
+    header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+    if header_obj:
+        violationruleInsert.InsertAction(
+                                        header_obj.RECORD_ID, quote_revision_record_id, "SAQTRV"
+                                        )
+    # Approval Trigger - End
     return ""
 
 def NoticeOnChange(IdleNotice):
@@ -352,7 +361,7 @@ def NoticeOnChange(IdleNotice):
         y = getPRTIAV.TOOLIDLING_NAME
             
         secstr = '<tr id = "notice_onchange" data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style="">'
-        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Notice_Exception" type="number" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
+        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Notice_Exception" type="number" style="color:#1B78D2" data-content="" value="" title="" onchange="" oninput="this.value|=0">'
     return secstr
 def DurationOnChange(IdleDuration):
     if IdleDuration == "Restricted Entry(Days)":
@@ -362,7 +371,7 @@ def DurationOnChange(IdleDuration):
         y = getPRTIAV.TOOLIDLING_NAME
             
         secstr = '<tr id = "duration_onchange" data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style="">'
-        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Duration_Exception" type="number" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
+        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Duration_Exception" type="number" style="color:#1B78D2" data-content="" value="" title="" onchange="" oninput="this.value|=0">'
     return secstr
 def ExceptionOnChange(IdlingException):
     if IdlingException == "Yes":
@@ -404,10 +413,24 @@ def HotOnChange(Hot):
             for val in getAllValues:
                 secstr += '<option id="'+x.replace(" ","_")+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
     return secstr
-SubtabName = Param.SUBTAB
-quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
-Action = Param.ACTION
+
+def EditItems():
+    line = []
+    GetLine = Sql.GetList("SELECT LINE FROM SAQRIT(NOLOCK) WHERE (BILLING_TYPE ='VARIABLE' OR BILLING_TYPE ='Variable') AND QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
+    for x in GetLine:
+        line.append(str(x.LINE))
+    
+    return str(line)
+try:
+    SubtabName = Param.SUBTAB
+except:
+    SubtabName = ""
+quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+try:
+    Action = Param.ACTION
+except:
+    Action = ""
 try:
     Trace.Write("try idle notice")
     IdleNotice = str(Param.IDLENOTICE)
@@ -460,4 +483,6 @@ elif SubtabName == "Summary" and Action == "SAVE":
     VALUES = dict(Param.VALUES)
     Trace.Write("values="+str(VALUES))
     ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
+if SubtabName == "Items" and Action == "Edit":
+    ApiResponse = ApiResponseFactory.JsonResponse(EditItems())
 

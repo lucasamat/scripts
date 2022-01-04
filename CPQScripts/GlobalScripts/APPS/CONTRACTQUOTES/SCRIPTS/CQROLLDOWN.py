@@ -240,26 +240,26 @@ def CoveredObjEntitlement():
 			Quote = QuoteHelper.Edit(quote_obj.QUOTE_ID)	
 	except Exception:
 		Log.Info("Exception in Quote Edit") 
-	try:
-		Log.Info("Called CQINSQTITM ==>cqroll "+str(Qt_rec_id))
-		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
-		#Log.Info("Called CQINSQTITM ==>cqroll enddddd "+str(Qt_rec_id))
-	except Exception:
-		Log.Info("Exception in Quote Item insert") 
+	# try:
+	# 	Log.Info("Called CQINSQTITM ==>cqroll "+str(Qt_rec_id))
+	# 	# data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
+	# 	#Log.Info("Called CQINSQTITM ==>cqroll enddddd "+str(Qt_rec_id))
+	# except Exception:
+	# 	Log.Info("Exception in Quote Item insert") 
 	
-	if ancillary_dict:
-		Log.Info("ancillary_dict--qi-"+str(ancillary_dict)+'--'+str(Qt_rec_id)) 
-		for anc_key,anc_val in ancillary_dict.items():
-			#if anc_val == 'INSERT':
-			try:
-				#temp_val = "SERVICE_ID = '{}'".format(anc_key)
-				#where = re.sub(r'SERVICE_ID\s*\=\s*\'[^>]*?\'', temp_val, where )
-				#where = where.replace('Z0091','{}'.format(anc_key))
-				#Log.Info('where--CQINSQTITM-'+str(where)+str(anc_key))
-				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":anc_key, "ActionType":'INSERT_LINE_ITEMS'})
-				#data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
-			except Exception:
-				Log.Info("Exception in Quote Item insert1111")
+	# if ancillary_dict:
+	# 	Log.Info("ancillary_dict--qi-"+str(ancillary_dict)+'--'+str(Qt_rec_id)) 
+	# 	for anc_key,anc_val in ancillary_dict.items():
+	# 		#if anc_val == 'INSERT':
+	# 		try:
+	# 			#temp_val = "SERVICE_ID = '{}'".format(anc_key)
+	# 			#where = re.sub(r'SERVICE_ID\s*\=\s*\'[^>]*?\'', temp_val, where )
+	# 			#where = where.replace('Z0091','{}'.format(anc_key))
+	# 			#Log.Info('where--CQINSQTITM-'+str(where)+str(anc_key))
+	# 			data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":anc_key, "ActionType":'INSERT_LINE_ITEMS'})
+	# 			#data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
+	# 		except Exception:
+	# 			Log.Info("Exception in Quote Item insert1111")
 	sendEmail(level)
 
 def CoveredObjItemEntitlement():
@@ -673,16 +673,15 @@ def SparepartsItem():
 	if TreeParam != 'Z0100':
 		SAQIEN="""INSERT SAQIEN 
 				(KB_VERSION,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,
-				LINE_ITEM_ID, QTEITM_RECORD_ID, QTESRVENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,
+				QTEITM_RECORD_ID, QTESRVENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,
 				SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,
 				EQUIPMENT_LINE_ID, QUOTE_ID, QUOTE_RECORD_ID, QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID, 
 				CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED)
 				SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM (
 					SELECT 
 						DISTINCT
-						SAQTSE.KB_VERSION,SAQTSE.ENTITLEMENT_XML,SAQIFP.PART_NUMBER as EQUIPMENT_ID,SAQIFP.PART_RECORD_ID as EQUIPMENT_RECORD_ID,
-						SAQIFP.LINE_ITEM_ID,SAQIFP.QTEITM_RECORD_ID,SAQTSE.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID as QTESRVENT_RECORD_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,
-						SAQTSE.SALESORG_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQIFP.PART_LINE_ID as EQUIPMENT_LINE_ID,
+						SAQTSE.KB_VERSION,SAQTSE.ENTITLEMENT_XML,SAQIFP.PART_NUMBER as EQUIPMENT_ID,SAQIFP.PART_RECORD_ID as EQUIPMENT_RECORD_ID,SAQIFP.QTEITM_RECORD_ID,SAQTSE.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID as QTESRVENT_RECORD_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,
+						SAQTSE.SALESORG_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,'' as EQUIPMENT_LINE_ID,
 						SAQTSE.QUOTE_ID, SAQTSE.QUOTE_RECORD_ID
 					FROM	
 					SAQTSE (NOLOCK)

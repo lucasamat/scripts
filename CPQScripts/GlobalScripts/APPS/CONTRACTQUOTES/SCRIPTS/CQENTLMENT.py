@@ -22,11 +22,13 @@ import sys
 from SYDATABASE import SQL
 import datetime
 import CQENTIFLOW
+import ACVIORULES
 #import CQTVLDRIFW
 userId = str(User.Id)
 userName = str(User.UserName)
 Sql = SQL()
 import time
+import re
 gettodaydate = datetime.datetime.now().strftime("%Y-%m-%d")
 GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
 if GetActiveRevision:
@@ -138,7 +140,7 @@ class Entitlements:
 								requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 								if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
 									#Trace.Write('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
-									for code in eval(row.ENTITLEMENT_VALUE_CODE):
+									for code in row.ENTITLEMENT_VALUE_CODE.split(','):
 										requestdata += '{"value":"' + str(code) + '","selected":true}'
 										requestdata +=','
 									requestdata +=']},'	
@@ -382,21 +384,21 @@ class Entitlements:
 			# 	parentObj = 'SAQTSE'
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				tableName = 'SAQSGE'
-				serviceId = self.treetopsuperparentparam
+				serviceId = self.treesuperparentparam
 				parentObj = 'SAQTSE'
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,self.treeparentparam)
+				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
 				Trace.Write('331----treesuperparentparam----'+str(self.treesuperparentparam))
 				Trace.Write('331----treetopsuperparentparam----'+str(self.treetopsuperparentparam))
 				tableName = 'SAQSCE'
 				#serviceId = self.treesuperparentparam
-				serviceId = self.treetopsuperparentparam
+				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSGE'
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam,self.treeparentparam)
+				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)	
 		###tool relocation receiving entitilement ends
 		else:
@@ -525,6 +527,7 @@ class Entitlements:
 		# else:
 		# 	defaultval = '0'
 		attr_level_pricing = []
+		get_conflict_message = get_conflict_message_id = ''
 		dropdownallowlist = []
 		dropdownallowlist_selected = []
 		dropdowndisallowlist = []
@@ -572,6 +575,17 @@ class Entitlements:
 					characteristics_attr_values = []
 					#dropdownallow = {}
 					for rootattribute, rootvalue in Fullresponse.items():
+						if rootattribute == "conflicts":
+							for conflict in rootvalue:
+								Trace.Write('88----'+str(conflict))
+								for val,key in conflict.items():
+									if str(val) == "explanation":
+										Trace.Write(str(key)+'--88----'+str(val))
+										get_conflict_message = str(key)
+										try:
+											get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
+										except:
+											get_conflict_message_id =''
 						if rootattribute == "rootItem":
 							for Productattribute, Productvalue in rootvalue.items():
 								if Productattribute == "characteristicGroups":
@@ -806,6 +820,17 @@ class Entitlements:
 				characteristics_attr_values = []
 				#dropdownallow = {}
 				for rootattribute, rootvalue in Fullresponse.items():
+					if rootattribute == "conflicts":
+						for conflict in rootvalue:
+							Trace.Write('88--820---'+str(conflict))
+							for val,key in conflict.items():
+								if str(val) == "explanation":
+									Trace.Write(str(key)+'--88----'+str(val))
+									get_conflict_message = str(key)
+									try:
+										get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
+									except:
+										get_conflict_message_id = ''
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristicGroups":
@@ -1019,7 +1044,7 @@ class Entitlements:
 			# to insert new input column value and price factor, cost impact for manual input Start 
 			getvalue = insertservice =""
 			Fullresponse = Product.GetGlobal('Fullresponse')
-			configuration_status =""
+			configuration_status = get_conflict_message = get_conflict_message_id =""
 			if Fullresponse:
 				Fullresponse = eval(Fullresponse)
 				##getting configuration_status status
@@ -1030,6 +1055,17 @@ class Entitlements:
 				else:
 					configuration_status = 'ERROR'
 				for rootattribute, rootvalue in Fullresponse.items():
+					if rootattribute == "conflicts":
+						for conflict in rootvalue:
+							Trace.Write('88---1052---'+str(conflict))
+							for val,key in conflict.items():
+								if str(val) == "explanation":
+									Trace.Write(str(key)+'--88--1054--'+str(val))
+									get_conflict_message = str(key)
+									try:
+										get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
+									except:
+										get_conflict_message_id = ''
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristicGroups":
@@ -1100,8 +1136,10 @@ class Entitlements:
 				count_temp_z0046 = 0
 				count_temp_z0101 = 0
 				for key,dict_val in ENT_IP_DICT.items():
+					display_value_arr = ''
+					ent_val_code = ''
 					if key != 'undefined' and dict_val.split("||")[3] != 'undefined':
-						Trace.Write("ENT DICT---->"+str(ENT_IP_DICT))
+						#Trace.Write("ENT DICT---->"+str(ENT_IP_DICT))
 						getcostbaborimpact =""
 						getpriceimpact = ""
 						calculation_factor =""
@@ -1123,18 +1161,20 @@ class Entitlements:
 							if tableName == "SAQSGE":
 								Quote.SetGlobal("Greenbook_Entitlement","Yes")
 							Trace.Write("entitlement_value -----"+str(entitlement_value))
-							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes"):
+							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value == "Some Inclusions"):
 								ancillary_object_dict['Z0101'] = "INSERT"
-								# if tableName == "SAQTSE":
-								# 	QuoteModule.service_level_entitlement({str(serviceId):1})
-								#ancillary_flag = "INSERT"
+								
 							else:
 								count_temp_z0101 += 1
-								if  count_temp_z0101 == 2:
+								if  count_temp_z0101 == 3:
 									ancillary_object_dict['Z0101'] = "DELETE"
-								# if tableName == "SAQTSE":
-								# 	QuoteModule.service_level_entitlement({str(serviceId):1})
-								#ancillary_flag = "DELETE"
+							if  serviceId == 'Z0092'  and key == "AGS_{}_TSC_CONSUM".format(serviceId):
+								if entitlement_value == "Some Inclusions":
+									Trace.Write("z0092--if--"+str(entitlement_value))
+									ancillary_object_dict['Z0100'] = "INSERT"	
+								else:
+									Trace.Write("z0092---else--"+str(entitlement_value))
+									ancillary_object_dict['Z0100'] = "DELETE"	
 
 						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004','Z0009') :
 							#ancillary_object = 'A6200'
@@ -1159,8 +1199,7 @@ class Entitlements:
 									ancillary_object_dict['Z0046'] = "DELETE"
 								#Quote.SetGlobal("ANCILLARY","NO")
 								#ancillary_flag = "DELETE"
-							
-							
+						
 						# ##calling script ancillary insert	
 						# if ancillary_flag != "False" and ancillary_object:
 						# 	Trace.Write("vall--"+str(key)+'--'+str(entitlement_value)  )
@@ -1359,12 +1398,13 @@ class Entitlements:
 							ent_disp_val = str((dict_val).split("||")[0]).replace("'","&apos;")
 						except:
 							ent_disp_val = ''
+						Trace.Write('datatype----'+str((dict_val).split("||")[2]))
 						if str((dict_val).split("||")[2]) == "Check Box" :
 							display_vals = str((dict_val).split("||")[0])
 							if display_vals:
 								display_vals = str(tuple(eval(display_vals))).replace(',)',')')
 								#STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{sys_id}' and S.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals  ))
-								
+								Trace.Write('key---1407-----'+str(key))
 								STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
 								#Trace.Write('Check Box--------'+str(val)+'----'+str(type(str((val).split("||")[0]))) +'----'+str(str((val).split("||")[0])) ) 
 								if STANDARD_ATTRIBUTE_VALUES:
@@ -1376,7 +1416,7 @@ class Entitlements:
 									ent_disp_val = ','.join(display_value_arr)
 									Trace.Write('ent_val_code_temp--if'+str(ent_val_code))
 									#try:
-									entitlement_desc =Sql.GetFirst("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL = {display_vals} ".format(sys_id = key,display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
+									entitlement_desc =Sql.GetFirst("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = key,display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
 									if entitlement_desc:
 										if entitlement_desc.ATTRDESC:
 											get_tool_desc= entitlement_desc.ATTRDESC
@@ -1469,7 +1509,7 @@ class Entitlements:
 						# 		ent_disp_val = attributevalues.get(key)
 
 						# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
-						#Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
+						Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key)+str(ent_val_code))
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 							<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -1483,12 +1523,23 @@ class Entitlements:
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 							<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = key,ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if key in attributedefaultvalue else '0',ent_type = str((dict_val).split("||")[2]),ent_desc=(dict_val).split("||")[3] ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
-						#Trace.Write("updateentXML-970------"+str(updateentXML))
-					
-				Quote.GetCustomField('ANCILLARY_DICT').Content = str(ancillary_object_dict)
+						Trace.Write("updateentXML-970------"+str(updateentXML))
+				# get_anc_dict = ancillary_object_dict
+				# Trace.Write("get_anc_dict-----"+str(get_anc_dict))
+				# #ancillary_object_dict = {}
+				# ancillary_object_dict[str(serviceId)] = get_anc_dict
+				# Trace.Write("ancillary_object_dict---"+str(ancillary_object_dict))
+				ancillary_service_dict = {}
+				if Quote.GetCustomField('ANCILLARY_DICT').Content:
+					ancillary_service_dict = eval(Quote.GetCustomField('ANCILLARY_DICT').Content)
+				Trace.Write("get_anc_dict-----"+str(ancillary_service_dict))
+
+				ancillary_service_dict[serviceId] = str(ancillary_object_dict)
+				Quote.GetCustomField('ANCILLARY_DICT').Content = str(ancillary_service_dict)
 				#Quote.SetGlobal("ancillary_object_dict",str(ancillary_object_dict))
 				Trace.Write('ancillary_object_dict----'+str(ancillary_object_dict))
 				updateentXML = updateentXML.encode('ascii', 'ignore').decode('ascii')
+				Trace.Write('updateentXML--1542-------'+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE(),CONFIGURATION_STATUS = '{}' WHERE  {} ".format(tableName, updateentXML,userId,configuration_status,whereReq)
 				###to update match id at all level while saving starts
 				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
@@ -1838,7 +1889,7 @@ class Entitlements:
 			else:
 				Trace.Write("---------------------------111111111"+str(ENT_IP_DICT))
 				# to insert  input column value  start
-				getvalue = ""
+				getvalue = get_conflict_message = get_conflict_message_id =""
 				updateentXML = getcostbaborimpact = getpriceimpact = ""
 				
 				for key,val in ENT_IP_DICT.items():
@@ -1890,6 +1941,17 @@ class Entitlements:
 							Sql.RunQuery(Updatecps)
 							characteristics_attr_values = []
 							for rootattribute, rootvalue in Fullresponse.items():
+								if rootattribute == "conflicts":
+									for conflict in rootvalue:
+										Trace.Write('88---1940-'+str(conflict))
+										for val,key in conflict.items():
+											if str(val) == "explanation":
+												Trace.Write(str(key)+'--1943-----'+str(val))
+												get_conflict_message = str(key)
+												try:
+													get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
+												except:
+													get_conflict_message_id = ''
 								if rootattribute == "rootItem":
 									for Productattribute, Productvalue in rootvalue.items():
 										if Productattribute == "variantConditions":
@@ -1988,7 +2050,7 @@ class Entitlements:
 				# 	factcurreny = factcurr.GS
 		#Trace.Write('attributeEditonlylst---Durga---1730--'+str(attributeEditonlylst))
 		Trace.Write('attriburesrequired_list---'+str(attriburesrequired_list))
-		Trace.Write('attributevalues_textbox---'+str(attributevalues_textbox))
+		Trace.Write('get_conflict_message--2043----'+str(get_conflict_message))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
 		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesrequired_list
@@ -2019,21 +2081,21 @@ class Entitlements:
 			# 	parentObj = 'SAQTSE'
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				tableName = 'SAQSGE'
-				serviceId = self.treetopsuperparentparam
+				serviceId = self.treesuperparentparam
 				parentObj = 'SAQTSE'
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,self.treeparentparam)
+				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
 				Trace.Write('331----treesuperparentparam----'+str(self.treesuperparentparam))
 				Trace.Write('331----treetopsuperparentparam----'+str(self.treetopsuperparentparam))
 				tableName = 'SAQSCE'
 				#serviceId = self.treesuperparentparam
-				serviceId = self.treetopsuperparentparam
+				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSGE'
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam,self.treeparentparam)
+				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 		###tool relocation receiving entitilement ends
 		else:
@@ -2132,8 +2194,20 @@ class Entitlements:
 				attributeEditonlylst = []
 				attributedefaultvalue = []
 				attriburesrequired_list =[]
-				attributevalues = {}			
+				attributevalues = {}
+				get_conflict_message = get_conflict_message_id= ''		
 				for rootattribute, rootvalue in Fullresponse.items():
+					if rootattribute == "conflicts":
+						for conflict in rootvalue:
+							Trace.Write('88---2191-'+str(conflict))
+							for val,key in conflict.items():
+								if str(val) == "explanation":
+									Trace.Write(str(key)+'-2195---'+str(val))
+									get_conflict_message = str(key)
+									try:
+										get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
+									except:
+										get_conflict_message_id = ''
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristics":
@@ -2289,18 +2363,18 @@ class Entitlements:
 			# 	objName = 'SAQSFE'
 			# 	serviceId = self.treesuperparentparam 
 			# 	where = " WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid, serviceId, self.treeparam)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				objName = 'SAQSGE'
-				serviceId = self.treetopsuperparentparam
-				where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND  SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId, self.treeparam,self.treeparentparam)
-			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
+				serviceId = self.treesuperparentparam
+				where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND  SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid, serviceId, self.treeparam)
+			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
 				Trace.Write('331----treesuperparentparam----'+str(self.treesuperparentparam))
 				Trace.Write('331----treetopsuperparentparam----'+str(self.treetopsuperparentparam))
 				objName = 'SAQSCE'
 				#serviceId = self.treesuperparentparam
-				serviceId = self.treetopsuperparentparam
+				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSGE'
-				where = " WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam,self.treeparentparam)
+				where = " WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND  QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 		###tool relocation receiving entitilement ends
 		else:
@@ -2373,10 +2447,16 @@ class Entitlements:
 			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'get_selected_value':get_selected_dict,'uptime_list':uptime_list,'get_ent_type_val':get_ent_type_val})
 	
 		if ENT_IP_DICT != '':
-			
-			ancillary_dict = Quote.GetCustomField('ANCILLARY_DICT').Content
-			
-			Trace.Write("ancillary_dict--"+str(ancillary_dict))
+			ancillary_dict = ''
+			if Quote.GetCustomField('ANCILLARY_DICT').Content:
+				ancillary_dict = eval(Quote.GetCustomField('ANCILLARY_DICT').Content)
+			if ancillary_dict:
+				ancillary_dict = str(ancillary_dict[serviceId])
+			# ancillary_dict_val = (re.sub(r'^{|"}$','',ancillary_dict)).split(': "')[1]
+			# ancillary_dict ={}
+			# ancillary_dict = eval(ancillary_dict_val)
+			#Trace.Write('ancillary_dict_val--'+str(type(ancillary_dict)))
+			#Trace.Write("ancillary_dict--"+str(ancillary_dict))
 			#Trace.Write("inside Attr List-----> "+str(AttributeList))
 			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)

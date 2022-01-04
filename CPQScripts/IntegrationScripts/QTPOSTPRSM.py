@@ -27,6 +27,7 @@ import time
 input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
 input_data = [input_data]
 sess = SqlHelper.GetFirst("select left(convert(varchar(100),newid()),5) as sess  ")
+Log.Info("28/12  input_data --->"+str(input_data))
 
 try:
 
@@ -35,7 +36,7 @@ try:
 		Qt_id = crmifno[0]
 		REVISION_ID = crmifno[-1]
 		
-		Log.Info("QTPOSTPRSM Start ---->"+str(Qt_id))
+		Log.Info("28/12 QTPOSTPRSM Qt_id ---->"+str(Qt_id))
 		
 		sessionid = SqlHelper.GetFirst("SELECT NEWID() AS A")
 		timestamp_sessionid = "'" + str(sessionid.A) + "'"
@@ -62,7 +63,7 @@ try:
 		
 		SAQSCO_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select DISTINCT A.QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,B.SALESORG_ID,C.REGION,A.QTEREV_ID,A.CONTRACT_VALID_FROM,A.CONTRACT_VALID_TO INTO "+str(SAQSCO)+" from SAQICO(NOLOCK) A JOIN SAQTRV B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID JOIN SASORG C(NOLOCK) ON B.SALESORG_ID = C.SALESORG_ID WHERE A.QUOTE_ID = ''"+str(Qt_id)+"'' AND A.QTEREV_ID=''"+str(REVISION_ID) +"'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSPRV(NOLOCK) WHERE ISNULL(SSCM_COST,''FALSE'')=''TRUE'' ) AND ISNULL(A.STATUS,'''')=''''  ' ")
 		
-		Sql = SqlHelper.GetFirst("sp_executesql @T=N'select quote_ID,equipment_id,service_id,ENTITLEMENT_XML into "+str(SAQSAE)+" from  SAQSCE(nolock)a WHERE quote_id = ''"+str(Qt_id)+"'' AND QTEREV_ID=''"+str(REVISION_ID) +"'' '")
+		Sql = SqlHelper.GetFirst("sp_executesql @T=N'select quote_ID,equipment_id,service_id,ENTITLEMENT_XML into "+str(SAQSAE)+" from  SAQIEN(nolock)a WHERE quote_id = ''"+str(Qt_id)+"'' AND QTEREV_ID=''"+str(REVISION_ID) +"'' '")
 
 		"""
 		start = 1
@@ -85,7 +86,7 @@ try:
 			else:
 				Check_flag=0 """
 		
-		SAQSCA_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select DISTINCT QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ASSEMBLY_ID,CONVERT(VARCHAR(100),NULL) AS COVERAGE,CONVERT(VARCHAR(100),NULL) AS WETCLEAN,CONVERT(VARCHAR(100),NULL) AS PERFGUARANTEE,CONVERT(VARCHAR(100),NULL) AS PMLABOR,CONVERT(VARCHAR(100),NULL) AS CMLABOR,CONVERT(VARCHAR(100),NULL) AS PMEVENT INTO "+str(SAQSCA)+" from SAQSCA(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND QTEREV_ID=''"+str(REVISION_ID) +"'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSPRV(NOLOCK) WHERE ISNULL(SSCM_COST,''FALSE'')=''TRUE'' ) ' ")
+		SAQSCA_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select DISTINCT QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ASSEMBLY_ID,CONVERT(VARCHAR(100),NULL) AS COVERAGE,CONVERT(VARCHAR(100),NULL) AS WETCLEAN,CONVERT(VARCHAR(100),NULL) AS PERFGUARANTEE,CONVERT(VARCHAR(100),NULL) AS PMLABOR,CONVERT(VARCHAR(100),NULL) AS CMLABOR,CONVERT(VARCHAR(100),NULL) AS PMEVENT INTO "+str(SAQSCA)+" from SAQICA(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND QTEREV_ID=''"+str(REVISION_ID) +"'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSPRV(NOLOCK) WHERE ISNULL(SSCM_COST,''FALSE'')=''TRUE'' ) ' ")
 		
 		SAQSCO_DEL = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM "+str(SAQSCO)+" WHERE EQUIPMENT_ID NOT IN (SELECT DISTINCT EQUIPMENT_ID FROM "+str(SAQSCA)+" ) ' ")
 		
@@ -146,7 +147,7 @@ try:
 				S2 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT 	quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+ substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0099_NET_PRMALB<'',entitlement_xml),charindex (''Preventative Maintenance Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0099_NET_PRMALB<'',entitlement_xml)+len(''Preventative Maintenance Labor</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0099'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Preventative Maintenance Labor''  '")
 				
 				#Z0092 Preventive Maintenance Labor
-				S2 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT 	quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+ substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0092_NET_PRMALB<'',entitlement_xml),charindex (''Preventive Maintenance Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0092_NET_PRMALB<'',entitlement_xml)+len(''Preventive Maintenance Labor</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0092'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Preventive Maintenance Labor''  '")
+				S2 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT 	quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+ substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0092_NET_PRMALB<'',entitlement_xml),charindex (''Preventative Maintenance Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0092_NET_PRMALB<'',entitlement_xml)+len(''Preventative Maintenance Labor</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0092'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Preventative Maintenance Labor''  '")
 				
 				#Z0035 Preventive Maintenance Labor
 				S2 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT 	quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+ substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0035_NET_PRMALB<'',entitlement_xml),charindex (''Preventative Maintenance Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0035_NET_PRMALB<'',entitlement_xml)+len(''Preventative Maintenance Labor</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0035'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Preventative Maintenance Labor''  '")
@@ -226,9 +227,9 @@ try:
 			webclient = System.Net.WebClient()
 			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;	
-
+			Log.Info("28/12 sscm tiggerd --->")
 			crm_response = webclient.UploadString(str(LOGIN_CRE.URL),str(table.RESULT))	
-			Log.Info("789 crm_response --->"+str(crm_response))
+			Log.Info("28/12 sscm_response --->"+str(crm_response))
 		
 		if "Status: 200" in crm_response:
 
@@ -279,7 +280,7 @@ try:
 			#Current user email(ToEmail)
 			#UserId = User.Id
 			#Log.Info("123 UserId.UserId --->"+str(UserId))
-			UserEmail = SqlHelper.GetFirst("SELECT isnull(email,'INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM') as email FROM saempl (nolock) where employee_id  = '"+str(ToEml.OWNER_ID)+"'")
+			UserEmail = SqlHelper.GetFirst("SELECT isnull(email,'"+str(LOGIN_CRE.Username)+"') as email FROM saempl (nolock) where employee_id  = '"+str(ToEml.OWNER_ID)+"'")
 			#Log.Info("123 UserEmail.email --->"+str(UserEmail.email))
 
 			# Create two mail adresses, one for send from and the another for recipient
@@ -287,7 +288,7 @@ try:
 				toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 			else:
 				toEmail = MailAddress(UserEmail.email)
-			fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
+			fromEmail = MailAddress(str(LOGIN_CRE.Username))
 
 			# Create new MailMessage object
 			msg = MailMessage(fromEmail, toEmail)
@@ -298,9 +299,6 @@ try:
 			msg.Body = Error_Info
 
 			# Bcc Emails			
-
-			copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
-			msg.Bcc.Add(copyEmail1) 
 
 			copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
 			msg.Bcc.Add(copyEmail4)
@@ -339,7 +337,7 @@ try:
 
 			# Create two mail adresses, one for send from and the another for recipient
 			toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
-			fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
+			fromEmail = MailAddress(str(LOGIN_CRE.Username))
 
 			# Create new MailMessage object
 			msg = MailMessage(fromEmail, toEmail)
@@ -349,10 +347,7 @@ try:
 			msg.IsBodyHtml = True
 			msg.Body = Error_Info
 
-			# CC Emails 	
-
-			copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
-			msg.Bcc.Add(copyEmail1) 		
+			# CC Emails 		
 
 			copyEmail3 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 			msg.Bcc.Add(copyEmail3)	

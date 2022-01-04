@@ -1,6 +1,6 @@
 import Webcom.Configurator.Scripting.Test.TestProduct
-GDLIST = Quote.GetGeneratedDocumentList('AMAT Quote')
-
+#GDLIST = Quote.GetGeneratedDocumentList('AMAT Quote')
+GDLIST = Quote.GetGeneratedDocumentList('AMAT_SUBTOTAL_OFFERING')
 
 for gndc in GDLIST:
     docid = gndc.Id

@@ -277,7 +277,12 @@ class SYLDRTLIST:
 						Columns = obj_obj.COLUMNS
 						if RECORD_ID == "SYOBJR-98869":                                
 							rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
-							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])						
+						if RECORD_ID == "SYOBJR-00029" and SubTab.upper() =='INCLUSIONS':							
+							rem_list_sp = ["NEW_PART",'FABLOCATION_ID','GREENBOOK']
+							Columns = [ele for ele in  eval(Columns) if ele not in rem_list_sp]
+							Columns.extend(['UNIT_PRICE','EXTENDED_PRICE'])
+							Columns = str(Columns)
 			
 			#Hide columns in Related list based on Quote type End
 			Obj_Name = obj_obj.OBJ_REC_ID            
@@ -285,8 +290,7 @@ class SYLDRTLIST:
 			objsk_permiss = Sql.GetFirst(
 				"SELECT CAN_ADD, CAN_EDIT, CAN_DELETE FROM SYOBJR  WHERE SAPCPQ_ATTRIBUTE_NAME = '" + str(RECORD_ID) + "'"
 			)
-			PARENT_LOOKUP_REC_ID = obj_obj.PARENT_LOOKUP_REC_ID
-			
+			PARENT_LOOKUP_REC_ID = obj_obj.PARENT_LOOKUP_REC_ID			
 			if objsk_permiss:
 				if str(objsk_permiss.CAN_EDIT).upper() == "TRUE":
 					Action_permission["Edit"] = obj_obj.CAN_EDIT                    
@@ -295,8 +299,7 @@ class SYLDRTLIST:
 				if str(objsk_permiss.CAN_DELETE).upper() == "TRUE":
 					Action_permission["Delete"] = obj_obj.CAN_DELETE                    
 				else:
-					Action_permission["Delete"] = objsk_permiss.CAN_DELETE
-			
+					Action_permission["Delete"] = objsk_permiss.CAN_DELETE			
 			objd_where_obj = Sql.GetFirst("select * from  SYOBJD (NOLOCK) where RECORD_ID = '" + str(COLUMN_REC_ID) + "'")
 			
 			if objd_where_obj is not None:
@@ -345,8 +348,7 @@ class SYLDRTLIST:
 			# 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 				
 			# Billing Matrix - Pivot - Start
-			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':
-				Trace.Write('452----TreeParam-----'+str(TreeParam))
+			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':				
 				try:
 					if SubTab:
 						# item_billing_plan_obj = Sql.GetFirst("""SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID""".format(contract_quote_record_id,quote_revision_record_id))
@@ -362,15 +364,12 @@ class SYLDRTLIST:
 						# 		if YearCount:
 						# 			end = int(YearCount.split(' ')[-1]) * 12
 						# 			start = end - 12 + 1
-						#commented for loading grid in billing plan 
-						Trace.Write('SubTab----'+str(SubTab))
+						#commented for loading grid in billing plan 						
 						end = int(SubTab.split(' ')[-1]) * 12
 						start = end - 12 + 1
 				except:
 					end = ""
-					start = ""
-					Trace.Write('452----TreeParentLevel0----')		
-				Trace.Write('452----TreeParentLevel0----'+str(TreeParentParam))
+					start = ""					
 				if str(TreeParam) == "Billing":
 					item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
 									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
@@ -397,9 +396,7 @@ class SYLDRTLIST:
 			if CurrentObj is not None:
 				CurrentObj_Recordno = CurrentObj.API_NAME
 				CurrentObj_Name = CurrentObj.OBJECT_NAME
-			CurrentObj2 = Sql.GetFirst(
-				"select OBJECT_NAME from  SYOBJD (NOLOCK) where PARENT_OBJECT_RECORD_ID = '" + str(Obj_Name) + "' "
-			)
+			
 			Qstn_where_obj = Sql.GetFirst(
 				"select QN.* from SYSEFL (NOLOCK) QN INNER JOIN SYSECT (nolock) SE on SE.RECORD_ID = QN.SECTION_RECORD_ID INNER JOIN SYPAGE (nolock) PG on SE.PAGE_RECORD_ID = PG.RECORD_ID where QN.API_NAME = '"
 				+ str(CurrentObj_Name)
@@ -424,6 +421,7 @@ class SYLDRTLIST:
 						RecAttValue = ""
 			table_id = obj_obj.SAPCPQ_ATTRIBUTE_NAME.replace("-", "_") + "_" + str(Obj_Name).replace("-", "_")
 			table_ids = "#" + str(table_id)
+		
 		if 'SYOBJR_98797' in table_id:
 			table_header = (
 				'<table id="'
@@ -442,6 +440,14 @@ class SYLDRTLIST:
 				+ table_id
 				+ '" data-pagination="false" data-filter-control="true"  data-maintain-selected="true" data-locale = "en-US"><thead>'
 			)
+		"""
+		elif 'SYOBJR_00005' in table_id:			
+			table_header = (
+				'<table id="'
+				+ table_id
+				+ '" data-pagination="false" data-filter-control="true" data-show-export="true" data-maintain-selected="true" data-locale = "en-US"><thead>'
+			)
+		"""		
 		related_list_edit_permission = False
 		related_list_delete_permission = False
 		#Realted list permissions start
@@ -558,12 +564,13 @@ class SYLDRTLIST:
 				if len(list(eval(Columns))) > 1:
 					lookup_disply_list123 = list(eval(Columns))[0]
 			obj_str = ",".join(list(eval(Columns)))
-			Trace.Write("Chkng_tracez"+str(obj_str)+" - "+str(lookup_str))
 			if lookup_str != "":
 				select_obj_str = str(obj_str) + "," + str(lookup_str)
 			else:
 				select_obj_str = str(obj_str)
 			#select_obj_str = select_obj_str.replace("PRIMARY","[PRIMARY]")
+			Trace.Write('obj_str-->'+str(obj_str))
+			Trace.Write('select_obj_str-->'+str(select_obj_str))
 			name = select_obj_str.split(",")
 			for text in name:                
 				s = Sql.GetList(
@@ -697,15 +704,12 @@ class SYLDRTLIST:
 					)
 					
 				
-				elif RECORD_ID == "SYOBJR-94441":
-					Trace.Write('94441###------')                    
+				elif RECORD_ID == "SYOBJR-94441":					            
 					RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00152").GetValue()
 					Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 				
-				elif RECORD_ID == "SYOBJR-94587" and TreeParam =="Section Actions" :
-					Trace.Write("sectio111----------")
-					RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00154").GetValue()
-					
+				elif RECORD_ID == "SYOBJR-94587" and TreeParam =="Section Actions" :					
+					RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00154").GetValue()					
 					tabRecord = ""
 					gettabres = Sql.GetFirst(
 						"Select TB.RECORD_ID,TB.PAGE_NAME,SE.SECTION_NAME from SYTABS (NOLOCK)TB INNER JOIN SYPAGE (NOLOCK) PG ON PG.TAB_RECORD_ID = TB.RECORD_ID INNER JOIN SYSECT (NOLOCK) SE ON SE.PAGE_RECORD_ID = PG.RECORD_ID where TB.TAB_LABEL = '" + str(TreeSecondSuperTopParentParam) + "'AND SE.SECTION_NAME = '"+str(TreeParentParam)+"'"
@@ -753,8 +757,6 @@ class SYLDRTLIST:
 					
 					Qustr = " where SECTION_RECORD_ID = '" + str(tabRecord) + "'"                    
 				elif RECORD_ID == "SYOBJR-98782":
-					getsectvalue = ""
-
 					GetappValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00154").GetValue()
 					
 					gettabval = Sql.GetFirst(
@@ -784,8 +786,7 @@ class SYLDRTLIST:
 					)
 					
 				
-				elif RECORD_ID == "SYOBJR-94587" and TreeParam =="Section Actions":
-					Trace.Write("sectio----------")
+				elif RECORD_ID == "SYOBJR-94587" and TreeParam =="Section Actions":					
 					gettabval = ""
 
 					GetappValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00154").GetValue()
@@ -1059,8 +1060,7 @@ class SYLDRTLIST:
 							+ str(sectrecid)
 							+ "'"
 						)
-					elif RECORD_ID == "SYOBJR-94441":
-						Trace.Write('94441------')
+					elif RECORD_ID == "SYOBJR-94441":						
 						RECORD_ID = Product.GetGlobal("RecordNo")                        
 						if RECORD_ID != "":
 							Qury_str = (
@@ -1121,8 +1121,7 @@ class SYLDRTLIST:
 						gettabval= Sql.GetFirst(
 							"Select RECORD_ID,ACTION_NAME from SYPSAC where SECTION_NAME = '" + str(TreeParentParam) + "'"
 						)
-					elif RECORD_ID == "SYOBJR-98869":
-						Trace.Write('1196---contract_quote_record_id-------'+str(contract_quote_record_id))
+					elif RECORD_ID == "SYOBJR-98869":						
 						RecAttValue = contract_quote_record_id
 						#Trace.Write('1196---RecAttValue--RecAttValue-----'+str(RecAttValue))
 						Qury_str = ("select DISTINCT TOP "
@@ -1178,7 +1177,6 @@ class SYLDRTLIST:
 								+ "'"
 							)
 						else:
-
 							Qury_str = (
 								"select top "
 								+ str(PerPage)
@@ -1199,10 +1197,8 @@ class SYLDRTLIST:
 								+ "' and OBJECT_NAME='"
 								+ str(CommonTreeParentParam)
 								+ "'"
-							)
-					
-					else:
-						
+							)					
+					else:						
 						if Wh_API_NAME == "FACTOR_ID":
 							dataobjPRICEFACTOR = Sql.GetFirst(
 								"SELECT FACTOR_ID FROM PRCAFC WHERE CALCULATION_FACTORS_RECORD_ID='" + str(RecAttValue) + "'"
@@ -1231,7 +1227,6 @@ class SYLDRTLIST:
 										if str(current_tab).upper() == "APPROVAL CHAIN":
 											RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00001").GetValue()
 										else:
-											Trace.Write("RecAttValue EXCEPT !!!")
 											RecAttValue = ""
 								Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 							elif current_prod.upper() == "PRICE MODELS" and TP == "Sales":                                
@@ -1257,25 +1252,20 @@ class SYLDRTLIST:
 								TreeParentParam = Product.GetGlobal("TreeParentLevel0") 
 								Wh_API_NAMEs = "PAGE_NAME"                       
 								Qustr =  " where PAGE_NAME = '" + str(TreeParentParam) + "'"         
-							else:    
-								Trace.Write("check1234")                         
+							else:    								                  
 								Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
-								Trace.Write("Qustr"+str(Qustr))
-				
 
-				if str(Qury_str) == "" and str(QuryCount_str) == "":                    
-					QStrWhere = QStrWhere_Count = ""                   
+				if str(Qury_str) == "" and str(QuryCount_str) == "":
 					TreeParam = Product.GetGlobal("TreeParam")
 					TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+					TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 					try:
 						CurrentTabName = TestProduct.CurrentTab
 					except:
 						CurrentTabName = "Quotes"
 					if str(RECORD_ID) == "SYOBJR-98795":                                           
 						qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
-						Serv_id = SqlHelper.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")    
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")						  
 						LineAndEquipIDList = TreeParam.split(' - ')
 						
 						if getyears == 1:
@@ -1314,8 +1304,7 @@ class SYLDRTLIST:
 						elif getyears == 4:
 							col_year =  'YEAR_1,YEAR_2,YEAR_3,YEAR_4'
 						else:
-							col_year = 'YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5'    
-						Trace.Write("TP "+str(TreeParam)+"TPP "+str(TreeParentParam)+"TSP "+str(Product.GetGlobal("TreeParentLevel1")))
+							col_year = 'YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5'
 						if Product.GetGlobal("TreeParentLevel2") == "Quote Items":                            
 							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 							acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
@@ -1323,8 +1312,7 @@ class SYLDRTLIST:
 							error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
 							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-							TreeParentParam = Product.GetGlobal("TreeParentLevel1")
-							
+							TreeParentParam = Product.GetGlobal("TreeParentLevel1")							
 							try:
 								if str(TreeParentParam.split("-")[4]):
 									ServiceId = TreeParentParam.split("-")[-3].strip()
@@ -1332,12 +1320,11 @@ class SYLDRTLIST:
 									ServiceId = TreeParentParam.split("-")[1].strip() 
 							except:
 								ServiceId = TreeParentParam.split("-")[1].strip()
-							fab_location_id = Product.GetGlobal("TreeParentLevel0")                    
-							Trace.Write("ServiceID :: {}".format(str(ServiceId)))
+							fab_location_id = Product.GetGlobal("TreeParentLevel0")
 							Qury_str = (
 									"SELECT DISTINCT TOP "
 									+ str(PerPage)
-									+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,EQUIPMENT_ID,SERVICE_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE_MARGIN,TARGET_PRICE,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,"+col_year+",SALDIS_PERCENT,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,BD_DISCOUNT_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,MNT_PLANT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+									+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,EQUIPMENT_ID,SERVICE_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE_MARGIN,TARGET_PRICE,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,"+col_year+",SALDIS_PERCENT,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,BD_DISCOUNT_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,MNT_PLANT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by LINE,"+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
 									+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"') m where m.ROW BETWEEN "
 									+ str(Page_start)
 									+ " AND "
@@ -1395,8 +1382,8 @@ class SYLDRTLIST:
 								)
 							#A055S000P01-4578 starts
 							elif TreeParam == "Quote Items":
-								saqico_cols =""
-								Trace.Write('column---'+str(Columns)+str(type(Columns)))
+								
+								#saqico_cols =""								
 								#pricing_curr = pricing_picklist_value
 									
 								# if pricing_picklist_value == 'Document Currency':
@@ -1424,7 +1411,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, LINE,SERVICE_ID,FABLOCATION_ID,GREENBOOK,GOT_CODE,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,PM_ID,PM_LABOR_LEVEL,KIT_NAME,KIT_NUMBER,TOOL_CONFIGURATION,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,PM_COUNT_YEAR,PER_EVENT_PMSA_COST,ANNUAL_PMSA_COST,LABOR_COST,GREATER_THAN_QTLY_PM_COST,LESS_THAN_QTLY_PM_COST,CM_PART_COST,PM_PART_COST,REPLACE_COST,REFURB_COST,CLEANING_COST,METROLOGY_COST,KPI_COST,SEEDSTOCK_COST,FAILURE_COST,LOGISTICS_COST,OUTSOURCE_COST,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ENTITLEMENT_COST_IMPACT,ADD_COST_IMPACT,ENTPRCIMP_INGL_CURR,ADD_PRICE_IMPACT,PER_EVENT_PMSA_PRICE,ANNUAL_PMSA_PRICE,CEILING_PRICE_MARGIN,TARGET_PRICE_MARGIN,BD_PRICE_MARGIN,DISCOUNT,SALES_PRICE_INGL_CURR,YEAR,YEAR_OVER_YEAR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CONVERT(VARCHAR(10),WARRANTY_START_DATE,101) AS [WARRANTY_START_DATE],CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CNTCST_INGL_CURR,CNTPRI_INGL_CURR,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY CpqTableEntryId) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,GOT_CODE,ASSEMBLY_ID,PM_ID,PM_LABOR_LEVEL,KIT_NAME,KIT_NUMBER,KPU,TOOL_CONFIGURATION,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,CEILING_PRICE_INGL_CURR,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,BD_PRICE_INGL_CURR,DISCOUNT,SALES_PRICE_INGL_CURR,YEAR_OVER_YEAR,YEAR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CONVERT(VARCHAR(10),WARRANTY_START_DATE,101) AS [WARRANTY_START_DATE],CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CNTCST_INGL_CURR,CNTPRI_INGL_CURR,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY CpqTableEntryId) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
 										+ str(Page_start)
@@ -1477,8 +1464,7 @@ class SYLDRTLIST:
 											LineAndEquipIDList[1], str(qt_rec_id.QUOTE_ID),quote_revision_record_id)
 								)
 					elif str(RECORD_ID) == "SYOBJR-91822":
-						contractrecid = Product.GetGlobal("contract_record_id")
-						Trace.Write("LineNo: 1483")    
+						contractrecid = Product.GetGlobal("contract_record_id")						
 						if Product.GetGlobal("TreeParentLevel1") == "Cart Items":                                                     
 							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 							acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
@@ -1499,12 +1485,10 @@ class SYLDRTLIST:
 									+ str(RecAttValue)
 									+ "'and GREENBOOK = '"+str(TreeParam)+"'and SERVICE_ID = '"+str(ServiceId)+"'"
 							)                                
-						else:
-							Trace.Write("Cart Items -> Line Item Details")
-							Trace.Write(TreeParam)                          
+						else:							                 
 							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 							acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
-							qt_rec_id = SqlHelper.GetFirst("SELECT CONTRACT_ID FROM CTCTSV WHERE CONTRACT_RECORD_ID='" + str(
+							qt_rec_id = Sql.GetFirst("SELECT CONTRACT_ID FROM CTCTSV (NOLOCK) WHERE CONTRACT_RECORD_ID='" + str(
 							contractrecid) + "'")
 							LineAndEquipIDList = TreeParam.split(' - ')
 							if TreeParentParam == "Cart Items":
@@ -1653,7 +1637,7 @@ class SYLDRTLIST:
 							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 							acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
 							contract_record_id = Product.GetGlobal("contract_record_id")
-							qt_rec_id = SqlHelper.GetFirst("SELECT CONTRACT_ID, SERVICE_ID FROM CTCTSV WHERE CONTRACT_RECORD_ID ='" + str(
+							qt_rec_id = Sql.GetFirst("SELECT CONTRACT_ID, SERVICE_ID FROM CTCTSV (NOLOCK) WHERE CONTRACT_RECORD_ID ='" + str(
 							contract_record_id) + "'")
 							LineAndEquipIDList = TreeParam.split(' - ')
 							if qt_rec_id.CONTRACT_ID == '70011556':
@@ -1695,8 +1679,7 @@ class SYLDRTLIST:
 											SERV_DESC, str(qt_rec_id.CONTRACT_ID))
 								)
 					elif str(RECORD_ID) == "SYOBJR-98788":
-						#contract_quote_record_id = Quote.CompositeNumber
-						Trace.Write("contract_quote_record_id1234"+str(contract_quote_record_id))
+						#contract_quote_record_id = Quote.CompositeNumber						
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")                        
 						qt_rec_id= Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 						if qt_rec_id is not None:
@@ -1721,8 +1704,7 @@ class SYLDRTLIST:
 								+ ""
 							)
 							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " S (nolock)  JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' )M ON S.SERVICE_ID = M.PRDOFR_ID " + str(Qustr) 
-						else: 
-							Trace.Write('checking----') 
+						else: 							
 							#Qustr = "where QUOTE_ID = '"+str(contract_quote_record_id)+"'"                          
 							Qury_str = (
 								"select DISTINCT top "
@@ -1814,11 +1796,9 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 									
 					## involved parties equipmemt starts
-					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start
-						Trace.Write(str(billing_date_column)+'--1844---Billing------'+str(TreeParam))
+					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start						
 						if billing_date_column:                        
-							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
-							Trace.Write('billing_date_column----'+str(billing_date_column))
+							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])							
 							if Qustr:
 								if str(TreeParentParam)== "Billing":
 									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
@@ -1878,7 +1858,7 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					##involved parties source fab ends
 					elif str(RECORD_ID) == "SYOBJR-98859":                        
-						Qustr += " AND SERVICE_ID = '"+str(TreeParentParam)+"' "
+						Qustr += " AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' "
 						Qury_str = (
 							"select DISTINCT top "
 							+ str(PerPage)
@@ -2001,8 +1981,7 @@ class SYLDRTLIST:
 						)
 						
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
-					elif str(RECORD_ID) == "SYOBJR-93188":
-						Trace.Write('SYOBJR-93188@222')
+					elif str(RECORD_ID) == "SYOBJR-93188":						
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
 						GetAppname_query = ""
 						Qustr = " WHERE TAB_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"'"
@@ -2048,8 +2027,7 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					elif str(RECORD_ID) == "SYOBJR-98834":
 						#contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
-						contract_quote_record_id = Quote.GetGlobal("contract_record_id")
-						Trace.Write("Contract Rec Id"+str(contract_quote_record_id))
+						contract_quote_record_id = Quote.GetGlobal("contract_record_id")						
 						Qustr = "where  CONTRACT_RECORD_ID = '"+str(contract_quote_record_id)+"'"
 						Qury_str = (
 							"select DISTINCT top "
@@ -2067,16 +2045,12 @@ class SYLDRTLIST:
 							+ " and "
 							+ str(Page_End)
 							+ ""
-						)
-						
+						)						
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
-					elif str(RECORD_ID) == "SYOBJR-98817":
-											
+					elif str(RECORD_ID) == "SYOBJR-98817":											
 						#contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
-						contract_quote_record_id = Quote.GetGlobal("contract_record_id")
-						Trace.Write("Contract"+str(contract_quote_record_id))
-						ct_rec_id= Sql.GetList("SELECT CONTRACT_ID FROM CTCFBL WHERE CONTRACT_RECORD_ID ='"+str(contract_quote_record_id)+"'")
-						Trace.Write("Record Id "+str(ct_rec_id))
+						contract_quote_record_id = Quote.GetGlobal("contract_record_id")						
+						ct_rec_id= Sql.GetList("SELECT CONTRACT_ID FROM CTCFBL (NOLOCK) WHERE CONTRACT_RECORD_ID ='"+str(contract_quote_record_id)+"'")						
 						Qustr = "where  CONTRACT_RECORD_ID = '"+str(contract_quote_record_id)+"'"
 						Qury_str = (
 							"select DISTINCT top "
@@ -2094,11 +2068,8 @@ class SYLDRTLIST:
 							+ " and "
 							+ str(Page_End)
 							+ ""
-						)
-						
-						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)   
-				
-
+						)						
+						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					else:
 						if  str(RECORD_ID) == "SYOBJR-98789" and "Sending Account -" in TreeParam :
 							Qustr += " AND RELOCATION_FAB_TYPE = 'SENDING FAB'"
@@ -2113,19 +2084,31 @@ class SYLDRTLIST:
 							if TreeSuperParentParam == "Product Offerings":
 								service_id = TreeParam.split('-')[0]	
 								if subTab == "New Parts":	
-									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'True'"	
-								else:
-									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'False'"	
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'True'"
+								elif subTab == "Inclusions":
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'False' AND INCLUDED = 1"	
+								elif subTab == "Exclusions":
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'False' AND INCLUDED = 0"	
 							elif TopTreeSuperParentParam == "Product Offerings":
 								service_id = TreeParentParam.split('-')[0]
 								if subTab == "New Parts":
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'True'"	
-								else:
-									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'False'"
-														
-						Trace.Write('In 1958---*'+str(Qustr))						
+								elif subTab == "Inclusions":
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 0 AND INCLUDED = 1"
+								elif subTab == "Exclusions":
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'False' AND INCLUDED = 0"														
+										
 						if str(RECORD_ID) == "SYOBJR-98874" or str(RECORD_ID) == "SYOBJR-98873":
 							Qustr += " AND LINE = '"+str(line_item)+"'"
+						if str(RECORD_ID) == "SYOBJR-98880":
+							Qustr += " AND GREENBOOK = '"+str(TreeParentParam)+"'"
+						if str(RECORD_ID) == "SYOBJR-98875":
+							quote_item_revision_rec_id = Product.GetGlobal('get_quote_item_service')							
+							get_gb_val = Sql.GetFirst("SELECT GREENBOOK FROM SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID= '"+str(quote_item_revision_rec_id)+"'")
+							if get_gb_val:
+								Qustr += "AND QTEITM_RECORD_ID = '"+str(quote_item_revision_rec_id)+"' AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
+						if str(RECORD_ID) == "SYOBJR-98872":
+							Wh_API_NAMEs +=",LINE"
 						if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825","SYOBJR-00016"):
 							Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
 						
@@ -2182,7 +2165,7 @@ class SYLDRTLIST:
 					Qury_str = (
 					"SELECT DISTINCT TOP "
 					+ str(PerPage)
-					+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+					+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
 					+"' AND QTEREV_RECORD_ID = '"
 					+str(quote_revision_record_id)
 					+"') m where m.ROW BETWEEN "
@@ -2215,17 +2198,17 @@ class SYLDRTLIST:
 					imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 					acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
 					cps_pricing_img = ""
-					#cps_pricing_img ="<a href=''#'' onclick=''cps_pricing_call(this)''><img src=''/mt/APPLIEDMATERIALS_TST/Additionalfiles/info.png''  style=''height: 15px; width: 15px; background-size: 20px 20px;''> </a>"
+					#cps_pricing_img ="<a href=''#'' onclick=''cps_pricing_call(this)''><img src=''/mt/APPLIEDMATERIALS_TST/Additionalfiles/info.png''  style=''height: 15px; width: 15px; background-size: 20px 20px;''> </a>" 
 					Qury_str = (
 						"SELECT DISTINCT TOP "
 						+ str(PerPage)
-						+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID, PART_LINE_ID,CONCAT('"+cps_pricing_img+ "',PART_NUMBER) AS PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+						+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,CONCAT('"+cps_pricing_img+ "',PART_NUMBER) AS PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,UNIT_PRICE_INGL_CURR,EXTENDED_PRICE,EXTENDED_UNIT_PRICE,EXTPRI_INGL_CURR,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
 						+"' AND QTEREV_RECORD_ID = '"
 						+str(quote_revision_record_id)
 						+"') m where m.ROW BETWEEN "
 						+ str(Page_start)
 						+ " AND "
-						+ str(Page_End)+" ORDER BY PART_LINE_ID,PRICING_STATUS ASC"
+						+ str(Page_End)+" ORDER BY PRICING_STATUS ASC"
 					)
 					QuryCount_str = (
 						"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQIFP (nolock) WHERE QUOTE_RECORD_ID = '"
@@ -2366,7 +2349,6 @@ class SYLDRTLIST:
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 				##involved parties source fab ends
 				elif str(RECORD_ID) == "SYOBJR-98859":
-					Qustr += " AND SERVICE_ID = '"+str(TreeParentParam)+"' "
 					Qury_str = (
 						"select DISTINCT top "
 						+ str(PerPage)
@@ -2517,8 +2499,7 @@ class SYLDRTLIST:
 					)
 					
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
-				elif str(RECORD_ID) == "SYOBJR-93188":
-					Trace.Write('SYOBJR-93188@3333')
+				elif str(RECORD_ID) == "SYOBJR-93188":					
 					RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
 					GetAppname_query = ""
 					Qustr = " WHERE TAB_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"'"
@@ -2668,12 +2649,6 @@ class SYLDRTLIST:
 					if QueryCount_Obj is not None:
 						QueryCount = QueryCount_Obj.cnt
 			
-		
-			tab_obj1 = Sql.GetFirst(
-				"SELECT PG.TAB_NAME,PG.TAB_RECORD_ID FROM SYSECT (nolock) SE INNER JOIN SYPAGE (nolock) PG on SE.PAGE_RECORD_ID = PG.RECORD_ID WHERE SE.PRIMARY_OBJECT_NAME='"
-				+ str(ObjectName)
-				+ "' and SE.SECTION_NAME ='BASIC INFORMATION'"
-			)
 			Trace.Write("CHKNG_QUERY_J "+str(Qury_str))
 			if Query_Obj is not None:
 				for ik in Query_Obj:					                  
@@ -2693,9 +2668,15 @@ class SYLDRTLIST:
 					pop_val = {}
 					list_lineup = []
 					list_lineup1 = []
-					if ObjectName != 'SAQIBP':
+					
+					if ObjectName != 'SAQIBP' and ObjectName != 'SAQDOC':
+						Trace.Write("dropdown11==="+str(ObjectName))
 						Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
+					elif ObjectName == "SAQDOC":
+						Trace.Write("dropdown11==="+str(ObjectName))
+						Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left empty_ctrdrop_ul" aria-labelledby="dropdownMenuButton">'
 					else:
+						Trace.Write("dropdown===")
 						Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" style="display: none;" aria-labelledby="dropdownMenuButton">'
 					#Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
 					
@@ -2743,9 +2724,7 @@ class SYLDRTLIST:
 							Action_str += (
 								'<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)"  >VIEW<a><li>'
 							)
-						elif ObjectName == "SAQTRV":
-							Trace.Write('2737----'+str(value123))
-							Trace.Write('2737---1234-'+str(value1234))
+						elif ObjectName == "SAQTRV":							
 							quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 							get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
 							if get_activerev:
@@ -2754,7 +2733,14 @@ class SYLDRTLIST:
 								Action_str += '<li><a id = "" class="dropdown-item" href="#"  style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>' 
 
 						elif ObjectName == "SAQDOC":
-							Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'		 
+							contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+							quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+							docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))
+							if docnode_action_btn:
+								if str(docnode_action_btn.DOCUMENT_DESCRIPTION) == "" or docnode_action_btn.DOCUMENT_DESCRIPTION == "":
+									Trace.Write("edit=====")
+									Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'													
+																	
 						
 						# elif str(current_tab).upper() == "APP" and str(ObjectName)=="SYTABS":                    
 						#     Action_str += '<li><a class="dropdown-item" href="#" onclick="Move_to_parent_obj(this)">VIEW<a><li>'  
@@ -2770,8 +2756,7 @@ class SYLDRTLIST:
 								Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW ACCOUNT</a></li>'
 							elif ObjectName == "SAQSPT":
 								pass
-							elif ObjectName != "SAQIBP":
-								Trace.Write('VIEw 2698')
+							elif ObjectName != "SAQIBP":								
 								Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 							elif ObjectName == "SAQSAO":
 								Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
@@ -2781,13 +2766,10 @@ class SYLDRTLIST:
 							
 
 
-					Trace.Write("12===3=====>"+str(Action_permission.get("Edit")).upper())
-					Trace.Write("13333333"+str(Action_permission.get("Delete")).upper())
+					
 					if str(Action_permission.get("Edit")).upper() == "TRUE":
-						if related_list_edit_permission:
-							Trace.Write('other_tab111==='+str(primary_view))
-							if primary_view != "":
-								Trace.Write('other_tab==='+str(other_tab))
+						if related_list_edit_permission:							
+							if primary_view != "":								
 								if other_tab == "1":
 									Action_str += (
 										'<li><a class="dropdown-item curptr"  href="../Configurator.aspx?pid='
@@ -2835,7 +2817,21 @@ class SYLDRTLIST:
 									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
 
 							elif ObjectName == "SAQDOC":
-								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'     
+								contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+								quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+								docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))								
+								#for date_value in docnode_action_btn:
+								if docnode_action_btn:
+									Trace.Write("act_btn=="+str(docnode_action_btn.DATE_SUBMITTED))						
+									if str(docnode_action_btn.DATE_SUBMITTED) != "":
+										Trace.Write("docnode=====")
+										if str(docnode_action_btn.DATE_ACCEPTED) == "" and str(docnode_action_btn.DATE_REJECTED) == "":
+											Trace.Write("2222222222222")
+											Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_accepted(this)">CUSTOMER ACCEPTED</a></li>'									
+											Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_rejected(this)">CUSTOMER REJECTED</a></li>'
+									else:
+										Trace.Write("docnode111=====")									
+										Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'     
 							elif ObjectName == "SAQDLT":
 								Action_str += (
 									'<li><a class="dropdown-item" href="#" onclick="replace_cont_manager(this)">REPLACE</a></li>'
@@ -2845,12 +2841,9 @@ class SYLDRTLIST:
 									Action_str += (
 										'<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'
 									)
-
 								elif Tree_Enable is not None and str(Tree_Enable.ENABLE_TREE).upper() == "TRUE":
-									if ObjectName =='SAQICT':
-										Trace.Write("SAQICT")
-										if str(ik.PRIMARY).upper() != "TRUE":
-											Trace.Write("oooooqqqqqqoooo11")
+									if ObjectName =='SAQICT':										
+										if str(ik.PRIMARY).upper() != "TRUE":											
 											Action_str += ('<li><a class="dropdown-item" href="#" onclick="mark_primary_contact(this)">MARK PRIMARY</a></li>')
 										#Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')" id ="ADDNEW__SYOBJR_98871_SYOBJ_002649">MARK PRIMARY</a></li>')
 									elif str(ObjectName) =='SAQSPT':
@@ -2881,15 +2874,12 @@ class SYLDRTLIST:
 									quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 									quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 									get_role_name = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' and PARTY_ROLE = 'SHIP TO' ")
-									if get_role_name.COUNT >1:
-										Trace.Write("Count if")
+									if get_role_name.COUNT >1:										
 										Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
-									else:
-										Trace.Write("Count else")
+									else:										
 										Action_str += ('<li style="display: none;"><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
 							##A055S000P01-10136
-							elif str(ObjectName)=="SAQICT":
-								# Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
+							elif str(ObjectName)=="SAQICT":								
 								Action_str += (
 									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
 									+ str(onclick)
@@ -2918,8 +2908,8 @@ class SYLDRTLIST:
 						value123 = a[0].replace("[", "").lstrip()
 						valu = ",".join(a[1:])
 						value1234 = valu.replace("]", "").lstrip()
-						if value1234 == "ACQUIRED":
-							value1234 = value1234.replace("ACQUIRED","<img title='Acquired' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Green_Tick.svg> ACQUIRED")
+						if value1234 == "ACQUIRED" or value1234 == "PRICED":
+							value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Green_Tick.svg> "+str(value1234))
 						if value1234 == "APPROVAL REQUIRED":
 							value1234 = value1234.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
 						if value1234 == "ACQUIRING":                        
@@ -2930,7 +2920,7 @@ class SYLDRTLIST:
 							value1234 = value1234.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
 						if value1234 == "PARTIALLY PRICED":
 							value1234 = value1234.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-						if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING":                        
+						if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
 							value1234 = value1234
 						if value123 == objRecName:
 							current_rec_id = value1234
@@ -3008,8 +2998,7 @@ class SYLDRTLIST:
 								
 							if value1234 is not None:
 								if value1234 != "":
-									if "-" in value1234:
-										Trace.Write("beforeformat0"+str(value123)+"qqq00"+str(value1234))
+									if "-" in value1234:										
 										##A055S000P01-12021
 										if (str(value123) == "NET_PRICE_INGL_CURR") and str(ObjectName) == "SAQICO":
 											my_format = "{:,." + str(decimal_place) + "f}"
@@ -3024,8 +3013,7 @@ class SYLDRTLIST:
 										value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
 										if str(value123) == "ANNUAL_BILLING_AMOUNT" and str(ObjectName) == "SAQIBP":
 											value1234 = value1234
-										else:
-											Trace.Write("value123value123value123====2956"+str(value123))
+										else:											
 											value1234 = value1234 + " " + curr_symbol
 						if str(cur_api_name) is not None and (
 							str(data_type_val) == "PERCENT" or str(formu_data_type_val) == "PERCENT"
@@ -3072,8 +3060,7 @@ class SYLDRTLIST:
 													"select PRODUCT_ID from products (nolock) where PRODUCT_NAME='"
 													+ str(module_txt)
 													+ "'"
-												)
-											Trace.Write("POP_6 "+str(value1234))
+												)											
 											if product_id != "" and product_id is not None:
 												if key:
 													pop_val[key] = value1234 + "|" + tab_val + "," + str(product_id.PRODUCT_ID)
@@ -3084,8 +3071,7 @@ class SYLDRTLIST:
 													+ "' AND LOOKUP_API_NAME ='"
 													+ str(key)
 													+ "' AND DATA_TYPE = 'LOOKUP'"
-												)
-												Trace.Write("POP_5 "+str(value1234))
+												)												
 												lookup_val = str(lookup_obj.LOOKUP_OBJECT)
 												if key:
 													pop_val[key] = value1234 + "|" + lookup_val
@@ -3097,8 +3083,7 @@ class SYLDRTLIST:
 											+ "' AND LOOKUP_API_NAME ='"
 											+ str(key)
 											+ "' AND DATA_TYPE = 'LOOKUP'"
-										)
-										Trace.Write("POP_4 "+str(value1234))
+										)										
 										lookup_val = str(lookup_obj.LOOKUP_OBJECT)
 										if key:
 											pop_val[key] = value1234 + "|" + lookup_val
@@ -3116,11 +3101,15 @@ class SYLDRTLIST:
 								+ str(ObjectName)
 								+ "' and SE.SECTION_NAME ='BASIC INFORMATION'"
 							)
-						else:
-							Trace.Write('At line 2805 ---2960----- Else'+str(value123))
-							# Trace.Write(' - '+str(value1234))
+						else:							
 							imgValue = ''
 							if str(ObjectName) == "SAQRIT":
+								if value1234 != "":
+									imgValue = str(value1234).split(">")[0]
+									imgValue = str(imgValue)+">"
+								else:
+									imgValue = ""
+							elif str(ObjectName) == "SAQDOC":
 								if value1234 != "":
 									imgValue = str(value1234).split(">")[0]
 									imgValue = str(imgValue)+">"
@@ -3135,8 +3124,7 @@ class SYLDRTLIST:
 								try:
 									value1234 = value1234[1]
 								except:
-									value1234 = value1234
-								
+									value1234 = value1234								
 							else:
 								value1234 = value1234.replace('"', "&quot;")
 								value1234 = value1234.replace("<p>", " ")
@@ -3153,13 +3141,21 @@ class SYLDRTLIST:
 							if value123 in img_list:
 								new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
 							else:
-								Trace.Write('At line 2832-- second else')
-								new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + str(value1234) + '">' + str(value1234) + "</abbr>")  
+								if not re.match(r'[A-Za-z0-9]',value1234):
+									Trace.Write("encode character")
+									Trace.Write("key_value ---"+str(key_value))
+									# Trace.Write(value1234.encode('utf-8'))
+									# Trace.Write(value1234.decode('utf-8'))
+									Trace.Write(value1234.encode('utf-8').decode('utf-8'))
+									value1234 = value1234.encode('utf-8').decode('utf-8')
+									new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")
+								else:
+									new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + str(value1234) + '">' + str(value1234) + "</abbr>")  
 								#new_dict[value123] = value1234                           
 						## addon product hyperlink starts
-						if str(RECORD_ID) == "SYOBJR-98859" and value123 == 'ADNPRD_ID':
+						if str(RECORD_ID) == "SYOBJR-98859" and value123 == 'SERVICE_ID':
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-							get_key_value = Sql.GetFirst("SELECT {} AS VAL from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}' and ADNPRD_ID = '{}' and SERVICE_ID = '{}'".format(str(objRecName),str(ObjectName),contract_quote_record_id,quote_revision_record_id,str(value1234),str(TreeParentParam)))
+							get_key_value = Sql.GetFirst("SELECT {} AS VAL from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}' and SERVICE_ID = '{}' AND GREENBOOK = '{}' and PAR_SERVICE_ID = '{}'".format(str(objRecName),str(ObjectName),contract_quote_record_id,quote_revision_record_id,str(value1234),str(TreeParentParam), str(TreeSuperParentParam)))
 							key_value = get_key_value.VAL
 						## addon product hyperlink ends
 						if value123 in edit_field:
@@ -3169,10 +3165,7 @@ class SYLDRTLIST:
 							
 							new_dict[value123] = (
 								'<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
-							)
-							#new_dict[value123] = value1234
-												
-							Trace.Write('At line 2848 edit field')     
+							)   
 						else:
 							if value123 in checkbox_list:
 								new_dict[value123] = value1234
@@ -3188,9 +3181,14 @@ class SYLDRTLIST:
 										+ "</a>"
 									)
 								else:
-									value1234 = str(value1234).replace('"', "&quot;")
-									value1234 = str(value1234).replace("<p>", " ")
-									value1234 = str(value1234).replace("</p>", " ")
+									if not re.match(r'[A-Za-z0-9]',value1234):
+										value1234 = value1234.replace('"', "&quot;")
+										value1234 = value1234.replace("<p>", " ")
+										value1234 = value1234.replace("</p>", " ")
+									else:
+										value1234 = str(value1234).replace('"', "&quot;")
+										value1234 = str(value1234).replace("<p>", " ")
+										value1234 = str(value1234).replace("</p>", " ")
 									#Trace.Write(str(value123)+'3107--3051---'+str(value1234))
 									if value123 in [
 										"ERROR",
@@ -3201,26 +3199,20 @@ class SYLDRTLIST:
 										new_dict[value123] = value1234
 										seg_pric[value123] = value1234.replace(curr_symbol, "").replace(" ", "")
 										seg_pric["PRICE_FACTOR"] = PriceFactor
-									else:
-										
+									else:										
 										#Trace.Write(str(value1234)+'---3067---'+str(value123))
-										if str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'NET_PRICE':
-											
+										if str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'NET_PRICE':							
 											new_dict[value123] = (
 												'<input id ="' + key_value + '" value="' + value1234 + '" style="border: 0px solid;" disabled> </input>'
-											)
-										
+											)										
 										#the Billing Matrix based on the Warranty Date  start
 										if str(value123) == "WARRANTY_END_DATE" and RECORD_ID != "SYOBJR-00009":
 											#Trace.Write('getindication--3075---'+str(getindication))
 											getdate_indication = str(value1234)
 											if getdate_indication:
-												getdate_indication = datetime.strptime(str(getdate_indication), '%m/%d/%Y')
-												Trace.Write('getindication---'+str(getdate_indication))
-										elif str(value123) in billing_date_column:
-											Trace.Write('---value123-3081--3078--'+str(value123))
-											getdate_indication_billing = datetime.strptime(str(value123), '%m-%d-%Y')
-											Trace.Write('getdate_indication_billing--'+str(getdate_indication_billing))
+												getdate_indication = datetime.strptime(str(getdate_indication), '%m/%d/%Y')												
+										elif str(value123) in billing_date_column:											
+											getdate_indication_billing = datetime.strptime(str(value123), '%m-%d-%Y')											
 											contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
 											curr_symbol_obj = Sql.GetFirst(
 												"select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select QUOTE_CURRENCY_RECORD_ID"
@@ -3229,28 +3221,21 @@ class SYLDRTLIST:
 												+ " = '"
 												+ str(contract_quote_record_id)
 												+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) "
-											)
-											concatedata = ""
+											)											
 											if curr_symbol_obj:
-												curr_symbol = curr_symbol_obj.CURRENCY
-												
+												curr_symbol = curr_symbol_obj.CURRENCY												
 												try:
-													decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
-													Trace.Write('curr_symbol--2289--'+str(curr_symbol))
+													decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES								
 													my_format = "{:,." + str(decimal_place) + "f}"
 													value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
 												except:
-													value1234
-											
-											if getdate_indication:
-												Trace.Write(str(getdate_indication_billing)+'--getindication--'+str(getdate_indication))
-												Trace.Write(str(type(getdate_indication_billing))+'--getindication--'+str(type(getdate_indication)))
+													value1234											
+											if getdate_indication:												
 												if getdate_indication > getdate_indication_billing:
 													new_dict[value123] = (
 														'<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 													)
-												else:
-													Trace.Write('3259--3255----'+str(value1234))
+												else:													
 													if str(value1234) == "0.00":
 														
 														new_dict[value123] = (
@@ -3260,8 +3245,7 @@ class SYLDRTLIST:
 														new_dict[value123] = (
 															'<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 														)
-											else:
-												Trace.Write('3259------'+str(value1234))   
+											else:												
 												new_dict[value123] = (
 													'<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 												)
@@ -3280,15 +3264,12 @@ class SYLDRTLIST:
 													if value1234 is not None and value1234 != '':
 														new_dict[value123] = (
 															'<abbr id ="' + key_value + '" title="' + str(value1234).upper() +'">' + str(value1234).upper() +  ' %' +  "</abbr>"
-														)
-														Trace.Write('At line 2899')
+														)														
 													else:
 														new_dict[value123] = (
 														'<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
-													)    
-														Trace.Write('At line 2904')
-												else:
-													
+													)	
+												else:													
 													img_list = ['PO_NOTES','PRICING_STATUS','STATUS','EQUIPMENT_STATUS']
 													if str(ObjectName) == "SAQIFP":
 														img_list.append('PRICING_STATUS')
@@ -3297,21 +3278,16 @@ class SYLDRTLIST:
 													if value123 in img_list:
 														
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
-													elif value123 in ["REV_EXPIRE_DATE","REV_CREATE_DATE"]:
-														Trace.Write('3182----'+str(value1234).upper().split(" ")[0].strip())
+													elif value123 in ["REV_EXPIRE_DATE","REV_CREATE_DATE"]:								
 														value1234 = str(value1234).upper().split(" ")[0].strip()
 														value1234 = new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 													# for redirecting the left tree node while viewing record from listgrid - start    
 													elif ObjectName in value1234: 
-														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>") 
-														Trace.Write('At line 2918')
+														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>") 							
 													# for redirecting the left tree node while viewing record from listgrid - end       
-													elif ObjectName == "SAQSAO":
-														
+													elif ObjectName == "SAQSAO" or ObjectName == "SAQSGB":
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + value1234 + "</abbr>") 
-													else:
-														Trace.Write('At line 2924'+str(value123))
-														Trace.Write(value1234)
+													else:														
 														try:
 															if RECORD_ID == 'SYOBJR-00009' and value123 == 'DISCOUNT':
 																new_dict[value123] = ('<abbr id ="discount_' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
@@ -3378,8 +3354,7 @@ class SYLDRTLIST:
 
 			filter_control_function = ""
 			values_list = ""
-			dict_form = {}
-			ATTRIBUTE_NAME_List = []
+			dict_form = {}			
 			cv_list = []
 			ignorecol = ['BILLING_DATE', 'BILLING_AMOUNT', 'BILLING_VALUE']
 			Trace.Write("Columns_chk_J"+str(Columns))
@@ -3401,12 +3376,9 @@ class SYLDRTLIST:
 			)
 			CountCol = eval(Currentcol.COLUMNS)
 			
-			# Billing Matrix - Pivot - Start
-			Trace.Write('Colcount--ObjectName-----'+str(ObjectName))
-			Trace.Write("SubTab------>"+str(SubTab))
+			# Billing Matrix - Pivot - Start			
 			Colcount = 0
-			#Trace.Write('Colcount--ObjectName-----'+str(ObjectName))
-			Trace.Write('Colcount--billing_date_column-----'+str(len(billing_date_column)))
+			#Trace.Write('Colcount--ObjectName-----'+str(ObjectName))			
 			if ObjectName == 'SAQIBP':
 				Colcount += len(billing_date_column)
 			# Billing Matrix - Pivot - End
@@ -3459,10 +3431,11 @@ class SYLDRTLIST:
 		
 			# Item Covered Object Column Grouping - Start
 			table_group_columns = ''
+			table_group_columns1 = ''
 			table_group_columns2 = ''
-			table_group_columns3 = ''
-			table_group_columns4 = ''
-			table_group_columns5 = ''
+			#table_group_columns3 = ''
+			#table_group_columns4 = ''
+			#table_group_columns5 = ''
 			#A055S000P01-4401 pricing view
 			##cost grouping
 			# ##price grouping
@@ -3527,11 +3500,8 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)         
-						else:  
-							Trace.Write("@3433"+str(qstring))
-							if str(TreeParam) != 'Quote Preview' and  str(TreeParam) != 'Billing Matrix':                                                      
-								
-								
+						else:  							
+							if str(TreeParam) != 'Quote Preview' and  str(TreeParam) != 'Billing Matrix':
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
@@ -3543,8 +3513,7 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)                                
-							else:
-								
+							else:								
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
@@ -3556,8 +3525,7 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)                         
-					else:        
-						Trace.Write("@3462"+str(qstring))
+					else:        						
 						if str(qstring) == "Purchase Order Notes" or str(qstring) == "Equipment Status":
 							table_header += (
 								'<th class="wth60" data-field="'
@@ -3582,8 +3550,7 @@ class SYLDRTLIST:
 								+ str("STATUS")
 								+ "</th>"
 							)
-						else:
-							Trace.Write("@3488"+str(qstring))
+						else:							
 							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-98875" and RECORD_ID !="SYOBJR-98873" and RECORD_ID!="SYOBJR-00005":
 								table_header += (
 									'<th  data-field="'
@@ -3610,8 +3577,7 @@ class SYLDRTLIST:
 										+ str(qstring)
 										+ "</th>"
 									)    
-								else:
-									Trace.Write("@3516"+str(qstring))
+								else:									
 									table_header += (
 										'<th  data-field="'
 										+ str(invs)
@@ -3627,10 +3593,7 @@ class SYLDRTLIST:
 							# 	table_header += ""
 							# elif RECORD_ID == "SYOBJR-98873":
 							# 	table_header += ""	
-							elif RECORD_ID == "SYOBJR-98875":
-								table_header += ""								
-								
-							else:
+							else:								
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
@@ -3669,179 +3632,32 @@ class SYLDRTLIST:
 				# 				+ "</th>"
 				# 			)           
 				# 	continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','PM_ID','PM_LABOR_LEVEL','KIT_NAME','KIT_NUMBER','TOOL_CONFIGURATION'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns:
-						table_header += '<th colspan="6" '+rowspan_level1+'  data-align="center"><div>OBJECT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','PM_COUNT_YEAR','PER_EVENT_PMSA_COST','ANNUAL_PMSA_COST'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns2:
-						table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div>EVENT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="event_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns2 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
-				##annulaized cost
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('LABOR_COST','GREATER_THAN_QTLY_PM_COST','LESS_THAN_QTLY_PM_COST','CM_PART_COST','PM_PART_COST','REPLACE_COST','REFURB_COST','CLEANING_COST','METROLOGY_COST','KPI_COST','SEEDSTOCK_COST','FAILURE_COST','LOGISTICS_COST','OUTSOURCE_COST','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','ENTITLEMENT_COST_IMPACT','ADD_COST_IMPACT'):	
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns3:
-						table_header += '<th colspan="18" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED COSTS<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					if str(invs) == 'ADD_COST_IMPACT':
-						table_group_columns3 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-formatter="cost_impact_edit_link" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)
-					else:
-						table_group_columns3 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)		           
-					continue
-				
-				##annulaized price
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('ENTPRCIMP_INGL_CURR','ADD_PRICE_IMPACT','PER_EVENT_PMSA_PRICE','ANNUAL_PMSA_PRICE','CEILING_PRICE_MARGIN','TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','DISCOUNT','SALES_PRICE_INGL_CURR'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns4:
-						table_header += '<th colspan="9" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					if str(invs) == 'ADD_PRICE_IMPACT':
-						table_group_columns4 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-formatter="price_impact_edit_link" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)
-					elif str(invs) == 'DISCOUNT':
-						table_group_columns4 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-formatter="discount_edit_link" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)   
-					else:
-						table_group_columns4 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)
-					continue
-				
-				##contractual cost and price
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('YEAR','YEAR_OVER_YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE','CNTCST_INGL_CURR','CNTPRI_INGL_CURR'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns5:
-						table_header += '<th colspan="8" '+rowspan_level1+'  data-align="center"><div>CONTRACTUAL COSTS AND PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					if str(invs) == 'YEAR_OVER_YEAR':
-						table_group_columns5 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-formatter="yoy_edit_link" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)
-					else:	
-						table_group_columns5 += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)
-					continue
-				
-				##A055S000P01-4401 
-				##cost grouping
-				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-					
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','PM_ID','PM_LABOR_LEVEL','KIT_NAME','KIT_NUMBER','TOOL_CONFIGURATION'):
 				# 	align = ''
-				# 	if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				# 		rowspan_level1 = 'rowspan="2"'
-				# 	else:
-				# 		rowspan_level1 = ""
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns:
+				# 		table_header += '<th colspan="6" '+rowspan_level1+'  data-align="center"><div>OBJECT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	table_group_columns += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
+				# 	continue
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','PM_COUNT_YEAR','PER_EVENT_PMSA_COST','ANNUAL_PMSA_COST'):
+				# 	align = ''
+				# 	rowspan_level1 = ""
 				# 	if not table_group_columns2:
-				# 		table_header += '<th colspan="2" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost-column-toggle" onclick="line_item_column_toggle(this)"></button>COST</div></th>'
+				# 		table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div>EVENT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="event_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 				# 	if str(invs) in right_align_list:
 				# 		align = 'right'
 				# 	elif str(invs) in center_align_list:
@@ -3858,49 +3674,30 @@ class SYLDRTLIST:
 				# 				+ "</th>"
 				# 			)           
 				# 	continue
-				# ##price grouping
-				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-					
+				# ##annulaized cost
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('LABOR_COST','GREATER_THAN_QTLY_PM_COST','LESS_THAN_QTLY_PM_COST','CM_PART_COST','PM_PART_COST','REPLACE_COST','REFURB_COST','CLEANING_COST','METROLOGY_COST','KPI_COST','SEEDSTOCK_COST','FAILURE_COST','LOGISTICS_COST','OUTSOURCE_COST','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','ENTITLEMENT_COST_IMPACT','ADD_COST_IMPACT'):	
 				# 	align = ''
-					
-				# 	if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				# 		rowspan_level1 = 'rowspan="2"'
-				# 	else:
-				# 		rowspan_level1 = ""
+				# 	rowspan_level1 = ""
 				# 	if not table_group_columns3:
-				# 		table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-column-toggle" onclick="line_item_column_toggle(this)"></button>PRICE</div></th>'
+				# 		table_header += '<th colspan="18" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED COSTS<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 				# 	if str(invs) in right_align_list:
 				# 		align = 'right'
 				# 	elif str(invs) in center_align_list:
 				# 		align = 'center'
-				# 	table_group_columns3 += (
-				# 				'<th data-toggle="bootstrap-table" data-field="'
-				# 				+ str(invs)
-				# 				+ '" data-filter-control="input" data-align="'
-				# 				+ str(align)
-				# 				+'" data-title-tooltsip="'
-				# 				+ str(qstring)
-				# 				+ '" data-sortable="true">'
-				# 				+ str(qstring)
-				# 				+ "</th>"
-				# 			)           
-				# 	continue
-				# ##Line summary grouping
-				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-					
-				# 	align = ''
-					
-				# 	if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				# 		rowspan_level1 = 'rowspan="2"'
+				# 	if str(invs) == 'ADD_COST_IMPACT':
+				# 		table_group_columns3 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-formatter="cost_impact_edit_link" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)
 				# 	else:
-				# 		rowspan_level1 = ""
-				# 	if not table_group_columns4:
-				# 		table_header += '<th colspan="4" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="linesummary-column-toggle" onclick="line_item_column_toggle(this)"></button>LINE SUMMARY</div></th>'
-				# 	if str(invs) in right_align_list:
-				# 		align = 'right'
-				# 	elif str(invs) in center_align_list:
-				# 		align = 'center'
-				# 	table_group_columns4 += (
+				# 		table_group_columns3 += (
 				# 				'<th data-toggle="bootstrap-table" data-field="'
 				# 				+ str(invs)
 				# 				+ '" data-filter-control="input" data-align="'
@@ -3910,16 +3707,136 @@ class SYLDRTLIST:
 				# 				+ '" data-sortable="true">'
 				# 				+ str(qstring)
 				# 				+ "</th>"
-				# 			)           
+				# 			)		           
 				# 	continue
 				
-
-				# elif RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items" and invs == "ENTITLEMENT_CATEGORY":
-				# 	Trace.Write('3 tier header')
-				# 	if header1:
-				# 		table_header += header1
-
+				# ##annulaized price
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('ENTPRCIMP_INGL_CURR','ADD_PRICE_IMPACT','PER_EVENT_PMSA_PRICE','ANNUAL_PMSA_PRICE','CEILING_PRICE_MARGIN','TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','DISCOUNT','SALES_PRICE_INGL_CURR'):
+				# 	align = ''
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns4:
+				# 		table_header += '<th colspan="9" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	if str(invs) == 'ADD_PRICE_IMPACT':
+				# 		table_group_columns4 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-formatter="price_impact_edit_link" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)
+				# 	elif str(invs) == 'DISCOUNT':
+				# 		table_group_columns4 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-formatter="discount_edit_link" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)   
+				# 	else:
+				# 		table_group_columns4 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)
 				# 	continue
+				
+				# ##contractual cost and price
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('YEAR','YEAR_OVER_YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE','CNTCST_INGL_CURR','CNTPRI_INGL_CURR'):
+				# 	align = ''
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns5:
+				# 		table_header += '<th colspan="8" '+rowspan_level1+'  data-align="center"><div>CONTRACTUAL COSTS AND PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	if str(invs) == 'YEAR_OVER_YEAR':
+				# 		table_group_columns5 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-formatter="yoy_edit_link" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)
+				# 	else:	
+				# 		table_group_columns5 += (
+				# 					'<th data-toggle="bootstrap-table" data-field="'
+				# 					+ str(invs)
+				# 					+ '" data-filter-control="input" data-align="'
+				# 					+ str(align)
+				# 					+'" data-title-tooltsip="'
+				# 					+ str(qstring)
+				# 					+ '" data-sortable="true">'
+				# 					+ str(qstring)
+				# 					+ "</th>"
+				# 				)
+				# 	continue
+				
+				#normal+Collapsaible+normal
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','GOT_CODE','ASSEMBLY_ID','PM_ID','PM_LABOR_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOOL_CONFIGURATION','SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','CEILING_PRICE_INGL_CURR'):
+					align = ''
+					rowspan_level1 = ""
+					if not table_group_columns:
+						table_header += '<th colspan="12" '+rowspan_level1+'  data-align="center"><div>CEILING PRICE<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="celing_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE','CNTCST_INGL_CURR','CNTPRI_INGL_CURR'):
+					align = ''
+					rowspan_level1 = ""
+					if not table_group_columns2:
+						table_header += '<th colspan="7" '+rowspan_level1+'  data-align="center"><div>CONTRACTUAL PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns2 += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
 
 				elif len(cell_api) > 0 and invs in cell_api:
 					table_header += (
@@ -3932,8 +3849,7 @@ class SYLDRTLIST:
 						+'>'
 						+ str(qstring)
 						+ "</th>"
-					)
-					
+					)					
 				elif lookup_link_popup is not None and invs in lookup_link_popup and (str(invs) != "TAB_NAME" and str(ObjectName) != "SYPSAC"):                 
 					table_header += (
 						'<th  data-field="'
@@ -3947,8 +3863,7 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif lookup_rl_popup is not None and invs in lookup_rl_popup:     
-					Trace.Write("3826_sER"+str(qstring))        
+				elif lookup_rl_popup is not None and invs in lookup_rl_popup:
 					footer_text_formatter = ''
 
 					if RECORD_ID == 'SYOBJR-00024' and invs == 'APRCHNSTP_ID':                        
@@ -3963,8 +3878,7 @@ class SYLDRTLIST:
 							+ str(qstring)
 							+ "</th>"
 						)
-					if invs == "SERVICE_ID"and RECORD_ID == 'SYOBJR-98873' :
-						Trace.Write("HyperService")
+					if invs == "SERVICE_ID"and RECORD_ID == 'SYOBJR-98873' :						
 						table_header += (
 							'<th  data-field="'
 							+ str(invs)
@@ -4017,16 +3931,14 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 										
-				else:
-					Trace.Write("CHKNGO_J"+str(qstring))				
+				else:								
 					dblclick_ele.append(invs)
 
-					if str(invs) in right_align_list:  
-						Trace.Write("right_align_list_j"+str(qstring))                      
+					if str(invs) in right_align_list:
 						visible = ""
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
 							visible = 'data-visible="false"'  
-						if (str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" and str(Product.GetGlobal("TreeParentLevel2"))=="Product Offerings") or (str(RECORD_ID)=="SYOBJR-00005" and str(invs) == "CUSTOMER_ANNUAL_QUANTITY" and str(TreeParentParam)=="Complementary Products"):
+						if (str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" and str(Product.GetGlobal("TreeParentLevel2"))=="Product Offerings") or (str(RECORD_ID)=="SYOBJR-00005" and str(invs) == "CUSTOMER_ANNUAL_QUANTITY" and str(TreeParentParam)=="Complementary Products") or (SubTab.upper() =='INCLUSIONS' and str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY"  and str(Product.GetGlobal("TreeParentLevel1"))=="Product Offerings") and TreeParam == 'Z0092':
 							data_formatter = "partsListEditLink" if getRevision.REVISION_STATUS!='APPROVED' else ''
 							table_header += (
 								'<th  data-field="'
@@ -4110,9 +4022,20 @@ class SYLDRTLIST:
 								+ "</th>"
 							)
 					else:                       
-						if str(qstring) == "Key": 
-							
+						if str(qstring) == "Key": 							
 							if ObjectName == "CTCICO":
+								table_header += (
+									'<th  data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-title-tooltip="'
+									+ str(qstring)
+									+ '" data-formatter="" data-sortable="true" '
+									+ rowspan
+									+'>'
+									+ str(qstring)
+									+ "</th>"
+								)
+							elif ObjectName == "SAQDOC":
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
@@ -4137,7 +4060,18 @@ class SYLDRTLIST:
 									+ "</th>"
 								)
 						
-
+						elif ObjectName == "SAQDOC" and str(qstring) == "Document Name":
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" class="cust_billing_name" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-formatter="documentrealtedhyperlink" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+							)
 						elif RECORD_ID == 'SYOBJR-00007' and str(invs) in billing_date_column: # Billing Matrix Date Change Model and Footer - Start
 							
 							footer_formatter = ''
@@ -4173,35 +4107,17 @@ class SYLDRTLIST:
 							)
 			table_header += "</tr>"
 		if RECORD_ID == 'SYOBJR-00009':
-			#A055S000P01-4401 Pricing view
-			# if header2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-			# 	Trace.Write('header2---'+str(header2))
-			# 	table_header += '<tr>{}</tr>'.format(header2)
 			grouping_columns = ""
-			# #entitlement category header 
-			# if pricing_picklist_value == 'Pricing' and header3 and str(TreeParam) == "Quote Items":
-			# 	grouping_columns += header3
-			# #cost header
-			# if table_group_columns2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-			# 	grouping_columns += table_group_columns2
-			# #price header
-			# if table_group_columns3 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-			# 	grouping_columns += table_group_columns3
-			# #line summary header
-			# if table_group_columns4 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-			# 	grouping_columns += table_group_columns4
-			#benchmark header
 			if table_group_columns:
-				#Trace.Write('table_group_columns---'+str(table_group_columns))
 				grouping_columns += table_group_columns
 			if table_group_columns2:
 				grouping_columns += table_group_columns2
-			if table_group_columns3:
-				grouping_columns += table_group_columns3
-			if table_group_columns4:
-				grouping_columns += table_group_columns4
-			if table_group_columns5:
-				grouping_columns += table_group_columns5 
+			# if table_group_columns3:
+			# 	grouping_columns += table_group_columns3
+			# if table_group_columns4:
+			# 	grouping_columns += table_group_columns4
+			# if table_group_columns5:
+			# 	grouping_columns += table_group_columns5 
 			table_header += "<tr >{}</tr>".format(grouping_columns)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
@@ -4212,7 +4128,7 @@ class SYLDRTLIST:
 		cls = "eq(2)"
 		CHL_STS_OBJ = None
 
-		if CHL_STS_OBJ is not None:
+		if CHL_STS_OBJ is not None: # Not Needed
 			dbl_clk_function += (
 				'$("debugger;'
 				+ str(table_ids)
@@ -4263,7 +4179,7 @@ class SYLDRTLIST:
 					+ str(table_ids)
 					+ '").on("dbl-click-cell.bs.table", onClickCell); $("'
 					+ str(table_ids)
-					+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom");if ($("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")) { if(localStorage.getItem("CommonTopSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products"){$("button#delete_parts").css("display","block"); }localStorage.setItem("selectall","yes");}if (!$("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")){$("button#delete_parts").css("display","none");localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if(localStorage.getItem("CommonTopSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products"){$("button#delete_parts").css("display","block");}localStorage.setItem("selectall","no");} if(!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){$("button#delete_parts").css("display","none");}$(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+					+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom");if ($("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")) { if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products"){$("button#delete_parts").css("display","block"); }localStorage.setItem("selectall","yes");}if (!$("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")){$("button#delete_parts").css("display","none");localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products"){$("button#delete_parts").css("display","block");}localStorage.setItem("selectall","no");} if(!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){$("button#delete_parts").css("display","none");}$(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
 					+ str(table_ids)
 					+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { if(localStorage.getItem("InlineEdit")=="YES"){ return ;}var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'
 					+ str(cls)
@@ -4336,10 +4252,9 @@ class SYLDRTLIST:
 		DropDownList = []
 		filter_level_list = []
 		filter_clas_name = ""
-		cv_list = []
-		TableclassName = "form-control" + table_id
+		cv_list = []		
 		footer_str, footer = "", ""
-		gettotalamt = getgrandtotalamt = ""
+		gettotalamt = ""
 		if ObjectName == "SAQIBP":
 			ContractRecordId = Product.GetGlobal("contract_quote_record_id")
 			gettotaldateamt = Sql.GetList("SELECT BILLING_VALUE=SUM(BILLING_VALUE),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
@@ -4370,15 +4285,8 @@ class SYLDRTLIST:
 				+ str(col_name)
 				+ "'"
 			)           
-			if objss_obj:
-				
+			if objss_obj:				
 				try:
-					try:
-						FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
-						FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
-						FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
-					except:
-						Trace.Write('4260---'+str(col_name))
 					if str(objss_obj.PICKLIST).upper() == "TRUE":		                                          
 						filter_level_data = "select"                        
 						filter_clas_name = (
@@ -4470,20 +4378,7 @@ class SYLDRTLIST:
 
 			if filter_level_data == "select" and col_name not in checkbox_list:                
 				try:
-					if str(col_name) == "EXCHANGE_RATE_DATE":
-						zzz = (
-							"SELECT Top 1000 CONVERT(VARCHAR(10),"
-							+ str(col_name)
-							+ ",101) as EXCHANGE_RATE_DATE  from "
-							+ str(ObjectName)
-							+ " (nolock) where "
-							+ str(Wh_API_NAME)
-							+ " = '"
-							+ str(RecAttValue)
-							+ "' ORDER BY CONVERT(DateTime,"
-							+ str(col_name)
-							+ ",101) DESC "
-						)
+					if str(col_name) == "EXCHANGE_RATE_DATE":						
 						xcdStr = (
 							"SELECT  Top 1000 CONVERT(VARCHAR(10),"
 							+ str(col_name)
@@ -4496,8 +4391,7 @@ class SYLDRTLIST:
 							+ "' ORDER BY CONVERT(DateTime,"
 							+ str(col_name)
 							+ ",101) DESC"
-						)
-						
+						)						
 					else:
 						if str(col_name) == 'TRACKING_TYPE':
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00159").GetValue()
@@ -4534,10 +4428,8 @@ class SYLDRTLIST:
 								+ str(col_name)
 							)
 					xcd = Sql.GetList(xcdStr)
-				except:
-					
-					if str(col_name) != "EXCHANGE_RATE_DATE":
-						
+				except:					
+					if str(col_name) != "EXCHANGE_RATE_DATE":						
 						xcdStr = (
 							"SELECT "
 							+ str(col_name)
@@ -4550,14 +4442,12 @@ class SYLDRTLIST:
 							+ "'"
 						)
 						xcd = Sql.GetList(xcdStr)
-				
 
 				try:
 					if xcd is not None:
 						StringValue_list = [
 							str(eval("ins." + str(col_name))) for ins in xcd if eval("ins." + str(col_name)) != ""
-						]
-						
+						]						
 						StringValue_list = filter(None, list(set(StringValue_list)))
 						if len(StringValue_list) == 0:
 							StringValue_list = [""]
@@ -4574,8 +4464,12 @@ class SYLDRTLIST:
 				StringValue_lists=[]
 				
 				for string in StringValue_list:
-					if string == "ACQUIRED":
-						string_value = string.replace("ACQUIRED","<img title='Acquired' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg> ACQUIRED")
+					string_value =""
+					Trace.Write("string--"+str(string))
+					if string == "ACQUIRED" or string == "PRICED":
+						Trace.Write("priced status--"+str(string))
+						string_value = string.replace(string,"<img title='"+str(string).title()+"' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg> "+str(string))
+						Trace.Write("string_value--"+str(string_value))
 					if string == "APPROVAL REQUIRED":
 						string_value = string.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
 					if string == "ACQUIRING":                        
@@ -4586,10 +4480,11 @@ class SYLDRTLIST:
 						string_value = string.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
 					if string == "PARTIALLY PRICED":
 						string_value = string.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-					if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "PARTIALLY PRICED" and string != "ACQUIRING":                        
+					if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "PARTIALLY PRICED" and string != "ACQUIRING" and string != "PRICED":                        
 						string_value = string
 					StringValue_lists.append(string_value)
 				DropDownList.append(StringValue_lists)
+				Trace.Write("DropDownList--"+str(DropDownList))
 				
 			elif col_name in checkbox_list:
 				DropDownList.append(["True", "False"])
@@ -4599,7 +4494,7 @@ class SYLDRTLIST:
 					if col_name in billing_date_column:                    
 						my_format = "{:,." + str(decimal_place) + "f}"
 						tovalue = 0.00
-						getamt = BILLING_AMOUNTTOL = ""                        
+						getamt = ""                        
 						#footer += '<th>{}{}</th>'.format(my_format.(sum([float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0].split(" ")[0].replace(",","")) for data in table_list])) ,curr_symbol)
 						for data in table_list:
 							#Trace.Write('getval ---------'+str(float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0].replace(",",""))))
@@ -4613,7 +4508,6 @@ class SYLDRTLIST:
 								footer += '<th colspan="2" class="text-left">{}</th>'.format(currency_obj.group(1))
 							else:
 								footer += '<th colspan="2" class="text-left"></th>'
-					
 					
 					#footer += '<th>{}{}</th>'.format(sum([float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0].split(" ")[0].replace(",","")) for data in table_list]),curr_symbol)
 					#footer += '<th>{}</th>'.format(sum([float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0]) for data in table_list]))
@@ -4658,7 +4552,7 @@ class SYLDRTLIST:
 		try:
 			get_Param_Val = Product.GetGlobal("CurrTreeParamVal")
 			Selected_Node = Product.GetGlobal("SEL_NODE_LIST")
-			EXECUTION_TIME = Product.GetGlobal("EXECUTION")
+			#EXECUTION_TIME = Product.GetGlobal("EXECUTION")
 			if get_Param_Val != "" and Selected_Node != "":
 				Selected_Node = eval(Selected_Node)
 				if get_Param_Val in Selected_Node:
@@ -4677,9 +4571,7 @@ class SYLDRTLIST:
 							+ str(table_id)
 							+ '").colResizable({ resizeMode:"overflow" }); }, 5000); }'
 						)
-						
-			else:
-				
+			else:				
 				filter_control_function += (
 					'try { $("#'
 					+ str(table_id)
@@ -4692,10 +4584,8 @@ class SYLDRTLIST:
 					+ '_RelatedMutipleCheckBoxDrop\']").jqxDropDownList("close"); } }); }, 3000); }  finally { setTimeout(function(){ $("#'
 					+ str(table_id)
 					+ '").colResizable({ resizeMode:"overflow" }); }, 5000); }'
-				)
-				
-		except:
-			
+				)				
+		except:			
 			filter_control_function += (
 				'try { $("#'
 				+ str(table_id)
@@ -4739,7 +4629,7 @@ class SYLDRTLIST:
 				+ str(cls)
 				+ '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
 			)
-			buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>" 
+			# buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>" 
 			SAQICO_dbl_clk_function += (    
 				'$("'   
 				+ str(table_ids)    
@@ -4808,7 +4698,7 @@ class SYLDRTLIST:
 				+ str(table_ids)
 				+ '").on("dbl-click-cell.bs.table", onClickCell); $("'
 				+ str(table_ids)
-				+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom");if ($("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")) { if(localStorage.getItem("CommonTopSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products"){$("button#delete_parts").css("display","block"); }localStorage.setItem("selectall","yes");}if (!$("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")){$("button#delete_parts").css("display","none");localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if(localStorage.getItem("CommonTopSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products"){$("button#delete_parts").css("display","block");}localStorage.setItem("selectall","no");} if(!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){$("button#delete_parts").css("display","none");} ItemsEdit();$(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+				+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom");if ($("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")) { if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products"){$("button#delete_parts").css("display","block"); }localStorage.setItem("selectall","yes");}if (!$("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")){$("button#delete_parts").css("display","none");localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products"){$("button#delete_parts").css("display","block");}localStorage.setItem("selectall","no");} if(!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){$("button#delete_parts").css("display","none");}$(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
 				+ str(table_ids)
 				+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { if(localStorage.getItem("InlineEdit")=="YES"){ return ;}var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'
 				+ str(cls)
@@ -5026,27 +4916,30 @@ class SYLDRTLIST:
 				contract_quote_record_id = ''    
 			
 			if Wh_OBJECT_NAME == 'SAQIBP':
-				if SubTab:
-					end = int(SubTab.split(' ')[-1]) * 12
-					start = end - 12 + 1
-					if TreeParam == "Billing":
-						item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
-									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
-														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID='{}'
-														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
-															contract_quote_record_id, quote_revision_record_id, start, end))
-					else:
-						item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
-									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
-														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'
-														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
-															contract_quote_record_id,TreeParam, quote_revision_record_id, start, end))
+				try:
+					if SubTab:
+						end = int(SubTab.split(' ')[-1]) * 12
+						start = end - 12 + 1
+						if TreeParam == "Billing":
+							item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
+										AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
+															FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID='{}'
+															GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+																contract_quote_record_id, Quote.GetGlobal("quote_revision_record_id"), start, end))
+						else:
+							item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
+										AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
+															FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'
+															GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+																contract_quote_record_id,TreeParam, Quote.GetGlobal("quote_revision_record_id"), start, end))
 
-				
-				if item_billing_plans_obj:
-					billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]                    
-					billing_date_column_joined = ",".join(["'{}'".format(billing_data) for billing_data in billing_date_column])                    
-					Columns = Columns.replace(']', ','+billing_date_column_joined+']')                     
+					
+					if item_billing_plans_obj:
+						billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]                    
+						billing_date_column_joined = ",".join(["'{}'".format(billing_data) for billing_data in billing_date_column])                    
+						Columns = Columns.replace(']', ','+billing_date_column_joined+']')                     
+				except:
+					pass
 			CurrentObj = Sql.GetFirst(
 				"select API_NAME, OBJECT_NAME from  SYOBJD (nolock) where PARENT_OBJECT_RECORD_ID = '"
 				+ str(PARENT_LOOKUP_REC_ID)
@@ -5150,6 +5043,14 @@ class SYLDRTLIST:
 						lookup_disply_list.remove("QUOTE_REVISION_CONTRACT_ITEM_ID")
 					except:
 						pass
+				elif "QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID" in lookup_disply_list and ObjectName == "SAQIGS":
+					try:
+						lookup_disply_list.remove("QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID")
+						lookup_disply_list.remove("CONTRACT_VALID_FROM")
+						lookup_disply_list.remove("CONTRACT_VALID_TO")
+						lookup_disply_list.remove("GREENBOOK")
+					except:
+						pass
 				
 				elif "QUOTE_REV_DEAL_TEAM_MEMBER_ID" in lookup_disply_list and ObjectName == "SAQDLT":
 					try:
@@ -5165,7 +5066,8 @@ class SYLDRTLIST:
 				select_obj_str = str(obj_str) + "," + str(lookup_str)
 			else:
 				select_obj_str = str(obj_str)
-			#Trace.Write("obj_str---- "+str(obj_str))
+			Trace.Write("obj_str---- "+str(obj_str))
+			Trace.Write("select_obj_str---- "+str(select_obj_str))
 			lookup_disply_list123 = ""
 			lookup_str = ",".join(list(lookup_disply_list))
 			if len(list(lookup_disply_list)) > 1:
@@ -5213,7 +5115,8 @@ class SYLDRTLIST:
 			if billing_date_column:
 				column_before_pivot_change = col
 				col += ","+ ",".join(billing_date_column)
-
+			select_obj_str = col
+			Trace.Write('@5221, Select obj str-->'+str(select_obj_str))
 			edit_field = []
 			OrderBy_obj = Sql.GetFirst("select ORDERS_BY from SYOBJR (NOLOCK) where RECORD_ID = '" + str(RECORD_ID) + "'")
 			
@@ -6087,9 +5990,7 @@ class SYLDRTLIST:
 						TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
-						Serv_id = SqlHelper.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")    
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")						
 						LineAndEquipIDList = TreeParam.split(' - ')                        
 						if getyears == 1:
 							col_year =  'YEAR_1'
@@ -6199,7 +6100,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, LINE,SERVICE_ID,FABLOCATION_ID,GREENBOOK,GOT_CODE,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,PM_ID,PM_LABOR_LEVEL,KIT_NAME,KIT_NUMBER,TOOL_CONFIGURATION,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,PM_COUNT_YEAR,PER_EVENT_PMSA_COST,ANNUAL_PMSA_COST,LABOR_COST,GREATER_THAN_QTLY_PM_COST,LESS_THAN_QTLY_PM_COST,CM_PART_COST,PM_PART_COST,REPLACE_COST,REFURB_COST,CLEANING_COST,METROLOGY_COST,KPI_COST,SEEDSTOCK_COST,FAILURE_COST,LOGISTICS_COST,OUTSOURCE_COST,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ENTITLEMENT_COST_IMPACT,ADD_COST_IMPACT,ENTPRCIMP_INGL_CURR,ADD_PRICE_IMPACT,PER_EVENT_PMSA_PRICE,ANNUAL_PMSA_PRICE,CEILING_PRICE_MARGIN,TARGET_PRICE_MARGIN,BD_PRICE_MARGIN,DISCOUNT,SALES_PRICE_INGL_CURR,YEAR,YEAR_OVER_YEAR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CONVERT(VARCHAR(10),WARRANTY_START_DATE,101) AS [WARRANTY_START_DATE],CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CNTCST_INGL_CURR,CNTPRI_INGL_CURR,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,GOT_CODE,ASSEMBLY_ID,PM_ID,PM_LABOR_LEVEL,KIT_NAME,KIT_NUMBER,KPU,TOOL_CONFIGURATION,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,CEILING_PRICE_INGL_CURR,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,BD_PRICE_INGL_CURR,DISCOUNT,SALES_PRICE_INGL_CURR,YEAR_OVER_YEAR,YEAR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CONVERT(VARCHAR(10),WARRANTY_START_DATE,101) AS [WARRANTY_START_DATE],CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CNTCST_INGL_CURR,CNTPRI_INGL_CURR,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY LINE,"+ str(Wh_API_NAMEs)
 										+") AS ROW, * from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "') m where m.ROW BETWEEN "
@@ -6529,7 +6430,7 @@ class SYLDRTLIST:
 						Qury_str = (
 						"SELECT DISTINCT TOP "
 						+ str(PerPage)
-						+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
+						+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
 						+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
 						+ str(Page_start)
 						+ " AND "
@@ -6568,11 +6469,11 @@ class SYLDRTLIST:
 						imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 						acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
 						cps_pricing_img = ""                     
-						#cps_pricing_img ='<a href="#" onclick=""><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/info.png"></a>'
+						#cps_pricing_img ='<a href="#" onclick=""><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/info.png"></a>' 
 						Qury_str = (
 							"SELECT DISTINCT TOP "
 							+ str(PerPage)
-							+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,PART_LINE_ID,CONCAT('"+cps_pricing_img+ "',PART_NUMBER) AS PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP 10 ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
+							+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,CONCAT('"+cps_pricing_img+ "',PART_NUMBER) AS PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,UNIT_PRICE_INGL_CURR,EXTENDED_PRICE,EXTENDED_UNIT_PRICE,EXTPRI_INGL_CURR,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP 10 ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
 							+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
 							+ str(Page_start)
 							+ " AND "
@@ -6687,7 +6588,7 @@ class SYLDRTLIST:
 					##involved parties equipmemt ends
 					elif str(RECORD_ID) == "SYOBJR-98859":
 						#"where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"'"
-						Qustr += " where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND  SERVICE_ID = '"+str(TreeParentParam)+"' "
+						Qustr += " where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' "
 						Qury_str = (
 							"select DISTINCT top "
 							+ str(PerPage)
@@ -7493,9 +7394,7 @@ class SYLDRTLIST:
 							TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 							qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-								contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
-							Serv_id = SqlHelper.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")    
+								contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")							  
 							LineAndEquipIDList = TreeParam.split(' - ')
 							
 							if getyears == 1:
@@ -7659,7 +7558,7 @@ class SYLDRTLIST:
 									Qury_str = (
 										"select top "
 											+ str(PerPage)
-											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, LINE,SERVICE_ID,FABLOCATION_ID,GREENBOOK,GOT_CODE,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,PM_ID,PM_LABOR_LEVEL,KIT_NAME,KIT_NUMBER,TOOL_CONFIGURATION,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,PM_COUNT_YEAR,PER_EVENT_PMSA_COST,ANNUAL_PMSA_COST,LABOR_COST,GREATER_THAN_QTLY_PM_COST,LESS_THAN_QTLY_PM_COST,CM_PART_COST,PM_PART_COST,REPLACE_COST,REFURB_COST,CLEANING_COST,METROLOGY_COST,KPI_COST,SEEDSTOCK_COST,FAILURE_COST,LOGISTICS_COST,OUTSOURCE_COST,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ENTITLEMENT_COST_IMPACT,ADD_COST_IMPACT,ENTPRCIMP_INGL_CURR,ADD_PRICE_IMPACT,PER_EVENT_PMSA_PRICE,ANNUAL_PMSA_PRICE,CEILING_PRICE_MARGIN,TARGET_PRICE_MARGIN,BD_PRICE_MARGIN,DISCOUNT,SALES_PRICE_INGL_CURR,YEAR,YEAR_OVER_YEAR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CONVERT(VARCHAR(10),WARRANTY_START_DATE,101) AS [WARRANTY_START_DATE],CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CNTCST_INGL_CURR,CNTPRI_INGL_CURR,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,GOT_CODE,ASSEMBLY_ID,PM_ID,PM_LABOR_LEVEL,KIT_NAME,KIT_NUMBER,KPU,TOOL_CONFIGURATION,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,CEILING_PRICE_INGL_CURR,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,BD_PRICE_INGL_CURR,DISCOUNT,SALES_PRICE_INGL_CURR,YEAR_OVER_YEAR,YEAR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CONVERT(VARCHAR(10),WARRANTY_START_DATE,101) AS [WARRANTY_START_DATE],CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CNTCST_INGL_CURR,CNTPRI_INGL_CURR,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 											+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
 											+ str(qt_rec_id.QUOTE_ID)
 											+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
@@ -7941,7 +7840,7 @@ class SYLDRTLIST:
 							Qury_str = (
 							"SELECT DISTINCT TOP "
 							+ str(PerPage)
-							+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_LINE_ID,PART_NUMBER,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,MATPRIGRP_ID,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+							+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_NUMBER,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,MATPRIGRP_ID,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
 							+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
 							+ str(Page_start)
 							+ " AND "
@@ -7975,7 +7874,7 @@ class SYLDRTLIST:
 							Qury_str = (
 								"SELECT DISTINCT TOP "
 								+ str(PerPage)
-								+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,PART_LINE_ID,CONCAT('"+cps_pricing_img+ "',PART_NUMBER) AS PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+								+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,CONCAT('"+cps_pricing_img+ "',PART_NUMBER) AS PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,UNIT_PRICE_INGL_CURR,EXTENDED_PRICE,EXTENDED_UNIT_PRICE,EXTPRI_INGL_CURR,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
 								+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
 								+ str(Page_start)
 								+ " AND "
@@ -8237,6 +8136,11 @@ class SYLDRTLIST:
 						elif str(RECORD_ID) == "SYOBJR-00013":
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00001").GetValue()
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+						elif str(RECORD_ID) == "SYOBJR-98875":
+							quote_item_revision_rec_id = Product.GetGlobal('get_quote_item_service')
+							get_gb_val = Sql.GetFirst("SELECT GREENBOOK FROM SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID= '"+str(quote_item_revision_rec_id)+"'")
+							if get_gb_val:
+								Qustr += "  where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "'  AND QTEITM_RECORD_ID = '"+str(quote_item_revision_rec_id)+"' AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
 						else:
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 				
@@ -8322,7 +8226,9 @@ class SYLDRTLIST:
 					OBJ_CpqTableEntryId_New = str(ik.CpqTableEntryId)
 				except:
 					pass
+				
 				Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
+				
 				for inm in ik:                
 					value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 					value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
@@ -8373,8 +8279,9 @@ class SYLDRTLIST:
 
 				elif str(current_tab).upper() == "ROLE":                    
 					Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW<a><li>'  
-				else:              
-					if ObjectName != "SAQIBP" and ObjectName != "SAQTRV":
+				else: 
+								
+					if ObjectName != "SAQIBP" and ObjectName != "SAQTRV" and ObjectName != "SAQDOC":
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 
 					elif ObjectName == "SAQTRV" :
@@ -8386,7 +8293,11 @@ class SYLDRTLIST:
 							Action_str += '<li><a class="dropdown-item" href="#" style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'
 
 					elif ObjectName == "SAQDOC":
-						Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'    
+						contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+						quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+						docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))
+						if str(docnode_action_btn.DOCUMENT_DESCRIPTION) == "":
+							Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'						    
 
 				if str(Action_permission.get("Edit")).upper() == "TRUE":
 					if ObjectName == "SAQTRV":
@@ -8396,11 +8307,37 @@ class SYLDRTLIST:
 						else:
 							Action_str += '<li><a class="dropdown-item" href="#" onclick="set_as_active(this)" >SET AS ACTIVE</a></li>'
 					elif ObjectName == "SAQDOC":
-						Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'
+						contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+						quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+						docnode_action_btn = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))								
+						#for date_value in docnode_action_btn:
+						if docnode_action_btn:
+							Trace.Write("act_btn=="+str(docnode_action_btn.DATE_SUBMITTED))						
+							if str(docnode_action_btn.DATE_SUBMITTED) != "":
+								Trace.Write("docnode=====")
+								if str(docnode_action_btn.DATE_ACCEPTED) == "" and str(docnode_action_btn.DATE_REJECTED) == "":
+									Trace.Write("2222222222222")
+									Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_accepted(this)">CUSTOMER ACCEPTED</a></li>'
+									Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_rejected(this)">CUSTOMER REJECTED</a></li>'
+							else:
+								Trace.Write("docnode111=====")									
+								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'
+					elif ObjectName == "SAQDLT":
+						Action_str += (
+							'<li><a class="dropdown-item" href="#" onclick="replace_cont_manager(this)">REPLACE</a></li>'
+						) 
 					else:
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'    
 				if str(Action_permission.get("Delete")).upper() == "TRUE":
-					Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModalDelete" data-toggle="modal" onclick="cont_delete(this)" href="#">DELETE</a></li>'
+					onclick = "CommonDelete(this, '" + str(ObjectName) + "', 'WARNING')"
+					if ObjectName == "SAQDLT":
+						Action_str += (
+									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
+									+ str(onclick)
+									+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE</a></li>'
+								)
+					else:
+						Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModalDelete" data-toggle="modal" onclick="cont_delete(this)" href="#">DELETE</a></li>'
 				Action_str += "</ul></div></div>"
 				new_dict = {}
 				seg_pric = {}
@@ -8666,8 +8603,7 @@ class SYLDRTLIST:
 										+ " = '"
 										+ str(contract_quote_record_id)
 										+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') "
-									)
-									concatedata = ""
+									)									
 									if curr_symbol_obj:
 										curr_symbol = curr_symbol_obj.CURRENCY                                            
 										try:
@@ -8725,10 +8661,6 @@ class SYLDRTLIST:
 													else:
 														#Trace.Write("value1234"+str(value1234)+"key_value"+str(key_value)+"value123"+str(value123))
 														new_dict[value123] = value1234
-
-
-
-
 					
 					new_dict["ACTIONS"] = Action_str       
 					new_dict["ids"] = ids
@@ -8740,7 +8672,7 @@ class SYLDRTLIST:
 				
 				footer_str, footer = "", ""
 				footer_tot = ""
-				if ObjectName == "SAQIBP":
+				if ObjectName == "SAQIBP" and TreeParam != 'Quote Items':
 					ContractRecordId = Product.GetGlobal("contract_quote_record_id")
 					gettotaldateamt = Sql.GetList("SELECT BILLING_VALUE=SUM(BILLING_VALUE),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
 					if gettotaldateamt:
@@ -8754,11 +8686,10 @@ class SYLDRTLIST:
 						footer_tot += '<th colspan="1" class="text-right">{}</th>'.format(gettotalamt)
 						for val in gettotaldateamt:
 							getamt = str(my_format.format(round(float(val.BILLING_VALUE), int(decimal_place))))
-							footer_tot += '<th class="text-right">{}</th>'.format(getamt)
-					
+							footer_tot += '<th class="text-right">{}</th>'.format(getamt)					
 					
 				for key, col_name in enumerate(list(eval(Columns))):                    
-					if ObjectName == 'SAQIBP' and (col_name in billing_date_column or col_name == 'QUOTE_CURRENCY'):                        
+					if ObjectName == 'SAQIBP' and TreeParam != 'Quote Items' and (col_name in billing_date_column or col_name == 'QUOTE_CURRENCY'):                        
 						try:                            
 							if col_name in billing_date_column:                                                
 								my_format = "{:,." + str(decimal_place) + "f}"
@@ -8768,8 +8699,7 @@ class SYLDRTLIST:
 								for data in table_list:                                    
 									tovalue += float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0].replace(",",""))
 									getamt = str(my_format.format(round(float(tovalue), int(decimal_place))))                               
-								footer += '<th class="text-right">{}</th>'.format(getamt)
-							
+								footer += '<th class="text-right">{}</th>'.format(getamt)							
 							else:
 								if table_list:
 									currency_obj = re.search(r'>(.+?)<', table_list[0].get(col_name))
@@ -8814,7 +8744,7 @@ class SYLDRTLIST:
 				+ str(cls)
 				+ '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
 			)
-			buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>" 
+			# buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>" 
 
 			SAQICO_dbl_clk_function += (    
 				'$("'   
@@ -8841,7 +8771,7 @@ class SYLDRTLIST:
 				+ str(table_id) 
 				+ "_SortColumnOrder', order); }); " 
 			)   
-			            
+						
 			dbl_clk_function = SAQICO_dbl_clk_function
 		return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 

@@ -50,6 +50,7 @@ class ViolationConditions:
                 "REJECTBTN",
                 "BULKAPPROVE",
                 "BULKREJECT",
+                "CBC_MAIL_TRIGGER"
             ],
             "ProductDetailLoading": ["PoductDetails", "ProductDetail"],
             "QueryBuilder": ["QueryBuilder", "QBSave"],
@@ -489,6 +490,7 @@ class ViolationConditions:
                     + str(val.APPROVAL_CHAIN_RECORD_ID)
                     + "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER"
                 )
+                Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER")
                 for result in CSSqlObjs:
                     GetObjName = Sql.GetFirst(
                         "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_RECORD_ID) + "'"
@@ -502,8 +504,9 @@ class ViolationConditions:
                     #     + str(result.WHERE_CONDITION_01)
                     # )
                     Select_Query = (
-                        "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE " + str(result.WHERE_CONDITION_01)
+                        "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE (" + str(result.WHERE_CONDITION_01) + ")"
                     )
+                    Log.Info("ACVIORULES--->"+str(Select_Query))
                     TargeobjRelation = Sql.GetFirst(
                         "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
                         + str(ObjectName)
@@ -526,6 +529,7 @@ class ViolationConditions:
                     Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
                     Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                     SqlQuery = Sql.GetFirst(Select_Query)
+                    Log.Info("@532")
                     if SqlQuery:
                         Log.Info("Inside the approval heaeder "+str(method)+" -index- "+str(index))
                         '"+str(Objh_Id)+"'
@@ -605,8 +609,9 @@ class ViolationConditions:
                                 Select_Query = (
                                     "SELECT * FROM "
                                     + str(GetObjName.OBJECT_NAME)
-                                    + " (NOLOCK) WHERE "
+                                    + " (NOLOCK) WHERE ("
                                     + str(result.WHERE_CONDITION_01)
+                                    + ") "
                                 )
                                 TargeobjRelation = Sql.GetFirst(
                                     "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
@@ -751,8 +756,11 @@ class ViolationConditions:
                             UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.TOTAL_APRTRX = {total},ACACHR.TOTAL_CHNSTP={totalchnstp},ACACHR.APRCHN_NAME=ACAPCH.APRCHN_NAME,ACACHR.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID,ACACHR.APPROVAL_ID = ACAPTX.APPROVAL_ID,ACACHR.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID,ACACHR.APRCHN_ID = ACAPTX.APRCHN_ID FROM ACAPTX INNER JOIN ACAPCH (NOLOCK) ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID INNER JOIN ACACHR ON ACAPTX.APRCHNRND_RECORD_ID = ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID WHERE ACAPTX.APRTRXOBJ_ID ='{quoteId}' AND ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID='{primarykey}'""".format(quoteId=QuoteId,primarykey=primarykey,total=transaction_count_obj.cnt,totalchnstp=chnstp_count_obj.cnt)
                             Log.Info(UPDATE_ACACHR)
                             Sql.RunQuery(UPDATE_ACACHR)               
+                    else:
+                        Log.Info("else @758")
         except Exception as e:
-            Trace.Write(str(e))
+            Log.Info(str(e))
+            
         return True
 
     def AutoApproval(self, revisionId, segmentId):

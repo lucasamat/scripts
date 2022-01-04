@@ -579,7 +579,7 @@ class QueryBuilder:
             segment_response = RestClient.DeserializeJson(str(defaultData))
             if EditEvent == "":
                 segment_response["flags"] = RestClient.DeserializeJson(
-                    '{"condition_readonly": false,"no_add_rule": true,"no_add_group": true,"no_delete": true}'
+                    '{"condition_readonly": false}'
                 )
                 # segment_response["flags"] = RestClient.DeserializeJson(str(AddGroupRule))
                 segment_response = self.build_non_editable_json_response("VIEW", segment_response)
@@ -601,7 +601,7 @@ class QueryBuilder:
             try:
                 if api_response["rules"][index]["rules"]:
                     api_response["rules"][index]["flags"] = RestClient.DeserializeJson(
-                        '{"condition_readonly": false,"no_add_rule": true,"no_add_group": true,"no_delete": true}'
+                        '{"condition_readonly": false}'
                     )
                     self.build_non_editable_json_response(MODE, api_response["rules"][index])
                     continue
@@ -950,19 +950,115 @@ class QueryBuilder:
 
     def SaveQueryBuilder(self, QbJsonData, QbWhereCondition, QbCallFromPricing):
         CpqIdQuery = Sql.GetFirst(
-            "select CpqTableEntryId from ACACST (nolock) where APPROVAL_CHAIN_STEP_RECORD_ID = '"
+            "select CpqTableEntryId,APRCHN_ID,APRCHN_RECORD_ID,APRCHNSTP_NAME,APRCHNSTP_NUMBER from ACACST (nolock) where APPROVAL_CHAIN_STEP_RECORD_ID = '"
             + str(self.CurrentRecordId)
             + "'"
         )
         tableInfo = Sql.GetTable("ACACST")
+        tableInfoACACSF = Sql.GetTable("ACACSF")
         updaterow = {
             "CpqTableEntryId": CpqIdQuery.CpqTableEntryId,
             "CRITERIA_01": QbJsonData,
             "WHERE_CONDITION_01": QbWhereCondition,
         }
+        
         Trace.Write(str(updaterow))
         tableInfo.AddRow(updaterow)
         Sql.Upsert(tableInfo)
+        QbJsonData = QbJsonData.replace("null","None")
+        QbJsonData = QbJsonData.replace("true","True")
+        QbJsonData = QbJsonData.replace("false","False") 
+        QbJsonData = eval(QbJsonData)
+        Trace.Write(str(QbJsonData))
+        #Trace.Write("--"+str(QbJsonData['rules'][0]['rules'][0]['values']['id']))
+        
+        if "(" in QbWhereCondition:
+            objName = str(QbJsonData['rules'][0]['rules'][0]['values']['id']).split(".")[0]
+            if QbJsonData["condition"] == "OR":
+                QbWhereCondition = QbWhereCondition.split("OR")
+                l = []
+                count = 0
+                for x in QbWhereCondition:
+                    if x.find("AND") != -1:
+                        y = x.split("AND")
+                        Trace.Write("y--->"+str(y))
+                        for i in y:
+                            i=i.strip().strip("(").strip(")")
+                            l.append(i.split(objName+"."))
+                for x in range(0,len(l)):
+                    getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(objName.strip(),str(l[x][1]).split(" '")[0].strip("=").strip("<").strip(">").strip("!=").strip("") ))
+                    getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(objName.strip()))
+                    if getFieldLabel and getObjLabel:
+                        row={}
+                        row = {
+                        "APRCHNSTP_TESTEDFIELD_RECORD_ID":str(Guid.NewGuid()).upper(),
+                        "APRCHN_ID":CpqIdQuery.APRCHN_ID,
+                        "APRCHN_RECORD_ID":CpqIdQuery.APRCHN_RECORD_ID,
+                        "APRCHNSTP_NUMBER":CpqIdQuery.APRCHNSTP_NUMBER,
+                        "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
+                        "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
+                        "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
+                        "TSTOBJ_LABEL":getObjLabel.LABEL,
+                        "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
+                        }
+                        tableInfoACACSF.AddRow(row)
+                Sql.Upsert(tableInfoACACSF)
+                Trace.Write("L--->"+str(l))
+            elif QbJsonData["condition"] == "AND":
+                QbWhereCondition = QbWhereCondition.split("AND")
+        else:
+
+            Trace.Write("where-"+str(QbWhereCondition))
+            if "AND" in QbWhereCondition or "OR" in QbWhereCondition:
+                if "AND" in QbWhereCondition:
+                    QbWhereCondition =QbWhereCondition.split("AND")
+                elif "OR" in QbWhereCondition:
+                    QbWhereCondition =QbWhereCondition.split("OR")
+                l=[]
+                count = 0
+                Trace.Write("976-"+str(QbWhereCondition))
+                for i in QbWhereCondition:
+                    l.append(i.split("."))
+                    count += 1
+                Trace.Write("LIST---"+str(l))
+                Trace.Write("count---"+str(count))
+                for x in range(0,count):
+                    getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(str(l[x][0]).strip(),str(l[x][1]).split("=")[0].strip()))
+                    getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(str(l[x][0]).strip()))
+                    if getFieldLabel and getObjLabel:
+                        row={}
+                        row = {
+                            "APRCHNSTP_TESTEDFIELD_RECORD_ID":str(Guid.NewGuid()).upper(),
+                            "APRCHN_ID":CpqIdQuery.APRCHN_ID,
+                            "APRCHN_RECORD_ID":CpqIdQuery.APRCHN_RECORD_ID,
+                            "APRCHNSTP_NUMBER":CpqIdQuery.APRCHNSTP_NUMBER,
+                            "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
+                            "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
+                            "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
+                            "TSTOBJ_LABEL":getObjLabel.LABEL,
+                            "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
+                        }
+                        tableInfoACACSF.AddRow(row)
+                Sql.Upsert(tableInfoACACSF) 
+            else:
+                objName = QbWhereCondition.split(".")[0].strip()
+                getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(objName,QbWhereCondition.split(".")[1].split(" '")[0].strip("=").strip("<").strip(">").strip("!=").strip("")))
+                getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(objName))
+                if getFieldLabel and getObjLabel:
+                    row={}
+                    row = {
+                        "APRCHNSTP_TESTEDFIELD_RECORD_ID":str(Guid.NewGuid()).upper(),
+                        "APRCHN_ID":CpqIdQuery.APRCHN_ID,
+                        "APRCHN_RECORD_ID":CpqIdQuery.APRCHN_RECORD_ID,
+                        "APRCHNSTP_NUMBER":CpqIdQuery.APRCHNSTP_NUMBER,
+                        "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
+                        "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
+                        "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
+                        "TSTOBJ_LABEL":getObjLabel.LABEL,
+                        "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
+                    }
+                    tableInfoACACSF.AddRow(row)
+                    Sql.Upsert(tableInfoACACSF)
         return True
 
 
@@ -1415,6 +1511,7 @@ except Exception, e:
 objDef = eval(violationruleInsert.Factory(Action))(CurrentRecordId=CurrentRecordId)
 Log.Info("inside the Approval center script ")
 if Action == "PoductDetails":
+    Trace.Write(str(Action))
     RecordId = Param.RecoedId
     wherecondition = Param.wherecondition
     Current_type = Param.Current_type
@@ -1425,12 +1522,15 @@ if Action == "PoductDetails":
         objDef.GetProductDetails(RecordId, wherecondition, Current_type, PerPage, startPage, endPage)
     )
 elif Action == "ProductDetail":
+    Trace.Write(str(Action))
     MaterilId = Param.MaterilId
     ApiResponse = ApiResponseFactory.JsonResponse(objDef.ProductDetailView(MaterilId))
 elif Action == "QueryBuilder":
+    Trace.Write(str(Action))
     OnEdit = Param.OnEdit
     ApiResponse = ApiResponseFactory.JsonResponse(objDef.ConstructQueryBuilder(OnEdit))
 elif Action == "QBSave":
+    Trace.Write(str(Action))
     QbJsonData = Param.QbJsonData
     QbWhereCondition = Param.QbWhereCondition
     QbCallFromPricing = Param.QbCallFromPricing

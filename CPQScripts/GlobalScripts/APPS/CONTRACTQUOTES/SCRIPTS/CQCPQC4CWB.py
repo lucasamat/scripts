@@ -72,7 +72,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         valid_to = tovalue+time
         ##date time conversion
         net_value = "0.0000"
-        opportunity_object = SqlHelper.GetFirst("select ISNULL(SAOPPR.C4C_OPPOBJ_ID,0) AS C4C_OPPOBJ_ID FROM SAOPPR(NOLOCK) INNER JOIN SAOPQT (NOLOCK) ON  SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID AND SAOPPR.ACCOUNT_ID = SAOPQT.ACCOUNT_ID WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
+        opportunity_object = Sql.GetFirst("select ISNULL(SAOPPR.C4C_OPPOBJ_ID,0) AS C4C_OPPOBJ_ID FROM SAOPPR(NOLOCK) INNER JOIN SAOPQT (NOLOCK) ON  SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID AND SAOPPR.ACCOUNT_ID = SAOPQT.ACCOUNT_ID WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
         opportunity_object_id = opportunity_object.C4C_OPPOBJ_ID
         
         ##Fetch the code according to the revision status..code starts...

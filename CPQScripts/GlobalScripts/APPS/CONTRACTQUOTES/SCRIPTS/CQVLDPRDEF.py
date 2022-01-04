@@ -287,38 +287,41 @@ def valuedriver_onchage():
 			entxmldict[x[0]]=sub_string
 	#if str(get_ent_type_val).upper() in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
 	Trace.Write('updateentXML-----'+str(updateentXML))
-	if uptime_list:
-		base_percent = uptime_list[0]
-		target_percent = uptime_list[1]
-		uptime_key = uptime_list[2]
-		uptime_coeff = uptime_list[3]
-		obj =re.match(r".*SERVICE_ID\s*\=\s*\'([^>]*?)\'",where_condition)
-		dynamic_service = obj.group(1)
-		if base_percent and target_percent in entxmldict.keys():
-			base= entxmldict[base_percent]
-			base_price=re.search(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>',base)
-			base_price_value =str(base_price.group(1))
-			target= entxmldict[target_percent]
-			target_price=re.search(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>',target)
-			target_price_value=str(target_price.group(1))
-			uptime=float(target_price_value)-float(base_price_value)
-			if uptime >= 10:
-				uptime = 10
-			update=Sql.GetFirst("Select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_COEFFICIENT FROM PRENVL WHERE ENTITLEMENT_DISPLAY_VALUE LIKE '%{uptime}%' AND SERVICE_ID = '{dynamic_service}'".format(uptime=uptime,dynamic_service=dynamic_service))
-			for key in entxmldict.keys():
-				if uptime_coeff == key:
-					entxmldict[uptime_coeff] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_coeff])
-					entxmldict[uptime_coeff] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_coeff])
-					querystring = querystring + entxmldict[uptime_coeff]
-				elif uptime_key == key:
-					entxmldict[uptime_key] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_DISPLAY_VALUE)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_key])
-					entxmldict[uptime_key] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_VALUE_CODE)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_key])
-					querystring = querystring + entxmldict[uptime_key]
-				else:
-					querystring = querystring + entxmldict[key]
-			Update_xml_uptime = ("UPDATE {TreeParam} SET ENTITLEMENT_XML = '{querystring}' {where_condition}".format(TreeParam=TreeParam,querystring=querystring,where_condition=where_condition))
-			Sql.RunQuery(Update_xml_uptime)
-
+	try:
+		if uptime_list:
+			base_percent = uptime_list[0]
+			target_percent = uptime_list[1]
+			uptime_key = uptime_list[2]
+			uptime_coeff = uptime_list[3]
+			obj =re.match(r".*SERVICE_ID\s*\=\s*\'([^>]*?)\'",where_condition)
+			dynamic_service = obj.group(1)
+			if base_percent and target_percent in entxmldict.keys():
+				base= entxmldict[base_percent]
+				base_price=re.search(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>',base)
+				base_price_value =str(base_price.group(1))
+				target= entxmldict[target_percent]
+				target_price=re.search(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>',target)
+				target_price_value=str(target_price.group(1))
+				uptime=float(target_price_value)-float(base_price_value)
+				if uptime >= 10:
+					uptime = 10
+				update=Sql.GetFirst("Select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_COEFFICIENT FROM PRENVL WHERE ENTITLEMENT_DISPLAY_VALUE LIKE '%{uptime}%' AND SERVICE_ID = '{dynamic_service}'".format(uptime=uptime,dynamic_service=dynamic_service))
+				for key in entxmldict.keys():
+					if uptime_coeff == key:
+						entxmldict[uptime_coeff] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_coeff])
+						entxmldict[uptime_coeff] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_coeff])
+						querystring = querystring + entxmldict[uptime_coeff]
+					elif uptime_key == key:
+						entxmldict[uptime_key] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_DISPLAY_VALUE)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_key])
+						entxmldict[uptime_key] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_VALUE_CODE)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_key])
+						querystring = querystring + entxmldict[uptime_key]
+					else:
+						querystring = querystring + entxmldict[key]
+				Update_xml_uptime = ("UPDATE {TreeParam} SET ENTITLEMENT_XML = '{querystring}' {where_condition}".format(TreeParam=TreeParam,querystring=querystring,where_condition=where_condition))
+				Sql.RunQuery(Update_xml_uptime)
+	except:
+		Trace.Write('323--error--')
+	Trace.Write('324---get_selected_value--'+str(get_selected_value))
 	for key,val in get_selected_value.items():
 		get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' and PRENVL.ENTITLEMENT_DISPLAY_VALUE='{}'".format(str(key), serviceId,val))
 		if get_coefficient_val:

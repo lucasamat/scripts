@@ -392,7 +392,9 @@ def GSCONTLOOKUPPOPUP(
                     VAL_Str = (
                         "SELECT top 1000 MASTER_TABLE_QUOTE_RECORD_ID,ACCOUNT_NAME FROM SAQTMT"
                     )
-                VAL_Obj = Sql.GetList(VAL_Str)   
+                VAL_Obj = Sql.GetList(VAL_Str)
+            
+
             elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(TreeParentParam) == "Approval Chain Steps":
                 Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(TRACKEDTESTEDOBJECT))
                 object_name = Header_Obj.OBJECT_NAME
@@ -439,7 +441,7 @@ def GSCONTLOOKUPPOPUP(
                 VAL_Obj = Sql.GetList(VAL_Str)
                 count_query=SqlHelper.GetList("SELECT COUNT(*) as cnt FROM cpq_permissions where permission_type ='0'")
             else:
-                Trace.Write('At 437')
+                Trace.Write('At 437'+str(TABLEID)+"tab_Name"+str(tab_Name))
                 if str(where).strip() != "":
                     where = " where " + str(where)
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID) + " " + str(where)
@@ -455,7 +457,17 @@ def GSCONTLOOKUPPOPUP(
                 #     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
                 elif str(TABLEID) == "SYOBJR":
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID)
-                    count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))    
+                    count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
+                elif str(TABLEID) == "SYPFTY":
+                    Trace.Write("TABLEID====>>>"+str(TABLEID))
+                    ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
+                    VAL_Str = (" SELECT top 1000 PARTNERFUNCTION_RECORD_ID,C4C_PARTNER_FUNCTION,CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION != '' AND C4C_PARTNER_FUNCTION NOT IN(SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    VAL_Obj = Sql.GetList(VAL_Str)
+                elif str(TABLEID) == "SAEMPL":
+                    Trace.Write("TABLEID====>>>"+str(TABLEID))
+                    ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
+                    VAL_Str = (" SELECT EMPLOYEE_RECORD_ID,EMPLOYEE_ID,EMPLOYEE_NAME,EMAIL FROM SAEMPL WHERE EMPLOYEE_ID NOT IN(SELECT MEMBER_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(ContractRecordId,quote_revision_record_id))
+                    VAL_Obj = Sql.GetList(VAL_Str) 
                 else:
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID)
                     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
@@ -796,6 +808,40 @@ def GSCONTLOOKUPPOPUPFILTER(
                             + "and OBJECT_NAME = '{}'".format(object_name)
                         )
                     VAL_Obj = Sql.GetList(VAL_Str)
+                elif str(TABLEID) == "SYPFTY":
+                    ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
+                    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+                    Trace.Write("TABLEID====>>>"+str(TABLEID))
+                    
+                    VAL_Str = ("SELECT top 1000 "+ str(COLUMNS_NAME)+ " FROM "
+                        + str(TABLEID)
+                        + " WHERE "
+                        + str(ATTRIBUTE_VALUE_STR)
+                        + " AND C4C_PARTNER_FUNCTION != '' AND C4C_PARTNER_FUNCTION NOT IN(SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT(NOLOCK) WHERE QTEREV_RECORD_ID ='"
+                        + str(quote_revision_record_id)
+                        + "' AND QUOTE_RECORD_ID = '"
+                        + str(ContractRecordId)
+                        + "'"
+                        + ")"
+                    )
+                    VAL_Obj = Sql.GetList(VAL_Str)
+                elif str(TABLEID) == "SAEMPL":
+                    Trace.Write("TABLEID====>>>"+str(TABLEID))
+                    ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
+                    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+                    
+                    VAL_Str = ("SELECT top 1000 "+ str(COLUMNS_NAME)+ " FROM "
+                        + str(TABLEID)
+                        + " WHERE "
+                        + str(ATTRIBUTE_VALUE_STR)
+                        + " AND EMPLOYEE_RECORD_ID NOT IN(SELECT MEMBER_RECORD_ID FROM SAQDLT(NOLOCK) WHERE QTEREV_RECORD_ID ='"
+                        + str(quote_revision_record_id)
+                        + "' AND QUOTE_RECORD_ID = '"
+                        + str(ContractRecordId)
+                        + "'"
+                        + ")"
+                    )
+                    VAL_Obj = Sql.GetList(VAL_Str) 
                 elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(SegmentsClickParam) == "Approval Chain Status Mappings":
                     Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(MAPPINGSAPPROVALOBJECT))
                     object_name = Header_Obj.OBJECT_NAME
@@ -882,12 +928,14 @@ def GSCONTLOOKUPPOPUPFILTER(
                     VAL_Obj = Sql.GetList(VAL_Str) 
                 if str(where).strip() != "" :
                     where = " and " + str(where)
-                if str(TABLEID) != "SYOBJD" and str(TABLEID) != "PRTXCL" and str(TABLEID) != "MAFBLC" and str(TABLEID) != "SAQSCO" and (str(TreeParentParam) != "Approval Chain Steps" or str(SegmentsClickParam) == "Approval Chain Steps") and TESTEDOBJECT !="SOURCE ACCOUNT":    
+                if str(TABLEID) != "SYOBJD" and str(TABLEID) != "PRTXCL" and str(TABLEID) != "MAFBLC" and str(TABLEID) != "SAQSCO" and str(TABLEID) != "SAEMPL" and str(TABLEID) != "SYPFTY" and (str(TreeParentParam) != "Approval Chain Steps" or str(SegmentsClickParam) == "Approval Chain Steps") and TESTEDOBJECT !="SOURCE ACCOUNT":    
                     VAL_Str = "SELECT top 100 " + COLUMNS_NAME + " FROM " + TABLEID + " where " + ATTRIBUTE_VALUE_STR + where
-                    VAL_Obj = Sql.GetList(VAL_Str) 
+                    VAL_Obj = Sql.GetList(VAL_Str)
+                
 
 
         else:
+            Trace.Write("cm toelse====")
             RelTABEL_NAME = ""
             if RelTABEL_NAME != "QSTN_R_SYOBJR_80011":
                 if str(where).strip() != "" and str(ATTRIBUTE_VALUE_STR).strip() != "":
