@@ -6,6 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
+from CPQScripts.GlobalScripts.APPS.CONTRACTQUOTES.SCRIPTS.CQENTLMENT import Trace
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
@@ -3043,6 +3044,7 @@ def Related_Sub_Banner(
             if str(multi_buttons) != "":
                 Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
+                    Trace.Write("btn---"+str(btn))
                     if ('SPLIT' in btn or 'EDIT' in btn) and subTabName =='Items':
                         if 'SPLIT' in btn:   
                             get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
@@ -3065,6 +3067,7 @@ def Related_Sub_Banner(
                             if billing_variable_visible:
                                 sec_rel_sub_bnr += (btn)
                     if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn:
+                        Trace.Write("btn-ifff--"+str(btn))
                         sec_rel_sub_bnr += (btn)
                     # else: commented because of duplicate button
                     #     Trace.Write("btn222"+str(btn))
