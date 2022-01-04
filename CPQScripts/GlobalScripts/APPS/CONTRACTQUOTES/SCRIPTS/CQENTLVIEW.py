@@ -238,7 +238,7 @@ class EntitlementView():
 			quote_item_revision_rec_id = Product.GetGlobal('get_quote_item_service')
 			Trace.Write('quote_item_revision_rec_id--'+str(quote_item_revision_rec_id))
 			if quote_item_revision_rec_id:
-				get_quite_item_service= Sql.GetFirst("select SERVICE_ID from SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(quote_item_revision_rec_id)+"'")
+				get_quite_item_service= Sql.GetFirst("select SERVICE_ID from SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(RECORD_ID)+"'")
 				ProductPartnumber = get_quite_item_service.SERVICE_ID
 				Trace.Write('ProductPartnumber-224-'+str(ProductPartnumber))
 				TableObj = Sql.GetFirst("select * from SAQITE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "'AND QTEITM_RECORD_ID ='"+str(quote_item_revision_rec_id)+"' ")
