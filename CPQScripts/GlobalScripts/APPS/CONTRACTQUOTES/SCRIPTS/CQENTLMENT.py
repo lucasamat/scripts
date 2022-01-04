@@ -2060,14 +2060,14 @@ class Entitlements:
 		gettotallist = Product.GetGlobal('ent_data_List')	
 		## set entitlement_xml for cancel fn A055S000P01-3157
 		prev_dict = {}
-		try:
-			prev_dict = eval(Product.GetGlobal('previous_entitlement_xml') )
-			## set entitlement_xml for cancel fn A055S000P01-3157
-			cpsmatc_incr = prev_dict['CPS_MATCH_ID']
-			configuration_status = prev_dict['CPS_CONFIGURATION_ID']
-			getprevent_xml = prev_dict['ENTITLEMENT_XML']
-		except Exception as e:
-			Trace.Write('error---'+str(e))
+		#try:
+		#prev_dict = Product.GetGlobal('previous_entitlement_xml') 
+		## set entitlement_xml for cancel fn A055S000P01-3157
+		cpsmatc_incr = Product.GetGlobal('previous_cps_macth_id') 
+		configuration_status = Product.GetGlobal('previous_config_id') 
+		getprevent_xml = Product.GetGlobal('previous_entitlement_xml') 
+		# except Exception as e:
+		# 	Trace.Write('error---'+str(e))
 
 		tableName = ''
 		serviceId = ''

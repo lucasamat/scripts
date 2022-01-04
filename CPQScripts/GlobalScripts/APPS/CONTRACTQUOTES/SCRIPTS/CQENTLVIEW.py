@@ -847,13 +847,13 @@ class EntitlementView():
 			## set entitlement_xml for cancel fn A055S000P01-3157 starts
 			previous_entitlement_xml  = Sql.GetFirst("select * from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
 			#Trace.Write('previous_entitlement_xml----'+str(previous_entitlement_xml))	
+			#prev_dict['CPS_CONFIGURATION_ID'] = a.CPS_CONFIGURATION_ID
+			# prev_dict['ENTITLEMENT_XML'] = previous_entitlement_xml.ENTITLEMENT_XML
+			# prev_dict['CPS_MATCH_ID'] = previous_entitlement_xml.CPS_MATCH_ID 
 			
-			prev_dict = {}
-			prev_dict['CPS_CONFIGURATION_ID'] = previous_entitlement_xml.CPS_CONFIGURATION_ID
-			prev_dict['ENTITLEMENT_XML'] = previous_entitlement_xml.ENTITLEMENT_XML
-			prev_dict['CPS_MATCH_ID'] = previous_entitlement_xml.CPS_MATCH_ID 
-			Product.SetGlobal("previous_entitlement_xml", str(prev_dict) )
-			#Product.SetGlobal("previous_cps__xml", previous_entitlement_xml.ENTITLEMENT_XML)
+			Product.SetGlobal("previous_entitlement_xml", previous_entitlement_xml.ENTITLEMENT_XML)
+			Product.SetGlobal("previous_cps_macth_id", previous_entitlement_xml.CPS_MATCH_ID)
+			Product.SetGlobal("previous_config_id", previous_entitlement_xml.CPS_CONFIGURATION_ID)
 			## set entitlement_xml for cancel fn A055S000P01-3157 ends
 			list_of_tabs = []
 			getprevdicts +=   ("var dict_new = {};var list_new = [];")	
