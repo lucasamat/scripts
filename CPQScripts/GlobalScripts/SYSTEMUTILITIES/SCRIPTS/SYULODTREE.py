@@ -2208,14 +2208,25 @@ class TreeView:
 										whr_str_greenbook =""
 										ent_table =""
 										subTabName =""
-										if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText :
+										if TreeSuperParentParam == 'Product Offerings' and '/>Z' in NodeText:
+											Trace.Write("service_level")
 											service_id = NodeText.split('/>')
 											service_id = service_id[len(service_id) -1]
 											ent_table ="SAQTSE"
-										else:
+										elif TreeTopSuperParentParam == 'Product Offerings' and TreeParentParam == Product.GetGlobal("SERVICE"):
+											Trace.Write("greenbook")
 											ent_table ="SAQSGE"
-											service_id = Product.GetGlobal("SERVICE")
+											service_id = TreeParentParam
 											whr_str_greenbook = " AND GREENBOOK = '{}'".format(NodeText)
+
+										# if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText :
+										# 	service_id = NodeText.split('/>')
+										# 	service_id = service_id[len(service_id) -1]
+										# 	ent_table ="SAQTSE"
+										# else:
+										# 	ent_table ="SAQSGE"
+										# 	service_id = Product.GetGlobal("SERVICE")
+										# 	whr_str_greenbook = " AND GREENBOOK = '{}'".format(NodeText)
 												
 										get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' {whr_str_greenbook}""".format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id,ent_table = ent_table,whr_str_greenbook = whr_str_greenbook ))
 										if get_entitlement_xml :
