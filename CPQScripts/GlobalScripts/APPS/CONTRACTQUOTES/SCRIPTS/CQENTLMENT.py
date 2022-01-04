@@ -2059,8 +2059,16 @@ class Entitlements:
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
 		gettotallist = Product.GetGlobal('ent_data_List')	
 		## set entitlement_xml for cancel fn A055S000P01-3157
-		getprevent_xml = Product.GetGlobal('previous_entitlement_xml')
-		## set entitlement_xml for cancel fn A055S000P01-3157
+		prev_dict = {}
+		try:
+			prev_dict = eval(Product.GetGlobal('previous_entitlement_xml') )
+			## set entitlement_xml for cancel fn A055S000P01-3157
+			cpsmatc_incr = prev_dict['CPS_MATCH_ID']
+			configuration_status = prev_dict['CPS_CONFIGURATION_ID']
+			getprevent_xml = prev_dict['ENTITLEMENT_XML']
+		except Exception as e:
+			Trace.Write('error---'+str(e))
+
 		tableName = ''
 		serviceId = ''
 		parentObj = ''
@@ -2152,7 +2160,7 @@ class Entitlements:
 				INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
 				WHERE SYSTEM_ID ='{SystemId}' 
 				GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(Gettabledata.SERVICE_ID)))
-		for AttributeID,valcode in dict(Getprevdict).items():
+		'''for AttributeID,valcode in dict(Getprevdict).items():
 			#Trace.Write(str(valcode)+'170-------'+str(AttributeID))
 			if AttributeID not in ['T0_T1_LABOR_calc','T0_T1_LABOR_imt','T3_LABOR','T0_T1_LABOR','T3_LABOR_imt','T2_LABOR_calc']:
 				valdisplaycode.append(str(valcode))
@@ -2283,22 +2291,23 @@ class Entitlements:
 				#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(tableName, cpsmatc_incr, self.ContractRecordId, serviceId)
 				#Sql.RunQuery(Updatecps)
 				## set entitlement_xml for cancel fn A055S000P01-3157 starts
-				if getprevent_xml:
-					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML = '{}',CPS_MATCH_ID ={},CONFIGURATION_STATUS = '{}' WHERE {}  ".format(
-							tableName,getprevent_xml,cpsmatc_incr,configuration_status,whereReq
-						)
-					#Trace.Write("UpdateEntitlement--"+ str(UpdateEntitlement))
-					Sql.RunQuery(UpdateEntitlement)	
-				####to update match id at all level while cancelling starts
-				ent_tables_list = ['SAQTSE','SAQSGE','SAQSCE','SAQSAE']
-				#ent_tables_list.remove(tableName)
-				for table in ent_tables_list:
-					Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, cpsmatc_incr, self.ContractRecordId,self.revision_recordid, serviceId)
-					Sql.RunQuery(Updatecps)
+		'''
+		if getprevent_xml:
+			UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML = '{}',CPS_MATCH_ID ={},CONFIGURATION_STATUS = '{}' WHERE {}  ".format(
+					tableName,getprevent_xml,cpsmatc_incr,configuration_status,whereReq
+				)
+			#Trace.Write("UpdateEntitlement--"+ str(UpdateEntitlement))
+			Sql.RunQuery(UpdateEntitlement)	
+		####to update match id at all level while cancelling starts
+		ent_tables_list = ['SAQTSE','SAQSGE','SAQSCE','SAQSAE']
+		#ent_tables_list.remove(tableName)
+		for table in ent_tables_list:
+			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, cpsmatc_incr, self.ContractRecordId,self.revision_recordid, serviceId)
+			Sql.RunQuery(Updatecps)
 				##to update match id at all level while cancelling ends
 
 				## set entitlement_xml for cancel fn A055S000P01-3157 ends	
-				GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,valcode))
+		'''		GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,valcode))
 				if GetDefault:
 					if GetDefault.IS_DEFAULT == 0:
 						defaultval = 0
@@ -2308,6 +2317,7 @@ class Entitlements:
 					tableName,defaultval,AttributeID, whereReq
 					)
 					Sql.RunQuery(UpdateIsdefault)
+		'''
 		if tableName == 'SAQTSE':
 			where = "WHERE TGT.QUOTE_RECORD_ID = '{}' AND TGT.QTEREV_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid, serviceId)
 		elif tableName == 'SAQSFE':
@@ -2319,12 +2329,13 @@ class Entitlements:
 		#self.ent_update(tableName,valcode, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
 		Trace.Write("Updated Successfully!!")
 		#Trace.Write('response2--Fullresponse--------'+str(Fullresponse))
-		Trace.Write("attriburesrequired_list-------"+str(attriburesrequired_list))
+		#Trace.Write("attriburesrequired_list-------"+str(attriburesrequired_list))
 		'''try:			
 			CQENTIFLOW.iflow_entitlement(tableName,where)
 		except Exception, e:
 			Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 			Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))'''
+		attributevalues = attributeReadonlylst = attributeEditonlylst = attributedefaultvalue= attriburesrequired_list = ''
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,valdisplaycode,attributedefaultvalue,attriburesrequired_list
 
 	def Rolldown(self):
