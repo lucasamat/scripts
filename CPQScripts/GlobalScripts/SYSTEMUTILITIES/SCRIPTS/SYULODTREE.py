@@ -2204,6 +2204,7 @@ class TreeView:
 									
 									elif (subTabName in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','New Parts') :
 										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
+										Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE")))
 										subtab_temp_variable = subTabName 
 										whr_str_greenbook =""
 										ent_table =""
