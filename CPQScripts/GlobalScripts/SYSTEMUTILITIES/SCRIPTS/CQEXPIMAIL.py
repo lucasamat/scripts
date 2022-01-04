@@ -1,3 +1,10 @@
+#===================================================================================================================#======================
+#   __script_name : CQEXPIMAIL.PY
+#   __script_description : THIS SCRIPT IS USED TRIGGER EMAIL BEFORE EXPIRATION OF QUOTE AND MAKE THE QUOTE EXPIRED .
+#   __primary_author__ : JOE,WASIM
+#   __create_date :08/30/2021
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+# #====================================================================================================================#======================
 from SYDATABASE import SQL
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQ
