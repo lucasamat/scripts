@@ -6,7 +6,6 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
-from CPQScripts.GlobalScripts.APPS.CONTRACTQUOTES.SCRIPTS.CQENTLMENT import Trace
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
