@@ -1430,6 +1430,7 @@ class TreeView:
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 		Trace.Write('RecId-----TreeParentParam--'+str(TreeParentParam))
 		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+		TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 		try:
 			contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
@@ -2202,7 +2203,7 @@ class TreeView:
 									# 	Trace.Write("subTabName Green service list---"+str(subTabName))
 									
 									elif (subTabName in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','New Parts') :
-										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName))
+										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
 										subtab_temp_variable = subTabName 
 										whr_str_greenbook =""
 										ent_table =""
