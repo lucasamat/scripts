@@ -3066,11 +3066,11 @@ def Related_Sub_Banner(
                             if billing_variable_visible:
                                 sec_rel_sub_bnr += (btn)
                     if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn:
-                        Trace.Write("btn-ifff--"+str(btn))
                         sec_rel_sub_bnr += (btn)
                     if subTabName == 'Inclusions' and quote_status.QUOTE_STATUS != 'APPROVED' and 'INLINE EDIT' in btn:
+                        Trace.Write("btn-ifff--"+str(btn))
                         sec_rel_sub_bnr += (btn)
-                        sec_rel_sub_bnr += '<button id="partsListInlineEdit" onclick="PartsListInlineEdit()" class="btnconfig" >INLINE EDIT</button>'
+                        #sec_rel_sub_bnr += '<button id="partsListInlineEdit" onclick="PartsListInlineEdit()" class="btnconfig" >INLINE EDIT</button>'
 
                     # else: commented because of duplicate button
                     #     Trace.Write("btn222"+str(btn))
