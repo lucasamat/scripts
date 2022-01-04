@@ -2715,7 +2715,7 @@ class SYLDRTLIST:
 							if get_activerev:
 								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="edit_desc(this)">EDIT DESC</a></li>'
 							else:
-								Action_str += '<li><a class="dropdown-item" href="#" style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'    
+								Action_str += ''    
 
 					else:                        
 						if str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
@@ -2731,7 +2731,7 @@ class SYLDRTLIST:
 							if get_activerev:
 								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="edit_desc(this)">EDIT DESC</a></li>'
 							else:
-								Action_str += '<li><a id = "" class="dropdown-item" href="#"  style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>' 
+								Action_str += '' 
 
 						elif ObjectName == "SAQDOC":
 							contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
@@ -8294,7 +8294,7 @@ class SYLDRTLIST:
 						if get_activerev:
 							Action_str += '<li><a class="dropdown-item" href="#"  onclick="edit_desc(this)">EDIT DESC</a></li>'
 						else:
-							Action_str += '<li><a class="dropdown-item" href="#" style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'
+							Action_str += ''
 
 					elif ObjectName == "SAQDOC":
 						contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
