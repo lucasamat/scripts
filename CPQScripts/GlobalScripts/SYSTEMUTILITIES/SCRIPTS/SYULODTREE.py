@@ -2190,7 +2190,6 @@ class TreeView:
 													subtab_temp ="Inclusions"
 												elif subtab_temp_variable == 'New Parts':
 													Trace.Write(" New Parts inside "+str(service_id))
-													Trace.Write(" treeParent_J "+str(TreeParentLevel0))
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="New Parts"
