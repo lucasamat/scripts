@@ -111,7 +111,7 @@ def _insert_billing_matrix():
 	return True
 
 def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date ='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
-	Trace.Write('104----')
+	Trace.Write('104--amount_column------'+str(amount_column))
 	get_val =get_billing_cycle = get_billing_type = ''
 	#Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
 	Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
