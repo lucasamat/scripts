@@ -2222,7 +2222,7 @@ class TreeView:
 														#subTabName = subtab_temp
 										
 										#if ent_value_dict:
-										if subtab_temp_variable in ("PM Events","Inclusions","Service Parts List") :
+										if subtab_temp_variable in ("PM Events","Inclusions","Service Parts List","New Parts") :
 											subTabName = ent_value_dict["SAQTSE"]
 										if entitlement_level_flag and subtab_temp_variable in ('Green Parts List','New Parts'):
 											Trace.Write("else-ifff-saqsge-"+str(ent_value_dict)+'--'+str(subtab_temp_variable)+'--'+str(entitlement_level_flag))
