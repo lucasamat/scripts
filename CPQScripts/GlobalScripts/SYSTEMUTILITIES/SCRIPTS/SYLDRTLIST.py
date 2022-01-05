@@ -349,6 +349,18 @@ class SYLDRTLIST:
 			# 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 				
 			# Billing Matrix - Pivot - Start
+			#delivery pivot start
+			if  Wh_OBJECT_NAME == 'SAQSPD':
+				item_delivery_plans_obj = SqlHelper.GetList("""SELECT FORMAT(DELIVERY_SCHED_DATE, 'MM-dd-yyyy') as DELIVERY_SCHED_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE)
+									AS ROW, * FROM (SELECT DISTINCT DELIVERY_SCHED_DATE
+														FROM SAQSPD (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' 
+														GROUP BY DELIVERY_SCHED_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+															contract_quote_record_id, quote_revision_record_id, 1, 52))
+				if item_delivery_plans_obj:
+					delivery_date_column = [item_delivery_plans_obj.BILLING_DATE for item_delivery_plans_obj in item_delivery_plans_obj]
+					delivery_date_column_joined = ",".join(["'{}'".format(delivery_data) for delivery_data in delivery_date_column])
+					Columns = Columns.replace(']', ','+delivery_date_column_joined+']')
+			#delivery pivot end
 			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':				
 				try:
 					if SubTab:
