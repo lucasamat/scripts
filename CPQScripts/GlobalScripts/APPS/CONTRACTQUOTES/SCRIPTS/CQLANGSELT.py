@@ -89,8 +89,9 @@ def _insert_subtotal_by_offerring_quote_table():
 
 get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 def insert_spare_doc(parts_list):
+	_insert_subtotal_by_offerring_quote_table()
 	if str(parts_list) == 'True':
-
+		Trace.Write('93------')
 		Log.Info('SAQDOC---documents-')
 		saqdoc_output_insert="""INSERT SAQDOC (
 							QUOTE_DOCUMENT_RECORD_ID,
@@ -131,7 +132,7 @@ def insert_spare_doc(parts_list):
 							FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(doc_id='Pending',doc_name='',quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=contract_quote_record_id,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
 			#Log.Info(qtqdoc)
 		Sql.RunQuery(saqdoc_output_insert)
-		_insert_subtotal_by_offerring_quote_table()
+		
 		gen_doc = Quote.GenerateDocument('AMAT_SUBTOTAL_OFFERING', GenDocFormat.PDF)
 		fileName = Quote.GetLatestGeneratedDocumentFileName()
 		GDB = Quote.GetLatestGeneratedDocumentInBytes()
