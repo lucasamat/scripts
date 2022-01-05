@@ -204,7 +204,7 @@ class SYLDRTLIST:
 		if obj_obj is None:
 			return "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
 		# Billing Matrix - Pivot - Start
-		billing_date_column = getQuotetype =''        
+		billing_date_column = getQuotetype = delivery_date_column = ''        
 		# Billing Matrix - Pivot - End
 		if obj_obj is not None:
 			##A055S000P01-4401            
@@ -627,6 +627,9 @@ class SYLDRTLIST:
 			if billing_date_column:
 				column_before_pivot_change = col
 				col += ","+ ",".join(billing_date_column)
+			if delivery_date_column:
+				column_before_pivot_change = col
+				col += ","+ ",".join(delivery_date_column)
 			# Billing Matrix - Pivot - End
 			col = col.replace("PRIMARY","[PRIMARY]") # CODE COMMON FOR ALL PRIMARY CHECK BOC API NAME
 			select_obj_str = col
@@ -4111,7 +4114,27 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							) # Billing Matrix Date Change Model and Footer - Start
-						else:                    
+						elif RECORD_ID == 'SYOBJR-34575'and str(invs) in delivery_date_column:
+							footer_formatter = ''
+							#'data-footer-formatter="priceSumFormatter"'
+							tooltip = qstring
+							qstring = '<a onclick="openBillingMatrixDateChangeModal(\'{Value}\')" href="#">{Value}</a>'.format(Value=qstring.replace('-','/'))
+							#data_field = invs.replace('/','-')
+							Trace.Write('2780-------month-------'+ str(invs))
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" class="text-right cust_billing_date" data-title-tooltip="'
+								+ str(tooltip)
+								+ '" data-sortable="true" '
+								+ str(footer_formatter)
+								+ ' '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+							)
+						else:
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)

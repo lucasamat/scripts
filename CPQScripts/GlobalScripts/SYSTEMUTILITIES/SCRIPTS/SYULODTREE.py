@@ -2163,7 +2163,10 @@ class TreeView:
 										subTabName =""
 										ent_value_dict = {}
 										service_id = Product.GetGlobal("SERVICE")
-										if TreeTopSuperParentParam == 'Product Offerings' and TreeParentParam == service_id:
+										# if TreeTopSuperParentParam == 'Product Offerings' and TreeParentParam == service_id:
+										if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText :
+											ent_table_list.append("SAQTSE")
+										else:
 											Trace.Write("greenbook level subtab")
 											whr_str_greenbook = " AND GREENBOOK = '{}'".format(NodeText)
 											ent_table_list.append("SAQSGE")
@@ -2186,8 +2189,8 @@ class TreeView:
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="Inclusions"
 												elif subtab_temp_variable == 'New Parts':
-													Trace.Write(" New Parts inside")
-													
+													Trace.Write(" New Parts inside "+str(service_id))
+													Trace.Write(" treeParent_J "+str(TreeParentLevel0))
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="New Parts"
