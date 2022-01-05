@@ -11,6 +11,7 @@ import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 import datetime
+from datetime import timedelta , date
 import sys
 import System.Net
 import CQPARTIFLW
