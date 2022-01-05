@@ -2224,7 +2224,9 @@ class TreeView:
 										if entitlement_level_flag:
 											pass
 										else:
+											Trace.Write("else--saqsge-"+str(ent_value_dict))
 											if subtab_temp_variable in ('Green Parts List','New Parts') and "SAQSGE" in ent_value_dict.keys():
+												Trace.Write("else-iff-saqsge-"+str(ent_value_dict["SAQSGE"]))
 												subTabName = ent_value_dict["SAQSGE"]
 								
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
