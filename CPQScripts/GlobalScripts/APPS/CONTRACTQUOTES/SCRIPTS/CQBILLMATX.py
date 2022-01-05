@@ -1,3 +1,10 @@
+# =========================================================================================================================================
+#   __script_name : CQBILLMATX.PY
+#   __script_description : THIS SCRIPT IS USED TO  genarte billing matrix
+#   __primary_author__ : DHURGA GOPALAKRISHNAN
+#   __create_date : 05/01/2022
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+# ==========================================================================================================================================
 import re
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
