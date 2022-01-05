@@ -2151,11 +2151,11 @@ class TreeView:
 									# 				break
 									# 		if flag_excluse==1:
 									# 			subTabName = "Exclusions"
-									# elif subTabName in ('Greenbook Inclusions','Service Inclusions'):
+									# elif subTabName in ('Greenbook Inclusions','Inclusions'):
 									# 	subTabName = ""
 									# 	whr_str_greenbook =""
 									# 	Trace.Write("service_id-inclusion-- "+str(NodeText))
-									# 	if subTabName == 'Service Inclusions':
+									# 	if subTabName == 'Inclusions':
 									# 		service_id = NodeText.split('/>')
 									# 		service_id = service_id[len(service_id) -1]
 									# 	else:
@@ -2202,13 +2202,13 @@ class TreeView:
 									# 			subTabName = "Exclusions"
 									# 	Trace.Write("subTabName Green service list---"+str(subTabName))
 									
-									elif (subTabName in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','New Parts') :
+									elif (subTabName in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','New Parts') :
 										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
 										subtab_temp_variable = subTabName 
 										whr_str_greenbook =""
 										ent_table =""
 										subTabName =""
-										if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText :
+										if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText :
 											service_id = NodeText.split('/>')
 											service_id = service_id[len(service_id) -1]
 											ent_table ="SAQTSE"
@@ -2244,7 +2244,7 @@ class TreeView:
 												pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
 												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
 												subtab_temp ="Exclusions"
-											elif subtab_temp_variable in ('Greenbook Inclusions','Service Inclusions') and service_id =='Z0092':
+											elif subtab_temp_variable in ('Greenbook Inclusions','Inclusions') and service_id =='Z0092':
 												Trace.Write(" Greenbook Inclusions")
 												pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
 												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
