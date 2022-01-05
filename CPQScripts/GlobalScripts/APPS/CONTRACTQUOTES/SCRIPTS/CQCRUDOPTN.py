@@ -1103,11 +1103,11 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				elif self.action_type == "ADD_SPARE_PARTS":
 					ent_table =""
 					parent_based_condition = ""
-					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") or  self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035"):
+					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009") or  self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 						parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"		
-					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035"):
+					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 						ent_table = "SAQTSE"
-					elif self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035"):
+					elif self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 						ent_table = "SAQSGE"
 					if ent_table == "SAQTSE" and self.tree_param == 'Z0092':
 						get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, service_id = self.tree_param,ent_table = ent_table ))
@@ -1191,7 +1191,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 												WHERE SYSPBT.BATCH_STATUS = 'IN PROGRESS' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 {ParentBasedCondition}) IQ
 												""".format(
 									green_book =self.tree_param,
-									service_id = self.tree_parent_level_0 if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") else self.tree_param,
+									service_id = self.tree_parent_level_0 if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009") else self.tree_param,
 									BatchGroupRecordId=batch_group_record_id,
 									QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
 									UserId=self.user_id,
@@ -1271,7 +1271,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						)
 			
 
-					get_child_service_id = Sql.GetFirst("""SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN SAQRSP (NOLOCK) ON SAQRSP.SERVICE_ID = SAQTSV.SERVICE_ID AND SAQRSP.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQRSP.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.PAR_SERVICE_ID = '{service_id}'""".format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId = self.quote_revision_record_id,service_id = self.tree_parent_level_0 if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") else self.tree_param))
+					get_child_service_id = Sql.GetFirst("""SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN SAQRSP (NOLOCK) ON SAQRSP.SERVICE_ID = SAQTSV.SERVICE_ID AND SAQRSP.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQRSP.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.PAR_SERVICE_ID = '{service_id}'""".format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId = self.quote_revision_record_id,service_id = self.tree_parent_level_0 if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009") else self.tree_param))
 					# if get_child_service_id:
 					# 	if get_child_service_id.SERVICE_ID == 'Z0101':
 					# 		spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,get_child_service_id.SERVICE_ID))
@@ -1878,7 +1878,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 					)
 				
 				
-				get_child_service_id = Sql.GetFirst("""SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN SAQRSP (NOLOCK) ON SAQRSP.SERVICE_ID = SAQTSV.SERVICE_ID AND SAQRSP.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQRSP.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.PAR_SERVICE_ID = '{service_id}'""".format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId = self.quote_revision_record_id,service_id = self.tree_parent_level_0 if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") else self.tree_param))
+				get_child_service_id = Sql.GetFirst("""SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN SAQRSP (NOLOCK) ON SAQRSP.SERVICE_ID = SAQTSV.SERVICE_ID AND SAQRSP.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQRSP.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.PAR_SERVICE_ID = '{service_id}'""".format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId = self.quote_revision_record_id,service_id = self.tree_parent_level_0 if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009") else self.tree_param))
 				# if get_child_service_id:
 				# 	if get_child_service_id.SERVICE_ID == 'Z0101':
 				# 		spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,get_child_service_id.SERVICE_ID))
