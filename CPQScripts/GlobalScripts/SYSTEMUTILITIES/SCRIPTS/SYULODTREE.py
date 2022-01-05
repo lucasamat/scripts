@@ -2153,7 +2153,7 @@ class TreeView:
 									# 				Trace.Write("subtab_temp_j"+str(subtab_temp))
 									# 				subTabName = subtab_temp
 									
-									elif (subTabName in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','New Parts') :
+									elif (subTabName in ("PM Events","Service New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','Green New Parts') :
 										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
 										Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE"))+'---'+str(entitlement_level_flag) )
 										ent_table_list = ["SAQTSE"]
@@ -2189,7 +2189,7 @@ class TreeView:
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="Inclusions"
-												elif subtab_temp_variable == 'New Parts':
+												elif subtab_temp_variable in ('Service New Parts','Green New Parts'):
 													Trace.Write(" New Parts inside "+str(service_id))
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
@@ -2223,9 +2223,9 @@ class TreeView:
 														#subTabName = subtab_temp
 										
 										#if ent_value_dict:
-										if subtab_temp_variable in ("PM Events","Inclusions","Service Parts List") :
+										if subtab_temp_variable in ("PM Events","Inclusions","Service Parts List","Service New Parts") :
 											subTabName = ent_value_dict["SAQTSE"]
-										if entitlement_level_flag and subtab_temp_variable in ('Green Parts List','New Parts'):
+										if entitlement_level_flag and subtab_temp_variable in ('Green Parts List','Green New Parts'):
 											Trace.Write("else-ifff-saqsge-"+str(ent_value_dict)+'--'+str(subtab_temp_variable)+'--'+str(entitlement_level_flag))
 											if entitlement_level_flag == 'SAQTSE':
 												subTabName = ent_value_dict["SAQTSE"] 
@@ -2234,7 +2234,7 @@ class TreeView:
 
 										else:
 											Trace.Write("else--save-"+str(ent_value_dict))
-											if subtab_temp_variable in ('Green Parts List','New Parts') and "SAQSGE" in ent_value_dict.keys():
+											if subtab_temp_variable in ('Green Parts List','Green New Parts') and "SAQSGE" in ent_value_dict.keys():
 												Trace.Write("else-iff-saqsge-"+str(ent_value_dict["SAQSGE"]))
 												subTabName = ent_value_dict["SAQSGE"]
 								
