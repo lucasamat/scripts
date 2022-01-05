@@ -2209,8 +2209,8 @@ class TreeView:
 										whr_str_greenbook =""
 										ent_table =""
 										subTabName =""
-										service_id = Product.GetGlobal("SERVICE")
-										if TreeSuperParentParam == 'Product Offerings':
+										service_id = ""
+										if TreeSuperParentParam == 'Product Offerings' and '/>Z' in NodeText:
 											Trace.Write("service_level")
 											service_id = NodeText.split('/>')
 											service_id = service_id[len(service_id) -1]
