@@ -2224,7 +2224,7 @@ class TreeView:
 										if entitlement_level_flag:
 											pass
 										else:
-											if subtab_temp_variable in ('Green Parts List','New Parts') :
+											if subtab_temp_variable in ('Green Parts List','New Parts') and "SAQSGE" in ent_value_dict.keys():
 												subTabName = ent_value_dict["SAQSGE"]
 								
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
