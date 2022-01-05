@@ -2222,6 +2222,7 @@ class TreeView:
 										if subtab_temp_variable in ("PM Events","Inclusions","Service Parts List") :
 											subTabName = ent_value_dict["SAQTSE"]
 										if entitlement_level_flag and subtab_temp_variable in ('Green Parts List','New Parts'):
+											Trace.Write("else--saqsge-"+str(ent_value_dict)+'--'+str(subtab_temp_variable)+'--'+str(entitlement_level_flag))
 											if entitlement_level_flag == 'SAQTSE':
 												subTabName = ent_value_dict["SAQTSE"] 
 											elif entitlement_level_flag == 'SAQSGE':
