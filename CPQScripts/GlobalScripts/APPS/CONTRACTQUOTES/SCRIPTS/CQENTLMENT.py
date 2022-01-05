@@ -1286,7 +1286,7 @@ class Entitlements:
 									Log.Info("---"+str(update_uom_recs))
 									Sql.RunQuery(update_uom_recs)
 								except:
-									Log.Info("EXCEPT ELSE UPDATE SAQSPT---------")
+									Log.Info("EXCEPT ELSE UPDATE SAQSPT-----")
 
 						elif key == "AGS_Z0091_PQB_PPCPRM" and entitlement_value == "Yes":
 							Trace.Write("@1181---"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
