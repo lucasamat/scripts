@@ -2163,11 +2163,11 @@ class TreeView:
 										subTabName =""
 										ent_value_dict = {}
 										service_id = Product.GetGlobal("SERVICE")
-										# if TreeTopSuperParentParam == 'Product Offerings' and TreeParentParam == service_id:
-										if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText :
-											Trace.Write("Service Level")
-											# ent_table_list.append("SAQTSE")
-										else:
+										if TreeTopSuperParentParam == 'Product Offerings' and TreeParentParam == service_id:
+										# if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText :
+										# 	Trace.Write("Service Level")
+										# 	# ent_table_list.append("SAQTSE")
+										# else:
 											Trace.Write("greenbook level subtab")
 											whr_str_greenbook = " AND GREENBOOK = '{}'".format(NodeText)
 											ent_table_list.append("SAQSGE")
@@ -2223,7 +2223,7 @@ class TreeView:
 														#subTabName = subtab_temp
 										
 										#if ent_value_dict:
-										if subtab_temp_variable in ("PM Events","Inclusions","Service Parts List","New Parts") :
+										if subtab_temp_variable in ("PM Events","Inclusions","Service Parts List") :
 											subTabName = ent_value_dict["SAQTSE"]
 										if entitlement_level_flag and subtab_temp_variable in ('Green Parts List','New Parts'):
 											Trace.Write("else-ifff-saqsge-"+str(ent_value_dict)+'--'+str(subtab_temp_variable)+'--'+str(entitlement_level_flag))
@@ -2237,8 +2237,6 @@ class TreeView:
 											if subtab_temp_variable in ('Green Parts List','New Parts') and "SAQSGE" in ent_value_dict.keys():
 												Trace.Write("else-iff-saqsge-"+str(ent_value_dict["SAQSGE"]))
 												subTabName = ent_value_dict["SAQSGE"]
-											else:
-												subTabName = ent_value_dict["SAQTSE"]
 								
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 										Trace.Write("NodeText spare parts"+str(NodeText))
