@@ -11,17 +11,14 @@ import CQPARTIFLW
 Param = Param 
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
+
 try:
-	contract_quote_record_id = Quote.QuoteId
-except:
-	contract_quote_record_id = ''
-try:
-	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	contract_quote_rec_id = Param.Quote_Record_ID
 except:
 	contract_quote_rec_id = ''
 
 try:
-	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+	quote_revision_rec_id = Param.Quote_Revision_ID
 	
 except:
 	quote_revision_rec_id =  ""
