@@ -174,7 +174,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					{BillingDate} as BILLING_START_DATE,
 					ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0)  AS ANNUAL_BILLING_AMOUNT,
 					{amount_column}  as BILLING_VALUE,
-					ISNULL(SAQRIT.ESTVAL_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
+					{amount_column}   as  BILLING_VALUE_INGL_CURR,
 					'{billing_type}' as BILLING_TYPE,
 					SAQRIT.LINE AS LINE,
 					SAQSCO.QUOTE_ID,
@@ -221,8 +221,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					{billing_end_date} as BILLING_END_DATE,
 					{BillingDate} as BILLING_START_DATE,
 					SAQRIT.NET_PRICE_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
-					ISNULL(SAQRIT.NET_PRICE, 0) / {get_val}  as BILLING_VALUE,
-					ISNULL(SAQRIT.ESTVAL_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
+					{amount_column}  as BILLING_VALUE,
+					{amount_column}  as  BILLING_VALUE_INGL_CURR,
 					'{billing_type}' as BILLING_TYPE,
 					SAQRIT.LINE AS LINE,
 					SAQRIT.QUOTE_ID,
@@ -255,7 +255,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
 					BillingDate=billing_date,
 					get_val=get_val,
-					service_id = service_id,billing_type =get_billing_type))
+					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
 	else:
 		
 		Sql.RunQuery("""INSERT SAQIBP (
