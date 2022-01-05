@@ -350,6 +350,7 @@ class SYLDRTLIST:
 				
 			# Billing Matrix - Pivot - Start
 			#delivery pivot start
+			#A055S000P01-14047 start
 			if  Wh_OBJECT_NAME == 'SAQSPD':
 				item_delivery_plans_obj = SqlHelper.GetList("""SELECT FORMAT(DELIVERY_SCHED_DATE, 'MM-dd-yyyy') as DELIVERY_SCHED_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE)
 									AS ROW, * FROM (SELECT DISTINCT DELIVERY_SCHED_DATE
@@ -360,6 +361,7 @@ class SYLDRTLIST:
 					delivery_date_column = [item_delivery_plans_obj.DELIVERY_SCHED_DATE for item_delivery_plans_obj in item_delivery_plans_obj]
 					delivery_date_column_joined = ",".join(["'{}'".format(delivery_data) for delivery_data in delivery_date_column])
 					Columns = Columns.replace(']', ','+delivery_date_column_joined+']')
+			#A055S000P01-14047 end
 			#delivery pivot end
 			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':				
 				try:
