@@ -652,8 +652,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				where = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id,service_id.SERVICE_ID)
 				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 				# data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Quote.GetGlobal("contract_quote_record_id"), "ContractQuoteRevisionRecordId":quote_revision_record_id, "ServiceId":service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
-		if str(item_covered_obj):       
-			_insert_billing_matrix()
+		#if str(item_covered_obj):       
+		#	_insert_billing_matrix()
 		##calling the iflow for pricing..
 		'''
 		try:
