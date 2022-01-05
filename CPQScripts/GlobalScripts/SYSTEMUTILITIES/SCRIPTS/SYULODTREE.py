@@ -2203,6 +2203,7 @@ class TreeView:
 														pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="Exclusions"
 												
+												Trace.Write("pattern_id_pattern_name "+str(service_id)+str(pattern_id)+str(pattern_name))
 												if pattern_id and pattern_name:
 													Trace.Write("inside ent tabs"+str(subtab_temp))
 													updateentXML = get_entitlement_xml.ENTITLEMENT_XML
