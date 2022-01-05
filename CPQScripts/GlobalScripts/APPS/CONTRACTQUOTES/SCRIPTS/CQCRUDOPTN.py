@@ -924,6 +924,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				Trace.Write('Row_Values--->'+str(row_values))
 				row_detail.update(row_values)
 				###A055S000P01-9650 START
+				Trace.Write('###Row_details----> '+str(row_detail))
 				getservice_count = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 				get_poes = Sql.GetFirst("Select POES FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 				# for count in getservice_count:
