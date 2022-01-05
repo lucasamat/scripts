@@ -2355,7 +2355,7 @@ class TreeView:
 								+ "' ORDER BY abs(DISPLAY_ORDER)"
 							)   """                          
 							# Getting parent node for Add-On Products 
-							if NodeText in ('Z0091','Z0092','Z0035','Z0004','Z0100','Z0110','Z0006','Z0007','Z0010','Z0016'): 
+							if NodeText in ('Z0091','Z0009','Z0092','Z0035','Z0004','Z0100','Z0110','Z0006','Z0007','Z0010','Z0016'): 
 								Product.SetGlobal("SERVICE",NodeText)
 							
 							# PROFILE EXPLORER
@@ -2451,7 +2451,7 @@ class TreeView:
 											Subwhere_string += " AND SERVICE_ID = '{}' ".format(serviceid)
 											Quote.SetGlobal("SERVICE",serviceid)
 											
-										if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG','Z0007_AG'):                                      
+										if NodeText in ('Z0091','Z0009','Z0092','Z0035','Z0016','Z0007','Z0016_AG','Z0007_AG'):                                      
 											Subwhere_string += " AND SERVICE_ID = '{}' ".format(NodeText)
 											Quote.SetGlobal("SERVICE",NodeText)
 											#service_id_1 = str(NodeText)
