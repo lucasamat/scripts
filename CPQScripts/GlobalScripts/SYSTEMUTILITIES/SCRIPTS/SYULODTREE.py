@@ -2167,7 +2167,7 @@ class TreeView:
 											Trace.Write("greenbook level subtab")
 											whr_str_greenbook = " AND GREENBOOK = '{}'".format(NodeText)
 											ent_table_list.append("SAQSGE")
-											ent_value_dict['SAQSGE'] = ''
+										ent_value_dict['SAQSGE'] = ''
 										ent_value_dict['SAQTSE'] = ''
 										for ent_table in ent_table_list:
 											get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' {whr_str_greenbook}""".format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = service_id,ent_table = ent_table,whr_str_greenbook = whr_str_greenbook if ent_table =='SAQSGE' else '' ))
@@ -2221,8 +2221,12 @@ class TreeView:
 										#if ent_value_dict:
 										if subtab_temp_variable in ("PM Events","Inclusions","Service Parts List") :
 											subTabName = ent_value_dict["SAQTSE"]
-										if entitlement_level_flag:
-											pass
+										if entitlement_level_flag and subtab_temp_variable in ('Green Parts List','New Parts'):
+											if entitlement_level_flag == 'SAQTSE':
+												subTabName = ent_value_dict["SAQTSE"] 
+											elif entitlement_level_flag == 'SAQSGE':
+												subTabName = ent_value_dict["SAQSGE"] 
+
 										else:
 											Trace.Write("else--saqsge-"+str(ent_value_dict))
 											if subtab_temp_variable in ('Green Parts List','New Parts') and "SAQSGE" in ent_value_dict.keys():
