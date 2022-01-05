@@ -1758,7 +1758,7 @@ class SyncQuoteAndCustomTables:
 								# 	Log.Info("CreateEntitlements Error")
 								entitle_end_time = time.time()
 								try:
-									update_uom_recs = """UPDATE SAQSPT SET SAQSPT.DELIVERY_MODE ='ONSITE' AND SAQSPT.SCHEDULE_MODE = 'LOW QUANTITY ONSITE'  WHERE SAQSPT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQSPT.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id =quote_revision_record_id)
+									update_uom_recs = """UPDATE SAQSPT SET SAQSPT.DELIVERY_MODE ='ONSITE', SAQSPT.SCHEDULE_MODE = 'LOW QUANTITY ONSITE'  WHERE SAQSPT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQSPT.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id =quote_revision_record_id)
 									Log.Info("---"+str(update_uom_recs))
 									Sql.RunQuery(update_uom_recs)
 								except:
