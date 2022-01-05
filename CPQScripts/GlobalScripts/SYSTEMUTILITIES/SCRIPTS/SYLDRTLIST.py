@@ -357,7 +357,7 @@ class SYLDRTLIST:
 														GROUP BY DELIVERY_SCHED_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
 															contract_quote_record_id, quote_revision_record_id, 1, 52))
 				if item_delivery_plans_obj:
-					delivery_date_column = [item_delivery_plans_obj.BILLING_DATE for item_delivery_plans_obj in item_delivery_plans_obj]
+					delivery_date_column = [item_delivery_plans_obj.DELIVERY_SCHED_DATE for item_delivery_plans_obj in item_delivery_plans_obj]
 					delivery_date_column_joined = ",".join(["'{}'".format(delivery_data) for delivery_data in delivery_date_column])
 					Columns = Columns.replace(']', ','+delivery_date_column_joined+']')
 			#delivery pivot end
