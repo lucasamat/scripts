@@ -591,8 +591,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		else:
 			Trace.Write("NO Quote Items")
 			price_bar = "no_quote_items"
-		get_documents_date_validation_accepted = Sql.Getfirst("SELECT DATE_ACCEPTED FROM SAQDOC (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))				
-		get_documents_date_validation_rejected = Sql.Getfirst("SELECT DATE_REJECTED FROM SAQDOC (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+		get_documents_date_validation_accepted = Sql.GetFirst("SELECT DATE_ACCEPTED FROM SAQDOC (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))				
+		get_documents_date_validation_rejected = Sql.GetFirst("SELECT DATE_REJECTED FROM SAQDOC (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		#if getsalesorg_ifo and getfab_info:
 		if getsalesorg_ifo:			
 			Trace.Write('salesorg--present---')
