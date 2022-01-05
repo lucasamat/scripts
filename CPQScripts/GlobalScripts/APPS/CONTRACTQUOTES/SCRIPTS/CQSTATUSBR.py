@@ -10,8 +10,9 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
-import re
 import datetime
+import sys
+import System.Net
 import CQPARTIFLW
 Param = Param 
 Sql = SQL()
