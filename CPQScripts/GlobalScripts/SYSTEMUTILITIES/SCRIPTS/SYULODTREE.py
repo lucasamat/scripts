@@ -2155,7 +2155,7 @@ class TreeView:
 									
 									elif (subTabName in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','New Parts') :
 										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
-										Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE")))
+										Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE"))+'---'+str(entitlement_level_flag) )
 										ent_table_list = ["SAQTSE"]
 										subtab_temp_variable = subTabName 
 										whr_str_greenbook =""
@@ -2222,14 +2222,14 @@ class TreeView:
 										if subtab_temp_variable in ("PM Events","Inclusions","Service Parts List") :
 											subTabName = ent_value_dict["SAQTSE"]
 										if entitlement_level_flag and subtab_temp_variable in ('Green Parts List','New Parts'):
-											Trace.Write("else--saqsge-"+str(ent_value_dict)+'--'+str(subtab_temp_variable)+'--'+str(entitlement_level_flag))
+											Trace.Write("else-ifff-saqsge-"+str(ent_value_dict)+'--'+str(subtab_temp_variable)+'--'+str(entitlement_level_flag))
 											if entitlement_level_flag == 'SAQTSE':
 												subTabName = ent_value_dict["SAQTSE"] 
 											elif entitlement_level_flag == 'SAQSGE':
 												subTabName = ent_value_dict["SAQSGE"] 
 
 										else:
-											Trace.Write("else--saqsge-"+str(ent_value_dict))
+											Trace.Write("else--save-"+str(ent_value_dict))
 											if subtab_temp_variable in ('Green Parts List','New Parts') and "SAQSGE" in ent_value_dict.keys():
 												Trace.Write("else-iff-saqsge-"+str(ent_value_dict["SAQSGE"]))
 												subTabName = ent_value_dict["SAQSGE"]
