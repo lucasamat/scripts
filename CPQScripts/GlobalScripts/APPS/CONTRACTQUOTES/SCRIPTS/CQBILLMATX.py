@@ -161,7 +161,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 		get_val =12
 	#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5
 	object_name = join_condition = ''
-	if str(get_billing_type).upper() == "FIXED":
+	if str(get_billing_type).upper() == "FIXED" and get_billing_type != '':
 		#join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK"
 		#object_name = 'SAQSCO'
 		#divide_amt = 'SAQRIT.NET_PRICE_INGL_CURR'
