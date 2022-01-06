@@ -2154,9 +2154,9 @@ class TreeView:
 									# 				subTabName = subtab_temp
 
 									# A055S000P01-14557 - New Parts, Inclusion , Exclusion Subtabs starts
-									elif (subTabName in ("PM Events","Service New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','Green New Parts') :
-										#Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
-										#Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE"))+'---'+str(entitlement_level_flag) )
+									elif (subTabName in ("PM Events","Service New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Green New Parts') :
+										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
+										Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE"))+'---'+str(entitlement_level_flag) )
 										ent_table_list = ["SAQTSE"]
 										subtab_temp_variable = subTabName 
 										whr_str_greenbook =""
@@ -2185,7 +2185,7 @@ class TreeView:
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="PM Events"
-												elif subtab_temp_variable and ('Service Inclusions','Greenbook Inclusions') :
+												elif subtab_temp_variable in ('Service Inclusions','Greenbook Inclusions') :
 													if service_id in ('Z0092') and subtab_temp_variable != 'Greenbook Inclusions':
 														Trace.Write(" Inclusions")
 														pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
@@ -2201,7 +2201,7 @@ class TreeView:
 													subtab_temp ="New Parts"
 												elif subtab_temp_variable in ('Service Parts List','Green Parts List')  :
 													#if service_id != 'Z0092' :
-													# Trace.Write(" Parts List inside")
+													Trace.Write(" Parts List inside")
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
 													# else:
