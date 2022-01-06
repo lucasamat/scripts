@@ -51,8 +51,6 @@ except:
 user_id = str(User.Id)
 user_name = str(User.UserName)
 
-if contract_quote_rec_id:
-	ApiResponse = ApiResponseFactory.JsonResponse(_insert_billing_matrix())
 
 
 #A055S000P01-3924-billing matrix creation start
@@ -566,3 +564,6 @@ def billingmatrix_create():
 													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 				#self.insert_quote_items_billing_plan()
 #A055S000P01-3924-billing matrix creation end
+
+if contract_quote_rec_id:
+	ApiResponse = ApiResponseFactory.JsonResponse(_insert_billing_matrix())
