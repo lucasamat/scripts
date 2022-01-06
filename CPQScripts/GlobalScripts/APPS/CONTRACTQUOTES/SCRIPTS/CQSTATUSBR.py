@@ -657,26 +657,16 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					Sql.RunQuery(update_workflow_status)
 					status = "APPROVED"
 					if get_documents_date_validation_accepted:
-						if str(get_documents_date_validation_accepted.DATE_ACCEPTED) != "":
-							update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
-							Sql.RunQuery(update_workflow_status)
+						if str(get_documents_date_validation_accepted.DATE_ACCEPTED) != "":							
 							status = "QUOTE DOCUMENTS"
 					if get_documents_date_validation_rejected:
-						if str(get_documents_date_validation_rejected.DATE_REJECTED) != "":
-							update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
-							Sql.RunQuery(update_workflow_status)
+						if str(get_documents_date_validation_rejected.DATE_REJECTED) != "":							
 							status = "QUOTE DOCUMENTS"
 					else:
 						status = "APPROVED"
-				elif get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING":
-					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-									
-					Sql.RunQuery(update_workflow_status)
+				elif get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING":					
 					status = "SUBMITTED FOR BOOKING"
-				elif get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED":
-					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-									
-					Sql.RunQuery(update_workflow_status)
+				elif get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED":					
 					status = "CONTRACT BOOKED"
 
 				elif get_workflow_status.WORKFLOW_STATUS:			
