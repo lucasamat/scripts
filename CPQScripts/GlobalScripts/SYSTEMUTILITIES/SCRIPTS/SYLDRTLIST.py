@@ -3525,7 +3525,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)         
 						else:  							
-							if str(TreeParam) != 'Quote Preview' and  str(TreeParam) != 'Billing Matrix':
+							if str(TreeParam) != 'Quote Preview' and  str(TreeParam) != 'Billing Matrix' and RECORD_ID != "SYOBJR-00010":
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
@@ -3536,7 +3536,20 @@ class SYLDRTLIST:
 									+'>'
 									+ str(qstring)
 									+ "</th>"
-								)                                
+								)       
+							elif RECORD_ID == "SYOBJR-00010":
+								Trace.Write("CHKNG_EMPTY HYPERLINK")
+								table_header += (
+									'<th  data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-title-tooltip="'
+									+ str(qstring)
+									+ '" data-formatter="emptyHyperLink" data-sortable="true" '
+									+ rowspan
+									+'>'
+									+ str(qstring)
+									+ "</th>"
+								)
 							else:								
 								table_header += (
 									'<th  data-field="'
@@ -4088,19 +4101,6 @@ class SYLDRTLIST:
 									+ '" data-filter-control="input" data-title-tooltip="'
 									+ str(qstring)
 									+ '" data-formatter="" data-sortable="true" '
-									+ rowspan
-									+'>'
-									+ str(qstring)
-									+ "</th>"
-								)
-							elif ObjectName == "SAQIFB":
-								Trace.Write("CHKNG_EMPTY HYPERLINK")
-								table_header += (
-									'<th  data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-title-tooltip="'
-									+ str(qstring)
-									+ '" data-formatter="emptyHyperLink" data-sortable="true" '
 									+ rowspan
 									+'>'
 									+ str(qstring)
