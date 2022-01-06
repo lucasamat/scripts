@@ -4163,9 +4163,9 @@ def POPUPLISTVALUEADDNEW(
 					elif(consumable and get_inclusion) or (consumable and get_exclusion):
 						if TreeSuperParentParam == "Product Offerings" and TreeParam =='Z0092' and consumable and get_inclusion: 
 							Trace.Write("non_consumable---"+str(non_consumable))
-							clusions_val_list.append('C')
+							iclusions_val_list.append('C')
 						elif TreeSuperParentParam != "Product Offerings" and TreeParam !='Z0092':
-							clusions_val_list.append('C')
+							iclusions_val_list.append('C')
 						
 				
 				if new_parts_yes == "Yes":
