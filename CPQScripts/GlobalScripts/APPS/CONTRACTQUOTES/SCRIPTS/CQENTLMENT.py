@@ -1272,7 +1272,7 @@ class Entitlements:
 								Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
 						elif key == "AGS_Z0110_TSC_ONSTCP":
 							Trace.Write("@1274---"+str(ENT_IP_DICT["AGS_Z0110_TSC_ONSTCP"]))
-							ent_value = ENT_IP_DICT["AGS_Z0110_TSC_ONSTCP"])
+							ent_value = ENT_IP_DICT["AGS_Z0110_TSC_ONSTCP"]
 							if int(ent_value) >= 10:
 								try:
 									update_uom_recs = """UPDATE SAQSPT SET SAQSPT.DELIVERY_MODE ='ONSITE', SAQSPT.SCHEDULE_MODE = 'LOW QUANTITY ONSITE'  WHERE SAQSPT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQSPT.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.ContractRecordId ,quote_revision_rec_id =self.revision_recordid)
