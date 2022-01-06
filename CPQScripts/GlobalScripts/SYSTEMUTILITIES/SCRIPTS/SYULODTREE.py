@@ -2155,8 +2155,8 @@ class TreeView:
 
 									# A055S000P01-14557 - New Parts, Inclusion , Exclusion Subtabs starts
 									elif (subTabName in ("PM Events","Service New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','Green New Parts') :
-										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
-										Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE"))+'---'+str(entitlement_level_flag) )
+										#Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
+										#Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE"))+'---'+str(entitlement_level_flag) )
 										ent_table_list = ["SAQTSE"]
 										subtab_temp_variable = subTabName 
 										whr_str_greenbook =""
@@ -2169,7 +2169,7 @@ class TreeView:
 										# 	Trace.Write("Service Level")
 										# 	# ent_table_list.append("SAQTSE")
 										# else:
-											Trace.Write("greenbook level subtab")
+											#Trace.Write("greenbook level subtab")
 											whr_str_greenbook = " AND GREENBOOK = '{}'".format(NodeText)
 											ent_table_list.append("SAQSGE")
 										ent_value_dict['SAQSGE'] = ''
@@ -2216,6 +2216,7 @@ class TreeView:
 														get_ent_id =re.findall(pattern_id,sub_string)
 														get_ent_name=re.findall(pattern_name,sub_string)
 														if get_ent_id and get_ent_name:
+															Trace.Write("get_ent_id-"+str(subtab_temp_variable)+"--"+str(get_ent_name))
 															flag_excluse=1
 															break
 													if flag_excluse==1 and subtab_temp:
