@@ -1776,8 +1776,9 @@ class ContractQuoteItem:
 			WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRSP.SERVICE_ID = '{ServiceId}' AND SAQRSP.QUANTITY > 0 AND ISNULL(SAQRIP.PART_RECORD_ID,'') = '' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 			##calling the iflow for pricing..
 			try:
-				Log.Info("PART PRICING IFLOW STARTED!")
-				CQPARTIFLW.iflow_pricing_call(str(self.user_name),str(self.contract_quote_id),str(self.contract_quote_revision_record_id))
+				if action_type == 'UPDATE_LINE_ITEMS':
+					Log.Info("PART PRICING IFLOW STARTED!")
+					CQPARTIFLW.iflow_pricing_call(str(self.user_name),str(self.contract_quote_id),str(self.contract_quote_revision_record_id))
 			except:
 				Log.Info("PART PRICING IFLOW ERROR!")
 		else:
