@@ -18,14 +18,21 @@ import CQPARTIFLW
 Param = Param 
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
-Log.Info("Billing matrix iflow  started--recotrd id----"+str(Param.Quote_Record_ID))
+
+
+input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
+Qt_rec_id = input_data[0]
+REVISION_rec_ID = input_data[-1]
+
+Log.Info("Billing matrix iflow ----started-----"+str(Qt_rec_id))
 try:
-	contract_quote_rec_id = Param.Quote_Record_ID
+    contract_quote_rec_id = input_data[0]
+	#contract_quote_rec_id = Param.Quote_Record_ID
 except:
 	contract_quote_rec_id = ''
 
 try:
-	quote_revision_rec_id = Param.Quote_Revision_ID
+	quote_revision_rec_id = input_data[-1]
 	
 except:
 	quote_revision_rec_id =  ""
