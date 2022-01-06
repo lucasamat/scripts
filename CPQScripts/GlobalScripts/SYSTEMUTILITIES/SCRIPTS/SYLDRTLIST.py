@@ -3588,7 +3588,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)
 						else:							
-							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-98875" and RECORD_ID !="SYOBJR-98873" and RECORD_ID!="SYOBJR-00005":
+							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-98875" and RECORD_ID !="SYOBJR-98873" and RECORD_ID!="SYOBJR-00005" and RECORD_ID != "SYOBJR-00010":
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
@@ -3600,7 +3600,19 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)
-									
+							elif RECORD_ID == "SYOBJR-00010":
+								Trace.Write("CHKNG_EMPTY HYPERLINK")
+								table_header += (
+									'<th  data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-title-tooltip="'
+									+ str(qstring)
+									+ '" data-formatter="emptyHyperLink" data-sortable="true" '
+									+ rowspan
+									+'>'
+									+ str(qstring)
+									+ "</th>"
+								)
 							elif str(current_tab).upper() == "APP":
 								if (str(TreeParam) == "Tabs" or str(TreeParam) == "Pages"):
 									table_header += (
@@ -4101,6 +4113,19 @@ class SYLDRTLIST:
 									+ '" data-filter-control="input" data-title-tooltip="'
 									+ str(qstring)
 									+ '" data-formatter="" data-sortable="true" '
+									+ rowspan
+									+'>'
+									+ str(qstring)
+									+ "</th>"
+								)
+							elif RECORD_ID == "SYOBJR-00010":
+								Trace.Write("CHKNG_EMPTY HYPERLINK")
+								table_header += (
+									'<th  data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-title-tooltip="'
+									+ str(qstring)
+									+ '" data-formatter="emptyHyperLink" data-sortable="true" '
 									+ rowspan
 									+'>'
 									+ str(qstring)
