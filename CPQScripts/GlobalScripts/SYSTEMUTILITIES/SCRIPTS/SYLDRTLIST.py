@@ -359,7 +359,6 @@ class SYLDRTLIST:
 															contract_quote_record_id, quote_revision_record_id, 1, 52))
 				count = 0
 				if item_delivery_plans_obj:
-					count += 1
 					delivery_date_column = [item_delivery_plans_obj.DELIVERY_SCHED_DATE for item_delivery_plans_obj in item_delivery_plans_obj]
 					for delivery_data in delivery_date_column:
 						count += 1
