@@ -69,6 +69,7 @@ if GetPricingProcedure is not None:
 	div = GetPricingProcedure.DIVISION_ID
 	exch = GetPricingProcedure.EXCHANGE_RATE_TYPE or 'M'
 	contract_quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
+
 	#taxk1 = GetPricingProcedure.CUSTAXCLA_ID
 	taxk1 = "1"
 account_info['docCurrency']= '{"name":"KOMK-WAERK","values":["'+str(curr)+'"]}'
@@ -87,6 +88,8 @@ account_info['globalCurrency']= '{"name":"KOMK-HWAER","values":["'+str(glb_curr)
 # Sql.RunQuery(update_SAQITM)
 update_SAQIFP = "UPDATE SAQIFP SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQIFP.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure), quote=QUOTE)
 Sql.RunQuery(update_SAQIFP)
+
+#price_list = SqlHelper.GetFirst("SELECT  PRICE_LIST FROM  SASAAC (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND SALESORG_ID ='"+str(salesorg)+"'AND DOC_CURRENCY ='"+str(curr)+"' AND DIVISION_ID ='"+str(div)+"'   AND DISTRIBUTIONCHANNEL_ID ='"+str(dis)+"' AND DIVISION_ID ='"+str(div)+"'")
 
 today = datetime.datetime.now()
 Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
