@@ -2152,7 +2152,8 @@ class TreeView:
 									# 			if flag_excluse==1 and subtab_temp:
 									# 				Trace.Write("subtab_temp_j"+str(subtab_temp))
 									# 				subTabName = subtab_temp
-									
+
+									# A055S000P01-14557 - New Parts, Inclusion , Exclusion Subtabs starts
 									elif (subTabName in ("PM Events","Service New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','Green New Parts') :
 										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
 										Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE"))+'---'+str(entitlement_level_flag) )
@@ -2237,7 +2238,7 @@ class TreeView:
 											if subtab_temp_variable in ('Green Parts List','Green New Parts') and "SAQSGE" in ent_value_dict.keys():
 												Trace.Write("else-iff-saqsge-"+str(ent_value_dict["SAQSGE"]))
 												subTabName = ent_value_dict["SAQSGE"]
-								
+									# A055S000P01-14557 - New Parts, Inclusion , Exclusion Subtabs ends
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 										Trace.Write("NodeText spare parts"+str(NodeText))
 										subTabName = ""
