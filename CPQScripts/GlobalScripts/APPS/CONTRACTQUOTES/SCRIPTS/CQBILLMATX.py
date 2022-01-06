@@ -18,7 +18,7 @@ import CQPARTIFLW
 Param = Param 
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
-Log.Info("Billing matrix iflow  started---")
+Log.Info("Billing matrix iflow  started--recotrd id----"+str(Param.Quote_Record_ID))
 try:
 	contract_quote_rec_id = Param.Quote_Record_ID
 except:
