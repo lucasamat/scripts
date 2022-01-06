@@ -4154,11 +4154,19 @@ def POPUPLISTVALUEADDNEW(
 						new_parts_yes = "Yes"
 						break
 					if (non_consumable and get_inclusion) or (non_consumable and get_exclusion):
-						Trace.Write("non_consumable---"+str(non_consumable))
-						iclusions_val_list.append('N')
+						if TreeSuperParentParam == "Product Offerings" and TreeParam =='Z0092' and non_consumable and get_exclusion: 
+							Trace.Write("non_consumable---"+str(non_consumable))
+							iclusions_val_list.append('N')
+						elif TreeSuperParentParam != "Product Offerings" and TreeParam !='Z0092':
+							iclusions_val_list.append('N')
+
 					elif(consumable and get_inclusion) or (consumable and get_exclusion):
-						Trace.Write("consumable---"+str(consumable))
-						iclusions_val_list.append('C')
+						if TreeSuperParentParam == "Product Offerings" and TreeParam =='Z0092' and consumable and get_inclusion: 
+							Trace.Write("non_consumable---"+str(non_consumable))
+							clusions_val_list.append('C')
+						elif TreeSuperParentParam != "Product Offerings" and TreeParam !='Z0092':
+							clusions_val_list.append('C')
+						
 				
 				if new_parts_yes == "Yes":
 					where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND  MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
