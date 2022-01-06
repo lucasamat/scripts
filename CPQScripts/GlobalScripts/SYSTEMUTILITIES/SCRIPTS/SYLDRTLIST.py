@@ -363,7 +363,6 @@ class SYLDRTLIST:
 					for delivery_data in delivery_date_column:
 						count += 1
 						Delivery = 'Delivery {}'.format(count)
-						Trace.Write('Delivery--'+str(Delivery))
 						delivery_date_column_joined = ",".join(["'{}'".format(Delivery)])
 						#delivery_date_column_joined = ",".join(["'{}'".format(delivery_data) for delivery_data in delivery_date_column])
 						Columns = Columns.replace(']', ','+delivery_date_column_joined+']')
@@ -3508,6 +3507,8 @@ class SYLDRTLIST:
 					# else:
 					rowspan = 'rowspan="2"'
 					#table_header += '<th colspan="5" data-align="right"><div><label class="onlytext"><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
+				if RECORD_ID == 'SYOBJR-34575':
+					rowspan = 'rowspan="3"'
 				if key == 0:
 					if invs in primary_link_popup:
 						
