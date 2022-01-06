@@ -262,7 +262,7 @@ try:
 							if GetEquipment_count:
 								GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE)/"+str(GetEquipment_count.CNT)+" AS TOTAL_UNIT, SUM(EXTENDED_PRICE)/"+str(GetEquipment_count.CNT)+"  AS TOTAL_EXT FROM SAQRSP WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format( QUOTE,revision_rec_id, get_ancillary_spare.SERVICE_ID))
 								Log.Info("QTPOSTPTPR TOTAL111 ==> "+str(GetSum.TOTAL_UNIT))
-								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE = {total_unit}, NET_PRICE ={total_net},YEAR_1 = {total_net},YEAR_2 = {total_net}, YEAR_3 =  {total_net}, YEAR_4= {total_net}, YEAR_5= {total_net}  FROM SAQRIT
+								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE = {total_unit}, NET_PRICE ={total_net},YEAR_1 = {total_net}  FROM SAQRIT
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{SERVICE_ID}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=get_ancillary_spare.SERVICE_ID))
 								Sql.RunQuery("""UPDATE SAQRIT 
 												SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0),
