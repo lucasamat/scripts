@@ -619,31 +619,59 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			# 	update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
 			# 	Sql.RunQuery(update_workflow_status)	
 			get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-			if get_workflow_status.REVISION_STATUS == "APPROVED" and Text == "COMPLETE STAGE":
-				update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-								
-				Sql.RunQuery(update_workflow_status)
-				status = "APPROVED"
-				if get_documents_date_validation_accepted:
-					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
+			if Text == "COMPLETE STAGE":
+				if get_workflow_status.REVISION_STATUS == "APPROVED" and Text == "COMPLETE STAGE":
+					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+									
 					Sql.RunQuery(update_workflow_status)
-					status = "QUOTE DOCUMENTS"
-				if get_documents_date_validation_rejected:
-					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
-					Sql.RunQuery(update_workflow_status)
-					status = "QUOTE DOCUMENTS"
-				else:
 					status = "APPROVED"
-			if get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING" and Text == "COMPLETE STAGE":
-				update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-								
-				Sql.RunQuery(update_workflow_status)
-				status = "SUBMITTED FOR BOOKING"
-			if get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED" and Text == "COMPLETE STAGE":
-				update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-								
-				Sql.RunQuery(update_workflow_status)
-				status = "CONTRACT BOOKED"
+					if get_documents_date_validation_accepted:
+						update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
+						Sql.RunQuery(update_workflow_status)
+						status = "QUOTE DOCUMENTS"
+					if get_documents_date_validation_rejected:
+						update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
+						Sql.RunQuery(update_workflow_status)
+						status = "QUOTE DOCUMENTS"
+					else:
+						status = "APPROVED"
+				if get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING" and Text == "COMPLETE STAGE":
+					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+									
+					Sql.RunQuery(update_workflow_status)
+					status = "SUBMITTED FOR BOOKING"
+				if get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED" and Text == "COMPLETE STAGE":
+					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+									
+					Sql.RunQuery(update_workflow_status)
+					status = "CONTRACT BOOKED"
+			
+			if Text != "COMPLETE STAGE":
+				if get_workflow_status.REVISION_STATUS == "APPROVED":
+					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+									
+					Sql.RunQuery(update_workflow_status)
+					status = "APPROVED"
+					if get_documents_date_validation_accepted:
+						update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
+						Sql.RunQuery(update_workflow_status)
+						status = "QUOTE DOCUMENTS"
+					if get_documents_date_validation_rejected:
+						update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
+						Sql.RunQuery(update_workflow_status)
+						status = "QUOTE DOCUMENTS"
+					else:
+						status = "APPROVED"
+				if get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING":
+					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+									
+					Sql.RunQuery(update_workflow_status)
+					status = "SUBMITTED FOR BOOKING"
+				if get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED":
+					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+									
+					Sql.RunQuery(update_workflow_status)
+					status = "CONTRACT BOOKED"
 
 			elif get_workflow_status.WORKFLOW_STATUS:			
 				Trace.Write('No button-2454-')
