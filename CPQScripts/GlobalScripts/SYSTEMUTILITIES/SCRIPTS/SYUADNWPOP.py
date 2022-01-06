@@ -4131,8 +4131,8 @@ def POPUPLISTVALUEADDNEW(
 				flag=0
 				iclusions_val_list = []
 				quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-				pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
-				pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
+				pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(Service_Id)+'[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+				pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(Service_Id)+'[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
 				pattern_new_parts_only = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
 				if TreeSuperParentParam == "Product Offerings" and TreeParam =='Z0092':
 					pattern_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
