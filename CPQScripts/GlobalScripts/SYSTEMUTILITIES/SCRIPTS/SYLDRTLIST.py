@@ -357,10 +357,17 @@ class SYLDRTLIST:
 														FROM SAQSPD (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' 
 														GROUP BY DELIVERY_SCHED_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
 															contract_quote_record_id, quote_revision_record_id, 1, 52))
+				count = 0
 				if item_delivery_plans_obj:
+					count += 1
 					delivery_date_column = [item_delivery_plans_obj.DELIVERY_SCHED_DATE for item_delivery_plans_obj in item_delivery_plans_obj]
-					delivery_date_column_joined = ",".join(["'{}'".format(delivery_data) for delivery_data in delivery_date_column])
-					Columns = Columns.replace(']', ','+delivery_date_column_joined+']')
+					for delivery_data in delivery_date_column:
+						count += 1
+						Delivery = 'Delivery {}'.format(count)
+						Trace.Write('Delivery--'+str(Delivery))
+						delivery_date_column_joined = ",".join(["'{}'".format(delivery_data)])
+						#delivery_date_column_joined = ",".join(["'{}'".format(delivery_data) for delivery_data in delivery_date_column])
+						Columns = Columns.replace(']', ','+delivery_date_column_joined+']')
 			#A055S000P01-14047 end
 			#delivery pivot end
 			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':				
