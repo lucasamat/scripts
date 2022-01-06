@@ -4153,8 +4153,10 @@ def POPUPLISTVALUEADDNEW(
 						new_parts_yes = "Yes"
 						break
 					if (non_consumable and get_inclusion) or (non_consumable and get_exclusion):
+						Trace.Write("non_consumable---"+str(non_consumable))
 						iclusions_val_list.append('N')
 					elif(consumable and get_inclusion) or (consumable and get_exclusion):
+						Trace.Write("consumable---"+str(consumable))
 						iclusions_val_list.append('C')
 				
 				if new_parts_yes == "Yes":
