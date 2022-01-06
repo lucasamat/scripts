@@ -2164,7 +2164,7 @@ class TreeView:
 										subTabName =""
 										ent_value_dict = {}
 										service_id = Product.GetGlobal("SERVICE")
-										if TreeTopSuperParentParam == 'Product Offerings' and TreeParentParam == service_id:
+										if subtab_temp_variable in ('Greenbook Inclusions','Green Parts List','Green New Parts') and TreeParentParam == service_id:
 										# if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText :
 										# 	Trace.Write("Service Level")
 										# 	# ent_table_list.append("SAQTSE")
