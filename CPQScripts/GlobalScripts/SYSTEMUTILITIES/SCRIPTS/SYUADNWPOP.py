@@ -2021,7 +2021,7 @@ def POPUPLISTVALUEADDNEW(
 					#"ADD_ON_PRODUCT_RECORD_ID",
 					"CREDITVOUCHER_RECORD_ID",
 					"ZAFTYPE",
-					"WRBTR",
+					"UNAPPLIED_BALANCE",
 					"CREDIT_APPLIED"
 				]
 				Objd_Obj = Sql.GetList(
