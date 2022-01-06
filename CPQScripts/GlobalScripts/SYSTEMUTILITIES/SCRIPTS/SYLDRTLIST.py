@@ -1402,7 +1402,7 @@ class SYLDRTLIST:
 								)
 							#A055S000P01-4578 starts
 							elif TreeParam == "Quote Items":
-								
+								Trace.Write("b1")
 								#saqico_cols =""								
 								#pricing_curr = pricing_picklist_value
 									
@@ -6171,7 +6171,7 @@ class SYLDRTLIST:
 							
 
 							if TreeParam == "Quote Items":
-
+								Trace.Write("a1")
 								# Qury_str = (
 								# 	"select top "
 								# 		+ str(PerPage)
@@ -6185,6 +6185,7 @@ class SYLDRTLIST:
 								# )
 
 								Qury_str = (
+									
 									"select top "
 										+ str(PerPage)
 										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,GOT_CODE,ASSEMBLY_ID,PM_ID,PM_LABOR_LEVEL,KIT_NAME,KIT_NUMBER,KPU,TOOL_CONFIGURATION,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,CEILING_PRICE_INGL_CURR,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,BD_PRICE_INGL_CURR,DISCOUNT,SALES_PRICE_INGL_CURR,YEAR_OVER_YEAR,YEAR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CONVERT(VARCHAR(10),WARRANTY_START_DATE,101) AS [WARRANTY_START_DATE],CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CNTCST_INGL_CURR,CNTPRI_INGL_CURR,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY LINE,"+ str(Wh_API_NAMEs)
@@ -7617,6 +7618,7 @@ class SYLDRTLIST:
 								qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(
 								contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 								if TreeParam == "Quote Items":
+									Trace.Write("c1")
 									##A055S000P01-4578 strts
 									#Trace.Write('xchk--')
 									saqico_cols =""
