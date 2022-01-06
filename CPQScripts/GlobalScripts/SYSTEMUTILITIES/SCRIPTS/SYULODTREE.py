@@ -2189,10 +2189,10 @@ class TreeView:
 													if service_id in ('Z0092') and subtab_temp_variable != 'Greenbook Inclusions':
 														Trace.Write(" Inclusions")
 														pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
-														pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
-													elif service_id != 'Z0092':
-														pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
 														pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
+													else:
+														pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+														pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="Inclusions"
 												elif subtab_temp_variable in ('Service New Parts','Green New Parts'):
 													Trace.Write(" New Parts inside "+str(service_id))
