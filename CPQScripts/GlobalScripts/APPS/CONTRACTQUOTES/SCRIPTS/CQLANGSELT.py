@@ -116,6 +116,8 @@ def _insert_subtotal_by_offerring_quote_table():
 		total_net_price += float(i['NET_PRICE'])
 		total_net_value += float(i['NET_VALUE'])
 		total_tax_amt += float(i['TAX_AMOUNT'])
+		Trace.Write('QT_SAQRIS---total_net_price----'+str(total_net_price))
+		Trace.Write('QT_SAQRIS---total_net_value----'+str(total_net_value))
 		Quote.SetGlobal('Subtotal_Offeirng_NetPrice', str(total_net_price))
 		Quote.SetGlobal('Subtotal_Offeirng_NetValue', str(total_net_value))
 		Quote.SetGlobal('Subtotal_Offeirng_tax_Amt', str(total_tax_amt))
