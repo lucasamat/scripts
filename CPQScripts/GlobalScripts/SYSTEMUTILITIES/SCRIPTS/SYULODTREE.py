@@ -2211,7 +2211,7 @@ class TreeView:
 													Trace.Write("inside ent tabs"+str(subtab_temp))
 													updateentXML = get_entitlement_xml.ENTITLEMENT_XML
 													flag_excluse=0
-													
+													get_disp_val = []
 													for m in re.finditer(pattern_tag, updateentXML):
 														sub_string = m.group(1)
 														get_ent_id =re.findall(pattern_id,sub_string)
@@ -2223,7 +2223,12 @@ class TreeView:
 															break
 													if flag_excluse==1 and subtab_temp:
 														Trace.Write("subtab_temp_j"+str(subtab_temp))
-														ent_value_dict[ent_table]  =subtab_temp
+														if subtab_temp ==  "Inclusions" and get_disp_val[0] in ("Some Inclusions","Included"):
+															ent_value_dict[ent_table] = "Inclusions"
+														elif subtab_temp ==  "Exclusions" and get_disp_val[0] == "Some Exclusions":
+															ent_value_dict[ent_table] = "Exclusions"
+														else:
+															ent_value_dict[ent_table]  =subtab_temp
 														#subTabName = subtab_temp
 										
 										#if ent_value_dict:
