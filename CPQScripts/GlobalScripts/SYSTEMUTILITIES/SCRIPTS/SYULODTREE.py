@@ -2207,6 +2207,7 @@ class TreeView:
 												
 												Trace.Write("pattern_id_pattern_name "+str(service_id)+str(pattern_id)+str(pattern_name))
 												if pattern_id and pattern_name:
+													display_pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 													Trace.Write("inside ent tabs"+str(subtab_temp))
 													updateentXML = get_entitlement_xml.ENTITLEMENT_XML
 													flag_excluse=0
@@ -2216,7 +2217,8 @@ class TreeView:
 														get_ent_id =re.findall(pattern_id,sub_string)
 														get_ent_name=re.findall(pattern_name,sub_string)
 														if get_ent_id and get_ent_name:
-															Trace.Write("get_ent_id-"+str(subtab_temp_variable)+"--"+str(get_ent_name))
+															get_disp_val = re.findall(display_pattern_name,sub_string)
+															Trace.Write("get_ent_id-"+str(subtab_temp_variable)+"--"+str(get_disp_val[0]))
 															flag_excluse=1
 															break
 													if flag_excluse==1 and subtab_temp:
