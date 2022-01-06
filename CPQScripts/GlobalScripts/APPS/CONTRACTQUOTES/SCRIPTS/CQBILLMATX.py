@@ -52,7 +52,7 @@ user_id = str(User.Id)
 user_name = str(User.UserName)
 
 if contract_quote_rec_id:
-	_insert_billing_matrix()
+	ApiResponse = ApiResponseFactory.JsonResponse(_insert_billing_matrix())
 
 
 #A055S000P01-3924-billing matrix creation start
