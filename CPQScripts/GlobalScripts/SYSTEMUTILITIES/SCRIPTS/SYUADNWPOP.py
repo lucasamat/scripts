@@ -2014,7 +2014,7 @@ def POPUPLISTVALUEADDNEW(
 				Header_details = {
 					"CREDITVOUCHER_RECORD_ID": "KEY",
 					"ZAFTYPE":"ZAF TYPE",
-					"WRBTR": "CREDIT AMOUNT",
+					"UNAPPLIED_BALANCE": "CREDIT AMOUNT",
 					"CREDIT_APPLIED": "APPLIED CREDIT",
 				}
 				ordered_keys = [
@@ -2022,7 +2022,7 @@ def POPUPLISTVALUEADDNEW(
 					"CREDITVOUCHER_RECORD_ID",
 					"ZAFTYPE",
 					"WRBTR",
-					"UNAPPLIED_BALANCE"
+					"CREDIT_APPLIED"
 				]
 				Objd_Obj = Sql.GetList(
 					"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -4119,7 +4119,6 @@ def POPUPLISTVALUEADDNEW(
 			if str(popup_obj)=="SAQRSP":
 				if TreeSuperParentParam == "Product Offerings":
 					TreeParam = TreeParam
-					Service_Id = TreeParam
 					TableName = "SAQTSE"
 					entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
 				else:
@@ -4132,34 +4131,29 @@ def POPUPLISTVALUEADDNEW(
 				flag=0
 				iclusions_val_list = []
 				quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-				pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(Service_Id)+'[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
-				pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(Service_Id)+'[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
+				pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+				pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
 				pattern_new_parts_only = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
 				if TreeSuperParentParam == "Product Offerings" and TreeParam =='Z0092':
-					pattern_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
+					pattern_exclusion_or_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
 				else:
-					pattern_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
-				pattern_exclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
+					pattern_exclusion_or_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
 				pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
 				new_parts_yes = ""
 				for m in re.finditer(quote_item_tag, entitlement_xml):
 					sub_string = m.group(1)
 					non_consumable =re.findall(pattern_non_consumable,sub_string)
 					consumable =re.findall(pattern_consumable,sub_string)
-					get_inclusion =re.findall(pattern_inclusion,sub_string)
-					get_exclusion = re.findall(pattern_exclusion,sub_string)
+					exclusion_or_inclusion =re.findall(pattern_exclusion_or_inclusion,sub_string)
 					new_parts_only = re.findall(pattern_new_parts_only,sub_string)
 					new_parts_only_value = re.findall(pattern_new_parts_only_yes,sub_string)
 					if new_parts_only and new_parts_only_value:
 						new_parts_yes = "Yes"
 						break
-					if (non_consumable and get_inclusion) or (non_consumable and get_exclusion):
-						Trace.Write("non_consumable---"+str(non_consumable))
+					if non_consumable and exclusion_or_inclusion:
 						iclusions_val_list.append('N')
-					elif(consumable and get_inclusion) or (consumable and get_exclusion):
-						Trace.Write("consumable---"+str(consumable))
+					if consumable and exclusion_or_inclusion:
 						iclusions_val_list.append('C')
-				
 				if new_parts_yes == "Yes":
 					where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND  MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
 					where_string_1 += """ MAMTRL.SAP_PART_NUMBER IN (SELECT SAP_PART_NUMBER FROM MAMSOP WHERE  MAMSOP.SALESORG_ID = '{sales}' )AND MAMTRL.IS_SPARE_PART = 'True' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
