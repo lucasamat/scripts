@@ -2184,7 +2184,7 @@ class TreeView:
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="PM Events"
-												elif subtab_temp_variable == 'Inclusions' and service_id =='Z0092' and ent_table == 'SAQTSE':
+												elif subtab_temp_variable == 'Inclusions' and (service_id =='Z0092' or service_id == 'Z0006') and ent_table == 'SAQTSE':
 													Trace.Write(" Inclusions")
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
