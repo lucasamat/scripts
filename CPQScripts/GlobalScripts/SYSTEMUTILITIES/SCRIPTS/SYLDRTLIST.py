@@ -4094,6 +4094,7 @@ class SYLDRTLIST:
 									+ "</th>"
 								)
 							elif ObjectName == "SAQIFB":
+								Trace.Write("CHKNG_EMPTY HYPERLINK")
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
