@@ -687,7 +687,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		#_insert_billing_matrix()
 	
 	# Quote Item Inserts - Starts
-	if quote_item_insert == 'yes':
+	if quote_item_insert == 'yes' and Text == "COMPLETE STAGE":
 		#service_id_query =  Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_record_id))
 		service_id_query = Sql.GetList("SELECT SAQTSV.*,MAMTRL.MATERIALCONFIG_TYPE FROM SAQTSV INNER JOIN MAMTRL ON SAP_PART_NUMBER = SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'  ".format(contract_quote_rec_id,quote_revision_record_id))
 		if service_id_query:
