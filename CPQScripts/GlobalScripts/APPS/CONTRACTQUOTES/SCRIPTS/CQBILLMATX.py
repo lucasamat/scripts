@@ -472,7 +472,7 @@ def billingmatrix_create():
 							# 	#get_ent_bill_cycle = get_ent_val
 							# else:
 							# 	get_ent_billing_type_value = str(get_ent_val)
-				Trace.Write(str(get_billing_type)+'--475--'+str(get_ent_bill_cycle))
+				Log.Info(str(get_billing_type)+'--475--'+str(get_ent_bill_cycle))
 				billing_month_end = 0
 				entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
 				if str(get_ent_bill_cycle).upper() == "MONTHLY":
