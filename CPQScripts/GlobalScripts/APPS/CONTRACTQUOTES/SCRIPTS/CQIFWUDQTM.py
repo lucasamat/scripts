@@ -205,7 +205,7 @@ def quoteiteminsert(Qt_id):
 						SAQTRV.TAX_AMOUNT_INGL_CURR = IQ.TAX_AMOUNT_INGL_CURR,						
 						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
 						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR - """+str(total_credit)+""",
-						SAQTRV.CREDIT_INGL_CURR	= """+str(total_credit)+"""
+						SAQTRV.CREDIT_INGL_CURR	= """+str(total_credit)+""",
 						SAQTRV.REVISION_STATUS	= """+str(rev_status)+"""		
 						FROM SAQTRV (NOLOCK)
 						INNER JOIN (SELECT SAQRIS.QUOTE_RECORD_ID, SAQRIS.QTEREV_RECORD_ID,
