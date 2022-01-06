@@ -195,7 +195,7 @@ def quoteiteminsert(Qt_id):
 			total_credit = get_credit_val.NET_PRICE_INGL_CURR
 	##A055S000P01-13894
 	update_revision_status = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQIFP WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND PRICING_STATUS = 'ERROR'""".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID))
-	rev_status =''
+	rev_status =""
 	if update_revision_status:
 		rev_status ="ON HOLD - COSTING"
 	else:
