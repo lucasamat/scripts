@@ -429,7 +429,7 @@ def billingmatrix_create():
 	get_billling_data_dict = {}
 	contract_start_date = quotedetails.CONTRACT_VALID_FROM
 	contract_end_date = quotedetails.CONTRACT_VALID_TO
-	get_ent_val = get_ent_bill_type = get_ent_billing_type_value = get_ent_bill_cycle = ''
+	get_ent_val = get_ent_bill_type = get_ent_billing_type_value = get_ent_bill_cycle = get_billing_type = ''
 	if contract_start_date and contract_end_date and billing_plan_obj:
 		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
 		#Trace.Write('4739---------4744------')
@@ -472,7 +472,7 @@ def billingmatrix_create():
 				Trace.Write(str(get_billling_data_dict)+'--dict----get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
 				billing_month_end = 0
 				entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
-				if str(get_ent_bill_cycle).upper() == "MONTHLY":
+				if str(get_ent_bill_cycle).upper() == "MONTHLY" and get_billing_type != '':
 					Trace.Write('billing_day----'+str(billing_day))
 					Trace.Write('start_date----'+str(start_date))
 					if billing_day in (29,30,31):
@@ -509,7 +509,7 @@ def billingmatrix_create():
 													), amount_column="YEAR_"+str((index/12) + 1),
 													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 					Trace.Write('total_months-470-----'+str(total_months))
-				elif str(get_ent_bill_cycle).upper() == "QUARTELY":
+				elif str(get_ent_bill_cycle).upper() == "QUARTELY" and get_billing_type != '':
 					Trace.Write('get_ent_val-billicycle--'+str(get_ent_bill_cycle))
 					ct_start_date =contract_start_date
 					ct_end_date =contract_end_date
@@ -532,7 +532,7 @@ def billingmatrix_create():
 													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value=get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 				else:
 					Trace.Write('get_ent_val---'+str(get_ent_bill_cycle))
-					if billing_day in (29,30,31):
+					if billing_day in (29,30,31) :
 						if start_date.month == 2:
 							isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
 							end_day = 29 if isLeap(start_date.year) else 28
@@ -550,15 +550,16 @@ def billingmatrix_create():
 					avgmonth = 365.2425/12.0  # even leap years have 12 months
 					years, remainder = divmod(diff1.days, avgyear)
 					years, months = int(years), int(remainder // avgmonth)
-					for index in range(0, years+1):
-						billing_month_end += 1
-						insert_items_billing_plan(total_months=years, 
-												billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
-													Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
-													),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
-													Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
-													),amount_column="YEAR_"+str((index) + 1),
-													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
+					if get_billing_type != '':
+						for index in range(0, years+1):
+							billing_month_end += 1
+							insert_items_billing_plan(total_months=years, 
+													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
+														),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+														Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
+														),amount_column="YEAR_"+str((index) + 1),
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 				#self.insert_quote_items_billing_plan()
 #A055S000P01-3924-billing matrix creation end			
 def Dynamic_Status_Bar(quote_item_insert,Text):
