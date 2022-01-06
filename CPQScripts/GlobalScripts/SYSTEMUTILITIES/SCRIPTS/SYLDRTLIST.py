@@ -3819,9 +3819,7 @@ class SYLDRTLIST:
 				# 	continue
 				
 				#normal+Collapsaible+normal
-				elif RECORD_ID = 'SYOBJR-34575' and invs not in ('QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID','PART_DESCRIPTION','QUANTITY','DELIVERY_SCHED_DATE'):
-					rowspan = 'rowspan="3"'
-
+			
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','GOT_CODE','ASSEMBLY_ID','PM_ID','PM_LABOR_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOOL_CONFIGURATION','SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','CEILING_PRICE_INGL_CURR'):
 					align = ''
 					rowspan_level1 = ""
