@@ -193,14 +193,20 @@ def quoteiteminsert(Qt_id):
 	if get_credit_val:
 		if get_credit_val.NET_PRICE_INGL_CURR:
 			total_credit = get_credit_val.NET_PRICE_INGL_CURR
-	
+	##A055S000P01-13894
+	update_revision_status = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQIFP WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND PRICING_STATUS = 'ERROR'""".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID))
+	rev_status =''
+	if update_revision_status:
+		rev_status ="ON HOLD - COSTING"
+	else:
+		rev_status ="PRICED"
 	Sql.RunQuery("""UPDATE SAQTRV
 						SET 
 						SAQTRV.TAX_AMOUNT_INGL_CURR = IQ.TAX_AMOUNT_INGL_CURR,						
 						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
 						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR - """+str(total_credit)+""",
 						SAQTRV.CREDIT_INGL_CURR	= """+str(total_credit)+"""
-									
+						SAQTRV.REVISION_STATUS	= """+str(rev_status)+"""		
 						FROM SAQTRV (NOLOCK)
 						INNER JOIN (SELECT SAQRIS.QUOTE_RECORD_ID, SAQRIS.QTEREV_RECORD_ID,
 									SUM(ISNULL(SAQRIS.TAX_AMOUNT_INGL_CURR, 0)) as TAX_AMOUNT_INGL_CURR,
