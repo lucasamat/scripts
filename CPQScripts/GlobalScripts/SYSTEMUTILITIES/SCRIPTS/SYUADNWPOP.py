@@ -4119,6 +4119,7 @@ def POPUPLISTVALUEADDNEW(
 			if str(popup_obj)=="SAQRSP":
 				if TreeSuperParentParam == "Product Offerings":
 					TreeParam = TreeParam
+					Service_Id = TreeParam
 					TableName = "SAQTSE"
 					entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
 				else:
