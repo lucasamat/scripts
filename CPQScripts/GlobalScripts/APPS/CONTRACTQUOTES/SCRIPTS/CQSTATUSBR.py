@@ -646,7 +646,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					Sql.RunQuery(update_workflow_status)
 					status = "CONTRACT BOOKED"
 			
-			if Text != "COMPLETE STAGE":
+			else:
 				if get_workflow_status.REVISION_STATUS == "APPROVED":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
@@ -662,23 +662,23 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 						status = "QUOTE DOCUMENTS"
 					else:
 						status = "APPROVED"
-				if get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING":
+				elif get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
 					status = "SUBMITTED FOR BOOKING"
-				if get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED":
+				elif get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
 					status = "CONTRACT BOOKED"
 
-			elif get_workflow_status.WORKFLOW_STATUS:			
-				Trace.Write('No button-2454-')
-				status = get_workflow_status.WORKFLOW_STATUS           
-			else:
-				Trace.Write('No button--1')
-				status = "IN-COMPLETE"
+				elif get_workflow_status.WORKFLOW_STATUS:			
+					Trace.Write('No button-2454-')
+					status = get_workflow_status.WORKFLOW_STATUS           
+				else:
+					Trace.Write('No button--1')
+					status = "IN-COMPLETE"
 		else:
 			Trace.Write('No button--2')
 			status = "IN-COMPLETE"
