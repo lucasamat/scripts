@@ -2064,10 +2064,7 @@ class ContractQuoteItem:
 				self._quote_items_summary_insert()
 				self._quote_items_insert()		
 				self._quote_items_object_insert()	
-				if self.service_id == 'Z0116':
-					self._simple_quote_annualized_items_insert()
-				else:
-					self._quote_annualized_items_insert()	
+				self._quote_annualized_items_insert()	
 				self._quote_item_line_entitlement_insert()
 				self._quote_items_assembly_insert()
 				self._quote_items_assembly_entitlement_insert()
@@ -2082,10 +2079,7 @@ class ContractQuoteItem:
 					self._quote_items_summary_insert()
 					self._quote_items_insert()
 					self._quote_items_object_insert()	
-					if self.service_id == 'Z0116':
-						self._simple_quote_annualized_items_insert()
-					else:
-						self._quote_annualized_items_insert()
+					self._quote_annualized_items_insert()
 					self._insert_quote_item_forecast_parts()
 
 				##simple product quote item insert
@@ -2101,10 +2095,7 @@ class ContractQuoteItem:
 					self._quote_items_insert()		
 					self._quote_items_object_insert()	
 					#self.cqent()
-					if self.service_id == 'Z0116':
-						self._simple_quote_annualized_items_insert()
-					else:
-						self._quote_annualized_items_insert()
+					self._quote_annualized_items_insert()
 					self._quote_item_line_entitlement_insert()
 					self._quote_items_assembly_insert()
 					self._quote_items_assembly_entitlement_insert()
@@ -2116,10 +2107,7 @@ class ContractQuoteItem:
 					self._quote_items_summary_insert()
 					self._quote_items_insert()
 					self._quote_items_object_insert()
-					if self.service_id == 'Z0116':
-						self._simple_quote_annualized_items_insert()
-					else:
-						self._quote_annualized_items_insert()
+					self._quote_annualized_items_insert()
 					self._insert_quote_item_forecast_parts()
 						
 				elif self.is_simple_service == True:
