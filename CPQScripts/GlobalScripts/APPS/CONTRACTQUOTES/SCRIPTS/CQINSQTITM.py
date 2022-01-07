@@ -983,12 +983,12 @@ class ContractQuoteItem:
 						self._ent_billing_type = ent_billing_display_value_tag_match[0].upper()
 				elif entitlement_nonconsumable_tag_match:
 					ent_nonconsumable_disp_val_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
-						if ent_nonconsumable_disp_val_tag_match:
-							self._ent_nonconsumable = ent_nonconsumable_disp_val_tag_match[0].upper()
+					if ent_nonconsumable_disp_val_tag_match:
+						self._ent_nonconsumable = ent_nonconsumable_disp_val_tag_match[0].upper()
 				elif entitlement_consumable_tag_match:
 					ent_consumable_disp_val_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
-						if ent_consumable_disp_val_tag_match:
-							self._ent_consumable = ent_consumable_disp_val_tag_match[0].upper()
+					if ent_consumable_disp_val_tag_match:
+						self._ent_consumable = ent_consumable_disp_val_tag_match[0].upper()
 				else:
 					continue
 			# if self.service_id == 'Z0101':
