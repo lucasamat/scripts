@@ -715,7 +715,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(contract_quote_id),str(quote_revision_record_id))
 				#If Qty is null for all parts to call this function with specific parameters
 				###calling script for saqris,saqtrv insert
-				CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":str(contract_quote_id),"Operation":"Delete"})
+				# CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":str(contract_quote_id),"Operation":"Delete"})
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
 		# Quote Item Inserts - Ends
