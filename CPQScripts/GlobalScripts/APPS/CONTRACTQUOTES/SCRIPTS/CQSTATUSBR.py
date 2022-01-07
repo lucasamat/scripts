@@ -713,6 +713,9 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			if count.CNT==0:
 				Log.Info("PART PRICING IFLOW STARTED WHEN USER CLICK COMPLETE STAGE!")
 				CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(contract_quote_id),str(quote_revision_record_id))
+				#If Qty is null for all parts to call this function with specific parameters
+				###calling script for saqris,saqtrv insert
+				CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE,"Operation":"Delete"})
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
 		# Quote Item Inserts - Ends
