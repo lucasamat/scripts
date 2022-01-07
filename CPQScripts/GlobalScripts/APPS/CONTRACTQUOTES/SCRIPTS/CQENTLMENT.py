@@ -1161,7 +1161,7 @@ class Entitlements:
 							if tableName == "SAQSGE":
 								Quote.SetGlobal("Greenbook_Entitlement","Yes")
 							Trace.Write("entitlement_value -----"+str(entitlement_value))
-							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value == "Some Inclusions"):
+							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included")):
 								ancillary_object_dict['Z0101'] = "INSERT"
 								
 							else:
