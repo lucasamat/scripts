@@ -33,6 +33,7 @@ class ContractQuoteItem:
 		self.quote_line_item_temp_table = '' 
 		self.quote_service_entitlement_type = ''
 		self._ent_billing_type = ""
+		self._ent_nonconsumable = ''
 		self._ent_consumable = ''
 		self.parent_service_id = ""
 		self.source_object_name = ''
@@ -955,12 +956,15 @@ class ContractQuoteItem:
 			entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.service_id)+'_PQB_QTITST</ENTITLEMENT_ID>')
 			##getting billing type
 			billing_type_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.service_id)+'_PQB_BILTYP</ENTITLEMENT_ID>')
-			pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.service_id))+'_TSC_CONSUM</ENTITLEMENT_ID>')
+			##getting consumable and non-consumable
+			pattern_nonconsumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(self.service_id)+'[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+			pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.service_id)+'_TSC_CONSUM</ENTITLEMENT_ID>')
 			entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 			for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obj.ENTITLEMENT_XML):
 				quote_item_tag_content = quote_item_tag.group(1)
 				entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)	
 				entitlement_billing_id_tag_match = re.findall(billing_type_pattern,quote_item_tag_content)
+				entitlement_nonconsumable_tag_match = re.findall(pattern_nonconsumable,quote_item_tag_content)
 				entitlement_consumable_tag_match = re.findall(pattern_consumable,quote_item_tag_content)
 				if entitlement_id_tag_match:
 					entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
@@ -977,6 +981,10 @@ class ContractQuoteItem:
 					ent_billing_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
 					if ent_billing_display_value_tag_match:
 						self._ent_billing_type = ent_billing_display_value_tag_match[0].upper()
+				elif entitlement_nonconsumable_tag_match:
+					ent_nonconsumable_disp_val_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
+						if ent_nonconsumable_disp_val_tag_match:
+							self._ent_nonconsumable = ent_nonconsumable_disp_val_tag_match[0].upper()
 				elif entitlement_consumable_tag_match:
 					ent_consumable_disp_val_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
 						if ent_consumable_disp_val_tag_match:
@@ -987,7 +995,7 @@ class ContractQuoteItem:
 			# 	self.quote_service_entitlement_type = 'OFFERING + GREENBOOK + GR EQUI'
 			Log.Info(str(self.contract_quote_id)+"_set_quote_service_entitlement_type ===> 2"+str(self.quote_service_entitlement_type))
 			Trace.Write("_ent_billing_type--"+str(self._ent_billing_type))
-			Trace.Write("_ent_consumable--"+str(self._ent_consumable))
+			Trace.Write("_ent_consumable--"+str(self._ent_consumable)+'--non-'+str(self._ent_nonconsumable))
 
 	def _quote_items_summary_insert(self, update=False):
 		if self.source_object_name:	
@@ -1790,7 +1798,7 @@ class ContractQuoteItem:
 					CQPARTIFLW.iflow_pricing_call(str(self.user_name),str(self.contract_quote_id),str(self.contract_quote_revision_record_id))
 			except:
 				Log.Info("PART PRICING IFLOW ERROR!")
-		elif self.service_id == 'Z0101' and self._ent_consumable.upper() == 'INCLUDED' and self.parent_service_id in ('Z0009','Z0006') :
+		elif self.service_id == 'Z0101' and self._ent_consumable.upper() == 'SOME INCLUSIONS' and self.parent_service_id in ('Z0009','Z0006') :
 			Sql.RunQuery("""INSERT SAQRIP (QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, NEW_PART ) 
 				SELECT 
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,
