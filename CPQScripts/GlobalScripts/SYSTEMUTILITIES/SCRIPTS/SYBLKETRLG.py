@@ -807,28 +807,28 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							if k:
 								key = str(k.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID)
 						elif obj_obj == 'SAQRSP':
-							if (str(TreeSuperParentParam)!="Product Offerings" and TreeParam !='Z0092')or (str(TreeSuperParentParam)=="Product Offerings" and TreeParam =='Z0092') :
-								if TITLE=="QUANTITY":
-									field = "Enter Updated Target Quantity to add to your Parts List..."
-									label = "UPDATED TARGET QUANTITY" 
-									input_id = "updatedQuantity"
-									input_type = ""
-									checked = ""
-								else: 
-									field = "Select New Part to Update Parts List..."
-									label = "UPDATED NEW PART"
-									input_id = "updatedNewPart"
-									input_type = "type = \'checkbox\' "
-									checked = "checked" if VALUE == 1 or str(VALUE).upper() =="TRUE" else ""
-								k = Sql.GetFirst("SELECT QUOTE_REV_PO_PRODUCT_LIST_ID FROM SAQRSP WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
-								apply_all = ''
-								if len(list(RECORDID)) > 1:
-									apply_all = '<div class="col-md-12 pt-0 pb-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">Apply changes to</div><div class="txt-col-sec col-md-6 pl-0"><div class="radio"><input type="radio" name="massOrSingleEdit" id="singleEditRadio" checked="checked"><label for="singleEditRadio">The record clicked</label></div><div class="radio"><input type="radio" name="massOrSingleEdit" id="massEditRadio"><label for="massEditRadio">All selected records</label></div></div></div>'
-								edt_str = '<div class="modal-dialog bg-white" id="edit_decrip"><div class="modal-content"><div class="modal-header revision_edit_decripheader"><span class="modal-title">BULK EDIT</span><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="multiedit_RL_cancel();"><span aria-hidden="true">x</span></button></div><div class="fixed-table-body"><div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr" id="seginnerbnr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"><div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;"><div class="product_txt_child"><abbr title="Bulk Edit">Bulk Edit</abbr></div><div class="product_txt_to_top_child help_text" style="float: left;"><abbr title="'+str(field)+'">'+str(field)+'</abbr></div></div></div></div><div class="col-md-12 pt-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">'+str(label)+'</div><div class="txt-col-sec col-md-6 pl-0"><input id="'+str(input_id)+'" class="light_yellow" '+str(input_type)+' value="'+str(VALUE)+'" '+str(checked)+'><span class="lbl"></span></div></div>'+str(apply_all)+'</div><div class="modal-footer"><button id="popupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true" onclick="multiedit_RL_cancel();">CANCEL</button><button onclick="PartsListMultiEdit(this)" id="'+str(input_id)+'_save" data-dismiss="modal" class="btn btn-list-cust">SAVE</button></div> </div></div>'
-								if k:
-									key = str(k.QUOTE_REV_PO_PRODUCT_LIST_ID)
-							else:
-								edt_str = "NO"
+							#if (str(TreeSuperParentParam)!="Product Offerings" and TreeParam !='Z0092')or (str(TreeSuperParentParam)=="Product Offerings" and TreeParam =='Z0092') :
+							if TITLE=="QUANTITY":
+								field = "Enter Updated Target Quantity to add to your Parts List..."
+								label = "UPDATED TARGET QUANTITY" 
+								input_id = "updatedQuantity"
+								input_type = ""
+								checked = ""
+							else: 
+								field = "Select New Part to Update Parts List..."
+								label = "UPDATED NEW PART"
+								input_id = "updatedNewPart"
+								input_type = "type = \'checkbox\' "
+								checked = "checked" if VALUE == 1 or str(VALUE).upper() =="TRUE" else ""
+							k = Sql.GetFirst("SELECT QUOTE_REV_PO_PRODUCT_LIST_ID FROM SAQRSP WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
+							apply_all = ''
+							if len(list(RECORDID)) > 1:
+								apply_all = '<div class="col-md-12 pt-0 pb-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">Apply changes to</div><div class="txt-col-sec col-md-6 pl-0"><div class="radio"><input type="radio" name="massOrSingleEdit" id="singleEditRadio" checked="checked"><label for="singleEditRadio">The record clicked</label></div><div class="radio"><input type="radio" name="massOrSingleEdit" id="massEditRadio"><label for="massEditRadio">All selected records</label></div></div></div>'
+							edt_str = '<div class="modal-dialog bg-white" id="edit_decrip"><div class="modal-content"><div class="modal-header revision_edit_decripheader"><span class="modal-title">BULK EDIT</span><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="multiedit_RL_cancel();"><span aria-hidden="true">x</span></button></div><div class="fixed-table-body"><div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr" id="seginnerbnr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"><div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;"><div class="product_txt_child"><abbr title="Bulk Edit">Bulk Edit</abbr></div><div class="product_txt_to_top_child help_text" style="float: left;"><abbr title="'+str(field)+'">'+str(field)+'</abbr></div></div></div></div><div class="col-md-12 pt-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">'+str(label)+'</div><div class="txt-col-sec col-md-6 pl-0"><input id="'+str(input_id)+'" class="light_yellow" '+str(input_type)+' value="'+str(VALUE)+'" '+str(checked)+'><span class="lbl"></span></div></div>'+str(apply_all)+'</div><div class="modal-footer"><button id="popupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true" onclick="multiedit_RL_cancel();">CANCEL</button><button onclick="PartsListMultiEdit(this)" id="'+str(input_id)+'_save" data-dismiss="modal" class="btn btn-list-cust">SAVE</button></div> </div></div>'
+							if k:
+								key = str(k.QUOTE_REV_PO_PRODUCT_LIST_ID)
+							# else:
+							# 	edt_str = "NO"
 						elif obj_obj == 'SAQSPT':
 							k = Sql.GetFirst("SELECT QUOTE_SERVICE_PART_RECORD_ID FROM SAQSPT WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
 							apply_all = ''
