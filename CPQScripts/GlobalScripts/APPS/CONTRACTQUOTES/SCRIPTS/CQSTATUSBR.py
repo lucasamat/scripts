@@ -705,16 +705,16 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		#if str(item_covered_obj):       
 			#_insert_billing_matrix()
 		##calling the iflow for pricing..
-		'''
 		try:
 			contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id")))
 			if contract_quote_obj:
-				contract_quote_id = contract_quote_obj.QUOTE_ID      
-			Log.Info("PART PRICING IFLOW STARTED WHEN USER CLICK COMPLETE STAGE!")
-			CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(contract_quote_id),str(quote_revision_record_id))
+				contract_quote_id = contract_quote_obj.QUOTE_ID
+			count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_ID= '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")      
+			if count.CNT==0:
+				Log.Info("PART PRICING IFLOW STARTED WHEN USER CLICK COMPLETE STAGE!")
+				CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(contract_quote_id),str(quote_revision_record_id))
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
-		'''
 		# Quote Item Inserts - Ends
 
 	
