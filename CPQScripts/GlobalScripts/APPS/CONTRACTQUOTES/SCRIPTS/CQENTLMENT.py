@@ -1161,7 +1161,7 @@ class Entitlements:
 							if tableName == "SAQSGE":
 								Quote.SetGlobal("Greenbook_Entitlement","Yes")
 							Trace.Write("entitlement_value -----"+str(entitlement_value))
-							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included")):
+							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value == "Some Inclusions"):
 								ancillary_object_dict['Z0101'] = "INSERT"
 								
 							else:
@@ -1169,7 +1169,7 @@ class Entitlements:
 								if  count_temp_z0101 == 3:
 									ancillary_object_dict['Z0101'] = "DELETE"
 							if  serviceId == 'Z0092'  and key == "AGS_{}_TSC_CONSUM".format(serviceId):
-								if entitlement_value in ("Some Inclusions","Included"):
+								if entitlement_value == "Some Inclusions":
 									Trace.Write("z0092--if--"+str(entitlement_value))
 									ancillary_object_dict['Z0100'] = "INSERT"	
 								else:

@@ -4135,10 +4135,11 @@ def POPUPLISTVALUEADDNEW(
 				pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(Service_Id)+'[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
 				pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(Service_Id)+'[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
 				pattern_new_parts_only = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
-				if TreeSuperParentParam == "Product Offerings" and TreeParam =='Z0092':
-					pattern_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
-				else:
-					pattern_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
+				# if TreeSuperParentParam == "Product Offerings" and TreeParam =='Z0092':
+				# 	pattern_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
+				# else:
+ 	
+				pattern_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
 				pattern_exclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
 				pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
 				new_parts_yes = ""
