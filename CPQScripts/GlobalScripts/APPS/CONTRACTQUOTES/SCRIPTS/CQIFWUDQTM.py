@@ -226,12 +226,25 @@ def quoteiteminsert(Qt_id):
 	#updating value to quote summary ends
 
 	return "True"
+
+def quoteitemupdate(Qt_id):
+    delete_saqris = Sql.RunQuery("DELETE FROM SAQRIS WHERE QUOTE_ID = '{}'".format(Qt_id))
+    delete_saqrit = Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_ID = '{}'".format(Qt_id))
+    delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_ID = '{}'".format(Qt_id))
+    update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET NET_PRICE_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_ID = '{}'".format(Qt_id))
+    
 try: 
 	Qt_id = Param.QT_REC_ID
+	Action = Param.Operation or ""
 except:
 	Qt_id = ""
+	Action= ""
 
 try:
-	calling_function = quoteiteminsert(Qt_id)
+	if Action == 'Delete':
+		calling_function = quoteitemupdate(Qt_id)
+	else:    
+		calling_function = quoteiteminsert(Qt_id)
+	
 except Exception as e:
 	Log.Info('pricing error-'+str(e))
