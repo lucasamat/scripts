@@ -122,7 +122,7 @@ def _insert_subtotal_by_offerring_quote_table():
 		Trace.Write('QT_SAQRIS---total_net_price----'+str(total_net_price))
 		Trace.Write('QT_SAQRIS---total_net_value----'+str(total_net_value))
 		Quote.SetGlobal('NP', str(total_net_price))
-		Quote.SetGlobal('NV', str(total_net_value))
+		Quote.SetGlobal('NEV', str(total_net_value))
 		Quote.SetGlobal('TX', str(total_tax_amt))
 
 
