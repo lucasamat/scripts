@@ -1184,37 +1184,21 @@ class Entitlements:
 							else:
 								ancillary_object_dict['A6200'] = "DELETE"
 								#ancillary_flag = "DELETE"
-						elif (key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId in ("Z0091","Z0035")) or (key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035")):
-							#Trace.Write("entiltmnt value---"+str(key)+'--'+str(entitlement_value)+'--'+str(count_temp_z0046))
-							#ancillary_object = 'Z0046'
+						elif (key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035")):
 							if entitlement_value == "Yes":
 								ancillary_object_dict['Z0046'] = "INSERT"
 								#Quote.SetGlobal("ANCILLARY","YES")
 								#ancillary_flag = "INSERT"
 							
 							else:
-								count_temp_z0046 += 1
-								if  count_temp_z0046 == 2:
-									#Trace.Write("inside delete")
-									ancillary_object_dict['Z0046'] = "DELETE"
+								# count_temp_z0046 += 1
+								# if  count_temp_z0046 == 2 :
+								# 	#Trace.Write("inside delete")
+								ancillary_object_dict['Z0046'] = "DELETE"
 								#Quote.SetGlobal("ANCILLARY","NO")
 								#ancillary_flag = "DELETE"
 						
-						# ##calling script ancillary insert	
-						# if ancillary_flag != "False" and ancillary_object:
-						# 	Trace.Write("vall--"+str(key)+'--'+str(entitlement_value)  )
-						# 	ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(ancillary_object, self.ContractRecordId,self.revision_recordid,serviceId ))
-							
-							# if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
-							# 	if ancillary_flag == "INSERT":
-							# 		Quote.SetGlobal("ANCILLARY","YES")
-							# 	else:
-							# 		Quote.SetGlobal("ANCILLARY","NO")
-							# 	ActionType = "{}_SERVICE".format(ancillary_flag)
-							# 	Trace.Write("ActionType--"+str(ActionType))
-							# 	Trace.Write("whereReq---"+str(whereReq))
-							# 	Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
-							# 	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
+						#(key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId in ("Z0035")) or
 						elif "GEN_IDLALW" in key:
 							Trace.Write("1125 entvalue"+str(entitlement_value))
 							if entitlement_value == "Yes":
