@@ -784,7 +784,7 @@ class SyncQuoteAndCustomTables:
 							# docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
 							# quote_id=quote_id,quote_revision_id=quote_revision_id)
 
-							Log.Info(UpdateSAQTRV)
+							Log.Info("@@@787------>"+str(UpdateSAQTRV))
 							Sql.RunQuery(UpdateSAQTRV)
 
 
