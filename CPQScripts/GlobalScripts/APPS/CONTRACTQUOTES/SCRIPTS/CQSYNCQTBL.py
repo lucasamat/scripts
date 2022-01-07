@@ -766,7 +766,7 @@ class SyncQuoteAndCustomTables:
 						else:
 							CustPricing = ""
 						Log.Info("FindProcedureID")
-						Log.Info(GetPricingProcedure)
+						Log.Info(GetPricingProcedure.PRICINGPROCEDURE_ID)
 						if GetPricingProcedure is not None:
 							# UpdateSAQTSO = """UPDATE SAQTSO SET SAQTSO.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTSO.PRICINGPROCEDURE_NAME = '{prcname}',SAQTSO.PRICINGPROCEDURE_RECORD_ID = '{prcrec}',SAQTSO.CUSTOMER_PRICING_PROCEDURE = '{customer_pricing_procedure}', SAQTSO.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTSO.QUOTE_ID = '{quote_id}' AND SAQTSO.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
 							# prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
