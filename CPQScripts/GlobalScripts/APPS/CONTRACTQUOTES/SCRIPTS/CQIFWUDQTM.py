@@ -235,9 +235,11 @@ def quoteitemupdate(Qt_id):
     
 try: 
 	Qt_id = Param.QT_REC_ID
-	Action = Param.Operation or ""
 except:
 	Qt_id = ""
+try:
+   	Action = Param.Operation
+except:
 	Action= ""
 
 try:
