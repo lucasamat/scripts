@@ -4158,14 +4158,14 @@ def POPUPLISTVALUEADDNEW(
 						if TreeSuperParentParam == "Product Offerings" and TreeParam =='Z0092' and non_consumable and get_exclusion: 
 							Trace.Write("non_consumable---"+str(non_consumable))
 							iclusions_val_list.append('N')
-						elif TreeSuperParentParam != "Product Offerings" and TreeParam !='Z0092':
+						elif (TreeSuperParentParam == "Product Offerings" and TreeParam !='Z0092') or TableName == "SAQSGE":
 							iclusions_val_list.append('N')
 
 					elif(consumable and get_inclusion) or (consumable and get_exclusion):
 						if TreeSuperParentParam == "Product Offerings" and TreeParam =='Z0092' and consumable and get_inclusion: 
 							Trace.Write("non_consumable---"+str(non_consumable))
 							iclusions_val_list.append('C')
-						elif TreeSuperParentParam != "Product Offerings" and TreeParam !='Z0092':
+						elif (TreeSuperParentParam == "Product Offerings" and TreeParam !='Z0092') or TableName == "SAQSGE":
 							iclusions_val_list.append('C')
 						
 				
