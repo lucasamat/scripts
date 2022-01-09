@@ -8489,6 +8489,7 @@ class SYLDRTLIST:
 								+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') "
 							)
 						else:
+							Trace.Write("value123-"+str(value123))
 							curr_symbol_obj = Sql.GetFirst(
 								"select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select "
 								+ str(cur_api_name_obj.CURRENCY_INDEX)
@@ -8501,6 +8502,7 @@ class SYLDRTLIST:
 								+ "' ) "
 							)
 						if curr_symbol_obj is not None:
+							Trace.Write("value123-"+str(value123)+'--'+str(curr_symbol_obj.DISPLAY_DECIMAL_PLACES))
 							curr_symbol = curr_symbol_obj.CURRENCY
 							decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
 						if value1234 is not None:
