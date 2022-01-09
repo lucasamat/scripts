@@ -1727,9 +1727,9 @@ class SyncQuoteAndCustomTables:
 										get_totalweeks,remainder = divmod(diff1.days,7)
 										for index in range(0, get_totalweeks):
 											delivery_week_date="DATEADD(week, {weeks}, '{DeliveryDate}')".format(weeks=index, DeliveryDate=start_date.strftime('%m/%d/%Y'))
-											Trace.Write('billing_date--'+str(billing_date))
-											getschedule_details(billing_date)
-											Trace.Write('23---'+str(billing_date))
+											#Trace.Write('billing_date--'+str(billing_date))
+											#getschedule_details(billing_date)
+											#Trace.Write('23---'+str(billing_date))
 											getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'ONSITE' and and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}'".format(delivery_date =delivery_week_date,contract_rec_id= contract_quote_record_id,qt_rev_id = quote_revision_record_id) )
 									#A055S000P01-14047 end
 
