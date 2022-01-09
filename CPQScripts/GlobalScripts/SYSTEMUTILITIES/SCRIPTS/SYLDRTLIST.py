@@ -3024,11 +3024,12 @@ class SYLDRTLIST:
 								if value1234 != "":
 									if "-" in value1234:										
 										##A055S000P01-12021
-										if (str(value123) == "NET_PRICE_INGL_CURR") and str(ObjectName) == "SAQICO":
+										if (str(value123) == "NET_PRICE_INGL_CURR") and str(ObjectName) in ("SAQICO","SAQRIS"):
 											my_format = "{:,." + str(decimal_place) + "f}"
 											value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
 											value1234 = value1234 + " " + curr_symbol
 										##A055S000P01-12021
+										
 										else:
 											ccc = value1234.split("-")
 											value1234 = value1234[0] + "" + ccc[1] + curr_symbol
@@ -8489,7 +8490,7 @@ class SYLDRTLIST:
 								+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') "
 							)
 						else:
-							Trace.Write("value123-"+str(value123))
+							#Trace.Write("value123-"+str(value123))
 							curr_symbol_obj = Sql.GetFirst(
 								"select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select "
 								+ str(cur_api_name_obj.CURRENCY_INDEX)
@@ -8502,7 +8503,7 @@ class SYLDRTLIST:
 								+ "' ) "
 							)
 						if curr_symbol_obj is not None:
-							Trace.Write("value123-"+str(value123)+'--'+str(curr_symbol_obj.DISPLAY_DECIMAL_PLACES))
+							#Trace.Write("value123-"+str(value123)+'--'+str(curr_symbol_obj.DISPLAY_DECIMAL_PLACES))
 							curr_symbol = curr_symbol_obj.CURRENCY
 							decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
 						if value1234 is not None:
