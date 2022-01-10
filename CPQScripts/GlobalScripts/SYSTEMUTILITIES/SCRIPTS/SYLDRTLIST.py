@@ -360,12 +360,12 @@ class SYLDRTLIST:
 				count = 0
 				if item_delivery_plans_obj:
 					delivery_date_column = [item_delivery_plans_obj.DELIVERY_SCHED_DATE for item_delivery_plans_obj in item_delivery_plans_obj]
-					for delivery_data in delivery_date_column:
-						count += 1
-						Delivery = 'Delivery {}'.format(count)
-						#delivery_date_column_joined = ",".join(["'{}'".format(Delivery)])
-						delivery_date_joined = ",".join(["'{}','{}'".format(Delivery,delivery_data) for delivery_data in delivery_date_column])
-						Columns = Columns.replace(']', ','+delivery_date_joined+']')
+					#for delivery_data in delivery_date_column:
+					count += 1
+					Delivery = 'Delivery {}'.format(count)
+					#delivery_date_column_joined = ",".join(["'{}'".format(Delivery)])
+					delivery_date_joined = ",".join(["'{}','{}'".format(Delivery,delivery_data) for delivery_data in delivery_date_column])
+					Columns = Columns.replace(']', ','+delivery_date_joined+']')
 			#A055S000P01-14047 end
 			#delivery pivot end
 			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':				
