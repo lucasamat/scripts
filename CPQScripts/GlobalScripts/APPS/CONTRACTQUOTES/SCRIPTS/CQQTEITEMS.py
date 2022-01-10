@@ -104,11 +104,11 @@ def LoadSummary():
         TotalSalesPrice = "{0:.2f}".format(float(getRevisionDetails.SALES_PRICE_INGL_CURR))
         TotalDiscount = "{0:.2f}".format(float(getRevisionDetails.DISCOUNT_PERCENT))
         Tax = "{0:.2f}".format(float(getRevisionDetails.TAX_AMOUNT_INGL_CURR))
-        TotalCost = ""
+        TotalCost = "{0:.2f}".format(float(getRevisionDetails.NET_PRICE_INGL_CURR))
         DiscountAmount = "{0:.2f}".format(float(getRevisionDetails.DISCOUNT_AMOUNT_INGL_CURR))
         #BDPrice = "{0:.2f}".format(float(getRevisionDetails.BD_PRICE_INGL_CURR))
         #CeilingPrice = "{0:.2f}".format(float(getRevisionDetails.CEILING_PRICE_INGL_CURR))
-        NetPrice = "{0:.2f}".format(float(getRevisionDetails.NET_PRICE_INGL_CURR))
+        NetPrice = "{0:.2f}".format(float(getRevisionDetails.NET_VALUE_INGL_CURR))
         NetValue = ""
         TargetPrice = "{0:.2f}".format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))
         Credit = "{0:.2f}".format(float(getRevisionDetails.CREDIT_INGL_CURR))
