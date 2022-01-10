@@ -2426,12 +2426,15 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				key = int(key)
 				credit_details = Sql.GetFirst("SELECT WRBTR,CREDIT_APPLIED,UNAPPLIED_BALANCE,HKONT FROM SACRVC WHERE CpqTableEntryId = '"+str(id)+"' ")
 				if APPLIED_CREDITS!='':
+					Trace.Write("crdit amt-"+str(APPLIED_CREDITS[key]))
+					if '-' not in APPLIED_CREDITS[key] :
+						APPLIED_CREDITS[key] = '-'+str(APPLIED_CREDITS[key])
 					try:
 						if float(credit_details.UNAPPLIED_BALANCE)==0 or float(credit_details.UNAPPLIED_BALANCE)=='':
 							unapplied = float(credit_details.WRBTR)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.WRBTR)
 						else:
 							unapplied = float(credit_details.UNAPPLIED_BALANCE)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.UNAPPLIED_BALANCE)
-						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CREDIT_APPLIED)+ int(APPLIED_CREDITS[key]), unapplied, id))
+						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CREDIT_APPLIED)- int(APPLIED_CREDITS[key]), unapplied, id))
 					except Exception as e:
 						Trace.Write('EXCEPTION: '+str(e))
 						Trace.Write('APPLIED_CREDITS'+str(APPLIED_CREDITS))
