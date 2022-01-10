@@ -3210,7 +3210,27 @@ class TreeView:
 			Quote.GetCustomField('PRICING_PICKLIST').Content = picklist_value
 			return True
 	#A055S000P01-4578 ends
-			
+	def PMSATree(self):
+		TableName = 'SAQTSE'
+		contract_quote_record_id = '195C0577-55D8-4984-BE8A-5DFA5CFAAF79'
+		quote_revision_record_id = '9A1E2B8D-628B-47EE-BC99-867256A2D3BB'
+		TreeParam = 'Z0009'
+		entitlement_obj = SqlHelper.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
+		import re
+		quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+		pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
+		pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>PMSA Flex</ENTITLEMENT_DISPLAY_VALUE>')
+		Trace.Write("PMSA----->"+str(pattern_new_parts_only_yes))
+		entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+		for m in re.finditer(quote_item_tag, entitlement_xml):
+			sub_string = m.group(1)
+			#Trace.Write("substring----->"+str(sub_string))
+			attribute_id =re.findall(pattern_consumable,sub_string)
+			attribute_value =re.findall(pattern_new_parts_only_yes,sub_string)
+			Trace.Write("attrvalue----->"+str(attribute_value))
+			if len(attribute_value) != 0:
+				Trace.Write("YES")
+				break		
 tree = TreeView()
 try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
