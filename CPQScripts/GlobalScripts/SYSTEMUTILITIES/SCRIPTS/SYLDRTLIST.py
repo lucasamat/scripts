@@ -4212,6 +4212,28 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							) # Billing Matrix Date Change Model and Footer - Start
+						elif RECORD_ID == 'SYOBJR-34575' and str(invs) in delivery_date_column_joined: 
+							
+							footer_formatter = ''
+							
+							#'data-footer-formatter="priceSumFormatter"'
+							tooltip = qstring
+							qstring = '<a onclick="openBillingMatrixDateChangeModal(\'{Value}\')" href="#">{Value}</a>'.format(Value=qstring.replace('-','/'))
+							#data_field = invs.replace('/','-')
+							#Trace.Write('2780-------month-------'+ str(invs))
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" class="text-right cust_billing_date" data-title-tooltip="'
+								+ str(tooltip)
+								+ '" data-sortable="true" '
+								+ str(footer_formatter)
+								+ ' '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+							)
 						else:                    
 							table_header += (
 								'<th  data-field="'
