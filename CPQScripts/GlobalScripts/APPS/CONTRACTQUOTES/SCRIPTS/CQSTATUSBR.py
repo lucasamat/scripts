@@ -572,7 +572,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		
-		get_addon_service_id = Sql.GetFirst("SELECT COUNT(DISTINCT SAQSGB.SERVICE_ID) as SERVICE_ID from SAQSGB INNER JOIN SAQSAO ON SAQSGB.QTEREV_RECORD_ID = SAQSAO.QTEREV_RECORD_ID AND SAQSGB.QUOTE_RECORD_ID = SAQSAO.QUOTE_RECORD_ID AND SAQSAO.SERVICE_ID = SAQSGE.SERVICE_ID where SAQSGB.QUOTE_RECORD_ID = '{}' AND SAQSGB.QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+		get_addon_service_id = Sql.GetFirst("SELECT COUNT(DISTINCT SAQSGB.SERVICE_ID) as SERVICE_ID from SAQSGB INNER JOIN SAQSAO ON SAQSGB.QTEREV_RECORD_ID = SAQSAO.QTEREV_RECORD_ID AND SAQSGB.QUOTE_RECORD_ID = SAQSAO.QUOTE_RECORD_ID AND SAQSAO.SERVICE_ID = SAQSAO.SERVICE_ID where SAQSGB.QUOTE_RECORD_ID = '{}' AND SAQSGB.QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		
 		quote_ser_level_entitlement_obj = Sql.GetList(" SELECT CONFIGURATION_STATUS,SERVICE_ID FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 
