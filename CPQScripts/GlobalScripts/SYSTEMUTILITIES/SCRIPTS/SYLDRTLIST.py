@@ -518,7 +518,7 @@ class SYLDRTLIST:
 
 		objRecName = ""
 		# Billing Matrix - Pivot - Start
-		column_before_pivot_change = ""
+		column_before_pivot_change = column_before_delivery_pivot_change = ""
 		# Billing Matrix - Pivot - End
 		if Columns != "" and Obj_Name != "":
 			
@@ -635,8 +635,11 @@ class SYLDRTLIST:
 			if billing_date_column:
 				column_before_pivot_change = col
 				col += ","+ ",".join(billing_date_column)
+			if delivery_date_column:
+				column_before_delivery_pivot_change = col
+				col += ","+ ",".join(delivery_date_column)
 		
-			Trace.Write('col---'+str(col))
+			Trace.Write('col--642----'+str(col))
 			# Billing Matrix - Pivot - End
 			col = col.replace("PRIMARY","[PRIMARY]") # CODE COMMON FOR ALL PRIMARY CHECK BOC API NAME
 			select_obj_str = col
@@ -1832,7 +1835,7 @@ class SYLDRTLIST:
 										AS ROW, *
 											FROM (
 												SELECT 
-													{Columns}                                           
+													{Columns}                                         
 												FROM {ObjectName}
 												{WhereString}
 											) AS IQ
@@ -1841,7 +1844,7 @@ class SYLDRTLIST:
 												SUM(DELIVERY_SCHED_CAT)
 												FOR DELIVERY_SCHED_DATE  IN ({PivotColumns})
 											)AS PVT
-										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
+										""".format(OrderByColumn=Wh_API_NAMEs,Columns=column_before_delivery_pivot_change, ObjectName=ObjectName,
 													WhereString=Qustr, PivotColumns=pivot_columns)                        
 							Qury_str = """
 										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY DELIVERY_SCHED_DATE 
