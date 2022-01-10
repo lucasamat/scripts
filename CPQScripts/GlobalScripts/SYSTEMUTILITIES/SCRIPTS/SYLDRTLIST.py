@@ -4217,7 +4217,7 @@ class SYLDRTLIST:
 						elif RECORD_ID == 'SYOBJR-34575' and str(invs) in delivery_date_column: 
 							
 							footer_formatter = ''
-							rowspan = 'rowspan="3"'
+							#rowspan = 'rowspan="1"'
 							#'data-footer-formatter="priceSumFormatter"'
 							tooltip = qstring
 							qstring = '<a onclick="openBillingMatrixDateChangeModal(\'{Value}\')" href="#">{Value}</a>'.format(Value=qstring.replace('-','/'))
