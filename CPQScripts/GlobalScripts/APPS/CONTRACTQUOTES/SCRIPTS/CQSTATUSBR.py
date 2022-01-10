@@ -571,7 +571,9 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		#getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-
+		
+		get_addon_service_id = Sql.GetFirst("SELECT COUNT(DISTINCT SAQSGB.SERVICE_ID) as SERVICE_ID from SAQSGB INNER JOIN SAQSAO ON SAQSGB.QTEREV_RECORD_ID = SAQSAO.QTEREV_RECORD_ID AND SAQSGB.QUOTE_RECORD_ID = SAQSAO.QUOTE_RECORD_ID AND SAQSAO.SERVICE_ID = SAQSGE.SERVICE_ID where SAQSGB.QUOTE_RECORD_ID = '{}' AND SAQSGB.QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+		
 		quote_ser_level_entitlement_obj = Sql.GetList(" SELECT CONFIGURATION_STATUS,SERVICE_ID FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 
 		complete_status = incomplete_status = ""
@@ -605,11 +607,11 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		if getsalesorg_ifo:
 			if Text == "COMPLETE STAGE":		
 				Trace.Write('salesorg--present---')
-				if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '' and complete_status != '' and Text == "COMPLETE STAGE":
+				if ((get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) or (get_service_ifo.SERVICE_ID == get_addon_service_id.SERVICE_ID) ) and incomplete_status == '' and complete_status != '' and Text == "COMPLETE STAGE":
 					Trace.Write('stage--1')
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 					Sql.RunQuery(update_workflow_status)
-				if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '' and complete_status != '' and price_bar == 'not_acquired_status' and Text == "COMPLETE STAGE":
+				if ((get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) or (get_service_ifo.SERVICE_ID == get_addon_service_id.SERVICE_ID) ) and incomplete_status == '' and complete_status != '' and price_bar == 'not_acquired_status' and Text == "COMPLETE STAGE":
 					Trace.Write('stage--2')
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING REVIEW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
