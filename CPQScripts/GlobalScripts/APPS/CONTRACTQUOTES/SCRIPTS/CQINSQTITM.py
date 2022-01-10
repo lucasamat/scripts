@@ -2050,7 +2050,7 @@ class ContractQuoteItem:
 			elif self.is_fpm_spare_service == True:				
 				# Spare Parts Insert/Update (Z0108)...
 				Log.Info("===> _do_opertion z0108 z0110 for testing")
-				saqspt_have_qty = Sql.GetFirst("""SELECT COUNT(*) AS CNT FROM SAQSPT (NOLOCK) QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND CUSTOMER_ANNUAL_QUANTITY IS NOT NULL""").format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id)
+				saqspt_have_qty = Sql.GetFirst("""SELECT COUNT(*) AS CNT FROM SAQSPT (NOLOCK) QUOTE_ID = '{QuoteId}' AND CUSTOMER_ANNUAL_QUANTITY IS NOT NULL""").format(QuoteId=self.contract_quote_id)
 				if saqspt_have_qty.CNT>0:              
 					self._quote_items_summary_insert()
 					self._simple_fpm_quote_items_insert()
