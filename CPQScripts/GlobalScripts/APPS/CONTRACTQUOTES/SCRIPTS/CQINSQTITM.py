@@ -1621,7 +1621,7 @@ class ContractQuoteItem:
 		JOIN (
 			SELECT SAQSPT.QUOTE_RECORD_ID, SAQSPT.SERVICE_RECORD_ID, MAX(CpqTableEntryId) as CpqTableEntryId, CAST(ROW_NUMBER()OVER(ORDER BY SAQSPT.SERVICE_RECORD_ID) + {EquipmentsCount} AS DECIMAL(5,1)) AS LINE_ITEM_ID FROM SAQSPT (NOLOCK) 
 			WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID ='{QuoteRevisionRecordId}'
-   			AND SAQSPT.CUSTOMER_ANNUAL_QUANTITY > 0
+			AND SAQSPT.CUSTOMER_ANNUAL_QUANTITY > 0
 			GROUP BY SAQSPT.QUOTE_RECORD_ID, SAQSPT.SERVICE_RECORD_ID
 		) AS IQ ON IQ.CpqTableEntryId = SAQSPT.CpqTableEntryId
 		JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID  AND SAQTMT.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID            
@@ -1908,7 +1908,7 @@ class ContractQuoteItem:
 			if delete_object == "SAQICO" and self.service_id in ('Z0110','Z0108'):
 				delete_statement = "DELETE DT FROM " +str(delete_object)+" DT (NOLOCK) WHERE DT.QUOTE_RECORD_ID='{}' AND DT.QTEREV_RECORD_ID='{}' AND DT.SERVICE_ID='{}' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id, self.service_id)			
 			Sql.RunQuery(delete_statement)
-    
+	
 		join_condition_string = ''
 		if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT'):
 			join_condition_string = """AND ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID"""
@@ -2049,11 +2049,13 @@ class ContractQuoteItem:
 				self._insert_quote_item_forecast_parts()
 			elif self.is_fpm_spare_service == True:				
 				# Spare Parts Insert/Update (Z0108)...
-				Log.Info("===> _do_opertion z0108 z0110 for testing")	
-				self._quote_items_summary_insert()
-				self._simple_fpm_quote_items_insert()
-				self._insert_quote_item_fpm_forecast_parts()
-				self._simple_quote_annualized_items_insert()
+				Log.Info("===> _do_opertion z0108 z0110 for testing")
+				saqspt_have_qty = Sql.GetFirst("""SELECT COUNT(*) AS CNT FROM SAQSPT (NOLOCK) QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND CUSTOMER_ANNUAL_QUANTITY IS NOT NULL""").format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id)
+				if saqspt_have_qty.CNT>0:              
+					self._quote_items_summary_insert()
+					self._simple_fpm_quote_items_insert()
+					self._insert_quote_item_fpm_forecast_parts()
+					self._simple_quote_annualized_items_insert()
 			elif self.is_simple_service == True:
 				self._simple_quote_items_summary_insert()
 				self._simple_quote_items_insert()
