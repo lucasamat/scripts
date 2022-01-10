@@ -702,8 +702,11 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						elif data_type.upper() == "PICKLIST":
 							edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
 							pick_val = pick_val.split(",")
-							for value in pick_val:
-								edt_str += "<option>" + str(value) + "</option>"
+							if str(api_name)=="SCHEDULE_MODE" and str(TreeParam)=="Z0110":
+								edt_str +="<option>LOW QUANTITY ONSITE</option>"
+							else:
+								for value in pick_val:
+									edt_str += "<option>" + str(value) + "</option>"
 							edt_str += "</select>"
 						elif data_type.upper() == "DATE":
 							date_field.append(api_name)
@@ -769,8 +772,11 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						elif data_type.upper() == "PICKLIST":
 							edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
 							pick_val = pick_val.split(",")
-							for value in pick_val:
-								edt_str += "<option>" + str(value) + "</option>"
+							if str(api_name) == "SCHEDULE_MODE" and str(TreeParam) == "Z0110":
+								edt_str +="<option>LOW QUANTITY ONSITE</option>"
+							else:
+								for value in pick_val:
+									edt_str += "<option>" + str(value) + "</option>"
 							edt_str += "</select>"
 						elif data_type.upper() == "DATE":
 							date_field.append(api_name)
