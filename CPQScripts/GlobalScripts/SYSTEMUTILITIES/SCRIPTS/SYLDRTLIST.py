@@ -364,7 +364,7 @@ class SYLDRTLIST:
 						count += 1
 						Delivery = 'Delivery {}'.format(count)
 						delivery_date_column_joined = ",".join(["'{}'".format(Delivery)])
-						delivery_date_joined = ",".join(["'{}{}'".format(delivery_date_column_joined,delivery_data) for delivery_data in delivery_date_column])
+						delivery_date_joined = ",".join(["'{}''{}'".format(Delivery,delivery_data) for delivery_data in delivery_date_column])
 						Columns = Columns.replace(']', ','+delivery_date_joined+']')
 			#A055S000P01-14047 end
 			#delivery pivot end
