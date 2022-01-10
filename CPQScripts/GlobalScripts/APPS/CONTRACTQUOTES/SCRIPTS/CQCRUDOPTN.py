@@ -2431,7 +2431,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						APPLIED_CREDITS[key] = '-'+str(APPLIED_CREDITS[key])
 					try:
 						if float(credit_details.UNAPPLIED_BALANCE)==0 or float(credit_details.UNAPPLIED_BALANCE)=='':
-							unapplied = float(credit_details.WRBTR)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.WRBTR)
+							unapplied = float(credit_details.WRBTR)-int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.WRBTR)
 						else:
 							unapplied = float(credit_details.UNAPPLIED_BALANCE)+int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.UNAPPLIED_BALANCE)
 						Sql.RunQuery("UPDATE SACRVC SET CREDIT_APPLIED = '{}', UNAPPLIED_BALANCE = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CREDIT_APPLIED)- int(APPLIED_CREDITS[key]), unapplied, id))
