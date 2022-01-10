@@ -2091,6 +2091,15 @@ class ContractQuoteItem:
 					self._simple_quote_items_insert()
 					self._simple_items_object_insert()
 					self._simple_quote_annualized_items_insert()
+				elif self.is_fpm_spare_service == True:				
+					# Spare Parts Insert/Update (Z0108)...
+					Log.Info("===>2 _do_opertion z0108 z0110 for testing")
+					saqspt_have_qty = Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT (NOLOCK) WHERE QUOTE_ID = '{}' AND CUSTOMER_ANNUAL_QUANTITY IS NOT NULL".format(self.contract_quote_id))
+					if saqspt_have_qty.CNT>0:              
+						self._quote_items_summary_insert()
+						self._simple_fpm_quote_items_insert()
+						self._insert_quote_item_fpm_forecast_parts()
+						self._simple_quote_annualized_items_insert()
 				else:
 					Log.Info("===> _do_opertion 4444")
 					self._quote_items_summary_insert()
