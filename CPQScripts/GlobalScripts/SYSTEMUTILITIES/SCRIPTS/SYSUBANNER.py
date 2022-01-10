@@ -3015,7 +3015,7 @@ def Related_Sub_Banner(
             elif str(subTabName)=="Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APPROVED':
                 if str(multi_buttons) != "":
                     for btn in multi_buttons:
-                        sec_rel_sub_bnr += (btn)
+                        sec_rel_sub_bnr += (multi_buttons)
                 else:
                     sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
