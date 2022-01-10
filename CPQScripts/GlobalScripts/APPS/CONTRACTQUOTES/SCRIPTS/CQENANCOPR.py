@@ -971,7 +971,7 @@ class AncillaryProductOperation:
 					ancillary_where = re.sub(r'AND EQUIPMENT_ID\s*\=\s*\'[^>]*?\'', '', ancillary_where )
 				else:
 					ancillary_where = re.sub('EQUIPMENT_ID', 'OBJECT_ID', ancillary_where )
-			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}' AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(obj,ancillary_where,self.ancillary_obj, quote_rec_id=self.contract_quote_record_id, service_id = self.service_id,revision_rec_id = self.contract_quote_revision_record_id ))
+			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}' AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(obj,ancillary_where,self.ancillary_obj, self.contract_quote_record_id, self.service_id,self.contract_quote_revision_record_id ))
 		
 		##deleting higher table records based on below level 
 		if self.tablename != "SAQTSE":
