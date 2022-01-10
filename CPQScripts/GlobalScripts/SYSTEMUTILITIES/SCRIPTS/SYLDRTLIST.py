@@ -1831,7 +1831,7 @@ class SYLDRTLIST:
 								
 								Qustr += " AND DELIVERY_SCHED_DATE  BETWEEN '{}' AND '{}'".format(delivery_date_column[0], delivery_date_column[-1])
 							pivot_query_str = """
-										SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE )
+										SELECT ROW_NUMBER() OVER(ORDER BY QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID )
 										AS ROW, *
 											FROM (
 												SELECT 
