@@ -3661,7 +3661,8 @@ class SYLDRTLIST:
 										+ str(qstring)
 										+ "</th>"
 									)    
-								else:									
+								else:	
+									Trace.Write("CHKNG_J_01 "+str(qstring))									
 									table_header += (
 										'<th  data-field="'
 										+ str(invs)
