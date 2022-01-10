@@ -635,9 +635,7 @@ class SYLDRTLIST:
 			if billing_date_column:
 				column_before_pivot_change = col
 				col += ","+ ",".join(billing_date_column)
-			if delivery_date_column:
-				column_before_pivot_change = col
-				col += ","+ ",".join(delivery_date_column)
+		
 			Trace.Write('col---'+str(col))
 			# Billing Matrix - Pivot - End
 			col = col.replace("PRIMARY","[PRIMARY]") # CODE COMMON FOR ALL PRIMARY CHECK BOC API NAME
@@ -1823,6 +1821,32 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 									
 					## involved parties equipmemt starts
+					elif  str(RECORD_ID) == "SYOBJR-34575":
+						if delivery_date_column:                        
+							pivot_columns = ",".join(['[{}]'.format(delivery_date) for delivery_date in delivery_date_column])							
+							if Qustr:
+								
+								Qustr += " AND DELIVERY_SCHED_DATE  BETWEEN '{}' AND '{}'".format(delivery_date_column[0], delivery_date_column[-1])
+							pivot_query_str = """
+										SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE )
+										AS ROW, *
+											FROM (
+												SELECT 
+													{Columns}                                           
+												FROM {ObjectName}
+												{WhereString}
+											) AS IQ
+											PIVOT
+											(
+												SUM(DELIVERY_SCHED_CAT)
+												FOR DELIVERY_SCHED_DATE  IN ({PivotColumns})
+											)AS PVT
+										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
+													WhereString=Qustr, PivotColumns=pivot_columns)                        
+							Qury_str = """
+										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY DELIVERY_SCHED_DATE 
+										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
+							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start						
 						if billing_date_column:                        
 							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])							
