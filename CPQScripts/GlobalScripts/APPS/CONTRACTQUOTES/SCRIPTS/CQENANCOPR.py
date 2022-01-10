@@ -768,7 +768,7 @@ class AncillaryProductOperation:
 
 		ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 		for obj in delete_obj_list:
-			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where})".format(obj = obj, where=  ancillary_where, par_where = self.where_string ))
+			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where}) AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE QUOTE_RECORD_ID='{quote_rec_id}' and SERVICE_ID = '{service_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' )".format(obj = obj, where=  ancillary_where, par_where = self.where_string ,quote_rec_id= self.contract_quote_record_id,revision_rec_id = self.contract_quote_revision_record_id,service_id = self.service_id ))
 
 	def _entitlement_rolldown(self):
 		try:
@@ -917,16 +917,16 @@ class AncillaryProductOperation:
 		
 		ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 		for obj in delete_obj_list:
-			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where} AND CONFIGURATION_STATUS ='INCOMPLETE')".format(obj = obj, where=  ancillary_where, par_where = self.where_string ))
+			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where} AND CONFIGURATION_STATUS ='INCOMPLETE') AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE QUOTE_RECORD_ID='{quote_rec_id}' and SERVICE_ID = '{service_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' )".format(obj = obj, where=  ancillary_where, par_where = self.where_string, quote_rec_id=self.contract_quote_record_id,revision_rec_id = self.contract_quote_revision_record_id, service_id = self.service_id ))
 
 
 
 
 		#delete_table_dict = {'SAQTSE': 'QUOTE_SERVICE_ENTITLEMENT_RECORD_ID','SAQSFE': 'QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID', 'SAQSGE' : 'QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID','SAQSCE':'QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID', 'SAQSAE':'QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID'}
-		delete_table_dict = {}
-		for delete_object,guid in delete_table_dict.items():
-			delete_statement = "DELETE FROM {obj} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND PAR_SERVICE_ID = '{par_service_id}' AND {guid} IN (SELECT {guid} FROM {obj} M WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{revision_rec_id}' AND M.SERVICE_ID = '{par_service_id}' AND M.CONFIGURATION_STATUS ='INCOMPLETE') ".format(obj = delete_object,guid = guid, QuoteRecordId = self.contract_quote_record_id,revision_rec_id = self.contract_quote_revision_record_id , par_service_id = self.service_id  )
-			Sql.RunQuery(delete_statement)
+		# delete_table_dict = {}
+		# for delete_object,guid in delete_table_dict.items():
+		# 	delete_statement = "DELETE FROM {obj} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND PAR_SERVICE_ID = '{par_service_id}' AND {guid} IN (SELECT {guid} FROM {obj} M WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{revision_rec_id}' AND M.SERVICE_ID = '{par_service_id}' AND M.CONFIGURATION_STATUS ='INCOMPLETE') ".format(obj = delete_object,guid = guid, QuoteRecordId = self.contract_quote_record_id,revision_rec_id = self.contract_quote_revision_record_id , par_service_id = self.service_id  )
+		# 	Sql.RunQuery(delete_statement)
 
 	def _delete_operation(self):
 		self._set_quote_service_entitlement_type()
@@ -971,7 +971,7 @@ class AncillaryProductOperation:
 					ancillary_where = re.sub(r'AND EQUIPMENT_ID\s*\=\s*\'[^>]*?\'', '', ancillary_where )
 				else:
 					ancillary_where = re.sub('EQUIPMENT_ID', 'OBJECT_ID', ancillary_where )
-			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}'".format(obj,ancillary_where,self.ancillary_obj))
+			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}' AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(obj,ancillary_where,self.ancillary_obj, quote_rec_id=self.contract_quote_record_id, service_id = self.service_id,revision_rec_id = self.contract_quote_revision_record_id ))
 		
 		##deleting higher table records based on below level 
 		if self.tablename != "SAQTSE":
