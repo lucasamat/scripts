@@ -3211,9 +3211,10 @@ class TreeView:
 			return True
 	#A055S000P01-4578 ends
 	def PMSATree(self):
+		flag = 0
 		TableName = 'SAQTSE'
-		contract_quote_record_id = '195C0577-55D8-4984-BE8A-5DFA5CFAAF79'
-		quote_revision_record_id = '9A1E2B8D-628B-47EE-BC99-867256A2D3BB'
+		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 		TreeParam = 'Z0009'
 		entitlement_obj = SqlHelper.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
 		import re
@@ -3230,7 +3231,12 @@ class TreeView:
 			Trace.Write("attrvalue----->"+str(attribute_value))
 			if len(attribute_value) != 0:
 				Trace.Write("YES")
-				break		
+				flag = 1
+				break
+		if flag == 1:
+			return 1
+		else:
+			return 0
 tree = TreeView()
 try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
