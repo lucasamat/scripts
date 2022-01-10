@@ -4212,7 +4212,7 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							) # Billing Matrix Date Change Model and Footer - Start
-						elif RECORD_ID == 'SYOBJR-34575' and str(invs) in delivery_date_column_joined: 
+						elif RECORD_ID == 'SYOBJR-34575' and str(invs) in delivery_date_column: 
 							
 							footer_formatter = ''
 							
