@@ -3561,6 +3561,7 @@ class SYLDRTLIST:
 							)         
 						else:  							
 							if str(TreeParam) != 'Quote Preview' and  str(TreeParam) != 'Billing Matrix' and RECORD_ID != "SYOBJR-00010":
+								Trace.Write("CHKNG_J_04 "+str(qstring))
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
@@ -3624,6 +3625,7 @@ class SYLDRTLIST:
 							)
 						else:							
 							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-98875" and RECORD_ID !="SYOBJR-98873" and RECORD_ID!="SYOBJR-00005" and RECORD_ID != "SYOBJR-00010":
+								Trace.Write("CHKNG_J_05 "+str(qstring))
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
@@ -4169,6 +4171,7 @@ class SYLDRTLIST:
 									+ "</th>"
 								)
 							else:
+								Trace.Write("CHKNG_J_02 "+str(qstring))
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
