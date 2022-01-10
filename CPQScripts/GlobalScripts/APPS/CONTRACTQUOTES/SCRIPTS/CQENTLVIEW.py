@@ -328,7 +328,7 @@ class EntitlementView():
 			#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
 			#Trace.Write('total_tablist--'+str(total_tablist))
 			#Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
-			Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
+			Trace.Write('attributedefaultvalue----'+str(attributedefaultvalue))
 			#Trace.Write("validation_dict---"+str(validation_dict))
 
 			product_obj = Sql.GetFirst("""SELECT 
@@ -1003,7 +1003,7 @@ class EntitlementView():
 								sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+"-0"
 
 							if attrSysId not in attributedefaultvalue:
-								#Trace.Write("add_style----3077----- "+str(attrSysId))
+								Trace.Write("add_style----3077----- "+str(attrSysId))
 								add_style = "color:#1B78D2"
 							#Trace.Write('--attributeEditlst-930----'+str(attributeEditlst))
 							if attrSysId in attributeEditlst :
