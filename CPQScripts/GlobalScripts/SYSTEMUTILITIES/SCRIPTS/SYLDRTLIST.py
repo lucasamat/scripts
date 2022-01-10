@@ -352,7 +352,7 @@ class SYLDRTLIST:
 			#delivery pivot start
 			#A055S000P01-14047 start
 			if  Wh_OBJECT_NAME == 'SAQSPD':
-				item_delivery_plans_obj = SqlHelper.GetList("""SELECT FORMAT(DELIVERY_SCHED_DATE, 'MM-dd-yyyy') as DELIVERY_SCHED_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE)
+				item_delivery_plans_obj = Sql.GetList("""SELECT FORMAT(DELIVERY_SCHED_DATE, 'MM-dd-yyyy') as DELIVERY_SCHED_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE)
 									AS ROW, * FROM (SELECT DISTINCT DELIVERY_SCHED_DATE
 														FROM SAQSPD (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' 
 														GROUP BY DELIVERY_SCHED_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
@@ -364,7 +364,7 @@ class SYLDRTLIST:
 					count += 1
 					Delivery = 'Delivery {}'.format(count)
 					#delivery_date_column_joined = ",".join(["'{}'".format(Delivery)])
-					delivery_date_joined = ",".join(["'{}','{}'".format(Delivery,delivery_data) for delivery_data in delivery_date_column])
+					delivery_date_joined = ",".join(["'{}','{}'".format('Delivery {}'.format(count),delivery_data) for delivery_data in delivery_date_column])
 					Columns = Columns.replace(']', ','+delivery_date_joined+']')
 			#A055S000P01-14047 end
 			#delivery pivot end
