@@ -204,7 +204,7 @@ class SYLDRTLIST:
 		if obj_obj is None:
 			return "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
 		# Billing Matrix - Pivot - Start
-		billing_date_column = getQuotetype =''        
+		billing_date_column = getQuotetype = delivery_date_column = ''        
 		# Billing Matrix - Pivot - End
 		if obj_obj is not None:
 			##A055S000P01-4401            
@@ -635,6 +635,10 @@ class SYLDRTLIST:
 			if billing_date_column:
 				column_before_pivot_change = col
 				col += ","+ ",".join(billing_date_column)
+			if delivery_date_column:
+				column_before_pivot_change = col
+				col += ","+ ",".join(delivery_date_column)
+			Trace.Write('col---'+str(col))
 			# Billing Matrix - Pivot - End
 			col = col.replace("PRIMARY","[PRIMARY]") # CODE COMMON FOR ALL PRIMARY CHECK BOC API NAME
 			select_obj_str = col
