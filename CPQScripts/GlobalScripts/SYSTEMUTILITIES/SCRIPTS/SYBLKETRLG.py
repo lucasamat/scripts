@@ -917,10 +917,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			
 			for annual_qty in cust_annual_qty:
 				Trace.Write("Annual_Qty "+str(annual_qty))
-				if annual_qty < 10:
+				if annual_qty.CUSTOMER_ANNUAL_QUANTITY < 10:
 					Trace.Write("Less Than 10")
 					Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'UNSCHEDULED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = '{service_id}' AND CUSTOMER_ANNUAL_QUANTITY < 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
-				elif annual_qty >= 10:
+				elif annual_qty.CUSTOMER_ANNUAL_QUANTITY >= 10:
 					Trace.Write("Greater Than 10")
 					Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'SCHEDULED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = '{service_id}' AND CUSTOMER_ANNUAL_QUANTITY >= 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
 		for index,rec in enumerate(selected_rows):
