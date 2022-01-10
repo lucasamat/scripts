@@ -451,6 +451,8 @@ def servicelevel_split_equip(seid):
 		FROM SAQRIT X(NOLOCK)
 		WHERE X.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND X.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID ='{splitservice_id}' """.format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
 	Sql.RunQuery(document_years)
+	document_years_adjustments ="UPDATE SAQRIT SET YEAR_1 = YEAR_1 + (NET_PRICE - (ISNULL(YEAR_1,0)+ISNULL(YEAR_2,0)+ISNULL(YEAR_3,0)+ISNULL(YEAR_4,0)+ISNULL(YEAR_5,0))) FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
+	Sql.RunQuery(document_years_adjustments)
 	#CQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":get_c4c_quote_id.QUOTE_ID})
 
 
@@ -533,7 +535,8 @@ def servicelevel_split_green(seid):
 		FROM SAQRIT X(NOLOCK)
 		WHERE X.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND X.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID ='{splitservice_id}' """.format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
 	Sql.RunQuery(document_years)
-
+	document_years_adjustments ="UPDATE SAQRIT SET YEAR_1 = YEAR_1 + (NET_PRICE - (ISNULL(YEAR_1,0)+ISNULL(YEAR_2,0)+ISNULL(YEAR_3,0)+ISNULL(YEAR_4,0)+ISNULL(YEAR_5,0))) FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
+	Sql.RunQuery(document_years_adjustments)
 	#CQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":get_c4c_quote_id.QUOTE_ID}) 
 
 
