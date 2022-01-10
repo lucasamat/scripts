@@ -1841,13 +1841,13 @@ class SYLDRTLIST:
 											) AS IQ
 											PIVOT
 											(
-												SUM(DELIVERY_SCHED_CAT)
+												SUM(QUANTITY)
 												FOR DELIVERY_SCHED_DATE  IN ({PivotColumns})
 											)AS PVT
 										""".format(OrderByColumn=Wh_API_NAMEs,Columns=column_before_delivery_pivot_change, ObjectName=ObjectName,
 													WhereString=Qustr, PivotColumns=pivot_columns)                        
 							Qury_str = """
-										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY DELIVERY_SCHED_DATE 
+										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID 
 										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start						
