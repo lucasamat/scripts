@@ -676,12 +676,7 @@ class TreeView:
 						getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 					except:
 						getAccounts = ""
-					try:
-						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-						if getZ0009 is not None:
-							getZ0009 =  self.PMSATree()
-					except:
-						getZ0009 = ""
+					
 					if getAccounts is None:
 						findChildOneObj = Sql.GetList(
 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
@@ -701,6 +696,12 @@ class TreeView:
 							+ str(RecId)
 							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 						)
+					try:
+						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+						if getZ0009 is not None:
+							getZ0009 =  self.PMSATree()
+					except:
+						getZ0009 = ""
 					if getZ0009 is None:
 						Trace.Write("if getZ0009 is None")
 						findChildOneObj = Sql.GetList(
@@ -2394,7 +2395,36 @@ class TreeView:
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 									+ str(ParRecId)
 									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)			
+								)
+							try:
+								getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+								if getZ0009 is not None:
+									getZ0009 =  self.PMSATree()
+							except:
+								getZ0009 = ""
+							if getZ0009 is None:
+								Trace.Write("if getZ0009 is None")
+								findSubChildAvailable = Sql.GetList(
+									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+									+ str(ParRecId)
+									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+								)
+							elif getZ0009 is not None:
+								Trace.Write("elif getZ0009 is not None")
+								if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
+									Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+									findSubChildAvailable = Sql.GetList(
+										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+										+ str(ParRecId)
+										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+									)
+								else:
+									Trace.Write("else Z0009")
+									findSubChildAvailable = Sql.GetList(
+									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+									+ str(ParRecId)
+									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+								)					
 							""" findSubChildAvailable = Sql.GetList(
 								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 								+ str(ParRecId)
@@ -2576,6 +2606,35 @@ class TreeView:
 					+ str(ParRecId)
 					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
 					)
+			try:
+				getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+				if getZ0009 is not None:
+					getZ0009 =  self.PMSATree()
+			except:
+				getZ0009 = ""
+			if getZ0009 is None:
+				Trace.Write("if getZ0009 is None")
+				findSubChildAvailable = Sql.GetList(
+					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+					+ str(ParRecId)
+					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+				)
+			elif getZ0009 is not None:
+				Trace.Write("elif getZ0009 is not None")
+				if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
+					Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+					findSubChildAvailable = Sql.GetList(
+						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+						+ str(ParRecId)
+						+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+					)
+				else:
+					Trace.Write("else Z0009")
+					findSubChildAvailable = Sql.GetList(
+					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+					+ str(ParRecId)
+					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+				)			
 			""" findChildOneObj = Sql.GetList(
 				"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
 				+ str(ParRecId)
@@ -2674,6 +2733,35 @@ class TreeView:
 									+ str(ParRecId)
 									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 								)		
+					try:
+						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+						if getZ0009 is not None:
+							getZ0009 =  self.PMSATree()
+					except:
+						getZ0009 = ""
+					if getZ0009 is None:
+						Trace.Write("if getZ0009 is None")
+						findSubChildAvailable = Sql.GetList(
+							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+							+ str(ParRecId)
+							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+						)
+					elif getZ0009 is not None:
+						Trace.Write("elif getZ0009 is not None")
+						if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
+							Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+							findSubChildAvailable = Sql.GetList(
+								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+								+ str(ParRecId)
+								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+							)
+						else:
+							Trace.Write("else Z0009")
+							findSubChildAvailable = Sql.GetList(
+							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+							+ str(ParRecId)
+							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+						)			
 					""" findSubChildAvailable = Sql.GetList(
 						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 						+ str(ParRecId)
@@ -2890,7 +2978,36 @@ class TreeView:
 								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 								+ str(ParRecId)
 								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)			
+							)	
+				try:
+					getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+					if getZ0009 is not None:
+						getZ0009 =  self.PMSATree()
+				except:
+					getZ0009 = ""
+				if getZ0009 is None:
+					Trace.Write("if getZ0009 is None")
+					findSubChildAvailable = Sql.GetList(
+						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+						+ str(ParRecId)
+						+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+					)
+				elif getZ0009 is not None:
+					Trace.Write("elif getZ0009 is not None")
+					if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
+						Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+						findSubChildAvailable = Sql.GetList(
+							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+							+ str(ParRecId)
+							+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+						)
+					else:
+						Trace.Write("else Z0009")
+						findSubChildAvailable = Sql.GetList(
+						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+						+ str(ParRecId)
+						+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+					)					
 				""" findSubChildAvailable = Sql.GetList(
 					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 					+ str(ParRecId)
@@ -3032,7 +3149,36 @@ class TreeView:
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
 										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)		
+									)	
+						try:
+							getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+							if getZ0009 is not None:
+								getZ0009 =  self.PMSATree()
+						except:
+							getZ0009 = ""
+						if getZ0009 is None:
+							Trace.Write("if getZ0009 is None")
+							findSubChildAvailable = Sql.GetList(
+								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+								+ str(ParRecId)
+								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+							)
+						elif getZ0009 is not None:
+							Trace.Write("elif getZ0009 is not None")
+							if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
+								Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+								findSubChildAvailable = Sql.GetList(
+									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+									+ str(ParRecId)
+									+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+								)
+							else:
+								Trace.Write("else Z0009")
+								findSubChildAvailable = Sql.GetList(
+								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+								+ str(ParRecId)
+								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+							)				
 						""" findSubChildAvailable = Sql.GetList(
 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 							+ str(ParRecId)
@@ -3060,7 +3206,36 @@ class TreeView:
 												"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 												+ str(ParRecId)
 												+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-											)		
+											)	
+								try:
+									getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+									if getZ0009 is not None:
+										getZ0009 =  self.PMSATree()
+								except:
+									getZ0009 = ""
+								if getZ0009 is None:
+									Trace.Write("if getZ0009 is None")
+									findSubChildAvailable = Sql.GetList(
+										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+										+ str(ParRecId)
+										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+									)
+								elif getZ0009 is not None:
+									Trace.Write("elif getZ0009 is not None")
+									if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
+										Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+										findSubChildAvailable = Sql.GetList(
+											"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+											+ str(ParRecId)
+											+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+										)
+									else:
+										Trace.Write("else Z0009")
+										findSubChildAvailable = Sql.GetList(
+										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+										+ str(ParRecId)
+										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+									)				
 								""" findSubChildAvailable = Sql.GetList(
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 									+ str(ParRecId)
