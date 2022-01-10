@@ -3624,7 +3624,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)
 						else:							
-							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-98875" and RECORD_ID !="SYOBJR-98873" and RECORD_ID!="SYOBJR-00005" and RECORD_ID != "SYOBJR-00010":
+							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-98875" and RECORD_ID !="SYOBJR-98873" and RECORD_ID!="SYOBJR-00005" and RECORD_ID != "SYOBJR-00010" and (invs != "LINE"and RECORD_ID != 'SYOBJR-98877'):
 								Trace.Write("CHKNG_J_05 "+str(qstring))
 								table_header += (
 									'<th  data-field="'
