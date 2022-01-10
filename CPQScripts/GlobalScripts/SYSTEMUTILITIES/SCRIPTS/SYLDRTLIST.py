@@ -368,8 +368,8 @@ class SYLDRTLIST:
 		
 						delivery_date_joined =",".join(["'{}'".format(delivery_data)])
 						deliverydata_concatenate  = delivery_date_column_joined + delivery_date_joined
-					#delivery_date_joined = ",".join(["'{}','{}'".format('Delivery {}'.format(count),delivery_data) for delivery_data in delivery_date_column])
-					Columns = Columns.replace(']', ','+deliverydata_concatenate+']')
+						#delivery_date_joined = ",".join(["'{}','{}'".format('Delivery {}'.format(count),delivery_data) for delivery_data in delivery_date_column])
+						Columns = Columns.replace(']', ','+deliverydata_concatenate+']')
 			#A055S000P01-14047 end
 			#delivery pivot end
 			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':				
