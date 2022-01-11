@@ -5583,7 +5583,7 @@ class SYLDRTLIST:
 								remove_tag =re.compile(r'<[^>]+>')
 								status_list = []
 								for value in quer_values:
-									quer_values=remove_tag.sub('',quer_values)
+									quer_values=remove_tag.sub('',value)
 									quer_values = quer_values.strip()
 									status_list.append(quer_values)
 								ATTRIBUTE_VALUE_STR += "(" + str(quer_value) + " in " + str(status_list) + ") and "                                          
