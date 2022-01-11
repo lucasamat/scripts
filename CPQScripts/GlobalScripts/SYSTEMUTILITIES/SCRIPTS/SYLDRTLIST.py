@@ -5470,6 +5470,7 @@ class SYLDRTLIST:
 									quer_values=remove_tag.sub('',quer_values)
 									quer_values = quer_values.strip()
 									ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
+									Trace.Write(str(ATTRIBUTE_VALUE_STR))
 								else:
 									ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
 							else:
