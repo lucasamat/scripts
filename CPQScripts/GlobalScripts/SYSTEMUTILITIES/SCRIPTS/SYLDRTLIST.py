@@ -4081,14 +4081,14 @@ class SYLDRTLIST:
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
-								+ '" data-filter-control="input" class="cust_billing_name" data-title-tooltip="'
+								+ '" data-filter-control="input" data-title-tooltip="'
 								+ str(qstring)
-								+ '" data-sortable="true" '
+								+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
 								+ rowspan
 								+'>'
 								+ str(qstring)
 								+ "</th>"
-							)
+							)   
 		
 						# if invs == "EQUIPMENT_LINE_ID":
 						# 	Trace.Write("@3817"+str(qstring))
