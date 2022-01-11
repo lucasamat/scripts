@@ -4846,7 +4846,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id')
 				)
-			))
+			)
 		
 	
 	def _create(self):
