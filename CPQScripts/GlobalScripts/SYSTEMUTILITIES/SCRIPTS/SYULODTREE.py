@@ -1666,6 +1666,10 @@ class TreeView:
 					elif str(ObjName).strip() == "SAQRGG" and str(NodeName).strip() == 'GOT_CODE':
 						greenbook = Quote.GetGlobal("Z0009_Greenbook")
 						where_string = "QUOTE_RECORD_ID ='{}' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),greenbook,quote_revision_record_id)
+					elif str(ObjName).strip() == "SAQGPM" and str(NodeName).strip() == 'PM_ID':
+						greenbook = Quote.GetGlobal("Z0009_Greenbook")
+						gotcode = Quote.GetGlobal("Z0009_Gotcode")
+						where_string = "QUOTE_RECORD_ID ='{}' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{}' AND GOT_CODE = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),greenbook,quote_revision_record_id,gotcode)
 					elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID': 
 						send_receive_node_text = Product.GetGlobal("setnodetextname")
 						if send_receive_node_text.startswith("Sending"):
@@ -1972,6 +1976,8 @@ class TreeView:
 									Quote.SetGlobal("Equipment",NodeText)
 								elif str(NodeName) == "GREENBOOK":
 									Quote.SetGlobal("Z0009_Greenbook",NodeText)
+								elif str(NodeName) == "GOT_CODE":
+									Quote.GetGlobal("Z0009_Gotcode",NodeText)
 								''' elif str(NodeName) == "TAB_NAME" and TabName == "App":
 									Product.SetGlobal('apptabname',str(NodeText)) '''
 								childQueryObj = Sql.GetFirst(
