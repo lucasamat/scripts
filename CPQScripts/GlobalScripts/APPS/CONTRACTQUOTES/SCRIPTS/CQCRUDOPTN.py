@@ -4811,7 +4811,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
                 QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,
                 CPQTABLEENTRYADDEDBY,
 				CPQTABLEENTRYDATEADDED
-                )SELECT GOTCODE.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(
+                )SELECT PMEVENT.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(
                 SELECT DISTINCT
                 0 as CHAMBER_QUANTITY,
 				SAQRGG.GOT_CODE,
@@ -4837,7 +4837,85 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
                 JOIN SAQSCA(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID
                 JOIN MAEAPK(NOLOCK) ON MAEAPK.EQUIPMENT_RECORD_ID = SAQSCA.EQUIPMENT_RECORD_ID AND MAEAPK.ASSEMBLY_RECORD_ID = SAQSCA.ASSEMBLY_RECORD_ID 
 				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.
-                QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRGG.SERVICE_ID = '{TreeParam}' ) GOTCODE """.format(
+                QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRGG.SERVICE_ID = '{TreeParam}' ) PMEVENT """.format(
+				UserName=self.user_name,
+				TreeParam=self.tree_param,
+				QuoteId = self.contract_quote_id,
+				QuoteRecordId=self.contract_quote_record_id,
+				RevisionId=self.quote_revision_id,
+				RevisionRecordId=self.quote_revision_record_id,
+				BatchGroupRecordId=kwargs.get('batch_group_record_id')
+				)
+			)
+  
+		self._process_query(
+			"""INSERT SAQGPA (
+					ASSEMBLY_ID,
+                    ASSEMBLY_DESCRIPTION,
+                    ASSEMBLY_RECORD_ID,
+                    ASSEMBLY_STATUS,
+                    EQUIPMENT_ID,
+                    EQUIPMENT_DESCRIPTION,
+                    EQUIPMENT_RECORD_ID,
+                    EQUIPMENTTYPE_ID,
+                    EQUIPMENTTYPE_RECORD_ID,
+                    GOT_CODE,
+                    GOTCODE_RECORD_ID,
+                    GREENBOOK,
+                    GREENBOOK_RECORD_ID,
+                    PM_ID,
+                    PM_NAME,
+                    PM_RECORD_ID,
+                    PM_LEVEL,
+                    SERVICE_ID,
+                    SERVICE_DESCRIPTION,
+                    SERVICE_RECORD_ID,
+                    QUOTE_ID,
+                    QUOTE_RECORD_ID,
+                    QTEREV_ID,
+                    QTEREV_RECORD_ID,
+                    QTESRV_RECORD_ID,
+                    QTESRVGBK_RECORD_ID,
+                    QTEREVPME_RECORD_ID,
+                    QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,
+                    CPQTABLEENTRYADDEDBY,
+                    CPQTABLEENTRYDATEADDED,
+                    ADDUSR_RECORD_ID)
+                    SELECT PM_EVENT_ASSEMBLY.*, ,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED ,{UserId} as ADDUSR_RECORD_ID(SELECT DISTINCT 
+                    SAQSCA.ASSEMBLY_ID,
+                    SAQSCA.ASSEMBLY_DESCRIPTION,
+                    SAQSCA.ASSEMBLY_RECORD_ID,
+                    SAQSCA.ASSEMBLY_STATUS,
+                    SAQSCA.EQUIPMENT_ID,
+                    SAQSCA.EQUIPMENT_DESCRIPTION,
+                    SAQSCA.EQUIPMENT_RECORD_ID,
+                    SAQSCA.EQUIPMENTTYPE_ID,
+                    SAQSCA.EQUIPMENTTYPE_RECORD_ID,
+                    SAQRGG.GOT_CODE,
+                    SAQRGG.GOTCODE_RECORD_ID,
+                    SAQRGG.GREENBOOK,
+                    SAQRGG.GREENBOOK_RECORD_ID,
+                    SAQGPM.PM_ID,
+                    SAQGPM.PM_NAME,
+                    SAQGPM.PM_RECORD_ID,
+                    SAQGPM.PM_LEVEL,
+                    SAQGPM.SERVICE_ID,
+                    SAQGPM.SERVICE_DESCRIPTION,
+                    SAQGPM.SERVICE_RECORD_ID,
+                    SAQGPM.QUOTE_ID,
+                    SAQGPM.QUOTE_RECORD_ID,
+                    SAQGPM.QTEREV_ID,
+                    SAQGPM.QTEREV_RECORD_ID,
+                    SAQGPM.QTESRV_RECORD_ID,
+                    SAQGPM.QTESRVGBK_RECORD_ID,
+                    SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEREVPME_RECORD_ID
+                    FROM SYSPBT (NOLOCK) 
+				JOIN SAQRGG(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SYSPBT.QTEREV_RECORD_ID
+                JOIN SAQSCA(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID AND SAQRGG.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID AND SAQRGG.GREENBOOK_RECORD_ID = SAQSCA.GREENBOOK_RECORD_ID
+                JOIN SAQGPM(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SAQGPM.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SAQGPM.QTEREV_RECORD_ID AND SAQGPM.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID  AND SAQGPM.GREENBOOK_RECORD_ID = SAQSCA.GREENBOOK_RECORD_ID
+				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.
+                QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.SERVICE_ID = '{TreeParam}' ) PMEVENT """.format(
+                UserId=self.user_id,
 				UserName=self.user_name,
 				TreeParam=self.tree_param,
 				QuoteId = self.contract_quote_id,
