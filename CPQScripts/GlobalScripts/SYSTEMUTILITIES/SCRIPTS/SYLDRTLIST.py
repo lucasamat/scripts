@@ -5465,14 +5465,12 @@ class SYLDRTLIST:
 									elif 'ERROR' in quer_values:
 										quer_values = "ERROR"
 									ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "   
-									Trace.Write('@5468')                                       
 								elif str(quer_value) == 'STATUS' and str(RECORD_ID) == 'SYOBJR-98872':
 									remove_tag =re.compile(r'<[^>]+>')
 									quer_values=remove_tag.sub('',quer_values)
-									Trace.Write('@5464-->'+str(quer_values))
+									quer_values = quer_values.strip()
 									ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
 								else:
-									Trace.Write('@5474')
 									ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
 							else:
 															
