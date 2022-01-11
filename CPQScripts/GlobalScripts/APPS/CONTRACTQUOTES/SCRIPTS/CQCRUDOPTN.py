@@ -2424,7 +2424,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				val = re.sub("[^0-9]","",val)
 				id = val.lstrip("0")
 				key = int(key)
-				credit_details = Sql.GetFirst("SELECT WRBTR,CREDIT_APPLIED,UNAPPLIED_BALANCE,HKONT FROM SACRVC WHERE CpqTableEntryId = '"+str(id)+"' ")
+				credit_details = Sql.GetFirst("SELECT * FROM SACRVC WHERE CpqTableEntryId = '"+str(id)+"' ")
 				if APPLIED_CREDITS!='':
 					Trace.Write("crdit amt-"+str(APPLIED_CREDITS[key]))
 					if '-' not in APPLIED_CREDITS[key] :
@@ -2455,7 +2455,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"SERVICE_DESCRIPTION":get_addon.SERVICE_DESCRIPTION,
 				"SERVICE_ID":ADDON_PRD_ID,
 				"SERVICE_RECORD_ID": get_addon.SERVICE_RECORD_ID,
-				"GL_ACCOUNT_NO": credit_details.HKONT if credit_details.HKONT else ''
+				"GL_ACCOUNT_NO": credit_details.HKONT if credit_details.HKONT else '',
+				"SALESORDER_NO": credit_details.BELNR if credit_details.BELNR else ''
 			}
 			credit_table_info = Sql.GetTable(table_name)
 			saqrcv_ids = []
