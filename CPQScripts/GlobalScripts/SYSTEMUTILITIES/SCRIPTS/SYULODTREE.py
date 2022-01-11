@@ -3450,16 +3450,16 @@ class TreeView:
 		quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 		pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
 		pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>PMSA Flex</ENTITLEMENT_DISPLAY_VALUE>')
-		Trace.Write("PMSA----->"+str(pattern_new_parts_only_yes))
+		#Trace.Write("PMSA----->"+str(pattern_new_parts_only_yes))
 		entitlement_xml = entitlement_obj.ENTITLEMENT_XML
 		for m in re.finditer(quote_item_tag, entitlement_xml):
 			sub_string = m.group(1)
 			#Trace.Write("substring----->"+str(sub_string))
 			attribute_id =re.findall(pattern_consumable,sub_string)
 			attribute_value =re.findall(pattern_new_parts_only_yes,sub_string)
-			Trace.Write("attrvalue----->"+str(attribute_value))
+			#Trace.Write("attrvalue----->"+str(attribute_value))
 			if len(attribute_value) != 0:
-				Trace.Write("YES")
+				#Trace.Write("YES")
 				flag = 1
 				break
 		if flag == 1:
