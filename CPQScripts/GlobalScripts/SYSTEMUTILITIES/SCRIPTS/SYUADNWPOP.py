@@ -2494,7 +2494,6 @@ def POPUPLISTVALUEADDNEW(
 			if TreeParam in ("Comprehensive Services","Product Offerings","Complementary Products"):
 				get_sales_org = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id) )
 				if get_sales_org :
-					Qustr = "where QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
 					doc_type = Sql.GetList("SELECT DOCTYP_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(quote_rec_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
 					for document_type in doc_type:
 						if document_type.DOCTYP_ID == "ZWK1":
