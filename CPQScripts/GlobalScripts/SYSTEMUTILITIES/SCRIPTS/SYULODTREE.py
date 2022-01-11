@@ -1666,7 +1666,7 @@ class TreeView:
 					elif str(ObjName).strip() == "SAQRGG" and str(NodeName).strip() == 'GOT_CODE':
 						greenbook = Quote.GetGlobal("Z0009_Greenbook")
 						where_string = "QUOTE_RECORD_ID ='{}' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),greenbook,quote_revision_record_id)
-					elif str(ObjName).strip() == "SAQGPM" and str(NodeName).strip() == 'PM_ID':
+					elif str(NodeName).strip() == 'PM_ID':
 						greenbook = Quote.GetGlobal("Z0009_Greenbook")
 						gotcode = Quote.GetGlobal("Z0009_Gotcode")
 						where_string = "QUOTE_RECORD_ID ='{}' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{}' AND GOT_CODE = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),greenbook,quote_revision_record_id,gotcode)
