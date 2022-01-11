@@ -713,20 +713,13 @@ class TreeView:
 						)
 					elif getZ0009 is not None:
 						Trace.Write("elif getZ0009 is not None")
-						if RecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or RecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or RecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or RecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
-							Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
-							findChildOneObj = Sql.GetList(
-								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-								+ str(RecId)
-								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)
-						else:
-							Trace.Write("else Z0009")
-							findChildOneObj = Sql.GetList(
+						#Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+						findChildOneObj = Sql.GetList(
 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 							+ str(RecId)
-							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)		
+							+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+						)
+							
 					if findChildOneObj is not None:
 						for findChildOne in findChildOneObj:
 							parobj = str(findChildOne.PARENTNODE_OBJECT)
@@ -2415,20 +2408,12 @@ class TreeView:
 								)
 							elif getZ0009 is not None:
 								Trace.Write("elif getZ0009 is not None")
-								if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
-									Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
-									findSubChildAvailable = Sql.GetList(
-										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)
-								else:
-									Trace.Write("else Z0009")
-									findSubChildAvailable = Sql.GetList(
+								#Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+								findSubChildAvailable = Sql.GetList(
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)					
+									+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+								)			
 							""" findSubChildAvailable = Sql.GetList(
 								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 								+ str(ParRecId)
@@ -2627,20 +2612,12 @@ class TreeView:
 				)
 			elif getZ0009 is not None:
 				Trace.Write("elif getZ0009 is not None")
-				if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
-					Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
-					findSubChildAvailable = Sql.GetList(
-						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-						+ str(ParRecId)
-						+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					)
-				else:
-					Trace.Write("else Z0009")
-					findSubChildAvailable = Sql.GetList(
+				#Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+				findSubChildAvailable = Sql.GetList(
 					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 					+ str(ParRecId)
-					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-				)			
+					+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+				)		
 			""" findChildOneObj = Sql.GetList(
 				"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
 				+ str(ParRecId)
@@ -2756,20 +2733,12 @@ class TreeView:
 						)
 					elif getZ0009 is not None:
 						Trace.Write("elif getZ0009 is not None")
-						if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
-							Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
-							findSubChildAvailable = Sql.GetList(
-								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-								+ str(ParRecId)
-								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)
-						else:
-							Trace.Write("else Z0009")
-							findSubChildAvailable = Sql.GetList(
+						#Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+						findSubChildAvailable = Sql.GetList(
 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 							+ str(ParRecId)
-							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)			
+							+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+						)		
 					""" findSubChildAvailable = Sql.GetList(
 						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 						+ str(ParRecId)
@@ -3004,20 +2973,11 @@ class TreeView:
 					)
 				elif getZ0009 is not None:
 					Trace.Write("elif getZ0009 is not None")
-					if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
-						Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
-						findSubChildAvailable = Sql.GetList(
-							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-							+ str(ParRecId)
-							+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)
-					else:
-						Trace.Write("else Z0009")
-						findSubChildAvailable = Sql.GetList(
+					findSubChildAvailable = Sql.GetList(
 						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 						+ str(ParRecId)
-						+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					)					
+						+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+					)			
 				""" findSubChildAvailable = Sql.GetList(
 					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 					+ str(ParRecId)
@@ -3177,20 +3137,12 @@ class TreeView:
 							)
 						elif getZ0009 is not None:
 							Trace.Write("elif getZ0009 is not None")
-							if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
-								Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
-								findSubChildAvailable = Sql.GetList(
-									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)
-							else:
-								Trace.Write("else Z0009")
-								findSubChildAvailable = Sql.GetList(
+							findSubChildAvailable = Sql.GetList(
 								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 								+ str(ParRecId)
-								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)				
+								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+							)
+										
 						""" findSubChildAvailable = Sql.GetList(
 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 							+ str(ParRecId)
@@ -3236,20 +3188,12 @@ class TreeView:
 									)
 								elif getZ0009 is not None:
 									Trace.Write("elif getZ0009 is not None")
-									if ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7":
-										Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
-										findSubChildAvailable = Sql.GetList(
-											"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-											+ str(ParRecId)
-											+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-										)
-									else:
-										Trace.Write("else Z0009")
-										findSubChildAvailable = Sql.GetList(
+									#Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+									findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)				
+										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+									)			
 								""" findSubChildAvailable = Sql.GetList(
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 									+ str(ParRecId)
