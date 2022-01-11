@@ -2010,7 +2010,15 @@ def Related_Sub_Banner(
         get_quote_details = Sql.GetFirst("select CREDIT_INGL_CURR,DISCOUNT_AMOUNT_INGL_CURR,SALES_PRICE_INGL_CURR,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         currency = Sql.GetFirst("SELECT GLOBAL_CURRENCY FROM SAQTRV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
         curr = currency.GLOBAL_CURRENCY
-        if get_quote_details:
+        if subTabName == "Summary":
+            Trace.Write("summar_SHP")
+            PrimaryLable = "Total Excluding Tax/VAT"
+            PrimaryValue = '0.00'+" "+curr
+            SecondLable = "Tax/VAT"
+            SecondValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+            ThirdLable = "Total Amount Including Tax/VAT"
+            ThirdValue = str("%.2f" % round(float(get_quote_details.NET_PRICE_INGL_CURR),2))+curr if str(get_quote_details.NET_PRICE_INGL_CURR) != '' else '0.00'+" "+curr
+        elif get_quote_details:
             PrimaryLable = "Total Sales Price"
             PrimaryValue = str("%.2f" % round(float(get_quote_details.SALES_PRICE_INGL_CURR),2))+" "+curr if str(get_quote_details.SALES_PRICE_INGL_CURR) != '' else '0.00'+" "+curr
             SecondLable = "Total Discount %"
