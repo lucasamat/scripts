@@ -1663,6 +1663,8 @@ class TreeView:
 						where_string += " AND QUOTE_RECORD_ID ='{}' AND (PARTY_ROLE LIKE '%SENDING%' OR PARTY_ROLE LIKE '%RECEIVING%')  AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 					# elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID': 
 					# 	where_string = " QUOTE_RECORD_ID ='{}' ".format(Quote.GetGlobal("contract_quote_record_id"))
+					elif str(ObjName).strip() == "SAQRGG" and str(NodeName).strip() == 'GOT_CODE':
+						where_string = "QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 					elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID': 
 						send_receive_node_text = Product.GetGlobal("setnodetextname")
 						if send_receive_node_text.startswith("Sending"):
