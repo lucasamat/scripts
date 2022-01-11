@@ -1977,7 +1977,7 @@ class TreeView:
 								elif str(NodeName) == "GREENBOOK":
 									Quote.SetGlobal("Z0009_Greenbook",NodeText)
 								elif str(NodeName) == "GOT_CODE":
-									Quote.GetGlobal("Z0009_Gotcode",NodeText)
+									Quote.SetGlobal("Z0009_Gotcode",NodeText)
 								''' elif str(NodeName) == "TAB_NAME" and TabName == "App":
 									Product.SetGlobal('apptabname',str(NodeText)) '''
 								childQueryObj = Sql.GetFirst(
