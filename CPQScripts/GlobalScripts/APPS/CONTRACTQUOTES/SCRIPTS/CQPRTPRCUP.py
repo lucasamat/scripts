@@ -267,3 +267,21 @@ today = datetime.datetime.now()
 Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 
 Log.Info("CQPRTPRCUP  end time ---->"+str(Modi_date))
+LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+if LOGIN_CREDENTIALS is not None:
+	Login_Username = str(LOGIN_CREDENTIALS.Username)
+	Login_Password = str(LOGIN_CREDENTIALS.Password)
+	authorization = Login_Username+":"+Login_Password
+	binaryAuthorization = UTF8.GetBytes(authorization)
+	authorization = Convert.ToBase64String(binaryAuthorization)
+	authorization = "Basic " + authorization
+
+
+	webclient = System.Net.WebClient()
+	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+	
+	result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_record_id,Rev_Id = revision)
+	
+	LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
+	Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
