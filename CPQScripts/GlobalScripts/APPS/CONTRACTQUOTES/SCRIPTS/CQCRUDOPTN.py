@@ -4789,6 +4789,65 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				BatchGroupRecordId=kwargs.get('batch_group_record_id')
 				)
 			)
+
+		self.process_query("""INSERT SAQGPM(CHAMBER_QUANTITY,
+				GOT_CODE,
+				GOTCODE_RECORD_ID,
+				GREENBOOK,
+				GREENBOOK_RECORD_ID,
+				PM_ID,
+				PM_NAME,
+				PM_RECORD_ID,
+				PM_LEVEL,
+				SERVICE_ID,
+				SERVICE_DESCRIPTION,
+				SERVICE_RECORD_ID,
+				QUOTE_ID,
+				QUOTE_RECORD_ID,
+				QTEREV_ID,
+				QTEREV_RECORD_ID,
+				QTESRV_RECORD_ID,
+				QTESRVGBK_RECORD_ID,
+				QTEREVGOT_RECORD_ID,
+                QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,
+                CPQTABLEENTRYADDEDBY,
+				CPQTABLEENTRYDATEADDED
+                )SELECT GOTCODE.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(
+                SELECT DISTINCT  
+				SAQRGG.GOT_CODE,
+				SAQRGG.GOTCODE_RECORD_ID,
+				SAQRGG.GREENBOOK,
+				SAQRGG.GREENBOOK_RECORD_ID,
+                MAEAPK.PM_ID,
+                MAEAPK.PM_NAME,
+                MAEAPK.PM_RECORD_ID,
+                MAEAPK.PM_LEVEL,
+				SAQRGG.SERVICE_ID,
+				SAQRGG.SERVICE_DESCRIPTION,
+				SAQRGG.SERVICE_RECORD_ID,
+				'{QuoteId}' as QUOTE_ID,
+				'{QuoteRecordId}' as QUOTE_RECORD_ID,
+				'{RevisionId}' as QTEREV_ID,
+				'{RevisionRecordId}' as QTEREV_RECORD_ID,
+				SAQRGG.QUOTE_SERVICE_RECORD_ID as QTESRV_RECORD_ID,
+				SAQRGG.QUOTE_SERVICE_GREENBOOK_RECORD_ID as QTESRVGBK_RECORD_ID,
+                SAQRGG.QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID as QTEREVGOT_RECORD_ID
+				FROM SYSPBT (NOLOCK) 
+				JOIN SAQRGG(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SYSPBT.QTEREV_RECORD_ID
+                JOIN SAQSCA(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID
+                JOIN MAEAPK(NOLOCK) ON MAEAPK.EQUIPMENT_RECORD_ID = SAQSCA.EQUIPMENT_RECORD_ID AND MAEAPK.ASSEMBLY_RECORD_ID = SAQSCA.ASSEMBLY_RECORD_ID 
+				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.
+                QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRGG.SERVICE_ID = '{TreeParam}' ) GOTCODE """.format(
+				UserName=self.user_name,
+				TreeParam=self.tree_param,
+				QuoteId = self.contract_quote_id,
+				QuoteRecordId=self.contract_quote_record_id,
+				RevisionId=self.quote_revision_id,
+				RevisionRecordId=self.quote_revision_record_id,
+				BatchGroupRecordId=kwargs.get('batch_group_record_id')
+				)
+			))
+		
 	
 	def _create(self):
 		if self.action_type == "ADD_COVERED_OBJ":
@@ -4855,9 +4914,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				#SAQSGB_end_time = time.time()	
 				##To check the PM events Attribute value...
 				##A055S000P01-12518 code starts...
+				if self.tree_param == 'Z0009':
+					self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id)
 				import re
 				service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
-				if service_entitlement_obj is not None:
+				if service_entitlement_obj is not None and self.tree_param != 'Z0009' :
 					updateentXML = service_entitlement_obj.ENTITLEMENT_XML
 					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 					pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
