@@ -321,7 +321,7 @@ class SYLDRTLIST:
 					if Quote is not None:
 						Quote.GetCustomField('GetBillingMatrix_Year').Content = str(getyears)
 					if getyears == 1:
-						rem_list_sp = ["YEAR_2","YEAR_3","YEAR_4","YEAR_5"]
+						rem_list_sp = ["YEAR_2","YEAR_3","YEAR_4","YEAR_5","YEAR_2_INGL_CURR","YEAR_3_INGL_CURR"]
 						Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp]) 
 					elif getyears == 2:
 						rem_list_sp = ["YEAR_3","YEAR_4","YEAR_5"]
