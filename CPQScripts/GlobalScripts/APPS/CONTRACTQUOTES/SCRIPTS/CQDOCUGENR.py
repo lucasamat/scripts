@@ -946,10 +946,16 @@ def customer_accepted(doc_rec_id):
 	Trace.Write("cm to this acceptedfunction=====")	
 	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 
 	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET ACCEPTED = 'TRUE', DATE_ACCEPTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y"),))
 	Sql.RunQuery(update_submitted_date)
+
+	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+	if output_doc_query:
+		if str(output_doc_query.DATE_ACCEPTED) != "":
+			Trace.Write("DATE_ACC"+str(output_doc_query.DATE_ACCEPTED))
+			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CUSTOMER ACCEPTED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+			Sql.RunQuery(update_workflow_status)
 	
 	return True
 
@@ -958,10 +964,16 @@ def customer_rejected(doc_rec_id):
 	submitted_date = ""
 	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 
 	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_REJECTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y")))
 	Sql.RunQuery(update_submitted_date)
+
+	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+	if output_doc_query:
+		if str(output_doc_query.DATE_REJECTED) != "":
+			Trace.Write("DATE_REJ"+str(output_doc_query.DATE_REJECTED))
+			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CUSTOMER REJECTED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+			Sql.RunQuery(update_workflow_status)
 	
 	return True
 
