@@ -743,6 +743,7 @@ def savecbc(Qt_rec_id, Quote, MODE):
 		if revision_document_type_object.DOCTYP_ID != "ZWK1" and revision_document_type_object.DOCTYP_ID != "":
 			Trace.Write("doc_type=====")
 			crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(get_quote_details.QUOTE_ID),'REVISION_ID':str(get_quote_details.QTEREV_ID),'Fun_type':'cpq_to_crm'})
+			Trace.Write("crm_result==="+str(crm_result))
 	#Added query and condition to restrict calling contract creation webservice based on document type = ZWK1(Scripting logic to prevent ZWK1 quote from being pushed to CRM) - end	
 	
 	##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
