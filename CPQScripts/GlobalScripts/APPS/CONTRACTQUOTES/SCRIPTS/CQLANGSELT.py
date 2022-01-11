@@ -102,13 +102,15 @@ def _insert_subtotal_by_offerring_quote_table():
 	insrt_item_details = ("""INSERT QT__QT_SAQRIT (LINE,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,SERVICE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,ownerId, cartId) select SAQRIT.LINE,SAQRIT.SERVICE_DESCRIPTION,SAQRIT.SERVICE_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.QUOTE_ID,SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_ID,SAQRIT.QTEREV_RECORD_ID,{UserId} as ownerId,{CartId} as cartId from SAQRIT (NOLOCK)  where SAQRIT.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIT.QTEREV_RECORD_ID= '{rev_rec_id}'""".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
 	Sql.RunQuery(insrt_item_details)
 
-	get_revision_details = Sql.GetFirst("SELECT REVISION_DESCRIPTION,REV_EXPIRE_DATE,EXCHANGE_RATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTRV where QUOTE_RECORD_ID = '{qt_rec_id}'".format(qt_rec_id = contract_quote_record_id))
+	get_revision_details = Sql.GetFirst("SELECT REVISION_DESCRIPTION,REV_EXPIRE_DATE,EXCHANGE_RATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,CUSTOMER_NOTES,PAYMENTTERM_NAME from SAQTRV where QUOTE_RECORD_ID = '{qt_rec_id}'".format(qt_rec_id = contract_quote_record_id))
 	if get_revision_details:
 		Quote.SetGlobal('REV_DESC', str(get_revision_details.REVISION_DESCRIPTION)) 
 		Quote.SetGlobal('REV_EXPIRE', str(get_revision_details.REV_EXPIRE_DATE))
 		Quote.SetGlobal('EXC_RATE', str(get_revision_details.EXCHANGE_RATE))
 		Quote.SetGlobal('QT_CVF', str(get_revision_details.CONTRACT_VALID_FROM))
 		Quote.SetGlobal('QT_CVT', str(get_revision_details.CONTRACT_VALID_TO))
+		Quote.SetGlobal('QT_CN', str(get_revision_details.CUSTOMER_NOTES))
+		Quote.SetGlobal('QT_PAYMENT_TERM', str(get_revision_details.PAYMENTTERM_NAME))
 	#set  total net price, total net value start
 	total_net_price = total_net_value = total_tax_amt = 0.00
 	quote_subtotalofferings = Quote.QuoteTables["QT_SAQRIS"]
