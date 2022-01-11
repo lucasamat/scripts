@@ -5599,7 +5599,7 @@ class SYLDRTLIST:
 									quer_values=remove_tag.sub('',value)
 									quer_values = quer_values.strip()
 									status_list.append(quer_values)
-								ATTRIBUTE_VALUE_STR += "(" + str(quer_value) + " in " + str(status_list) + ") and "                                          
+								ATTRIBUTE_VALUE_STR += "(" + str(quer_value) + " in " + str(tuple(status_list)) + ") and "                                          
 							else:
 								if api_data_type == "AUTO NUMBER":
 									ATTRIBUTE_VALUE_STR += (
