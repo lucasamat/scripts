@@ -2014,7 +2014,7 @@ def Related_Sub_Banner(
             Trace.Write("summar_SHP")
             PrimaryLable = "Total Excluding Tax/VAT"
             #PrimaryValue = '0.00'+" "+curr
-            PrimaryValue = str("%.2f" % round(float(get_quote_details.NET_PRICE_INGL_CURR),2))+curr if str
+            PrimaryValue = str("%.2f" % round(float(get_quote_details.NET_PRICE_INGL_CURR),2))+curr if str(get_quote_details.NET_PRICE_INGL_CURR) != '' else '0.00'+" "+curr
             SecondLable = "Tax/VAT"
             SecondValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
             ThirdLable = "Total Amount Including Tax/VAT"
