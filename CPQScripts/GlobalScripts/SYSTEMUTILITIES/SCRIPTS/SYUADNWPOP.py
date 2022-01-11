@@ -2494,7 +2494,12 @@ def POPUPLISTVALUEADDNEW(
 			if TreeParam in ("Comprehensive Services","Product Offerings","Complementary Products"):
 				get_sales_org = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id) )
 				if get_sales_org :
-					inner_join = " INNER JOIN MAMSOP (NOLOCK) ON MAMTRL.MATERIAL_RECORD_ID = MAMSOP.MATERIAL_RECORD_ID"
+					doc_type = Sql.GetList("SELECT DOCTYP_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(quote_rec_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+					for document_type in doc_type:
+						if document_type.DOCTYP_ID == "ZWK1":
+							inner_join = " INNER JOIN MAMSOP (NOLOCK) ON MAMTRL.MATERIAL_RECORD_ID = MAMSOP.MATERIAL_RECORD_ID"
+						else:
+							inner_join = " INNER JOIN MAMSOP (NOLOCK) ON MAMTRL.MATERIAL_RECORD_ID = MAMSOP.MATERIAL_RECORD_ID JOIN MAADPR  ON MAADPR.PRDOFR_ID =  MAMTRL.SAP_PART_NUMBER AND MAADPR.PRDOFR_ID = MAMSOP.SAP_PART_NUMBER"
 					additional_where = " AND SALESORG_ID='{}' ".format(get_sales_org.SALESORG_ID)
 			if TreeParam == "Product Offerings":
 				Pagination_M = Sql.GetFirst(
@@ -2536,9 +2541,17 @@ def POPUPLISTVALUEADDNEW(
 				"PRODUCT_TYPE",
 				]
 			if TreeParam == "Product Offerings":
-				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID  )""".format(
-					contract_quote_record_id,quote_revision_record_id
-				)
+
+				doc_type = Sql.GetList("SELECT DOCTYP_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(quote_rec_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+				for document_type in doc_type:
+					if document_type.DOCTYP_ID == "ZWK1":
+						where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID  )""".format(
+							contract_quote_record_id,quote_revision_record_id
+						)
+					else:
+						where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND  MAADPR.VISIBLE_INCONFIG = 'TRUE' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID  )""".format(
+							contract_quote_record_id,quote_revision_record_id
+						)
 			else:
 				where_string += """ PRODUCT_TYPE ='{}' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(
 					Product.GetGlobal("TreeParam"), contract_quote_record_id,quote_revision_record_id
