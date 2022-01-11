@@ -2758,7 +2758,7 @@ class SYLDRTLIST:
 					for inm in ik:
 						value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 						value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
-						
+						Trace.Write("after_after_search")
 						if (
 							str(obj_obj.SAPCPQ_ATTRIBUTE_NAME) == "SYOBJR-30114"
 							or str(obj_obj.SAPCPQ_ATTRIBUTE_NAME) == "SYOBJR-60052"
