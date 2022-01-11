@@ -554,11 +554,7 @@ Sql.RunQuery("""UPDATE SAQTRV
 									SUM(ISNULL(SAQRIS.NET_VALUE_INGL_CURR, 0)) as NET_VALUE_INGL_CURR
 									FROM SAQRIS (NOLOCK) WHERE SAQRIS.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND SAQRIS.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQRIS.QUOTE_RECORD_ID,SAQRIS.QTEREV_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
 						WHERE SAQTRV.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' """.format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id) )
-
-splitserviceinsert()
-
-
-
+						
 LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
 if LOGIN_CREDENTIALS is not None:
 	Login_Username = str(LOGIN_CREDENTIALS.Username)
@@ -577,3 +573,10 @@ if LOGIN_CREDENTIALS is not None:
 	
 	LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
 	Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
+
+
+splitserviceinsert()
+
+
+
+
