@@ -621,20 +621,13 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 									
 					Sql.RunQuery(update_workflow_status)
 					status = "APPROVED"
-					if get_documents_date_validation_accepted:
-						if str(get_documents_date_validation_accepted.DATE_ACCEPTED) != "":
-							Trace.Write("accepted===")
-							update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
-							Sql.RunQuery(update_workflow_status)
-							status = "QUOTE DOCUMENTS"
-					if get_documents_date_validation_rejected:
-						if str(get_documents_date_validation_rejected.DATE_REJECTED) != "":
-							Trace.Write("rejected===")
-							update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
-							Sql.RunQuery(update_workflow_status)
-							status = "QUOTE DOCUMENTS"
-					else:
-						status = "APPROVED"
+				if (getsalesorg_ifo.REVISION_STATUS == "CUSTOMER ACCEPTED" or getsalesorg_ifo.REVISION_STATUS == "CUSTOMER REJECTED") and Text == "COMPLETE STAGE":
+					#if str(get_documents_date_validation_accepted.DATE_ACCEPTED) != "":
+					Trace.Write("accepted===")
+					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
+					Sql.RunQuery(update_workflow_status)
+					status = "QUOTE DOCUMENTS"			
+				
 				if getsalesorg_ifo.REVISION_STATUS == "SUBMITTED FOR BOOKING" and Text == "COMPLETE STAGE":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
