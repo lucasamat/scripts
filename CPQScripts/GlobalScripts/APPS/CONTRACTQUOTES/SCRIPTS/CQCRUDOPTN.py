@@ -4789,7 +4789,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				)
 			)
 
-		self.process_query("""INSERT SAQGPM(CHAMBER_QUANTITY,
+		self._process_query("""INSERT SAQGPM(CHAMBER_QUANTITY,
 				GOT_CODE,
 				GOTCODE_RECORD_ID,
 				GREENBOOK,
