@@ -643,7 +643,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 						
 			if get_workflow_status.REVISION_STATUS == "APPROVED" and get_workflow_status.WORKFLOW_STATUS == "APPROVALS":				
 				status = "APPROVED"
-			elif get_workflow_status.REVISION_STATUS == "APPROVED" and get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS":										
+			elif get_workflow_status.REVISION_STATUS == "CUSTOMER ACCEPTED" or get_workflow_status.REVISION_STATUS == "CUSTOMER REJECTED":										
 				status = "QUOTE DOCUMENTS"		
 			
 			elif get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING" and get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":					
