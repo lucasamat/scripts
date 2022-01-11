@@ -5579,6 +5579,11 @@ class SYLDRTLIST:
 								quer_values = tuple(quer_values)
 								
 								ATTRIBUTE_VALUE_STR += "(" + str(quer_value) + " in " + str(quer_values) + ") and "                                          
+							elif str(quer_value) == 'STATUS' and str(RECORD_ID) == 'SYOBJR-98872':
+								remove_tag =re.compile(r'<[^>]+>')
+								quer_values=remove_tag.sub('',quer_values)
+								quer_values = quer_values.strip()
+								ATTRIBUTE_VALUE_STR += "(" + str(quer_value) + " in " + str(quer_values) + ") and "                                          
 							else:
 								if api_data_type == "AUTO NUMBER":
 									ATTRIBUTE_VALUE_STR += (
