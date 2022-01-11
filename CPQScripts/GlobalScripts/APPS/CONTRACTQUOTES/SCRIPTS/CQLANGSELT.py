@@ -109,8 +109,10 @@ def _insert_subtotal_by_offerring_quote_table():
 		Quote.SetGlobal('EXC_RATE', str(get_revision_details.EXCHANGE_RATE))
 		Quote.SetGlobal('QT_CVF', str(get_revision_details.CONTRACT_VALID_FROM))
 		Quote.SetGlobal('QT_CVT', str(get_revision_details.CONTRACT_VALID_TO))
-		Quote.SetGlobal('QT_CN', str(get_revision_details.CUSTOMER_NOTES))
-		Quote.SetGlobal('QT_PAYMENT_TERM', str(get_revision_details.PAYMENTTERM_NAME))
+		if str(get_revision_details.CUSTOMER_NOTES):
+			Quote.SetGlobal('QT_CN', str(get_revision_details.CUSTOMER_NOTES))
+		if str(get_revision_details.PAYMENTTERM_NAME):
+			Quote.SetGlobal('QT_PAYMENT_TERM', str(get_revision_details.PAYMENTTERM_NAME))
 	#set  total net price, total net value start
 	total_net_price = total_net_value = total_tax_amt = 0.00
 	quote_subtotalofferings = Quote.QuoteTables["QT_SAQRIS"]
