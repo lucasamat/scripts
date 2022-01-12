@@ -367,7 +367,25 @@ def splitserviceinsert():
 					servicelevel_split_green(service_entitlement_obj.SERVICE_ID)
 					break
 		##saqite insert
-		_quote_items_entitlement_insert() 
+		_quote_items_entitlement_insert()
+	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+	if LOGIN_CREDENTIALS is not None:
+		Login_Username = str(LOGIN_CREDENTIALS.Username)
+		Login_Password = str(LOGIN_CREDENTIALS.Password)
+		authorization = Login_Username+":"+Login_Password
+		binaryAuthorization = UTF8.GetBytes(authorization)
+		authorization = Convert.ToBase64String(binaryAuthorization)
+		authorization = "Basic " + authorization
+
+
+		webclient = System.Net.WebClient()
+		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+		
+		result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_rec_id,Rev_Id = quote_revision_rec_id)
+		
+		LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
+		Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 
 
 def servicelevel_split_equip(seid):
@@ -455,24 +473,7 @@ def servicelevel_split_equip(seid):
 	document_years_adjustments ="UPDATE SAQRIT SET YEAR_1 = YEAR_1 + (NET_PRICE - (ISNULL(YEAR_1,0)+ISNULL(YEAR_2,0)+ISNULL(YEAR_3,0)+ISNULL(YEAR_4,0)+ISNULL(YEAR_5,0))) FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
 	Sql.RunQuery(document_years_adjustments)
 
-	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
-	if LOGIN_CREDENTIALS is not None:
-		Login_Username = str(LOGIN_CREDENTIALS.Username)
-		Login_Password = str(LOGIN_CREDENTIALS.Password)
-		authorization = Login_Username+":"+Login_Password
-		binaryAuthorization = UTF8.GetBytes(authorization)
-		authorization = Convert.ToBase64String(binaryAuthorization)
-		authorization = "Basic " + authorization
-
-
-		webclient = System.Net.WebClient()
-		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
-		
-		result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_rec_id,Rev_Id = quote_revision_rec_id)
-		
-		LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
-		Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
+	
 	#CQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":get_c4c_quote_id.QUOTE_ID})
 
 
