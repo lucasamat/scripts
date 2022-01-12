@@ -13,6 +13,7 @@ import re
 from datetime import datetime
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Text.Encoding import UTF8
+from System import Convert
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 from SYDATABASE import SQL
 Sql = SQL()
