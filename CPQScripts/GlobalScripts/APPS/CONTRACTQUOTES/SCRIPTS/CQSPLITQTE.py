@@ -87,7 +87,7 @@ def _update_entitlement_values(par_service = ''):
 	if get_parent_dict and get_service_xml_dict:
 		for key,value in get_service_xml_dict.items():
 			if key in get_parent_dict.keys() or key == 'AGS_Z0105_PQB_SVSPPC' :
-				#Trace.Write("keyiffff- "+str(key)+" valueiffff- "+str(value))
+				Trace.Write("keyiffff- "+str(key)+" valueiffff- "+str(value))
 				if key == 'AGS_Z0105_PQB_SVSPPC':
 					value = get_parent_dict['AGS_Z0105_SPS_SPLIT_PER']
 				else:
