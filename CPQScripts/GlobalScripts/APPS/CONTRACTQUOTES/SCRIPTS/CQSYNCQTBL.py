@@ -1111,6 +1111,7 @@ class SyncQuoteAndCustomTables:
 					#     }
 					#     quote_involved_party_table_info.AddRow(sending_account_quote_data)
 					if self.quote.ShipToCustomer:
+						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 						ship_to_customer = self.quote.ShipToCustomer
 						shiptocustomer_quote_data = {
 							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1125,7 +1126,10 @@ class SyncQuoteAndCustomTables:
 							"PARTY_ROLE": "SHIP TO",
 							"PHONE": ship_to_customer.BusinessPhone,
 							"QTEREV_RECORD_ID":quote_revision_id,
-							"QTEREV_ID":quote_rev_id
+							"QTEREV_ID":quote_rev_id,
+							"PARTNERFUNCTION_DESC": partner_function_obj.PARTNERFUNCTION_DESCRIPTION,
+							"PARTNERFUNCTION_ID": partner_function_obj.PARTNERFUNCTION_ID,
+							"PARTNERFUNCTION_RECORD_ID": partner_function_obj.PARTNERFUNCTION_RECORD_ID
 						}
 						quote_involved_party_table_info.AddRow(shiptocustomer_quote_data)
 					if custom_fields_detail.get("PayerID"):
