@@ -8493,24 +8493,6 @@ class SYLDRTLIST:
 				Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left empty_ctrdrop_ul" aria-labelledby="dropdownMenuButton">'
 				
 				for inm in ik:                
-					a = str(inm).split(",")
-					value123 = a[0].replace("[", "").lstrip()
-					valu = ",".join(a[1:])
-					value1234 = valu.replace("]", "").lstrip()
-					if value1234 == "ACQUIRED" or value1234 == "PRICED":
-						value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Green_Tick.svg> "+str(value1234))
-					if value1234 == "APPROVAL REQUIRED":
-						value1234 = value1234.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
-					if value1234 == "ACQUIRING":                        
-						value1234 = value1234.replace("ACQUIRING","<img title='Acquiring' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Cloud_Icon.svg> ACQUIRING")
-					if value1234 == "ERROR":
-						value1234 = value1234.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/exclamation_icon.svg> ERROR")
-					if value1234 == "ASSEMBLY IS MISSING":
-						value1234 = value1234.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
-					if value1234 == "PARTIALLY PRICED":
-						value1234 = value1234.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-					if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
-						value1234 = value1234
 					value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 					value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
 					Trace.Write("after_search")
@@ -8637,24 +8619,6 @@ class SYLDRTLIST:
 				list_lineup = []
 				current_rec_id = ""
 				for inm in ik:
-					a = str(inm).split(",")
-					value123 = a[0].replace("[", "").lstrip()
-					valu = ",".join(a[1:])
-					value1234 = valu.replace("]", "").lstrip()
-					if value1234 == "ACQUIRED" or value1234 == "PRICED":
-						value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Green_Tick.svg> "+str(value1234))
-					if value1234 == "APPROVAL REQUIRED":
-						value1234 = value1234.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
-					if value1234 == "ACQUIRING":                        
-						value1234 = value1234.replace("ACQUIRING","<img title='Acquiring' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Cloud_Icon.svg> ACQUIRING")
-					if value1234 == "ERROR":
-						value1234 = value1234.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/exclamation_icon.svg> ERROR")
-					if value1234 == "ASSEMBLY IS MISSING":
-						value1234 = value1234.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
-					if value1234 == "PARTIALLY PRICED":
-						value1234 = value1234.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-					if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
-						value1234 = value1234
 					value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 					value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
 					Trace.Write("search_after_img")
