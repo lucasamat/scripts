@@ -3864,7 +3864,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	table_header = (
 		'<table id="'
 		+ str(table_id)
-		+ '"  data-pagination="false" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
+		+ '"  data-pagination="false" data-sortable="true" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
 	)
 	Columns = [
 		"QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID",
@@ -4022,7 +4022,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 				+ str(invs)
 				+ '"  data-field="'
 				+ str(invs)
-				+ '" data-filter-control="input" data-align="center" data-formatter="CheckboxFieldRelatedList" ><abbr title="'
+				+ '" data-filter-control="input" data-align="center" data-formatter="CheckboxFieldRelatedList" data-sortable="true"><abbr title="'
 				+ str(qstring)
 				+ '">'
 				+ str(qstring)
@@ -4040,7 +4040,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 				+ str(invs)
 				+ '"  data-field="'
 				+ str(invs)
-				+ '" data-filter-control="input" data-formatter="'+str(data_formatter)+'" ><abbr title="'
+				+ '" data-filter-control="input" data-formatter="'+str(data_formatter)+'" data-sortable="true"><abbr title="'
 				+ str(qstring)
 				+ '">'
 				+ str(qstring)
@@ -4052,7 +4052,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 				+ str(invs)
 				+ '"  data-field="'
 				+ str(invs)
-				+ '" data-filter-control="input" ><abbr title="'
+				+ '" data-filter-control="input" data-sortable="true"><abbr title="'
 				+ str(qstring)
 				+ '">'
 				+ str(qstring)
