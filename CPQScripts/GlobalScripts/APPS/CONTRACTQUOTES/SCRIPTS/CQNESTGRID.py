@@ -3859,7 +3859,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 				if where_string:
 					where_string += " AND "
 				where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
-		where_string += " AND "
+	where_string += " AND " if str(where_string)!="" else ""
 	objh_getid = Sql.GetFirst(
 		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
 	)
