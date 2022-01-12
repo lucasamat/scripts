@@ -3844,7 +3844,9 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	obj_idval = "SYOBJ_00974_SYOBJ_00974"
 	rec_id = "SYOBJ_00974"
 	obj_id = "SYOBJ-00974"
-	if str(SortColumn)!='' and str(SortColumnOrder)!='':
+	if str(SortColumn) == "SSCM_PM_FREQUENCY" or str(SortColumn) == "PM_FREQUENCY":
+		sort_by = " ORDER BY CAST("+str(SortColumn)+" AS FLOAT) "+str(SortColumnOrder)
+	elif str(SortColumn)!='' and str(SortColumnOrder)!='':
 		sort_by = " ORDER BY "+str(SortColumn)+" "+str(SortColumnOrder)
 	else:
 		sort_by = ' ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID'
@@ -3925,6 +3927,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' "
 		)
 	elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
+		offset = int(Page_start)-1
 		Qstr = (
 			"select QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GOT_CODE,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
@@ -3932,7 +3935,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam).split('-')[0]
-			+ "' "+str(sort_by)+" OFFSET "+str(Page_start)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
+			+ "' "+str(sort_by)+" OFFSET "+str(offset)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
 		)
 		QueryCountObj = Sql.GetFirst(
 			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
