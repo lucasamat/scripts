@@ -1111,7 +1111,7 @@ class SyncQuoteAndCustomTables:
 					#     }
 					#     quote_involved_party_table_info.AddRow(sending_account_quote_data)
 					if self.quote.ShipToCustomer:
-						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
+						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'SH'")
 						ship_to_customer = self.quote.ShipToCustomer
 						shiptocustomer_quote_data = {
 							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
