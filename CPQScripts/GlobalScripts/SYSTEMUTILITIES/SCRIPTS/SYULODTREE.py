@@ -3457,8 +3457,8 @@ class TreeView:
 			sub_string = m.group(1)
 			#Trace.Write("substring----->"+str(sub_string))
 			attribute_id =re.findall(pattern_consumable,sub_string)
-			attribute =re.findall(pattern_consumable,sub_string)
-			attribute_value =re.findall(pattern_new_parts_only,sub_string)
+			attribute =re.findall(pattern_new_parts_only,sub_string)
+			attribute_value =re.findall(pattern_new_parts_only_yes,sub_string)
 			#Trace.Write("attrvalue----->"+str(attribute_value))
 			if len(attribute_value) != 0 or len(attribute) != 0:
 				#Trace.Write("YES")
