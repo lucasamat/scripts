@@ -87,13 +87,15 @@ def _update_entitlement_values(par_service = ''):
 		get_service_xml_dict =  _construct_dict_xml(getall_recid.ENTITLEMENT_XML)
 	if get_parent_dict and get_service_xml_dict:
 		for key,value in get_service_xml_dict.items():
+			temp_val = value
 			if key in get_parent_dict.keys() or key == 'AGS_Z0105_PQB_SVSPPC' :
 				Trace.Write("keyiffff- "+str(key)+" valueiffff- "+str(value))
 				if key == 'AGS_Z0105_PQB_SVSPPC':
-					value = get_parent_dict['AGS_Z0105_SPS_SPLIT_PER']
+					#temp_val = get_parent_dict['AGS_Z0105_SPS_SPLIT_PER']
+					pass
 				else:
-					value = get_parent_dict[key]
-			assign_xml += value
+					temp_val = get_parent_dict[key]
+			assign_xml += temp_val
 		Sql.RunQuery("UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' AND SERVICE_ID ='Z0105'".format(assign_xml,contract_quote_rec_id, quote_revision_rec_id ,par_service) )
 	
 
