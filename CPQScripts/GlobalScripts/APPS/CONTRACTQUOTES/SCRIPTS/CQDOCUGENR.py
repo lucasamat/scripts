@@ -282,7 +282,7 @@ def englishdoc():
 	for i in QuoteproductTotals.Rows:
 		#Log.Info('inside SAQIFP for tool base quote')
 		extifp_price += float(i['UNIT_PRICE'])
-		fptotal += float(i['EXTENDED_UNIT_PRICE'] +(i['TAX']))
+		fptotal += float(i['EXTENDED_PRICE'] +(i['TAX']))
 		fptax += float(i['TAX'])
 		Quote.SetGlobal('Subtotaltoolsdoc', str(extifp_price))
 		Quote.SetGlobal('taxtoolsdoc', str(fptax))

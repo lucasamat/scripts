@@ -44,7 +44,7 @@ def BULKSAVE(CUS_ANN,SCH_MODE,GETQTID,GET_PARTNUM):
 			sqlforupdateHP += "UPDATE SAQIFP SET  ANNUAL_QUANTITY = '{AQ}', EXTENDED_PRICE = (UNIT_PRICE*'{AQ}') where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER ='{PN}'  AND QTEREV_RECORD_ID = '{REV}'".format(AQ =CQ ,CT = str(ContractRecordId),PN=str(PN),REV=quote_revision_record_id)
 			Sql.RunQuery(sqlforupdateHP)
 			
-			sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ}, EXTENDED_UNIT_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER ='{PN}'".format(AQ =CQ ,CT = str(ContractRecordId),PN=str(PN))
+			sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ}, EXTENDED_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER ='{PN}'".format(AQ =CQ ,CT = str(ContractRecordId),PN=str(PN))
 			Sql.RunQuery(sqlforupdate)
 	
 	return 'save'
