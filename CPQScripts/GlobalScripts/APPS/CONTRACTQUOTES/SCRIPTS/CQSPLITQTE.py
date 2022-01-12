@@ -57,9 +57,47 @@ def _insert_equipment_entitlement():
 	Log.Info('@qtqsce_anc_query-renewal----179=---Qt_rec_id--'+str(qtqsce_anc_query))
 	Sql.RunQuery(qtqsce_anc_query)
 
+def _construct_dict_xml(updateentXML):
+	entxmldict = {}
+	pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+	pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+	entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+	display_val_dict = {}
+	if updateentXML:
+		for m in re.finditer(pattern_tag, updateentXML):
+			sub_string = m.group(1)
+			x=re.findall(pattern_name,sub_string)
+			if x:
+				entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
+				if entitlement_display_value_tag_match:
+					display_val_dict[x[0]] = entitlement_display_value_tag_match[0].upper()
+			entxmldict[x[0]]=sub_string
+	return entxmldict
+
+def _update_entitlement_values(par_service = ''):
+	get_parent_xml = Sql.GetFirst("SELECT * FROM SAQTSE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_rec_id, quote_revision_rec_id ,par_service) )
+	getall_recid = Sql.GetFirst("SELECT * FROM SAQTSE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0105' AND PAR_SERVICE_ID = '{}' ".format(contract_quote_rec_id, quote_revision_rec_id ,par_service) )
+	get_parent_dict = {}
+	get_service_xml_dict = {}
+	assign_xml = ""
+	if get_parent_xml:
+		get_parent_dict = _construct_dict_xml(get_parent_xml.ENTITLEMENT_XML)
+	if getall_recid:
+		get_service_xml_dict =  _construct_dict_xml(getall_recid.ENTITLEMENT_XML)
+	if get_parent_dict and get_service_xml_dict:
+		for key,value in get_service_xml_dict.items():
+			if key in get_parent_dict.keys() or key == 'AGS_Z0105_PQB_SVSPPC' :
+				#Trace.Write("keyiffff- "+str(key)+" valueiffff- "+str(value))
+				if key == 'AGS_Z0105_PQB_SVSPPC':
+					value = get_parent_dict['AGS_Z0105_SPS_SPLIT_PER']
+				else:
+					value = get_parent_dict[key]
+			assign_xml += value
+	
+
 def _insert_service_level_entitlement(par_service=''):
 	splitservice_object = 'Z0105'
-	ent_disp_val = ent_val_code = NewValue = ''
+	ent_disp_val = ent_val_code = ''
 	get_tooltip = ''
 	tbrow = {}
 	request_url="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
@@ -180,7 +218,12 @@ def _insert_service_level_entitlement(par_service=''):
 			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 			Sql.RunQuery(insert_qtqtse_query)			
-			
+		
+			try:
+				_update_entitlement_values(par_service)
+			except:
+				pass
+
 def _quote_items_entitlement_insert():
 	Trace.Write("Insert saqite")
 	service_id = 'Z0105'
