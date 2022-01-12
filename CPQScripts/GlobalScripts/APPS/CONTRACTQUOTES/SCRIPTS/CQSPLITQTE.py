@@ -93,7 +93,7 @@ def _update_entitlement_values(par_service = ''):
 				else:
 					value = get_parent_dict[key]
 			assign_xml += value
-		Sql.RunQuery("UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(assign_xml,contract_quote_rec_id, quote_revision_rec_id ,par_service) )
+		Sql.RunQuery("UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' AND SERVICE_ID ='Z0105'".format(assign_xml,contract_quote_rec_id, quote_revision_rec_id ,par_service) )
 	
 
 def _insert_service_level_entitlement(par_service=''):
