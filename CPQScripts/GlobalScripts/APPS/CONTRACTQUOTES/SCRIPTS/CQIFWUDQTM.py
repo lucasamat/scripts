@@ -15,6 +15,7 @@ import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
+from System.Text.Encoding import UTF8
 #Log.Info('quote_revision_record_id- '+str(quote_revision_record_id))
 def quoteiteminsert(Qt_id):
 	#quote_number = Qt_id[2:12]
@@ -224,7 +225,24 @@ def quoteiteminsert(Qt_id):
 	# SUM(ISNULL(SAQITM.YEAR_4_INGL_CURR, 0)) as YEAR_4_INGL_CURR,
 	# SUM(ISNULL(SAQITM.YEAR_5_INGL_CURR, 0)) as YEAR_5_INGL_CURR
 	#updating value to quote summary ends
+	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+	if LOGIN_CREDENTIALS is not None:
+		Login_Username = str(LOGIN_CREDENTIALS.Username)
+		Login_Password = str(LOGIN_CREDENTIALS.Password)
+		authorization = Login_Username+":"+Login_Password
+		binaryAuthorization = UTF8.GetBytes(authorization)
+		authorization = Convert.ToBase64String(binaryAuthorization)
+		authorization = "Basic " + authorization
 
+
+		webclient = System.Net.WebClient()
+		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+		
+		result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_record_id,Rev_Id = revision)
+		
+		LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
+		Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 	return "True"
 
 def quoteitemupdate(Qt_id):
