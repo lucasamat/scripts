@@ -26,7 +26,7 @@ REVISION_rec_ID = input_data[-1]
 
 Log.Info("Billing-----"+str(Qt_rec_id)+"--REVISION_rec_ID---"+str(REVISION_rec_ID))
 try:
-    contract_quote_rec_id = input_data[0]
+	contract_quote_rec_id = input_data[0]
 	#contract_quote_rec_id = Param.Quote_Record_ID
 except:
 	contract_quote_rec_id = ''
@@ -364,7 +364,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 	if service_id == 'Z0116':
 		update_annual_bill_amt  = Sql.GetFirst("SELECT SUM(YEAR_1) as YEAR1 from SAQRIT where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'  and SERVICE_ID = 'Z0116' GROUP BY SERVICE_ID,GREENBOOK".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id))
 		if update_annual_bill_amt:
-			update_credit_amt = "UPDATE SAQIBP SET ANNUAL_BILLING_AMOUNT ={}".format(update_annual_bill_amt.YEAR1)
+			update_credit_amt = "UPDATE SAQIBP SET ANNUAL_BILLING_AMOUNT ={amt} where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'  and SERVICE_ID = 'Z0116' GROUP BY SERVICE_ID,GREENBOOK ".format(amt=update_annual_bill_amt.YEAR1,contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id)
 			Sql.RunQuery(update_credit_amt)
 	return True
 def _quote_items_greenbook_summary_insert():	
