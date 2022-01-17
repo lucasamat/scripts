@@ -4396,6 +4396,7 @@ class SYLDRTLIST:
 
 			grouping_columns_delivery += table_group_columns_delivery
 			if table_group_columns_delivery2:
+				Trace.Write('table_group_columns_delivery2---'+str(table_group_columns_delivery2))
 				grouping_columns_delivery += table_group_columns_delivery2
 
 				
