@@ -2683,14 +2683,15 @@ class SYLDRTLIST:
 						+ str(ObjectName)
 						+ " (nolock) "
 						+ str(Qustr)
-						+ " ) m where m.ROW BETWEEN "
+						+ " AND GOT_CODE = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
 						+ str(Page_start)
 						+ " and "
 						+ str(Page_End)
 						+ ""
 					)
 					
-					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
+					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
+
 				
 				try:
 					Query_Obj = Sql.GetList(str(Qury_str))
