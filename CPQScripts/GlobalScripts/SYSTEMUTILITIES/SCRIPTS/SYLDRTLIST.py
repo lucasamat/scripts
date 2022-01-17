@@ -4371,7 +4371,7 @@ class SYLDRTLIST:
 			for invs in delivery_date_column_joined:
 				Trace.Write('week---'+str(invs))
 			
-				grouping_columns_delivery += "<th>{}</th>".format(str(invs))
+				grouping_columns_delivery += "<tr>{}</tr>".format(str(invs))
 			Trace.Write('grouping_columns_delivery---'+str(grouping_columns_delivery))
 			#table_header += "<tr >{}</tr>".format(grouping_columns_delivery)
 		if RECORD_ID == 'SYOBJR-00009':
