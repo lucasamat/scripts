@@ -1094,7 +1094,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						ServiceId=self.tree_param,
 						BatchGroupRecordId=batch_group_record_id,
 						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-						UserId=self.user_id, delivery_mode= "OFFSITE" if self.tree_param=="Z0108" else "ONSITE"
+						UserId=self.user_id, delivery_mode= "OFFSITE" if "Z0108" in self.tree_param else "ONSITE"
 					)
 					)
 					# spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
@@ -1699,7 +1699,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 						ServiceId=self.tree_param,
 						BatchGroupRecordId=batch_group_record_id,
 						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-						UserId=self.user_id, delivery_mode = "OFFSITE" if self.tree_param=="Z0108" else "ONSITE"
+						UserId=self.user_id, delivery_mode = "OFFSITE" if "Z0108" in self.tree_param else "ONSITE"
 					)
 				)
 				# spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
