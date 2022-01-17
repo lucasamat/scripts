@@ -8977,6 +8977,8 @@ class SYLDRTLIST:
 													Trace.Write("8974")
 													#imgValue =imgValue.split(">")[0]
 													#imgvalue =str(imgValue)+">"
+													imgValue = re.sub(r'>\s+([^>]*?)$','>',imgValue)
+													Trace.Write("8981"+str(imgValue))
 													new_dict[value123] = ('<abbr id ="' + key_value + '">' + imgValue + "</abbr>")  
 												elif RECORD_ID == 'SYOBJR-98872' and value123 == 'LINE':
 													Trace.Write("8976")
