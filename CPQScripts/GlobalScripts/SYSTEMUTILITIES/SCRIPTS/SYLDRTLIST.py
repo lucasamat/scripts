@@ -4260,12 +4260,12 @@ class SYLDRTLIST:
 						elif RECORD_ID == 'SYOBJR-34575' and str(invs) in delivery_date_column: 
 							
 							footer_formatter = ''
-							rowspan = 'rowspan="2"'
+							#rowspan = 'rowspan="2"'
 							#'data-footer-formatter="priceSumFormatter"'
 							tooltip = qstring
 							qstring = '<a onclick="openBillingMatrixDateChangeModal(\'{Value}\')" href="#">{Value}</a>'.format(Value=qstring.replace('-','/'))
 							#data_field = invs.replace('/','-')
-							#Trace.Write('2780-------month-------'+ str(invs))
+							Trace.Write('2780-----rowspan-----'+ str(rowspan))
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
