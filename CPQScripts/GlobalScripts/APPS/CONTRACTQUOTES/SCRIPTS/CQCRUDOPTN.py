@@ -4850,7 +4850,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				SAQGPM.KIT_ID,
 				SAQGPM.KIT_RECORD_ID,
 				SAQGPM.KIT_NUMBER,
-				SAQGPM.KIT_NUMBER_RECORD_ID,
+				SAQGPM.KITNUMBER_RECORD_ID,
 				'{QuoteId}' as QUOTE_ID,
 				'{QuoteRecordId}' as QUOTE_RECORD_ID,
 				'{RevisionId}' as QTEREV_ID,
