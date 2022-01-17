@@ -2268,7 +2268,7 @@ def Related_Sub_Banner(
         SecondValue = str(TreeParentParam)
         ThirdLable = "Got Code"
         ThirdValue = str(TreeParam)
-    elif ObjName == "SAQGPM":
+    elif ObjName == "SAQGPM" or ObjName = "SAQGPA":
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeTopSuperParentParam)
         SecondLable = "Greenbook"
