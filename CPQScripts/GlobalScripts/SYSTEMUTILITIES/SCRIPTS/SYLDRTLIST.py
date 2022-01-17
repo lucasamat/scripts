@@ -8881,8 +8881,10 @@ class SYLDRTLIST:
 							img_list.append('PRICING_STATUS')
 						
 						if value123 in img_list:
+							Trace.Write("8883")
 							new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
 						else:
+							Trace.Write("8886")
 							new_dict[value123] = value1234.upper() 
 					if value123 in edit_field:                      
 						value1234 = value1234.replace('"', "&quot;")
@@ -8971,18 +8973,20 @@ class SYLDRTLIST:
 												if str(ObjectName) == "SAQIFP":
 													img_list.append('PRICING_STATUS')
 												if value123 in img_list:
-												
+													Trace.Write("8974")
 													new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")  
 												elif RECORD_ID == 'SYOBJR-98872' and value123 == 'LINE':
+													Trace.Write("8976")
 													new_dict[value123] = ('<abbr id ="' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 												elif RECORD_ID == 'SYOBJR-98873' and value123 == 'SERVICE_ID':
 													new_dict[value123] = ('<abbr id ="' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
-												else:                                                           
+												else:     
 													if RECORD_ID == 'SYOBJR-00009' and value123 == 'DISCOUNT':
 														new_dict[value123] = ('<abbr id="discount_'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
 													elif value123 == "QUOTE_REV_DEAL_TEAM_MEMBER_ID":
 														new_dict[value123] = ('<abbr id ="' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 													else:
+														Trace.Write("8985")
 														#Trace.Write("value1234"+str(value1234)+"key_value"+str(key_value)+"value123"+str(value123))
 														new_dict[value123] = value1234
 					
