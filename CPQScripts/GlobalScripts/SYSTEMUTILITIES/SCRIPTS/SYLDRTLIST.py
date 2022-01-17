@@ -3907,27 +3907,7 @@ class SYLDRTLIST:
 				# 	continue
 				
 				#normal+Collapsaible+normal
-				elif RECORD_ID == 'SYOBJR-34575' and invs in (delivery_date_joined):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns_delivery:
-						table_header += '<th colspan="52" '+rowspan_level1+'  data-align="center"><div>CEILING PRICE<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="celing_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns_delivery += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
+				
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','GOT_CODE','ASSEMBLY_ID','PM_ID','PM_LABOR_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOOL_CONFIGURATION','SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','CEILING_PRICE_INGL_CURR'):
 					align = ''
 					rowspan_level1 = ""
