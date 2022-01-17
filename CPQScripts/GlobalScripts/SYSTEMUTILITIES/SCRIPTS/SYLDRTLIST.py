@@ -3566,8 +3566,8 @@ class SYLDRTLIST:
 					# else:
 					rowspan = 'rowspan="2"'
 					#table_header += '<th colspan="5" data-align="right"><div><label class="onlytext"><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
-				if RECORD_ID == 'SYOBJR-34575':
-					rowspan = 'rowspan="2"'
+				#if RECORD_ID == 'SYOBJR-34575':
+					#rowspan = 'rowspan="2"'
 				if key == 0:
 					if invs in primary_link_popup:
 						
@@ -3909,7 +3909,7 @@ class SYLDRTLIST:
 				#normal+Collapsaible+normal
 				elif RECORD_ID == 'SYOBJR-34575' and invs in ('PART_DESCRIPTION','QUANTITY','DELIVERY_SCHED_DATE'):
 					align = ''
-					
+					rowspan = 'rowspan="2"'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
