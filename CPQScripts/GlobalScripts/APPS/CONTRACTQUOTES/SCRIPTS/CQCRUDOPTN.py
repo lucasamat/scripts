@@ -1054,7 +1054,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 										MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
 										MAMTRL.SAP_PART_NUMBER as CUSTOMER_PART_NUMBER,
 										MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
-										'{delivery_mode}}' as DELIVERY_MODE,
+										'{delivery_mode}' as DELIVERY_MODE,
 										0.00 as EXTENDED_UNIT_PRICE,
 										MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
 										MAMTRL.SAP_PART_NUMBER as PART_NUMBER,
@@ -1659,7 +1659,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 										MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
 										MAMTRL.SAP_PART_NUMBER as CUSTOMER_PART_NUMBER,
 										MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
-										'{delivery_mode}}' as DELIVERY_MODE,
+										'{delivery_mode}' as DELIVERY_MODE,
 										0.00 as EXTENDED_UNIT_PRICE,
 										MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
 										MAMTRL.SAP_PART_NUMBER as PART_NUMBER,
@@ -1699,7 +1699,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 						ServiceId=self.tree_param,
 						BatchGroupRecordId=batch_group_record_id,
 						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-						UserId=self.user_id, delivery_mode== "OFFSITE" if tree_param=="Z0108" else "ONSITE"
+						UserId=self.user_id, delivery_mode = "OFFSITE" if tree_param=="Z0108" else "ONSITE"
 					)
 				)
 				# spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
