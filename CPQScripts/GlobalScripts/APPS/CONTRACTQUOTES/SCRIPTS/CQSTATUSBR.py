@@ -657,6 +657,11 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			else:
 				Trace.Write('No button--1')
 				status = "IN-COMPLETE"
+				
+			# Set Quote Item Insert --> No, If Revision Status Equal to Approved - Start
+			if getsalesorg_ifo.REVISION_STATUS == 'APPROVED':
+				quote_item_insert = "No"
+			# Set Quote Item Insert --> No, If Revision Status Equal to Approved - End
 		else:
 			Trace.Write('No button--2')
 			status = "IN-COMPLETE"
@@ -681,8 +686,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				# 		if get_ent_config_status.COUNT > 0:
 				# 			data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Quote.GetGlobal("contract_quote_record_id"), "ContractQuoteRevisionRecordId":quote_revision_record_id, "ServiceId":get_child_service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
 
-				where = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(contract_quote_rec_id,quote_revision_record_id,service_id.SERVICE_ID)
-				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
+				#where = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(contract_quote_rec_id,quote_revision_record_id,service_id.SERVICE_ID)
+				#data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 				# data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Quote.GetGlobal("contract_quote_record_id"), "ContractQuoteRevisionRecordId":quote_revision_record_id, "ServiceId":service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
 			# Pricing Calculation - Start
 			quote_line_item_obj = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'  AND ISNULL(STATUS,'') = ''".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_record_id))
