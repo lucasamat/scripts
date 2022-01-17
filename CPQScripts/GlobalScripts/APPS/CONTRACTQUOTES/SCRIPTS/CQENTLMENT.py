@@ -344,7 +344,7 @@ class Entitlements:
 			return attr_prices
 					
 
-	def EntitlementSave(self, subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT):
+	def EntitlementSave(self, subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT,scheduled_parts):
 		#AttributeValCode = AttributeValCode.replace("_"," ")
 		Trace.Write(str(type(NewValue))+'----NewValue')
 		if not type(NewValue) is 'str' and multiselect_flag == 'true':
@@ -793,6 +793,11 @@ class Entitlements:
 					#Sql.RunQuery(UpdateEntitlement)	
 					Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 					Sql.RunQuery(Updatecps)
+
+					cust_annual_qty = Sql.GetList("SELECT CUSTOMER_ANNUAL_QUANTITY FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
+
+					if cust_annual_qty:
+						for annual_qty in cust_annual_qty:
 				else:
 					Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
 			else:
@@ -1039,7 +1044,7 @@ class Entitlements:
 				#Sql.RunQuery(UpdateEntitlement)	
 				Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 				Sql.RunQuery(Updatecps)
-			
+				Trace.Write("CHKNG _scheduled_parts "+str(scheduled_parts))
 		else:
 			# to insert new input column value and price factor, cost impact for manual input Start 
 			getvalue = insertservice =""
@@ -2693,6 +2698,11 @@ try:
 	previous_val = Param.prev
 except:
 	previous_val =""
+
+try:
+	scheduled_parts = Param.scheduled_parts
+except:
+	scheduled_parts = ""
 Trace.Write("subtabName : " + str(subtabName)+".. EntitlementType : "+str(EntitlementType)+"Action : "+str(ACTION))
 #Trace.Write("calc_factor : " + str(calc_factor) + " costimpact : " + str(costimpact) + " priceimapct "+str(priceimapct))
 #Trace.Write("AttributeID : " + str(AttributeID) + " AttributeValCode : " + str(AttributeValCode))
@@ -2709,5 +2719,5 @@ elif ACTION == 'SAVE':
 else:
 	Trace.Write("calling else save")
 	ApiResponse = ApiResponseFactory.JsonResponse(
-		EntObj.EntitlementSave(subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT)
+		EntObj.EntitlementSave(subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT,scheduled_parts)
 	)
