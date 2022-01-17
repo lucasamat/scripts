@@ -3924,8 +3924,7 @@ class SYLDRTLIST:
 								+ '" data-sortable="true">'
 								+ str(qstring)
 								+ rowspan "</th>"
-							)           
-					continue
+							)
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','GOT_CODE','ASSEMBLY_ID','PM_ID','PM_LABOR_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOOL_CONFIGURATION','SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','CEILING_PRICE_INGL_CURR'):
 					align = ''
 					rowspan_level1 = ""
