@@ -2268,6 +2268,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				# if addon_entitlement_object is None:
 				# 	CQADDONPRD.addon_service_level_entitlement(OfferingRow_detail,self.tree_parent_level_0)
 				try:
+					Trace.Write("OfferingRow_detail--"+str(OfferingRow_detail))
 					CQADDONPRD.addon_operations(OfferingRow_detail,self.tree_parent_level_0)
 				except:
 					pass
