@@ -8854,6 +8854,7 @@ class SYLDRTLIST:
 							if value1234 != "":
 								imgValue = str(value1234).split(">")[0]
 								imgValue = str(imgValue)+">"
+							
 							else:
 								imgValue = ""
 						elif str(ObjectName) == "SAQDOC":
@@ -8974,9 +8975,8 @@ class SYLDRTLIST:
 													img_list.append('PRICING_STATUS')
 												if value123 in img_list:
 													Trace.Write("8974")
-													Trace.Write("8979"+str(imgValue))
-													Trace.Write("8979"+str(value1234))
-													Trace.Write("8979"+str(key_value))
+													imgValue =imgValue.split(">")[0]
+													imgvalue =str(imgValue)+">"
 													new_dict[value123] = ('<abbr id ="' + key_value + '">' + imgValue + "</abbr>")  
 												elif RECORD_ID == 'SYOBJR-98872' and value123 == 'LINE':
 													Trace.Write("8976")
