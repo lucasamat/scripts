@@ -364,7 +364,8 @@ class SYLDRTLIST:
 					for delivery_data in delivery_date_column:
 						count += 1
 						Delivery = 'Delivery {}'.format(count)
-						delivery_date_column_joined = ",".join(["'{}'".format(Delivery)])
+						#delivery_date_column_joined = ",".join(["'{}'".format(Delivery)])
+						delivery_date_column_joined.append('{}'.format(Delivery))
 						delivery_date_joined =",".join(["'{}'".format(delivery_data)])
 						#deliverydata_concatenate  = delivery_date_column_joined + delivery_date_joined
 						#delivery_date_joined = ",".join(["'{}','{}'".format('Delivery {}'.format(count),delivery_data) for delivery_data in delivery_date_column])
