@@ -2220,18 +2220,32 @@ def Related_Sub_Banner(
     elif ObjName == "SAQSGB" and subTabName == "Details":
         Trace.Write("@2221")
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '{service_id}'".format(service_id=TreeSuperParentParam if "Add" in TreeParam else TreeParentParam))
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeSuperParentParam) if "Add" in TreeParam else str(TreeParentParam)
-        SecondLable = "Product Offering Description"
-        SecondValue = getService.SERVICE_DESCRIPTION
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParentParam) if "Add" in TreeParam else str(TreeParam)
-        FourthLable = ''
-        FourthValue = ''
-        FifthLable = ''
-        FifthValue = ''
-        SixthLable = ''
-        SixthValue = ''
+        try:
+            PrimaryLable = "Product Offering ID"
+            PrimaryValue = str(TreeSuperParentParam) if "Add" in TreeParam else str(TreeParentParam)
+            SecondLable = "Product Offering Description"
+            SecondValue = getService.SERVICE_DESCRIPTION
+            ThirdLable = "Greenbook"
+            ThirdValue = str(TreeParentParam) if "Add" in TreeParam else str(TreeParam)
+            FourthLable = ''
+            FourthValue = ''
+            FifthLable = ''
+            FifthValue = ''
+            SixthLable = ''
+            SixthValue = ''
+        except:
+            PrimaryLable = "Product Offering ID"
+            PrimaryValue = str(TreeSuperParentParam)
+            SecondLable = "Greenbook"
+            SecondValue = str(TreeParentParam)
+            ThirdLable = "Got Code"
+            ThirdValue = str(TreeParam)
+            FourthLable = ''
+            FourthValue = ''
+            FifthLable = ''
+            FifthValue = ''
+            SixthLable = ''
+            SixthValue = ''
     elif ObjName == "SAQSGB" and subTabName == "Entitlements" and TreeTopSuperParentParam == "Product Offerings":
         Trace.Write("@2236")
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
