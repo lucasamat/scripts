@@ -4316,7 +4316,7 @@ class SYLDRTLIST:
 			
 				grouping_columns_delivery += "<th>{}</th>".format(str(invs))
 			Trace.Write('grouping_columns_delivery---'+str(grouping_columns_delivery))
-			table_header += "<tr >{}</tr>".format(grouping_columns_delivery)
+			#table_header += "<tr >{}</tr>".format(grouping_columns_delivery)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
