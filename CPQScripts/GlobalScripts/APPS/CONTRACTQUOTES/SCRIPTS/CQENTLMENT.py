@@ -789,7 +789,8 @@ class Entitlements:
 
 								UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
 								#Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
-									
+				Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
+				Sql.RunQuery(Updatecps)
 				else:
 					Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
 			else:
