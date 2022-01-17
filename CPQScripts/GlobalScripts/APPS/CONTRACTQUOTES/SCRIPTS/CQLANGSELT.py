@@ -96,8 +96,14 @@ def _insert_subtotal_by_offerring_quote_table():
 			else:
 				newRow['TAX_PERCENTAGE'] = 0
 			newRow['TAX_AMOUNT'] = val.TAX_AMOUNT
-			newRow['UNIT_PRICE'] = val.UNIT_PRICE
-			newRow['UNIT_PRICE_INGL_CURR'] = val.UNIT_PRICE_INGL_CURR
+			if val.UNIT_PRICE:
+				newRow['UNIT_PRICE'] = val.UNIT_PRICE
+			else:
+				newRow['UNIT_PRICE'] = 0
+			if val.UNIT_PRICE_INGL_CURR:
+				newRow['UNIT_PRICE_INGL_CURR'] = val.UNIT_PRICE_INGL_CURR
+			else:
+				newRow['UNIT_PRICE_INGL_CURR'] = 0
 
 
 		Quoteofferings.Save()
