@@ -8642,11 +8642,6 @@ class SYLDRTLIST:
 						value1234 = value1234
 					if value123 == objRecName:
 						current_rec_id = value1234
-					if value123 == objRecName:
-						current_rec_id = value1234
-					if value123 == objRecName:
-						#current_rec_id = ""
-						current_rec_id = value1234
 						
 					curr_symbol = ""
 					cur_api_name=Sql.GetFirst(
