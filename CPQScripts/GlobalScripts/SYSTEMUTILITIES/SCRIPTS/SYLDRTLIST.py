@@ -8877,14 +8877,9 @@ class SYLDRTLIST:
 							new_dict[value123] = value1234
 						else:
 							Trace.Write("elseval"+str(value1234))
-							if not re.match(r'[A-Za-z0-9]',value1234):
-								value1234 = value1234.replace('"', "&quot;")
-								value1234 = value1234.replace("<p>", " ")
-								value1234 = value1234.replace("</p>", " ")
-							else:
-								value1234 = str(value1234).replace('"', "&quot;")
-								value1234 = str(value1234).replace("<p>", " ")
-								value1234 = str(value1234).replace("</p>", " ")
+							value1234 = str(value1234).replace('"', "&quot;")
+							value1234 = str(value1234).replace("<p>", " ")
+							value1234 = str(value1234).replace("</p>", " ")
 
 							if value123 in [
 								"ERROR",
