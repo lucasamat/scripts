@@ -27,13 +27,13 @@ contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 #get_spare=Sql.GetFirst("select * from QTQIFP where QUOTE_RECORD_ID='"+str(quoteid)+"'")
 gettoolquote=Sql.GetFirst("select QUOTE_TYPE,QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID='"+str(contract_quote_record_id)+"'")
-'''if get_spare and gettoolquote.QUOTE_TYPE =="ZTBC - TOOL BASED":
-	INCLUDESPARE = 'INCLUDESPARES'
-	add_style = "display:block"
-else:
-	Trace.Write('succes--NO--')
-	INCLUDESPARE = ''
-	add_style = "display:none"'''
+#if get_spare and gettoolquote.QUOTE_TYPE =="ZTBC - TOOL BASED":
+	#INCLUDESPARE = 'INCLUDESPARES'
+	#add_style = "display:block"
+#else:
+	#Trace.Write('succes--NO--')
+	#INCLUDESPARE = ''
+	#add_style = "display:none"
 
 #Document XML
 
@@ -88,7 +88,10 @@ def _insert_subtotal_by_offerring_quote_table():
 			newRow['QUOTE_ID'] = val.QUOTE_ID
 			newRow['QTEREV_ID'] = val.QTEREV_ID
 			newRow['QTEREV_RECORD_ID'] = val.QTEREV_RECORD_ID
-			newRow['TAX_PERCENTAGE'] = val.TAX_PERCENTAGE
+			if val.TAX_PERCENTAGE:
+				newRow['TAX_PERCENTAGE'] = val.TAX_PERCENTAGE
+			else:
+				newRow['TAX_PERCENTAGE'] = 0
 			newRow['TAX_AMOUNT'] = val.TAX_AMOUNT
 			newRow['UNIT_PRICE'] = val.UNIT_PRICE
 			newRow['UNIT_PRICE_INGL_CURR'] = val.UNIT_PRICE_INGL_CURR
@@ -111,13 +114,16 @@ def _insert_subtotal_by_offerring_quote_table():
 		Quote.SetGlobal('QT_CVT', str(get_revision_details.CONTRACT_VALID_TO))
 		if str(get_revision_details.CUSTOMER_NOTES):
 			Quote.SetGlobal('QT_CN', str(get_revision_details.CUSTOMER_NOTES))
+			Quote.GetCustomField('customer_notes').Content = str(get_revision_details.CUSTOMER_NOTES)
 		if str(get_revision_details.PAYMENTTERM_NAME):
 			Quote.SetGlobal('QT_PAYMENT_TERM', str(get_revision_details.PAYMENTTERM_NAME))
 	#set  total net price, total net value start
 	total_net_price = total_net_value = total_tax_amt = 0.00
+	
+    
 	quote_subtotalofferings = Quote.QuoteTables["QT_SAQRIS"]
 
-	for i in quote_subtotalofferings.Rows:
+	'''for i in quote_subtotalofferings.Rows:
 		Trace.Write('QT_SAQRIS---'+str(i['NET_PRICE']))
 		#exts_price += float(i['EXTENDED_PRICE'])
 		total_net_price += float(i['NET_PRICE'])
@@ -127,8 +133,8 @@ def _insert_subtotal_by_offerring_quote_table():
 		Trace.Write('QT_SAQRIS---total_net_value----'+str(total_net_value))
 		Quote.SetGlobal('NP', str(total_net_price))
 		Quote.SetGlobal('NEV', str(total_net_value))
-		Quote.SetGlobal('TX', str(total_tax_amt))
-	get_quotetotal = Sql.GetFirst("SELECT SUM(NET_PRICE) as netprice from QT__QT_SAQRIS where QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID ='{}' ".format(contract_quote_record_id,quote_revision_record_id))
+		Quote.SetGlobal('TX', str(total_tax_amt))'''
+	get_quotetotal = Sql.GetFirst("SELECT SUM(NET_PRICE) as netprice from QT__QT_SAQRIS where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
 	if get_quotetotal:
 		Quote.GetCustomField('doc_net_price').Content = str(get_quotetotal.netprice)
 
