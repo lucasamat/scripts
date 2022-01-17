@@ -2691,7 +2691,23 @@ class SYLDRTLIST:
 					)
 					
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
-
+				elif RECORD_ID == "SYOBJR-95556":
+					Qury_str = (
+						"select DISTINCT top "
+						+ str(PerPage)
+						+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by CpqTableEntryId"
+						+ ") AS ROW, * from "
+						+ str(ObjectName)
+						+ " (nolock) "
+						+ str(Qustr)
+						+ " AND PM_ID = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
+						+ str(Page_start)
+						+ " and "
+						+ str(Page_End)
+						+ ""
+					)
+					
+					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND PM_ID = '"+str(TreeParam)+"' "
 				
 				try:
 					Query_Obj = Sql.GetList(str(Qury_str))
