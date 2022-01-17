@@ -261,7 +261,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				for spare_record in xls_spare_records[1:]:
 					Trace.Write("===>>>> "+str(list(spare_record)))
 					for spare in spare_record:
-						Trace.Write("===>>>> 111"+str(spare))
+						Trace.Write("===>>>> 111"+str(type(spare)))
 				self.records = ', '.join(map(str, [str(tuple(list(spare_record)+[self.contract_quote_record_id, self.contract_quote_revision_record_id])) for spare_record in xls_spare_records[1:]])).replace("None","null").replace("'","''")
 				self.records = self.records.replace("True","1").replace("False","0")
 			# for index, data in enumerate(list(sheet_data.Value)):
