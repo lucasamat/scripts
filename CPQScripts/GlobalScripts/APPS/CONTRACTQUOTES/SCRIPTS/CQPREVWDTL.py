@@ -418,7 +418,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					# else:
 					#sefl_api = sefl_api.encode('ascii', 'ignore').decode('ascii')
 					
-					len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"' if sefl_api=='CANCELLATION_PERIOD_NOTPER' else ""
+					len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"' Trace.Write('@421'+sefl_api) if sefl_api=='CANCELLATION_PERIOD_NOTPER' else ""
 
 					try:
 						sec_str += (
