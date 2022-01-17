@@ -8836,8 +8836,14 @@ class SYLDRTLIST:
 						value1234 = value1234.replace("</p>", " ")
 						imgValue = value1234
 						value1234 = value1234.split('"')
-						
-						value1234 = value1234[1]
+						try:
+							value1234 = value1234[1]
+						except:
+							value1234 = value1234
+
+
+
+						#value1234 = value1234[1]
 					else:                 
 						img_list = ['PO_NOTES','PRICING_STATUS','STATUS','EQUIPMENT_STATUS']
 						if str(ObjectName) == "SAQIFP":
