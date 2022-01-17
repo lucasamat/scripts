@@ -4004,7 +4004,7 @@ class SYLDRTLIST:
 										+ '" data-filter-control="input" '+rowspan_level1+' data-align="'
 										+ str(align)
 										+'" data-title-tooltsip="'
-										+ str(qstring)
+										+ str(invs)
 										+ '" data-sortable="true">'
 										+ str(invs)
 										+ "</th>"
