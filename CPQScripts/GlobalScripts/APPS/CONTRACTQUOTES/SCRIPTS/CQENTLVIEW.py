@@ -1223,7 +1223,7 @@ class EntitlementView():
 													disallow_style = ""
 												Trace.Write("checkkkkkk---"+str(val.ENTITLEMENT_VALUE_CODE)+"----"+str(value.STANDARD_ATTRIBUTE_VALUE)+str(attrSysId))
 												try:
-													if not (type(val.ENTITLEMENT_VALUE_CODE) is 'int' or type(val.ENTITLEMENT_VALUE_CODE) is 'float'):
+													if not (type(val.ENTITLEMENT_VALUE_CODE) is 'int' or type(val.ENTITLEMENT_VALUE_CODE) is 'float') and val.ENTITLEMENT_VALUE_CODE:
 														# value_code = eval(val.ENTITLEMENT_VALUE_CODE)
 														value_code = val.ENTITLEMENT_VALUE_CODE.split(',')
 													else:
