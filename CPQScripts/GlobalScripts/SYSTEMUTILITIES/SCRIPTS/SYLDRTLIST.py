@@ -3433,11 +3433,15 @@ class SYLDRTLIST:
 			values_list = ""
 			dict_form = {}			
 			cv_list = []
-			ignorecol = ['BILLING_DATE', 'BILLING_AMOUNT', 'BILLING_VALUE']
+			ignorecol = ['BILLING_DATE', 'BILLING_AMOUNT', 'BILLING_VALUE','DELIVERY_SCHED_DATE']
 			Trace.Write("Columns_chk_J"+str(Columns))
 			for invs in list(eval(Columns)):
 				table_ids = "#" + str(table_id)
 				if invs in billing_date_column: # Billing Matrix - Pivot - Start
+					filter_clas = ("#" + str(table_id) + " .bootstrap-table-filter-control-" + str(invs).replace('-','_'))
+					values_list += "var x_" + str(invs).replace('-','_') + ' = $("' + str(filter_clas) + '").val(); '
+					values_list += "ATTRIBUTE_VALUEList.push(x_" + str(invs).replace('/','_').replace('-','_') + "); "
+				elif  invs in delivery_date_column: # Billing Matrix - Pivot - Start
 					filter_clas = ("#" + str(table_id) + " .bootstrap-table-filter-control-" + str(invs).replace('-','_'))
 					values_list += "var x_" + str(invs).replace('-','_') + ' = $("' + str(filter_clas) + '").val(); '
 					values_list += "ATTRIBUTE_VALUEList.push(x_" + str(invs).replace('/','_').replace('-','_') + "); "              
