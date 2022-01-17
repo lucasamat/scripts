@@ -2685,7 +2685,7 @@ class SYLDRTLIST:
 						+ str(ObjectName)
 						+ " (nolock) "
 						+ str(Qustr)
-						+ " ') m where m.ROW BETWEEN "
+						+ " ) m where m.ROW BETWEEN "
 						+ str(Page_start)
 						+ " and "
 						+ str(Page_End)
