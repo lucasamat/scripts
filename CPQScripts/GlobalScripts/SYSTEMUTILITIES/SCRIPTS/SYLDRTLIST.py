@@ -4377,6 +4377,9 @@ class SYLDRTLIST:
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
+		elif RECORD_ID == 'SYOBJR-34575':
+			cls = "eq(3)"
+			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
 		else:
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
 		
