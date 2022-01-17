@@ -12,7 +12,7 @@ import datetime
 User_name = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
 User_Id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
 
-def _addon_service_level_entitlement(OfferingRow_detail,greenbook):
+def _addon_service_level_entitlement(OfferingRow_detail):
 	Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 						
 	Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.ADNPRD_ID,'request_url':Request_URL,'request_type':"New"})
@@ -161,7 +161,115 @@ def _addon_service_level_entitlement(OfferingRow_detail,greenbook):
 		# 	Trace.Write("EXCEPT---PREDEFINED DRIVER IFLOW")
 
 def _addon_equipment_insert(OfferingRow_detail,greenbook):
-	pass
+	Sql.RunQuery(
+				"""
+				INSERT SAQSCO (
+					QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+					EQUIPMENT_ID,
+					EQUIPMENT_RECORD_ID,
+					EQUIPMENT_DESCRIPTION,                            
+					FABLOCATION_ID,
+					FABLOCATION_NAME,
+					FABLOCATION_RECORD_ID,
+					WAFER_SIZE,
+					SALESORG_ID,
+					SALESORG_NAME,
+					SALESORG_RECORD_ID,
+					SERIAL_NO,
+					QUOTE_RECORD_ID,
+					QUOTE_ID,
+					QUOTE_NAME,
+					RELOCATION_EQUIPMENT_TYPE,
+					SERVICE_ID,
+					SERVICE_TYPE,
+					SERVICE_DESCRIPTION,
+					SERVICE_RECORD_ID,
+					EQUIPMENT_STATUS,
+					EQUIPMENTCATEGORY_ID,
+					EQUIPMENTCATEGORY_DESCRIPTION,
+					EQUIPMENTCATEGORY_RECORD_ID,
+					PLATFORM,
+					GREENBOOK,
+					GREENBOOK_RECORD_ID,
+					MNT_PLANT_RECORD_ID,
+					MNT_PLANT_NAME,
+					MNT_PLANT_ID,
+					WARRANTY_START_DATE,
+					WARRANTY_END_DATE,
+					CUSTOMER_TOOL_ID,
+					PAR_SERVICE_DESCRIPTION,
+					PAR_SERVICE_ID,
+					PAR_SERVICE_RECORD_ID,
+					TECHNOLOGY,
+					CPQTABLEENTRYADDEDBY,
+					CPQTABLEENTRYDATEADDED,
+					CpqTableEntryModifiedBy,
+					CpqTableEntryDateModified,
+					QTEREV_RECORD_ID,
+					KPU,
+					QTEREV_ID
+											
+					) SELECT
+						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+						EQUIPMENT_ID,
+						EQUIPMENT_RECORD_ID,
+						EQUIPMENT_DESCRIPTION,                                
+						FABLOCATION_ID,
+						FABLOCATION_NAME,
+						FABLOCATION_RECORD_ID,
+						WAFER_SIZE,
+						SALESORG_ID,
+						SALESORG_NAME,
+						SALESORG_RECORD_ID,
+						SERIAL_NO,
+						QUOTE_RECORD_ID,
+						QUOTE_ID,
+						QUOTE_NAME,
+						RELOCATION_EQUIPMENT_TYPE,
+						'{serviceid}',
+						'{service_type}',
+						'{desc}',
+						'{rec}',
+						EQUIPMENT_STATUS,
+						EQUIPMENTCATEGORY_ID,
+						EQUIPMENTCATEGORY_DESCRIPTION,
+						EQUIPMENTCATEGORY_RECORD_ID,
+						PLATFORM,
+						GREENBOOK,
+						GREENBOOK_RECORD_ID,
+						MNT_PLANT_RECORD_ID,
+						MNT_PLANT_NAME,
+						MNT_PLANT_ID,
+						WARRANTY_START_DATE,
+						WARRANTY_END_DATE,
+						CUSTOMER_TOOL_ID,
+						SERVICE_DESCRIPTION,
+						SERVICE_ID,
+						SERVICE_RECORD_ID,
+						TECHNOLOGY,
+						'{UserName}',
+						GETDATE(),
+						{UserId},
+						GETDATE(),
+						QTEREV_RECORD_ID,
+						KPU,
+						QTEREV_ID
+						FROM SAQSCO (NOLOCK)
+						WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND SERVICE_ID ='{par_service_id}' AND GREENBOOK = '{greenbook}' AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND PAR_SERVICE_ID ='{par_service_id}' AND SERVICE_ID ='{serviceid}' AND GREENBOOK = '{greenbook}')
+												
+					""".format(
+						par_service_id = OfferingRow_detail.SERVICE_ID,
+						serviceid = OfferingRow_detail.ADNPRD_ID ,
+						service_type ="Add-On Products",
+						QuoteRecordId = OfferingRow_detail.QUOTE_RECORD_ID,
+						RevisionRecordId = OfferingRow_detail.QTEREV_RECORD_ID,
+						desc = OfferingRow_detail.SERVICE_DESCRIPTION,
+						rec = OfferingRow_detail.SERVICE_RECORD_ID,
+						UserName = User_name,
+						UserId = User_Id,
+						greenbook = greenbook
+					)
+					)
 
 def _addon_rolldown_entitlement(OfferingRow_detail,greenbook):
 	Sql.RunQuery("""INSERT SAQSGE (KB_VERSION,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,PAR_SERVICE_ID, PAR_SERVICE_RECORD_ID, PAR_SERVICE_DESCRIPTION,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID, CPS_CONFIGURATION_ID, CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,QTESRVENT_RECORD_ID,QTESRVGBK_RECORD_ID,ENTITLEMENT_XML,CONFIGURATION_STATUS, QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED )
@@ -173,6 +281,6 @@ def _addon_rolldown_entitlement(OfferingRow_detail,greenbook):
 			WHERE SAQTSE.QUOTE_RECORD_ID ='{QuoteRecordId}'  AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.PAR_SERVICE_ID = '{ServiceId}' AND  SAQTSE.SERVICE_ID = '{Addon_ServiceId}' AND SAQSGB.GREENBOOK = '{greenbook}' AND ISNULL(SAQSGE.GREENBOOK_RECORD_ID,'') = '' )IQ""".format(UserId=User_Id, QuoteRecordId=OfferingRow_detail.QUOTE_RECORD_ID, ServiceId=OfferingRow_detail.SERVICE_ID, revision_rec_id = OfferingRow_detail.QTEREV_RECORD_ID,Addon_ServiceId = OfferingRow_detail.ADNPRD_ID,greenbook = greenbook))
 
 def addon_operations(OfferingRow_detail,greenbook):
-	_addon_service_level_entitlement(OfferingRow_detail,greenbook)
+	_addon_service_level_entitlement(OfferingRow_detail)
 	_addon_equipment_insert(OfferingRow_detail,greenbook)
 	_addon_rolldown_entitlement(OfferingRow_detail,greenbook)
