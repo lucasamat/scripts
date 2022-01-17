@@ -263,8 +263,8 @@ def _addon_equipment_insert(OfferingRow_detail,greenbook):
 						service_type ="Add-On Products",
 						QuoteRecordId = OfferingRow_detail.QUOTE_RECORD_ID,
 						RevisionRecordId = OfferingRow_detail.QTEREV_RECORD_ID,
-						desc = OfferingRow_detail.SERVICE_DESCRIPTION,
-						rec = OfferingRow_detail.SERVICE_RECORD_ID,
+						desc = OfferingRow_detail.ADNPRD_DESCRIPTION,
+						rec = OfferingRow_detail.ADNPRDOFR_RECORD_ID,
 						UserName = User_name,
 						UserId = User_Id,
 						greenbook = greenbook
