@@ -8974,8 +8974,7 @@ class SYLDRTLIST:
 												if str(ObjectName) == "SAQIFP":
 													img_list.append('PRICING_STATUS')
 												if value123 in img_list:
-													Trace.Write("8974")
-													#imgValue =imgValue.split(">")[0]
+													#A055S000P01-15028									#imgValue =imgValue.split(">")[0]
 													#imgvalue =str(imgValue)+">"
 													imgValue = re.sub(r'>\s+([^>]*?)$','>',imgValue)
 													Trace.Write("8981"+str(imgValue))
