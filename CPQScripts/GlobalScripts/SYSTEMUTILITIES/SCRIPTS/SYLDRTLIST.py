@@ -2674,6 +2674,25 @@ class SYLDRTLIST:
 					)
 					
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID NOT LIKE '%BUNDLE%' "
+				elif RECORD_ID == "SYOBJR-95555":
+					Qury_str = (
+						"select DISTINCT top "
+						+ str(PerPage)
+						+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by "          
+						
+						+ str(Wh_API_NAMEs)
+						+ ") AS ROW, * from "
+						+ str(ObjectName)
+						+ " (nolock) "
+						+ str(Qustr)
+						+ " ') m where m.ROW BETWEEN "
+						+ str(Page_start)
+						+ " and "
+						+ str(Page_End)
+						+ ""
+					)
+					
+					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 				
 				try:
 					Query_Obj = Sql.GetList(str(Qury_str))
