@@ -4310,12 +4310,12 @@ class SYLDRTLIST:
 		if RECORD_ID == 'SYOBJR-34575':
 			grouping_columns_delivery = ""
 			#if table_group_columns:
-			for invs in delivery_date_column_joined:
-				Trace.Write('week---'+str(invs))
+			#for invs in delivery_date_column_joined:
+			Trace.Write('week---'+str(delivery_date_column_joined))
 			
 			grouping_columns_delivery += "<th>{}</th>".format(str(invs))
 			
-			table_header += "<tr >{}</tr>".format(grouping_columns_delivery)
+			#table_header += "<tr >{}</tr>".format(grouping_columns_delivery)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
