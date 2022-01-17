@@ -4006,7 +4006,7 @@ class SYLDRTLIST:
 										+'" data-title-tooltsip="'
 										+ str(qstring)
 										+ '" data-sortable="true">'
-										+ str(qstring)
+										+ str(invs)
 										+ "</th>"
 									)           
 					continue
