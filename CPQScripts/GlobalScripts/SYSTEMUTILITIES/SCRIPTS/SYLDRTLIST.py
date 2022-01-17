@@ -3988,7 +3988,7 @@ class SYLDRTLIST:
 								)           
 					continue
 				elif RECORD_ID == 'SYOBJR-34575' and delivery_date_column_joined:
-					Trace.Write('3991--')
+					Trace.Write('3991-')
 					align = ''
 					rowspan_level1 = ""
 					if str(invs) in right_align_list:
