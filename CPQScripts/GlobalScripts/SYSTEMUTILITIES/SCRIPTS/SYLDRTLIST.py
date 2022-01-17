@@ -8830,7 +8830,21 @@ class SYLDRTLIST:
 									new_dict[value123] = (
 										'<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
 									)
+					
 					if value1234.startswith("<img"):
+						imgValue = ''
+						if str(ObjectName) == "SAQRIT":
+							if value1234 != "":
+								imgValue = str(value1234).split(">")[0]
+								imgValue = str(imgValue)+">"
+							else:
+								imgValue = ""
+						elif str(ObjectName) == "SAQDOC":
+							if value1234 != "":
+								imgValue = str(value1234).split(">")[0]
+								imgValue = str(imgValue)+">"
+							else:
+								imgValue = ""
 						# value1234 = value1234.replace('"', "&quot;")
 						value1234 = value1234.replace("<p>", " ")
 						value1234 = value1234.replace("</p>", " ")
@@ -8862,6 +8876,7 @@ class SYLDRTLIST:
 						if value123 in checkbox_list:
 							new_dict[value123] = value1234
 						else:
+							Trace.Write("elseval"+str(value1234))
 							if not re.match(r'[A-Za-z0-9]',value1234):
 								value1234 = value1234.replace('"', "&quot;")
 								value1234 = value1234.replace("<p>", " ")
