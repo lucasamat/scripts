@@ -204,7 +204,8 @@ class SYLDRTLIST:
 		if obj_obj is None:
 			return "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
 		# Billing Matrix - Pivot - Start
-		billing_date_column = getQuotetype = delivery_date_column = delivery_date_column_joined = ''        
+		billing_date_column = getQuotetype = delivery_date_column =  ''
+		delivery_date_column_joined = []        
 		# Billing Matrix - Pivot - End
 		if obj_obj is not None:
 			##A055S000P01-4401            
