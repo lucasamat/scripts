@@ -1406,6 +1406,7 @@ class EntitlementView():
 									new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str(sec_str_primp)
 									new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")						
 							else:
+								Trace.Write("attrSysId-else-"+str(attrSysId)+'--'+str(DType))
 								tab_get_disallow_list.append(attrSysId)
 								if attrSysId not in attributesdisallowedlst and attrSysId:
 									attributesdisallowedlst.append(attrSysId)
