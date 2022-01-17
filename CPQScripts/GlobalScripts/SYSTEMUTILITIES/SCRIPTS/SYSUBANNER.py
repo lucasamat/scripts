@@ -2855,7 +2855,7 @@ def Related_Sub_Banner(
     
 
     if subTabName == 'Summary' and TreeParam == "Quote Items" and (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
-        Trace.Write("Subtotal by Offering"+str(TabName))
+        Trace.Write("Offering"+str(TabName))
         getQuotetype = ""
         #getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()
         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")

@@ -474,7 +474,7 @@ def Quote_Preview(quote_id,quote_type):
             
 
             <div class="col-md-12 p-0">
-            <div class="noRecDisp noRecDisp-head">SUBTOTAL BY OFFERINGS</div>
+            <div class="noRecDisp noRecDisp-head">OFFERINGS</div>
             <div id="div_Quote"></div>	
             </div>
             
@@ -699,7 +699,7 @@ def Quote_Preview(quote_id,quote_type):
             
 
             <div class="col-md-12 p-0">
-            <div class="noRecDisp noRecDisp-head">SUBTOTAL BY OFFERINGS</div>
+            <div class="noRecDisp noRecDisp-head">OFFERINGS</div>
             <div id="div_Quote"></div>	
             </div>
 
@@ -924,7 +924,7 @@ def Quote_Preview(quote_id,quote_type):
             
 
             <div class="col-md-12 p-0">
-            <div class="noRecDisp noRecDisp-head">SUBTOTAL BY OFFERINGS</div>
+            <div class="noRecDisp noRecDisp-head">OFFERINGS</div>
             <div id="div_Quote"></div>	
             </div>
 
@@ -1149,7 +1149,7 @@ def Quote_Preview(quote_id,quote_type):
             
 
             <div class="col-md-12 p-0">
-            <div class="noRecDisp noRecDisp-head">SUBTOTAL BY OFFERINGS</div>
+            <div class="noRecDisp noRecDisp-head">OFFERINGS</div>
             <div id="div_Quote"></div>	
             </div>
 
@@ -1167,7 +1167,7 @@ def Quote_Preview(quote_id,quote_type):
                         <div class="noRecDisp">No Records to Display</div>
                     </div>
                     <div class="col-md-12 p-0">
-                            <div class="noRecDisp noRecDisp-head">SUBTOTAL BY OFFERINGS</div>
+                            <div class="noRecDisp noRecDisp-head">OFFERINGS</div>
                             <div id="div_Quote"></div>	
                         </div>
                     <div class="col-md-12 p-0 mt-10">
@@ -1627,7 +1627,7 @@ def Contract_Preview(contract_id,contract_type):
 
 
             <div class="col-md-12 p-0">
-            <div class="noRecDisp-head">SUBTOTAL BY OFFERINGS</div>
+            <div class="noRecDisp-head">OFFERINGS</div>
             <div id="div_Quote"></div>	
             </div>
             
@@ -1852,7 +1852,7 @@ def Contract_Preview(contract_id,contract_type):
 
 
             <div class="col-md-12 p-0">
-            <div class="noRecDisp-head">SUBTOTAL BY OFFERINGS</div>
+            <div class="noRecDisp-head">OFFERINGS</div>
             <div id="div_Quote"></div>	
             </div>
 
@@ -2077,7 +2077,7 @@ def Contract_Preview(contract_id,contract_type):
 
 
             <div class="col-md-12 p-0">
-            <div class="noRecDisp-head">SUBTOTAL BY OFFERINGS</div>
+            <div class="noRecDisp-head">OFFERINGS</div>
             <div id="div_Quote"></div>	
             </div>
 
@@ -2302,7 +2302,7 @@ def Contract_Preview(contract_id,contract_type):
 
 
             <div class="col-md-12 p-0">
-            <div class="noRecDisp-head">SUBTOTAL BY OFFERINGS</div>
+            <div class="noRecDisp-head">OFFERINGS</div>
             <div id="div_Quote"></div>	
             </div>
 
@@ -2320,7 +2320,7 @@ def Contract_Preview(contract_id,contract_type):
                         <div class="noRecDisp">No Records to Display</div>
                     </div>
                     <div class="col-md-12 p-0">
-                            <div class="noRecDisp-head">SUBTOTAL BY OFFERINGS</div>
+                            <div class="noRecDisp-head">OFFERINGS</div>
                             <div id="div_Quote"></div>	
                         </div>
                     <div class="col-md-12 p-0 mt-10">
