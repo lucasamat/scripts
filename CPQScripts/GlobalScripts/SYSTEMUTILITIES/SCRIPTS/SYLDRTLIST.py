@@ -3987,6 +3987,28 @@ class SYLDRTLIST:
 									+ "</th>"
 								)           
 					continue
+				elif RECORD_ID == 'SYOBJR-34575' and invs in (delivery_date_column_joined):
+					align = ''
+					rowspan_level1 = ""
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					if not table_group_columns_delivery:
+						#table_header += '<th colspan="12" '+rowspan_level1+'  data-align="center"><div>CEILING PRICE<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="celing_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+						for invs in delivery_date_column_joined:
+							table_group_columns_delivery2 += (
+										'<th data-toggle="bootstrap-table" data-field="'
+										+ str(invs)
+										+ '" data-filter-control="input" '+rowspan_level1+' data-align="'
+										+ str(align)
+										+'" data-title-tooltsip="'
+										+ str(qstring)
+										+ '" data-sortable="true">'
+										+ str(qstring)
+										+ "</th>"
+									)           
+					continue
 				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','DISCOUNT','SALES_PRICE_INGL_CURR','YEAR_OVER_YEAR'):
 				# 	align = ''
 				# 	rowspan_level1 = ""
@@ -4370,7 +4392,7 @@ class SYLDRTLIST:
 			#if table_group_columns:
 			for invs in delivery_date_column_joined:
 				Trace.Write('week---'+str(invs))
-			
+
 			grouping_columns_delivery += table_group_columns_delivery
 				
 			Trace.Write('grouping_columns_delivery---'+str(grouping_columns_delivery))
