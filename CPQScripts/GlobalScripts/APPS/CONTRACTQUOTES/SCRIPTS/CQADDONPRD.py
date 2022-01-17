@@ -11,7 +11,8 @@ import sys
 import datetime
 User_name = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
 User_Id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
-def addon_service_level_entitlement(OfferingRow_detail,greenbook):
+
+def _addon_service_level_entitlement(OfferingRow_detail,greenbook):
 	Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 						
 	Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.ADNPRD_ID,'request_url':Request_URL,'request_type':"New"})
@@ -61,8 +62,8 @@ def addon_service_level_entitlement(OfferingRow_detail,greenbook):
 	is_default = ent_val_code = ''
 	AttributeID_Pass =""
 	get_toolptip = ""
-
-	if ProductVersionObj:
+	addon_entitlement_object = Sql.GetFirst("select count(SAQTSE.CpqTableEntryId) as cnt from SAQTSE(nolock) inner join SAQSAO on SAQTSE.SERVICE_ID = SAQSAO.ADNPRD_ID AND SAQTSE.PAR_SERVICE_ID = SAQSAO.SERVICE_ID AND SAQTSE.QUOTE_RECORD_ID = SAQSAO.QUOTE_RECORD_ID and SAQTSE.QTEREV_RECORD_ID = SAQSAO.QTEREV_RECORD_ID WHERE SAQTSE.PAR_SERVICE_ID = '{}' AND SAQSAO.QUOTE_RECORD_ID = '{}' and SAQSAO.QTEREV_RECORD_ID = '{}' AND SAQTSE.SERVICE_ID = '{}'".format(OfferingRow_detail.SERVICE_ID,OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.QTEREV_RECORD_ID, OfferingRow_detail.ADNPRD_ID))
+	if ProductVersionObj and addon_entitlement_object.cnt == 0:
 		insertservice = ""
 		tbrow={}	
 		for attrs in overallattributeslist:
@@ -159,7 +160,10 @@ def addon_service_level_entitlement(OfferingRow_detail,greenbook):
 		# except:
 		# 	Trace.Write("EXCEPT---PREDEFINED DRIVER IFLOW")
 
-def addon_greenbook_level_entitlement(OfferingRow_detail,greenbook):
+def _addon_equipment_insert(OfferingRow_detail,greenbook):
+	pass
+
+def _addon_rolldown_entitlement(OfferingRow_detail,greenbook):
 	Sql.RunQuery("""INSERT SAQSGE (KB_VERSION,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,PAR_SERVICE_ID, PAR_SERVICE_RECORD_ID, PAR_SERVICE_DESCRIPTION,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID, CPS_CONFIGURATION_ID, CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,QTESRVENT_RECORD_ID,QTESRVGBK_RECORD_ID,ENTITLEMENT_XML,CONFIGURATION_STATUS, QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED )
 			SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM (SELECT DISTINCT SAQTSE.KB_VERSION,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_NAME,SAQTSE.QUOTE_RECORD_ID,SAQTSE.QTEREV_RECORD_ID,SAQTSE.QTEREV_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.PAR_SERVICE_ID,SAQTSE.PAR_SERVICE_RECORD_ID,SAQTSE.PAR_SERVICE_DESCRIPTION,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID,	
 			SAQTSE.CPS_CONFIGURATION_ID, SAQTSE.CPS_MATCH_ID,SAQSGB.GREENBOOK,SAQSGB.GREENBOOK_RECORD_ID,SAQTSE.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID as QTESRVENT_RECORD_ID,SAQSGB.QUOTE_SERVICE_GREENBOOK_RECORD_ID as QTESRVGBK_RECORD_ID,SAQTSE.ENTITLEMENT_XML,SAQTSE.CONFIGURATION_STATUS FROM
@@ -167,3 +171,8 @@ def addon_greenbook_level_entitlement(OfferingRow_detail,greenbook):
 		JOIN SAQSGB  (NOLOCK) ON SAQSGB.SERVICE_ID = SAQTSE.SERVICE_ID AND SAQSGB.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID  AND SAQSGB.QTEREV_RECORD_ID = SAQTSE.QTEREV_RECORD_ID  
 		LEFT JOIN SAQSGE (NOLOCK) ON SAQSGE.QUOTE_RECORD_ID = SAQSGB.QUOTE_RECORD_ID AND SAQSGE.QTEREV_RECORD_ID = SAQSGB.QTEREV_RECORD_ID AND SAQSGE.SERVICE_ID = SAQSGB.SERVICE_ID AND ISNULL(SAQSGE.GREENBOOK_RECORD_ID,'') = ISNULL(SAQSGB.GREENBOOK_RECORD_ID,'')
 			WHERE SAQTSE.QUOTE_RECORD_ID ='{QuoteRecordId}'  AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.PAR_SERVICE_ID = '{ServiceId}' AND  SAQTSE.SERVICE_ID = '{Addon_ServiceId}' AND SAQSGB.GREENBOOK = '{greenbook}' AND ISNULL(SAQSGE.GREENBOOK_RECORD_ID,'') = '' )IQ""".format(UserId=User_Id, QuoteRecordId=OfferingRow_detail.QUOTE_RECORD_ID, ServiceId=OfferingRow_detail.SERVICE_ID, revision_rec_id = OfferingRow_detail.QTEREV_RECORD_ID,Addon_ServiceId = OfferingRow_detail.ADNPRD_ID,greenbook = greenbook))
+
+def addon_operations(OfferingRow_detail,greenbook):
+	_addon_service_level_entitlement(OfferingRow_detail,greenbook)
+	_addon_equipment_insert(OfferingRow_detail,greenbook)
+	_addon_rolldown_entitlement(OfferingRow_detail,greenbook)
