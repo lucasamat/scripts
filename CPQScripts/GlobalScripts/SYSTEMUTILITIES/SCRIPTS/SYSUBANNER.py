@@ -2268,6 +2268,13 @@ def Related_Sub_Banner(
         SecondValue = str(TreeParentParam)
         ThirdLable = "Got Code"
         ThirdValue = str(TreeParam)
+    elif ObjName == "SAQGPM" and (subTabName == "Details" or subTabName == "Assemblies"  ):
+        PrimaryLable = "Product Offering ID"
+        PrimaryValue = str(TreeTopSuperParentParam)
+        SecondLable = "Greenbook"
+        SecondValue = str(TreeSuperParentParam)
+        ThirdLable = "PM ID"
+        ThirdValue = str(TreeParam)
     elif ObjName == "SAQSGB" and TreeTopSuperParentParam == "Product Offerings" and (subTabName in("Equipment Details","Equipment Entitlements","Equipment Assemblies")):
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         PrimaryLable = "Product Offering ID"
