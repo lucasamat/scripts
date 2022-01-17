@@ -1568,6 +1568,7 @@ class Entitlements:
 				##to update match id at all level while saving ends
 				Sql.RunQuery(UpdateEntitlement)
 				#Trace.Write("TEST COMMIT")
+				
 				Trace.Write("CHKNG _scheduled_parts "+str(scheduled_parts))
 				where = " QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,self.treeparentparam)
 				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
