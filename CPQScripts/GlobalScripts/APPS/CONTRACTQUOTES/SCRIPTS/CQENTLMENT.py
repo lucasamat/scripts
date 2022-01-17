@@ -790,14 +790,6 @@ class Entitlements:
 								UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
 								#Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
 									
-					#Sql.RunQuery(UpdateEntitlement)	
-					# Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
-					# Sql.RunQuery(Updatecps)
-
-					# cust_annual_qty = Sql.GetList("SELECT CUSTOMER_ANNUAL_QUANTITY FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
-
-					# if cust_annual_qty:
-					# 	for annual_qty in cust_annual_qty:
 				else:
 					Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
 			else:
@@ -1568,8 +1560,15 @@ class Entitlements:
 				##to update match id at all level while saving ends
 				Sql.RunQuery(UpdateEntitlement)
 				#Trace.Write("TEST COMMIT")
+				cust_annual_qty = Sql.GetList("SELECT CUSTOMER_ANNUAL_QUANTITY FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
 
-				Trace.Write("CHKNG _scheduled_parts "+str(scheduled_parts))
+				if cust_annual_qty:
+					for annual_qty in cust_annual_qty:
+						if int(scheduled_parts) < 10:
+							Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'UNSCHEDULED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY < 10".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
+						elif int(scheduled_parts) >= 10:
+							Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'SCHEDULED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY >= 10".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
+				# Trace.Write("CHKNG _scheduled_parts "+str(scheduled_parts))
 				where = " QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,self.treeparentparam)
 				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
 				getPlatform = Sql.GetList("SELECT EQUIPMENT_ID,WAFER_SIZE,GREENBOOK,PLATFORM  FROM SAQSCO (NOLOCK) WHERE {where}".format(where=where))
