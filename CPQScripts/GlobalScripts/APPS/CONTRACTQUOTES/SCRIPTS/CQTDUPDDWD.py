@@ -246,7 +246,10 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
 		except Exception:
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")		
-	
+	def _validate_records(self, record_list_obj=None):
+		if record_list_obj:
+			pass
+
 	def _do_opertion(self):
 		for sheet_data in self.upload_data:	
 			if not sheet_data.Value:	
