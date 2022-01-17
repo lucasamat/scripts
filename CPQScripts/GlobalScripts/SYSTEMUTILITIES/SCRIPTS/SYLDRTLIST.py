@@ -3516,6 +3516,7 @@ class SYLDRTLIST:
 			table_group_columns_delivery = ''
 			#table_group_columns1 = ''
 			table_group_columns2 = ''
+			table_group_columns_delivery2 =''
 			#table_group_columns3 = ''
 			#table_group_columns4 = ''
 			#table_group_columns5 = ''
