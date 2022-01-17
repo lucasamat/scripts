@@ -3917,13 +3917,13 @@ class SYLDRTLIST:
 					table_header += (
 								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
+								+ '" data-filter-control="input"  '+rowspan+' data-align="'
 								+ str(align)
 								+'" data-title-tooltsip="'
 								+ str(qstring)
 								+ '" data-sortable="true">'
 								+ str(qstring)
-								+ rowspan "</th>"
+								+ "</th>"
 							)
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','GOT_CODE','ASSEMBLY_ID','PM_ID','PM_LABOR_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOOL_CONFIGURATION','SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','CEILING_PRICE_INGL_CURR'):
 					align = ''
