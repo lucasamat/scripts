@@ -90,21 +90,21 @@ def _update_entitlement_values(par_service = ''):
 	if get_parent_dict and get_service_xml_dict:
 		for key,value in get_service_xml_dict.items():
 			#temp_val = value
-			if key in get_parent_dict.keys() or key == 'AGS_Z0105_PQB_SVSPPC' :
-				Trace.Write("keyiffff- "+str(key)+" valueiffff- "+str(value))
-				if key == 'AGS_Z0105_PQB_SVSPPC' and 'AGS_Z0105_SPS_SPLIT_PER' in get_parent_dict.keys():
-					#Trace.Write("keyi- "+str(key)+" valueiffff- "+str(value))
-					ent_display_value_tag_match = re.findall(ent_display_val_tag_pattern,get_parent_dict['AGS_Z0105_SPS_SPLIT_PER'])
-					if ent_display_value_tag_match:
-						value = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(ent_display_value_tag_match[0])+'</ENTITLEMENT_DISPLAY_VALUE>',value)
+			if key in get_parent_dict.keys()  :
+				# Trace.Write("keyiffff- "+str(key)+" valueiffff- "+str(value))
+				# if key == 'AGS_Z0105_PQB_SVSPPC' and 'AGS_Z0105_SPS_SPLIT_PER' in get_parent_dict.keys():
+				# 	#Trace.Write("keyi- "+str(key)+" valueiffff- "+str(value))
+				# 	ent_display_value_tag_match = re.findall(ent_display_val_tag_pattern,get_parent_dict['AGS_Z0105_SPS_SPLIT_PER'])
+				# 	if ent_display_value_tag_match:
+				# 		value = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(ent_display_value_tag_match[0])+'</ENTITLEMENT_DISPLAY_VALUE>',value)
 
-						value = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(ent_display_value_tag_match[0])+'</ENTITLEMENT_VALUE_CODE>',value)
-					#value = get_parent_dict['AGS_Z0105_SPS_SPLIT_PER']
-					#temp = get_parent_dict['AGS_Z0105_SPS_SPLIT_PER']
-					#Trace.Write("valueee---"+str(value))
-					#pass
-					# else:
-					# 	temp_val = get_parent_dict[key]
+				# 		value = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(ent_display_value_tag_match[0])+'</ENTITLEMENT_VALUE_CODE>',value)
+				# 	value = get_parent_dict['AGS_Z0105_SPS_SPLIT_PER']
+				# 	temp = get_parent_dict['AGS_Z0105_SPS_SPLIT_PER']
+				# 	Trace.Write("valueee---"+str(value))
+				# 	pass
+				# 	else:
+				value = get_parent_dict[key]
 			assign_xml += value
 		Sql.RunQuery("UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' AND SERVICE_ID ='Z0105'".format(assign_xml,contract_quote_rec_id, quote_revision_rec_id ,par_service) )
 	
