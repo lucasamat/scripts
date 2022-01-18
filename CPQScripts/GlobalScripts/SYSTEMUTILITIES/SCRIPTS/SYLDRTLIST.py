@@ -4342,7 +4342,7 @@ class SYLDRTLIST:
 						elif RECORD_ID == 'SYOBJR-34575' and str(invs) in delivery_date_column: 
 							
 							footer_formatter = ''
-							rowspan = 'rowspan="1"'
+							#rowspan = 'rowspan="1"'
 							#'data-footer-formatter="priceSumFormatter"'
 							tooltip = qstring
 							invst ='QUAN'
@@ -4352,7 +4352,7 @@ class SYLDRTLIST:
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
-								+ '" data-filter-control="input" colspan="1" class="text-right cust_billing_date" data-title-tooltip="'
+								+ '" data-filter-control="input"  class="text-right cust_billing_date" data-title-tooltip="'
 								+ str(tooltip)
 								+ '" data-sortable="true" '
 								+ str(footer_formatter)
