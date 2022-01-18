@@ -1712,7 +1712,7 @@ def Related_Sub_Banner(
         FifthValue = str(SerialNumber)
         SixthLable = "Assembly ID"
         SixthValue = str(AssemblyId)     
-    elif TopSuperParentParam == "Product Offerings" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Fab Value Drivers" or subTabName == "Fab Cost and Value Drivers" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers") and current_prod !='SYSTEM ADMIN' and CurrentTab == 'Quotes':
+    elif TopSuperParentParam == "Product Offerings" and (subTabName == "Equipment" or subTabName == "Got Code" or subTabName == "Entitlements" or subTabName == "Fab Value Drivers" or subTabName == "Fab Cost and Value Drivers" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers") and current_prod !='SYSTEM ADMIN' and CurrentTab == 'Quotes':
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeParentParam)
