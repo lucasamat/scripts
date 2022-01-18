@@ -4408,8 +4408,7 @@ class SYLDRTLIST:
 			grouping_columns_delivery = ""
 			#if table_group_columns:
 			#Trace.Write('table_group_columns_delivery---'+str(table_group_columns_delivery))
-			rowspan = 'rowspan="1"'
-			invst ='QUANTITY'
+			
 			
 			grouping_columns_delivery += table_group_columns_delivery2
 			
