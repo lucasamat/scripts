@@ -1057,7 +1057,7 @@ class ContractQuoteItem:
 		Log.Info("====>>> _quote_items_insert")
 		Log.Info("Checking_source_object_name"+str(source_object_name))
 		Trace.Write("====>>> _quote_items_insert"+str(self.quote_service_entitlement_type))
-		
+
 		# dynamic_select_columns = ""
 		# item_where_string = ""
 		# item_join_string = ""
@@ -2061,6 +2061,7 @@ class ContractQuoteItem:
 					self._simple_fpm_quote_items_insert()
 					self._insert_quote_item_fpm_forecast_parts()
 					self._simple_quote_annualized_items_insert()
+					self._quote_items_entitlement_insert()
 			elif self.is_simple_service == True:
 				self._simple_quote_items_summary_insert()
 				self._simple_quote_items_insert()
