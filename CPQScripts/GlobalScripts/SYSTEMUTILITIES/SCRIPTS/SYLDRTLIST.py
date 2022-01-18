@@ -8970,10 +8970,12 @@ class SYLDRTLIST:
 							img_list.append('PRICING_STATUS')
 						
 						if value123 in img_list:
-							Trace.Write("8883")
+							Trace.Write("8883"+str(imgValue))
+							
 							new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
 						else:
 							Trace.Write("8886")
+							Trace.Write("8886"+str(value1234))
 							new_dict[value123] = value1234.upper() 
 					if value123 in edit_field:                      
 						value1234 = value1234.replace('"', "&quot;")
