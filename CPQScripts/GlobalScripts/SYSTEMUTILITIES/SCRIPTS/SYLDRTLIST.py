@@ -9064,6 +9064,7 @@ class SYLDRTLIST:
 												if value123 in img_list:
 													#A055S000P01-15028									#imgValue =imgValue.split(">")[0]
 													#imgvalue =str(imgValue)+">"
+													Trace.Write("9067"+str(value123))
 													imgValue = re.sub(r'>\s+([^>]*?)$','>',imgValue)
 													Trace.Write("8981"+str(imgValue))
 													new_dict[value123] = ('<abbr id ="' + key_value + '">' + imgValue + "</abbr>")  
