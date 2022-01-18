@@ -8940,9 +8940,9 @@ class SYLDRTLIST:
 						imgValue = ''
 						if str(ObjectName) == "SAQRIT":
 							if value1234 != "":
+								Trace.Write("8943"+str(value1234))
 								imgValue = str(value1234).split(">")[0]
-								imgValue = str(imgValue)+">"
-							
+								imgValue = str(imgValue)+">"	
 							else:
 								imgValue = ""
 						elif str(ObjectName) == "SAQDOC":
