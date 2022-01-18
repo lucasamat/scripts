@@ -4928,6 +4928,12 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				BatchGroupRecordId=kwargs.get('batch_group_record_id')
 				))
 		
+		if self.tree_param == "Z0009":
+			delete_obj_list = ["SAQSCO","SAQSCA"]
+			for object in delete_obj_list:
+				Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(object,self.contract_quote_record_id, self.service_id,self.contract_quote_revision_record_id ))
+  
+  
 	
 	def _create(self):
 		if self.action_type == "ADD_COVERED_OBJ":
