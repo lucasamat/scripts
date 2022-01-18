@@ -2444,8 +2444,8 @@ class Entitlements:
 				if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
 					greenbook_id = self.treeparentparam
 					par_serviceId = self.treesuperparentparam
-					where = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}' AND GREENBOOK ='{}' AND QTESRVGBK_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,par_serviceId,greenbook_id, service_gnbook_rec_id)
-					get_service_id = Sql.GetFirst("SELECT SERVICE_ID FROM {} (NOLOCK) WHERE {}".format(objName, where) )
+					where = " WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.PAR_SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.QTESRVGBK_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,par_serviceId,greenbook_id, service_gnbook_rec_id)
+					get_service_id = Sql.GetFirst("SELECT SERVICE_ID FROM {} (NOLOCK)  {}".format(objName, where.replace('SRC','')) )
 					serviceId = get_service_id.SERVICE_ID
 				else:
 					greenbook_id = self.treeparam
