@@ -4373,7 +4373,7 @@ class SYLDRTLIST:
 							table_group_columns_delivery += (
 								'<th  data-field="'
 								+ str(invs)
-								+ '" data-filter-control="input" colspan="7" class="text-right cust_billing_date" data-title-tooltip="'
+								+ '" data-filter-control="input" class="text-right cust_billing_date" data-title-tooltip="'
 								+ str(tooltip)
 								+ '" data-sortable="true" '
 								+ str(footer_formatter)
