@@ -4347,7 +4347,7 @@ class SYLDRTLIST:
 							tooltip = qstring
 							qstring = '<a onclick="openBillingMatrixDateChangeModal(\'{Value}\')" href="#">{Value}</a>'.format(Value=qstring.replace('-','/'))
 							#data_field = invs.replace('/','-')
-							Trace.Write('2780-----rowspan-----'+ str(rowspan))
+							Trace.Write('2780-----rowspan----'+ str(rowspan))
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
