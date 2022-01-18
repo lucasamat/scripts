@@ -417,13 +417,18 @@ class Entitlements:
 				tableName = 'SAQSGE'
 				parentObj = 'SAQTSE'
 				if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
+					Trace.Write("service_gnbook_rec_id-- "+str(service_gnbook_rec_id))
 					greenbook_id = self.treeparentparam
-					serviceId = self.treesuperparentparam
+					par_serviceId = self.treesuperparentparam
+					whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}' AND GREENBOOK ='{}' AND QTESRVGBK_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,par_serviceId,greenbook_id, service_gnbook_rec_id)
+					get_service_id = Sql.GetFirst("SELECT SERVICE_ID FROM {} (NOLOCK) WHERE {}".format(tableName, whereReq) )
+					serviceId = get_service_id.SERVICE_ID
 				else:
 					greenbook_id = self.treeparam
 					serviceId = self.treeparentparam
+					whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,greenbook_id)
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,greenbook_id)
+				
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
 				tableName = 'SAQSCE'
@@ -2147,12 +2152,17 @@ class Entitlements:
 				parentObj = 'SAQTSE'
 				if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
 					greenbook_id = self.treeparentparam
-					serviceId = self.treesuperparentparam
+					par_serviceId = self.treesuperparentparam
+					whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}' AND GREENBOOK ='{}' AND QTESRVGBK_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,par_serviceId,greenbook_id, service_gnbook_rec_id)
+					get_service_id = Sql.GetFirst("SELECT SERVICE_ID FROM {} (NOLOCK) WHERE {}".format(tableName, whereReq) )
+					serviceId = get_service_id.SERVICE_ID
+
 				else:
 					greenbook_id = self.treeparam
 					serviceId = self.treeparentparam
+					whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId, greenbook_id)
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId, greenbook_id)
+				
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
 				tableName = 'SAQSCE'
@@ -2433,11 +2443,14 @@ class Entitlements:
 				
 				if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
 					greenbook_id = self.treeparentparam
-					serviceId = self.treesuperparentparam
+					par_serviceId = self.treesuperparentparam
+					where = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}' AND GREENBOOK ='{}' AND QTESRVGBK_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,par_serviceId,greenbook_id, service_gnbook_rec_id)
+					get_service_id = Sql.GetFirst("SELECT SERVICE_ID FROM {} (NOLOCK) WHERE {}".format(objName, where) )
+					serviceId = get_service_id.SERVICE_ID
 				else:
 					greenbook_id = self.treeparam
 					serviceId = self.treeparentparam
-				where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid, serviceId, greenbook_id)
+					where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid, serviceId, greenbook_id)
 			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
 				Trace.Write("inside--2303-----"+str(self.treeparam))
 				objName = 'SAQSCE'			
@@ -2618,8 +2631,11 @@ class Entitlements:
 			get_curr = value.PRICE_METHOD
 
 
+try:
+	service_gnbook_rec_id = Param.RECORD_ID
+except:
+	service_gnbook_rec_id = ''
 
-	
 try:
 	AttributeID = Param.attributeId
 except:	
