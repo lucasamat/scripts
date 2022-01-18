@@ -3966,7 +3966,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				elif RECORD_ID == 'SYOBJR-34575' and invs in ('PART_DESCRIPTION','QUANTITY','DELIVERY_SCHED_DATE'):
+				elif RECORD_ID == 'SYOBJR-34575' and invs in ('QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID','PART_DESCRIPTION','QUANTITY','DELIVERY_SCHED_DATE'):
 					align = ''
 					rowspan_level1 = ""
 					if str(invs) in right_align_list:
