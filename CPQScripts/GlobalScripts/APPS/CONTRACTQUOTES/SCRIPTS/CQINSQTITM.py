@@ -2105,6 +2105,7 @@ class ContractQuoteItem:
 						self._simple_fpm_quote_items_insert()
 						self._insert_quote_item_fpm_forecast_parts()
 						self._simple_quote_annualized_items_insert()
+						self._quote_items_entitlement_insert()
 				else:
 					Log.Info("===> _do_opertion 4444")
 					self._quote_items_summary_insert()
