@@ -4436,6 +4436,7 @@ class SYLDRTLIST:
 		CHL_STS_OBJ = None
 
 		if CHL_STS_OBJ is not None: # Not Needed
+			Trace.Write('4512---4439------')
 			dbl_clk_function += (
 				'$("debugger;'
 				+ str(table_ids)
