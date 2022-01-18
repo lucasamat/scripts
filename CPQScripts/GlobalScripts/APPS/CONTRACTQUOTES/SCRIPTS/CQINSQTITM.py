@@ -1055,6 +1055,7 @@ class ContractQuoteItem:
 		Log.Info("====>>> _quote_items_insert")
 		Log.Info("Checking_source_object_name"+str(source_object_name))
 		Trace.Write("====>>> _quote_items_insert"+str(self.quote_service_entitlement_type))
+		
 		# dynamic_select_columns = ""
 		# item_where_string = ""
 		# item_join_string = ""
