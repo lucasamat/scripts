@@ -28,28 +28,29 @@ def quoteiteminsert(Qt_id):
 	get_exch_rate = Sql.GetFirst("SELECT * FROM SAQTRV where QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(Qt_id,get_rev_rec_id.QTEREV_RECORD_ID))
 	
 	get_exch_rate = get_exch_rate.EXCHANGE_RATE
+	try:
+		##updating price for z0117
+		check_record = Sql.GetFirst("SELECT count(*) as cnt FROM SAQRIT WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117'".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID) )
+		if check_record.cnt > 0:
+			get_greenbook_record = Sql.GetList("SELECT DISTINCT GREENBOOK,ENTITLEMENT_XML,SERVICE_ID,PAR_SERVICE_ID FROM SAQSGE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' ")
+			tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_Z0117_PQB_QTITST</ENTITLEMENT_ID>')
+			entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			if get_greenbook_record:
+				for record in get_greenbook_record:
+					get_voucher_value = ''
+					for quote_item_tag in re.finditer(tag_pattern, record.ENTITLEMENT_XML):
+						quote_item_tag_content = quote_item_tag.group(1)
+						entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)	
+						if entitlement_id_tag_match:
+							entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
+							if entitlement_display_value_tag_match:
+								get_voucher_value = entitlement_display_value_tag_match[0].upper()
+								break
+					Trace.Write("get_voucher_value-"+str(record.GREENBOOK)+"-"+str(get_voucher_value))
 
-	##updating price for z0117
-	check_record = Sql.GetFirst("SELECT count(*) as cnt FROM SAQRIT WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117'".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID) )
-	if check_record.cnt > 0:
-		get_greenbook_record = Sql.GetList("SELECT DISTINCT GREENBOOK,ENTITLEMENT_XML,SERVICE_ID,PAR_SERVICE_ID FROM SAQSGE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' ")
-		tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-		entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_Z0117_PQB_QTITST</ENTITLEMENT_ID>')
-		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-		if get_greenbook_record:
-			for record in get_greenbook_record:
-				get_voucher_value = ''
-				for quote_item_tag in re.finditer(tag_pattern, record.ENTITLEMENT_XML):
-					quote_item_tag_content = quote_item_tag.group(1)
-					entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)	
-					if entitlement_id_tag_match:
-						entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
-						if entitlement_display_value_tag_match:
-							get_voucher_value = entitlement_display_value_tag_match[0].upper()
-							break
-				Trace.Write("get_voucher_value-"+str(record.GREENBOOK)+"-"+str(get_voucher_value))
-				
-
+	except:
+		pass
 
 
 
@@ -123,29 +124,32 @@ def quoteiteminsert(Qt_id):
 	# SUM(ISNULL(SAQITM.YEAR_4_INGL_CURR, 0)) as YEAR_4_INGL_CURR,
 	# SUM(ISNULL(SAQITM.YEAR_5_INGL_CURR, 0)) as YEAR_5_INGL_CURR
 	#updating value to quote summary ends
-	get_services = Sql.GetList("SELECT SERVICE_ID from SAQTSE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
-	get_services_list = []
-	for val in get_services:
-		if val.SERVICE_ID:
-			get_services_list.append(val.SERVICE_ID)
-	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
-	if LOGIN_CREDENTIALS is not None:
-		Login_Username = str(LOGIN_CREDENTIALS.Username)
-		Login_Password = str(LOGIN_CREDENTIALS.Password)
-		authorization = Login_Username+":"+Login_Password
-		binaryAuthorization = UTF8.GetBytes(authorization)
-		authorization = Convert.ToBase64String(binaryAuthorization)
-		authorization = "Basic " + authorization
+	try:
+		get_services = Sql.GetList("SELECT SERVICE_ID from SAQTSE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
+		get_services_list = []
+		for val in get_services:
+			if val.SERVICE_ID:
+				get_services_list.append(val.SERVICE_ID)
+		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+		if LOGIN_CREDENTIALS is not None:
+			Login_Username = str(LOGIN_CREDENTIALS.Username)
+			Login_Password = str(LOGIN_CREDENTIALS.Password)
+			authorization = Login_Username+":"+Login_Password
+			binaryAuthorization = UTF8.GetBytes(authorization)
+			authorization = Convert.ToBase64String(binaryAuthorization)
+			authorization = "Basic " + authorization
 
 
-		webclient = System.Net.WebClient()
-		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
-		
-		result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_record_id,Rev_Id = revision)
-		
-		LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
-		Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
+			webclient = System.Net.WebClient()
+			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+			
+			result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_record_id,Rev_Id = revision)
+			
+			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
+			Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
+	except:
+		Log.Info('error in Billing')	
 	return "True"
 
 def quoteitemupdate(Qt_id):
