@@ -965,7 +965,9 @@ class ContractQuoteItem:
 					entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
 					if entitlement_display_value_tag_match:
 						self.quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
+						Trace.Write("---self.quote_service_entitlement_type"+str(self.quote_service_entitlement_type))
 						if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT'):
+							Trace.Write("---===self.quote_service_entitlement_type"+str(self.quote_service_entitlement_type))
 							self.source_object_name = 'SAQSCE'
 						elif self.quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART','OFFERING+FAB+GREENBOOK+CREDIT','OFFERING+GREENBOOK+TOOLS GROUP'):
 							self.source_object_name = 'SAQSGE'
