@@ -3609,8 +3609,8 @@ class SYLDRTLIST:
 					# else:
 					rowspan = 'rowspan="2"'
 					#table_header += '<th colspan="5" data-align="right"><div><label class="onlytext"><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
-				if RECORD_ID == 'SYOBJR-34575':
-					rowspan = 'rowspan="3"'
+				# if RECORD_ID == 'SYOBJR-34575':
+				# 	rowspan = 'rowspan="3"'
 				if key == 0:
 					if invs in primary_link_popup:
 						
@@ -4426,9 +4426,9 @@ class SYLDRTLIST:
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
-		elif RECORD_ID == 'SYOBJR-34575':
-			cls = "eq(3)"
-			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
+		# elif RECORD_ID == 'SYOBJR-34575':
+		# 	cls = "eq(3)"
+		# 	table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
 		else:
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
 		
@@ -4464,7 +4464,7 @@ class SYLDRTLIST:
 			)
 
 		else:
-			if RECORD_ID != "SYOBJR-00009" and RECORD_ID != "SYOBJR-34575":
+			if RECORD_ID != "SYOBJR-00009":
 				dbl_clk_function += (
 					'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
 					+ str(table_ids)
