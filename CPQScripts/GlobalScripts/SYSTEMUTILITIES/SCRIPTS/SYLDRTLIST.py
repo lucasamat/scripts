@@ -4370,7 +4370,7 @@ class SYLDRTLIST:
 							
 							#data_field = invs.replace('/','-')
 							Trace.Write('2780-----rowspan-----'+ str(rowspan))
-							table_header += (
+							table_group_columns_delivery += (
 								'<th  data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" class="text-right cust_billing_date" data-title-tooltip="'
