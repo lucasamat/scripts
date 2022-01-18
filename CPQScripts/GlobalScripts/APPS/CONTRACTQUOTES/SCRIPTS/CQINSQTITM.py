@@ -1053,6 +1053,7 @@ class ContractQuoteItem:
 	
 	def _quote_items_insert(self, update=False):
 		Log.Info("====>>> _quote_items_insert")
+		Log.Info("Checking_source_object_name"+str(source_object_name))
 		Trace.Write("====>>> _quote_items_insert"+str(self.quote_service_entitlement_type))
 		# dynamic_select_columns = ""
 		# item_where_string = ""
@@ -1078,7 +1079,7 @@ class ContractQuoteItem:
 				dynamic_global_curr_columns += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR,"
 				dynamic_columns += "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
 		
-		Log.Info("Checking_source_object_name"+str(source_object_name))
+		
 		if self.source_object_name:		
 			equipments_count = 0
 			quote_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
