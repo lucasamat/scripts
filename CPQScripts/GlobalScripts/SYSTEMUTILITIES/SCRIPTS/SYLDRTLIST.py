@@ -3433,11 +3433,11 @@ class SYLDRTLIST:
 				rowspan = 'rowspan="2"' 
 				
 				#table_header += '<th colspan="23" data-align="right"><div><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
-			if RECORD_ID == 'SYOBJR-34575':
-				# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				# 	rowspan = 'rowspan="3"' 
-				# else:
-				rowspan = 'rowspan="3"'
+			# if RECORD_ID == 'SYOBJR-34575':
+			# 	# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+			# 	# 	rowspan = 'rowspan="3"' 
+			# 	# else:
+			# 	rowspan = 'rowspan="3"'
 			if TreeParam == "Quote Preview" or TreeParam == "Contract Preview":
 				table_header += ''            
 			else:
