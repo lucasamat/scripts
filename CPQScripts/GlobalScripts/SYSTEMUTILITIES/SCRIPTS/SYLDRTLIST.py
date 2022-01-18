@@ -4395,11 +4395,24 @@ class SYLDRTLIST:
 			grouping_columns_delivery = ""
 			#if table_group_columns:
 			#Trace.Write('table_group_columns_delivery---'+str(table_group_columns_delivery))
+			rowspan = 'rowspan="1"'
+			invst ='QUANTITY'
+			table_group_columns_delivery2 += (
+								'<th  data-field="'
+								+ str(invst)
+								+ '" data-filter-control="input" colspan="1" class="text-right cust_billing_date" data-title-tooltip="'
+								+ str(invst)
+								+ '" data-sortable="true" '
+								+ str(footer_formatter)
+								+ ' '
+								+ rowspan
+								+'>'
+								+ str(invst)
+								+ "</th>"
+							)
+			grouping_columns_delivery += table_group_columns_delivery2
 			
-			grouping_columns_delivery += table_group_columns_delivery
-			# if table_group_columns_delivery2:
-			# 	Trace.Write('table_group_columns_delivery2---'+str(table_group_columns_delivery2))
-			# 	grouping_columns_delivery += table_group_columns_delivery2
+			Trace.Write('table_group_columns_delivery2---'+str(table_group_columns_delivery2))
 
 				
 			Trace.Write('grouping_columns_delivery---'+str(grouping_columns_delivery))
