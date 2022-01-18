@@ -4415,16 +4415,16 @@ class SYLDRTLIST:
 		if RECORD_ID == 'SYOBJR-34575':
 			grouping_columns_delivery = ""
 			#if table_group_columns:
-			#Trace.Write('table_group_columns_delivery---'+str(table_group_columns_delivery))
+			Trace.Write('table_group_columns_delivery---'+str(table_group_columns_delivery))
 			
-			grouping_columns_delivery += table_group_columns_delivery
+			#grouping_columns_delivery += table_group_columns_delivery
 			# if table_group_columns_delivery2:
 			# 	Trace.Write('table_group_columns_delivery2---'+str(table_group_columns_delivery2))
 			# 	grouping_columns_delivery += table_group_columns_delivery2
 
 				
-			Trace.Write('grouping_columns_delivery---'+str(grouping_columns_delivery))
-			table_header += "<tr >{}</tr>".format(grouping_columns_delivery)
+			#Trace.Write('grouping_columns_delivery---'+str(grouping_columns_delivery))
+			#table_header += "<tr >{}</tr>".format(grouping_columns_delivery)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
