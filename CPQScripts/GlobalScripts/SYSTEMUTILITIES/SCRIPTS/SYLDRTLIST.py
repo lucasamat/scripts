@@ -8600,7 +8600,6 @@ class SYLDRTLIST:
 				for inm in ik:                
 					value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 					value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
-					Trace.Write("after_search")
 					if (
 						str(obj_obj.SAPCPQ_ATTRIBUTE_NAME) == "SYOBJR-30114"
 						or str(obj_obj.SAPCPQ_ATTRIBUTE_NAME) == "SYOBJR-60052"
@@ -8939,7 +8938,7 @@ class SYLDRTLIST:
 					if value1234.startswith("<img"):
 						imgValue = ''
 						if str(ObjectName) == "SAQRIT":
-							if value1234 != "":
+							if value1234 != "" and value1234.startswith("<img"):
 								Trace.Write("8943"+str(value1234))
 								imgValue = str(value1234).split(">")[0]
 								imgValue = str(imgValue)+">"	
@@ -8954,6 +8953,7 @@ class SYLDRTLIST:
 						# value1234 = value1234.replace('"', "&quot;")
 						value1234 = value1234.replace("<p>", " ")
 						value1234 = value1234.replace("</p>", " ")
+						Trace.Write("value1234value1234value1234value1234value1234"+str(value1234))
 						imgValue = value1234
 						value1234 = value1234.split('"')
 						try:
