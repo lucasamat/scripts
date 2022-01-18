@@ -371,7 +371,7 @@ class SYLDRTLIST:
 						#deliverydata_concatenate  = delivery_date_column_joined + delivery_date_joined
 						#delivery_date_joined = ",".join(["'{}','{}'".format('Delivery {}'.format(count),delivery_data) for delivery_data in delivery_date_column])
 						#Columns = Columns.replace(']', ','+delivery_date_joined+']')
-						Columns = Columns.replace(']', ','+delivery_date_joined+','+delivery_date_column_joined+']')
+						Columns = Columns.replace(']', ','+delivery_date_joined+']')
 			#A055S000P01-14047 end
 			#delivery pivot end
 			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':				
@@ -4361,28 +4361,28 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)
-						elif RECORD_ID == 'SYOBJR-34575' and str(invs) in delivery_list: 
+						elif RECORD_ID == 'SYOBJR-34575' and  delivery_list: 
 							
 							footer_formatter = ''
 							#rowspan = 'rowspan="2"'
 							#'data-footer-formatter="priceSumFormatter"'
 							tooltip = invs
-							
-							#data_field = invs.replace('/','-')
-							Trace.Write('2780-----rowspan-----'+ str(rowspan))
-							table_group_columns_delivery += (
-								'<th  data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" colspan="7" class="text-right cust_billing_date" data-title-tooltip="'
-								+ str(tooltip)
-								+ '" data-sortable="true" '
-								+ str(footer_formatter)
-								+ ' '
-								+ rowspan
-								+'>'
-								+ str(invs)
-								+ "</th>"
-							)
+							for delivery in delivery_list:
+								#data_field = invs.replace('/','-')
+								Trace.Write('2780-----rowspan-----'+ str(rowspan))
+								table_group_columns_delivery += (
+									'<th  data-field="'
+									+ str(delivery)
+									+ '" data-filter-control="input" colspan="7" class="text-right cust_billing_date" data-title-tooltip="'
+									+ str(delivery)
+									+ '" data-sortable="true" '
+									+ str(footer_formatter)
+									+ ' '
+									+ rowspan
+									+'>'
+									+ str(delivery)
+									+ "</th>"
+								)
 						
 						else:                    
 							table_header += (
