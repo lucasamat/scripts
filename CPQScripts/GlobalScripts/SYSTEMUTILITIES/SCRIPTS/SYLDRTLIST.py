@@ -3603,7 +3603,7 @@ class SYLDRTLIST:
 					rowspan = 'rowspan="2"'
 					#table_header += '<th colspan="5" data-align="right"><div><label class="onlytext"><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 				if RECORD_ID == 'SYOBJR-34575':
-					rowspan = 'rowspan="3"'
+					rowspan = 'rowspan="2"'
 				if key == 0:
 					if invs in primary_link_popup:
 						
@@ -4407,7 +4407,7 @@ class SYLDRTLIST:
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
 		elif RECORD_ID == 'SYOBJR-34575':
-			cls = "eq(4)"
+			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
 		else:
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
