@@ -4361,28 +4361,7 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)
-						elif RECORD_ID == 'SYOBJR-34575' and str(invs) in delivery_list: 
-							
-							footer_formatter = ''
-							#rowspan = 'rowspan="2"'
-							#'data-footer-formatter="priceSumFormatter"'
-							tooltip = invs
-							
-							#data_field = invs.replace('/','-')
-							Trace.Write('2780-----rowspan-----'+ str(rowspan))
-							table_group_columns_delivery += (
-								'<th  data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" class="text-right cust_billing_date" data-title-tooltip="'
-								+ str(tooltip)
-								+ '" data-sortable="true" '
-								+ str(footer_formatter)
-								+ ' '
-								+ rowspan
-								+'>'
-								+ str(invs)
-								+ "</th>"
-							)
+						
 						
 						else:                    
 							table_header += (
