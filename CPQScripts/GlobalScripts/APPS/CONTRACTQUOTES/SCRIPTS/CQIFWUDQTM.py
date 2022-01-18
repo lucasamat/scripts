@@ -29,7 +29,33 @@ def quoteiteminsert(Qt_id):
 	
 	get_exch_rate = get_exch_rate.EXCHANGE_RATE
 
-	
+	##updating price for z0117
+	check_record = Sql.GetFirst("SELECT count(*) as cnt FROM SAQRIT WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117'".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID) )
+	if check_record.cnt > 0:
+		get_greenbook_record = Sql.GetList("SELECT DISTINCT GREENBOOK,ENTITLEMENT_XML,SERVICE_ID,PAR_SERVICE_ID FROM SAQSGE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' ")
+		tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+		entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_Z0117_PQB_QTITST</ENTITLEMENT_ID>')
+		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+		if get_greenbook_record:
+			for record in get_greenbook_record:
+				get_voucher_value = ''
+				for quote_item_tag in re.finditer(tag_pattern, record.ENTITLEMENT_XML):
+					quote_item_tag_content = quote_item_tag.group(1)
+					entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)	
+					if entitlement_id_tag_match:
+						entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
+						if entitlement_display_value_tag_match:
+							get_voucher_value = entitlement_display_value_tag_match[0].upper()
+							break
+				Trace.Write("get_voucher_value-"+str(record.GREENBOOK)+"-"+str(get_voucher_value))
+				
+
+
+
+
+
+
+
 	##updating saqris
 	Sql.RunQuery("""UPDATE SAQRIS 
 							SET UNIT_PRICE_INGL_CURR = IQ.UNIT_PRICE_INGL_CURR, 
