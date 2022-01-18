@@ -909,7 +909,7 @@ class ContractQuoteItem:
 				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinConditionString=join_condition_string, dynamic_is_changed_value = dynamic_is_changed_value, dynamic_group_id_value = dynamic_group_id_value))
 		return True
 
-    def _quote_items_fpm_entitlement_insert(self, update=False):		
+	def _quote_items_fpm_entitlement_insert(self, update=False):		
 		join_condition_string = ''
 		dynamic_group_id_value = 'null as ENTITLEMENT_GROUP_ID'
 		dynamic_is_changed_value = 'null as IS_CHANGED'
