@@ -3972,28 +3972,27 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				# elif RECORD_ID == 'SYOBJR-34575' and invs in ('PART_DESCRIPTION','QUANTITY','DELIVERY_SCHED_DATE'):
-				# 	align = ''
-				# 	rowspan_level1 = ""
-				# 	if str(invs) in right_align_list:
-				# 		align = 'right'
-				# 	elif str(invs) in center_align_list:
-				# 		align = 'center'
-				# 	if not table_group_columns_delivery:
-				# 		#table_header += '<th colspan="12" '+rowspan_level1+'  data-align="center"><div>CEILING PRICE<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="celing_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				elif RECORD_ID == 'SYOBJR-34575' and invs in ('QUANTITY'):
+					align = ''
+					rowspan = 'rowspan="2"'
+					colspan = 'colspan="2"'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
 					
-				# 		table_header += (
-				# 					'<th data-toggle="bootstrap-table" data-field="'
-				# 					+ str(invs)
-				# 					+ '" data-filter-control="input" '+rowspan_level1+' data-align="'
-				# 					+ str(align)
-				# 					+'" data-title-tooltsip="'
-				# 					+ str(qstring)
-				# 					+ '" data-sortable="true">'
-				# 					+ str(qstring)
-				# 					+ "</th>"
-				# 				)           
-				# 	continue
+					table_header += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" '+rowspan+' '+colspan+' data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					
 				# elif RECORD_ID == 'SYOBJR-34575' and delivery_date_column_joined:
 				# 	Trace.Write('3991-')
 				# 	align = ''
