@@ -3995,7 +3995,7 @@ class SYLDRTLIST:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					if not table_group_columns_delivery:
+					if not table_group_columns_delivery2:
 						#table_header += '<th colspan="12" '+rowspan_level1+'  data-align="center"><div>CEILING PRICE<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="celing_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 						for invs in delivery_date_column_joined:
 							table_header += (
