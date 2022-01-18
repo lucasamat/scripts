@@ -8933,15 +8933,13 @@ class SYLDRTLIST:
 								else:                                                                                                                                             
 									new_dict[value123] = (
 										'<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
-									)
-					
-					if value1234.startswith("<img"):
+									)					
+					else:                 
 						imgValue = ''
 						if str(ObjectName) == "SAQRIT":
-							if value1234 != "" and value1234.startswith("<img"):
-								Trace.Write("8943"+str(value1234))
+							if value1234 != "":
 								imgValue = str(value1234).split(">")[0]
-								imgValue = str(imgValue)+">"	
+								imgValue = str(imgValue)+">"
 							else:
 								imgValue = ""
 						elif str(ObjectName) == "SAQDOC":
@@ -8950,21 +8948,20 @@ class SYLDRTLIST:
 								imgValue = str(imgValue)+">"
 							else:
 								imgValue = ""
-						# value1234 = value1234.replace('"', "&quot;")
-						value1234 = value1234.replace("<p>", " ")
-						value1234 = value1234.replace("</p>", " ")
-						Trace.Write("value1234value1234value1234value1234value1234"+str(value1234))
-						imgValue = value1234
-						value1234 = value1234.split('"')
-						try:
-							value1234 = value1234[1]
-						except:
-							value1234 = value1234
-
-
-
-						#value1234 = value1234[1]
-					else:                 
+						elif value1234.startswith("<img"):
+							# value1234 = value1234.replace('"', "&quot;")
+							value1234 = value1234.replace("<p>", " ")
+							value1234 = value1234.replace("</p>", " ")
+							imgValue = value1234
+							value1234 = value1234.split('"')
+							try:
+								value1234 = value1234[1]
+							except:
+								value1234 = value1234								
+						else:
+							value1234 = value1234.replace('"', "&quot;")
+							value1234 = value1234.replace("<p>", " ")
+							value1234 = value1234.replace("</p>", " ")
 						img_list = ['PO_NOTES','PRICING_STATUS','STATUS','EQUIPMENT_STATUS']
 						if str(ObjectName) == "SAQIFP":
 							img_list.append('PRICING_STATUS')
