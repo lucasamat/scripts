@@ -4427,7 +4427,7 @@ class SYLDRTLIST:
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
 		elif RECORD_ID == 'SYOBJR-34575':
-			cls = "eq(3)"
+			cls = "eq(4)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
 		else:
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
@@ -4463,7 +4463,7 @@ class SYLDRTLIST:
 			)
 
 		else:
-			if RECORD_ID != "SYOBJR-00009":
+			if RECORD_ID != "SYOBJR-00009" and RECORD_ID != "SYOBJR-34575":
 				dbl_clk_function += (
 					'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
 					+ str(table_ids)
@@ -4509,6 +4509,7 @@ class SYLDRTLIST:
 					+ "'); }); "
 				)  
 			else:
+				Trace.Write('4512----')
 				dbl_clk_function += (
 					'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
 					+ str(table_ids)
