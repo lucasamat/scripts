@@ -120,7 +120,7 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 					)
 				elif data_type =="CHECKBOX":
 					act_status = (eval("col_name." + str(sefl_api)))
-					Trace.Write("act_status---->"+str(act_status))
+					#Trace.Write("act_status---->"+str(act_status))
 					if act_status == True  or act_status == 1:
 						sec_str += (
 							'<div class="col-md-3 padtop5 padleft10"><input id="'
@@ -238,19 +238,16 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				col_name = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "' ") 
 			if col_name:
 				if objd_datatype =="CURRENCY" or objd_formulatype == "CURRENCY":
-					Trace.Write('@@@SEFL_API** --> '+str(sefl_api))
+					#Trace.Write('@@@SEFL_API** --> '+str(sefl_api))
 					curr_symbol = ""
 					current_obj_value = eval("col_name." + sefl_api)
-					decimal_val = 3				
-					Trace.Write('243')	
+					decimal_val = 3
 					try:
-						curr_symbol_obj = Sql.GetFirst("select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 " + curr_index + " from "+ str(primary_objname)+ " where QUOTE_RECORD_ID = '"+ str(Quote)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'  ) ")			
-						Trace.Write('261')
+						curr_symbol_obj = Sql.GetFirst("select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 " + curr_index + " from "+ str(primary_objname)+ " where QUOTE_RECORD_ID = '"+ str(Quote)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'  ) ")
 						if curr_symbol_obj is not None:
 							if curr_symbol_obj != "":
 								curr_symbol = curr_symbol_obj.CURRENCY
-								decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES  # modified for A043S001P01-9963	
-						Trace.Write('266')						
+								decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES  # modified for A043S001P01-9963					
 						if current_obj_value != "" and decimal_val != "":
 							formatting_string = "{0:." + str(decimal_val) + "f}"
 							current_obj_value = formatting_string.format(float(current_obj_value))
@@ -325,7 +322,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				# To get the hyperlink for source contract id field in Quote information node - end              
 				##to get date from datetime for CONTRACT_VALID_FROM and CONTRACT_VALID_TO strts
 				elif sefl_api in ("CONTRACT_VALID_FROM","CONTRACT_VALID_TO","QUOTE_EXPIRE_DATE","QUOTE_CREATED_DATE","REV_APPROVE_DATE","REV_CREATE_DATE","REV_EXPIRE_DATE","EXCHANGE_RATE_DATE"):
-					Trace.Write("date---->"+str(eval("col_name." + str(sefl_api))))
+					#Trace.Write("date---->"+str(eval("col_name." + str(sefl_api))))
 					try:
 						datetime_value = datetime.strptime(str(eval("col_name." + str(sefl_api))), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y')
 					except:
@@ -350,7 +347,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					)
 				elif sefl_api=="POES":
 					#if str((eval("col_name." + str(sefl_api)))).upper() == "TRUE" or (eval("col_name." + str(sefl_api))) == "1":
-					Trace.Write("313")
+					#Trace.Write("313")
 					act_status = (eval("col_name." + str(sefl_api)))
 					sec_str += (
 						'<td><input id="'
@@ -372,7 +369,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ 'disabled checked><span class="lbl"></span></div>'
 					)
 				elif sefl_api in ["INTERNAL_NOTES","CUSTOMER_NOTES"]:
-					Trace.Write('At line 289-->err'+str(sefl_api))
+					#Trace.Write('At line 289-->err'+str(sefl_api))
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <textarea type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
 						+ str(eval("col_name." + str(sefl_api)))
@@ -408,7 +405,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					# 	)
 				else:
 					# if sefl_api != "REGION":
-					Trace.Write('At line 289-->arr2'+sefl_api)
+					#Trace.Write('At line 289-->arr2'+sefl_api)
 					# if sefl_api == "APPDTE_EXCH_RATE" and str(eval("col_name." + str(sefl_api))) != "":
 					# 	sec_str += (
 					# 		"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
@@ -418,8 +415,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					# else:
 					#sefl_api = sefl_api.encode('ascii', 'ignore').decode('ascii')
 					if sefl_api=='CANCELLATION_PERIOD_NOTPER':
-						len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"' 
-						Trace.Write('@421'+sefl_api) 
+						len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"'
 					else :
 						len_restrict=""
 
@@ -501,7 +497,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 
 
 def constructCBC(Qt_rec_id, Quote, MODE):
-	Trace.Write('Constructing Clean Book Checklist')
+	#Trace.Write('Constructing Clean Book Checklist')
 	sec_str = ""      
 	new_value_dict = {}
 	ObjectName = "SAQCBC"
@@ -718,8 +714,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 						
 	return sec_str
 
-def editcbc(Qt_rec_id, Quote, MODE):		
-	Trace.Write('CBC Update')	
+def editcbc(Qt_rec_id, Quote, MODE):	
 	for val in values:
 		if '.' not in val['CHECKLIST_ID']:
 			val['COMMENT'] = val['COMMENT'].replace("'", "").replace("<", "").replace(">", "")
@@ -728,13 +723,11 @@ def editcbc(Qt_rec_id, Quote, MODE):
 	return True
 
 def countcbc(Qt_rec_id, Quote, MODE):
-	Trace.Write('CBC COUNT')
 	popupquery=Sql.GetFirst("SELECT COUNT(*) as cnt FROM SAQCBC WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND SERVICE_CONTRACT='False' AND SPECIALIST_REVIEW='FALSE' AND CHECKLIST_ID NOT IN('4.1','4.2','4.3','4.4','12.1','12.2','12.3','28.1','28.2','28.3')".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	popupquery_value = popupquery.cnt
 	return popupquery_value
 
 def savecbc(Qt_rec_id, Quote, MODE):
-	Trace.Write('CBC SAVE')
 	#CBD POPUP FUNCTIONALITY ADDED UPDATE QUERY
 	Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'SUBMITTED FOR BOOKING' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))	
 	Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
@@ -747,9 +740,7 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	revision_document_type_object = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	if revision_document_type_object:
 		if revision_document_type_object.DOCTYP_ID != "ZWK1" and revision_document_type_object.DOCTYP_ID != "":
-			Trace.Write("doc_type=====")
 			crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(get_quote_details.QUOTE_ID),'REVISION_ID':str(get_quote_details.QTEREV_ID),'Fun_type':'cpq_to_crm'})
-			Trace.Write("crm_result==="+str(crm_result))
 	#Added query and condition to restrict calling contract creation webservice based on document type = ZWK1(Scripting logic to prevent ZWK1 quote from being pushed to CRM) - end	
 	
 	##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
@@ -802,7 +793,6 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 			sec_str += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
 			if sefl.REQUIRED == "True" or sefl.REQUIRED == "1" or sefl.REQUIRED == True:
 				mandatory = '<span class="req-field mrg3fltltmt7"  >*</span>'
-				Trace.Write('sefl.FIELD_LABEL---457--'+str(sefl.FIELD_LABEL))
 				sec_str += (
 					"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
 					+ str(sefl.FIELD_LABEL)
@@ -836,7 +826,6 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 					)
 				elif data_type =="CHECKBOX":
 					act_status = (eval("col_name." + str(sefl_api)))
-					Trace.Write("act_status---->"+str(act_status))
 					if act_status == True  or act_status == 1:
 						sec_str += (
 							'<div class="col-md-3 padtop5 padleft10"><input id="'
@@ -856,7 +845,6 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 							+ 'disabled ><span class="lbl"></span></div>'
 						)
 				elif data_type =="PICKLIST":
-					Trace.Write("CHK_PICKLIST_J"+str(sefl_api))
 					Sql_Quality_Tier = Sql.GetFirst(
 						"select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='SAQTRV' and DATA_TYPE='PICKLIST' and API_NAME = '"
 						+ str(sefl_api)
@@ -1336,7 +1324,7 @@ def constructapprovalchaininformation(MODE,record_id):
 				# To get the hyperlink for source contract id field in Quote information node - end              
 				##to get date from datetime for CONTRACT_VALID_FROM and CONTRACT_VALID_TO strts
 				elif sefl_api in ("CONTRACT_VALID_FROM","CONTRACT_VALID_TO"):
-					Trace.Write(str(eval("col_name." + str(sefl_api))))
+					#Trace.Write(str(eval("col_name." + str(sefl_api))))
 					try:
 						datetime_value = datetime.strptime(str(eval("col_name." + str(sefl_api))), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y')
 					except:
@@ -1355,7 +1343,7 @@ def constructapprovalchaininformation(MODE,record_id):
 					) 
 				elif data_type =="CHECKBOX":
 					act_status = (eval("col_name." + str(sefl_api)))
-					Trace.Write("act_status---->"+str(act_status))
+					#Trace.Write("act_status---->"+str(act_status))
 					if act_status == True  or act_status == 1:
 						sec_str += (
 							'<div class="col-md-3 padtop5 padleft10"><input id="'
@@ -1455,7 +1443,7 @@ def constructapprovalchaininformation(MODE,record_id):
 # commented the code(Approvals node functionality in Quotes explorer) -end
 
 ACTION = Param.ACTION
-Trace.Write('ACTION---1041--'+str(ACTION))
+#Trace.Write('ACTION---1041--'+str(ACTION))
 try:
 	AllTreeParam = Param.AllTreeParam
 	TreeParam = AllTreeParam['TreeParam']
@@ -1500,7 +1488,7 @@ elif ACTION == "LEGALSOW_VIEW":
 		Quote = quote_id.MASTER_TABLE_QUOTE_RECORD_ID
 	elif TreeParam == "Quote Information":
 		Quote = Quote.GetGlobal("contract_quote_record_id")
-	Trace.Write("Quote---->" + str(Quote))
+	#Trace.Write("Quote---->" + str(Quote))
 	MODE = "VIEW"
 	ApiResponse = ApiResponseFactory.JsonResponse(constructlegalsow(Qt_rec_id, Quote, MODE))
 elif ACTION == "CBC_VIEW":
@@ -1528,7 +1516,7 @@ elif ACTION == "OPPORTUNITY_VIEW":
 		Quote = quote_id.MASTER_TABLE_QUOTE_RECORD_ID
 	elif TreeParam == "Quote Information":
 		Quote = Quote.GetGlobal("contract_quote_record_id")
-	Trace.Write("Quote---->" + str(Quote))
+	#Trace.Write("Quote---->" + str(Quote))
 	MODE = "VIEW"
 	ApiResponse = ApiResponseFactory.JsonResponse(constructopportunity(Qt_rec_id, Quote, MODE))
 elif ACTION in ("QUOTE_INFO","CONTRACT_INFO"):
@@ -1537,7 +1525,7 @@ elif ACTION in ("QUOTE_INFO","CONTRACT_INFO"):
 	## Contract 1st node 
 	elif ACTION == "CONTRACT_INFO" :
 		contract_record_id =  Quote.GetGlobal("contract_record_id")
-		Trace.Write("contract_record_id---->" + str(contract_record_id))
+		#Trace.Write("contract_record_id---->" + str(contract_record_id))
 	MODE = "VIEW"
 	ApiResponse = ApiResponseFactory.JsonResponse(constructquoteinformation(Qt_rec_id, Quote, MODE))
 # elif ACTION in ("QUOTE_ATTR","CONTRACT_ATTR"):
@@ -1554,7 +1542,7 @@ elif ACTION == "Approval_Chain_INFO":
 	record_id = Param.RECORD_ID
 	record_id = record_id[:36]
 	# record_id = Quote.GetGlobal("contract_quote_record_id")
-	Trace.Write("record_idrecord_id"+str(record_id))
+	#Trace.Write("record_idrecord_id"+str(record_id))
 	MODE = "VIEW"
 	ApiResponse = ApiResponseFactory.JsonResponse(constructapprovalchaininformation(MODE,record_id))
 # elif ACTION in ("SALES_INFO","CONTRACT_SALES_INFO"):
