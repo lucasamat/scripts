@@ -4345,6 +4345,7 @@ class SYLDRTLIST:
 							rowspan = 'rowspan="1"'
 							#'data-footer-formatter="priceSumFormatter"'
 							tooltip = qstring
+							invst ='QUAN'
 							qstring = '<a onclick="openBillingMatrixDateChangeModal(\'{Value}\')" href="#">{Value}</a>'.format(Value=qstring.replace('-','/'))
 							#data_field = invs.replace('/','-')
 							Trace.Write('2780-----rowspan----'+ str(rowspan))
