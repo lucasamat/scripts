@@ -413,7 +413,7 @@ class Entitlements:
 			# 	parentObj = 'SAQTSE'
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)	
-			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treetopsuperparentparam == 'Add-On Products' and self.treetopsupertopparentparam == 'Comprehensive Services')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
+			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
 				tableName = 'SAQSGE'
 				serviceId = self.treeparentparam
 				parentObj = 'SAQTSE'
@@ -2137,7 +2137,7 @@ class Entitlements:
 			# 	parentObj = 'SAQTSE'
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treetopsuperparentparam == 'Add-On Products' and self.treetopsupertopparentparam == 'Comprehensive Services')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
+			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
 				tableName = 'SAQSGE'
 				parentObj = 'SAQTSE'
 				serviceId = self.treeparentparam
@@ -2417,7 +2417,7 @@ class Entitlements:
 			# 	objName = 'SAQSFE'
 			# 	serviceId = self.treeparentparam
 			# 	where = " WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid, serviceId, self.treeparam)
-			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treetopsuperparentparam == 'Add-On Products' and self.treetopsupertopparentparam == 'Comprehensive Services')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
+			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
 				Trace.Write("inside--2298-----"+str(self.treeparam))
 				objName = 'SAQSGE'			
 				serviceId = self.treeparentparam
