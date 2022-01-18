@@ -262,8 +262,11 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				for spare_record in xls_spare_records[1:]:
 					modified_records.append(str(tuple([float(spare_val) if type(spare_val) == "<type 'Decimal'>" else spare_val for spare_val in spare_record])))
 
-				self.records = ', '.join(map(str, modified_records)).replace("None","null").replace("'","''")
+
+				#self.records = ', '.join(map(str, modified_records)).replace("None","null").replace("'","''")
+				self.records = ', '.join(map(str, [str(tuple(list(spare_record)+[self.contract_quote_record_id, self.contract_quote_revision_record_id])) for spare_record in xls_spare_records[1:]])).replace("None","null").replace("'","''")
 				self.records = self.records.replace("True","1").replace("False","0")
+				self.records = re.sub(r"<?[a-zA-Z0-9_.\[ \]]+>", "0.00", self.records)
 			# for index, data in enumerate(list(sheet_data.Value)):
 			# 	if index == 0:
 			# 		self.columns = ",".join(data)
