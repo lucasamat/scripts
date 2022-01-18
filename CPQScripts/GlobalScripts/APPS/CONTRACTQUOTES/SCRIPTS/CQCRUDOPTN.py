@@ -1586,8 +1586,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 							Trace.Write('billing_date--'+str(billing_date))
 							getschedule_delivery_insert(billing_date)
 					#A055S000P01-14047 end
-				except:
-					Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
+				except Exception,e:
+					Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW"+str(e))
 
 class PartsListModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):		
