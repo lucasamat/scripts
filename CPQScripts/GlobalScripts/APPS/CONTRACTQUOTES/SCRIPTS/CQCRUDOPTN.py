@@ -4763,7 +4763,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionId=self.quote_revision_id,
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id'),
-				pm_level_value = ['Scheduled Maintenance','Chamber / Module PM'] if(quote_type_attribute_value != "Tool based") else ['Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance']
+				pm_level_value = ['Scheduled Maintenance','Chamber / Module PM'] if(kwargs.get('quote_type_attribute_value') != "Tool based") else ['Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance']
 				)
 			)
 
