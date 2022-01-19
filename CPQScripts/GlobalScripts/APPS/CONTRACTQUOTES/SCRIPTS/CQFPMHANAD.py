@@ -60,7 +60,12 @@ class SyncFPMQuoteAndHanaDatabase:
                     saqspt_dict[key]=value
                 saqspt_table_info.AddRow(saqspt_dict)
                 Sql.Upsert(saqspt_table_info)
-
+        try:
+            
+			update_sales_uom = """UPDATE SAQSPT SET SAQSPT.SALESUOM_CONVERSION_FACTOR = M.CONVERSION_QUANTITY FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE   S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id =quote_revision_record_id)
+			Sql.RunQuery(update_sales_uom)
+		except:
+            Trace.Write('error=68')
     def fetch_quotebasic_info(self):
         saqtrv_obj = Sql.GetFirst("select QUOTE_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_id)+"'")
         if saqtrv_obj:
