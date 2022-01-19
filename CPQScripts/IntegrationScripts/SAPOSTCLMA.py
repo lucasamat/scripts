@@ -21,33 +21,32 @@ try:
 	Quote_Id = Param.QUOTE_ID #'3050000339'
 	Revision_Id = Param.REVISION_ID #'0'
 
-	CLMQuery = SqlHelper.GetList("SELECT DISTINCT top 1 ISNULL(SAQTRV.CLM_CONTRACT_TYPE,'') AS ContractTypeName,ISNULL(SAQTRV.CLM_TEMPLATE_NAME,'') AS StatementOfWorkType,ISNULL(SAQTRV.HLV_ORG_BUN,'') AS HighLevelOrg,ISNULL(SAQTRV.APPLIED_NAME,'') AS AppliedPartyName,ISNULL(SAQTRV.COMPANY_ID,'') AS SAPOtherPartyID,ISNULL(SAQTRV.CLM_AGREEMENT_OWNER,'') AS CPQContractInitiator,ISNULL(SAQTRV.APPLIED_EMAIL,'') AS  AppliedSignatory1Email,ISNULL(SAQTRV.APPLIED_TITLE,'') AS AppliedSignatoryTitle,ISNULL(SAQTRV.EXTERNAL_EMAIL,'') AS ExternalSignatory1Email,ISNULL(SAQTRV.EXTERNAL_TITLE,'') AS OtherPartySignatoryTitle,ISNULL(CONVERT(VARCHAR,SAQTRV.NET_VALUE_INGL_CURR),'') AS ExpectedValue,ISNULL(SAQTRV.GLOBAL_CURRENCY,'') AS ExpectedValueCurrency,ISNULL(SAQTRV.CUSTOMER_NOTES,'') AS Comments,ISNULL(CONVERT(VARCHAR,SAQTRV.CONTRACT_VALID_TO),'') AS ContractExpirationDate,ISNULL(SAQTSV.SERVICE_ID,'') AS ProductOffering FROM SAQTRV(NOLOCK) JOIN SAQTSV(NOLOCK) ON SAQTRV.QUOTE_ID = '"+str(Quote_Id)+"' AND SAQTRV.QTEREV_ID = '"+str(Revision_Id)+"' AND SAQTSV.QUOTE_ID = '"+str(Quote_Id)+"'")
+	CLMQuery = SqlHelper.GetList("SELECT DISTINCT top 1 ISNULL(SAQTRV.CLM_CONTRACT_TYPE,'') AS ContractTypeName,ISNULL(SAQTRV.CLM_TEMPLATE_NAME,'') AS StatementOfWorkType,ISNULL(CASE WHEN SAQTRV.HLV_ORG_BUN='AGS - SSC' THEN '004' ELSE NULL END,'') AS HighLevelOrg,ISNULL((SELECT REPLICATE('0',(10-LEN(ACCOUNT_ID)))+ACCOUNT_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '"+str(Quote_Id)+"' AND QTEREV_ID = '"+str(Revision_Id)+"'  ),'') AS SAPOtherPartyID,ISNULL(SAQTRV.COMPANY_NAME,'') AS AppliedPartyName,ISNULL((SELECT OWNER_NAME FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '"+str(Quote_Id)+"' AND QTEREV_ID = '"+str(Revision_Id)+"'  ),'') AS CPQContractInitiator,ISNULL(SAQTRV.APPLIED_EMAIL,'test@gmail.com') AS  AppliedSignatory1Email,ISNULL(SAQTRV.APPLIED_TITLE,'test') AS AppliedSignatoryTitle,ISNULL(SAQTRV.EXTERNAL_EMAIL,'test@gmail.com') AS ExternalSignatory1Email,ISNULL(SAQTRV.EXTERNAL_TITLE,'test') AS OtherPartySignatoryTitle,ISNULL(CONVERT(VARCHAR,SAQTRV.NET_VALUE_INGL_CURR),'0') AS ExpectedValue,ISNULL(SAQTRV.GLOBAL_CURRENCY,'') AS ExpectedValueCurrency,ISNULL(SAQTRV.CUSTOMER_NOTES,'test') AS Comments,ISNULL(CONVERT(VARCHAR,SAQTRV.CONTRACT_VALID_TO),'') AS ContractExpirationDate,SAQTRV.QUOTE_ID +'-'+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) AS CorrelationID,'CPQ Quote#'+SAQTRV.QUOTE_ID +'-'+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) AS AgreementName,ISNULL(OPPORTUNITY_ID,'') AS OpportunityNumber,CONVERT(VARCHAR(11),CONTRACT_VALID_FROM,121) AS ContractEffectiveDate  FROM SAQTRV(NOLOCK) JOIN SAOPQT (NOLOCK) on SAQTRV.QUOTE_ID = SAOPQT.QUOTE_ID WHERE SAQTRV.QTEREV_ID = '"+str(Revision_Id)+"' AND SAQTRV.QUOTE_ID = '"+str(Quote_Id)+"'")
 
 	dt={}  
 
 	for data in CLMQuery:
-		
-		dt['ContractTypeName'] = data.ContractTypeName
+	
+		dt['ContractTypeName'] = data.StatementOfWorkType
 		dt['StatementOfWorkType'] = data.StatementOfWorkType
-		dt['CorrelationID'] = ''
+		dt['CorrelationID'] = data.CorrelationID
 		dt['HighLevelOrg-BUID'] = data.HighLevelOrg	
 		dt['AppliedPartyName'] = data.AppliedPartyName
 		dt['SAPOtherPartyID'] = data.SAPOtherPartyID
 		dt['CPQContractInitiator'] = data.CPQContractInitiator
 		dt['QuotationNumber'] = Quote_Id
 		dt['QuoteRevision'] = Revision_Id
-		dt['OpportunityNumber'] = ''
+		dt['OpportunityNumber'] = data.OpportunityNumber
 		dt['AppliedSignatory1Email'] = data.AppliedSignatory1Email
 		dt['AppliedSignatoryTitle'] = data.AppliedSignatoryTitle
 		dt['ExternalSignatory1Email'] = data.ExternalSignatory1Email
 		dt['OtherPartySignatoryTitle'] = data.OtherPartySignatoryTitle
 		dt['ExpectedValue(USDonly)'] = data.ExpectedValue
 		dt['ExpectedValueCurrency'] = data.ExpectedValueCurrency	
-		dt['AgreementName'] = ''
+		dt['AgreementName'] = data.AgreementName
 		dt['Comments'] = data.Comments
 		dt['ContractExpirationDate'] = data.ContractExpirationDate
-		dt['ContractEffectiveDate'] = ''
-		dt['LegalPerson'] = ''
+		dt['ContractEffectiveDate'] = data.ContractEffectiveDate
 		
 	Timestamp = SqlHelper.GetFirst("select Getdate() as date")
 	result = {
