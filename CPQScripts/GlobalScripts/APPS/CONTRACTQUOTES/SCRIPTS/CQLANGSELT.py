@@ -117,10 +117,10 @@ def _insert_subtotal_by_offerring_quote_table():
 	get_revision_details = Sql.GetFirst("SELECT REVISION_DESCRIPTION,REV_EXPIRE_DATE,EXCHANGE_RATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,CUSTOMER_NOTES,PAYMENTTERM_NAME from SAQTRV where QUOTE_RECORD_ID = '{qt_rec_id}'".format(qt_rec_id = contract_quote_record_id))
 	if get_revision_details:
 		Quote.SetGlobal('REV_DESC', str(get_revision_details.REVISION_DESCRIPTION)) 
-		Quote.SetGlobal('REV_EXPIRE', str(get_revision_details.REV_EXPIRE_DATE))
+		Quote.SetGlobal('REV_EXPIRE', str(get_revision_details.REV_EXPIRE_DATE).split()[0])
 		Quote.SetGlobal('EXC_RATE', str(get_revision_details.EXCHANGE_RATE))
-		Quote.SetGlobal('QT_CVF', str(get_revision_details.CONTRACT_VALID_FROM))
-		Quote.SetGlobal('QT_CVT', str(get_revision_details.CONTRACT_VALID_TO))
+		Quote.SetGlobal('QT_CVF', str(get_revision_details.CONTRACT_VALID_FROM).split()[0])
+		Quote.SetGlobal('QT_CVT', str(get_revision_details.CONTRACT_VALID_TO).split()[0])
 		if str(get_revision_details.CUSTOMER_NOTES):
 			Quote.SetGlobal('QT_CN', str(get_revision_details.CUSTOMER_NOTES))
 			Quote.GetCustomField('customer_notes').Content = str(get_revision_details.CUSTOMER_NOTES)
