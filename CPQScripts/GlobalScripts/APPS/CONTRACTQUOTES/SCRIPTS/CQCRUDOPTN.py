@@ -5016,14 +5016,14 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						sub_string = value.group(1)
 						pm_event_attribute_id =re.findall(pattern_id,sub_string)
 						quote_type_attribute_id =re.findall(quote_type_id,sub_string)
-						if pm_event_attribute_id:
+						if pm_event_attribute_id and self.tree_param != 'Z0009':
 							pm_event_attribute_value =re.findall(pattern_name,sub_string)
 							if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based"):
 								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
 							pm_event_flag=1
-						if quote_type_attribute_id:
+						if quote_type_attribute_id and self.tree_param == 'Z0009':
 							quote_type_attribute_value =re.findall(pattern_name,sub_string)
-							if self.tree_param == 'Z0009' and quote_type_attribute_id and quote_type_attribute_value:
+							if  quote_type_attribute_value:
 								if quote_type_attribute_value != ['Tool based']:
 									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value)
 								else:
