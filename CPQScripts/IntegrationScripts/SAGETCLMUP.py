@@ -73,7 +73,7 @@ try:
 		primaryQueryItems = SqlHelper.GetFirst(
 			""
 			+ str(Parameter1.QUERY_CRITERIA_1)
-			+ "  SAQTRV SET CLM_AGREEMENT_NUM=''"+ str(rebuilt_data['AgreementNumber'])+"'',CLM_AGREEMENT_OWNER = ''"+ str(rebuilt_data['AgreementID'])+"'',CLM_AGREEMENT_STATUS = ''"+ str(rebuilt_data['AgreementStatus'])+"'' FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = ''"+ str(Qt_Id)+"''  ' "
+			+ "  SAQTRV SET CLM_AGREEMENT_NUM=''"+ str(rebuilt_data['AgreementNumber'])+"'',CLM_AGREEMENT_ID = ''"+ str(rebuilt_data['AgreementID'])+"'',CLM_AGREEMENT_STATUS = ''"+ str(rebuilt_data['AgreementStatus'])+"'',CLM_AGREEMENT_URL = ''"+ str(rebuilt_data['AgreementURL'])+"'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +'-'+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"''  ' "
 		)
 
 except:
