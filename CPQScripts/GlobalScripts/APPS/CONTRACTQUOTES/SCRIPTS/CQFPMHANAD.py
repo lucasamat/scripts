@@ -1,5 +1,5 @@
 # =========================================================================================================================================
-#   __script_name : CQFPMHANAD.PY
+#   __script_name : CQPARTSINS.py
 #   __script_description : THIS SCRIPT IS USED TO CONNECT WITH HANA TABLES TO PULL PARTS AND LOADED INTO CPQ.
 #   __primary_author__ : SURIYANARAYANAN
 #   __create_date :09-01-2022
@@ -37,6 +37,19 @@ class SyncFPMQuoteAndHanaDatabase:
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.response = webclient.UploadString('https://hannaconnection.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
     
+    def pull_spareparts_hana(self):
+        requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
+        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
+        response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
+        response=response.replace("null",'""')
+        response=eval(response)
+        auth="Bearer"+' '+str(response['access_token'])
+        requestdata = '{"soldtoParty":"10002301","shiptoparty":"10002428"}'
+        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
+        self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
+    
     def insert_records_saqspt(self):
         if self.response:
             response = self.response
@@ -65,15 +78,15 @@ class SyncFPMQuoteAndHanaDatabase:
     def update_records_saqspt(self):
 
         update_customer_pn = """UPDATE SAQSPT SET SAQSPT.CUSTOMER_PART_NUMBER = M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,sales_id = self.sales_org_id,stp_acc_id=str(account_info.get('SOLD TO')),quote_revision_rec_id =self.quote_revision_id)
-		Sql.RunQuery(update_customer_pn)
+        Sql.RunQuery(update_customer_pn)
 
-		update_uom_recs = """UPDATE SAQSPT SET SAQSPT.BASEUOM_ID = M.UNIT_OF_MEASURE,SAQSPT.BASEUOM_RECORD_ID = M.UOM_RECORD_ID FROM SAQSPT S INNER JOIN MAMTRL M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE   S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,quote_revision_rec_id =self.quote_revision_id)
-		Sql.RunQuery(update_uom_recs)
+        update_uom_recs = """UPDATE SAQSPT SET SAQSPT.BASEUOM_ID = M.UNIT_OF_MEASURE,SAQSPT.BASEUOM_RECORD_ID = M.UOM_RECORD_ID FROM SAQSPT S INNER JOIN MAMTRL M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE   S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,quote_revision_rec_id =self.quote_revision_id)
+        Sql.RunQuery(update_uom_recs)
 
-		update_salesuom_conv= """UPDATE SAQSPT SET SAQSPT.SALESUOM_CONVERSION_FACTOR = M.CONVERSION_QUANTITY FROM SAQSPT S INNER JOIN MAMUOC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE S.BASEUOM_ID=M.BASEUOM_ID AND  S.SALESUOM_ID=M.CONVERSIONUOM_ID AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id ,quote_revision_rec_id =self.quote_revision_id)
-		Sql.RunQuery(update_salesuom_conv)
+        update_salesuom_conv= """UPDATE SAQSPT SET SAQSPT.SALESUOM_CONVERSION_FACTOR = M.CONVERSION_QUANTITY FROM SAQSPT S INNER JOIN MAMUOC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE S.BASEUOM_ID=M.BASEUOM_ID AND  S.SALESUOM_ID=M.CONVERSIONUOM_ID AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id ,quote_revision_rec_id =self.quote_revision_id)
+        Sql.RunQuery(update_salesuom_conv)
 
-		
+        
 
 
     def fetch_quotebasic_info(self):
@@ -87,7 +100,7 @@ class SyncFPMQuoteAndHanaDatabase:
             self.contract_valid_to = saqtrv_obj.CONTRACT_VALID_TO
         
 fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
-fpm_obj.pull_fpm_parts_hana()
+fpm_obj.pull_spareparts_hana()
 fpm_obj.insert_records_saqspt()
 fpm_obj.update_records_saqspt()
 
