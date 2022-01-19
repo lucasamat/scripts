@@ -62,7 +62,7 @@ try :
 									Tbl_data = rebuilt_data[tn]
 									
 								for record_dict in Tbl_data:
-									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAEAPM_INBOUND (SESSION_ID,EQUIPMENT_ID,ASSEMBLY_ID,PM_NAME,PM_FREQUENCY,KIT_ID,KIT_NUMBER,SEEDSTOCK_COST,LOGISTICS_COST,TKM_COST_PER_EVENT,cpqtableentrydatemodified,KIT_MASTER_ID,APPLICATION,REGION,CUSTOMER_MARKETING_NAME,DEVICE,PROCESS_TYPE,SERVICE_COMPLEXITY,TECHNOLOGY_NODE,HW_TYPE,ARCM_MODULE_ID,RFP_EDIT,UPDATED_DATE,CPQ_PROCESSED)  select  ''"+ str(primaryQuerysession.A)+ "'',''"+record_dict['TOOL_ID']+ "'',''"+record_dict['Assembly_ID']+ "'',''"+record_dict['PM_Event']+ "'',''"+str(record_dict['PM_Freq'])+ "'',''"+record_dict['KIT_ID']+ "'',''"+record_dict['KIT_Number']+ "'',''"+str(record_dict['Seedstock_Cost'])+ "'',''"+str(record_dict['Logistics_Cost'])+ "'',''"+str(record_dict['TKM_Cost_Per_Event'])+ "'',''"+ str(Modi_date)+ "'',''"+str(record_dict['KIT_MASTER_ID'])+ "'',''"+record_dict['APPLICATION']+ "'',''"+record_dict['CLEANING_REGION']+ "'',''"+record_dict['CUSTOMER_MARKETING_NAME']+ "'',''"+record_dict['DEVICE']+ "'',''"+record_dict['PROCESS_TYPE']+ "'',''"+record_dict['SERVICE_COMPLEXITY']+ "'',''"+record_dict['TECH_NODE']+ "'',''"+record_dict['HW_TYPE']+ "'',N''"+str(record_dict['ARCM_Module_ID'])+ "'',N''"+str(record_dict['RFP_Edit'])+ "'',N''"+str(record_dict['Updated_Date'])+ "'',N''"+str(record_dict['CPQ_Processed'])+ "'' ' ")
+									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAEAPM_INBOUND (SESSION_ID,EQUIPMENT_ID,ASSEMBLY_ID,PM_NAME,PM_FREQUENCY,KIT_ID,KIT_NUMBER,SEEDSTOCK_COST,LOGISTICS_COST,TKM_COST_PER_EVENT,cpqtableentrydatemodified,KIT_MASTER_ID,APPLICATION,REGION,CUSTOMER_MARKETING_NAME,DEVICE,PROCESS_TYPE,SERVICE_COMPLEXITY,TECHNOLOGY_NODE,HW_TYPE,ARCM_MODULE_ID,RFP_EDIT,UPDATED_DATE,CPQ_PROCESSED,PM_LEVEL,CLEAN_COATING)  select  ''"+ str(primaryQuerysession.A)+ "'',''"+record_dict['TOOL_ID']+ "'',''"+record_dict['Assembly_ID']+ "'',''"+record_dict['PM_Event']+ "'',''"+str(record_dict['PM_Freq'])+ "'',''"+record_dict['KIT_ID']+ "'',''"+record_dict['KIT_Number']+ "'',''"+str(record_dict['Seedstock_Cost'])+ "'',''"+str(record_dict['Logistics_Cost'])+ "'',''"+str(record_dict['TKM_Cost_Per_Event'])+ "'',''"+ str(Modi_date)+ "'',''"+str(record_dict['KIT_MASTER_ID'])+ "'',''"+record_dict['APPLICATION']+ "'',''"+record_dict['CLEANING_REGION']+ "'',''"+record_dict['CUSTOMER_MARKETING_NAME']+ "'',''"+record_dict['DEVICE']+ "'',''"+record_dict['PROCESS_TYPE']+ "'',''"+record_dict['SERVICE_COMPLEXITY']+ "'',''"+record_dict['TECH_NODE']+ "'',''"+record_dict['HW_TYPE']+ "'',N''"+str(record_dict['ARCM_Module_ID'])+ "'',N''"+str(record_dict['RFP_Edit'])+ "'',N''"+str(record_dict['Updated_Date'])+ "'',N''"+str(record_dict['CPQ_Processed'])+ "'',N''"+str(record_dict['Maintenance_Event_Level'])+ "'',N''"+str(record_dict['KIT_CleaningCoating_Differentiation'])+ "'' ' ")
 									
 							elif str(tn).upper() == "MAKTPT":
 								if str(type(rebuilt_data[tn])) == "<type 'dict'>":
@@ -179,14 +179,9 @@ try :
 	primaryQueryItems = SqlHelper.GetFirst(
 	""
 	+ str(Parameter.QUERY_CRITERIA_1)
-	+ " SGPMNT(ACTIVE,PM_NAME,CPQTABLEENTRYADDEDBY,ADDUSR_RECORD_ID,CPQTABLEENTRYDATEADDED,PM_RECORD_ID) SELECT SUB_SGPMNT.ACTIVE,SUB_SGPMNT.PM_NAME,''"+ str(User.UserName)
+	+ " MAPMEV(ACTIVE,PM_NAME,PM_ID,PM_LEVEL,CPQTABLEENTRYADDEDBY,ADDUSR_RECORD_ID,CPQTABLEENTRYDATEADDED,PM_RECORD_ID) SELECT SUB_SGPMNT.ACTIVE,SUB_SGPMNT.PM_NAME,''"+ str(User.UserName)
 	+ "'',''"+ str(User.Id)
-	+ "'',GETDATE(),CONVERT(VARCHAR(1000),NEWID()) FROM (SELECT DISTINCT ''TRUE'' AS ACTIVE,PM_NAME  FROM MAEAPM_INBOUND(NOLOCK) WHERE ISNULL(PROCESS_STATUS,'''')=''READY FOR UPLOAD'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"')SUB_SGPMNT LEFT JOIN SGPMNT (NOLOCK) ON SUB_SGPMNT.PM_NAME = SGPMNT.PM_NAME WHERE SGPMNT.PM_NAME IS NULL  '")
-	
-	primaryQueryItems = SqlHelper.GetFirst(
-	""
-	+ str(Parameter1.QUERY_CRITERIA_1)
-	+ " SGPMNT set PM_ID = cpqtableentryid where isnull(PM_ID,'''')=''''  '")
+	+ "'',GETDATE(),CONVERT(VARCHAR(1000),NEWID()) FROM (SELECT DISTINCT ''TRUE'' AS ACTIVE,PM_NAME,PM_NAME AS PM_ID,CASE WHEN PM_LEVEL =''Sched Maint'' THEN ''Scheduled Maintenance'' ELSE PM_LEVEL END AS PM_LEVEL FROM MAEAPM_INBOUND(NOLOCK) WHERE ISNULL(PROCESS_STATUS,'''')=''READY FOR UPLOAD'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"')SUB_SGPMNT LEFT JOIN MAPMEV (NOLOCK) ON SUB_SGPMNT.PM_NAME = MAPMEV.PM_NAME WHERE MAPMEV.PM_NAME IS NULL  '")
 	
 	#Kit Upload
 	primaryQueryItems = SqlHelper.GetFirst(
