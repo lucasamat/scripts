@@ -2197,7 +2197,7 @@ class TreeView:
 									# 				subTabName = subtab_temp
 
 									# A055S000P01-14557 - New Parts, Inclusion , Exclusion Subtabs starts
-									elif (subTabName in ("PM Events","Service New Parts","Service Parts List","Service Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Green New Parts') :
+									elif subTabName in ("PM Events","Service New Parts","Service Parts List","Service Inclusions",'Greenbook Inclusions','Green Parts List','Green New Parts') :
 										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
 										Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE"))+'---'+str(entitlement_level_flag) )
 										ent_table_list = ["SAQTSE"]
