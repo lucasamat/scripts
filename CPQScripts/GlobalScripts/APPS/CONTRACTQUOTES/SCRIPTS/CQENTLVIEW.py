@@ -1000,7 +1000,10 @@ class EntitlementView():
 								add_style = ""
 							##validation msg
 							if attrSysId in validation_dict.keys():
-								sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+"-0"
+								if validation_dict[attrSysId]  == '0.00':
+									sec_validation = "Only enter the values in the following range: -∞ - "+str(validation_dict[attrSysId])
+								else:
+									sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+" - 0"
 
 							if attrSysId not in attributedefaultvalue:
 								Trace.Write("add_style----3077----- "+str(attrSysId))
