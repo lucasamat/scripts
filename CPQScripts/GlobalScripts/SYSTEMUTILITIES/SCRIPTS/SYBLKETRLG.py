@@ -637,9 +637,9 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	#if str(CLICKEDID) == "SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F" and (TreeParentParam != 'Quote Items' and TreeParentParam != ''):
 	#canedit = "FALSE"	
 	Trace.Write("@175----canedit,value-------->"+str(canedit)+','+str(VALUE))
-	if str(Product.GetGlobal("TreeParentLevel0")=="Complementary Products" and TITLE == "CUSTOMER_PART_NUMBER" and str(VALUE)==''):
+	if str(Product.GetGlobal("TreeParentLevel0")=="Complementary Products" and TITLE == "CUSTOMER_PART_NUMBER" and str(VALUE)!=''):
 		edt_str = "NO"
-		Trace.Write('###Empty value')
+		Trace.Write('###Edit available only for empty value!!!')
 	elif objh_obj is not None and str(canedit).upper() == "TRUE":
 		obj_obj = str(objh_obj.OBJECT_NAME)
 		Trace.Write("object name--"+str(obj_obj))
