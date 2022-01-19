@@ -5028,9 +5028,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,type_value = type_value )
 							else:
 								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
+							break
 						elif pm_event_attribute_id and pm_event_attribute_value:
 							self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)		
-						break
+							break
 				##A055S000P01-12518 code ends...
 				#ENTITLEMENT SV TO CE
 				Entitlement_start_time = time.time()
