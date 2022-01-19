@@ -30,7 +30,7 @@ if ACTION == "BULKUPLOADDATA":
                         <div class="txt-col-sec col-md-4"><input id="uploadsheet" class="light_yellow" style="width: 100%;" disabled></div>
                         <div class="col-md-3">
                             <label for="file-input" class="m-0">
-                                <img src="https://sandbox.webcomcpq.com/mt/APPLIEDMATERIALS_TST/Additionalfiles/document_upload_icon.svg" class="wid-9per">
+                                <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/document_upload_icon.svg" class="wid-9per">
                             </label>
                             <input id="file-input" style="display:none" type="file" onchange="var filename = $('#file-input')[0].files[0].name;$('#uploadsheet').val(filename);">
                         </div>
