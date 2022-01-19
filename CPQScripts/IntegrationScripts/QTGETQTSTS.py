@@ -66,7 +66,10 @@ try:
 				Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 				if Dirct_record['STATUS_DESCRIPTION'].upper() == "SUCCESS":
 					Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
-					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOOKING SUBMITTED'' FROM SAQTMT(NOLOCK)  WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' '")
+					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''SUBMITTED FOR BOOKING'' FROM SAQTMT(NOLOCK)  WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' '")
+					
+					if 'CONTRACT_ID'  in Dirct_record:
+						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''CONVERTED CONTRACT'',CRM_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK)  WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' '")
 				
 					ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Data successfully updated"}]})
 
@@ -139,4 +142,4 @@ try:
 except:		
 	Log.Info("QTGETQTSTS ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("QTGETQTSTS ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})	
+	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
