@@ -1001,7 +1001,7 @@ class EntitlementView():
 							##validation msg
 							if attrSysId in validation_dict.keys():
 								if validation_dict[attrSysId]  == '0.00':
-									sec_validation = "Only enter the values in the following range: -∞ - "+str(validation_dict[attrSysId])
+									sec_validation = "Only enter the values in the following range: -&infin; - "+str(validation_dict[attrSysId])
 								else:
 									sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+" - 0"
 
