@@ -5008,15 +5008,19 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					updateentXML = service_entitlement_obj.ENTITLEMENT_XML
 					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 					pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
-					pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
+					#pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
 					quote_type_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-					quote_type_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+					#quote_type_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 					for value in re.finditer(pattern_tag, updateentXML):
 						sub_string = value.group(1)
 						pm_event_attribute_id =re.findall(pattern_id,sub_string)
-						pm_event_attribute_value =re.findall(pattern_name,sub_string)
+						#pm_event_attribute_value =re.findall(pattern_name,sub_string)
 						type_id =re.findall(quote_type_id,sub_string)
-						type_value =re.findall(quote_type_value,sub_string)
+						if pm_event_attribute_id:
+							pm_event_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
+						if type_id:
+							type_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+						#type_value =re.findall(quote_type_value,sub_string)
 						#Trace.Write("sub_string"+str(sub_string))
 						#Trace.Write("get_ent_id_J "+str(get_ent_id)+"get_ent_name_J "+str(get_ent_name))
 						if self.tree_param == 'Z0009' and type_id and type_value:
