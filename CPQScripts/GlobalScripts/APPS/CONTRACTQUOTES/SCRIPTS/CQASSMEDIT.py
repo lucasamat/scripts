@@ -319,6 +319,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		#Log.Info('response2--182----267-----'+str(response2))
 		response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
 		Fullresponse= eval(response2)
+		Trace.Write("Fullresponse--"+str(Fullresponse))
 		##getting configuration_status status
 		if Fullresponse['complete'] == 'true':
 			configuration_status = 'COMPLETE'
