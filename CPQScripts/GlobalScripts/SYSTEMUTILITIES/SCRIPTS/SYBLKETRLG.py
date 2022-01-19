@@ -847,7 +847,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 								validation = ""
 								type = "text"
 							else:
-								field =  "Customer Annual Quantity"
+								field =  "Annual Quantity"
 								ids ="updatedCustomerAnnualQuantity"
 								validation ='onkeyup="validateInput()"'
 								type = "number"
