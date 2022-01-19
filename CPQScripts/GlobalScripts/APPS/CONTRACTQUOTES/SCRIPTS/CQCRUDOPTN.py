@@ -4763,7 +4763,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionId=self.quote_revision_id,
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id'),
-				pm_level_value = ['Scheduled Maintenance','Chamber / Module PM'] if(type_value != "Tool based") else ['Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance']
+				pm_level_value = ['Scheduled Maintenance','Chamber / Module PM'] if(quote_type_attribute_value != "Tool based") else ['Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance']
 				)
 			)
 
@@ -5005,32 +5005,31 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				import re
 				service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
 				if service_entitlement_obj is not None:
+					pm_event_flag=0
+					qte_type_flag=0
 					updateentXML = service_entitlement_obj.ENTITLEMENT_XML
 					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 					pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
-					#pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
+					pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 					quote_type_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-					#quote_type_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 					for value in re.finditer(pattern_tag, updateentXML):
 						sub_string = value.group(1)
 						pm_event_attribute_id =re.findall(pattern_id,sub_string)
-						#pm_event_attribute_value =re.findall(pattern_name,sub_string)
-						type_id =re.findall(quote_type_id,sub_string)
+						quote_type_attribute_id =re.findall(quote_type_id,sub_string)
 						if pm_event_attribute_id:
-							pm_event_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
-						if type_id:
-							type_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-						#type_value =re.findall(quote_type_value,sub_string)
-						#Trace.Write("sub_string"+str(sub_string))
-						#Trace.Write("get_ent_id_J "+str(get_ent_id)+"get_ent_name_J "+str(get_ent_name))
-						if self.tree_param == 'Z0009' and type_id and type_value:
-							if type_value != ['Tool based']:
-								self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,type_value = type_value )
-							else:
+							pm_event_attribute_value =re.findall(pattern_name,sub_string)
+							if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based"):
 								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
-							break
-						elif pm_event_attribute_id and pm_event_attribute_value:
-							self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)		
+							pm_event_flag=1
+						if quote_type_attribute_id:
+							quote_type_attribute_value =re.findall(pattern_name,sub_string)
+							if self.tree_param == 'Z0009' and quote_type_attribute_id and quote_type_attribute_value:
+								if quote_type_attribute_value != ['Tool based']:
+									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value)
+								else:
+									self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
+							qte_type_flag=1
+						if pm_event_flag and qte_type_flag:
 							break
 				##A055S000P01-12518 code ends...
 				#ENTITLEMENT SV TO CE
