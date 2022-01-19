@@ -5027,10 +5027,15 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								if quote_type_attribute_value != ['Tool based']:
 									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value)
 								else:
-									self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
+									pm_event_attribute_value =re.findall(pattern_name,sub_string)
+									if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based"):
+										self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
 							qte_type_flag=1
-						if pm_event_flag and qte_type_flag:
+						if self.tree_param == 'Z0009' and qte_type_flag == 1:
 							break
+						else:
+							if pm_event_flag == 1:
+								break
 				##A055S000P01-12518 code ends...
 				#ENTITLEMENT SV TO CE
 				Entitlement_start_time = time.time()
