@@ -5020,7 +5020,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						#Trace.Write("get_ent_id_J "+str(get_ent_id)+"get_ent_name_J "+str(get_ent_name))
 						if self.tree_param == 'Z0009' and type_id and type_value:
 							if type_value != ['Tool based']:
-								self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id)
+								self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,type_value)
 							else:
 								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
 						elif pm_event_attribute_id and pm_event_attribute_value:
