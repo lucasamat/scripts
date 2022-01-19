@@ -619,7 +619,9 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	pricbk_lock = "FALSE"
 	date_field = []
 	key = ""
+	Trace.Write('Value before-->'+str(VALUE))
 	VALUE = remove_html_tags(VALUE)
+	Trace.Write('Value After-->'+str(VALUE))
 	rec_ids = ",".join(RECORDID)
 	
 	Product.SetGlobal("RecordList", str(list(RECORDID)))
