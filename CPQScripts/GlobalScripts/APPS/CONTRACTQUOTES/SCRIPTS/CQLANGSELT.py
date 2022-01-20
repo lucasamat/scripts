@@ -81,7 +81,10 @@ def _insert_subtotal_by_offerring_quote_table():
             newRow['GLOBAL_CURRENCY_RECORD_ID'] = val.GLOBAL_CURRENCY_RECORD_ID
             newRow['LINE'] = val.LINE
             newRow['NET_PRICE'] = val.NET_PRICE
-            newRow['NET_PRICE_INGL_CURR'] = val.NET_PRICE_INGL_CURR
+			if val.NET_PRICE_INGL_CURR:
+            	newRow['NET_PRICE_INGL_CURR'] = val.NET_PRICE_INGL_CURR
+			else:
+				newRow['NET_PRICE_INGL_CURR'] = 0
             newRow['SERVICE_ID'] = val.SERVICE_ID
             if val.NET_VALUE:
                 newRow['NET_VALUE'] = val.NET_VALUE
@@ -146,7 +149,7 @@ def _insert_subtotal_by_offerring_quote_table():
         Quote.SetGlobal('NP', str(total_net_price))
         Quote.SetGlobal('NEV', str(total_net_value))
         Quote.SetGlobal('TX', str(total_tax_amt))'''
-    get_quotetotal = Sql.GetFirst("SELECT SUM(NET_PRICE) as netprice,SUM(ESTIMATED_VALUE) as est_val from QT__QT_SAQRIS where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+    get_quotetotal = Sql.GetFirst("SELECT SUM(NET_PRICE_INGL_CURR) as netprice,SUM(ESTIMATED_VALUE) as est_val from QT__QT_SAQRIS where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
     if get_quotetotal:
         Quote.GetCustomField('doc_net_price').Content = str(get_quotetotal.netprice)
         Quote.GetCustomField('tot_est').Content = str(get_quotetotal.est_val)
