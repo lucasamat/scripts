@@ -100,6 +100,12 @@ try:
 		#SACRVC Insert Query  
 		
 		primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SACRVC_INBOUND SET ZAFSHIP_DATE = null FROM SACRVC_INBOUND(NOLOCK) where ZAFSHIP_DATE = ''00000000''    '") 
+
+		primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SACRVC_INBOUND SET ZAF_UDATE = null FROM SACRVC_INBOUND(NOLOCK) where ZAF_UDATE = ''00000000''    '") 
+		
+		primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SACRVC_INBOUND SET BUDAT = null FROM SACRVC_INBOUND(NOLOCK) where BUDAT = ''00000000''    '") 
+		
+		primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SACRVC_INBOUND SET ZAFEXPIRY_DATE = null FROM SACRVC_INBOUND(NOLOCK) where ZAFEXPIRY_DATE = ''00000000''    '") 
 		
 		primaryQueryItems = SqlHelper.GetFirst(
 			""
