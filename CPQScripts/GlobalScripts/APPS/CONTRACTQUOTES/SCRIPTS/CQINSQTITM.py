@@ -2218,8 +2218,7 @@ class ContractQuoteItem:
 					self._quote_items_assembly_insert(update=True)
 					self._quote_items_assembly_entitlement_insert(update=True)
 		
-		if self.service_id == 'Z0117':
-			CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":str(self.contract_quote_id),"Operation":"VOUCHER_UPDATE"})		
+			
 		# Pricing Calculation - Start
 		# quote_line_item_obj = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND ISNULL(STATUS,'') = ''".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		# #added condition to restrict email trigger thrice
