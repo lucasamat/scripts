@@ -163,15 +163,15 @@ def voucher_amt_update(Qt_id):
 
 			Sql.RunQuery("""UPDATE SAQRIT SET YEAR_5 = CNTPRI_INGL_CURR ,YEAR_5_INGL_CURR = CNTPRI_INGL_CURR FROM SAQRIT (NOLOCK) INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GREENBOOK AND YEAR = 'YEAR 5' WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID = 'Z0117'  AND YEAR = 'YEAR 5' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value ))
 
-			Sql.RunQuery("""UPDATE SAQRIT 
+			Sql.RunQuery("""UPDATE SAQRIT SET
 						NET_PRICE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0), 
 						NET_PRICE_INGL_CURR = ISNULL(YEAR_1_INGL_CURR,0) + ISNULL(YEAR_2_INGL_CURR,0) + ISNULL(_INGL_CURR,0) + ISNULL(YEAR_4_INGL_CURR,0) + ISNULL(YEAR_5_INGL_CURR,0)
 					FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' AND GREENBOOK = '{grnbok}' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value,grnbok = record.GREENBOOK  ))
 			
 			Sql.RunQuery("""UPDATE SAQRIT 
 						SET STATUS = 'ACQUIRED', 
-						NET_VALUE = ISNULL(NET_PRICE, 0) + ISNULL(TAX_AMOUNT, 0), 
-						NET_VALUE_INGL_CURR =NET_PRICE_INGL_CURR, 0) + ISNULL(TAX_AMOUNT, 0)
+						NET_VALUE = ISNULL(NET_PRICE, 0) + ISNULL(TAX_AMOUNT,0), 
+						NET_VALUE_INGL_CURR =ISNULL(NET_PRICE_INGL_CURR, 0) + ISNULL(TAX_AMOUNT, 0)
 					FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' AND GREENBOOK = '{grnbok}' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value,grnbok = record.GREENBOOK  ))
 
 
