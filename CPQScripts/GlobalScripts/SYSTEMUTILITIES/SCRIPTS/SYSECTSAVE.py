@@ -1441,7 +1441,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 					#generate_year_based_billing_matrix(newdict)
 				if TableName == 'SAQTIP':
 					Trace.Write('SAQTIP_CHK_J '+str(RECORD['PARTY_ROLE']))
-					saqtip_ship_to_update_query = "UPDATE SAQTIP SET PARTY_ID = {party_id}, IS_MAIN = '{is_main}', [PRIMARY] = '{primary}' WHERE QUOTE_INVOLVED_PARTY_RECORD_ID = '{ship_to_id}'".format(party_id=RECORD['PARTY_ID'],is_main=RECORD['IS_MAIN'],primary=RECORD['PRIMARY'],ship_to_id=RECORD['QUOTE_INVOLVED_PARTY_RECORD_ID'])
+					saqtip_ship_to_update_query = "UPDATE SAQTIP SET PARTY_ID = {party_id}, PRIMARY = '{is_main}', [PRIMARY] = '{primary}' WHERE QUOTE_INVOLVED_PARTY_RECORD_ID = '{ship_to_id}'".format(party_id=RECORD['PARTY_ID'],is_main=RECORD['PRIMARY'],primary=RECORD['PRIMARY'],ship_to_id=RECORD['QUOTE_INVOLVED_PARTY_RECORD_ID'])
 
 					Sql.RunQuery(saqtip_ship_to_update_query)
 					account_details = Sql.GetFirst("SELECT * FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(RECORD['PARTY_ID'])+"'")
