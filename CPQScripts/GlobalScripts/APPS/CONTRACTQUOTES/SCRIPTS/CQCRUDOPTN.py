@@ -4982,7 +4982,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id'))
 				)
-				
+		Trace.Write("insert saqgpe")
 		
 		# if self.tree_param == "Z0009":
 		# 	delete_obj_list = ["SAQSCO","SAQSCA"]
