@@ -28,12 +28,12 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 #get_spare=Sql.GetFirst("select * from QTQIFP where QUOTE_RECORD_ID='"+str(quoteid)+"'")
 gettoolquote=Sql.GetFirst("select QUOTE_TYPE,QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID='"+str(contract_quote_record_id)+"'")
 #if get_spare and gettoolquote.QUOTE_TYPE =="ZTBC - TOOL BASED":
-    #INCLUDESPARE = 'INCLUDESPARES'
-    #add_style = "display:block"
+	#INCLUDESPARE = 'INCLUDESPARES'
+	#add_style = "display:block"
 #else:
-    #Trace.Write('succes--NO--')
-    #INCLUDESPARE = ''
-    #add_style = "display:none"
+	#Trace.Write('succes--NO--')
+	#INCLUDESPARE = ''
+	#add_style = "display:none"
 
 #Document XML
 
@@ -44,117 +44,117 @@ Sql.RunQuery(update_rev_expire_date)
 
 #A055S000P01-10549-end
 def _insert_subtotal_by_offerring_quote_table():
-    
-    c4c_quote_id = gettoolquote.QUOTE_ID
-    cartobj = Sql.GetFirst("select CART_ID, USERID from CART where ExternalId = '{}'".format(c4c_quote_id))
-    try:
-        delete_offerings = "DELETE FROM QT__QT_SAQRIS where cartId = {CartId} AND QUOTE_RECORD_ID ='{c4c_quote_id}' and  QTEREV_RECORD_ID= '{rev_rec_id}'".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id)
-        Sql.RunQuery(delete_offerings)
-        delete_items = "DELETE FROM QT__QT_SAQRIT where cartId = {CartId} AND QUOTE_RECORD_ID ='{c4c_quote_id}' and  QTEREV_RECORD_ID= '{rev_rec_id}'".format(CartId = cartobj.CART_ID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id)
-        Sql.RunQuery(delete_offerings)
-        Sql.RunQuery(delete_items)
-    except:
-        Trace.Write("NO REC FOUND ")
+	
+	c4c_quote_id = gettoolquote.QUOTE_ID
+	cartobj = Sql.GetFirst("select CART_ID, USERID from CART where ExternalId = '{}'".format(c4c_quote_id))
+	try:
+		delete_offerings = "DELETE FROM QT__QT_SAQRIS where cartId = {CartId} AND QUOTE_RECORD_ID ='{c4c_quote_id}' and  QTEREV_RECORD_ID= '{rev_rec_id}'".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id)
+		Sql.RunQuery(delete_offerings)
+		delete_items = "DELETE FROM QT__QT_SAQRIT where cartId = {CartId} AND QUOTE_RECORD_ID ='{c4c_quote_id}' and  QTEREV_RECORD_ID= '{rev_rec_id}'".format(CartId = cartobj.CART_ID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id)
+		Sql.RunQuery(delete_offerings)
+		Sql.RunQuery(delete_items)
+	except:
+		Trace.Write("NO REC FOUND ")
 
 
-    Quoteofferings = Quote.QuoteTables["QT_SAQRIS"]
+	Quoteofferings = Quote.QuoteTables["QT_SAQRIS"]
 
-    getoffer_details_obj = Sql.GetList("select SAQRIS.COMMITTED_VALUE,SAQRIS.CONTRACT_VALID_FROM,SAQRIS.CONTRACT_VALID_TO,SAQRIS.DIVISION_ID,SAQRIS.DIVISION_RECORD_ID,SAQRIS.DOC_CURRENCY,SAQRIS.DOCCURR_RECORD_ID,SAQRIS.ESTIMATED_VALUE,SAQRIS.GLOBAL_CURRENCY,SAQRIS.GLOBAL_CURRENCY_RECORD_ID,SAQRIS.LINE,SAQRIS.NET_PRICE,SAQRIS.NET_PRICE_INGL_CURR,SAQRIS.NET_VALUE,SAQRIS.NET_VALUE_INGL_CURR,SAQRIS.PLANT_ID,SAQRIS.PLANT_RECORD_ID,SAQRIS.SERVICE_DESCRIPTION,SAQRIS.SERVICE_ID,SAQRIS.SERVICE_RECORD_ID,SAQRIS.QUANTITY,SAQRIS.QUOTE_ID,SAQRIS.QUOTE_RECORD_ID,SAQRIS.QTEREV_ID,SAQRIS.QTEREV_RECORD_ID,SAQRIS.TAX_PERCENTAGE,SAQRIS.TAX_AMOUNT,SAQRIS.TAX_AMOUNT_INGL_CURR,SAQRIS.UNIT_PRICE,SAQRIS.UNIT_PRICE_INGL_CURR,{UserId} as ownerId,{CartId} as cartId from SAQRIS (NOLOCK)  where SAQRIS.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIS.QTEREV_RECORD_ID= '{rev_rec_id}'".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
+	getoffer_details_obj = Sql.GetList("select SAQRIS.COMMITTED_VALUE,SAQRIS.CONTRACT_VALID_FROM,SAQRIS.CONTRACT_VALID_TO,SAQRIS.DIVISION_ID,SAQRIS.DIVISION_RECORD_ID,SAQRIS.DOC_CURRENCY,SAQRIS.DOCCURR_RECORD_ID,SAQRIS.ESTIMATED_VALUE,SAQRIS.GLOBAL_CURRENCY,SAQRIS.GLOBAL_CURRENCY_RECORD_ID,SAQRIS.LINE,SAQRIS.NET_PRICE,SAQRIS.NET_PRICE_INGL_CURR,SAQRIS.NET_VALUE,SAQRIS.NET_VALUE_INGL_CURR,SAQRIS.PLANT_ID,SAQRIS.PLANT_RECORD_ID,SAQRIS.SERVICE_DESCRIPTION,SAQRIS.SERVICE_ID,SAQRIS.SERVICE_RECORD_ID,SAQRIS.QUANTITY,SAQRIS.QUOTE_ID,SAQRIS.QUOTE_RECORD_ID,SAQRIS.QTEREV_ID,SAQRIS.QTEREV_RECORD_ID,SAQRIS.TAX_PERCENTAGE,SAQRIS.TAX_AMOUNT,SAQRIS.TAX_AMOUNT_INGL_CURR,SAQRIS.UNIT_PRICE,SAQRIS.UNIT_PRICE_INGL_CURR,{UserId} as ownerId,{CartId} as cartId from SAQRIS (NOLOCK)  where SAQRIS.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIS.QTEREV_RECORD_ID= '{rev_rec_id}'".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
 
-    quote_subtotalofferings = Quote.QuoteTables["QT_SAQRIS"]
-    quote_subtotalofferings.Rows.Clear()
-    if getoffer_details_obj:
-        for val in getoffer_details_obj:
-            newRow = Quoteofferings.AddNewRow()
-            newRow['COMMITTED_VALUE'] = val.COMMITTED_VALUE
-            newRow['CONTRACT_VALID_FROM'] = val.CONTRACT_VALID_FROM
-            newRow['CONTRACT_VALID_TO'] = val.CONTRACT_VALID_TO
-            newRow['DIVISION_ID'] = val.DIVISION_ID
-            newRow['DIVISION_RECORD_ID'] = val.DIVISION_RECORD_ID
-            newRow['DOC_CURRENCY'] =  val.DOC_CURRENCY
-            newRow['DOCCURR_RECORD_ID'] = val.DOCCURR_RECORD_ID
-            if val.ESTIMATED_VALUE:
-                newRow['ESTIMATED_VALUE'] = val.ESTIMATED_VALUE
-            else:
-                newRow['ESTIMATED_VALUE'] = 0
-            newRow['GLOBAL_CURRENCY'] = val.GLOBAL_CURRENCY
-            newRow['GLOBAL_CURRENCY_RECORD_ID'] = val.GLOBAL_CURRENCY_RECORD_ID
-            newRow['LINE'] = val.LINE
-            newRow['NET_PRICE'] = val.NET_PRICE
+	quote_subtotalofferings = Quote.QuoteTables["QT_SAQRIS"]
+	quote_subtotalofferings.Rows.Clear()
+	if getoffer_details_obj:
+		for val in getoffer_details_obj:
+			newRow = Quoteofferings.AddNewRow()
+			newRow['COMMITTED_VALUE'] = val.COMMITTED_VALUE
+			newRow['CONTRACT_VALID_FROM'] = val.CONTRACT_VALID_FROM
+			newRow['CONTRACT_VALID_TO'] = val.CONTRACT_VALID_TO
+			newRow['DIVISION_ID'] = val.DIVISION_ID
+			newRow['DIVISION_RECORD_ID'] = val.DIVISION_RECORD_ID
+			newRow['DOC_CURRENCY'] =  val.DOC_CURRENCY
+			newRow['DOCCURR_RECORD_ID'] = val.DOCCURR_RECORD_ID
+			if val.ESTIMATED_VALUE:
+				newRow['ESTIMATED_VALUE'] = val.ESTIMATED_VALUE
+			else:
+				newRow['ESTIMATED_VALUE'] = 0
+			newRow['GLOBAL_CURRENCY'] = val.GLOBAL_CURRENCY
+			newRow['GLOBAL_CURRENCY_RECORD_ID'] = val.GLOBAL_CURRENCY_RECORD_ID
+			newRow['LINE'] = val.LINE
+			newRow['NET_PRICE'] = val.NET_PRICE
 			if val.NET_PRICE_INGL_CURR:
-            	newRow['NET_PRICE_INGL_CURR'] = val.NET_PRICE_INGL_CURR
+				newRow['NET_PRICE_INGL_CURR'] = val.NET_PRICE_INGL_CURR
 			else:
 				newRow['NET_PRICE_INGL_CURR'] = 0
-            newRow['SERVICE_ID'] = val.SERVICE_ID
-            if val.NET_VALUE:
-                newRow['NET_VALUE'] = val.NET_VALUE
-            else:
-                newRow['NET_VALUE'] = 0
-            newRow['SERVICE_RECORD_ID'] = val.SERVICE_RECORD_ID
-            newRow['SERVICE_DESCRIPTION'] = val.SERVICE_DESCRIPTION
-            newRow['QUANTITY'] = val.QUANTITY
-            newRow['QUOTE_RECORD_ID'] = val.QUOTE_RECORD_ID
-            newRow['QUOTE_ID'] = val.QUOTE_ID
-            newRow['QTEREV_ID'] = val.QTEREV_ID
-            newRow['QTEREV_RECORD_ID'] = val.QTEREV_RECORD_ID
-            if val.TAX_PERCENTAGE:
-                newRow['TAX_PERCENTAGE'] = val.TAX_PERCENTAGE
-            else:
-                newRow['TAX_PERCENTAGE'] = 0
-            newRow['TAX_AMOUNT'] = val.TAX_AMOUNT
-            if val.UNIT_PRICE:
-                newRow['UNIT_PRICE'] = val.UNIT_PRICE
-            else:
-                newRow['UNIT_PRICE'] = 0
-            if val.UNIT_PRICE_INGL_CURR:
-                newRow['UNIT_PRICE_INGL_CURR'] = val.UNIT_PRICE_INGL_CURR
-            else:
-                newRow['UNIT_PRICE_INGL_CURR'] = 0
+			newRow['SERVICE_ID'] = val.SERVICE_ID
+			if val.NET_VALUE:
+				newRow['NET_VALUE'] = val.NET_VALUE
+			else:
+				newRow['NET_VALUE'] = 0
+			newRow['SERVICE_RECORD_ID'] = val.SERVICE_RECORD_ID
+			newRow['SERVICE_DESCRIPTION'] = val.SERVICE_DESCRIPTION
+			newRow['QUANTITY'] = val.QUANTITY
+			newRow['QUOTE_RECORD_ID'] = val.QUOTE_RECORD_ID
+			newRow['QUOTE_ID'] = val.QUOTE_ID
+			newRow['QTEREV_ID'] = val.QTEREV_ID
+			newRow['QTEREV_RECORD_ID'] = val.QTEREV_RECORD_ID
+			if val.TAX_PERCENTAGE:
+				newRow['TAX_PERCENTAGE'] = val.TAX_PERCENTAGE
+			else:
+				newRow['TAX_PERCENTAGE'] = 0
+			newRow['TAX_AMOUNT'] = val.TAX_AMOUNT
+			if val.UNIT_PRICE:
+				newRow['UNIT_PRICE'] = val.UNIT_PRICE
+			else:
+				newRow['UNIT_PRICE'] = 0
+			if val.UNIT_PRICE_INGL_CURR:
+				newRow['UNIT_PRICE_INGL_CURR'] = val.UNIT_PRICE_INGL_CURR
+			else:
+				newRow['UNIT_PRICE_INGL_CURR'] = 0
 
 
-        Quoteofferings.Save()
-    #insrt_subtotal_offering = ("""INSERT QT__QT_SAQRIS (COMMITTED_VALUE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,DIVISION_ID,DIVISION_RECORD_ID,DOC_CURRENCY,DOCCURR_RECORD_ID,ESTIMATED_VALUE,GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID,LINE,NET_PRICE,NET_PRICE_INGL_CURR,NET_VALUE,NET_VALUE_INGL_CURR,PLANT_ID,PLANT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,TAX_PERCENTAGE,TAX_AMOUNT,TAX_AMOUNT_INGL_CURR,UNIT_PRICE,UNIT_PRICE_INGL_CURR,ownerId, cartId) select SAQRIS.COMMITTED_VALUE,SAQRIS.CONTRACT_VALID_FROM,SAQRIS.CONTRACT_VALID_TO,SAQRIS.DIVISION_ID,SAQRIS.DIVISION_RECORD_ID,SAQRIS.DOC_CURRENCY,SAQRIS.DOCCURR_RECORD_ID,SAQRIS.ESTIMATED_VALUE,SAQRIS.GLOBAL_CURRENCY,SAQRIS.GLOBAL_CURRENCY_RECORD_ID,SAQRIS.LINE,SAQRIS.NET_PRICE,SAQRIS.NET_PRICE_INGL_CURR,SAQRIS.NET_VALUE,SAQRIS.NET_VALUE_INGL_CURR,SAQRIS.PLANT_ID,SAQRIS.PLANT_RECORD_ID,SAQRIS.SERVICE_DESCRIPTION,SAQRIS.SERVICE_ID,SAQRIS.SERVICE_RECORD_ID,SAQRIS.QUANTITY,SAQRIS.QUOTE_ID,SAQRIS.QUOTE_RECORD_ID,SAQRIS.QTEREV_ID,SAQRIS.QTEREV_RECORD_ID,SAQRIS.TAX_PERCENTAGE,SAQRIS.TAX_AMOUNT,SAQRIS.TAX_AMOUNT_INGL_CURR,SAQRIS.UNIT_PRICE,SAQRIS.UNIT_PRICE_INGL_CURR,{UserId} as ownerId,{CartId} as cartId from SAQRIS (NOLOCK)  where SAQRIS.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIS.QTEREV_RECORD_ID= '{rev_rec_id}'""".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
-    #Sql.RunQuery(insrt_subtotal_offering)
+		Quoteofferings.Save()
+	#insrt_subtotal_offering = ("""INSERT QT__QT_SAQRIS (COMMITTED_VALUE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,DIVISION_ID,DIVISION_RECORD_ID,DOC_CURRENCY,DOCCURR_RECORD_ID,ESTIMATED_VALUE,GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID,LINE,NET_PRICE,NET_PRICE_INGL_CURR,NET_VALUE,NET_VALUE_INGL_CURR,PLANT_ID,PLANT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,TAX_PERCENTAGE,TAX_AMOUNT,TAX_AMOUNT_INGL_CURR,UNIT_PRICE,UNIT_PRICE_INGL_CURR,ownerId, cartId) select SAQRIS.COMMITTED_VALUE,SAQRIS.CONTRACT_VALID_FROM,SAQRIS.CONTRACT_VALID_TO,SAQRIS.DIVISION_ID,SAQRIS.DIVISION_RECORD_ID,SAQRIS.DOC_CURRENCY,SAQRIS.DOCCURR_RECORD_ID,SAQRIS.ESTIMATED_VALUE,SAQRIS.GLOBAL_CURRENCY,SAQRIS.GLOBAL_CURRENCY_RECORD_ID,SAQRIS.LINE,SAQRIS.NET_PRICE,SAQRIS.NET_PRICE_INGL_CURR,SAQRIS.NET_VALUE,SAQRIS.NET_VALUE_INGL_CURR,SAQRIS.PLANT_ID,SAQRIS.PLANT_RECORD_ID,SAQRIS.SERVICE_DESCRIPTION,SAQRIS.SERVICE_ID,SAQRIS.SERVICE_RECORD_ID,SAQRIS.QUANTITY,SAQRIS.QUOTE_ID,SAQRIS.QUOTE_RECORD_ID,SAQRIS.QTEREV_ID,SAQRIS.QTEREV_RECORD_ID,SAQRIS.TAX_PERCENTAGE,SAQRIS.TAX_AMOUNT,SAQRIS.TAX_AMOUNT_INGL_CURR,SAQRIS.UNIT_PRICE,SAQRIS.UNIT_PRICE_INGL_CURR,{UserId} as ownerId,{CartId} as cartId from SAQRIS (NOLOCK)  where SAQRIS.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIS.QTEREV_RECORD_ID= '{rev_rec_id}'""".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
+	#Sql.RunQuery(insrt_subtotal_offering)
 
 
-    insrt_item_details = ("""INSERT QT__QT_SAQRIT (LINE,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,SERVICE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,ownerId, cartId) select SAQRIT.LINE,SAQRIT.SERVICE_DESCRIPTION,SAQRIT.SERVICE_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.QUOTE_ID,SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_ID,SAQRIT.QTEREV_RECORD_ID,{UserId} as ownerId,{CartId} as cartId from SAQRIT (NOLOCK)  where SAQRIT.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIT.QTEREV_RECORD_ID= '{rev_rec_id}'""".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
-    Sql.RunQuery(insrt_item_details)
+	insrt_item_details = ("""INSERT QT__QT_SAQRIT (LINE,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,SERVICE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,ownerId, cartId) select SAQRIT.LINE,SAQRIT.SERVICE_DESCRIPTION,SAQRIT.SERVICE_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.QUOTE_ID,SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_ID,SAQRIT.QTEREV_RECORD_ID,{UserId} as ownerId,{CartId} as cartId from SAQRIT (NOLOCK)  where SAQRIT.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIT.QTEREV_RECORD_ID= '{rev_rec_id}'""".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
+	Sql.RunQuery(insrt_item_details)
 
-    get_revision_details = Sql.GetFirst("SELECT REVISION_DESCRIPTION,REV_EXPIRE_DATE,EXCHANGE_RATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,CUSTOMER_NOTES,PAYMENTTERM_NAME from SAQTRV where QUOTE_RECORD_ID = '{qt_rec_id}'".format(qt_rec_id = contract_quote_record_id))
-    if get_revision_details:
-        Quote.SetGlobal('REV_DESC', str(get_revision_details.REVISION_DESCRIPTION)) 
-        Quote.SetGlobal('REV_EXPIRE', str(get_revision_details.REV_EXPIRE_DATE).split()[0])
-        Quote.SetGlobal('EXC_RATE', str(get_revision_details.EXCHANGE_RATE))
-        Quote.SetGlobal('QT_CVF', str(get_revision_details.CONTRACT_VALID_FROM).split()[0])
-        Quote.SetGlobal('QT_CVT', str(get_revision_details.CONTRACT_VALID_TO).split()[0])
-        if str(get_revision_details.CUSTOMER_NOTES):
-            Quote.SetGlobal('QT_CN', str(get_revision_details.CUSTOMER_NOTES))
-            Quote.GetCustomField('customer_notes').Content = str(get_revision_details.CUSTOMER_NOTES)
-        if str(get_revision_details.PAYMENTTERM_NAME):
-            Quote.SetGlobal('QT_PAYMENT_TERM', str(get_revision_details.PAYMENTTERM_NAME))
-    #set  total net price, total net value start
-    total_net_price = total_net_value = total_tax_amt = 0.00
-    
-    
-    quote_subtotalofferings = Quote.QuoteTables["QT_SAQRIS"]
+	get_revision_details = Sql.GetFirst("SELECT REVISION_DESCRIPTION,REV_EXPIRE_DATE,EXCHANGE_RATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,CUSTOMER_NOTES,PAYMENTTERM_NAME from SAQTRV where QUOTE_RECORD_ID = '{qt_rec_id}'".format(qt_rec_id = contract_quote_record_id))
+	if get_revision_details:
+		Quote.SetGlobal('REV_DESC', str(get_revision_details.REVISION_DESCRIPTION)) 
+		Quote.SetGlobal('REV_EXPIRE', str(get_revision_details.REV_EXPIRE_DATE).split()[0])
+		Quote.SetGlobal('EXC_RATE', str(get_revision_details.EXCHANGE_RATE))
+		Quote.SetGlobal('QT_CVF', str(get_revision_details.CONTRACT_VALID_FROM).split()[0])
+		Quote.SetGlobal('QT_CVT', str(get_revision_details.CONTRACT_VALID_TO).split()[0])
+		if str(get_revision_details.CUSTOMER_NOTES):
+			Quote.SetGlobal('QT_CN', str(get_revision_details.CUSTOMER_NOTES))
+			Quote.GetCustomField('customer_notes').Content = str(get_revision_details.CUSTOMER_NOTES)
+		if str(get_revision_details.PAYMENTTERM_NAME):
+			Quote.SetGlobal('QT_PAYMENT_TERM', str(get_revision_details.PAYMENTTERM_NAME))
+	#set  total net price, total net value start
+	total_net_price = total_net_value = total_tax_amt = 0.00
+	
+	
+	quote_subtotalofferings = Quote.QuoteTables["QT_SAQRIS"]
 
-    '''for i in quote_subtotalofferings.Rows:
-        Trace.Write('QT_SAQRIS---'+str(i['NET_PRICE']))
-        #exts_price += float(i['EXTENDED_PRICE'])
-        total_net_price += float(i['NET_PRICE'])
-        total_net_value += float(i['NET_VALUE'])
-        total_tax_amt += float(i['TAX_AMOUNT'])
-        Trace.Write('QT_SAQRIS---total_net_price----'+str(total_net_price))
-        Trace.Write('QT_SAQRIS---total_net_value----'+str(total_net_value))
-        Quote.SetGlobal('NP', str(total_net_price))
-        Quote.SetGlobal('NEV', str(total_net_value))
-        Quote.SetGlobal('TX', str(total_tax_amt))'''
-    get_quotetotal = Sql.GetFirst("SELECT SUM(NET_PRICE_INGL_CURR) as netprice,SUM(ESTIMATED_VALUE) as est_val from QT__QT_SAQRIS where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
-    if get_quotetotal:
-        Quote.GetCustomField('doc_net_price').Content = str(get_quotetotal.netprice)
-        Quote.GetCustomField('tot_est').Content = str(get_quotetotal.est_val)
+	'''for i in quote_subtotalofferings.Rows:
+		Trace.Write('QT_SAQRIS---'+str(i['NET_PRICE']))
+		#exts_price += float(i['EXTENDED_PRICE'])
+		total_net_price += float(i['NET_PRICE'])
+		total_net_value += float(i['NET_VALUE'])
+		total_tax_amt += float(i['TAX_AMOUNT'])
+		Trace.Write('QT_SAQRIS---total_net_price----'+str(total_net_price))
+		Trace.Write('QT_SAQRIS---total_net_value----'+str(total_net_value))
+		Quote.SetGlobal('NP', str(total_net_price))
+		Quote.SetGlobal('NEV', str(total_net_value))
+		Quote.SetGlobal('TX', str(total_tax_amt))'''
+	get_quotetotal = Sql.GetFirst("SELECT SUM(NET_PRICE_INGL_CURR) as netprice,SUM(ESTIMATED_VALUE) as est_val from QT__QT_SAQRIS where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_quotetotal:
+		Quote.GetCustomField('doc_net_price').Content = str(get_quotetotal.netprice)
+		Quote.GetCustomField('tot_est').Content = str(get_quotetotal.est_val)
 
-    return True
+	return True
 #Document XML end
 
 
@@ -162,74 +162,74 @@ def _insert_subtotal_by_offerring_quote_table():
 
 get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 def insert_spare_doc(parts_list):
-    _insert_subtotal_by_offerring_quote_table()
-    if str(parts_list) == 'True':
-        Trace.Write('93------')
-        Log.Info('SAQDOC---documents-')
-        saqdoc_output_insert="""INSERT SAQDOC (
-                            QUOTE_DOCUMENT_RECORD_ID,
-                            DOCUMENT_ID,
-                            DOCUMENT_NAME,
-                            DOCUMENT_PATH,
-                            QUOTE_ID,
-                            QUOTE_NAME,
-                            QUOTE_RECORD_ID,
-                            LANGUAGE_ID,
-                            LANGUAGE_NAME,
-                            LANGUAGE_RECORD_ID,
-                            CPQTABLEENTRYADDEDBY,
-                            CPQTABLEENTRYDATEADDED,
-                            CpqTableEntryModifiedBy,
-                            CpqTableEntryDateModified,
-                            STATUS,
-                            QTEREV_ID,
-                            QTEREV_RECORD_ID
-                            )SELECT
-                            CONVERT(VARCHAR(4000),NEWID()) as QUOTE_DOCUMENT_RECORD_ID,
-                            '{doc_id}' AS DOCUMENT_ID,
-                            '{doc_name}' AS DOCUMENT_NAME,
-                            '' AS DOCUMENT_PATH,
-                            '{quoteid}' AS QUOTE_ID,
-                            '{quotename}' AS QUOTE_NAME,
-                            '{quoterecid}' AS QUOTE_RECORD_ID,
-                            'EN' AS LANGUAGE_ID,
-                            'English' AS LANGUAGE_NAME,
-                            MALANG.LANGUAGE_RECORD_ID AS LANGUAGE_RECORD_ID,
-                            '{UserName}' as CPQTABLEENTRYADDEDBY,
-                            '{dateadded}' as CPQTABLEENTRYDATEADDED,
-                            '{UserId}' as CpqTableEntryModifiedBy,
-                            '{date}' as CpqTableEntryDateModified,
-                            'PENDING' as STATUS,
-                            '{qt_revid}' as QTEREV_ID,
-                            '{qt_rev_rec_id}' as QTEREV_RECORD_ID
-                            FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(doc_id='Pending',doc_name='',quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=contract_quote_record_id,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
-            #Log.Info(qtqdoc)
-        Sql.RunQuery(saqdoc_output_insert)
-        
-        gen_doc = Quote.GenerateDocument('AMAT_SUBTOTAL_OFFERING', GenDocFormat.PDF)
-        fileName = Quote.GetLatestGeneratedDocumentFileName()
-        GDB = Quote.GetLatestGeneratedDocumentInBytes()
-        List = Quote.GetGeneratedDocumentList('AMAT_SUBTOTAL_OFFERING')
-        for doc in List:
-            doc_id = doc.Id
-            doc_name = doc.FileName
-            if fileName==doc_name:
-                quote_id = gettoolquote.QUOTE_ID
-                #added_by = audit_fields.USERNAME
-                #modified_by = audit_fields.CpqTableEntryModifiedBy
-                #modified_date = audit_fields.CpqTableEntryDateModified
-                guid = str(Guid.NewGuid()).upper()
-                qt_rec_id = contract_quote_record_id
-                date_added = doc.DateCreated
-                update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND STATUS = 'PENDING' AND QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=contract_quote_record_id,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)
-                Sql.RunQuery(update_query)
-    return True
+	_insert_subtotal_by_offerring_quote_table()
+	if str(parts_list) == 'True':
+		Trace.Write('93------')
+		Log.Info('SAQDOC---documents-')
+		saqdoc_output_insert="""INSERT SAQDOC (
+							QUOTE_DOCUMENT_RECORD_ID,
+							DOCUMENT_ID,
+							DOCUMENT_NAME,
+							DOCUMENT_PATH,
+							QUOTE_ID,
+							QUOTE_NAME,
+							QUOTE_RECORD_ID,
+							LANGUAGE_ID,
+							LANGUAGE_NAME,
+							LANGUAGE_RECORD_ID,
+							CPQTABLEENTRYADDEDBY,
+							CPQTABLEENTRYDATEADDED,
+							CpqTableEntryModifiedBy,
+							CpqTableEntryDateModified,
+							STATUS,
+							QTEREV_ID,
+							QTEREV_RECORD_ID
+							)SELECT
+							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_DOCUMENT_RECORD_ID,
+							'{doc_id}' AS DOCUMENT_ID,
+							'{doc_name}' AS DOCUMENT_NAME,
+							'' AS DOCUMENT_PATH,
+							'{quoteid}' AS QUOTE_ID,
+							'{quotename}' AS QUOTE_NAME,
+							'{quoterecid}' AS QUOTE_RECORD_ID,
+							'EN' AS LANGUAGE_ID,
+							'English' AS LANGUAGE_NAME,
+							MALANG.LANGUAGE_RECORD_ID AS LANGUAGE_RECORD_ID,
+							'{UserName}' as CPQTABLEENTRYADDEDBY,
+							'{dateadded}' as CPQTABLEENTRYDATEADDED,
+							'{UserId}' as CpqTableEntryModifiedBy,
+							'{date}' as CpqTableEntryDateModified,
+							'PENDING' as STATUS,
+							'{qt_revid}' as QTEREV_ID,
+							'{qt_rev_rec_id}' as QTEREV_RECORD_ID
+							FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(doc_id='Pending',doc_name='',quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=contract_quote_record_id,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
+			#Log.Info(qtqdoc)
+		Sql.RunQuery(saqdoc_output_insert)
+		
+		gen_doc = Quote.GenerateDocument('AMAT_SUBTOTAL_OFFERING', GenDocFormat.PDF)
+		fileName = Quote.GetLatestGeneratedDocumentFileName()
+		GDB = Quote.GetLatestGeneratedDocumentInBytes()
+		List = Quote.GetGeneratedDocumentList('AMAT_SUBTOTAL_OFFERING')
+		for doc in List:
+			doc_id = doc.Id
+			doc_name = doc.FileName
+			if fileName==doc_name:
+				quote_id = gettoolquote.QUOTE_ID
+				#added_by = audit_fields.USERNAME
+				#modified_by = audit_fields.CpqTableEntryModifiedBy
+				#modified_date = audit_fields.CpqTableEntryDateModified
+				guid = str(Guid.NewGuid()).upper()
+				qt_rec_id = contract_quote_record_id
+				date_added = doc.DateCreated
+				update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND STATUS = 'PENDING' AND QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=contract_quote_record_id,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)
+				Sql.RunQuery(update_query)
+	return True
 
 
 def language_select():
-    Trace.Write("Inside language select")
-    sec_str =  ''
-    get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+	Trace.Write("Inside language select")
+	sec_str =  ''
+	get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 	if get_quote_status:
 		if str(get_quote_status.REVISION_STATUS).upper() == "APPROVED":
 			Trace.Write("If")
@@ -376,25 +376,25 @@ def language_select():
 			"</div>")
 
 			sec_str += '<table class="wth100mrg8"><tbody>'
-    return sec_str
+	return sec_str
 
 try:
-    action_type = Param.LOAD
+	action_type = Param.LOAD
 except:
-    action_type = ''
+	action_type = ''
 
 
 
 try:
-    parts_list = Param.parts_list
+	parts_list = Param.parts_list
 except:
-    parts_list = ''
+	parts_list = ''
 
 Trace.Write("parts_list---"+str(parts_list)+"--parts_list---inside"+str(action_type))
 
 if str(parts_list) == 'True':
-    ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
+	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
 
 if action_type == "DOCUMENT":
-    Trace.Write("inside"+str(action_type))
-    ApiResponse = ApiResponseFactory.JsonResponse(language_select())
+	Trace.Write("inside"+str(action_type))
+	ApiResponse = ApiResponseFactory.JsonResponse(language_select())
