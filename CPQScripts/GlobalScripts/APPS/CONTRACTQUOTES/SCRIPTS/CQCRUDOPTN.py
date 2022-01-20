@@ -4929,6 +4929,57 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id')
 				))
+  
+		Sql._process_query("""INSERT SAQGPE (
+				CPS_CONFIGURATION_ID,
+				CPS_MATCH_ID,
+				ENTITLEMENT_XML,
+				GOT_CODE,
+				GOTCODE_RECORD_ID,
+				GREENBOOK,
+				GREENBOOK_RECORD_ID,
+				KB_VERSION,
+				PM_ID,
+				PM_RECORD_ID,
+				QUOTE_ID,
+				QUOTE_RECORD_ID,
+				QTEREV_ID,
+				QTEREV_RECORD_ID,
+				QTEGBKENT_RECORD_ID,
+				QTEGGTPME_RECORD_ID,
+				QUOTE_REV_GOT_CD_PM_EVNT_ENTITLEMENTS_RECORD_ID,
+				CPQTABLEENTRYADDEDBY,
+				CPQTABLEENTRYDATEADDED
+				) 
+				SELECT pm_entitlement.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_GOT_CD_PM_EVNT_ENTITLEMENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT DISTINCT 
+				SAQSGE.CPS_CONFIGURATION_ID,
+				SAQSGE.CPS_MATCH_ID,
+				SAQSGE.ENTITLEMENT_XML,
+				SAQGPM.GOT_CODE,
+				SAQGPM.GOTCODE_RECORD_ID,
+				SAQGPM.GREENBOOK_RECORD_ID,
+				SAQSGE.KB_VERSION,
+				SAQGPM.PM_ID,
+				SAQGPM.PM_RECORD_ID,
+				SAQGPM.QUOTE_ID,
+				SAQGPM.QUOTE_RECORD_ID,
+				SAQGPM.QTEREV_ID,
+				SAQGPM.QTEREV_RECORD_ID
+				SAQGPM.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID as QTEGBKENT_RECORD_ID,
+				SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEGGTPME_RECORD_ID
+                FROM SYSPBT (NOLOCK) 
+                JOIN SYSPBT.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID
+                JOIN SAQGPM.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID AND SAQGPM.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQGPM.GREENBOOK_RECORD_ID = SAQSGE.GREENBOOK_RECORD_ID
+                WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SAQGPM.SERVICE_ID = '{TreeParam}' """.format(
+                UserName=self.user_name,
+				TreeParam=self.tree_param,
+				QuoteId = self.contract_quote_id,
+				QuoteRecordId=self.contract_quote_record_id,
+				RevisionId=self.quote_revision_id,
+				RevisionRecordId=self.quote_revision_record_id,
+				BatchGroupRecordId=kwargs.get('batch_group_record_id'))
+                )
+				
 		
 		# if self.tree_param == "Z0009":
 		# 	delete_obj_list = ["SAQSCO","SAQSCA"]
