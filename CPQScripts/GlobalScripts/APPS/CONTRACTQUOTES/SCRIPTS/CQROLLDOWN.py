@@ -16,6 +16,8 @@ from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 Sql = SQL()
 userId = str(User.Id)
 userName = str(User.UserName)
+import CQADDONPRD
+
 gettodaydate = datetime.datetime.now().strftime("%Y-%m-%d")
 Log.Info('ROLL DWON STARTS-CQROLLDWON---')
 def cloneEntitlement(ProductPartnumber):
@@ -233,13 +235,13 @@ def CoveredObjEntitlement():
 	except:
 		Log.Info("ancillary entitlement error")
 
-	
 	try:
-		quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
-		if quote_obj:
-			Quote = QuoteHelper.Edit(quote_obj.QUOTE_ID)	
-	except Exception:
-		Log.Info("Exception in Quote Edit") 
+		addon_object =Sql.GetList("SELECT SAQSAO.*, SAQSGB.GREENBOOK FROM SAQSAO (NOLOCK) INNER JOIN SAQSGB (NOLOCK) ON SAQSGB.QUOTE_RECORD_ID=SAQSAO.QUOTE_RECORD_ID and SAQSGB.QTEREV_RECORD_ID=SAQSAO.QTEREV_RECORD_ID and SAQSGB.SERVICE_ID = SAQSAO.ADNPRD_ID AND SAQSGB.PAR_SERVICE_ID = SAQSAO.SERVICE_ID WHERE SAQSAO.QUOTE_RECORD_ID= '{QuoteRecordId}' AND SAQSAO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSAO.ACTIVE ='TRUE' AND SAQSAO.SERVICE_ID = '{service_id}' ".format(QuoteRecordId=Qt_rec_id,RevisionRecordId=rev_rec_id, service_id = TreeParam))
+		for OfferingRow_detail in addon_object:
+			CQADDONPRD.addon_operations(OfferingRow_detail,OfferingRow_detail.GREENBOOK)
+	except:
+		Log.Info("error in add on product")
+	 
 	# try:
 	# 	Log.Info("Called CQINSQTITM ==>cqroll "+str(Qt_rec_id))
 	# 	# data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
