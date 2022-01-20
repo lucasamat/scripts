@@ -1601,6 +1601,7 @@ class Entitlements:
 
 				# if cust_annual_qty:
 					# for annual_qty in cust_annual_qty:
+					
 				if int(parts_value) < 10:
 					Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'UNSCHEDULED', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
 				elif int(parts_value) >= 10:
