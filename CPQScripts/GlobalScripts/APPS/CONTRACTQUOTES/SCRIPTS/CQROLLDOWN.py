@@ -219,7 +219,7 @@ def CoveredObjEntitlement():
 		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
 		for anc_key,anc_val in ancillary_dict.items():
 			Log.Info("vall--"+str(anc_key)  )
-			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(anc_key, Qt_rec_id,rev_rec_id,TreeParam ))
+			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{anc_key}' AND QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID = '{service_id}' AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{rev_rec_id}')".format(anc_key =anc_key,Qt_rec_id = Qt_rec_id,rev_rec_id = rev_rec_id,service_id = TreeParam ))
 			
 			if anc_val == "INSERT" :
 				
