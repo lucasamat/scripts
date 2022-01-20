@@ -1001,7 +1001,7 @@ class EntitlementView():
 							##validation msg
 							validation_attr = ""
 							if attrSysId in validation_dict.keys():
-								validation_attr = 'onkeypress="return isNumberKey(event);"'
+								validation_attr = ' onkeypress="return isNumberKey(event);"'
 								if validation_dict[attrSysId]  == '0.00':
 									sec_validation = "Only enter the values in the following range: -&infin; - "+str(validation_dict[attrSysId])
 									
@@ -1323,7 +1323,7 @@ class EntitlementView():
 													datepicker = "onclick_datepicker('" + attrSysId + "')"
 												
 												sec_str1 += (
-													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" '+str(validation_attr)+' id = "'
+													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 													+ str(attr_value)
@@ -1342,7 +1342,7 @@ class EntitlementView():
 												if attr_value == "DefaultValue":
 													attr_value = ''
 												sec_str1 += (
-													'<input maxlength="255" class="form-control no_border_bg '+str(disable_edit)+'" id = "'
+													'<input maxlength="255" class="form-control no_border_bg '+str(validation_attr)+' '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"  style ="'+str(add_style)+'"  data-content ="'
 													+ str(attr_value)
