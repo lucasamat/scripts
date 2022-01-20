@@ -197,8 +197,8 @@ except:
 try:
 	if Action == 'Delete':
 		calling_function = quoteitemupdate(Qt_id)
-	# elif  Action == 'VOUCHER_UPDATE':
-	# 	voucher_amt_update(Qt_id)
+	elif  Action == 'VOUCHER_UPDATE':
+		voucher_amt_update(Qt_id)
 	else:    
 		voucher_amt_update(Qt_id)
 		calling_function = quoteiteminsert(Qt_id)
