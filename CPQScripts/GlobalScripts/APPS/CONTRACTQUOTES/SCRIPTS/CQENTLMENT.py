@@ -1583,14 +1583,28 @@ class Entitlements:
 				##to update match id at all level while saving ends
 				Sql.RunQuery(UpdateEntitlement)
 				#Trace.Write("TEST COMMIT")
-				cust_annual_qty = Sql.GetList("SELECT CUSTOMER_ANNUAL_QUANTITY FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
+				parts_value = 0
+				Service_Id = 'Z0108'
+				entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+				entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+				quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+				valllllllllll = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(Service_Id)+'[^>]*?_TSC_SCPT</ENTITLEMENT_ID>')
+				value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+				for m in re.finditer(quote_item_tag, entitlement_xml):
+					sub_string = m.group(1)
+					scheduled_parts =re.findall(valllllllllll,sub_string)
+					scheduled_value =re.findall(value,sub_string)
+					if scheduled_parts and scheduled_value:
+						parts_value = scheduled_value[0]
+						break
+				# cust_annual_qty = Sql.GetList("SELECT CUSTOMER_ANNUAL_QUANTITY FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
 
-				if cust_annual_qty:
-					for annual_qty in cust_annual_qty:
-						if int(scheduled_parts) < 10:
-							Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'UNSCHEDULED', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY < 10".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
-						elif int(scheduled_parts) >= 10:
-							Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'SCHEDULED', DELIVERY_MODE = 'ONSITE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY >= 10".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
+				# if cust_annual_qty:
+					# for annual_qty in cust_annual_qty:
+				if int(parts_value) < 10:
+					Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'UNSCHEDULED', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
+				elif int(parts_value) >= 10:
+					Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'SCHEDULED', DELIVERY_MODE = 'ONSITE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' ".format(QuoteRecordId = self.ContractRecordId,rev_rec_id = self.revision_recordid))
 				# Trace.Write("CHKNG _scheduled_parts "+str(scheduled_parts))
 				where = " QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,self.treeparentparam)
 				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
