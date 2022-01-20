@@ -790,7 +790,7 @@ class ViolationConditions:
                     else:
                         Log.Info("else @758")
         except Exception as e:
-            Log.Info(str(e))
+            Log.Info("EXCEPTION ACVIORULES!!!!---->>>"+str(e))
             
         return True
 
