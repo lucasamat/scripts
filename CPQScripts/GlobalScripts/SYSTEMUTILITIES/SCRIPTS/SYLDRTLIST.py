@@ -4827,6 +4827,18 @@ class SYLDRTLIST:
 				)
 				filter_level_list.append(filter_level_data)
 				cv_list.append(filter_clas_name)
+			elif ObjectName == 'SAQSPD' and (col_name in delivery_date_column):
+				Trace.Write('4831---col_name-'+str(col_name))
+				filter_level_data = "input"
+				col_name = col_name.replace('/','-')
+				col_name = col_name.replace('-','_')                
+				filter_clas_name = (
+					'<input type="text" class="width100_vis form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ '">'
+				)
+				filter_level_list.append(filter_level_data)
+				cv_list.append(filter_clas_name)
 			else:
 				DropDownList.append("")
 		if ObjectName == 'SAQIBP' and TreeParam != 'Quote Items':
