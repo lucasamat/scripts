@@ -504,6 +504,7 @@ class ViolationConditions:
                     #     + str(result.WHERE_CONDITION_01)
                     # )
                     #A055S000P01-15007 START
+                    flag = 0
                     if "PRENVL" in result.WHERE_CONDITION_01:
                         flag = 0
                         
@@ -527,17 +528,14 @@ class ViolationConditions:
                                 if len(attribute) != 0 and len(attribute_id) != 0:
                                     flag = 1
                                     break
-                        if flag == 1:
-                            SqlQuery = "val"
-                        else:
-                            SqlQuery = None
+                        
                     #A055S000P01-15007 END
                     else:
                         Select_Query = (
                             "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE (" + str(result.WHERE_CONDITION_01) + ")"
                         )
                         Log.Info("ACVIORULES--->"+str(Select_Query))
-                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
+                        
                     TargeobjRelation = Sql.GetFirst(
                         "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
                         + str(ObjectName)
@@ -557,10 +555,13 @@ class ViolationConditions:
                     """ else:
                         if str(ObjectName) == 'SAQTMT':
                             rec_name = 'QUOTE_ID' """
-                    
-                    Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
-                    SqlQuery = Sql.GetFirst(Select_Query)
-                    Log.Info("@532")
+                    if flag == 0:
+                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
+                        Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
+                        SqlQuery = Sql.GetFirst(Select_Query)
+                        Log.Info("@532")
+                    else:
+                        SqlQuery = None
                     if SqlQuery:
                         Log.Info("Inside the approval heaeder "+str(method)+" -index- "+str(index))
                         '"+str(Objh_Id)+"'
