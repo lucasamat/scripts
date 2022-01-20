@@ -66,15 +66,78 @@ try:
 	jsonData = jsonData.split("'")
 
 	rebuilt_data = eval(str(jsonData[1]))
-
-	if 'CorrelationID' in rebuilt_data:
+	if 'ErrorCode' in rebuilt_data:
 		Qt_Id = rebuilt_data['CorrelationID']
-		
-		primaryQueryItems = SqlHelper.GetFirst(
-			""
-			+ str(Parameter1.QUERY_CRITERIA_1)
-			+ "  SAQTRV SET CLM_AGREEMENT_NUM=''"+ str(rebuilt_data['AgreementNumber'])+"'',CLM_AGREEMENT_ID = ''"+ str(rebuilt_data['AgreementID'])+"'',CLM_AGREEMENT_STATUS = ''"+ str(rebuilt_data['AgreementStatus'])+"'',CLM_AGREEMENT_URL = ''"+ str(rebuilt_data['AgreementURL'])+"'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +'-'+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"''  ' "
-		)
+		Error_Msg = rebuilt_data['ErrorMessage']
+
+		ToEml = SqlHelper.GetFirst("SELECT ISNULL(OWNER_ID,'X0116954') as OWNER_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.QUOTE_ID = '"+str(Qt_Id)+"'  ")  
+
+
+		# Mail system				
+		Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black';} </style></head><body id = 'bd'>"
+
+		Table_start = "<p>Hi Team,<br><br>CLM Aggrement response getting follwing error message.</p><table class='table table-bordered'><tr><th id = 'grey'>Quote ID</th><th id = 'grey'>Error Message</th></tr><tr><td >"+str(Qt_Id)+"</td><td>"+str(Error_Msg)+"</td ></tr>"
+
+		Table_info = ""
+		Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
+
+		Error_Info = Header + Table_start + Table_info + Table_End
+
+		LOGIN_CRE = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password FROM SYCONF where Domain ='SUPPORT_MAIL'")
+
+		# Create new SmtpClient object
+		mailClient = SmtpClient()
+
+		# Set the host and port (eg. smtp.gmail.com)
+		mailClient.Host = "smtp.gmail.com"
+		mailClient.Port = 587
+		mailClient.EnableSsl = "true"
+
+		# Setup NetworkCredential
+		mailCred = NetworkCredential()
+		mailCred.UserName = str(LOGIN_CRE.Username)
+		mailCred.Password = str(LOGIN_CRE.Password)
+		mailClient.Credentials = mailCred
+
+		UserEmail = SqlHelper.GetFirst("SELECT isnull(email,'"+str(LOGIN_CRE.Username)+"') as email FROM saempl (nolock) where employee_id  = '"+str(ToEml.OWNER_ID)+"'")
+
+		# Create two mail adresses, one for send from and the another for recipient
+		if UserEmail is None:
+			toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
+		else:
+			toEmail = MailAddress(UserEmail.email)
+		fromEmail = MailAddress(str(LOGIN_CRE.Username))
+
+		# Create new MailMessage object
+		msg = MailMessage(fromEmail, toEmail)
+
+		# Set message subject and body
+		msg.Subject = "CLM Agrement Error Message - AMAT CPQ(X-Tenant)"
+		msg.IsBodyHtml = True
+		msg.Body = Error_Info
+
+		# Bcc Emails	
+		copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
+		msg.Bcc.Add(copyEmail4)
+
+		copyEmail6 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
+		msg.Bcc.Add(copyEmail6) 
+
+		# Send the message
+		mailClient.Send(msg)
+
+
+
+	else:
+
+		if 'CorrelationID' in rebuilt_data:
+			Qt_Id = rebuilt_data['CorrelationID']
+			
+			primaryQueryItems = SqlHelper.GetFirst(
+				""
+				+ str(Parameter1.QUERY_CRITERIA_1)
+				+ "  SAQTRV SET CLM_AGREEMENT_NUM=''"+ str(rebuilt_data['AgreementNumber'])+"'',CLM_AGREEMENT_ID = ''"+ str(rebuilt_data['AgreementID'])+"'',CLM_AGREEMENT_STATUS = ''"+ str(rebuilt_data['AgreementStatus'])+"'',CLM_AGREEMENT_URL = ''"+ str(rebuilt_data['AgreementURL'])+"'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +'-'+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"''  ' "
+			)
 
 except:
 	Log.Info("SAGETCLMUP ERROR---->:" + str(sys.exc_info()[1]))
