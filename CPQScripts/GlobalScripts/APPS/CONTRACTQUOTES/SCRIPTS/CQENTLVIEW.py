@@ -1342,7 +1342,7 @@ class EntitlementView():
 												if attr_value == "DefaultValue":
 													attr_value = ''
 												sec_str1 += (
-													'<input maxlength="255" class="form-control no_border_bg '+str(validation_attr)+' '+str(disable_edit)+'" id = "'
+													'<input maxlength="255" '+str(validation_attr)+' class="form-control no_border_bg '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"  style ="'+str(add_style)+'"  data-content ="'
 													+ str(attr_value)
