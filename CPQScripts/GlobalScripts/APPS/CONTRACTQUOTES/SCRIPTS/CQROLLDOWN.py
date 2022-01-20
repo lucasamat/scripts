@@ -209,7 +209,7 @@ def CoveredObjEntitlement():
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW")
 	#ancillary_service_Z0046()
 	if not ancillary_dict:
-		get_ancillary = Sql.GetList("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}'".format(Qt_rec_id,rev_rec_id,TreeParam))
+		get_ancillary = Sql.GetList("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID ='{service_id}' AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{rev_rec_id}')".format(Qt_rec_id = Qt_rec_id,rev_rec_id = rev_rec_id,service_id = TreeParam ))
 		if get_ancillary:
 			for rec in get_ancillary:
 				ancillary_dict[rec.SERVICE_ID] = 'INSERT'
