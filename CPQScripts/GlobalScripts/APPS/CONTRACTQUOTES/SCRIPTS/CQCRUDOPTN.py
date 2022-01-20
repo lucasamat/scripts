@@ -4755,7 +4755,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				JOIN MAEAPK(NOLOCK) ON MAEAPK.EQUIPMENT_RECORD_ID = SAQSCA.EQUIPMENT_RECORD_ID AND MAEAPK.ASSEMBLY_RECORD_ID = SAQSCA.ASSEMBLY_RECORD_ID 
 				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.
 				QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRGG.SERVICE_ID = '{TreeParam}' AND  MAEAPK.PM_LEVEL IN {pm_level_value}) pmsa_pmevents  LEFT JOIN SAQGPM (NOLOCK) AS pm on pmsa_pmevents.QUOTE_RECORD_ID = pm.QUOTE_RECORD_ID AND pmsa_pmevents.QTEREV_RECORD_ID = pm.QTEREV_RECORD_ID AND pmsa_pmevents.SERVICE_RECORD_ID = pm.SERVICE_RECORD_ID AND pmsa_pmevents.GREENBOOK_RECORD_ID = pm.GREENBOOK_RECORD_ID and pmsa_pmevents.GOTCODE_RECORD_ID = pm.GOTCODE_RECORD_ID and pmsa_pmevents.PM_RECORD_ID = pm.PM_RECORD_ID
-    			WHERE ISNULL(pm.PM_RECORD_ID,'') = ''""".format(
+				WHERE ISNULL(pm.PM_RECORD_ID,'') = ''""".format(
 				UserName=self.user_name,
 				TreeParam=self.tree_param,
 				QuoteId = self.contract_quote_id,
@@ -4920,7 +4920,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				JOIN MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQGPM.KIT_ID
 				JOIN MAMTRL(NOLOCK) ON MAMTRL.SAP_PART_NUMBER = MAKTPT.PART_NUMBER
 				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}') KP LEFT JOIN SAQSKP (NOLOCK) AS KIT ON 
-   	 			KP.QUOTE_RECORD_ID =KIT.QUOTE_RECORD_ID AND KP.QTEREV_RECORD_ID =KIT.QTEREV_RECORD_ID AND KP.SERVICE_RECORD_ID =KIT.SERVICE_RECORD_ID AND KP.EQUIPMENT_RECORD_ID =KIT.EQUIPMENT_RECORD_ID  AND KP.ASSEMBLY_RECORD_ID =KIT.ASSEMBLY_RECORD_ID AND KP.PM_RECORD_ID =KIT.PM_RECORD_ID AND KP.KIT_RECORD_ID =KIT.KIT_RECORD_ID  AND KP.KITNUMBER_RECORD_ID =KIT.KIT_NUMBER_RECORD_ID AND ISNULL(KIT.KIT_RECORD_ID,'') = '' """.format(
+				KP.QUOTE_RECORD_ID =KIT.QUOTE_RECORD_ID AND KP.QTEREV_RECORD_ID =KIT.QTEREV_RECORD_ID AND KP.SERVICE_RECORD_ID =KIT.SERVICE_RECORD_ID AND KP.EQUIPMENT_RECORD_ID =KIT.EQUIPMENT_RECORD_ID  AND KP.ASSEMBLY_RECORD_ID =KIT.ASSEMBLY_RECORD_ID AND KP.PM_RECORD_ID =KIT.PM_RECORD_ID AND KP.KIT_RECORD_ID =KIT.KIT_RECORD_ID  AND KP.KITNUMBER_RECORD_ID =KIT.KIT_NUMBER_RECORD_ID AND ISNULL(KIT.KIT_RECORD_ID,'') = '' """.format(
 				UserName=self.user_name,
 				TreeParam=self.tree_param,
 				QuoteId = self.contract_quote_id,
@@ -4929,7 +4929,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id')
 				))
-  
+
 		self._process_query("""INSERT SAQGPE (
 				CPS_CONFIGURATION_ID,
 				CPS_MATCH_ID,
@@ -4957,6 +4957,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				SAQSGE.ENTITLEMENT_XML,
 				SAQGPM.GOT_CODE,
 				SAQGPM.GOTCODE_RECORD_ID,
+				SAQGPM.GREENBOOK,
 				SAQGPM.GREENBOOK_RECORD_ID,
 				SAQSGE.KB_VERSION,
 				SAQGPM.PM_ID,
@@ -4964,29 +4965,30 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				SAQGPM.QUOTE_ID,
 				SAQGPM.QUOTE_RECORD_ID,
 				SAQGPM.QTEREV_ID,
-				SAQGPM.QTEREV_RECORD_ID
-				SAQGPM.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID as QTEGBKENT_RECORD_ID,
+				SAQGPM.QTEREV_RECORD_ID,
+				SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID as QTEGBKENT_RECORD_ID,
 				SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEGGTPME_RECORD_ID
-                FROM SYSPBT (NOLOCK) 
-                JOIN SYSPBT.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID
-                JOIN SAQGPM.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID AND SAQGPM.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQGPM.GREENBOOK_RECORD_ID = SAQSGE.GREENBOOK_RECORD_ID
-                WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SAQGPM.SERVICE_ID = '{TreeParam}' """.format(
-                UserName=self.user_name,
+				FROM SYSPBT (NOLOCK) 
+				JOIN SAQSGE(NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID
+				JOIN SAQGPM(NOLOCK) ON SAQGPM.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID 
+				AND SAQGPM.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQGPM.GREENBOOK_RECORD_ID = SAQSGE.GREENBOOK_RECORD_ID
+				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SAQGPM.SERVICE_ID = '{TreeParam}' """.format(
+				UserName=self.user_name,
 				TreeParam=self.tree_param,
 				QuoteId = self.contract_quote_id,
 				QuoteRecordId=self.contract_quote_record_id,
 				RevisionId=self.quote_revision_id,
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id'))
-                )
+				)
 				
 		
 		# if self.tree_param == "Z0009":
 		# 	delete_obj_list = ["SAQSCO","SAQSCA"]
 		# 	for object in delete_obj_list:
 		# 		Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(object,self.contract_quote_record_id, self.service_id,self.contract_quote_revision_record_id ))
-  
-  
+
+
 	
 	def _create(self):
 		if self.action_type == "ADD_COVERED_OBJ":
