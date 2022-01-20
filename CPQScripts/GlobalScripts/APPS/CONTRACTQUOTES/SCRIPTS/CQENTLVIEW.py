@@ -329,7 +329,7 @@ class EntitlementView():
 			#Trace.Write('total_tablist--'+str(total_tablist))
 			#Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
 			Trace.Write('attributedefaultvalue----'+str(attributedefaultvalue))
-			#Trace.Write("validation_dict---"+str(validation_dict))
+			Trace.Write("validation_dict---"+str(validation_dict))
 
 			product_obj = Sql.GetFirst("""SELECT 
 										MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
@@ -999,9 +999,12 @@ class EntitlementView():
 								#Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
 								add_style = ""
 							##validation msg
+							validation_attr = ""
 							if attrSysId in validation_dict.keys():
+								validation_attr = 'onkeypress="return isNumberKey(event);"'
 								if validation_dict[attrSysId]  == '0.00':
 									sec_validation = "Only enter the values in the following range: -&infin; - "+str(validation_dict[attrSysId])
+									
 								else:
 									sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+" - 0"
 
@@ -1320,7 +1323,7 @@ class EntitlementView():
 													datepicker = "onclick_datepicker('" + attrSysId + "')"
 												
 												sec_str1 += (
-													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
+													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" '+str(validation_attr)+' id = "'
 													+ str(attrSysId)
 													+ '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 													+ str(attr_value)
