@@ -4930,7 +4930,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				BatchGroupRecordId=kwargs.get('batch_group_record_id')
 				))
   
-		Sql._process_query("""INSERT SAQGPE (
+		self._process_query("""INSERT SAQGPE (
 				CPS_CONFIGURATION_ID,
 				CPS_MATCH_ID,
 				ENTITLEMENT_XML,
