@@ -3972,26 +3972,7 @@ class SYLDRTLIST:
                                 + "</th>"
                             )           
                     continue
-                elif RECORD_ID == 'SYOBJR-34575' and invs in ('QUANTITY'):
-                    align = ''
-                    rowspan = 'rowspan="2"'
-                    colspan = 'colspan="2"'
-                    if str(invs) in right_align_list:
-                        align = 'right'
-                    elif str(invs) in center_align_list:
-                        align = 'center'
-                    
-                    table_header += (
-                                '<th data-toggle="bootstrap-table" data-field="'
-                                + str(invs)
-                                + '" data-filter-control="input" '+rowspan+' '+colspan+' data-align="'
-                                + str(align)
-                                +'" data-title-tooltsip="'
-                                + str(qstring)
-                                + '" data-sortable="true">'
-                                + str(qstring)
-                                + "</th>"
-                            )           
+                        
                     
                 # elif RECORD_ID == 'SYOBJR-34575' and delivery_date_column_joined:
                 # 	Trace.Write('3991-')
@@ -4350,7 +4331,7 @@ class SYLDRTLIST:
                             #rowspan = 'rowspan="1"'
                             #'data-footer-formatter="priceSumFormatter"'
                             tooltip = qstring
-                            invst ='QUAN'
+                            
                             qstring = '<a onclick="openBillingMatrixDateChangeModal(\'{Value}\')" href="#">{Value}</a>'.format(Value=qstring.replace('-','/'))
                             #data_field = invs.replace('/','-')
                             Trace.Write('2780-----rowspan----'+ str(rowspan))
@@ -4367,19 +4348,7 @@ class SYLDRTLIST:
                                 + str(qstring)
                                 + "</th>"
                             )
-                            # table_group_columns_delivery2 += (
-                            # 	'<th  data-field="'
-                            # 	+ str(invst)
-                            # 	+ '" data-filter-control="input" colspan="6" class="text-right cust_billing_date" data-title-tooltip="'
-                            # 	+ str(invst)
-                            # 	+ '" data-sortable="true" '
-                            # 	+ str(footer_formatter)
-                            # 	+ ' '
-                            # 	+ rowspan
-                            # 	+'>'
-                            # 	+ str(invst)
-                            # 	+ "</th>"
-                            # )
+                           
                         
                         else:                    
                             table_header += (
