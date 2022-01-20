@@ -1265,7 +1265,7 @@ class Entitlements:
 								Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
 						elif "PQB_SPLQTE" in key and entitlement_value == "Yes":
 							# Approval Trigger - Start								
-							import ACVIORULES
+							#import ACVIORULES
 							violationruleInsert = ACVIORULES.ViolationConditions()
 							header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
 							if header_obj:
