@@ -3483,10 +3483,12 @@ class SYLDRTLIST:
 				table_ids = "#" + str(table_id)
 				if invs in billing_date_column: # Billing Matrix - Pivot - Start
 					filter_clas = ("#" + str(table_id) + " .bootstrap-table-filter-control-" + str(invs).replace('-','_'))
+					Trace.Write('filter_clas--billing--'+str(filter_clas))
 					values_list += "var x_" + str(invs).replace('-','_') + ' = $("' + str(filter_clas) + '").val(); '
 					values_list += "ATTRIBUTE_VALUEList.push(x_" + str(invs).replace('/','_').replace('-','_') + "); "
 				elif  invs in delivery_date_column: # Billing Matrix - Pivot - Start
 					filter_clas = ("#" + str(table_id) + " .bootstrap-table-filter-control-" + str(invs).replace('-','_'))
+					Trace.Write('filter_clas--delivery--'+str(filter_clas))
 					values_list += "var x_" + str(invs).replace('-','_') + ' = $("' + str(filter_clas) + '").val(); '
 					values_list += "ATTRIBUTE_VALUEList.push(x_" + str(invs).replace('/','_').replace('-','_') + "); "              
 				else:# Billing Matrix - Pivot - End
