@@ -1263,6 +1263,17 @@ class Entitlements:
 							elif entitlement_value == "No":
 								Quote.SetGlobal("IdlingAllowed","No")
 								Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
+						elif "PQB_SPLQTE" in key and entitlement_value == "Yes":
+							# Approval Trigger - Start								
+							import ACVIORULES
+							violationruleInsert = ACVIORULES.ViolationConditions()
+							header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+							if header_obj:
+								Trace.Write("Inside Approval Trigger")
+								violationruleInsert.InsertAction(
+																header_obj.RECORD_ID, self.revision_recordid, "SAQTRV"
+																)
+							# Approval Trigger - End
 						elif key == "AGS_Z0110_TSC_ONSTCP":
 							Trace.Write("@1274---"+str(ENT_IP_DICT["AGS_Z0110_TSC_ONSTCP"]))
 							if str(Quote.GetGlobal("ConsignedQty")) != "":
