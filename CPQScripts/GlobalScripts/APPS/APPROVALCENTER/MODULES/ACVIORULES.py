@@ -508,25 +508,25 @@ class ViolationConditions:
                         flag = 0
                         
                         entitlement_obj = SqlHelper.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
-                        
-                        import re
-                        
-                        quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-                        
-                        attr = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
-                        
-                        value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
-                        
-                        entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-                        
-                        for m in re.finditer(quote_item_tag, entitlement_xml):
-                            sub_string = m.group(1)
-                            attribute_id =re.findall(attr,sub_string)
-                            attribute =re.findall(value,sub_string)
+                        if entitlement_obj:
+                            import re
                             
-                            if len(attribute) != 0 and len(attribute_id) != 0:
-                                flag = 1
-                                break
+                            quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                            
+                            attr = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
+                            
+                            value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
+                            
+                            entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+                            
+                            for m in re.finditer(quote_item_tag, entitlement_xml):
+                                sub_string = m.group(1)
+                                attribute_id =re.findall(attr,sub_string)
+                                attribute =re.findall(value,sub_string)
+                                
+                                if len(attribute) != 0 and len(attribute_id) != 0:
+                                    flag = 1
+                                    break
                         if flag == 1:
                             SqlQuery = "val"
                         else:
