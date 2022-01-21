@@ -106,16 +106,16 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
             approver_list.append(approver)
         role_code_id = "71"
         requestdata = (
-        '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
-        + str(writeback)
-        + "</writeback><contract_quote_id>"
-        +str(contract_quote_id.QUOTE_ID)
-        +"</contract_quote_id><approver_list>"
-        + str(approver_list)
-        +"</approver_list><role_code_id>"
-        + str(role_code_id)
-        +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
-    )
+            '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
+            + str(writeback)
+            + "</writeback><contract_quote_id>"
+            +str(contract_quote_id.QUOTE_ID)
+            +"</contract_quote_id><approver_list>"
+            + str(approver_list)
+            +"</approver_list><role_code_id>"
+            + str(role_code_id)
+            +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
+        )
     
     
     
