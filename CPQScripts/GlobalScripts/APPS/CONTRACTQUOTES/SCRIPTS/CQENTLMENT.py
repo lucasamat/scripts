@@ -1564,6 +1564,18 @@ class Entitlements:
 				updateentXML = updateentXML.encode('ascii', 'ignore').decode('ascii')
 				Trace.Write('updateentXML--1542-------'+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE(),CONFIGURATION_STATUS = '{}' WHERE  {} ".format(tableName, updateentXML,userId,configuration_status,whereReq)
+				
+				###to update match id at all level while saving starts
+				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
+				ent_tables_list = ['SAQTSE','SAQSGE','SAQSCE','SAQSAE']
+				#ent_tables_list.remove(tableName)
+				if get_match_id:
+					for table in ent_tables_list:
+						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, get_match_id.CPS_MATCH_ID, self.ContractRecordId,self.revision_recordid, serviceId)
+						Sql.RunQuery(Updatecps)
+				##to update match id at all level while saving ends
+				Sql.RunQuery(UpdateEntitlement)
+				#Trace.Write("TEST COMMIT")
 				#15007 START
 				if Quote.GetGlobal("SplitQuote") == "Yes":
 					Quote.SetGlobal("SplitQuote","No")
@@ -1579,17 +1591,6 @@ class Entitlements:
 					
 					# Approval Trigger - End
 				#15007 END
-				###to update match id at all level while saving starts
-				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
-				ent_tables_list = ['SAQTSE','SAQSGE','SAQSCE','SAQSAE']
-				#ent_tables_list.remove(tableName)
-				if get_match_id:
-					for table in ent_tables_list:
-						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, get_match_id.CPS_MATCH_ID, self.ContractRecordId,self.revision_recordid, serviceId)
-						Sql.RunQuery(Updatecps)
-				##to update match id at all level while saving ends
-				Sql.RunQuery(UpdateEntitlement)
-				#Trace.Write("TEST COMMIT")
 				parts_value = 0
 				Service_Id = 'Z0108'
 				entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.ContractRecordId,RevisionRecordId=self.revision_recordid))
