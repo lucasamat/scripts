@@ -1264,16 +1264,8 @@ class Entitlements:
 								Quote.SetGlobal("IdlingAllowed","No")
 								Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
 						elif "PQB_SPLQTE" in key and entitlement_value == "Yes":
-							# Approval Trigger - Start								
-							#import ACVIORULES
-							violationruleInsert = ACVIORULES.ViolationConditions()
-							header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-							if header_obj:
-								Trace.Write("Inside Approval Trigger")
-								violationruleInsert.InsertAction(
-																header_obj.RECORD_ID, self.revision_recordid, "SAQTRV"
-																)
-							# Approval Trigger - End
+							Quote.SetGlobal("SplitQuote","Yes")
+							
 						elif key == "AGS_Z0110_TSC_ONSTCP":
 							Trace.Write("@1274---"+str(ENT_IP_DICT["AGS_Z0110_TSC_ONSTCP"]))
 							if str(Quote.GetGlobal("ConsignedQty")) != "":
@@ -1572,6 +1564,21 @@ class Entitlements:
 				updateentXML = updateentXML.encode('ascii', 'ignore').decode('ascii')
 				Trace.Write('updateentXML--1542-------'+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE(),CONFIGURATION_STATUS = '{}' WHERE  {} ".format(tableName, updateentXML,userId,configuration_status,whereReq)
+				#15007 START
+				if Quote.GetGlobal("SplitQuote") == "Yes":
+					Quote.SetGlobal("SplitQuote","No")
+					# Approval Trigger - Start								
+					#import ACVIORULES
+					violationruleInsert = ACVIORULES.ViolationConditions()
+					header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+					if header_obj:
+						Trace.Write("Inside Approval Trigger")
+						violationruleInsert.InsertAction(
+														header_obj.RECORD_ID, self.revision_recordid, "SAQTRV"
+														)
+					
+					# Approval Trigger - End
+				#15007 END
 				###to update match id at all level while saving starts
 				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
 				ent_tables_list = ['SAQTSE','SAQSGE','SAQSCE','SAQSAE']
