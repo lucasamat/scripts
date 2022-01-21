@@ -3141,6 +3141,7 @@ def Related_Sub_Banner(
                             if billing_variable_visible:
                                 sec_rel_sub_bnr += (btn)
                     if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn and 'ADD' not in btn:
+                        Trace.Write("555"+str(btn))
                         sec_rel_sub_bnr += (btn)
                     if (subTabName == 'Inclusions'  or subTabName == 'Exclusions' or subTabName == 'New Parts')  and quote_status.QUOTE_STATUS != 'APPROVED' and 'INLINE EDIT' in btn:
                         Trace.Write("btn-ifff--"+str(btn))
