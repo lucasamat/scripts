@@ -683,6 +683,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		self.all_values = kwargs.get('all_values')
 		self.new_part = kwargs.get('new_part')
 		self.node_id = ""
+		self.inclusion = kwargs.get('inclusion')
 	
 	# def _insert_quote_line_items(self, cart_id, cart_user_id):
 	# 	Bundle_Query = ''
@@ -1217,7 +1218,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 									UserId=self.user_id,
 									ParentBasedCondition=parent_based_condition,
 									new_part= self.new_part if self.new_part else 0,
-									included = 1 if self.tree_parent_level_0 in ('Z0009','Z0006') else 0
+									included = self.inclusion
 								)
 							)
 					
@@ -1612,6 +1613,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""
 		self.new_part = kwargs.get('new_part')
+		self.inclusion = kwargs.get('inclusion')
 	
 	def _create(self):
 		if self.action_type == "ADD_PART" or self.action_type == "ADD_SPARE_PART":
@@ -1867,7 +1869,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 												UserId=self.user_id,
 												ParentBasedCondition=parent_based_condition,
 												new_part= self.new_part if self.new_part else 0,
-												included = 1 if self.tree_parent_level_0 in ('Z0009','Z0006') else 0
+												included = self.inclusion
 											)
 										)
 				
@@ -5929,6 +5931,11 @@ else:
 		except:
 			Trace.Write("new_part Exception")
 			new_part = 0
+		try:
+			inclusion = Param.inclusion
+		except:
+			Trace.Write("inclusion Exception")
+			inclusion = 0
 		
 	except Exception as e:
 		Trace.Write('error-'+str(e))
@@ -5937,7 +5944,7 @@ else:
 node_object = Factory(node_type)(
 	opertion=opertion, action_type=action_type, table_name=table_name, values=values, 
 	all_values=all_values, trigger_from=trigger_from, contract_quote_record_id=contract_quote_record_id, 
-	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,
+	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,inclusion = inclusion
 )
 
 if opertion == "INSERT":
