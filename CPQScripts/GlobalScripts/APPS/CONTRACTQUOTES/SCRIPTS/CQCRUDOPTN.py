@@ -1655,6 +1655,14 @@ class PartsListModel(ContractQuoteCrudOpertion):
 			parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")			
 			primaryQueryItems = SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID,SAP_PART_NUMBER, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAMTRL.MATERIAL_RECORD_ID as BATCH_RECORD_ID,MAMTRL.SAP_PART_NUMBER, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(self.contract_quote_id)+"'' as QUOTE_ID, ''"+str(self.contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAMTRL (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAMTRL.MATERIAL_RECORD_ID'")
 			Trace.Write('##action type '+str(self.action_type))
+			if self.tree_param == 'Z0108' or self.tree_param == 'Z0110':
+				part_nos =[]
+				for val in self.values:
+					val  = val.split('-')[1].lstrip("0")
+					get_part = Sql.GetFirst("SELECT SAP_PART_NUMBER FROM MAMTRL WHERE CpqTableEntryId = '"+str(val)+"' ")
+					part_nos.append(get_part.SAP_PART_NUMBER)
+				Trace.Write('###PART_NOS-->'+str(part_nos))
+				Trace.Write('###values-->'+str(self.values))
 			if self.action_type == "ADD_SPARE_PART":
 				parts_value = 0
 				Service_Id = self.tree_param
