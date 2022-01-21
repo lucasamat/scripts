@@ -50,7 +50,7 @@ class SyncFPMQuoteAndHanaDatabase:
         response=response.replace("null",'""')
         response=eval(response)
         auth="Bearer"+' '+str(response['access_token'])
-        requestdata = '{"soldtoParty":"10002301","shiptoparty":"10002428","salesOrg":"2070","priceList":"","priceGroup":"","validTo":"20220616","validFrom":"20210518",	"participatewith6k":"Yes","customParticipaton":"Yes","partNumber":["0190-14140","0190-14140","0010-22985","0190-53753"]}'
+        requestdata = '{"soldtoParty":"'+str(self.account_info['SOLD TO'])+'","shiptoparty":"'+str(self.account_info['SHIP TO'])+'","salesOrg":"'+str(self.sales_org_id)+'","priceList":"","priceGroup":"","validTo":"20220616","validFrom":"20210518",	"participatewith6k":"Yes","customParticipaton":"Yes"}'
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
@@ -199,6 +199,7 @@ class SyncFPMQuoteAndHanaDatabase:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
         except Exception:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+            Trace.Write("Exception in Query")
         
     def update_records_saqspt(self):
         update_customer_pn = """UPDATE SAQSPT SET SAQSPT.CUSTOMER_PART_NUMBER = M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,sales_id = self.sales_org_id,stp_acc_id=str(self.account_info['SOLD TO']),quote_revision_rec_id =self.quote_revision_id)
