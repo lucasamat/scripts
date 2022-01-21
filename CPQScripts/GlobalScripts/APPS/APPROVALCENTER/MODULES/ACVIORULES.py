@@ -556,8 +556,8 @@ class ViolationConditions:
                         if str(ObjectName) == 'SAQTMT':
                             rec_name = 'QUOTE_ID' """
                     if flag == 1:
-                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                        Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
+                        #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
+                        #Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                         SqlQuery = "Val"
                         Log.Info("if flag")
                     elif flag == 2:
