@@ -170,23 +170,22 @@ try:
 					QuoteItemList.Save()					
 				'''
 				core_credit_amount = ''
-				try:
-					cust_participate = Sql.GetFirst("SELECT CUSTOMER_PARTICIPATE FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(revision_rec_id)+"' AND PART_NUMBER = '"+str(Itemidinfo[0])+"' ")
-					Log.Info('###At line 175')
-					if cust_participate and str(cust_participate.CUSTOMER_PARTICIPATE).upper() == "TRUE":
-						Log.Info('###At line 177')
-						response1 = response1.replace("null","''")
-						response1 = response1.replace("true","'TRUE'")
-						response1 = response1.replace("false","'FALSE'")
-						response1 = eval(response1)
-						conditions = response1['items'][0]['conditions']
-						Log.Info('###At line 181')
-						for condition in conditions:
-							if condition['conditionType'] == "ZERU":
-								core_credit_amount = condition['conditionValue']
-								break
-				except:
-					pass
+				cust_participate = Sql.GetFirst("SELECT CUSTOMER_PARTICIPATE FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(revision_rec_id)+"' AND PART_NUMBER = '"+str(Itemidinfo[0])+"' ")
+				if cust_participate and str(cust_participate.CUSTOMER_PARTICIPATE).upper() == "TRUE":
+					response1 = response1.replace("null","''")
+					Log.Info('###At line 176')
+					response1 = response1.replace("true","'TRUE'")
+					Log.Info('###At line 178')
+					response1 = response1.replace("false","'FALSE'")
+					Log.Info('###At line 180')
+					response1 = eval(response1)
+					Log.Info('###At line 182')
+					conditions = response1['items'][0]['conditions']
+					Log.Info('###At line 184')
+					for condition in conditions:
+						if condition['conditionType'] == "ZERU":
+							core_credit_amount = condition['conditionValue']
+							break
 				Log.Info("core_credit_amount--->"+str(core_credit_amount))
 				insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount)))
 				Log.Info("UNIT_PRICE---22---"+str(insert_data))
