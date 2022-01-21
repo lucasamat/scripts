@@ -5,7 +5,7 @@
 #   __create_date :09-01-2022
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-from logging import exception
+#from logging import exception
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import clr
@@ -25,6 +25,7 @@ class SyncFPMQuoteAndHanaDatabase:
         self.quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         self.quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
         self.datetime_value = datetime.datetime.now()
+        self.account_info = {}
         self.tree_param = 'Z0108'
         self.fetch_quotebasic_info()
         
@@ -84,15 +85,15 @@ class SyncFPMQuoteAndHanaDatabase:
         Trace.Write(spare_parts_temp_table_name)		
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
-        except exception:
+        except Exception:
             Trace.Write("Error 1")    
         try:
             spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
-        except exception:
+        except Exception:
             Trace.Write("Error 2")    
         try:    
             spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_id)+"'' ' ")
-        except exception:
+        except Exception:
             Trace.Write("Error 3")    
         try:
             Sql.RunQuery("""
@@ -192,7 +193,7 @@ class SyncFPMQuoteAndHanaDatabase:
             Trace.Write("Test")		
     
     def update_records_saqspt(self):
-        update_customer_pn = """UPDATE SAQSPT SET SAQSPT.CUSTOMER_PART_NUMBER = M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,sales_id = self.sales_org_id,stp_acc_id=str(account_info.get('SOLD TO')),quote_revision_rec_id =self.quote_revision_id)
+        update_customer_pn = """UPDATE SAQSPT SET SAQSPT.CUSTOMER_PART_NUMBER = M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,sales_id = self.sales_org_id,stp_acc_id=str(self.account_info['SOLD TO']),quote_revision_rec_id =self.quote_revision_id)
         Sql.RunQuery(update_customer_pn)
 
         update_uom_recs = """UPDATE SAQSPT SET SAQSPT.BASEUOM_ID = M.UNIT_OF_MEASURE,SAQSPT.BASEUOM_RECORD_ID = M.UOM_RECORD_ID FROM SAQSPT S INNER JOIN MAMTRL M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE   S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,quote_revision_rec_id =self.quote_revision_id)
@@ -210,7 +211,10 @@ class SyncFPMQuoteAndHanaDatabase:
             self.quote_id = saqtrv_obj.QUOTE_ID
             self.contract_valid_from = saqtrv_obj.CONTRACT_VALID_FROM
             self.contract_valid_to = saqtrv_obj.CONTRACT_VALID_TO
-    
+        get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+        for keyobj in get_party_role:
+            self.account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
+								
     def prepare_backup_table(self):
         if self.response:
             response = self.response
@@ -246,5 +250,5 @@ fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
 fpm_obj.pull_requestto_hana()
 fpm_obj.prepare_backup_table()
 fpm_obj._insert_spare_parts()
-#fpm_obj.update_records_saqspt()
+fpm_obj.update_records_saqspt()
 
