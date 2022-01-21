@@ -4859,7 +4859,16 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				BatchGroupRecordId=kwargs.get('batch_group_record_id')
 				)
 			)
-
+		Sql.RunQuery("""UPDATE SAQGPA
+					SET FABLOCATION_ID = IQ.FABLOCATION_ID,
+     					FABLOCATION_NAME = IQ.FABLOCATION_NAME,
+          				FABLOCATION_RECORD_ID = IQ.FABLOCATION_RECORD_ID		
+						FROM SAQGPA (NOLOCK)
+						INNER JOIN (SELECT FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID
+									FROM MAEQUP (NOLOCK) 
+									JOIN SAQGPA (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID 
+									WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}'
+									)IQ """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		self._process_query(
 			"""INSERT SAQSKP (
 				ASSEMBLY_ID,
