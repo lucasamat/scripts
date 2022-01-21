@@ -2812,11 +2812,7 @@ def Related_Sub_Banner(
             for btn in multi_buttons:
                 sec_rel_sub_bnr += (btn)
             Trace.Write(sec_rel_sub_bnr)
-        elif TreeParam == "Delivery Schedule":
-            Trace.Write("BM 1740")
-            for btn in multi_buttons:
-                sec_rel_sub_bnr += (btn)
-            Trace.Write(sec_rel_sub_bnr)
+        
 
         
 
