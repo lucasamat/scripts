@@ -116,6 +116,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
             + str(role_code_id)
             +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
         )
+        Trace.Write("requestdata"+str(requestdata))
     
     
     
