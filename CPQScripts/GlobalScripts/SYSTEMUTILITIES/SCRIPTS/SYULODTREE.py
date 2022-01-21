@@ -19,7 +19,12 @@ Sql = SQL()
 c_total = 0
 g_total = 0
 
-get_ohold_pricing_status = ''
+get_ohold_pricing_status =get_delivery_nodes =  ''
+#suppress delivery node for other quote
+get_delivery_nodes = Sql.GetFirst("SELECT SERVICE_ID from SAQTSV where QUOTE_ID ='{}' and SERVICE_ID='Z0108'" .format(Quote.CompositeNumber))
+if get_delivery_nodes:
+	get_delivery_nodes = get_delivery_nodes.SERVICE_ID
+#suppress delivery node - end
 #node visibility query based on sales employee
 login_user= User.Id
 get_node_visibility = Sql.GetFirst("SELECT CP.permission_id from  CPQ_PERMISSIONS (NOLOCK) CP  INNER JOIN USERS_PERMISSIONS (NOLOCK) UP ON CP.PERMISSION_ID = UP.PERMISSION_ID  where user_id ='{login_user}' and CP.permission_id = '319'".format(login_user=login_user))
@@ -557,6 +562,8 @@ class TreeView:
 					##adding image along with tree params
 					#12096 start-quote item visibility start
 					if get_node_visibility and str(get_ohold_pricing_status).upper() == "ON HOLD - COSTING" and str(getParentObj.NODE_NAME) == "Quote Items":
+						continue
+					elif get_delivery_nodes and str(getParentObj.NODE_NAME) == "Delivery Schedule":
 						continue
 					#12096 start-quote item visibility end
 					if str(getParentObj.TREEIMAGE_URL):
