@@ -1001,21 +1001,45 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					Sql.RunQuery("""UPDATE SAQSPT SET SCHEDULE_MODE = '{value}' {delivery_mode} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=VALUE,delivery_mode= ",DELIVERY_MODE = 'ONSITE' " if str(VALUE)=="LOW QUANTITY ONSITE" and str(TreeParam)=="Z0110" else "",QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				elif TITLE=="CUSTOMER_PART_NUMBER":
 					Sql.RunQuery("""UPDATE SAQSPT SET CUSTOMER_PART_NUMBER = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
-				count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_RECORD_ID= '"+str(Qt_rec_id)+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")  
-				cust_annual_qty = Sql.GetList("SELECT CUSTOMER_ANNUAL_QUANTITY,UNIT_PRICE FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
-				if cust_annual_qty:
-					for annual_qty in cust_annual_qty:
-						Trace.Write("Annual_Qty "+str(annual_qty))
-						if annual_qty.CUSTOMER_ANNUAL_QUANTITY < 10:
-							Trace.Write("Less Than 10")
-							Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'UNSCHEDULED', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY < 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
-						elif annual_qty.CUSTOMER_ANNUAL_QUANTITY >= 10:
-							Trace.Write("Greater Than 10")
-							Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'SCHEDULED', DELIVERY_MODE = 'ONSITE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY >= 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
-						if annual_qty.CUSTOMER_ANNUAL_QUANTITY <= 9 and annual_qty.UNIT_PRICE <= 50:
-							parts_record_query = Sql.GetList("SELECT QUOTE_SERVICE_PART_RECORD_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND UNIT_PRICE <= 50".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
-							for parts in parts_record_query:
-								Sql.RunQuery("DELETE FROM SAQSPT WHERE QUOTE_SERVICE_PART_RECORD_ID = '"+str(parts.QUOTE_SERVICE_PART_RECORD_ID)+"'")
+				count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_RECORD_ID= '"+str(Qt_rec_id)+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")
+				if TreeParam == 'Z0108' or TreeParam == 'Z0110':
+					if TreeParam == 'Z0108':
+						cust_annual_qty = Sql.GetList("SELECT CUSTOMER_ANNUAL_QUANTITY,UNIT_PRICE FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
+						if cust_annual_qty:
+							for annual_qty in cust_annual_qty:
+								Trace.Write("Annual_Qty "+str(annual_qty))
+								if annual_qty.CUSTOMER_ANNUAL_QUANTITY < 10:
+									Trace.Write("Less Than 10")
+									Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'UNSCHEDULED', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY < 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
+								elif annual_qty.CUSTOMER_ANNUAL_QUANTITY >= 10:
+									Trace.Write("Greater Than 10")
+									Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'SCHEDULED', DELIVERY_MODE = 'ONSITE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY >= 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
+								if annual_qty.CUSTOMER_ANNUAL_QUANTITY <= 9 and annual_qty.UNIT_PRICE <= 50:
+									parts_record_query = Sql.GetList("SELECT QUOTE_SERVICE_PART_RECORD_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND UNIT_PRICE <= 50".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
+									for parts in parts_record_query:
+										Sql.RunQuery("DELETE FROM SAQSPT WHERE QUOTE_SERVICE_PART_RECORD_ID = '"+str(parts.QUOTE_SERVICE_PART_RECORD_ID)+"'")
+					else:
+						###A055S000P01-14322 Updating the schedule mode and delivery mode based on the 
+						product_offering_entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = TreeParam))
+						entitlement_xml = product_offering_entitlement_obj.ENTITLEMENT_XML
+						quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+						consigned_parts_match_id = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(TreeParam)+'[^>]*?_TSC_ONSTCP</ENTITLEMENT_ID>')
+						consigned_parts_match_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+						for m in re.finditer(quote_item_tag, entitlement_xml):
+							sub_string = m.group(1)
+							consigned_parts_id =re.findall(consigned_parts_match_id,sub_string)
+							consigned_parts_value =re.findall(consigned_parts_match_value,sub_string)
+							if consigned_parts_id and consigned_parts_value:
+								consigned_parts_value = consigned_parts_value[0]
+								break
+						# fpm_spare_parts_object = Sql.GetList("SELECT CUSTOMER_ANNUAL_QUANTITY,UNIT_PRICE FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = '{service_id}' AND CUSTOMER_ANNUAL_QUANTITY < {consigned_parts_value}".format(QuoteRecordId = ContractRecordId,rev_rec_id = quote_revision_record_id,service_id =TreeParam,consigned_parts_value))
+						# for fpm_spare_part in fpm_spare_parts_object:
+						# 	if fpm_spare_part:
+						Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'ON REQUEST', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{TreeParam}' AND CUSTOMER_ANNUAL_QUANTITY < {consigned_parts_value}".format(QuoteRecordId = Qt_rec_id,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
+						Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'LOW QUANTITY ONSITE', DELIVERY_MODE = 'ONSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{TreeParam}' AND CUSTOMER_ANNUAL_QUANTITY > {consigned_parts_value}".format(QuoteRecordId = Qt_rec_id,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
+						
+
+						
 
 				if count.CNT==0:
 					delete_saqris = Sql.RunQuery("DELETE FROM SAQRIS WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
