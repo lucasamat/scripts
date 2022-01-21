@@ -277,8 +277,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
 					{billing_end_date} as BILLING_END_DATE,
 					{BillingDate} as BILLING_START_DATE,
-					SAQRIT.ESTIMATED_VALUE AS ANNUAL_BILLING_AMOUNT,
-					SAQRIT.ESTIMATED_VALUE  as BILLING_VALUE,
+					{amount_column} AS ANNUAL_BILLING_AMOUNT,
+					ISNULL({amount_column}, 0) / {get_val}  as BILLING_VALUE,
 					ISNULL(SAQRIT.ESTVAL_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
 					'{billing_type}' as BILLING_TYPE,
 					SAQRIT.LINE AS LINE,
@@ -312,7 +312,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
 					BillingDate=billing_date,
 					get_val=get_val,
-					service_id = service_id,billing_type =get_billing_type))
+					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
 		Sql.RunQuery("""INSERT SAQIBP (
 					
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
@@ -325,8 +325,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
 					{billing_end_date} as BILLING_END_DATE,
 					{BillingDate} as BILLING_START_DATE,
-					ESTIMATED_VALUE AS ANNUAL_BILLING_AMOUNT,
-					ESTIMATED_VALUE / {get_val}  as BILLING_VALUE,
+					{amount_column} AS ANNUAL_BILLING_AMOUNT,
+					ISNULL({amount_column}, 0) / {get_val}  as BILLING_VALUE,
 					ISNULL(NET_PRICE_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
 					'{billing_type}' as BILLING_TYPE,
 					LINE,
@@ -360,7 +360,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					RevisionRecordId=quote_revision_rec_id,
 					BillingDate=billing_date,billing_end_date=billing_end_date,
 					get_val=get_val,
-					service_id = service_id,billing_type =get_billing_type))
+					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
 	if service_id == 'Z0116':
 		update_annual_bill_amt  = Sql.GetFirst("SELECT SUM(YEAR_1) as YEAR1 from SAQRIT where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'  and SERVICE_ID = 'Z0116' GROUP BY SERVICE_ID,GREENBOOK".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id))
 		if update_annual_bill_amt:
@@ -527,6 +527,25 @@ def billingmatrix_create():
 													Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
 													),amount_column="YEAR_"+str((index/4) + 1),
 													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value=get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
+				elif str(get_ent_bill_cycle).upper() == "ONE ITEM PER QUOTE":
+					end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')			
+					diff1 = end_date - start_date
+					Trace.Write('diff1--'+str(diff1))
+					avgyear = 365.00    # even leap years have 12 months
+					years, remainder = divmod(diff1.days, avgyear)
+					years = int(years)
+					
+					Trace.Write('years--'+str(years))
+					for index in range(1, years+1):
+						billing_month_end += 1
+						Trace.Write('billing_month_end--'+str(index))
+						insert_items_billing_plan(total_months='',
+													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
+														),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+														Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
+														), amount_column="YEAR_"+str(index + 1),
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 				else:
 					Trace.Write('get_ent_val---'+str(get_ent_bill_cycle))
 					if billing_day in (29,30,31):
