@@ -20,12 +20,11 @@ webclient = System.Net.WebClient()
 class SyncFPMQuoteAndHanaDatabase:
     def __init__(self, Quote):
         self.quote = Quote
-        self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt= ''
+        self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = ''
         self.quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         self.quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
         self.datetime_value = datetime.datetime.now()
         self.account_info = {}
-        self.tree_param = 'Z0108'
         self.fetch_quotebasic_info()
         cv=str(self.contract_valid_from)
         (cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
@@ -79,7 +78,6 @@ class SyncFPMQuoteAndHanaDatabase:
         fpm_obj.prepare_backup_table()
         fpm_obj._insert_spare_parts()
         fpm_obj.update_records_saqspt()
-
     
     def insert_records_saqspt(self):
         if self.response:
@@ -108,6 +106,7 @@ class SyncFPMQuoteAndHanaDatabase:
     def _insert_spare_parts(self):
         datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
         spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.quote_record_id, datetime_string)
+        spare_parts_temp_table_name = re.sub(r'-','_',spare_parts_temp_table_name)
         Trace.Write(spare_parts_temp_table_name)		
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
@@ -172,9 +171,9 @@ class SyncFPMQuoteAndHanaDatabase:
                                 0.00 as EXTENDED_UNIT_PRICE,
                                 MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
                                 CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER!='' THEN TEMP_TABLE.CHILD_PART_NUMBER ELSE MAMTRL.SAP_PART_NUMBER END AS PART_NUMBER,
-	                            MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
+                                MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
                                 '' as PRDQTYCON_RECORD_ID,
-                                TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY as QUANTITY,
+                                CASE WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' THEN NULL ELSE TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY END as QUANTITY,
                                 SAQTMT.QUOTE_ID as QUOTE_ID,
                                 SAQTMT.QUOTE_NAME as QUOTE_NAME,
                                 SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
@@ -204,8 +203,8 @@ class SyncFPMQuoteAndHanaDatabase:
                                 TEMP_TABLE.Material_Eligibility AS EXCHANGE_ELIGIBLE,
                                 'True' as CUSTOMER_PARTICIPATE,
                                 'True' as CUSTOMER_ACCEPT_PART,
-                                {'sold_to'} as STPACCOUNT_ID,
-                                {'ship_to'} as SHPACCOUNT_ID
+                                '{sold_to}' as STPACCOUNT_ID,
+                                '{ship_to}' as SHPACCOUNT_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
                             JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
@@ -214,10 +213,10 @@ class SyncFPMQuoteAndHanaDatabase:
                             WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') <> '05') IQ
                             """.format(
                                         TempTable=spare_parts_temp_table_name,
-                                        ServiceId=self.tree_param,									
+                                        ServiceId=self.service_id,									
                                         QuoteRecordId=self.quote_record_id,
                                         RevisionRecordId=self.quote_revision_id,
-                                        UserId=user.user_id,
+                                        UserId=User.Id,
                                         sold_to=self.account_info['SOLD TO'],
                                         ship_to=self.account_info['SHIP TO']
                                     )
@@ -249,7 +248,13 @@ class SyncFPMQuoteAndHanaDatabase:
         get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
         for keyobj in get_party_role:
             self.account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
-								
+        
+        saqtsv_obj = Sql.GetFirst("SELECT SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQTSV where QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_id)+"'")
+        if saqtsv_obj:
+            self.service_id = saqtsv_obj.SERVICE_ID
+            self.service_desc = saqtsv_obj.SERVICE_DESCRIPTION
+            self.service_record_id = saqtsv_obj.SERVICE_RECORD_ID
+            
     def prepare_backup_table(self):
         if self.response:
             response = self.response
