@@ -1033,6 +1033,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					else:
 						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				elif TITLE.split(',') == ["RETURN_NOTIFY_EMAIL","SHIP_NOTIFY_EMAIL"]:
+					
 					if ALLVALUES1:
 						Trace.Write('555 '+str(ALLVALUES1)+'555 '+str(objh_head))
 						Sql.RunQuery("""UPDATE SAQICT SET RETURN_NOTIFY_EMAIL = '{value}',SHIP_NOTIFY_EMAIL = '{value1}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' """.format(value = ALLVALUES1[0],value1 = ALLVALUES1[1],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head)
