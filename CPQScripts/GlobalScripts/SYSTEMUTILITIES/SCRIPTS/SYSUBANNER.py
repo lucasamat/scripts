@@ -1786,6 +1786,7 @@ def Related_Sub_Banner(
             FifthLable = "Serial Number"
             FifthValue = str(SerialNumber)
         elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Credits") and subTabName != "Assembly Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
+            Trace.Write('addon enti11')
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(TreeSuperParentParam)
             SecondLable = "Product Offering Description"
