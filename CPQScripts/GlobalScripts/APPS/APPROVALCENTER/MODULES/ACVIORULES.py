@@ -506,7 +506,7 @@ class ViolationConditions:
                     #A055S000P01-15007 START
                     flag = 0
                     if "PRENVL" in result.WHERE_CONDITION_01:
-                        flag = 0
+                        flag = 2
                         
                         entitlement_obj = SqlHelper.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
                         if entitlement_obj:
@@ -559,9 +559,17 @@ class ViolationConditions:
                         Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
                         Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                         SqlQuery = "Val"
-                        Log.Info("@532")
-                    else:
+                        Log.Info("if flag")
+                    elif flag == 2:
+                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
+                        Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                         SqlQuery = None
+                        Log.Info("elif flag")
+                    else:
+                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
+                        Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
+                        SqlQuery = Sql.GetFirst(Select_Query)
+                        Log.Info("else flag")
                     if SqlQuery:
                         Log.Info("Inside the approval heaeder "+str(method)+" -index- "+str(index))
                         '"+str(Objh_Id)+"'
