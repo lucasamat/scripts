@@ -11,6 +11,7 @@ import clr
 import sys
 import System.Net
 import re
+import datetime
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor()
@@ -22,6 +23,7 @@ class SyncFPMQuoteAndHanaDatabase:
         self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns=''
         self.quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         self.quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
+        self.datetime_value = datetime.datetime.now()
         self.fetch_quotebasic_info()
         
     def pull_fpm_parts_hana(self):
@@ -37,7 +39,7 @@ class SyncFPMQuoteAndHanaDatabase:
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.response = webclient.UploadString('https://hannaconnection.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
     
-    def pull_spareparts_hana(self):
+    def pull_requestto_hana(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
@@ -45,7 +47,7 @@ class SyncFPMQuoteAndHanaDatabase:
         response=response.replace("null",'""')
         response=eval(response)
         auth="Bearer"+' '+str(response['access_token'])
-        requestdata = '{"soldtoParty":"10002301","shiptoparty":"10002428"}'
+        requestdata = '{"soldtoParty":"10002301","shiptoparty":"10002428","salesOrg":"2070","priceList":"","priceGroup":"","validTo":"20220616","validFrom":"20210518",	"participatewith6k":"Yes","customParticipaton":"Yes","partNumber":["0190-14140","0190-14140","0010-22985","0190-53753"]}'
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
@@ -76,7 +78,8 @@ class SyncFPMQuoteAndHanaDatabase:
 
     def _insert_spare_parts(self):
         datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
-        spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.contract_quote_id, datetime_string)		
+        spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
+        Trace.Write(spare_parts_temp_table_drop)		
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
             
@@ -175,9 +178,10 @@ class SyncFPMQuoteAndHanaDatabase:
                                         UserId=self.user_id
                                     )
             )
-            spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+            #spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
         except Exception:
-            spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")		
+            #spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+            Trace.Write("Test")		
     
     def update_records_saqspt(self):
         update_customer_pn = """UPDATE SAQSPT SET SAQSPT.CUSTOMER_PART_NUMBER = M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,sales_id = self.sales_org_id,stp_acc_id=str(account_info.get('SOLD TO')),quote_revision_rec_id =self.quote_revision_id)
@@ -188,7 +192,6 @@ class SyncFPMQuoteAndHanaDatabase:
 
         update_salesuom_conv= """UPDATE SAQSPT SET SAQSPT.SALESUOM_CONVERSION_FACTOR = M.CONVERSION_QUANTITY FROM SAQSPT S INNER JOIN MAMUOC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE S.BASEUOM_ID=M.BASEUOM_ID AND  S.SALESUOM_ID=M.CONVERSIONUOM_ID AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id ,quote_revision_rec_id =self.quote_revision_id)
         Sql.RunQuery(update_salesuom_conv)
-
     
     def fetch_quotebasic_info(self):
         saqtrv_obj = Sql.GetFirst("select QUOTE_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_id)+"'")
@@ -204,23 +207,36 @@ class SyncFPMQuoteAndHanaDatabase:
         if self.response:
             response = self.response
             response=response.replace("null",'""')
-            response=response.replace("true",'"1"')
-            response=response.replace("false",'"0"')
-            response=response.replace("YES",'"1"')
-            response=response.replace("NO",'"0"')
+            response=response.replace("true",'1')
+            response=response.replace("false",'0')
+            response=response.replace("YES",'1')
+            response=response.replace("NO",'0')
             response = re.sub(r'\[|\]','',response)
             pattern = re.compile(r'(\{[^>]*?\})')
-            self.column = ['QUOTE_RECORD_ID','QTEREV_RECORD_ID']
-            saqspt_table_info={"QUOTE_ID":self.quote_id,"QTEREV_RECORD_ID":self.quote_revision_id,"QUOTE_RECORD_ID":self.quote_record_id,}
+            pattern2 = re.compile(r'\"([^>]*?)\"\:(\"[^>]*?\")')
+            self.columns = '(QUOTE_RECORD_ID,QTEREV_RECORD_ID'
+            value  = """({},{}""".format(self.quote_record_id,self.quote_revision_id)
+            col_flag = 0
             for record in re.finditer(pattern, response):
                 rec = re.sub(r'\{|\}','',record.group(1))
-                saqspt_dict = {}
-                for ele in rec.split('","'):
-                    ele = re.sub(r'\"','',ele)
-                    (key,value)=ele.split(':')
-                
+                temp_value = value
+                for ele in re.finditer(pattern2,rec):
+                    if col_flag == 0:
+                        self.columns +=','+ele.group(1)
+                    temp_value +=','+ele.group(2) if ele.group(2) !='' else None
+                if col_flag == 0:
+                    self.columns +=')'
+                temp_value +=')'
+                if self.records == '':
+                    self.records = temp_value
+                else:
+                    self.records += ', '+temp_value
+                temp_value =''
+                col_flag=1
+    
 fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
-fpm_obj.pull_spareparts_hana()
+fpm_obj.pull_requestto_hana()
+fpm_obj.prepare_backup_table()
 fpm_obj.insert_records_saqspt()
 fpm_obj.update_records_saqspt()
 
