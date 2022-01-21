@@ -1293,7 +1293,7 @@ class ContractQuoteItem:
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
 							--ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
-							nul  as LINE,
+							null  as LINE,
 							null as OBJECT_ID,
 							'GREENBOOK' as OBJECT_TYPE,
 							IQ.FABLOCATION_ID as FABLOCATION_ID,
