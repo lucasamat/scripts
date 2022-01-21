@@ -2289,7 +2289,7 @@ class TreeView:
 										#if ent_value_dict:
 										if subtab_temp_variable in ("PM Events","Service Inclusions","Service Parts List","Service New Parts") :
 											subTabName = ent_value_dict["SAQTSE"]
-										if entitlement_level_flag and subtab_temp_variable in ('Green Parts List','Green New Parts','Greenbook Inclusions'):
+										if entitlement_level_flag and (subtab_temp_variable in ('Green Parts List','Green New Parts') or (subtab_temp_variable == 'Greenbook Inclusions' and service_id in ('Z0009', 'Z0006') ) ):
 											Trace.Write("else-ifff-saqsge-"+str(ent_value_dict)+'--'+str(subtab_temp_variable)+'--'+str(entitlement_level_flag))
 											if entitlement_level_flag == 'SAQTSE':
 												subTabName = ent_value_dict["SAQTSE"] 
@@ -2298,7 +2298,7 @@ class TreeView:
 
 										else:
 											Trace.Write("else--save-"+str(ent_value_dict))
-											if subtab_temp_variable in ('Green Parts List','Green New Parts','Greenbook Inclusions') and "SAQSGE" in ent_value_dict.keys():
+											if (subtab_temp_variable in ('Green Parts List','Green New Parts') or (subtab_temp_variable == 'Greenbook Inclusions' and service_id in ('Z0009', 'Z0006') ) ) and "SAQSGE" in ent_value_dict.keys():
 												Trace.Write("else-iff-saqsge-"+str(ent_value_dict["SAQSGE"]))
 												subTabName = ent_value_dict["SAQSGE"]
 									# A055S000P01-14557 - New Parts, Inclusion , Exclusion Subtabs ends

@@ -213,7 +213,13 @@ def Related_Sub_Banner(
         #     Trace.Write(str(add_button)+'176---200----212--------'+str(sec_rel_sub_bnr))
         Trace.Write(str(sec_rel_sub_bnr)+"--ObjName---178--ADD+BUT_J----"+str(add_button))
         Trace.Write("Multi buttons--> "+str(multi_buttons))
-            
+        if subTabName == 'Inclusions' and (TreeSuperParentParam == 'Product Offerings' or TopSuperParentParam == 'Product Offerings'):
+            multi_buttons_temp = multi_buttons
+            multi_buttons = []
+            if (TreeParam == 'Z0092' and TreeSuperParentParam == 'Product Offerings') or (TopSuperParentParam == 'Product Offerings' and TreeParentParam in ('Z0009','Z0006')):
+                multi_buttons = multi_buttons_temp 
+
+
             # Getting Dynamic buttons for secondary banner -  Ends
     getmainservice =""
     if TreeParam == "Quote Information" or TreeParam == "Quote Preview":		
