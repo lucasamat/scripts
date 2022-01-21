@@ -1447,7 +1447,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 					saqtip_ship_to_false = "UPDATE SAQTIP SET [PRIMARY] = 'false' WHERE QUOTE_INVOLVED_PARTY_RECORD_ID != '{ship_to_id}' AND PARTY_ID = 'SHIP TO'".format(ship_to_id=RECORD['QUOTE_INVOLVED_PARTY_RECORD_ID'])
 
 					Sql.RunQuery(saqtip_ship_to_update_query)
-					Sql.RunQuery(saqtip_ship_to_update_query)
+					Sql.RunQuery(saqtip_ship_to_false)
 					account_details = Sql.GetFirst("SELECT * FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(RECORD['PARTY_ID'])+"'")
 					send_n_receive_acunt = "UPDATE SAQSRA SET ACCOUNT_ID = '{}', ACCOUNT_NAME = '{}', ACCOUNT_RECORD_ID = '{}', ADDRESS_1 = '{}', CITY = '{}', COUNTRY = '{}', COUNTRY_RECORD_ID = '{}', PHONE = '{}', STATE = '{}', STATE_RECORD_ID = '{}', POSTAL_CODE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND RELOCATION_TYPE = '{}'".format(str(account_details.ACCOUNT_ID), str(account_details.ACCOUNT_NAME), str(account_details.ACCOUNT_RECORD_ID), str(account_details.ADDRESS_1), str(account_details.CITY), str(account_details.COUNTRY), str(account_details.COUNTRY_RECORD_ID), str(account_details.PHONE), str(account_details.STATE), str(account_details.STATE_RECORD_ID), str(account_details.POSTAL_CODE), Product.GetGlobal("contract_quote_record_id"), quote_revision_record_id, str(RECORD['PARTY_ROLE']))
 					Sql.RunQuery(send_n_receive_acunt)
