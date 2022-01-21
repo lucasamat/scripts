@@ -21,13 +21,24 @@ webclient = System.Net.WebClient()
 class SyncFPMQuoteAndHanaDatabase:
     def __init__(self, Quote):
         self.quote = Quote
-        self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records=''
+        self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt=''
         self.quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         self.quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
         self.datetime_value = datetime.datetime.now()
         self.account_info = {}
         self.tree_param = 'Z0108'
         self.fetch_quotebasic_info()
+        cv=str(self.contract_valid_from)
+        (cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+        cd = '0'+str(cd) if len(cd)==1 else cd
+        cm = '0'+str(cm) if len(cm)==1 else cm        
+        self.cvf = cy+cm+cd
+        cv=str(self.contract_valid_to)
+        (cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+        cd = '0'+str(cd) if len(cd)==1 else cd
+        cm = '0'+str(cm) if len(cm)==1 else cm        
+        self.cvt = cy+cm+cd
+
         
     def pull_fpm_parts_hana(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=16c3719c-d099-42d4-921c-765f4cee223a&password=mKv2~uXpeRD9SrD2DTW09Lk2GQ&scope=hanasafeaccess"
@@ -50,7 +61,7 @@ class SyncFPMQuoteAndHanaDatabase:
         response=response.replace("null",'""')
         response=eval(response)
         auth="Bearer"+' '+str(response['access_token'])
-        requestdata = '{"soldtoParty":"'+str(self.account_info['SOLD TO'])+'","shiptoparty":"'+str(self.account_info['SHIP TO'])+'","salesOrg":"'+str(self.sales_org_id)+'","priceList":"","priceGroup":"","validTo":"20220616","validFrom":"20210518",	"participatewith6k":"Yes","customParticipaton":"Yes"}'
+        requestdata = '{"soldtoParty":"'+str(self.account_info['SOLD TO'])+'","shiptoparty":"'+str(self.account_info['SHIP TO'])+'","salesOrg":"'+str(self.sales_org_id)+'","priceList":"","priceGroup":"","validTo":"'+str(self.cvt)+'","validFrom":"'+str(self.cvf)+'",	"participatewith6k":"Yes","customParticipaton":"Yes"}'
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
