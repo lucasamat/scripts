@@ -169,8 +169,18 @@ try:
 									Taxrate = '0.00'
 					QuoteItemList.Save()					
 				'''
-				
-				insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate)))
+				core_credit_amount = ''
+				try:
+					cust_participate = Sql.GetFirst("SELECT CUSTOMER_PARTICIPATE FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(revision_rec_id)+"' AND PART_NUMBER = '"+str(Itemidinfo[0])+"' ")
+					if cust_participate and str(cust_participate.CUSTOMER_PARTICIPATE).upper() == "TRUE":
+						conditions = response1['items'][0]['conditions']
+						for condition in conditions:
+							if condition['conditionType'] == "ZERU":
+								core_credit_amount = condition['conditionValue']
+								break
+				except:
+					pass
+				insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount)))
 				Log.Info("UNIT_PRICE---22---"+str(insert_data))
 				#Log.Info("4521 batch_group_record_id --->"+str(batch_group_record_id))
 				#Log.Info("4521 contract_quote_record_id --->"+str(contract_quote_record_id))
@@ -183,12 +193,12 @@ try:
 					getpartsdata = Sql.GetFirst("select * from SAQSPT where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
 					
 				if getpartsdata or get_ancillary_spare:
-					Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE) VALUES {}".format(', '.join(map(str, insert_data))))			
+					Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE,CORE_CREDIT_PRICE) VALUES {}".format(', '.join(map(str, insert_data))))			
 					#Log.Info('getpartsdata -->'+str(getpartsdata.PART_NUMBER))
 				
 					if getpartsdata:
 						if currencyType == 'docCurrency':
-							Sql.RunQuery("""UPDATE SAQSPT SET UNIT_PRICE = SYSPBT.UNIT_PRICE ,EXTENDED_UNIT_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQSPT 				
+							Sql.RunQuery("""UPDATE SAQSPT SET UNIT_PRICE = SYSPBT.UNIT_PRICE ,CORE_CREDIT_PRICE = SYSPBT.CORE_CREDIT_PRICE ,EXTENDED_UNIT_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQSPT 				
 									JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID
 									WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
 								""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
@@ -219,7 +229,7 @@ try:
 							#CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})	
 							
 						else:
-							Sql.RunQuery("""UPDATE SAQSPT SET UNIT_PRICE = SYSPBT.UNIT_PRICE ,EXTENDED_UNIT_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQSPT 				
+							Sql.RunQuery("""UPDATE SAQSPT SET UNIT_PRICE = SYSPBT.UNIT_PRICE ,CORE_CREDIT_PRICE = SYSPBT.CORE_CREDIT_PRICE,EXTENDED_UNIT_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQSPT 				
 									JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID
 									WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
 								""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
