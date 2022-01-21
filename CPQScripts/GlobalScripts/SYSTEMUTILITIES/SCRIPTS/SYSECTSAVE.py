@@ -1444,7 +1444,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 					saqtip_ship_to_update_query = "UPDATE SAQTIP SET PARTY_ID = {party_id}, [PRIMARY] = '{primary}' WHERE QUOTE_INVOLVED_PARTY_RECORD_ID = '{ship_to_id}'".format(party_id=RECORD['PARTY_ID'],primary=RECORD['PRIMARY'],ship_to_id=RECORD['QUOTE_INVOLVED_PARTY_RECORD_ID'])
 
-					saqtip_ship_to_false = "UPDATE SAQTIP SET [PRIMARY] = 'false' WHERE QUOTE_INVOLVED_PARTY_RECORD_ID != '{ship_to_id}' AND PARTY_ID = 'SHIP TO'".format(ship_to_id=RECORD['QUOTE_INVOLVED_PARTY_RECORD_ID'])
+					saqtip_ship_to_false = "UPDATE SAQTIP SET [PRIMARY] = 'false' WHERE QUOTE_INVOLVED_PARTY_RECORD_ID != '{ship_to_id}' AND PARTY_ID = 'SHIP TO' AND QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{qte_rev_id}'".format(ship_to_id=RECORD['QUOTE_INVOLVED_PARTY_RECORD_ID'],qte_rec_id=Product.GetGlobal("contract_quote_record_id"),qte_rev_id=quote_revision_record_id)
 
 					Sql.RunQuery(saqtip_ship_to_update_query)
 					Sql.RunQuery(saqtip_ship_to_false)
