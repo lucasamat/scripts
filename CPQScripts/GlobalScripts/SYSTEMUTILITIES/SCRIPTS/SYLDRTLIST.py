@@ -357,7 +357,7 @@ class SYLDRTLIST:
 				item_delivery_plans_obj = Sql.GetList("""SELECT FORMAT(DELIVERY_SCHED_DATE, 'MM-dd-yyyy') as DELIVERY_SCHED_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE)
 									AS ROW, * FROM (SELECT DISTINCT DELIVERY_SCHED_DATE
 														FROM SAQSPD (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' 
-														GROUP BY DELIVERY_SCHED_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+														GROUP BY DELIVERY_SCHED_DATE,QTEREVSPT_RECORD_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
 															contract_quote_record_id, quote_revision_record_id, 1, 52))
 				count = 0
 				if item_delivery_plans_obj:
@@ -1853,7 +1853,7 @@ class SYLDRTLIST:
 								
 								Qustr += " AND DELIVERY_SCHED_DATE  BETWEEN '{}' AND '{}'".format(delivery_date_column[0], delivery_date_column[-1])
 							pivot_query_str = """
-										SELECT ROW_NUMBER() OVER(ORDER BY QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID )
+										SELECT ROW_NUMBER() OVER(ORDER BY QTEREVSPT_RECORD_ID )
 										AS ROW, *
 											FROM (
 												SELECT 
@@ -1869,7 +1869,7 @@ class SYLDRTLIST:
 										""".format(OrderByColumn=Wh_API_NAMEs,Columns=column_before_delivery_pivot_change, ObjectName=ObjectName,
 													WhereString=Qustr, PivotColumns=pivot_columns)                        
 							Qury_str = """
-										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID 
+										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY QTEREVSPT_RECORD_ID 
 										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start						
