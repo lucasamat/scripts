@@ -1008,7 +1008,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				self._process_query("""DELETE SYSPBT FROM SYSPBT JOIN SAQSPT ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID AND  SYSPBT.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 				if self.action_type == "ADD_PARTS":
 					parts_value = 0
-					Service_Id = 'Z0108'
+					Service_Id = self.tree_param
 					entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 					entitlement_xml = entitlement_obj.ENTITLEMENT_XML
 					quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -1021,7 +1021,12 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						if scheduled_parts and scheduled_value:
 							parts_value = scheduled_value[0]
 							break
-
+					if self.tree_param == 'Z0108':
+						delivery_mode = "OFFSITE" if "Z0108" in self.tree_param else "ONSITE"
+						schedule_mode= "SCHEDULED" if int(parts_value) > 9 else "UNSCHEDULED"
+					elif self.tree_param == 'Z0110':
+						delivery_mode = "ONSITE"
+						schedule_mode= "LOW QUANTITY ONSITE"
 					self._process_query("""
 									INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 									SELECT DISTINCT
@@ -1109,7 +1114,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						ServiceId=self.tree_param,
 						BatchGroupRecordId=batch_group_record_id,
 						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-						UserId=self.user_id, delivery_mode= "OFFSITE" if "Z0108" in self.tree_param else "ONSITE", schedule_mode= "SCHEDULED" if int(parts_value) > 9 else "UNSCHEDULED"
+						UserId=self.user_id, delivery_mode= delivery_mode, schedule_mode = schedule_mode
 					)
 					)
 					# spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
@@ -1649,7 +1654,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 			Trace.Write('##action type '+str(self.action_type))
 			if self.action_type == "ADD_SPARE_PART":
 				parts_value = 0
-				Service_Id = 'Z0108'
+				Service_Id = self.tree_param
 				entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 				entitlement_xml = entitlement_obj.ENTITLEMENT_XML
 				quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -1662,7 +1667,12 @@ class PartsListModel(ContractQuoteCrudOpertion):
 					if scheduled_parts and scheduled_value:
 						parts_value = scheduled_value[0]
 						break
-
+				if self.tree_param == 'Z0108':
+					delivery_mode = "OFFSITE"
+					schedule_mode= "SCHEDULED" if int(parts_value) > 9 else "UNSCHEDULED"
+				elif self.tree_param == 'Z0110':
+					delivery_mode = "ONSITE"
+					schedule_mode= "LOW QUANTITY ONSITE"
 				self._process_query("""
 									INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 									SELECT DISTINCT
@@ -1750,7 +1760,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 						ServiceId=self.tree_param,
 						BatchGroupRecordId=batch_group_record_id,
 						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-						UserId=self.user_id, delivery_mode = "OFFSITE" if "Z0108" in self.tree_param else "ONSITE",schedule_mode= "SCHEDULED" if int(parts_value) > 9 else "UNSCHEDULED"
+						UserId=self.user_id, delivery_mode = delivery_mode,schedule_mode = schedule_mode
 					)
 				)
 				# spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
