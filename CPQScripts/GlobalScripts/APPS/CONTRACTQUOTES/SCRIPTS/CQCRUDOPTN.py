@@ -4866,9 +4866,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						FROM SAQGPA (NOLOCK)
 						INNER JOIN (SELECT FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID
 									FROM MAEQUP (NOLOCK) 
-									JOIN SAQGPA (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID 
-									WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}'
-									)IQ """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+									JOIN SAQGPA (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_RECORD_ID = SAQGPA.EQUIPMENT_RECORD_ID
+									JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQGPA.QTEREV_RECORD_ID
+									WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}'
+									)IQ """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
 		self._process_query(
 			"""INSERT SAQSKP (
 				ASSEMBLY_ID,
@@ -5008,7 +5009,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		self._process_query("""INSERT SAQGPE (
 				CPS_CONFIGURATION_ID,
 				CPS_MATCH_ID,
-				ENTITLEMENT_XML,
+				--ENTITLEMENT_XML,
 				GOT_CODE,
 				GOTCODE_RECORD_ID,
 				GREENBOOK,
@@ -5029,7 +5030,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				SELECT pm_entitlement.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_GOT_CD_PM_EVNT_ENTITLEMENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT DISTINCT 
 				SAQSGE.CPS_CONFIGURATION_ID,
 				SAQSGE.CPS_MATCH_ID,
-				SAQSGE.ENTITLEMENT_XML,
+				--SAQSGE.ENTITLEMENT_XML,
 				SAQGPM.GOT_CODE,
 				SAQGPM.GOTCODE_RECORD_ID,
 				SAQGPM.GREENBOOK,
@@ -5056,6 +5057,15 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id'))
 				)
+		Sql.RunQuery("""UPDATE SAQGPE
+					SET ENTITLEMENT_XML = IQ.ENTITLEMENT_XML		
+						FROM SAQGPE (NOLOCK)
+						INNER JOIN (SELECT ENTITLEMENT_XML
+									FROM SAQGSE (NOLOCK) 
+									JOIN SAQGPE (NOLOCK) ON SAQGSE.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND SAQGSE.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND SAQGSE.SERVICE_RECORD_ID = SAQGPE.SERVICE_RECORD_ID AND SAQGSE.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID
+									JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID
+									WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGSE.SERVICE_ID = '{TreeParam}'
+									)IQ """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
 		Trace.Write("insert saqgpe")
 		
 		# if self.tree_param == "Z0009":
