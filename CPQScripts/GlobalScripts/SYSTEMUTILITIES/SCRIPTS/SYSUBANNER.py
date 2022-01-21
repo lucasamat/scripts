@@ -2751,7 +2751,7 @@ def Related_Sub_Banner(
                 getsaletypeloc = Sql.GetFirst("select SALE_TYPE,QUOTE_TYPE from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,quote_revision_record_id))				
                 if getsaletypeloc:
                     # dynamic_Button = Sql.GetList("SELECT HTML_CONTENT FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
-                    Trace.Write("multi_buttons"+str(len(multi_buttons)))
+                    Trace.Write("multi_buttons--2754--"+str(len(multi_buttons)))
                     if len(multi_buttons) > 0:						
                         # if TreeParam == "Quote Items" and getsaletypeloc.QUOTE_TYPE =="ZTBC - TOOL BASED" and getsaletypeloc.SALE_TYPE != "TOOL RELOCATION":
                         #     # Appending Price button in Quote Items Node
@@ -2808,6 +2808,11 @@ def Related_Sub_Banner(
                         + '" class="btnconfig" onclick="relateListBulkDelete(this)" data-target="#related_delete_POPUP" data-toggle="modal" disabled>DELETE</button>'
                     )'''
         elif TreeParam == "Billing":
+            Trace.Write("BM 1740")
+            for btn in multi_buttons:
+                sec_rel_sub_bnr += (btn)
+            Trace.Write(sec_rel_sub_bnr)
+        elif TreeParam == "Delivery Schedule":
             Trace.Write("BM 1740")
             for btn in multi_buttons:
                 sec_rel_sub_bnr += (btn)
