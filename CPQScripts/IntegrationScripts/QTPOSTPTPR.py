@@ -180,7 +180,7 @@ try:
 					# Log.Info('###At line 180')
 					# response1 = eval(response1)
 					# Log.Info('###At line 182')
-					conditions = response1['items'][0]['conditions']
+					conditions = response1['Entries'][0]['items'][0]['conditions']
 					Log.Info('###At line 184')
 					for condition in conditions:
 						if condition['conditionType'] == "ZERU":
