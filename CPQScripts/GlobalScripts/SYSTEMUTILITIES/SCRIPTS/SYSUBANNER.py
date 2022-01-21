@@ -1786,18 +1786,27 @@ def Related_Sub_Banner(
             FifthLable = "Serial Number"
             FifthValue = str(SerialNumber)
         elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Credits") and subTabName != "Assembly Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
-            Trace.Write('addon enti11')
-            PrimaryLable = "Product Offering ID"
-            PrimaryValue = str(TreeSuperParentParam)
-            SecondLable = "Product Offering Description"
-            SecondValue = desc
-            #ThirdLable = "Fab Location ID"
-            #ThirdValue = str(TreeParentParam)
-            ThirdLable = "Greenbook"
-            ThirdValue = str(TreeParentParam) if "Add" in TreeParam else str(TreeParam)
-            # if subTabName != "Details":
-            #     FourthLable = "Equipment"
-            #     FifthValue = "All"
+            if subTabName =='Entitlements' and str(ObjName) == "SAQSAO" and TreeParam == "Add-On Products" :
+                Trace.Write("addon entitlement")
+                get_addon_service_desc = Sql.GetFirst("SELECT * FROM SAQSGB (NOLOCK) WHERE QUOTE_SERVICE_GREENBOOK_RECORD_ID  = '{}'".format(CurrentRecordId))
+                if get_addon_service_desc:
+                    PrimaryLable = "Product Offering ID"
+                    PrimaryValue = get_addon_service_desc.SERVICE_ID
+                    SecondLable = "Product Offering Description"
+                    SecondValue = get_addon_service_desc.SERVICE_DESCRIPTION 
+            else:
+                Trace.Write('addon enti11')
+                PrimaryLable = "Product Offering ID"
+                PrimaryValue = str(TreeSuperParentParam)
+                SecondLable = "Product Offering Description"
+                SecondValue = desc
+                #ThirdLable = "Fab Location ID"
+                #ThirdValue = str(TreeParentParam)
+                ThirdLable = "Greenbook"
+                ThirdValue = str(TreeParentParam) if "Add" in TreeParam else str(TreeParam)
+                # if subTabName != "Details":
+                #     FourthLable = "Equipment"
+                #     FifthValue = "All"
         elif subTabName == "Details":			
             PrimaryLable = ListKey[0]
             PrimaryValue = PrimaryValue
