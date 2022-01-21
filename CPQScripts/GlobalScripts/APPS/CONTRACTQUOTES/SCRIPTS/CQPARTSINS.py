@@ -108,7 +108,6 @@ class SyncFPMQuoteAndHanaDatabase:
         datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
         spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.quote_record_id, datetime_string)
         spare_parts_temp_table_name = re.sub(r'-','_',spare_parts_temp_table_name)
-        Trace.Write(spare_parts_temp_table_name)		
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
             spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
@@ -168,7 +167,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
                                 CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER!='' THEN TEMP_TABLE.CHILD_PART_NUMBER ELSE MAMTRL.SAP_PART_NUMBER END AS CUSTOMER_PART_NUMBER,
                                 MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
-                                'ONSITE' as DELIVERY_MODE,
+                                CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN '' ELSE 'ONSITE' END AS DELIVERY_MODE,
                                 0.00 as EXTENDED_UNIT_PRICE,
                                 MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
                                 CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER!='' THEN TEMP_TABLE.CHILD_PART_NUMBER ELSE MAMTRL.SAP_PART_NUMBER END AS PART_NUMBER,
@@ -185,7 +184,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 0.00 as SALESUOM_CONVERSION_FACTOR,
                                 MAMTRL.UNIT_OF_MEASURE as SALESUOM_ID,
                                 MAMTRL.UOM_RECORD_ID as SALESUOM_RECORD_ID, 
-                                'SCHEDULED' as SCHEDULE_MODE,
+                                CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN '' ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
                                 SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
                                 SAQTSV.SERVICE_ID as SERVICE_ID,
                                 SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
@@ -288,6 +287,22 @@ class SyncFPMQuoteAndHanaDatabase:
                 temp_value =''
                 col_flag=1
     
+    def delete_child_records_6kw(self):
+        saqtse_obj = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"'")
+        pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+        pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(self.service_id)+'_TSC_FPMEXC)</ENTITLEMENT_ID>')
+        pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+        customer_wants_participate=''
+        for m in re.finditer(pattern_tag, saqtse_obj.ENTITLEMENT_XML):
+            sub_string = m.group(1)
+            get_ent_id = re.findall(pattern_id,sub_string)
+            if get_ent_id:
+                get_ent_val= re.findall(pattern_name,sub_string)
+                customer_wants_participate = get_ent_val[0]
+                break
+        if customer_wants_participate == 'No':
+            Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
+        
 fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
 fpm_obj.pull_requestto_hana()
 fpm_obj.prepare_backup_table()
