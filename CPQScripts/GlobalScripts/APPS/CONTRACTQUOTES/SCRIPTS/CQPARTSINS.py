@@ -64,6 +64,19 @@ class SyncFPMQuoteAndHanaDatabase:
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
     
+    def add_parts_requestto_hana(self):
+        requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
+        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
+        response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
+        response=response.replace("null",'""')
+        response=eval(response)
+        auth="Bearer"+' '+str(response['access_token'])
+        requestdata = '{"soldtoParty":"'+str(self.account_info['SOLD TO'])+'","shiptoparty":"'+str(self.account_info['SHIP TO'])+'","salesOrg":"'+str(self.sales_org_id)+'","priceList":"","priceGroup":"","validTo":"20220616","validFrom":"20210518",	"participatewith6k":"Yes","customParticipaton":"Yes","partNumber":'+str(self.part_ids)+'}'
+        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
+        self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
+    
     def insert_records_saqspt(self):
         if self.response:
             response = self.response
