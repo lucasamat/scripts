@@ -2784,7 +2784,7 @@ def Related_Sub_Banner(
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
                                         Trace.Write('add_button->unmapped--'+str(add_button))
                                         sec_rel_sub_bnr += str(btn)
-                        else:##Added the else part for the multi buttons scenario...
+                        else:##Added the else part for the multi buttons scenario.....
                             for btn in multi_buttons:
                                 sec_rel_sub_bnr += str(btn)
                             
