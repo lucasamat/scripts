@@ -3140,7 +3140,7 @@ def Related_Sub_Banner(
                             billing_variable_visible = Sql.GetFirst("""SELECT BILLING_TYPE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND BILLING_TYPE in ('VARIABLE','Variable')""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
                             if billing_variable_visible:
                                 sec_rel_sub_bnr += (btn)
-                    if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn and 'ContactsInlineEdit' not in btn and 'ADD' not in btn:
+                    if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn and 'ADD' not in btn:
                         sec_rel_sub_bnr += (btn)
                     if (subTabName == 'Inclusions'  or subTabName == 'Exclusions' or subTabName == 'New Parts')  and quote_status.QUOTE_STATUS != 'APPROVED' and 'INLINE EDIT' in btn:
                         Trace.Write("btn-ifff--"+str(btn))
