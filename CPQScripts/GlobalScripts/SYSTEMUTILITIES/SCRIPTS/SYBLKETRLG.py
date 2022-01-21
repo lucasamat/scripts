@@ -1034,9 +1034,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				elif TITLE.split(',') == ["RETURN_NOTIFY_EMAIL","SHIP_NOTIFY_EMAIL"]:
 					if ALLVALUES1:
-						Sql.RunQuery("""UPDATE SAQICT SET RETURN_NOTIFY_EMAIL = '{value}',SHIP_NOTIFY_EMAIL = '{value1}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES1[0],column1=TITLE.split(',')[1],value1 = ALLVALUES1[1],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
-					else:
-						Sql.RunQuery("""UPDATE SAQICT SET {column} = '{value}',{column1} = '{value1}',{column2} = '{value2}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index],column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						Sql.RunQuery("""UPDATE SAQICT SET RETURN_NOTIFY_EMAIL = '{value}',SHIP_NOTIFY_EMAIL = '{value1}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' """.format(value = ALLVALUES1[0],value1 = ALLVALUES1[1],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head)
 				count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQICT WHERE QUOTE_RECORD_ID= '"+str(Qt_rec_id)+"' ")  
 
 			elif str(obj_name) == "SAQSPT":
