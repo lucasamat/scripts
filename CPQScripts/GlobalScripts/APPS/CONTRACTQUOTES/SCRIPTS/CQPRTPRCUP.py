@@ -150,6 +150,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 					s = ','.join(li)	
 
 					requestdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">  <soapenv:Body> <cpq_columns><root> {"docCurrency":"'+curr+'","locCurrency":"'+glb_curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(s)+']} </root> <CPSToken>'+str(response['access_token'])+'</CPSToken></cpq_columns> </soapenv:Body></soapenv:Envelope>'
+					Log.Info('***Requestdata'+str(requestdata))
 				else:
 					Log.Info("**Multiple-Partids**")
 					for p,q in zip(partids,quantity):
