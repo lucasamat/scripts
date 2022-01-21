@@ -563,7 +563,7 @@ class TreeView:
 					#12096 start-quote item visibility start
 					if get_node_visibility and str(get_ohold_pricing_status).upper() == "ON HOLD - COSTING" and str(getParentObj.NODE_NAME) == "Quote Items":
 						continue
-					elif get_delivery_nodes and str(getParentObj.NODE_NAME) == "Delivery Schedule":
+					elif not get_delivery_nodes and str(getParentObj.NODE_NAME) == "Delivery Schedule":
 						continue
 					#12096 start-quote item visibility end
 					if str(getParentObj.TREEIMAGE_URL):
