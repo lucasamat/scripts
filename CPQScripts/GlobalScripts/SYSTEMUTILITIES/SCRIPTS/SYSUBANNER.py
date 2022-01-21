@@ -193,6 +193,9 @@ def Related_Sub_Banner(
                         if subTabName.startswith("Year") and str(ObjName) == "SAQRIB":
                             Trace.Write('176---------------')
                             add_button = '<button id="billingmatrix_save" onclick="showSBillMatBulksave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="billingmatrix_cancel" onclick="showSBillMatBulkcancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>'
+                        if subTabName =="Delivery Schedule"  and str(ObjName) == "SAQSPD":
+                            Trace.Write('176---------------')
+                            add_button = '<button id="delivery_save" onclick="showSdeliverysave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="delivery_cancel" onclick="showSdeliverycancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>'
                     except:
                         #Trace.Write('176--------EXCEPT-------')
                         add_button = ""
@@ -205,6 +208,9 @@ def Related_Sub_Banner(
             if subTabName.startswith("Year") and str(ObjName) == "SAQRIB":
                 Trace.Write('176---------------')
                 sec_rel_sub_bnr +=('<button id="billingmatrix_save" onclick="showSBillMatBulksave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="billingmatrix_cancel" onclick="showSBillMatBulkcancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>')
+            if subTabName =="Delivery Schedule"  and str(ObjName) == "SAQSPD":
+                Trace.Write('176---------------')
+                add_button = '<button id="delivery_save" onclick="showSdeliverysave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="delivery_cancel" onclick="showSdeliverycancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>'
         except:
             Trace.Write('176--------EXCEPT-------')
             add_button = ""
