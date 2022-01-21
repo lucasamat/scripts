@@ -5016,7 +5016,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									FROM SAQSGE (NOLOCK) 
 									JOIN SAQGPE (NOLOCK) ON SAQSGE.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND SAQSGE.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND SAQSGE.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID
 									JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID
-									WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGSE.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
+									WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSGE.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
 									)IQ ON SAQGPE.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQGPE.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param,BatchGroupRecordId = kwargs.get('batch_group_record_id') ))
 		
 		# if self.tree_param == "Z0009":
