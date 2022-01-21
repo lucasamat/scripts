@@ -1781,7 +1781,7 @@ def POPUPLISTVALUEADDNEW(
 				
 			if where_string:
 				where_string += " AND"
-			where_string += """ PRDOFR_ID = '{}' AND PRDOFR_DOCTYP = '{}' AND COMP_PRDOFR_ID NOT IN (SELECT SERVICE_ID FROM SAQSGB where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' )""".format(str(TreeSuperParentParam),str(getDocType.DOCTYP_ID),contract_quote_record_id,quote_revision_record_id,TreeParentParam)
+			where_string += """ PRDOFR_ID = '{}' AND PRDOFR_DOCTYP = '{}' AND COMP_PRDOFR_ID NOT IN (SELECT SERVICE_ID FROM SAQSGB where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' AND PAR_SERVICE_ID ='{}')""".format(str(TreeSuperParentParam),str(getDocType.DOCTYP_ID),contract_quote_record_id,quote_revision_record_id,TreeParentParam,str(TreeSuperParentParam))
 
 			table_data = Sql.GetList(
 				"select {} from MAADPR (NOLOCK) {} {} {}".format(
