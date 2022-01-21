@@ -15,7 +15,6 @@ import re
 import datetime
 
 Sql = SQL()
-#ScriptExecutor = ScriptExecutor()
 webclient = System.Net.WebClient()
 
 class SyncFPMQuoteAndHanaDatabase:
@@ -38,7 +37,6 @@ class SyncFPMQuoteAndHanaDatabase:
         cd = '0'+str(cd) if len(cd)==1 else cd
         cm = '0'+str(cm) if len(cm)==1 else cm        
         self.cvt = cy+cm+cd
-
         
     def pull_fpm_parts_hana(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=16c3719c-d099-42d4-921c-765f4cee223a&password=mKv2~uXpeRD9SrD2DTW09Lk2GQ&scope=hanasafeaccess"
