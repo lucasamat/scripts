@@ -1019,7 +1019,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 									for parts in parts_record_query:
 										Sql.RunQuery("DELETE FROM SAQSPT WHERE QUOTE_SERVICE_PART_RECORD_ID = '"+str(parts.QUOTE_SERVICE_PART_RECORD_ID)+"'")
 					else:
-						###A055S000P01-14322 Updating the schedule mode and delivery mode based on the 
+						###A055S000P01-14322 Updating the schedule mode and delivery mode based on the consigned_parts_value from the entitlement and customer annuality quantity value from the spare parts..
 						product_offering_entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = TreeParam))
 						entitlement_xml = product_offering_entitlement_obj.ENTITLEMENT_XML
 						quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -1036,7 +1036,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						# for fpm_spare_part in fpm_spare_parts_object:
 						# 	if fpm_spare_part:
 						Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'ON REQUEST', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{TreeParam}' AND CUSTOMER_ANNUAL_QUANTITY < {consigned_parts_value}".format(QuoteRecordId = Qt_rec_id,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
-						Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'LOW QUANTITY ONSITE', DELIVERY_MODE = 'ONSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{TreeParam}' AND CUSTOMER_ANNUAL_QUANTITY > {consigned_parts_value}".format(QuoteRecordId = Qt_rec_id,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
+						Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'LOW QUANTITY ONSITE', DELIVERY_MODE = 'ONSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{TreeParam}' AND CUSTOMER_ANNUAL_QUANTITY >= {consigned_parts_value}".format(QuoteRecordId = Qt_rec_id,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
 						
 
 						
