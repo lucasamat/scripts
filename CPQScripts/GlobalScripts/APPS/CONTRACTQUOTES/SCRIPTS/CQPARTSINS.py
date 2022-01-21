@@ -158,7 +158,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CUSTOMER_PARTICIPATE,
                                 CUSTOMER_ACCEPT_PART,
                                 STPACCOUNT_ID,
-                                SHPACCOUNT_ID
+                                SHPACCOUNT_ID,
                                 {UserId} as CPQTABLEENTRYADDEDBY, 
                                 GETDATE() as CPQTABLEENTRYDATEADDED
                             FROM (
@@ -250,7 +250,7 @@ class SyncFPMQuoteAndHanaDatabase:
         for keyobj in get_party_role:
             self.account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
         
-        saqtsv_obj = Sql.GetFirst("SELECT SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQTSV where QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_id)+"'")
+        saqtsv_obj = Sql.GetFirst("SELECT SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQTSV where QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"'")
         if saqtsv_obj:
             self.service_id = saqtsv_obj.SERVICE_ID
             self.service_desc = saqtsv_obj.SERVICE_DESCRIPTION
@@ -267,8 +267,8 @@ class SyncFPMQuoteAndHanaDatabase:
             response = re.sub(r'\[|\]','',response)
             pattern = re.compile(r'(\{[^>]*?\})')
             pattern2 = re.compile(r'\"([^>]*?)\"\:(\"[^>]*?\")')
-            self.columns = '(QUOTE_RECORD_ID,QTEREV_RECORD_ID'
-            value  = """({},{}""".format(self.quote_record_id,self.quote_revision_id)
+            self.columns = 'QUOTE_RECORD_ID,QTEREV_RECORD_ID'
+            value  = """(\''{}\'',\''{}\''""".format(self.quote_record_id,self.quote_revision_id)
             col_flag = 0
             for record in re.finditer(pattern, response):
                 rec = re.sub(r'\{|\}','',record.group(1))
@@ -277,9 +277,10 @@ class SyncFPMQuoteAndHanaDatabase:
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
                     temp_value +=','+ele.group(2) if ele.group(2) !='' else None
-                if col_flag == 0:
-                    self.columns +=')'
+                #if col_flag == 0:
+                #	self.columns +=')'
                 temp_value +=')'
+                temp_value = re.sub(r'"',"''",temp_value)
                 if self.records == '':
                     self.records = temp_value
                 else:
