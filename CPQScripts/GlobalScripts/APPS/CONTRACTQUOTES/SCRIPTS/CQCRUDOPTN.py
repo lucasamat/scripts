@@ -1826,7 +1826,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 													{UserId} as CPQTABLEENTRYADDEDBY, 
 													GETDATE() as CPQTABLEENTRYDATEADDED,
 													{new_part} as NEW_PART,
-													0 as INCLUDED
+													{included} as INCLUDED
 												FROM (
 												SELECT 
 													DISTINCT
@@ -1866,10 +1866,11 @@ class PartsListModel(ContractQuoteCrudOpertion):
 												UserId=self.user_id,
 												ParentBasedCondition=parent_based_condition,
 												new_part= self.new_part if self.new_part else 0
+												included = 1 if self.tree_parent_level_0 in ('Z0009','Z0006') else 0
 											)
 										)
 				
-				elif 'Z0100' in parent_based_condition or ('Z0101' in parent_based_condition and self.tree_param in ("Z0006","Z0009")):
+				elif 'Z0100' in parent_based_condition :
 					Trace.Write("z0100---2211")
 					self._process_query("""INSERT SAQRSP (QUOTE_REV_PO_PRODUCT_LIST_ID,PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID,PROD_INSP_MEMO,QUANTITY, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,NEW_PART,INCLUDED)
 							SELECT DISTINCT
@@ -1945,11 +1946,11 @@ class PartsListModel(ContractQuoteCrudOpertion):
 				# 		spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,get_child_service_id.SERVICE_ID))
 				# 		if spareparts_config_status_count.COUNT > 0:
 				# 			data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":self.contract_quote_record_id, "ContractQuoteRevisionRecordId":self.quote_revision_record_id, "ServiceId":get_child_service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
-			# self._process_query(
-			# 			"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-			# 				BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
-			# 			)
-			# 		)
+			self._process_query(
+						"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+							BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
+						)
+					)
 
 class ToolRelocationModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
