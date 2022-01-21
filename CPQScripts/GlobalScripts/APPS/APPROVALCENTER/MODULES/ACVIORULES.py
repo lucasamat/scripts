@@ -508,7 +508,7 @@ class ViolationConditions:
                     if "PRENVL" in result.WHERE_CONDITION_01:
                         flag = 2
                         
-                        entitlement_obj = SqlHelper.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
+                        entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
                         if entitlement_obj:
                             import re
                             
