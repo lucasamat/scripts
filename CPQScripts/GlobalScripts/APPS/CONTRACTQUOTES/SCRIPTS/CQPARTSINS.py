@@ -5,6 +5,7 @@
 #   __create_date :09-01-2022
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+from logging import exception
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import clr
@@ -14,16 +15,17 @@ import re
 import datetime
 
 Sql = SQL()
-ScriptExecutor = ScriptExecutor()
+#ScriptExecutor = ScriptExecutor()
 webclient = System.Net.WebClient()
 
 class SyncFPMQuoteAndHanaDatabase:
     def __init__(self, Quote):
         self.quote = Quote
-        self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns=''
+        self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records=''
         self.quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         self.quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
         self.datetime_value = datetime.datetime.now()
+        self.tree_param = 'Z0108'
         self.fetch_quotebasic_info()
         
     def pull_fpm_parts_hana(self):
@@ -78,15 +80,21 @@ class SyncFPMQuoteAndHanaDatabase:
 
     def _insert_spare_parts(self):
         datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
-        spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
-        Trace.Write(spare_parts_temp_table_drop)		
+        spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.quote_record_id, datetime_string)
+        Trace.Write(spare_parts_temp_table_name)		
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
-            
+        except exception:
+            Trace.Write("Error 1")    
+        try:
             spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
-            
-            spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' ' ")
-
+        except exception:
+            Trace.Write("Error 2")    
+        try:    
+            spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_id)+"'' ' ")
+        except exception:
+            Trace.Write("Error 3")    
+        try:
             Sql.RunQuery("""
                             INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT
@@ -173,9 +181,9 @@ class SyncFPMQuoteAndHanaDatabase:
                             """.format(
                                         TempTable=spare_parts_temp_table_name,
                                         ServiceId=self.tree_param,									
-                                        QuoteRecordId=self.contract_quote_record_id,
-                                        RevisionRecordId=self.contract_quote_revision_record_id,
-                                        UserId=self.user_id
+                                        QuoteRecordId=self.quote_record_id,
+                                        RevisionRecordId=self.quote_revision_id,
+                                        UserId=user.user_id
                                     )
             )
             #spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
@@ -237,6 +245,6 @@ class SyncFPMQuoteAndHanaDatabase:
 fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
 fpm_obj.pull_requestto_hana()
 fpm_obj.prepare_backup_table()
-fpm_obj.insert_records_saqspt()
-fpm_obj.update_records_saqspt()
+fpm_obj._insert_spare_parts()
+#fpm_obj.update_records_saqspt()
 
