@@ -1733,12 +1733,11 @@ class SyncQuoteAndCustomTables:
 								fpm_service_ids += ','
 
 								fpm_service_ids_list = fpm_service_ids.split(',')
-								for val in fpm_service_ids_list:
-									Log.Info("555555555"+str(val))
+								for val in fpm_service_ids_list:									
 									if val != '':
-										service_object = Sql.GetFirst("SELECT SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id,val))
+										#service_object = Sql.GetFirst("SELECT SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id,val))
 										
-										parts_value = 0
+										#parts_value = 0
 										Service = 'Z0108'
 										entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id))
 										if entitlement_obj:
@@ -1767,8 +1766,7 @@ class SyncQuoteAndCustomTables:
 
 
 										#calling CQPARTSINS
-										ScriptExecutor.ExecuteGlobal('CQPARTSINS')
-										Log.Info("CQPARTSINS")
+										ScriptExecutor.ExecuteGlobal('CQPARTSINS')										
 
 									#A055S000P01-14047 start
 									if val == "Z0108":

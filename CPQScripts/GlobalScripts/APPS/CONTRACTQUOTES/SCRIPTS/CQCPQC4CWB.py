@@ -9,13 +9,6 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import clr
 import System.Net
 import sys
-#import sys
-import datetime
-#import clr
-#import System.Net
-from System.Text.Encoding import UTF8
-from System import Convert
-#from SYDATABASE import SQL
 from SYDATABASE import SQL
 
 Sql = SQL()
@@ -116,9 +109,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
             + str(role_code_id)
             +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
         )
-        Trace.Write("requestdata"+str(requestdata))
-    
-    
+        Trace.Write("requestdata"+str(requestdata)) 
     
     LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='CPQ_TO_C4C_WRITEBACK'")
     LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
@@ -137,5 +128,4 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         webclient = System.Net.WebClient()
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
-        response = webclient.UploadString(URL, requestdata)
-    
+        response = webclient.UploadString(URL, requestdata
