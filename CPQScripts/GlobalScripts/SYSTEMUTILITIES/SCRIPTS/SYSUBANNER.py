@@ -3096,7 +3096,9 @@ def Related_Sub_Banner(
                         dropdown_multi_btn_str += '<li>'+str(val)+'</li>'
                         #sec_rel_sub_bnr += (btn)
                     dropdown_multi_btn_str += '''</ul></div></div>'''
+                    Trace.Write('3095--dropdown_multi_btn_str--'+str(dropdown_multi_btn_str))
                     sec_rel_sub_bnr += (dropdown_multi_btn_str)
+                    Trace.Write('3095--sec_rel_sub_bnr--'+str(sec_rel_sub_bnr))
                 else:
                     sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
