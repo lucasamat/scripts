@@ -3092,7 +3092,11 @@ def Related_Sub_Banner(
             elif str(subTabName)=="Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APPROVED':
                 if str(multi_buttons) != "":
                     for btn in multi_buttons:
-                        sec_rel_sub_bnr += (btn)
+                        Trace.Write('3095----')
+                        dropdown_multi_btn_str += '<li>'+str(val)+'</li>'
+                        #sec_rel_sub_bnr += (btn)
+                    dropdown_multi_btn_str += '''</ul></div></div>'''
+                    sec_rel_sub_bnr += (dropdown_multi_btn_str)
                 else:
                     sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
