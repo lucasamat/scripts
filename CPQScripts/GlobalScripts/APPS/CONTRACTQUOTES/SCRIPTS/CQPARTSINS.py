@@ -65,6 +65,8 @@ class SyncFPMQuoteAndHanaDatabase:
         self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
     
     def add_parts_requestto_hana(self,part_ids):
+        part_ids = str(part_ids)
+        part_ids = re.sub(r"'",'"',part_ids)
         Log.Info(str(part_ids))
         requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
