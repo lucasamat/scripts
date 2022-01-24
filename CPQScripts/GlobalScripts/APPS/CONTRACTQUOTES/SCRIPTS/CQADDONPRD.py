@@ -59,15 +59,13 @@ def _addon_service_level_entitlement(OfferingRow_detail):
 
 	ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 
-	is_default = ent_val_code = ''
-	AttributeID_Pass =""
+	ent_val_code = ''
 	get_toolptip = ""
 	addon_entitlement_object = Sql.GetFirst("select count(SAQTSE.CpqTableEntryId) as cnt from SAQTSE(nolock) inner join SAQSAO on SAQTSE.SERVICE_ID = SAQSAO.ADNPRD_ID AND SAQTSE.PAR_SERVICE_ID = SAQSAO.SERVICE_ID AND SAQTSE.QUOTE_RECORD_ID = SAQSAO.QUOTE_RECORD_ID and SAQTSE.QTEREV_RECORD_ID = SAQSAO.QTEREV_RECORD_ID WHERE SAQTSE.PAR_SERVICE_ID = '{}' AND SAQSAO.QUOTE_RECORD_ID = '{}' and SAQSAO.QTEREV_RECORD_ID = '{}' AND SAQTSE.SERVICE_ID = '{}'".format(OfferingRow_detail.SERVICE_ID,OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.QTEREV_RECORD_ID, OfferingRow_detail.ADNPRD_ID))
 	if ProductVersionObj and addon_entitlement_object.cnt == 0:
 		insertservice = ""
 		tbrow={}	
-		for attrs in overallattributeslist:
-			
+		for attrs in overallattributeslist:			
 			if attrs in attributevalues:					
 				HasDefaultvalue=True					
 				STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
@@ -88,13 +86,11 @@ def _addon_service_level_entitlement(OfferingRow_detail):
 			if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
 				get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 				ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
-			getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.QUOTE_RECORD_ID)+"'")
-			if getslaes_value:
-				getquote_sales_val = getslaes_value.SALESORG_ID
-			get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
-			get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
-			
-			
+			# getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.QUOTE_RECORD_ID)+"'")
+			# if getslaes_value:
+			# 	getquote_sales_val = getslaes_value.SALESORG_ID
+			# get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+			# get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 			
 			#A055S000P01-7401 START
 			if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.ADNPRD_ID) ) and ent_disp_val != '':
