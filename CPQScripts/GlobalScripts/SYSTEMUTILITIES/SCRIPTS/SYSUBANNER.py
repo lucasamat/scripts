@@ -2795,7 +2795,7 @@ def Related_Sub_Banner(
                             for btn in multi_buttons:
                                 #if "INLINE EDIT" not in btn and TreeParam != "Fab Locations":
                                     #Trace.Write("ADD_FAB====")
-                                if TreeParam != "Fab Locations":
+                                if TreeParam != "Fab Locations" and TreeParam != "Customer information":
                                     sec_rel_sub_bnr += str(btn)
                             
                                 
