@@ -289,6 +289,7 @@ class SyncFPMQuoteAndHanaDatabase:
                 col_flag=1
     
     def delete_child_records_6kw(self):
+        Trace.Write('Delete Child called!!!')
         saqtse_obj = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"'")
         pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
         pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(self.service_id)+'_TSC_FPMEXC)</ENTITLEMENT_ID>')
