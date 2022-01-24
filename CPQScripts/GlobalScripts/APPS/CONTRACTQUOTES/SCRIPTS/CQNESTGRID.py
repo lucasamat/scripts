@@ -428,7 +428,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 	Hyperlink = " "
 	if	Product.GetGlobal("TreeParam") == 'Z0009' or Product.GetGlobal("TreeParentLevel0") == 'Z0009':
 		import re
-		get_entitlement_xml =SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId=Quote.GetGlobal("quote_revision_record_id"), service_id = 'Z0009' ))
+		get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId=Quote.GetGlobal("quote_revision_record_id"), service_id = 'Z0009' ))
 		if get_entitlement_xml:
 			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 			pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
