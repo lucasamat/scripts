@@ -22,6 +22,7 @@ import sys
 from SYDATABASE import SQL
 import datetime
 import CQENTIFLOW
+# from CQPARTSINS import SyncFPMQuoteAndHanaDatabase
 import ACVIORULES
 #import CQTVLDRIFW
 userId = str(User.Id)
@@ -2112,6 +2113,10 @@ class Entitlements:
 				# if factcurr:
 				# 	factcurreny = factcurr.GS
 		#Trace.Write('attributeEditonlylst---Durga---1730--'+str(attributeEditonlylst))
+		Trace.Write('###2116 for FPM CALL')
+		#fpm_call = SyncFPMQuoteAndHanaDatabase(Quote)
+		#fpm_call.delete_child_records_6kw()
+
 		Trace.Write('attriburesrequired_list---'+str(attriburesrequired_list))
 		Trace.Write('get_conflict_message--2043----'+str(get_conflict_message))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
