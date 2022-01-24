@@ -867,8 +867,8 @@ class EntitlementView():
 			getprevdicts +=   ("var dict_new = {};var list_new = [];")	
 			if str(self.treeparentparam).upper() == "ADD-ON PRODUCTS":
 				self.treesuperparentparam = ""
-			Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
-			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber or self.treeparam in ("Quote Items",'Add-On Products' ) and  self.treetopsuperparentparam.upper() == ProductPartnumber:	
+			Trace.Write('self.treeparam----'+str(self.treetopsuperparentparam)+'--'+str(ProductPartnumber))
+			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber or self.treeparam in ("Quote Items",'Add-On Products' ) or  self.treetopsuperparentparam.upper() == ProductPartnumber:	
 				#Trace.Write("@2756------->"+str(self.treeparentparam))
 				
 				for product_tab_obj in product_tabs_obj:
