@@ -201,7 +201,7 @@ def Related_Sub_Banner(
                         add_button = ""
                     add_button = ""
         else:
-            Trace.Write('200-add_button--'+str(add_button))
+            #Trace.Write('200-add_button--'+str(add_button))
             add_button = ""
         Trace.Write(str(sec_rel_sub_bnr)+"--sec_rel_sub_bnr----add_button_ Trace ------- "+str(add_button))
         try:
