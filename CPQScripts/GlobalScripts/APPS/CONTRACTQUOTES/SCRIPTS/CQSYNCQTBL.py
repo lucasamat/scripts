@@ -1748,11 +1748,11 @@ class SyncQuoteAndCustomTables:
 										if entitlement_obj:
 											entitlement_xml = entitlement_obj.ENTITLEMENT_XML
 											quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-											valllllllllll = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(Service)+'[^>]*?_TSC_SCPT</ENTITLEMENT_ID>')
+											entitlement_value = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(Service)+'[^>]*?_TSC_SCPT</ENTITLEMENT_ID>')
 											value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 											for m in re.finditer(quote_item_tag, entitlement_xml):
 												sub_string = m.group(1)
-												scheduled_parts =re.findall(valllllllllll,sub_string)
+												scheduled_parts =re.findall(entitlement_value,sub_string)
 												scheduled_value =re.findall(value,sub_string)
 												if scheduled_parts and scheduled_value:
 													parts_value = scheduled_value[0]
