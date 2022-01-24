@@ -9,11 +9,11 @@ import Webcom
 from datetime import datetime
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
-Sql = SQL()
 import re
 import System.Net
 import sys
 
+Sql = SQL()
 
 Trace.Write('script called')
 def Request_access_token():
@@ -26,7 +26,6 @@ def Request_access_token():
 		"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
 	)
 	return eval(response)
-
 
 def entitlement_request(partnumber,request_url,request_type):
 	gettodaydate = datetime.now().strftime("%Y-%m-%d")
@@ -44,7 +43,6 @@ def entitlement_request(partnumber,request_url,request_type):
 
 		Trace.Write("requestdata-1888---" + str(requestdata))
 		response1 = webclient.UploadString(request_url, str(requestdata))
-
 	else:
 		try:		
 			#Trace.Write("CHKNGTRAZ_J "+str(webclient.Headers[System.Net.HttpRequestHeader.Authorization]))
@@ -66,7 +64,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		level_name = 'OFFERING FAB LEVEL'
 	elif ent_level_table == "SAQITE":
 		get_entitlement_qt_item_sctructure = Sql.GetFirst("select ENTITLEMENT_XML,SERVICE_ID,GREENBOOK from SAQITE where {where_condition}".format(where_condition= where_cond))
-		flag_excluse=0
+		#flag_excluse=0
 		get_service_val =get_entitlement_qt_item_sctructure.SERVICE_ID
 		get_greenbook_value_itemlevel = get_entitlement_qt_item_sctructure.GREENBOOK
 		#condition based on quote item strcuture start
@@ -84,7 +82,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 				if get_ent_id:
 					Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val[0]))
 					get_ent_val = str(get_ent_val[0])
-					flag_excluse=1
+					#flag_excluse=1
 					break
 		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
 		if str(get_ent_val).upper() == "OFFERING + EQUIPMENT":
@@ -124,14 +122,8 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	#Trace.Write('get_attr_leve_based_list--type return'+str(type(get_attr_leve_based_list)))
 	return get_attr_leve_based_list
 
-
-
 action= Param.action
-
 #to get the product status
-
-
-
 try:
 	where_cond= Param.where_cond
 	#Trace.Write('where_cond-----try--'+str(where_cond))
@@ -144,12 +136,10 @@ try:
 except:
 	ent_level_table = ""
 	#Trace.Write('ent_level_table---except---'+str(ent_level_table))
-try:
-	
+try:	
 	partnumber= Param.partnumber
 	#Trace.Write('partnumber---try---'+str(partnumber))
-except:
-	
+except:	
 	partnumber = ""
 	#Trace.Write('partnumber--except----'+str(partnumber))
 try:
