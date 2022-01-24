@@ -95,7 +95,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 			return 'not saved',savebill
 
 def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
-	Trace.Write('98------')
+	Trace.Write('98-----deliverydict-'+str(deliverydict))
 	return 'save','savebill'
 try:
 	GET_DICT =list(Param.billdict)
