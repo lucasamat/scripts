@@ -442,7 +442,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 					Hyperlink = "No"
 					break
 	if Hyperlink == "No":
-		hyper_link = [" "]
+		hyper_link = []
 	else:
 		hyper_link = ["QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID"]
 	if TreeTopSuperParentParam == "Fab Locations" and ("Sending Account -" in TreeSuperParentParam) or ("Receiving Account -" in TreeSuperParentParam):
