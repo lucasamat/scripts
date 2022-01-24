@@ -303,6 +303,7 @@ class SyncFPMQuoteAndHanaDatabase:
             Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
 fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
+parameters={}
 try:
 	parameters['Action'] = Param.Action
 except Exception:
