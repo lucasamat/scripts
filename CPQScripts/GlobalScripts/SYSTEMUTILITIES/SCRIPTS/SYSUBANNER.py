@@ -55,7 +55,7 @@ def Related_Sub_Banner(
     else:
         CurrentRecordId = str(CurrentRecordId)"""    
     user_id = User.Id
-    buttonvisibility = ''
+    buttonvisibility = dropdown_multi_btn_str = ''
     price_bar = ''
     LOGIN_CREDENTIALS = Sql.GetFirst("SELECT top 1 Domain FROM SYCONF (nolock) order by CpqTableEntryId")
     if LOGIN_CREDENTIALS is not None:
@@ -101,6 +101,7 @@ def Related_Sub_Banner(
     dynamic_Button = None
     # Getting page details
     multi_buttons = []
+    dropdown_multi_btn_str = '''<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'''
     Trace.Write('ObjName---103--'+str(ObjName))
     if ObjName == "SAQIGS" or ObjName == "SAQRIB":
         ObjName ="SAQRIB"
