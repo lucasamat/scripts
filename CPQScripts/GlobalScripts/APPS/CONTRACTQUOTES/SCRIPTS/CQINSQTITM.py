@@ -1070,7 +1070,7 @@ class ContractQuoteItem:
 						'{UserName}' AS CPQTABLEENTRYADDEDBY,
 						GETDATE() as CPQTABLEENTRYDATEADDED,
 						{UserId} as CpqTableEntryModifiedBy,
-						GETDATE() as CpqTableEntryDateModified,
+						GETDATE() as CpqTableEntryDateModified,OQ.* FROM ( SELECT DISTINCT 
 						{ObjectName}.CPS_CONFIGURATION_ID,
 						{ObjectName}.CPS_MATCH_ID,
 						null as ENTITLEMENT_COST_IMPACT,
@@ -1105,7 +1105,7 @@ class ContractQuoteItem:
 												AND SAQRIT.OBJECT_ID = IQ.PM_ID
 												AND SAQRIT.GOT_CODE = IQ.GOT_CODE
 															
-					WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND IQ.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE'			
+					WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND IQ.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE' ) OQ			
 				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName='SAQGPE', QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		return True
 
