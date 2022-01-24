@@ -3366,7 +3366,7 @@ class SYLDRTLIST:
 											#the Billing Matrix based on the Warranty Date  start
 										elif str(value123) in delivery_date_column:
 											new_dict[value123] = (
-												'<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
+												'<input  type= "text" id ="' + key_value + '" class= "deliveryclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 											)
 										else:                                            
 											if str(value123) != "CUSTOMER_ANNUAL_QUANTITY":
