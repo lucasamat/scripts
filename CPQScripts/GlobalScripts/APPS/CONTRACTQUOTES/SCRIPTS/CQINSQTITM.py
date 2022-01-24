@@ -2113,6 +2113,10 @@ class ContractQuoteItem:
 					SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 
 	def _simple_quote_items_summary_insert(self):	
+		if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT"):
+			condition_str = ' AND SAQTSE.SERVICE_ID = SAQTSV.SERVICE_ID '
+		else:
+			condition_str = ' AND SAQTSE.SERVICE_ID = SAQTSV.PAR_SERVICE_ID '	
 		summary_last_line_no = 0
 		quote_item_summary_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIS (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		if quote_item_summary_obj:
@@ -2141,14 +2145,14 @@ class ContractQuoteItem:
 				FROM SAQTSV (NOLOCK) 
 				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID  
 				JOIN (
-				SELECT DISTINCT SAQTSE.QUOTE_RECORD_ID,SAQTSE.QTEREV_RECORD_ID, SAQTSV.SERVICE_ID,SAQTSE.SALESORG_RECORD_ID FROM SAQTSE (NOLOCK) INNER JOIN SAQTSV ON SAQTSE.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID  AND SAQTSE.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQTSE.SERVICE_ID = SAQTSV.PAR_SERVICE_ID 
+				SELECT DISTINCT SAQTSE.QUOTE_RECORD_ID,SAQTSE.QTEREV_RECORD_ID, SAQTSV.SERVICE_ID,SAQTSE.SALESORG_RECORD_ID FROM SAQTSE (NOLOCK) INNER JOIN SAQTSV ON SAQTSE.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID  AND SAQTSE.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID {condition_str}
 				WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND ISNULL(CONFIGURATION_STATUS, '') = 'COMPLETE' AND SAQTSV.SERVICE_ID ='{ServiceId}'			
 				) AS IQ ON IQ.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND IQ.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND IQ.SERVICE_ID = SAQTSV.SERVICE_ID	AND IQ.SERVICE_ID = '{ServiceId}' 
 				JOIN SAQTRV (NOLOCK) ON SAQTRV.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID
 				LEFT JOIN MAMSOP (NOLOCK) ON MAMSOP.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMSOP.SALESORG_ID = SAQTRV.SALESORG_ID AND MAMSOP.DISTRIBUTIONCHANNEL_ID = SAQTRV.DISTRIBUTIONCHANNEL_ID			
 				LEFT JOIN SAQRIS (NOLOCK) ON SAQRIS.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQRIS.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQRIS.SERVICE_RECORD_ID = SAQTSV.SERVICE_RECORD_ID
 				WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQRIS.SERVICE_RECORD_ID,'') = '') IQ			
-		""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, ItemSummaryLastLineNo=summary_last_line_no) 
+		""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, ItemSummaryLastLineNo=summary_last_line_no, condition_str = condition_str) 
 		)
 	
 		return True		
