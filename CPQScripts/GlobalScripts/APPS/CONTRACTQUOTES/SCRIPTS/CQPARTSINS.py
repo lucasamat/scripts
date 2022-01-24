@@ -277,8 +277,9 @@ class SyncFPMQuoteAndHanaDatabase:
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
                     if str(ele.group(1)) == 'PART_DESCRIPTION':
-                        temp_value +=','+ele.group(2) if ele.group(2) !='' else None
-                        temp_value = re.sub(r"'|\\","",temp_value)
+                        partdesc = ele.group(2) or ''
+                        partdesc = re.sub(r"'|\\","",partdesc)
+                        temp_value +=','+partdesc if partdesc !='' else None
                     else:
                         temp_value +=','+ele.group(2) if ele.group(2) !='' else None
                 #if col_flag == 0:
