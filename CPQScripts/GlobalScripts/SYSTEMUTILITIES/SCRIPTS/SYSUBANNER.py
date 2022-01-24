@@ -3121,6 +3121,7 @@ def Related_Sub_Banner(
             sec_rel_sub_bnr += ""
         elif subTabName =="Delivery Schedule":
             Trace.Write('sec_rel_sub_bnr---3123---'+str(sec_rel_sub_bnr))
+            sec_rel_sub_bnr += ('<button id="delivery_save" onclick="showSdeliverysave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="delivery_cancel" onclick="showSdeliverycancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>')
         else:
             Trace.Write("TreeParam-->"+str(TreeParam))
             Trace.Write("TabName-->"+str(TabName))
