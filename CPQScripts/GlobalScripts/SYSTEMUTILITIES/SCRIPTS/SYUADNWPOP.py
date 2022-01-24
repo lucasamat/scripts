@@ -3753,9 +3753,10 @@ def POPUPLISTVALUEADDNEW(
 					)
 				)	
 			else:
-				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND SALESORG_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
 					account_record_id,
 					Product.GetGlobal("TreeParam"),
+					sales_org,
 					where_string,
 					contract_quote_record_id,
 					Product.GetGlobal("TreeParam"),
