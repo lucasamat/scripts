@@ -3094,7 +3094,7 @@ def Related_Sub_Banner(
                     Trace.Write('### _ 3094----Multi_buttons'+str(type(multi_buttons)))
                     for btn in multi_buttons:
                         Trace.Write('3095----')
-                        dropdown_multi_btn_str += '<li>'+str(val)+'</li>'
+                        dropdown_multi_btn_str += '<li>'+str(btn)+'</li>'
                         #sec_rel_sub_bnr += (btn)
                     dropdown_multi_btn_str += '''</ul></div></div>'''
                     Trace.Write('3095--dropdown_multi_btn_str--'+str(dropdown_multi_btn_str))
