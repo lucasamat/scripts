@@ -94,17 +94,31 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 			savebill = 'NOTSAVE'
 			return 'not saved',savebill
 
-
+def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
+	Trace.Write('98------')
+	return 'save','savebill'
 try:
-    GET_DICT =list(Param.billdict)
-    totalyear = Param.totalyear
-    getedited_amt = Param.getedited_amt
+	GET_DICT =list(Param.billdict)
+	totalyear = Param.totalyear
+	getedited_amt = Param.getedited_amt
 except:
-    GET_DICT = []
-    totalyear = "" 
-    getedited_amt = ""
+	GET_DICT = []
+	totalyear = "" 
+	getedited_amt = ""
+try:
+	deliverydict =list(Param.deliverydict)
+	totalyear = Param.totalyear
+	getedited_amt = Param.getedited_amt
+	deliveryEdit = Param.deliveryEdit
+except:
+	GET_DICT = []
+	totalyear = "" 
+	getedited_amt = deliveryEdit = ""
 #GET_DICT =list(Param.billdict)
 #totalyear = Param.totalyear
 #getedited_amt = Param.getedited_amt
 #Trace.Write(str(totalyear)+"--GET_DICT--------------"+str(GET_DICT))
-ApiResponse = ApiResponseFactory.JsonResponse(BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,))
+if deliveryEdit == "DELIVERYEDIT":
+	ApiResponse = ApiResponseFactory.JsonResponse(DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit))
+else:
+	ApiResponse = ApiResponseFactory.JsonResponse(BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,))
