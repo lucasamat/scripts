@@ -18,7 +18,7 @@ Sql = SQL()
 webclient = System.Net.WebClient()
 
 class SyncFPMQuoteAndHanaDatabase:
-    def __init__(self, Quote):
+    def __init__(self,Quote):
         self.quote = Quote
         self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = ''
         self.quote_record_id = Quote.GetGlobal("contract_quote_record_id")
@@ -77,10 +77,7 @@ class SyncFPMQuoteAndHanaDatabase:
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
-        fpm_obj.prepare_backup_table()
-        fpm_obj._insert_spare_parts()
-        fpm_obj.update_records_saqspt()
-    
+        
     def insert_records_saqspt(self):
         if self.response:
             response = self.response
@@ -289,6 +286,7 @@ class SyncFPMQuoteAndHanaDatabase:
                 col_flag=1
     
     def delete_child_records_6kw(self):
+        Trace.Write('Delete Child called!!!')
         saqtse_obj = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"'")
         pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
         pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(self.service_id)+'_TSC_FPMEXC)</ENTITLEMENT_ID>')
@@ -303,10 +301,22 @@ class SyncFPMQuoteAndHanaDatabase:
                 break
         if customer_wants_participate == 'No':
             Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
-        
-fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
-fpm_obj.pull_requestto_hana()
-fpm_obj.prepare_backup_table()
-fpm_obj._insert_spare_parts()
-fpm_obj.update_records_saqspt()
 
+fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
+try:
+	parameters['Action'] = Param.Action
+except Exception:
+	parameters['Action'] = 'Default'
+
+if parameters['Action'] == 'AddParts':
+    fpm_obj.add_parts_requestto_hana(Param.partno)
+    fpm_obj.prepare_backup_table()
+    fpm_obj._insert_spare_parts()
+    fpm_obj.update_records_saqspt()
+elif parameters['Action'] == 'Delete':
+    fpm_obj.delete_child_records_6kw()
+else:
+    fpm_obj.pull_requestto_hana()
+    fpm_obj.prepare_backup_table()
+    fpm_obj._insert_spare_parts()
+    fpm_obj.update_records_saqspt()
