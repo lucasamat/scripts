@@ -5207,26 +5207,8 @@ def GetAssembliesMaster(PerPage, PageInform, A_Keys, A_Values):
 		data_dict["WARRANTY_END_DATE"] = str(par.WARRANTY_END_DATE)
 		data_list.append(data_dict)
 
-	Hyperlink = " "
-	if	Product.GetGlobal("TreeParam") == 'Z0009' or Product.GetGlobal("TreeParentLevel0") == 'Z0009':
-		import re
-		get_entitlement_xml =SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId=Quote.GetGlobal("quote_revision_record_id"), service_id = 'Z0009' ))
-		if get_entitlement_xml:
-			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-			pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Event Based|Flex Event Based)</ENTITLEMENT_DISPLAY_VALUE>')
-			updateentXML = get_entitlement_xml.ENTITLEMENT_XML
-			for m in re.finditer(pattern_tag, updateentXML):
-				sub_string = m.group(1)
-				get_ent_id =re.findall(pattern_id,sub_string)
-				get_ent_name=re.findall(pattern_name,sub_string)
-				if get_ent_id and get_ent_name:
-					Hyperlink = "No"
-					break
-	if Hyperlink == "No":
-		hyper_link = [" "]
-	else:
-		hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
+	
+	hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
 	table_header += "<tr>"
 	table_header += (
 		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
@@ -6984,7 +6966,26 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		#data_dict["CONTRACT_END_DATE"] = ('<abbr id ="" title="' + str(par.CONTRACT_END_DATE) + '">' + str(par.CONTRACT_END_DATE) + "</abbr>")
 		data_list.append(data_dict)
 	Trace.Write('data_list--'+str(data_list))
-	hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
+	Hyperlink = " "
+	if	Product.GetGlobal("TreeParam") == 'Z0009' or Product.GetGlobal("TreeParentLevel0") == 'Z0009':
+		import re
+		get_entitlement_xml =SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId=Quote.GetGlobal("quote_revision_record_id"), service_id = 'Z0009' ))
+		if get_entitlement_xml:
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Event Based|Flex Event Based)</ENTITLEMENT_DISPLAY_VALUE>')
+			updateentXML = get_entitlement_xml.ENTITLEMENT_XML
+			for m in re.finditer(pattern_tag, updateentXML):
+				sub_string = m.group(1)
+				get_ent_id =re.findall(pattern_id,sub_string)
+				get_ent_name=re.findall(pattern_name,sub_string)
+				if get_ent_id and get_ent_name:
+					Hyperlink = "No"
+					break
+	if Hyperlink == "No":
+		hyper_link = [" "]
+	else:
+		hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
 	table_header += "<tr>"
 	table_header += (
 		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
