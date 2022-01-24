@@ -427,6 +427,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		# Trace.Write("data_dict||data_dict||data_dict"+str(data_dict))
 	Hyperlink = " "
 	if	Product.GetGlobal("TreeParam") == 'Z0009' or Product.GetGlobal("TreeParentLevel0") == 'Z0009':
+		Trace.Write("inside the if condition ")
 		import re
 		get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId=Quote.GetGlobal("quote_revision_record_id"), service_id = 'Z0009' ))
 		if get_entitlement_xml:
