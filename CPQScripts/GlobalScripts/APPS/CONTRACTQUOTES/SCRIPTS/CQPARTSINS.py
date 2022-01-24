@@ -310,7 +310,7 @@ class SyncFPMQuoteAndHanaDatabase:
         if customer_wants_participate == 'No':
             Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
-Log.Info(str(Param))
+Log.Info(str(Param.Response))
 parameters={}
 try:
 	parameters['Action'] = Param.Action
