@@ -95,9 +95,16 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 			return 'not saved',savebill
 
 
-#Headerlist = list(Param.gethedaer)
-GET_DICT =list(Param.billdict)
-totalyear = Param.totalyear
-getedited_amt = Param.getedited_amt
+try:
+    GET_DICT =list(Param.billdict)
+    totalyear = Param.totalyear
+    getedited_amt = Param.getedited_amt
+except:
+    GET_DICT = []
+    totalyear = "" 
+    getedited_amt = ""
+#GET_DICT =list(Param.billdict)
+#totalyear = Param.totalyear
+#getedited_amt = Param.getedited_amt
 #Trace.Write(str(totalyear)+"--GET_DICT--------------"+str(GET_DICT))
 ApiResponse = ApiResponseFactory.JsonResponse(BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,))
