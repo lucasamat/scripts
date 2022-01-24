@@ -3456,9 +3456,9 @@ class TreeView:
 		entitlement_obj = SqlHelper.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
 		import re
 		quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-		pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
-		pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>PMSA Flex</ENTITLEMENT_DISPLAY_VALUE>')
-		pattern_new_parts_only = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event based</ENTITLEMENT_DISPLAY_VALUE>')
+		pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+		pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Flex Event Based</ENTITLEMENT_DISPLAY_VALUE>')
+		pattern_new_parts_only = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event Based</ENTITLEMENT_DISPLAY_VALUE>')
 		#Trace.Write("PMSA----->"+str(pattern_new_parts_only_yes))
 		entitlement_xml = entitlement_obj.ENTITLEMENT_XML
 		for m in re.finditer(quote_item_tag, entitlement_xml):
