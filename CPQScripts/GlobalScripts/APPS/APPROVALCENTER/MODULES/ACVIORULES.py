@@ -63,9 +63,7 @@ class ViolationConditions:
                 return key
         return True
 
-    def DeleteforApprovalHeaderTable(self, RecordId, chainId, ChainStep, ObjectName):
-        Trace.Write("gggdelete")
-        Log.Info("Entered DeleteforApprovalHeaderTable---delete")
+    def DeleteforApprovalHeaderTable(self, RecordId, chainId, ChainStep, ObjectName):        
         """Delete approval header."""
         ApprovalCombinationID = str(RecordId)
         """getApprovalId = Sql.GetFirst(
@@ -116,8 +114,7 @@ class ViolationConditions:
         )
         return True
 
-    def ViolationRuleForApprovals(self, CurrentId, ObjectName, chainid):
-        Log.Info("Entered ViolationRuleForApprovals---insert ACAPMA")
+    def ViolationRuleForApprovals(self, CurrentId, ObjectName, chainid):        
         """Approval violations."""
         ApprovalCombinationID = approval_id_auto = ""
         GetObjHPromaryKey = Sql.GetFirst("SELECT RECORD_NAME,RECORD_ID FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
@@ -131,7 +128,7 @@ class ViolationConditions:
         RevisionId = str(GetQuoteId.QTEREV_ID)
         ApprovalCombinationID = str(CurrentId)
         ApprovalCombo = str(ApprovalCombinationID) + "-" + str(chainid)
-        Log.Info("Approval Combo----->"+str(ApprovalCombo))
+        
         Getlatestauto = Sql.GetFirst(
             "SELECT APPROVAL_ID FROM ACAPMA (NOLOCK) WHERE APPROVAL_ID LIKE '%"
             + str(ApprovalCombo)
@@ -207,8 +204,7 @@ class ViolationConditions:
             QuoteId=str(QuoteId),
             RevisionId=str(RevisionId),
             recid=GetObjHPromaryKey.RECORD_ID
-        )
-        Log.Info("query statement acapma ---"+str(insertQueryStatement))
+        )        
         return insertQueryStatement
 
     def ApprovalTranscationDataInsert(self, ApprovalChainRecordId=None,QuoteId=None,RoundKey=None,Round=None):
@@ -470,14 +466,12 @@ class ViolationConditions:
         """Param: RecordId -> Refere Curresponding object auto number key."""
         """Param: ObjectName -> Refere Curresponding object Name."""
         """Param: method -> Refere Only for Recall Option."""
-        rec_name = ""
-        Log.Info("Entered Insert Action")
+        rec_name = ""        
         try:
             QuoteId = ""
             if str(ObjectName).strip() == "SAQTRV":
                 GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
-                QuoteId = GetQuoteId.QUOTE_ID
-            Log.Info("Quote ID = "+str(QuoteId))
+                QuoteId = GetQuoteId.QUOTE_ID            
             Vio_Select_Query = Vio_where_conditon = ""
             CHSqlObjs = Sql.GetList(
                 "SELECT APPROVAL_CHAIN_RECORD_ID,APRCHN_ID FROM ACAPCH (NOLOCK) WHERE APROBJ_RECORD_ID = '"
@@ -489,8 +483,7 @@ class ViolationConditions:
                     "SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"
                     + str(val.APPROVAL_CHAIN_RECORD_ID)
                     + "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER"
-                )
-                Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER")
+                )                
                 for result in CSSqlObjs:
                     GetObjName = Sql.GetFirst(
                         "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_RECORD_ID) + "'"
@@ -533,8 +526,7 @@ class ViolationConditions:
                     else:
                         Select_Query = (
                             "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE (" + str(result.WHERE_CONDITION_01) + ")"
-                        )
-                        Log.Info("ACVIORULES--->"+str(Select_Query))
+                        )                        
                         
                     TargeobjRelation = Sql.GetFirst(
                         "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
@@ -558,20 +550,14 @@ class ViolationConditions:
                     if flag == 1:
                         #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
                         #Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
-                        SqlQuery = "Val"
-                        Log.Info("if flag")
+                        SqlQuery = "Val"                        
                     elif flag == 2:
                         Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                        Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
-                        SqlQuery = None
-                        Log.Info("elif flag")
+                        SqlQuery = None                        
                     else:
-                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                        Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
+                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "                        
                         SqlQuery = Sql.GetFirst(Select_Query)
-                        Log.Info("else flag")
-                    if SqlQuery:
-                        Log.Info("Inside the approval heaeder "+str(method)+" -index- "+str(index))
+                    if SqlQuery:                        
                         '"+str(Objh_Id)+"'
                         where_conditon = (
                             " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
@@ -581,8 +567,7 @@ class ViolationConditions:
                             + "' "
                         )
                         if method is None:
-                            if index == 0:
-                                Log.Info(" ACVIORULES Inside the delete cal")
+                            if index == 0:                                
                                 Rundelete = self.DeleteforApprovalHeaderTable(
                                     str(RecordId),
                                     str(val.APPROVAL_CHAIN_RECORD_ID),
@@ -590,14 +575,12 @@ class ViolationConditions:
                                     str(ObjectName),
                                 )
                             where_conditon += "AND ACACSS.APPROVALSTATUS = 'APPROVAL REQUIRED' "
-                        else:
-                            Trace.Write("method@@111")
+                        else:                            
                             where_conditon += "AND ACACSS.APPROVALSTATUS = 'REQUESTED' "
 
                         where_conditon += " ORDER BY ACACST.APRCHNSTP_NUMBER"
                         rulebody = self.ViolationRuleForApprovals(str(RecordId), str(ObjectName), str(val.APRCHN_ID))
-                        Rulebodywithcondition = rulebody + where_conditon
-                        Log.Info("ACAPMA=====>>>>>>>>Rulebodywithcondition "+str(Rulebodywithcondition))
+                        Rulebodywithcondition = rulebody + where_conditon                        
                         a = Sql.RunQuery(Rulebodywithcondition)
 
                         # Approval Rounding - Start
@@ -605,11 +588,11 @@ class ViolationConditions:
                         roundd = 1
                         if QuoteId!= '':
                             round_obj = Sql.GetFirst("SELECT TOP 1 APPROVAL_ROUND FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' AND APRCHN_RECORD_ID = '{}' ORDER BY CpqTableEntryId DESC".format(QuoteId,val.APPROVAL_CHAIN_RECORD_ID))
-                            Log.Info("SELECT TOP 1 APPROVAL_ROUND FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' ORDER BY CpqTableEntryId DESC".format(QuoteId))
+                            
                             if round_obj:
                                 roundd = int(round_obj.APPROVAL_ROUND) + 1
                         QueryStatement = """INSERT INTO ACACHR (APPROVAL_CHAIN_ROUND_RECORD_ID,TOTAL_CHNSTP,TOTAL_APRTRX,COMPLETED_DATE,COMPLETEDBY_RECORD_ID,COMPLETED_BY,APPROVAL_ROUND,APPROVAL_RECORD_ID,APPROVAL_ID,APRCHN_RECORD_ID,APRCHN_NAME,APRCHN_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES ('{primarykey}',0,0,null,'','',{Round},'','','','','','{UserName}','{datetime_value}','{UserId}','{datetime_value}')""".format(primarykey = primarykey,UserId=self.Get_UserID, UserName=self.Get_UserNAME,Round=roundd,datetime_value=self.datetime_value, Name=self.Get_NAME)
-                        Log.Info("INSERT ACACHR---"+str(QueryStatement))  
+                        
                         Sql.RunQuery(QueryStatement)
                         # Approval Rounding - End
 
@@ -622,15 +605,7 @@ class ViolationConditions:
                             + "' AND WHERE_CONDITION_01 <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
                             + str(val.APPROVAL_CHAIN_RECORD_ID)
                             + "' "
-                        )
-                        Log.Info("CheckviolationRule2-----SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
-                            + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
-                            + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
-                            + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
-                            + str(Objh_Id)
-                            + "' AND WHERE_CONDITION_01 <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
-                            + str(val.APPROVAL_CHAIN_RECORD_ID)
-                            + "' ")
+                        )                        
                         if CheckViolaionRule2:
                             for result in CheckViolaionRule2:
                                 GetObjName = Sql.GetFirst(
@@ -676,8 +651,6 @@ class ViolationConditions:
                                 Trace.Write("===============" + str(Select_Query))
                                 SqlQuery = Sql.GetFirst(Select_Query)
                                 if SqlQuery:
-                                    Log.Info("@626Inside the approval Transcation")
-
                                     where_conditon = (
                                         " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
                                         + str(result.APPROVAL_CHAIN_RECORD_ID)
@@ -715,7 +688,7 @@ class ViolationConditions:
                                     
                                     Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=primarykey,Round=roundd)
                                     Rulebodywithcondition = Transcationrulebody + where_conditon
-                                    Log.Info("ACAPTX Rulebodywithcondition ===> "+str(Rulebodywithcondition))
+                                    
                                     b = Sql.RunQuery(Rulebodywithcondition)
                                     #UPDATE ACAPTX APPROVAL STATUS OF SECOND CHAIN DURING RECALL
                                     #if flag == 1:
@@ -789,15 +762,12 @@ class ViolationConditions:
 										Transcationrulebody = self.ApprovalTranscationDataInsert()
 										Rulebodywithcondition = Transcationrulebody +where_conditon
 										b= Sql.RunQuery(Rulebodywithcondition)"""
-                        if QuoteId != "":
-                            Log.Info("Entering Round")
+                        if QuoteId != "":                            
                             transaction_count_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
                             chnstp_count_obj = Sql.GetFirst("SELECT count(distinct APRCHNSTP_ID) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
                             UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.TOTAL_APRTRX = {total},ACACHR.TOTAL_CHNSTP={totalchnstp},ACACHR.APRCHN_NAME=ACAPCH.APRCHN_NAME,ACACHR.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID,ACACHR.APPROVAL_ID = ACAPTX.APPROVAL_ID,ACACHR.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID,ACACHR.APRCHN_ID = ACAPTX.APRCHN_ID FROM ACAPTX INNER JOIN ACAPCH (NOLOCK) ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID INNER JOIN ACACHR ON ACAPTX.APRCHNRND_RECORD_ID = ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID WHERE ACAPTX.APRTRXOBJ_ID ='{quoteId}' AND ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID='{primarykey}'""".format(quoteId=QuoteId,primarykey=primarykey,total=transaction_count_obj.cnt,totalchnstp=chnstp_count_obj.cnt)
-                            Log.Info(UPDATE_ACACHR)
-                            Sql.RunQuery(UPDATE_ACACHR)               
-                    else:
-                        Log.Info("else @758")
+                            
+                            Sql.RunQuery(UPDATE_ACACHR)
         except Exception as e:
             Log.Info("EXCEPTION ACVIORULES!!!!---->>>"+str(e))
             

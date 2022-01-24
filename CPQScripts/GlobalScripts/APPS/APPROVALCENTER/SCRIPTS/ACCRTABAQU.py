@@ -1509,7 +1509,6 @@ except Exception, e:
 
 """Object Initialization by Factory Method."""
 objDef = eval(violationruleInsert.Factory(Action))(CurrentRecordId=CurrentRecordId)
-Log.Info("inside the Approval center script ")
 if Action == "PoductDetails":
     Trace.Write(str(Action))
     RecordId = Param.RecoedId
