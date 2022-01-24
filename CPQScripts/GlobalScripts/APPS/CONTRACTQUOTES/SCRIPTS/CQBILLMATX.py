@@ -7,19 +7,14 @@
 # ==========================================================================================================================================
 import re
 import Webcom.Configurator.Scripting.Test.TestProduct
-import SYTABACTIN as Table
-import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 import datetime
-from datetime import timedelta , date
 import sys
 import System.Net
-import CQPARTIFLW
+
 Param = Param 
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
-
-
 input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
 Qt_rec_id = input_data[0]
 REVISION_rec_ID = input_data[-1]
@@ -30,28 +25,20 @@ try:
 	#contract_quote_rec_id = Param.Quote_Record_ID
 except:
 	contract_quote_rec_id = ''
-
 try:
-	quote_revision_rec_id = input_data[-1]
-	
+	quote_revision_rec_id = input_data[-1]	
 except:
 	quote_revision_rec_id =  ""
-
 try:
-	current_prod = Product.Name
-	
+	current_prod = Product.Name	
 except:
 	current_prod = "Sales"
 try:
 	TabName = TestProduct.CurrentTab
 except:
 	TabName = "Quotes"
-
-
 user_id = str(User.Id)
 user_name = str(User.UserName)
-
-
 
 #A055S000P01-3924-billing matrix creation start
 def _insert_billing_matrix():
@@ -116,8 +103,7 @@ def _insert_billing_matrix():
 	return True
 
 def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date ='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
-	Trace.Write('104----')
-	get_val =get_billing_cycle = get_billing_type = ''
+	get_billing_cycle = get_billing_type = ''
 	#Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
 	Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
 	for data,val in get_billling_data_dict.items():
@@ -127,40 +113,15 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 			get_billing_type =val
 	#Trace.Write('get_billing_cycle---'+str(get_billing_cycle))
 	Trace.Write(str(service_id)+'----billing_type---'+str(get_billing_type)+'--CYCLE---'+str(get_billing_cycle))
-	if get_billing_cycle == "Monthly":
-		year = int(amount_column.split('_')[-1])
-		remaining_months = (total_months + 1) - (year*12)		
-		divide_by = 12
-		
-		if remaining_months < 0:
-			divide_by = 12 + remaining_months
+	if get_billing_cycle == "Monthly":				
 		get_val =12
-	elif str(get_billing_cycle).upper() == "QUARTERLY":
-		year = int(amount_column.split('_')[-1])
-		remaining_months = (total_months) - (year*12)		
-		divide_by = 12
-		
-		if remaining_months < 0:
-			divide_by = 12 + remaining_months
+	elif str(get_billing_cycle).upper() == "QUARTERLY":			
 		get_val = 4
-	elif str(get_billing_cycle).upper() == "ANNUALLY":
-		year = int(amount_column.split('_')[-1])
-		remaining_months = (total_months + 1) - (year*12)		
-		divide_by = 12
-		
-		if remaining_months < 0:
-			divide_by = 12 + remaining_months
+	elif str(get_billing_cycle).upper() == "ANNUALLY":				
 		get_val = 1
-	else:
-		year = int(amount_column.split('_')[-1])
-		remaining_months = (total_months + 1) - (year*12)		
-		divide_by = 12
-		
-		if remaining_months < 0:
-			divide_by = 12 + remaining_months
+	else:				
 		get_val =12
-	#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5
-	object_name = join_condition = ''
+	#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5	
 	if str(get_billing_type).upper() == "FIXED" and get_billing_type != '':
 		#join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK"
 		#object_name = 'SAQSCO'
@@ -216,7 +177,6 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
 		Sql.RunQuery(""" INSERT SAQIBP (
-
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
 					QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
 					BILLING_DATE, BILLING_YEAR,
@@ -263,8 +223,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					BillingDate=billing_date,
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
-	else:
-		
+	else:		
 		Sql.RunQuery("""INSERT SAQIBP (
 					
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
@@ -313,8 +272,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					BillingDate=billing_date,
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
-		Sql.RunQuery("""INSERT SAQIBP (
-					
+		Sql.RunQuery("""INSERT SAQIBP (					
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
 					QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
 					BILLING_DATE, BILLING_YEAR,
@@ -362,11 +320,12 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
 	if service_id == 'Z0116':
-		update_annual_bill_amt  = Sql.GetFirst("SELECT SUM(YEAR_1) as YEAR1 from SAQRIT where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'  and SERVICE_ID = 'Z0116' GROUP BY SERVICE_ID,GREENBOOK".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id))
+		update_annual_bill_amt  = Sql.GetFirst("SELECT SUM(YEAR_1) as YEAR1 from SAQRIT (NOLOCK) where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'  and SERVICE_ID = 'Z0116' GROUP BY SERVICE_ID,GREENBOOK".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id))
 		if update_annual_bill_amt:
 			update_credit_amt = "UPDATE SAQIBP SET ANNUAL_BILLING_AMOUNT ={amt} where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'  and SERVICE_ID = 'Z0116' GROUP BY SERVICE_ID,GREENBOOK ".format(amt=update_annual_bill_amt.YEAR1,contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id)
 			Sql.RunQuery(update_credit_amt)
 	return True
+
 def _quote_items_greenbook_summary_insert():	
 	greenbook_summary_last_line_no = 0
 	quote_item_summary_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQIGS (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
@@ -436,7 +395,7 @@ def billingmatrix_create():
 	get_billling_data_dict = {}
 	contract_start_date = quotedetails.CONTRACT_VALID_FROM
 	contract_end_date = quotedetails.CONTRACT_VALID_TO
-	get_ent_val = get_ent_bill_type = get_ent_billing_type_value = get_ent_bill_cycle = get_billing_type = ''
+	get_ent_val = get_ent_billing_type_value = get_ent_bill_cycle = get_billing_type = ''
 	if contract_start_date and contract_end_date and billing_plan_obj:
 		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
 		#Trace.Write('4739---------4744------')
@@ -475,7 +434,7 @@ def billingmatrix_create():
 							# 	#get_ent_bill_cycle = get_ent_val
 							# else:
 							# 	get_ent_billing_type_value = str(get_ent_val)
-				Log.Info(str(get_billing_type)+'--475--'+str(get_ent_bill_cycle))
+				#Log.Info(str(get_billing_type)+'--475--'+str(get_ent_bill_cycle))
 				billing_month_end = 0
 				entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
 				if str(get_ent_bill_cycle).upper() == "MONTHLY":
