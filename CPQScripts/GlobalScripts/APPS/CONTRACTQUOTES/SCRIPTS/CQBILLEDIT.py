@@ -6,14 +6,9 @@
 # ==========================================================================================================================================
 
 import Webcom.Configurator.Scripting.Test.TestProduct
-Trace.Write('BULK EDIT SAVE BILLING MATRIX')
-import math
-import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 import re
 
-import datetime
-from datetime import date
 #gettotalannualamt = ""
 SubTab = getdatestart = getmonthavle = getmonthavl = ""
 Sql = SQL()
@@ -27,13 +22,12 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 	Trace.Write(str(totalyear)+'---BULK EDIT SAVE BILLING MATRIX--inside function---GET_DICT----'+str(GET_DICT))
 	for val in GET_DICT:
 		value = val.split('-')
-		getmonthavl = value[1].replace("/",'-').strip()
-		valuedate = value[1][0:3]
+		getmonthavl = value[1].replace("/",'-').strip()		
 		getamtval = re.findall(r"\d",str(totalyear))
 		SubTab = getamtval[0]
 		getannual_amt = value[3]
 		Trace.Write('gettotalamount-----'+str(getannual_amt))
-		getfinalmonth = 'MONTH_'+str(int(valuedate)).strip()
+		
 		if float(getannual_amt.replace(',','')) > float(getedited_amt):
 			sqlforupdatePT = "UPDATE SAQIBP SET BILLING_VALUE = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
 			getmonthvalue = Sql.GetFirst("select * from QT__Billing_Matrix_Header where QUOTE_RECORD_ID ='{CT}' and YEAR  = {BL}".format(BL =int(SubTab),CT = str(ContractRecordId)))
