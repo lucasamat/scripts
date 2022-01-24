@@ -58,8 +58,8 @@ class SyncFPMQuoteAndHanaDatabase:
         response=response.replace("null",'""')
         response=eval(response)
         auth="Bearer"+' '+str(response['access_token'])
-        #requestdata = '{"soldtoParty":"'+str(self.account_info['SOLD TO'])+'","shiptoparty":"'+str(self.account_info['SHIP TO'])+'","salesOrg":"'+str(self.sales_org_id)+'","priceList":"","priceGroup":"","validTo":"'+str(self.cvt)+'","validFrom":"'+str(self.cvf)+'",	"participatewith6k":"Yes","customParticipaton":"Yes"}'
-        requestdata = '{"soldtoParty":"10002301","shiptoparty":"10002428","salesOrg":"2070","priceList":"","priceGroup":"","validTo":"20220616","validFrom":"20210518",	"participatewith6k":"Yes","customParticipaton":"Yes","partNumber":["0190-14140","0190-14140","0010-22985","0190-53753"]}'
+        requestdata = '{"soldtoParty":"'+str(self.account_info['SOLD TO'])+'","shiptoparty":"'+str(self.account_info['SHIP TO'])+'","salesOrg":"'+str(self.sales_org_id)+'","priceList":"","priceGroup":"","validTo":"'+str(self.cvt)+'","validFrom":"'+str(self.cvf)+'",	"participatewith6k":"Yes","customParticipaton":"Yes"}'
+        #requestdata = '{"soldtoParty":"10002301","shiptoparty":"10002428","salesOrg":"2070","priceList":"","priceGroup":"","validTo":"20220616","validFrom":"20210518",	"participatewith6k":"Yes","customParticipaton":"Yes","partNumber":["0190-14140","0190-14140","0010-22985","0190-53753"]}'
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
@@ -276,7 +276,11 @@ class SyncFPMQuoteAndHanaDatabase:
                 for ele in re.finditer(pattern2,rec):
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
-                    temp_value +=','+ele.group(2) if ele.group(2) !='' else None
+                    if str(ele.group(1)) == 'PART_DESCRIPTION':
+                        temp_value +=','+ele.group(2) if ele.group(2) !='' else None
+                        temp_value = re.sub(r"'|\\","",temp_value)
+                    else:
+                        temp_value +=','+ele.group(2) if ele.group(2) !='' else None
                 #if col_flag == 0:
                 #	self.columns +=')'
                 temp_value +=')'
