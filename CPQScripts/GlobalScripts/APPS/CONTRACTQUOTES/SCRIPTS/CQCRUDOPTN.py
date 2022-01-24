@@ -15,6 +15,7 @@ import SYCNGEGUID as CPQID
 import CQPARTIFLW
 import CQADDONPRD
 from SYDATABASE import SQL
+from CQPARTSINS import SyncFPMQuoteAndHanaDatabase		
 #from datetime import datetime
 #from datetime import datetime
 #import time
@@ -1663,8 +1664,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 					part_nos.append(get_part.SAP_PART_NUMBER)
 				Trace.Write('###PART_NOS-->'+str(part_nos))
 				Trace.Write('###values-->'+str(self.values))
-				from CQPARTSINS import SyncFPMQuoteAndHanaDatabase
-				fpm_call = SyncFPMQuoteAndHanaDatabase()
+				fpm_call = SyncFPMQuoteAndHanaDatabase(Quote)
 				fpm_call.add_parts_requestto_hana(part_nos)
 			if self.action_type == "ADD_SPARE_PART":
 				parts_value = 0
