@@ -310,7 +310,7 @@ class SyncFPMQuoteAndHanaDatabase:
         if customer_wants_participate == 'No':
             Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
-fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
+Log.Info(str(Param))
 parameters={}
 try:
 	parameters['Action'] = Param.Action
@@ -318,13 +318,16 @@ except Exception:
 	parameters['Action'] = 'Default'
 
 if parameters['Action'] == 'AddParts':
+    fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
     fpm_obj.add_parts_requestto_hana(Param.partno)
     fpm_obj.prepare_backup_table()
     fpm_obj._insert_spare_parts()
     fpm_obj.update_records_saqspt()
 elif parameters['Action'] == 'Delete':
+    fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
     fpm_obj.delete_child_records_6kw()
 else:
+    fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
     fpm_obj.pull_requestto_hana()
     fpm_obj.prepare_backup_table()
     fpm_obj._insert_spare_parts()
