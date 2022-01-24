@@ -181,7 +181,12 @@ class EntitlementView():
 			TableObj = Sql.GetFirst("select * from SAQSCE (NOLOCK) where QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'")
 			ObjectName = "SAQSCE"
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
-					
+
+		elif EntitlementType == "EVENT":
+			ProductPartnumber = self.treetopsuperparentparam
+			TableObj = Sql.GetFirst("select * from SAQGPE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(self.treesuperparentparam)+"' AND GOT_CODE = '"+str(self.treeparentparam)+"' AND PM_ID = '"+str(self.treeparam)+"' AND SERVICE_ID = '"+str(self.treetopsuperparentparam)+"' ")
+			ObjectName = "SAQGPE"
+			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(self.treesuperparentparam)+"' AND GOT_CODE = '"+str(self.treeparentparam)+"' AND PM_ID = '"+str(self.treeparam)+"' AND SERVICE_ID = '"+str(self.treetopsuperparentparam)+"'"	
 
 		elif EntitlementType == "ITEMGREENBOOK":
 			ObjectName = "SAQSGE"
@@ -1799,7 +1804,10 @@ elif ObjectName == "SAQTSE":
 	#Trace.Write("TOOLS")
 	SectionObjectName = ObjectName
 	EntitlementType = "TOOLS"
-	
+elif ObjectName == "SAQGPM":	
+	#Trace.Write("TOOLS")
+	SectionObjectName = ObjectName
+	EntitlementType = "EVENT"
 # elif ObjectName == "CTCTSE":	
 # 	SectionObjectName = ObjectName
 # 	EntitlementType = "TOOLS"
