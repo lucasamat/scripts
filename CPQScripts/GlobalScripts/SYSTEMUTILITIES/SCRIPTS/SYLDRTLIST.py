@@ -5219,7 +5219,7 @@ class SYLDRTLIST:
 		Wh_API_NAME = ""
 		Wh_OBJECT_NAME = ""
 		Query_Obj =  ""
-		billing_date_column = ''
+		billing_date_column = delivery_date_column = ''
 		if obj_obj is not None:
 			Columns = obj_obj.COLUMNS
 			Obj_Name = obj_obj.OBJ_REC_ID
@@ -5442,6 +5442,9 @@ class SYLDRTLIST:
 						if str(RECORD_ID) == "SYOBJR-00007" and ins.API_NAME == 'BILLING_DATE':
 							text = "CONVERT(VARCHAR(10),FORMAT(" + str(text) + ",'MM-dd-yyyy'),101) AS [" + str(text) + "]"
 							texts = texts + "," + str(text)
+						elif str(RECORD_ID) == "SYOBJR-34575" and ins.API_NAME == 'DELIVERY_SCHED_DATE':
+							text = "CONVERT(VARCHAR(10),FORMAT(" + str(text) + ",'MM-dd-yyyy'),101) AS [" + str(text) + "]"
+							texts = texts + "," + str(text)
 						elif texts != "":
 							text = "CONVERT(VARCHAR(10)," + str(text) + ",101) AS [" + str(text) + "]"
 							texts = texts + "," + str(text)
@@ -5458,6 +5461,9 @@ class SYLDRTLIST:
 			if billing_date_column:
 				column_before_pivot_change = col
 				col += ","+ ",".join(billing_date_column)
+			if delivery_date_column:
+				column_before_delivery_pivot_change = col
+				col += ","+ ",".join(delivery_date_column)
 			select_obj_str = col
 			Trace.Write('@5221, Select obj str-->'+str(select_obj_str))
 			edit_field = []
