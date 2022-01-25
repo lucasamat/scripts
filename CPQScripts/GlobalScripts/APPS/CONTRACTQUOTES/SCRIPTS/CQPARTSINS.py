@@ -21,8 +21,14 @@ class SyncFPMQuoteAndHanaDatabase:
     def __init__(self,Quote):
         self.quote = Quote
         self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = ''
-        self.quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-        self.quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
+        try:
+            self.quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+            self.quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
+        except:
+            saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID from SAQTRV where QUOTE_ID = '"+str(self.QuoteID)+"'")
+            self.quote_record_id = saqtrv_obj.QUOTE_RECORD_ID
+            self.quote_revision_id = saqtrv_obj.QUOTE_REVISION_RECORD_ID
+            
         self.datetime_value = datetime.datetime.now()
         self.account_info = {}
         self.fetch_quotebasic_info()
