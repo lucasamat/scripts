@@ -110,23 +110,44 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 + str(role_code_id)
                 +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
             )
-            Trace.Write("requestdata"+str(requestdata)) 
+            Trace.Write("requestdata"+str(requestdata))
+            LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='CPQ_TO_C4C_WRITEBACK'")
+            LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
+            if LOGIN_CREDENTIALS is not None:
+                Login_Username = str(LOGIN_QUERY.Username)
+                Login_Password = str(LOGIN_QUERY.Password)
+                URL = str(LOGIN_CREDENTIALS.URL)
+                authorization = Login_Username + ":" + Login_Password
+                from System.Text.Encoding import UTF8
+
+                binaryAuthorization = UTF8.GetBytes(authorization)
+                from System import Convert
+
+                authorization = Convert.ToBase64String(binaryAuthorization)
+                authorization = "Basic " + authorization
+                webclient = System.Net.WebClient()
+                webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
+                webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
+                response = webclient.UploadString(URL, requestdata) 
     
-    LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='CPQ_TO_C4C_WRITEBACK'")
-    LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
-    if LOGIN_CREDENTIALS is not None:
-        Login_Username = str(LOGIN_QUERY.Username)
-        Login_Password = str(LOGIN_QUERY.Password)
-        URL = str(LOGIN_CREDENTIALS.URL)
-        authorization = Login_Username + ":" + Login_Password
-        from System.Text.Encoding import UTF8
 
-        binaryAuthorization = UTF8.GetBytes(authorization)
-        from System import Convert
 
-        authorization = Convert.ToBase64String(binaryAuthorization)
-        authorization = "Basic " + authorization
-        webclient = System.Net.WebClient()
-        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
-        response = webclient.UploadString(URL, requestdata)
+    if writeback != "approver_list":
+        LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='CPQ_TO_C4C_WRITEBACK'")
+        LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
+        if LOGIN_CREDENTIALS is not None:
+            Login_Username = str(LOGIN_QUERY.Username)
+            Login_Password = str(LOGIN_QUERY.Password)
+            URL = str(LOGIN_CREDENTIALS.URL)
+            authorization = Login_Username + ":" + Login_Password
+            from System.Text.Encoding import UTF8
+
+            binaryAuthorization = UTF8.GetBytes(authorization)
+            from System import Convert
+
+            authorization = Convert.ToBase64String(binaryAuthorization)
+            authorization = "Basic " + authorization
+            webclient = System.Net.WebClient()
+            webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
+            webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
+            response = webclient.UploadString(URL, requestdata)
