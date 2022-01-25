@@ -164,9 +164,7 @@ class ContractQuoteSummaryUpdate:
 	def CalculatePlusDiscount(self):
 		Trace.Write("Plus")
 		decimal_discount = float(self.discount) / 100.0
-		Sql.RunQuery("""UPDATE SAQICO SET										
-										SALES_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) + (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),									
-										DISCOUNT_AMOUNT_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0)  - ISNULL(SALES_PRICE_INGL_CURR,0),
+		Sql.RunQuery("""UPDATE SAQICO SET
 										NET_PRICE = '',
 										NET_PRICE_INGL_CURR = '',
 									FROM SAQICO (NOLOCK)                                     
