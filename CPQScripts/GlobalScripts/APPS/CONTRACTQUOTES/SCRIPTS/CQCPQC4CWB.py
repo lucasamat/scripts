@@ -144,17 +144,9 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
             requestdata = (
                 '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
                 + str(writeback)
-                + "</writeback><contract_quote_id>"
-                +str(contract_quote_id.QUOTE_ID)
-                +"</contract_quote_id><approver_list>"
-                + str(approver)
-                +"</approver_list><approver_step_id>"
-				+ str(approver_step)
-				+"</approver_step_id><c4c_object_id>"
+                + "</writeback><c4c_object_id>"
 				+ str(c4c_object_id)
-				+"</c4c_object_id><role_code_id>"
-                + str(role_code_id)
-                +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
+				+"</c4c_object_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
             )
             Trace.Write("requestdata"+str(requestdata))
             LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='CPQ_TO_C4C_WRITEBACK'")
