@@ -99,6 +99,8 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		#getannual_amt = value[3]
 		Trace.Write('---delivery_date--'+str(delivery_date)+'--spare_rc---'+str(spare_rc))
 		Trace.Write('---delivery_quantity--'+str(delivery_quantity))
+		Update_delivery_details = "UPDATE SAQSPD SET QUANTITY={qty} where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE = '{del_sch_date}'".format(qty= value[2].replace(",",""),qt_rec_id = str(ContractRecordId),rev_spare_rec_id=spare_rc,del_sch_date = val.split('#')[1], revision_rec_id = quote_revision_record_id,qty = val.split('#')[2])
+		Update_delivery_details_query = Sql.RunQuery(Update_delivery_details)
 	return 'save','savebill'
 try:
 	GET_DICT =list(Param.billdict)
