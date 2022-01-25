@@ -28,7 +28,7 @@ login_is_admin = User.IsAdmin
 
 def insert_items_billing_plan(contract_quote_record_id=None, total_months=1, billing_date=''):     
 	Sql.RunQuery("""INSERT SAQIBP (
-					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
+					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_TYPE, 
 					LINE, QUOTE_ID, QTEITM_RECORD_ID, 
 					QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,
 					BILLING_DATE, BILLING_YEAR,
@@ -39,8 +39,6 @@ def insert_items_billing_plan(contract_quote_record_id=None, total_months=1, bil
 				) 
 				SELECT 
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
-					SAQICO.WARRANTY_END_DATE as BILLING_END_DATE,
-					SAQICO.WARRANTY_START_DATE as BILLING_START_DATE,
 					SAQTSE.ENTITLEMENT_VALUE_CODE as BILLING_TYPE,
 					SAQICO.LINE AS LINE,                                       
 					SAQICO.QUOTE_ID,
