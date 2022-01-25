@@ -1543,8 +1543,9 @@ class EntitlementView():
 					sefl_api = sefl.API_FIELD_NAME
 					
 					if col_name:
+						Trace.Write('current_obj_value-----'+str(sefl_api))
 						current_obj_value = str(eval("col_name." + str(sefl_api)))
-						#Trace.Write('current_obj_value---'+str(current_obj_value)+'--'+str(sefl_api))
+						
 						if sefl_api in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified") and current_obj_value:
 							try:
 								current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
