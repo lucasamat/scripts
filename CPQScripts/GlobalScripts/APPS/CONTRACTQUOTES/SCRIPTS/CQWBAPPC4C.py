@@ -20,7 +20,9 @@ if 'Param' in globals():
         object_id = approval_object_data[0]
         quote_id = str(approval_object_data[-1]).upper()
         approver_id = str(approval_object_data[-2]).upper()
-
+        Log.Info("object_id--"+str(object_id))
+        Log.Info("quote_id--"+str(quote_id))
+        Log.Info("approver_id--"+str(approver_id))
         
     else:
         Log.Info("else condition")
