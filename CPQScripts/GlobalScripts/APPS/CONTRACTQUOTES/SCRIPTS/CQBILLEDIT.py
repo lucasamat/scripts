@@ -96,7 +96,8 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		delivery_date = val.split('#')[1]
 		delivery_quantity = val.split('#')[2]
 		get_delivery_list.append(delivery_date)
-		get_delivery_recs = tuple(get_delivery_list)
+		 
+		get_delivery_recs = str(tuple(get_delivery_list)).replace(',)',')')
 		#SubTab = getamtval[0]
 		#getannual_amt = value[3]
 		Trace.Write('---delivery_date--'+str(delivery_date)+'--spare_rc---'+str(spare_rc))
