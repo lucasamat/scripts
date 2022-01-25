@@ -21,9 +21,12 @@ g_total = 0
 
 get_ohold_pricing_status =get_delivery_nodes =  ''
 #suppress delivery node for other quote
-get_delivery_nodes = Sql.GetFirst("SELECT SERVICE_ID from SAQTSV where QUOTE_ID ='{}' and SERVICE_ID='Z0108'" .format(Quote.CompositeNumber))
-if get_delivery_nodes:
-	get_delivery_nodes = get_delivery_nodes.SERVICE_ID
+try:
+	get_delivery_nodes = Sql.GetFirst("SELECT SERVICE_ID from SAQTSV where QUOTE_ID ='{}' and SERVICE_ID='Z0108'" .format(Quote.CompositeNumber))
+	if get_delivery_nodes:
+		get_delivery_nodes = get_delivery_nodes.SERVICE_ID
+except:
+	pass
 #suppress delivery node - end
 #node visibility query based on sales employee
 login_user= User.Id
