@@ -1134,7 +1134,9 @@ class Entitlements:
 							if  serviceId == 'Z0092'  and key == "AGS_{}_TSC_CONSUM".format(serviceId):
 								if entitlement_value in ("Some Inclusions","Included"):
 									Trace.Write("z0092--if--"+str(entitlement_value))
-									ancillary_object_dict['Z0100'] = "INSERT"	
+									ancillary_object_dict['Z0100'] = "INSERT"
+									if entitlement_value == "Some Inclusions":
+										ancillary_object_dict['Z0101'] = "INSERT"
 								else:
 									Trace.Write("z0092---else--"+str(entitlement_value))
 									ancillary_object_dict['Z0100'] = "DELETE"	
