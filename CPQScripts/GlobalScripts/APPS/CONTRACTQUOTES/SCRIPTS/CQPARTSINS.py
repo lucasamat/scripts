@@ -6,7 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 #from logging import exception
-from ast import Param
+#from ast import Param
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import clr
