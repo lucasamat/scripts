@@ -6552,6 +6552,32 @@ class SYLDRTLIST:
 								"select count(*) as cnt FROM SAQDOC where " + str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(
 									str(qt_rec_id.QUOTE_ID),quote_revision_record_id)
 						)
+					elif  str(RECORD_ID) == "SYOBJR-34575":
+						if delivery_date_column:                        
+							pivot_columns = ",".join(['[{}]'.format(delivery_date) for delivery_date in delivery_date_column])					Qustr = " where " + str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"		
+							if Qustr:
+								
+								Qustr += " AND DELIVERY_SCHED_DATE  BETWEEN '{}' AND '{}'".format(delivery_date_column[0], delivery_date_column[-1])
+							pivot_query_str = """
+										SELECT ROW_NUMBER() OVER(ORDER BY QTEREVSPT_RECORD_ID )
+										AS ROW, *
+											FROM (
+												SELECT 
+													{Columns}                                         
+												FROM {ObjectName}
+												{WhereString}
+											) AS IQ
+											PIVOT
+											(
+												SUM(QUANTITY)
+												FOR DELIVERY_SCHED_DATE  IN ({PivotColumns})
+											)AS PVT
+										""".format(OrderByColumn=Wh_API_NAMEs,Columns=column_before_delivery_pivot_change, ObjectName=ObjectName,
+													WhereString=Qustr, PivotColumns=pivot_columns)                        
+							Qury_str = """
+										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY QTEREVSPT_RECORD_ID 
+										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
+							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start                        
 						pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 						Qustr = " where " + str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
@@ -8617,7 +8643,33 @@ class SYLDRTLIST:
 													WhereString=Qustr, PivotColumns=pivot_columns)                        
 						Qury_str = """SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY EQUIPMENT_ID
 										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
-						QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str) 
+						QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
+					elif  str(RECORD_ID) == "SYOBJR-34575":
+						if delivery_date_column:                        
+							pivot_columns = ",".join(['[{}]'.format(delivery_date) for delivery_date in delivery_date_column])					Qustr = " where " + str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"		
+							if Qustr:
+								
+								Qustr += " AND DELIVERY_SCHED_DATE  BETWEEN '{}' AND '{}'".format(delivery_date_column[0], delivery_date_column[-1])
+							pivot_query_str = """
+										SELECT ROW_NUMBER() OVER(ORDER BY QTEREVSPT_RECORD_ID )
+										AS ROW, *
+											FROM (
+												SELECT 
+													{Columns}                                         
+												FROM {ObjectName}
+												{WhereString}
+											) AS IQ
+											PIVOT
+											(
+												SUM(QUANTITY)
+												FOR DELIVERY_SCHED_DATE  IN ({PivotColumns})
+											)AS PVT
+										""".format(OrderByColumn=Wh_API_NAMEs,Columns=column_before_delivery_pivot_change, ObjectName=ObjectName,
+													WhereString=Qustr, PivotColumns=pivot_columns)                        
+							Qury_str = """
+										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY QTEREVSPT_RECORD_ID 
+										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
+							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					else:
 						Qury_str = (
 							"select top "
