@@ -91,11 +91,14 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 	Trace.Write('98-----deliverydict-'+str(deliverydict))
 	for val in deliverydict:
-		value = val.split('#')
+		spare_rc = val.split('#')[0]
+		delivery_date = val.split('#')[1]
+		delivery_quantity = val.split('#')[2]
 		
 		#SubTab = getamtval[0]
 		#getannual_amt = value[3]
-		Trace.Write('---value--'+str(value))
+		Trace.Write('---delivery_date--'+str(delivery_date)+'--spare_rc---'+str(spare_rc))
+		Trace.Write('---delivery_quantity--'+str(delivery_quantity))
 	return 'save','savebill'
 try:
 	GET_DICT =list(Param.billdict)
