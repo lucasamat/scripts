@@ -102,7 +102,7 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		#getannual_amt = value[3]
 		Trace.Write('---delivery_date--'+str(delivery_date)+'--spare_rc---'+str(spare_rc))
 		Trace.Write('---get_delivery_recs--'+str(get_delivery_recs))
-		get_current_details = Sql.GetFirst("SELECT SUM(QUANTITY) FROM SAQSPD where QUOTE_RECORD_ID ='{ContractRecordId}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE not in ('07/24/2022')".format(ContractRecordId=ContractRecordId,quote_revision_record_id=quote_revision_record_id,rev_spare_rec_id=spare_rc))
+		get_current_details = Sql.GetFirst("SELECT SUM(QUANTITY) FROM SAQSPD where QUOTE_RECORD_ID ='{ContractRecordId}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE not in {deliverydates}".format(ContractRecordId=ContractRecordId,quote_revision_record_id=quote_revision_record_id,rev_spare_rec_id=spare_rc,deliverydates=get_delivery_recs))
 		get_spare_qty = Sql.GetFirst("SELECT CUSTOMER_ANNUAL_QUANTITY from SAQSPT where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}'".format(revision_rec_id = quote_revision_record_id,qt_rec_id = str(ContractRecordId)))
 		if get_spare_qty:
 			qty = get_spare_qty.CUSTOMER_ANNUAL_QUANTITY
