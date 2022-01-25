@@ -1551,8 +1551,12 @@ class EntitlementView():
 							except:
 								pass
 						elif sefl_api in ("CpqTableEntryModifiedBy","CPQTABLEENTRYADDEDBY") and current_obj_value:
-							current_user = Sql.GetFirst(
-								"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + "")
+							try:	
+								current_user = Sql.GetFirst(
+									"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + "")
+							except:
+								current_user = Sql.GetFirst(
+									"SELECT USERNAME FROM USERS WHERE USERNAME = '" + str(current_obj_value) + "'")
 							current_obj_value = current_user.USERNAME
 
 						sec_str_boot +=(
