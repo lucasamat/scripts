@@ -1734,7 +1734,7 @@ class SyncQuoteAndCustomTables:
 
 								fpm_service_ids_list = fpm_service_ids.split(',')
 								for val in fpm_service_ids_list:									
-									if val != '':
+									if val != '' and val in ('Z0108','Z0110'):
 										#service_object = Sql.GetFirst("SELECT SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id,val))
 										
 										#parts_value = 0
