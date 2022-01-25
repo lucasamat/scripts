@@ -16,7 +16,7 @@ from SYDATABASE import SQL
 
 Sql = SQL()
 
-def iflow_pullspareparts_call(user,soldto,shipto,salesorg,pricelist,pricegroup,customerparticipate,participate6kw,partnumbers,validfrom,validto,quoteid,accesstoken):
+def iflow_pullspareparts_call(user,soldto,shipto,salesorg,pricelist,pricegroup,customerparticipate,participate6kw,partnumbers,validfrom,validto,quoteid,revisionrecordid,accesstoken):
     requestdata = (
         '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><User>'
         + str(user)
@@ -42,7 +42,9 @@ def iflow_pullspareparts_call(user,soldto,shipto,salesorg,pricelist,pricegroup,c
         +str(validto)
         +"</ValidTo><QuoteID>"
         +str(quoteid)
-        +"</QuoteID><AccessToken>"
+        +"</QuoteID><RevisionRecordID>"
+        +str(revisionrecordid)
+        +"</RevisionRecordID><AccessToken>"
         +str(accesstoken)
         +"</AccessToken></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
     )
