@@ -310,6 +310,12 @@ def do_process(TABLEID, LABLE, VALUE):
                     row["APRCHNSTP_APPROVER_ID"] = "PRO-"+str(row.get("PROFILE_ID"))                                        
                 elif row.get("APPROVER_SELECTION_METHOD").strip() == "GROUP OF USERS" and row.get("ROLE_ID"):               
                     row["APRCHNSTP_APPROVER_ID"] = "ROL-"+str(row.get("ROLE_ID"))
+                elif row.get("APPROVER_SELECTION_METHOD").strip() == "CUSTOM QUERY":
+                    Trace.Write("Entered custom query elif")
+                    custom_query = row.get("CUSTOM_QUERY")
+                    Trace.Write("ROW-->"+str(row))
+
+                
             elif row.get("APRCHNSTP_NAME"):
                 row["APRCHNSTP_NAME"] = row.get("APRCHNSTP_NAME").upper()
             if str(Req_Flag) == "0" and Flag_unique == "True":
