@@ -147,7 +147,7 @@ def voucher_amt_update(Qt_id):
 								get_voucher_value = entitlement_display_value_tag_match[0].upper()
 								break
 					Trace.Write("get_voucher_value-"+str(record.GREENBOOK)+"-"+str(get_voucher_value))
-					Sql.RunQuery("UPDATE SAQICO SET STATUS = 'ACQUIRED', CNTPRI_INGL_CURR = '{voucher_amt}', NET_PRICE_INGL_CURR ='{voucher_amt}' FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' AND GREENBOOK = '{grnbok}' ".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value,grnbok = record.GREENBOOK  ))
+					Sql.RunQuery("UPDATE SAQICO SET STATUS = 'ACQUIRED', CNTPRI_INGL_CURR = '{voucher_amt}' FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' AND GREENBOOK = '{grnbok}' ".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value,grnbok = record.GREENBOOK  ))
 			
 					Sql.RunQuery("""UPDATE SAQRIT 
 						SET 
