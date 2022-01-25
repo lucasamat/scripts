@@ -1,8 +1,8 @@
 # =========================================================================================================================================
 #   __script_name : CQWBAPPC4C.PY
-#   __script_description : TO UPDATE THE OPPORTUNITY STATUS IN  CPQ WHEN THE USER IS CHANGING THE STATUS IN C4C.
-#   __primary_author__ : WASIM
-#   __create_date :25-01-2022
+#   __script_description : TO UPDATE THE OBJECT ID IN CPQ WHEN THE APPROVER IS CREATED IN C4C.
+#   __primary_author__ : WASIM.ABDUL
+#   __create_date : 25-01-2022
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 
