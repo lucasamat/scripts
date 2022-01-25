@@ -93,10 +93,11 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         )
     elif writeback == "approver_list":
         contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
-        approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID  FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND APPROVALSTATUS = 'APPROVAL REQUIRED'".format(contract_quote_id.QUOTE_ID))
+        approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND APPROVALSTATUS = 'APPROVAL REQUIRED'".format(contract_quote_id.QUOTE_ID))
         #approver_list = []
         for app in approver_list_id:
             approver = app.APRCHNSTP_APPROVER_ID
+            approver_step = app.APRCHNSTP_ID
             #approver_list.append(approver)
             role_code_id = "71"
             requestdata = (
@@ -106,7 +107,9 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 +str(contract_quote_id.QUOTE_ID)
                 +"</contract_quote_id><approver_list>"
                 + str(approver)
-                +"</approver_list><role_code_id>"
+                +"</approver_list><approver_step_id>"
+				+ str(approver_step)
+				+"</approver_step_id><role_code_id>"
                 + str(role_code_id)
                 +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
             )
