@@ -1127,7 +1127,7 @@ class Entitlements:
 							Trace.Write("entitlement_value -----"+str(entitlement_value))
 							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included")):
 								ancillary_object_dict['Z0101'] = "INSERT"								
-							else:
+							elif not (serviceId == 'Z0092' and entitlement_value == "Some Inclusions"):
 								count_temp_z0101 += 1
 								if  count_temp_z0101 == 3:
 									ancillary_object_dict['Z0101'] = "DELETE"
@@ -1137,6 +1137,7 @@ class Entitlements:
 									ancillary_object_dict['Z0100'] = "INSERT"
 									if entitlement_value == "Some Inclusions":
 										ancillary_object_dict['Z0101'] = "INSERT"
+									Trace.Write("z0092--if11--"+str(ancillary_object_dict))
 								else:
 									Trace.Write("z0092---else--"+str(entitlement_value))
 									ancillary_object_dict['Z0100'] = "DELETE"	
@@ -2027,7 +2028,10 @@ class Entitlements:
 		#Trace.Write('attributeEditonlylst---Durga---1730--'+str(attributeEditonlylst))
 		#Trace.Write('###2116 for FPM CALL')
 		#calling CQPARTSINS
-		ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"Action": "Delete"})
+		try:
+			ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"Action": "Delete"})
+		except:
+			pass
 		Trace.Write('attriburesrequired_list---'+str(attriburesrequired_list))
 		# Trace.Write('get_conflict_message--2043----'+str(get_conflict_message))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
