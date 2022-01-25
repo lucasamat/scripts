@@ -1119,7 +1119,7 @@ class Entitlements:
 						##Ancillary Object auto insert based on conditions
 						# ancillary_flag = "False"
 						#Trace.Write("entitlement_value--"+str(entitlement_value)+'key--'+str(key))
-						Trace.Write("serviceId--"+str(serviceId)+"key"+str(key)+"tableName-->"+str(tableName))
+						Trace.Write("serviceId--"+str(serviceId)+"key"+str(key)+"tableName-->"+str(tableName)+'--'+str(ancillary_object_dict))
 						if str(serviceId) in ("Z0091","Z0004","Z0007","Z0006","Z0092","Z0035","Z0009") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId),"AGS_{}_TSC_RPPNNW".format(serviceId)) and str(tableName) in ('SAQSGE','SAQTSE'):
 							#ancillary_object = 'Z0101'
 							if tableName == "SAQSGE":
@@ -1128,6 +1128,7 @@ class Entitlements:
 							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included")):
 								ancillary_object_dict['Z0101'] = "INSERT"								
 							elif not (serviceId == 'Z0092' and entitlement_value == "Some Inclusions"):
+								Trace.Write("z0101 else")
 								count_temp_z0101 += 1
 								if  count_temp_z0101 == 3:
 									ancillary_object_dict['Z0101'] = "DELETE"
