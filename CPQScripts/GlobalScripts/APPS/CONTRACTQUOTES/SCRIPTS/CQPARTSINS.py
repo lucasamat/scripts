@@ -6,6 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 #from logging import exception
+from ast import Param
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import clr
@@ -25,7 +26,7 @@ class SyncFPMQuoteAndHanaDatabase:
             self.quote_record_id = Quote.GetGlobal("contract_quote_record_id")
             self.quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
         except:
-            saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID from SAQTRV where QUOTE_ID = '"+str(self.QuoteID)+"'")
+            saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID from SAQTRV where QUOTE_ID = '"+str(Param.QuoteID)+"'")
             self.quote_record_id = saqtrv_obj.QUOTE_RECORD_ID
             self.quote_revision_id = saqtrv_obj.QUOTE_REVISION_RECORD_ID
             
