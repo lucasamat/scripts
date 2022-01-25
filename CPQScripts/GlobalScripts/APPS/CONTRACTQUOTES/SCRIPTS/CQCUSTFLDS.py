@@ -75,8 +75,8 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	sales_discount_price = float(a.SALES_DISCOUNT_PRICE)/count
 	extended_price = ext_price/count
 	
-	update_sales_price = "UPDATE SAQICO SET YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},EXTENDED_PRICE = {ext},SALES_DISCOUNT_PRICE = {sales_discount_price},YEAR_OVER_YEAR = {yearoveryear}  WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(
-	service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),y1=yr1,y2=yr2,y3=yr3,y4=yr4,y5=yr5,ext=extended_price,sales_discount_price = sales_discount_price,lineitemid =lineitemid,yearoveryear= yearoveryear,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+	update_sales_price = "UPDATE SAQICO SET YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},EXTENDED_PRICE = {ext},SALES_DISCOUNT_PRICE = {sales_discount_price}  WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(
+	service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),y1=yr1,y2=yr2,y3=yr3,y4=yr4,y5=yr5,ext=extended_price,sales_discount_price = sales_discount_price,lineitemid =lineitemid,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	)
 	Sql.RunQuery(update_sales_price)
 	

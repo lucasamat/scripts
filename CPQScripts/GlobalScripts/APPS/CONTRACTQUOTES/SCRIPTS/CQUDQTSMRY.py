@@ -34,7 +34,7 @@ class ContractQuoteSummaryUpdate:
 			Sql.RunQuery("""UPDATE SAQICO SET
 											SAQICO.YEAR_{Year} = CASE  
 												WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) >= {Count} 
-													THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100.0                                                   
+													THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0))/100.0                                                   
 												ELSE 0
 											END
 										FROM SAQICO (NOLOCK) 

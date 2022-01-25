@@ -1140,7 +1140,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				getting_cps_tax(quote_id,quote_record_id,item_lines_record_ids)
 			elif TITLE == 'NET_PRICE':
 				
-				a = Sql.GetFirst("SELECT ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
+				a = Sql.GetFirst("SELECT ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
 				
 				if float(a.TARGET_PRICE) != 0.0 or float(a.TARGET_PRICE) != 0.00:
 					discount =(float(a.TARGET_PRICE)-float(VALUE))/float(a.TARGET_PRICE)
@@ -1161,7 +1161,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Trace.Write("number of days---------------->"+str((d2 - d1).days))
 				
 				
-				yoy = float(a.YEAR_OVER_YEAR)
+				yoy = None
 				#VALUE = float(a.SALES_DISCOUNT_PRICE)-amt
 				year1 = float(VALUE)
 				year2 = 0.00
@@ -1249,7 +1249,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			elif TITLE == 'DISCOUNT':
 				if '%' in VALUE:
 					VALUE = VALUE.replace('%','')
-				a = Sql.GetFirst("SELECT ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,FABLOCATION_ID,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
+				a = Sql.GetFirst("SELECT ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,FABLOCATION_ID,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
 				amt = 0.00
 				if float(a.TARGET_PRICE) != 0.0 or float(a.TARGET_PRICE) != 0.00:
 					if "+" not in VALUE and "-" not in VALUE:
@@ -1278,7 +1278,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Trace.Write("number of days---------------->"+str((d2 - d1).days))
 				
 				
-				yoy = float(a.YEAR_OVER_YEAR)
+				yoy = None
 				#VALUE = amt
 				year1 = float(amt)
 				year2 = 0.00
