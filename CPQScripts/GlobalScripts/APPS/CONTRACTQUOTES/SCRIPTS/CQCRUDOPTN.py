@@ -1806,7 +1806,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 								flag_excluse=1
 								break
 						if flag_excluse==1 :
-							parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0100'"		
+							parent_based_condition = " AND SAQTSV.SERVICE_ID in ('Z0100','Z0101')"			
 
 
 				#fab_count = SqlHelper.GetList("SELECT COUNT(FABLOCATION_ID) AS COUNT from SAQSCO WHERE GREENBOOK = '"+str(self.tree_param)"' AND 	SERVICE_ID = '"+str(self.treeparentparam)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' GROUP BY FABLOCATION_ID")
