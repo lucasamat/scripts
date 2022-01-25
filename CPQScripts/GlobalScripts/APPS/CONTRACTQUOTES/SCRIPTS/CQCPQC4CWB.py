@@ -131,9 +131,52 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
                 response = webclient.UploadString(URL, requestdata) 
     
+    elif writeback == "delete_approver_list":
+        contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+        approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID,OWNER_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND APPROVALSTATUS != 'APPROVAL REQUIRED'".format(contract_quote_id.QUOTE_ID))
+        #approver_list = []
+        for app in approver_list_id:
+            approver = app.APRCHNSTP_APPROVER_ID
+            approver_step = app.APRCHNSTP_ID
+            c4c_object_id =app.OWNER_ID
+            #approver_list.append(approver)
+            role_code_id = "71"
+            requestdata = (
+                '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
+                + str(writeback)
+                + "</writeback><contract_quote_id>"
+                +str(contract_quote_id.QUOTE_ID)
+                +"</contract_quote_id><approver_list>"
+                + str(approver)
+                +"</approver_list><approver_step_id>"
+				+ str(approver_step)
+				+"</approver_step_id><c4c_object_id>"
+				+ str(c4c_object_id)
+				+"</c4c_object_id><role_code_id>"
+                + str(role_code_id)
+                +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
+            )
+            Trace.Write("requestdata"+str(requestdata))
+            LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='CPQ_TO_C4C_WRITEBACK'")
+            LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
+            if LOGIN_CREDENTIALS is not None:
+                Login_Username = str(LOGIN_QUERY.Username)
+                Login_Password = str(LOGIN_QUERY.Password)
+                URL = str(LOGIN_CREDENTIALS.URL)
+                authorization = Login_Username + ":" + Login_Password
+                from System.Text.Encoding import UTF8
+                binaryAuthorization = UTF8.GetBytes(authorization)
+                from System import Convert
+                authorization = Convert.ToBase64String(binaryAuthorization)
+                authorization = "Basic " + authorization
+                webclient = System.Net.WebClient()
+                webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
+                webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
+                response = webclient.UploadString(URL, requestdata) 
+    
 
 
-    if writeback != "approver_list":
+    if writeback != "approver_list" or writeback != "delete_approver_list" :
         LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='CPQ_TO_C4C_WRITEBACK'")
         LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
         if LOGIN_CREDENTIALS is not None:
