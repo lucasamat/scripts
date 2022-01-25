@@ -419,7 +419,7 @@ class Entitlements:
 				serviceId = (self.treeparam).split("-")[1].strip()	
 			elif self.treetopsupertopparentparam == 'Product Offerings' and subtabName == 'Entitlements':
 				tableName = 'SAQGPE'
-				serviceId = (self.treetopsuperparentparam).split("-")[1].strip()
+				serviceId = self.treetopsuperparentparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' AND GOT_CODE ='{}' AND PM_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treesuperparentparam,self.treeparentparam,self.treeparam)
 				
 		Trace.Write('tableName'+str(tableName))
@@ -2129,7 +2129,7 @@ class Entitlements:
 				serviceId = (self.treeparam).split("-")[1].strip()	
 			elif self.treetopsupertopparentparam == 'Product Offerings' and subtabName == 'Entitlements':
 				tableName = 'SAQGPE'
-				serviceId = (self.treetopsuperparentparam).split("-")[1].strip()
+				serviceId = self.treetopsuperparentparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' AND GOT_CODE ='{}' AND PM_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treesuperparentparam,self.treeparentparam,self.treeparam)
 		valdisplaycode = []
 		Getprevdict = eval(str(Getprevdict))
@@ -2408,7 +2408,7 @@ class Entitlements:
 				# ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			elif self.treetopsupertopparentparam == 'Product Offerings' and subtabName == 'Entitlements':
 				objName = 'SAQGPE'
-				serviceId = (self.treetopsuperparentparam).split("-")[1].strip()
+				serviceId = self.treetopsuperparentparam
 				where = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' AND GOT_CODE ='{}' AND PM_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treesuperparentparam,self.treeparentparam,self.treeparam)
 		get_status = Sql.GetFirst("SELECT * FROM {} {}".format(objName,where.replace("SRC.","")))
 		if get_status:
