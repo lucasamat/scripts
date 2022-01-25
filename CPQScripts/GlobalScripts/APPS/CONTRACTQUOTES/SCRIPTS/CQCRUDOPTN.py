@@ -4679,6 +4679,12 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		return True
 	
 	def applied_preventive_maintainence(self, **kwargs):
+		##Deleting the SAQSAP and SAQSKP TABLE records when the user is changing the quote type from Tool Based to other values...
+		if self.tree_param == "Z0009":
+			delete_obj_list = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP"]
+			for object in delete_obj_list:
+				Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(object,self.contract_quote_record_id, self.service_id,self.contract_quote_revision_record_id ))
+		
 		self._process_query("""INSERT SAQRGG (
 				GOT_CODE,
 				GOTCODE_RECORD_ID,
@@ -5037,12 +5043,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID
 									WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSGE.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
 									)IQ ON SAQGPE.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQGPE.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param,BatchGroupRecordId = kwargs.get('batch_group_record_id') ))
-		
-		# if self.tree_param == "Z0009":
-		# 	delete_obj_list = ["SAQSCO","SAQSCA"]
-		# 	for object in delete_obj_list:
-		# 		Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(object,self.contract_quote_record_id, self.service_id,self.contract_quote_revision_record_id ))
-
 
 	
 	def _create(self):
