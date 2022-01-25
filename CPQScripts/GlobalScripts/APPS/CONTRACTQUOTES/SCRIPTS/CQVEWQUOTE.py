@@ -15,14 +15,12 @@ from System import Convert
 from SYDATABASE import SQL
 
 Sql = SQL()
-
 get_user_id = User.Id
 class RedirectQuote:
     def __init__(self, Quote):
         self.quote = Quote
 
-    def view_quote(self, ComposId):
-        Log.Info("inside view quote"+str(ComposId))
+    def view_quote(self, ComposId):        
         if ComposId !='':
             GetQuotes = Sql.GetFirst("SELECT * FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID = '" + str(ComposId) + "'")
             
@@ -34,7 +32,6 @@ class RedirectQuote:
                 if LOGIN_CREDENTIALS is not None:
                     Login_Username = str(LOGIN_CREDENTIALS.Username)
                     Login_Password = str(LOGIN_CREDENTIALS.Password)
-                    Trace.Write("Login_Username: "+str(Login_Username)+"-Login_Password: "+str(Login_Password))
                     authorization = Login_Username + ":" + Login_Password
                     binaryAuthorization = UTF8.GetBytes(authorization)
                     authorization = Convert.ToBase64String(binaryAuthorization)
@@ -55,20 +52,16 @@ class RedirectQuote:
         try:
             c4cId = self.quote.CompositeNumber
         except:
-            c4cId = ComposId
-        Log.Info("c4cId-->"+str(c4cId))
-        Log.Info("get_user_id-->"+str(get_user_id))
+            c4cId = ComposId        
         masterQuoteId = ""
         masterQuoteRecId = ""
-        if c4cId is not None:
-            Log.Info("inside if--63")
+        if c4cId is not None:            
             GetQuoteId = Sql.GetFirst(
                 "SELECT QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID = '" + str(c4cId) + "'"
             )
             if GetQuoteId is not None and GetQuoteId != '':
                 masterQuoteId = GetQuoteId.QUOTE_ID
-                masterQuoteRecId = GetQuoteId.MASTER_TABLE_QUOTE_RECORD_ID
-                Log.Info("masterQuoteId : " + str(masterQuoteId))
+                masterQuoteRecId = GetQuoteId.MASTER_TABLE_QUOTE_RECORD_ID                
         record_obj = Sql.GetList(
             """SELECT MOD.* FROM (
                 SELECT TOP 100  MM.APP_LABEL, P.PRODUCT_ID, MM.APP_RECORD_ID, MM.DISPLAY_ORDER,
@@ -85,9 +78,7 @@ class RedirectQuote:
         )
         getappdata = ''
         if len(record_obj) == 0:
-            getappdata = "No access to app"
-        Log.Info("getappdata : " + str(getappdata))
-        
+            getappdata = "No access to app"        
         return masterQuoteId, masterQuoteRecId,getappdata
 
 
