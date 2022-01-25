@@ -17,6 +17,7 @@ if 'Param' in globals():
         Log.Info("CQWBAPPC4C called.......inside if")    
         
         approval_object_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
+        Log.Info("approval_object_data--"+str(approval_object_data))
         object_id = approval_object_data[0]
         quote_id = str(approval_object_data[-1]).upper()
         approver_id = str(approval_object_data[-2]).upper()
@@ -24,7 +25,7 @@ if 'Param' in globals():
         Log.Info("object_id--"+str(object_id))
         Log.Info("quote_id--"+str(quote_id))
         Log.Info("approver_id--"+str(approver_id))
-        Log.Info("approver_id--"+str(approver_step_id)) 
+        Log.Info("approver_approver_step_idid--"+str(approver_step_id)) 
     else:
         Log.Info("else condition")
             
