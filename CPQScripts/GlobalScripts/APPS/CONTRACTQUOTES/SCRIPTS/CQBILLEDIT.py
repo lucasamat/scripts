@@ -91,6 +91,8 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 	Trace.Write('98-----deliverydict-'+str(deliverydict))
 	get_delivery_list =[]
+	saqspd_total_qty = 0
+	saqspt_total_qty =0
 	for val in deliverydict:
 		spare_rc = val.split('#')[0]
 		delivery_date = val.split('#')[1]
@@ -102,12 +104,15 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		#getannual_amt = value[3]
 		Trace.Write('---delivery_date--'+str(delivery_date)+'--spare_rc---'+str(spare_rc))
 		Trace.Write('---get_delivery_recs--'+str(get_delivery_recs))
-		get_current_details = Sql.GetFirst("SELECT SUM(QUANTITY) FROM SAQSPD where QUOTE_RECORD_ID ='{ContractRecordId}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE not in {deliverydates}".format(ContractRecordId=ContractRecordId,quote_revision_record_id=quote_revision_record_id,rev_spare_rec_id=spare_rc,deliverydates=get_delivery_recs))
+		get_current_details = Sql.GetFirst("SELECT SUM(QUANTITY) as total FROM SAQSPD where QUOTE_RECORD_ID ='{ContractRecordId}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE not in {deliverydates}".format(ContractRecordId=ContractRecordId,quote_revision_record_id=quote_revision_record_id,rev_spare_rec_id=spare_rc,deliverydates=get_delivery_recs))
+		if get_current_details:
+			saqspd_total_qty = get_current_details.total
 		get_spare_qty = Sql.GetFirst("SELECT CUSTOMER_ANNUAL_QUANTITY from SAQSPT where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}'".format(revision_rec_id = quote_revision_record_id,qt_rec_id = str(ContractRecordId)))
 		if get_spare_qty:
-			qty = get_spare_qty.CUSTOMER_ANNUAL_QUANTITY
-		Update_delivery_details = "UPDATE SAQSPD SET QUANTITY={qty} where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE = '{del_sch_date}'".format(qty= val.split('#')[2],qt_rec_id = str(ContractRecordId),rev_spare_rec_id=spare_rc,del_sch_date = val.split('#')[1], revision_rec_id = quote_revision_record_id)
-		Update_delivery_details_query = Sql.RunQuery(Update_delivery_details)
+			saqspt_total_qty = get_spare_qty.CUSTOMER_ANNUAL_QUANTITY
+		if saqspd_total_qty >= saqspt_total_qty :
+			Update_delivery_details = "UPDATE SAQSPD SET QUANTITY={qty} where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE = '{del_sch_date}'".format(qty= val.split('#')[2],qt_rec_id = str(ContractRecordId),rev_spare_rec_id=spare_rc,del_sch_date = val.split('#')[1], revision_rec_id = quote_revision_record_id)
+			Update_delivery_details_query = Sql.RunQuery(Update_delivery_details)
 	return 'save','savebill'
 try:
 	GET_DICT =list(Param.billdict)
