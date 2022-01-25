@@ -18,7 +18,7 @@ if 'Param' in globals():
         
         approval_object_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
         Log.Info("approval_object_data--"+str(approval_object_data))
-        object_id = approval_object_data[0]
+        obj_id = approval_object_data[0]
         quote_id = str(approval_object_data[1]).upper()
         approver_id='USR-'+str(approval_object_data[2]).upper()
         approver_step_id = str(approval_object_data[3]).upper()
@@ -26,9 +26,8 @@ if 'Param' in globals():
         Log.Info("quote_id--"+str(quote_id))
         Log.Info("approver_id--"+str(approver_id))
         Log.Info("approver_approver_step_idid--"+str(approver_step_id)) 
-        update_object_id="""UPDATE ACAPTX SET OWNER_ID = '{object_id}' WHERE APRTRXOBJ_ID = '{quote_id}' AND APRCHNSTP_APPROVER_ID ='{approver_id}' AND APRCHNSTP_ID ='{approver_step_id}'""".format(object_id=object_id,quote_id =quote_id,approver_id = approver_id,approver_step_id =approver_step_id)
-        Sql.RunQuery(update_object_id)
-        Log.Info("update_object_id--"+str(update_object_id)) 
+        update_obj_id="""UPDATE ACAPTX SET OWNER_ID = '{obj_id}' WHERE APRTRXOBJ_ID = '{quote_id}' AND APRCHNSTP_APPROVER_ID ='{approver_id}' AND APRCHNSTP_ID ='{approver_step_id}'""".format(obj_id=obj_id,quote_id =quote_id,approver_id = approver_id,approver_step_id =approver_step_id)
+        Sql.RunQuery(update_obj_id) 
     else:
         Log.Info("else condition")
             
