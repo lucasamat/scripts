@@ -312,7 +312,7 @@ class SyncFPMQuoteAndHanaDatabase:
 
 Log.Info("CQPARTINS script called --> from CPI")
 Log.Info("Param.CPQ_Column----"+str(type(Param)))
-Log.Info("Param cpq val--"+str(dir(Param)))
+#Log.Info("Param cpq val--"+str(dir(Param)))
 parameters={}
 try:
 	parameters['Action'] = Param.Action
