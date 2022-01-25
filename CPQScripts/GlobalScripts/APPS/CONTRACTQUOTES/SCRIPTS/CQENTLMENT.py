@@ -417,7 +417,7 @@ class Entitlements:
 			elif (self.treeparentparam == 'Quote Items' and subtabName == 'Entitlements'):
 				tableName = 'SAQIEN'
 				serviceId = (self.treeparam).split("-")[1].strip()	
-			elif self.self.treetopsupertopparentparam == 'Product Offerings' and subtabName == 'Entitlements':
+			elif self.treetopsupertopparentparam == 'Product Offerings' and subtabName == 'Entitlements':
 				tableName = 'SAQGPE'
 				serviceId = (self.treetopsuperparentparam).split("-")[1].strip()
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' AND GOT_CODE ='{}' AND PM_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treesuperparentparam,self.treeparentparam,self.treeparam)
@@ -2127,7 +2127,7 @@ class Entitlements:
 			elif (self.treeparentparam == 'Quote Items' and subtabName == 'Entitlements'):
 				tableName = 'SAQIEN'
 				serviceId = (self.treeparam).split("-")[1].strip()	
-			elif self.self.treetopsupertopparentparam == 'Product Offerings' and subtabName == 'Entitlements':
+			elif self.treetopsupertopparentparam == 'Product Offerings' and subtabName == 'Entitlements':
 				tableName = 'SAQGPE'
 				serviceId = (self.treetopsuperparentparam).split("-")[1].strip()
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' AND GOT_CODE ='{}' AND PM_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treesuperparentparam,self.treeparentparam,self.treeparam)
@@ -2406,7 +2406,7 @@ class Entitlements:
 				# parentObj = 'SAQSCE'
 				where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.EQUIPMENT_ID = '{}' AND SRC.ASSEMBLY_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,EquipmentId,AssemblyId)
 				# ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
-			elif self.self.treetopsupertopparentparam == 'Product Offerings' and subtabName == 'Entitlements':
+			elif self.treetopsupertopparentparam == 'Product Offerings' and subtabName == 'Entitlements':
 				objName = 'SAQGPE'
 				serviceId = (self.treetopsuperparentparam).split("-")[1].strip()
 				where = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' AND GOT_CODE ='{}' AND PM_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treesuperparentparam,self.treeparentparam,self.treeparam)
