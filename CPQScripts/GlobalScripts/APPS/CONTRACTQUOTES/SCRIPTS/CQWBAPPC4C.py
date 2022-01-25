@@ -27,7 +27,8 @@ if 'Param' in globals():
         Log.Info("approver_id--"+str(approver_id))
         Log.Info("approver_approver_step_idid--"+str(approver_step_id)) 
         update_object_id="""UPDATE ACAPTX SET OWNER_ID = '{object_id}' WHERE APRTRXOBJ_ID = '{quote_id}' AND APRCHNSTP_APPROVER_ID ='{approver_id}' AND APRCHNSTP_ID ='{approver_step_id}'""".format(object_id=object_id,quote_id =quote_id,approver_id = approver_id,approver_step_id =approver_step_id)
-        Sql.RunQuery(update_object_id)  
+        Sql.RunQuery(update_object_id)
+        Log.Info("update_object_id--"+str(update_object_id)) 
     else:
         Log.Info("else condition")
             
