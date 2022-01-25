@@ -5490,6 +5490,8 @@ class SYLDRTLIST:
 						Wh_API_NAMEs = Wh_API_NAMEs
 					elif SortColumn in billing_date_column:
 						Wh_API_NAMEs = " CONVERT(VARCHAR(10),FORMAT("+str(SortColumn)+",'MM-dd-yyyy'),101) " + str(SortColumnOrder).upper()
+					elif SortColumn in delivery_date_column:
+						Wh_API_NAMEs = " CONVERT(VARCHAR(10),FORMAT("+str(SortColumn)+",'MM-dd-yyyy'),101) " + str(SortColumnOrder).upper()
 					else:                        
 						Wh_API_NAMEs = str(SortColumn) + " " + str(SortColumnOrder).upper()                                              
 				else:                    
