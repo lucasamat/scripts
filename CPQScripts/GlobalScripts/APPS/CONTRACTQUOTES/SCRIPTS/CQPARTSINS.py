@@ -313,7 +313,10 @@ class SyncFPMQuoteAndHanaDatabase:
 Log.Info("CQPARTINS script called --> from CPI")
 Log.Info("Param.CPQ_Column----"+str(type(Param)))
 if Param:
-    Log.Info("Param cpq val--"+str(Param.Response))
+    try:
+        Log.Info("Param cpq val--"+' '.join(map(str, Param.Response)))
+    except Exception:
+        Log.Info(str(Param))
 parameters={}
 try:
 	parameters['Action'] = Param.Action
