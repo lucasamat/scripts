@@ -1554,11 +1554,9 @@ class EntitlementView():
 							try:	
 								current_user = Sql.GetFirst(
 									"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + "")
+								current_obj_value = current_user.USERNAME
 							except:
-								current_user = Sql.GetFirst(
-									"SELECT USERNAME FROM USERS WHERE USERNAME = '" + str(current_obj_value) + "'")
-							current_obj_value = current_user.USERNAME
-
+								pass
 						sec_str_boot +=(
 							'<td><input id="'
 							+ str(sefl_api)
