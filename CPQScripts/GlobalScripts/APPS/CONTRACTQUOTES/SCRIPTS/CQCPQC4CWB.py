@@ -119,10 +119,8 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 URL = str(LOGIN_CREDENTIALS.URL)
                 authorization = Login_Username + ":" + Login_Password
                 from System.Text.Encoding import UTF8
-
                 binaryAuthorization = UTF8.GetBytes(authorization)
                 from System import Convert
-
                 authorization = Convert.ToBase64String(binaryAuthorization)
                 authorization = "Basic " + authorization
                 webclient = System.Net.WebClient()
