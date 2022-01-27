@@ -1145,7 +1145,16 @@ class Entitlements:
 									ancillary_object_dict['Z0100'] = "DELETE"
 									if entitlement_value != "Some Inclusions":
 										ancillary_object_dict['Z0101'] = "DELETE"
-
+						elif str(serviceId) in ("Z0009") and key in ( "AGS_{}_PQB_QTETYP".format(serviceId)) and str(tableName) in ('SAQTSE'):
+							if entitlement_value in ("Event Based","Flex Event Based"):
+								ScriptExecutor.ExecuteGlobal(
+									"CQCRUDOPTN",
+								{
+									"NodeType"   : "COVERED OBJ MODEL",
+									"ActionType" : "ADD_COVERED_OBJ",
+									"applied_preventive_maintainence_quote_type_changed": "Yes"
+								},
+							)
 						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004','Z0009') :
 							#ancillary_object = 'A6200'
 							if entitlement_value.upper() == "YES":
