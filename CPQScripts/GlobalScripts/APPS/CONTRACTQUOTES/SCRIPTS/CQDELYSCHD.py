@@ -4,7 +4,7 @@
 #   __create_date : 27/01/2022
 #   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-import re
+
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import datetime
