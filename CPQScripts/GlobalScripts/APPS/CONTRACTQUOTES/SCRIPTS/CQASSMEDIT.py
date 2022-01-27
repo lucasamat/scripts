@@ -9,14 +9,12 @@ import Webcom
 from SYDATABASE import SQL
 from datetime import datetime
 import Webcom.Configurator.Scripting.Test.TestProduct
-import time
-Sql = SQL()
 import SYCNGEGUID as CPQID
 import System.Net
 import sys
 import re
 
-
+Sql = SQL()
 
 #A055S000P01-6826- Relocation chamber starts...
 def update_assembly_level(Values):
@@ -85,8 +83,6 @@ def update_assembly_level(Values):
 				update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam,'SAQSCE')
 				if update_flag:
 					##Assembly level roll down
-					userId = User.Id
-					datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
 					where_cond = "SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
 					rolldown(where_cond)
 		##update chmaber as included for SAQSSE,SAQSCO and assembly rolldown
@@ -100,13 +96,9 @@ def update_assembly_level(Values):
 				NewValue = 'Chamber based'
 				update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam,'SAQSCE')
 				if update_flag:
-					##Assembly level roll down
-					userId = User.Id
-					datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
+					##Assembly level roll down					
 					where_cond = "SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
 					rolldown(where_cond)
-					
-
 	return True
 
 def edit_assembly_level(Values):
@@ -211,16 +203,14 @@ def child_ent_request(tableName,where,serviceId):
 							Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
 							cpsmatchID = cpsmatchID
 
-		getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
-		#cpsmatc_incr = cpsmatchID + 1
-		for data in getdata:
-			updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
+		# getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
+		# #cpsmatc_incr = cpsmatchID + 1
+		# for data in getdata:
+		updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
 	except Exception:
 		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
 	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 	return newConfigurationid,cpsmatchID
-
-
 
 def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=None,service_id=None,table_name=None):
 	#whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format('50243B0C-C53B-4BE5-8923-939BB9DCEB73','Z0007','100000181')
@@ -319,6 +309,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		#Log.Info('response2--182----267-----'+str(response2))
 		response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
 		Fullresponse= eval(response2)
+		Trace.Write("Fullresponse--"+str(Fullresponse))
 		##getting configuration_status status
 		if Fullresponse['complete'] == 'true':
 			configuration_status = 'COMPLETE'
@@ -330,7 +321,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		attributesdisallowedlst=[]
 		attributesallowedlst=[]
 		attributedefaultvalue = []
-		multi_value = get_tooltip_desc = ""
+		get_tooltip_desc = ""
 		overallattributeslist =[]
 		attributevalues={}
 		for rootattribute, rootvalue in Fullresponse.items():
@@ -338,7 +329,6 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				for Productattribute, Productvalue in rootvalue.items():
 					if Productattribute=="characteristics":
 						for prdvalue in Productvalue:
-							multi_value = ""
 							overallattributeslist.append(prdvalue['id'])
 							if prdvalue['visible'] =='false':
 								attributesdisallowedlst.append(prdvalue['id'])
@@ -363,9 +353,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 								attributevalues[str(prdvalue["id"])] = value_list
 								#Trace.Write('else if--chkbox--'+str(prdvalue["id"])+'--'+str(attributevalues[str(prdvalue["id"])]))
 							# else:
-							#     Trace.Write('else'+str(prdvalue["id"]))
-
-		
+							#     Trace.Write('else'+str(prdvalue["id"]))		
 		attributesallowedlst = list(set(attributesallowedlst))
 		overallattributeslist = list(set(overallattributeslist))
 		HasDefaultvalue=False
@@ -410,10 +398,8 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							ent_disp_val = ','.join(ent_disp_val)
 							ent_val_code = ','.join(ent_val_code)
 						else:
-							ent_disp_val = ent_val_code =''
-						
-					else:
-						
+							ent_disp_val = ent_val_code =''						
+					else:						
 						get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 						if get_display_val:
 							#ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
@@ -465,11 +451,8 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				#Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
 			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}',CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = GETDATE(),CONFIGURATION_STATUS = '{}' WHERE {} ".format(table_name, cpsmatc_incr,cpsConfigID,insertservice,User.Id,configuration_status,whereReq)
 			Trace.Write(str(whereReq)+'---Updatecps---'+str(Updatecps))
-			Sql.RunQuery(Updatecps)
-		
+			Sql.RunQuery(Updatecps)		
 		return True
-		#except Exception as e:
-			#Trace.Write("except---"+str(e))
 
 def rolldown(where_cond):
 	userId = User.Id
@@ -483,7 +466,6 @@ def rolldown(where_cond):
 		FROM SAQSCE (NOLOCK) SRC JOIN SAQSAE (NOLOCK) TGT 
 		ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE {} """.format(userId,datetimenow,where_cond)
 	Sql.RunQuery(update_query)
-
 
 TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 try:

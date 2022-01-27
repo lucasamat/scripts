@@ -34,7 +34,7 @@ class ContractQuoteSummaryUpdate:
 			Sql.RunQuery("""UPDATE SAQICO SET
 											SAQICO.YEAR_{Year} = CASE  
 												WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) >= {Count} 
-													THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100.0                                                   
+													THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0))/100.0                                                   
 												ELSE 0
 											END
 										FROM SAQICO (NOLOCK) 
@@ -49,15 +49,15 @@ class ContractQuoteSummaryUpdate:
 	
 	def _quote_item_lines_update(self):
 		decimal_discount = float(int(self.discount)) / 100.0
-		Sql.RunQuery("""UPDATE SAQICO SET
-										DISCOUNT = {Discount}
-									FROM SAQICO (NOLOCK)                                     
-									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
-										QuoteRecordId=self.contract_quote_record_id,
-										RevisionRecordId=self.quote_revision_record_id,
-										DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
-										Discount=self.discount)
-					)
+		# Sql.RunQuery("""UPDATE SAQICO SET
+		# 								DISCOUNT = {Discount}
+		# 							FROM SAQICO (NOLOCK)                                     
+		# 							WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
+		# 								QuoteRecordId=self.contract_quote_record_id,
+		# 								RevisionRecordId=self.quote_revision_record_id,
+		# 								DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
+		# 								Discount=self.discount)
+		# 			)
 		# Update Year2 to Year5 - Start
 	#COMMENTING since NET_VALUE IS REMOVED FROM SAQICO
 	#	self._update_year()
@@ -68,8 +68,8 @@ class ContractQuoteSummaryUpdate:
 	#								WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
 	#									QuoteRecordId=self.contract_quote_record_id,
 	#									RevisionRecordId=self.quote_revision_record_id 
-										)
-					)
+					# 					)
+					# )
 	
 	# def _quote_item_update(self):
 	# 	Sql.RunQuery("""UPDATE SAQITM
@@ -164,19 +164,14 @@ class ContractQuoteSummaryUpdate:
 	def CalculatePlusDiscount(self):
 		Trace.Write("Plus")
 		decimal_discount = float(self.discount) / 100.0
-		Sql.RunQuery("""UPDATE SAQICO SET										
-										SALES_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) + (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),									
-										DISCOUNT_AMOUNT_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0)  - ISNULL(SALES_PRICE_INGL_CURR,0),
+		Sql.RunQuery("""UPDATE SAQICO SET
 										NET_PRICE = '',
 										NET_PRICE_INGL_CURR = '',
-										DISCOUNT = '{plus}{Discount}'
 									FROM SAQICO (NOLOCK)                                     
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
 										QuoteRecordId=self.contract_quote_record_id,
 										RevisionRecordId=self.quote_revision_record_id,
-										DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
-										Discount=self.discount,
-										plus="+"))
+										DecimalDiscount=decimal_discount if decimal_discount > 0 else 1))
 
 		# Sql.RunQuery("""UPDATE SAQICO SET 
 		# 								NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
@@ -200,8 +195,7 @@ class ContractQuoteSummaryUpdate:
 							DISCOUNT = '{Discount}'					
 							FROM SAQIRT (NOLOCK)
 							INNER JOIN (SELECT SAQIRT.CpqTableEntryId,										
-										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.SALES_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as SALES_PRICE_INGL_CURR,										
-										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.DISCOUNT_AMOUNT_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as DISCOUNT_AMOUNT_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.SALES_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as SALES_PRICE_INGL_CURR,
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR
 										FROM SAQIRT (NOLOCK) 
 										JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQIRT.QUOTE_RECORD_ID  AND SAQICO.QTEREV_RECORD_ID = SAQIRT.QTEREV_RECORD_ID 
@@ -401,28 +395,15 @@ class ContractQuoteSummaryUpdate:
 		decimal_discount = float(int(self.discount)) / 100.0
 		Sql.RunQuery("""UPDATE SAQICO SET 
 										NET_PRICE = ISNULL(TARGET_PRICE,0) + (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
-										NET_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) + (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
-										YEAR_1 = ISNULL(TARGET_PRICE,0) + (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),	
-										DISCOUNT = '{plus}{Discount}'
+										YEAR_1 = ISNULL(TARGET_PRICE,0) + (ISNULL(TARGET_PRICE,0) * {DecimalDiscount})
 									FROM SAQICO (NOLOCK)                                     
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
 										QuoteRecordId=self.contract_quote_record_id,
 										RevisionRecordId=self.quote_revision_record_id,
-										DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
-										Discount=self.discount,
-										plus="+"))
+										DecimalDiscount=decimal_discount if decimal_discount > 0 else 1
+										))
 	#NET_VALUE REMOVAL FROM SAQICO
 		self._update_year()
-<<<<<<< Updated upstream
-		Sql.RunQuery("""UPDATE SAQICO SET 
-										NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0),
-										NET_VALUE_INGL_CURR = ''
-									FROM SAQICO (NOLOCK)                                     
-									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
-										QuoteRecordId=self.contract_quote_record_id,
-										RevisionRecordId=self.quote_revision_record_id 
-										))
-=======
 	#	Sql.RunQuery("""UPDATE SAQICO SET 
     #									NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0),
 	#									NET_VALUE_INGL_CURR = ISNULL(YEAR_1_INGL_CURR,0) + ISNULL(YEAR_2_INGL_CURR
@@ -432,7 +413,6 @@ class ContractQuoteSummaryUpdate:
 #										QuoteRecordId=self.contract_quote_record_id,
 #										RevisionRecordId=self.quote_revision_record_id 
 #										))
->>>>>>> Stashed changes
 		# Sql.RunQuery("""UPDATE SAQITM
 		# 					SET 
 		# 					NET_VALUE = IQ.NET_VALUE,

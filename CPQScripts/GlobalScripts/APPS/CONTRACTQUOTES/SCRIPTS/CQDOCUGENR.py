@@ -230,41 +230,34 @@ def englishdoc():
 	FROM QT__Billing_Matrix_Header
 	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '5' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
 
-
-
 	try:
 		Y1ED = GetYear1EndDate.LastUpdateDate
 		d1 = '{}-{}-{}'.format(Y1ED.Month, Y1ED.Day, Y1ED.Year)
-		Quote.SetGlobal('Year1EndDate', str(d1))
-		X = Quote.GetGlobal('Year1EndDate')
+		Quote.SetGlobal('Year1EndDate', str(d1))		
 	except:
 		pass
 	try:
 		Y2ED = GetYear2EndDate.LastUpdateDate
 		d2 = '{}-{}-{}'.format(Y2ED.Month, Y2ED.Day, Y2ED.Year)
-		Quote.SetGlobal('Year2EndDate', str(d2))
-		X = Quote.GetGlobal('Year2EndDate')
+		Quote.SetGlobal('Year2EndDate', str(d2))		
 	except:
 		pass
 	try:
 		Y3ED = GetYear3EndDate.LastUpdateDate
 		d3 = '{}-{}-{}'.format(Y3ED.Month, Y3ED.Day, Y3ED.Year)
-		Quote.SetGlobal('Year3EndDate', str(d3))
-		X = Quote.GetGlobal('Year3EndDate')
+		Quote.SetGlobal('Year3EndDate', str(d3))		
 	except:
 		pass
 	try:
 		Y4ED = GetYear4EndDate.LastUpdateDate
 		d4 = '{}-{}-{}'.format(Y4ED.Month, Y4ED.Day, Y4ED.Year)
-		Quote.SetGlobal('Year4EndDate', str(d4))
-		X = Quote.GetGlobal('Year4EndDate')
+		Quote.SetGlobal('Year4EndDate', str(d4))		
 	except:
 		pass
 	try:
 		Y5ED = GetYear5EndDate.LastUpdateDate
 		d5 = '{}-{}-{}'.format(Y5ED.Month, Y5ED.Day, Y5ED.Year)
-		Quote.SetGlobal('Year5EndDate', str(d5))
-		X = Quote.GetGlobal('Year5EndDate')
+		Quote.SetGlobal('Year5EndDate', str(d5))		
 	except:
 		pass
 
@@ -282,7 +275,7 @@ def englishdoc():
 	for i in QuoteproductTotals.Rows:
 		#Log.Info('inside SAQIFP for tool base quote')
 		extifp_price += float(i['UNIT_PRICE'])
-		fptotal += float(i['EXTENDED_UNIT_PRICE'] +(i['TAX']))
+		fptotal += float(i['EXTENDED_PRICE'] +(i['TAX']))
 		fptax += float(i['TAX'])
 		Quote.SetGlobal('Subtotaltoolsdoc', str(extifp_price))
 		Quote.SetGlobal('taxtoolsdoc', str(fptax))
@@ -290,9 +283,9 @@ def englishdoc():
 		Quote.SetGlobal('totalspareToolsdoc', str(fptotal))
 		#Log.Info('inside SAQIFP for tool base quote---totalspareToolsdoc-----'+str(fptotal))
 	#to insert in SAQIFP for tool base quote end
-	offerings_total = 0.00
-	decimal_place ="2"
-	oft = tax = totalprice = unoft = 0.00
+	# offerings_total = 0.00
+	# decimal_place ="2"
+	# oft = tax = totalprice = unoft = 0.00
 	# QuoteproductTotal = Quote.QuoteTables["SAQITM"]
 	# for i in QuoteproductTotal.Rows:
 		
@@ -352,14 +345,14 @@ def englishdoc():
 		doc_id = doc.Id
 		doc_name = doc.FileName
 		if fileName==doc_name:
-			quote_id = quoteid.QUOTE_ID
-			quote_name = quoteid.QUOTE_NAME
+			# quote_id = quoteid.QUOTE_ID
+			# quote_name = quoteid.QUOTE_NAME
 			#added_by = audit_fields.USERNAME
 			#modified_by = audit_fields.CpqTableEntryModifiedBy
 			#modified_date = audit_fields.CpqTableEntryDateModified
-			guid = str(Guid.NewGuid()).upper()
-			qt_rec_id = recid
-			date_added = doc.DateCreated
+			# guid = str(Guid.NewGuid()).upper()
+			# qt_rec_id = recid
+			# date_added = doc.DateCreated
 			""" tableInfo = SqlHelper.GetTable('SAQDOC')
 			row = {}	
 			row['QUOTE_DOCUMENT_RECORD_ID'] = guid
@@ -377,8 +370,7 @@ def englishdoc():
 			row['CpqTableEntryDateModified'] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 			tableInfo.AddRow(row)
 			SqlHelper.Upsert(tableInfo) """
-			update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE SAQDOC.DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND SAQDOC.STATUS = 'PENDING' AND SAQDOC.QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=recid,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)
-			Log.Info(update_query)
+			update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE SAQDOC.DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND SAQDOC.STATUS = 'PENDING' AND SAQDOC.QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=recid,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)			
 			Sql.RunQuery(update_query)
 			''' qtqdoc="""INSERT SAQDOC (
 						QUOTE_DOCUMENT_RECORD_ID,
@@ -415,7 +407,6 @@ def englishdoc():
 			Sql.RunQuery(qtqdoc) '''
 
 def chinesedoc():
-
 	quoteid = SqlHelper.GetFirst("SELECT QUOTE_ID, QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 	Quote=QuoteHelper.Edit(quoteid.C4C_QUOTE_ID)
 	qtqdoc="""INSERT SAQDOC (
@@ -622,42 +613,34 @@ def chinesedoc():
 	AS LastUpdateDate
 	FROM QT__Billing_Matrix_Header
 	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '5' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
-
-
-
 	try:
 		Y1ED = GetYear1EndDate.LastUpdateDate
 		d1 = '{}-{}-{}'.format(Y1ED.Month, Y1ED.Day, Y1ED.Year)
-		Quote.SetGlobal('Year1EndDate', str(d1))
-		X = Quote.GetGlobal('Year1EndDate')
+		Quote.SetGlobal('Year1EndDate', str(d1))		
 	except:
 		pass
 	try:
 		Y2ED = GetYear2EndDate.LastUpdateDate
 		d2 = '{}-{}-{}'.format(Y2ED.Month, Y2ED.Day, Y2ED.Year)
-		Quote.SetGlobal('Year2EndDate', str(d2))
-		X = Quote.GetGlobal('Year2EndDate')
+		Quote.SetGlobal('Year2EndDate', str(d2))		
 	except:
 		pass
 	try:
 		Y3ED = GetYear3EndDate.LastUpdateDate
 		d3 = '{}-{}-{}'.format(Y3ED.Month, Y3ED.Day, Y3ED.Year)
-		Quote.SetGlobal('Year3EndDate', str(d3))
-		X = Quote.GetGlobal('Year3EndDate')
+		Quote.SetGlobal('Year3EndDate', str(d3))		
 	except:
 		pass
 	try:
 		Y4ED = GetYear4EndDate.LastUpdateDate
 		d4 = '{}-{}-{}'.format(Y4ED.Month, Y4ED.Day, Y4ED.Year)
-		Quote.SetGlobal('Year4EndDate', str(d4))
-		X = Quote.GetGlobal('Year4EndDate')
+		Quote.SetGlobal('Year4EndDate', str(d4))		
 	except:
 		pass
 	try:
 		Y5ED = GetYear5EndDate.LastUpdateDate
 		d5 = '{}-{}-{}'.format(Y5ED.Month, Y5ED.Day, Y5ED.Year)
-		Quote.SetGlobal('Year5EndDate', str(d5))
-		X = Quote.GetGlobal('Year5EndDate')
+		Quote.SetGlobal('Year5EndDate', str(d5))		
 	except:
 		pass
 	
@@ -666,11 +649,9 @@ def chinesedoc():
 		Quote.GetCustomField('CustomerPO').Content = str(PO_n.PO_NUMBER)
 	except:
 		pass
-
-
-	offerings_total = 0
-	decimal_place ="2"
-	oft = tax = totalprice =unoft =  0.00
+	# offerings_total = 0
+	# decimal_place ="2"
+	# oft = tax = totalprice =unoft =  0.00
 	
 	# QuoteproductTotal = Quote.QuoteTables["SAQITM"]
 	# for i in QuoteproductTotal.Rows:
@@ -714,14 +695,14 @@ def chinesedoc():
 		doc_id = doc.Id
 		doc_name = doc.FileName
 		if fileName==doc_name:
-			quote_id = quoteid.QUOTE_ID
-			quote_name = quoteid.QUOTE_NAME
+			# quote_id = quoteid.QUOTE_ID
+			# quote_name = quoteid.QUOTE_NAME
 			#added_by = audit_fields.USERNAME
 			#modified_by = audit_fields.CpqTableEntryModifiedBy
 			#modified_date = audit_fields.CpqTableEntryDateModified
-			guid = str(Guid.NewGuid()).upper()
-			qt_rec_id = recid
-			date_added = doc.DateCreated
+			# guid = str(Guid.NewGuid()).upper()
+			# qt_rec_id = recid
+			# date_added = doc.DateCreated
 			""" tableInfo = SqlHelper.GetTable('SAQDOC')
 			row = {}
 			row['QUOTE_DOCUMENT_RECORD_ID'] = guid
@@ -775,12 +756,9 @@ def chinesedoc():
 			#Log.Info(qtqdoc)
 			Sql.RunQuery(qtqdoc) '''
 
-
 def fpmdoc():
 	quoteid = SqlHelper.GetFirst("SELECT QUOTE_ID, QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
-	Log.Info("FPM QUOTE"+str(recid))
-	Quote=QuoteHelper.Edit(quoteid.C4C_QUOTE_ID)
-	Log.Info("FPM QUOTE---775---"+str(recid))
+	Quote=QuoteHelper.Edit(quoteid.C4C_QUOTE_ID)	
 	qtqdoc="""INSERT SAQDOC (
 						QUOTE_DOCUMENT_RECORD_ID,
 						DOCUMENT_ID,
@@ -811,21 +789,18 @@ def fpmdoc():
 						'{UserId}' as CpqTableEntryModifiedBy,
 						'{date}' as CpqTableEntryDateModified,
 						'PENDING' as STATUS
-						FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(quoteid=quoteid.QUOTE_ID,quotename=quoteid.QUOTE_NAME,quoterecid=recid,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
-	Log.Info(qtqdoc)
+						FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(quoteid=quoteid.QUOTE_ID,quotename=quoteid.QUOTE_NAME,quoterecid=recid,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))	
 	Sql.RunQuery(qtqdoc)
 	
 	try:
 		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 		Quote.GetCustomField('CustomerPO').Content = str(PO_n.PO_NUMBER)
 	except:
-		pass	
+		pass
 
-	
-
-	offerings_total = 0
-	decimal_place ="2"
-	oft = tax = totalprice = unoft = 0.00
+	# offerings_total = 0
+	# decimal_place ="2"
+	# oft = tax = totalprice = unoft = 0.00
 	
 	# QuoteproductTotal = Quote.QuoteTables["SAQITM"]
 	# for i in QuoteproductTotal.Rows:
@@ -849,14 +824,14 @@ def fpmdoc():
 		doc_id = doc.Id
 		doc_name = doc.FileName
 		if fileName==doc_name:
-			quote_id = quoteid.QUOTE_ID
-			quote_name = quoteid.QUOTE_NAME
+			# quote_id = quoteid.QUOTE_ID
+			# quote_name = quoteid.QUOTE_NAME
 			#added_by = audit_fields.USERNAME
 			#modified_by = audit_fields.CpqTableEntryModifiedBy
 			#modified_date = audit_fields.CpqTableEntryDateModified
-			guid = str(Guid.NewGuid()).upper()
-			qt_rec_id = recid
-			date_added = doc.DateCreated
+			# guid = str(Guid.NewGuid()).upper()
+			# qt_rec_id = recid
+			# date_added = doc.DateCreated
 			""" tableInfo = SqlHelper.GetTable('SAQDOC')
 			row = {}
 			row['QUOTE_DOCUMENT_RECORD_ID'] = guid
@@ -926,53 +901,49 @@ def popup():
 	return sec_str
 
 def warning():
-
 	sec_str = ""
 	sec_str += """<div id="Headerbnr" class="mart_col_back disp_blk"><div class="col-md-12" id="PageAlert"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert_notifcatio6" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down"></i><i class="pull-right fa fa-chevron-up"></i></div><div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-warning"><label title=" Warning: Please select a valid document language from the list before generating."><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Info"> Warning: Please select a valid document language from the list before generating.</label></div></div></div></div>"""
 	return sec_str
-def submit_to_customer(doc_rec_id):
-	Trace.Write("cm to this function=====")
-	submitted_date = ""
-	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
-	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 
+def submit_to_customer(doc_rec_id):
+	Trace.Write("cm to this function=====")		
+	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_SUBMITTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y")))
-	Sql.RunQuery(update_submitted_date)
-	
+	Sql.RunQuery(update_submitted_date)	
 	return True
 
 def customer_accepted(doc_rec_id):
-	Trace.Write("cm to this acceptedfunction=====")	
-	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	Trace.Write("cm to this acceptedfunction=====")		
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
-
 	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET ACCEPTED = 'TRUE', DATE_ACCEPTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y"),))
 	Sql.RunQuery(update_submitted_date)
-	
+	output_doc_query = Sql.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+	if output_doc_query:
+		if str(output_doc_query.DATE_ACCEPTED) != "":			
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CUSTOMER ACCEPTED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+			Sql.RunQuery(update_revision_status)	
 	return True
 
 def customer_rejected(doc_rec_id):
 	Trace.Write("cm to this rejectedfunction=====")
-	submitted_date = ""
-	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-	output_doc_query = SqlHelper.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 
 	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_REJECTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y")))
 	Sql.RunQuery(update_submitted_date)
-	
+
+	output_doc_query = Sql.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+	if output_doc_query:
+		if str(output_doc_query.DATE_REJECTED) != "":
+			Trace.Write("DATE_REJ"+str(output_doc_query.DATE_REJECTED))
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CUSTOMER REJECTED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+			Sql.RunQuery(update_revision_status)	
 	return True
 
 def save_document_description(doc_desc_val,doc_rec_id):
-	Trace.Write("cm to this savefunction=====")
-	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
-	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-	document_record_info = Sql.GetFirst("SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+	Trace.Write("cm to this savefunction=====")	
+	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")	
 	update_document_description = Sql.RunQuery("""UPDATE SAQDOC SET DOCUMENT_DESCRIPTION = '{description}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,description = doc_desc_val))
 	Sql.RunQuery(update_document_description)
-
 	return True
 
 try:

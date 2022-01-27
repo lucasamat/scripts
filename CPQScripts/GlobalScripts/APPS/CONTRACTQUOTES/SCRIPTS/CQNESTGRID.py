@@ -425,6 +425,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		data_dict["WARRANTY_END_DATE"] = ('<abbr id ="" title="' + str(par.WARRANTY_END_DATE) + '">' + str(par.WARRANTY_END_DATE) + "</abbr>")
 		data_list.append(data_dict)
 		# Trace.Write("data_dict||data_dict||data_dict"+str(data_dict))
+	
 	hyper_link = ["QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID"]
 	if TreeTopSuperParentParam == "Fab Locations" and ("Sending Account -" in TreeSuperParentParam) or ("Receiving Account -" in TreeSuperParentParam):
 		ParentObj = Sql.GetList(
@@ -3844,10 +3845,22 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	obj_idval = "SYOBJ_00974_SYOBJ_00974"
 	rec_id = "SYOBJ_00974"
 	obj_id = "SYOBJ-00974"
-	if str(SortColumn)!='' and str(SortColumnOrder)!='':
+	if str(SortColumn) == "SSCM_PM_FREQUENCY" or str(SortColumn) == "PM_FREQUENCY":
+		sort_by = " ORDER BY CAST("+str(SortColumn)+" AS FLOAT) "+str(SortColumnOrder)
+	elif str(SortColumn)!='' and str(SortColumnOrder)!='':
 		sort_by = " ORDER BY "+str(SortColumn)+" "+str(SortColumnOrder)
 	else:
 		sort_by = ' ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID'
+	where_string = ""
+	if A_Keys != "" and A_Values != "":
+		A_Keys = list(A_Keys)
+		A_Values = list(A_Values)
+		for key, value in zip(A_Keys, A_Values):
+			if value.strip():
+				if where_string:
+					where_string += " AND "
+				where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
+	where_string += " AND " if str(where_string)!="" else ""
 	objh_getid = Sql.GetFirst(
 		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
 	)
@@ -3925,17 +3938,18 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' "
 		)
 	elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
+		offset = int(Page_start)-1
 		Qstr = (
-			"select QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GOT_CODE,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+			"select QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GOT_CODE,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQSAP (NOLOCK) where "+str(where_string)+" QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam).split('-')[0]
-			+ "' "+str(sort_by)+" OFFSET "+str(Page_start)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
+			+ "' "+str(sort_by)+" OFFSET "+str(offset)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
 		)
 		QueryCountObj = Sql.GetFirst(
-			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where "+str(where_string)+" QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -4082,7 +4096,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		+ str(ASSEMBLYID)
 		+'", "EQUIPMENTID" : "'
 		+ str(EQUIPMENTID)
-		+'"}, function(dataset) { data2 = dataset[1];  data1 = dataset[0]; data3 = dataset[2]; console.log("len ---->"+data1.length);  try { if(data1.length > 0) { $("#' + str(tbl_id) + '").bootstrapTable("load", data1 );$("#noRecDisp").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;}} else{ $("#' + str(tbl_id) + '").bootstrapTable("load", data1  );$("#' + str(tbl_id) + '").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;} }} catch(err){} }); filter_search_click();$(".JColResizer").mousedown(function(){ $("thead.fullHeadFirst").css("cssText","z-index: 2;border-top: 1px solid rgb(220, 220, 220);top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","none"); });$(".JColResizer").mouseup(function(){ var th_width_resize = [];$("#table_Preventive_Maintainence_parent thead.fullHeadFirst tr th").each(function(index){var wid = $(this).css("width"); if(index ==0 || index ==1){th_width_resize.push("60px");}else{th_width_resize.push(wid);}}); $("thead.fullHeadFirst").css("cssText","position: fixed;z-index: 2;border-top: 1px solid rgb(220, 220, 220); top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","table-header-group");$("#table_Preventive_Maintainence_parent thead.fullHeadFirst tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);});$("#table_Preventive_Maintainence_parent thead.fullHeadSecond tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);}); });});'
+		+'"}, function(dataset) {debugger;console.log(dataset); data2 = dataset[1];  data1 = dataset[0]; data3 = dataset[2]; console.log("len ---->"+data1.length);  try { if(data1.length > 0) { $("#' + str(tbl_id) + '").bootstrapTable("load", data1 );$("#noRecDisp").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;}} else{ $("#' + str(tbl_id) + '").bootstrapTable("load", data1  );$("#' + str(tbl_id) + '").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;} }} catch(err){} }); filter_search_click();$(".JColResizer").mousedown(function(){ $("thead.fullHeadFirst").css("cssText","z-index: 2;border-top: 1px solid rgb(220, 220, 220);top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","none"); });$(".JColResizer").mouseup(function(){ var th_width_resize = [];$("#table_Preventive_Maintainence_parent thead.fullHeadFirst tr th").each(function(index){var wid = $(this).css("width"); if(index ==0 || index ==1){th_width_resize.push("60px");}else{th_width_resize.push(wid);}}); $("thead.fullHeadFirst").css("cssText","position: fixed;z-index: 2;border-top: 1px solid rgb(220, 220, 220); top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","table-header-group");$("#table_Preventive_Maintainence_parent thead.fullHeadFirst tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);});$("#table_Preventive_Maintainence_parent thead.fullHeadSecond tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);}); });});'
 	)
 
 	### editablity in Grid 
@@ -4756,10 +4770,12 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 	can_delete = str(objs_obj.CAN_DELETE)
 
 	orderby = ""
-	if SortColumn != '' and SortColumnOrder !='':
+	if str(SortColumn) == "SSCM_PM_FREQUENCY" or str(SortColumn) == "PM_FREQUENCY":
+		orderby = " CAST("+str(SortColumn)+" AS FLOAT) "+str(SortColumnOrder)
+	elif SortColumn != '' and SortColumnOrder !='':
 		orderby = SortColumn + " " + SortColumnOrder
 	else:
-		orderby = "QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"
+		orderby = "QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"	
 
 
 	if ATTRIBUTE_VALUE is None or ATTRIBUTE_VALUE == "" or ATTRIBUTE_VALUE_STR is None or ATTRIBUTE_VALUE_STR == "":
@@ -5191,6 +5207,7 @@ def GetAssembliesMaster(PerPage, PageInform, A_Keys, A_Values):
 		data_dict["WARRANTY_END_DATE"] = str(par.WARRANTY_END_DATE)
 		data_list.append(data_dict)
 
+	
 	hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
 	table_header += "<tr>"
 	table_header += (
@@ -6949,7 +6966,26 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		#data_dict["CONTRACT_END_DATE"] = ('<abbr id ="" title="' + str(par.CONTRACT_END_DATE) + '">' + str(par.CONTRACT_END_DATE) + "</abbr>")
 		data_list.append(data_dict)
 	Trace.Write('data_list--'+str(data_list))
-	hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
+	Hyperlink = " "
+	if	Product.GetGlobal("TreeParam") == 'Z0009' or Product.GetGlobal("TreeParentLevel0") == 'Z0009':
+		import re
+		get_entitlement_xml =SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId=Quote.GetGlobal("quote_revision_record_id"), service_id = 'Z0009' ))
+		if get_entitlement_xml:
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Event Based|Flex Event Based)</ENTITLEMENT_DISPLAY_VALUE>')
+			updateentXML = get_entitlement_xml.ENTITLEMENT_XML
+			for m in re.finditer(pattern_tag, updateentXML):
+				sub_string = m.group(1)
+				get_ent_id =re.findall(pattern_id,sub_string)
+				get_ent_name=re.findall(pattern_name,sub_string)
+				if get_ent_id and get_ent_name:
+					Hyperlink = "No"
+					break
+	if Hyperlink == "No":
+		hyper_link = [" "]
+	else:
+		hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
 	table_header += "<tr>"
 	table_header += (
 		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'

@@ -1,6 +1,6 @@
 # ====================================================================================================
 #   __script_name : CQTRSSCMPR.PY
-#   __script_description : This script is used to do the trigger the sscm pricing call
+#   __script_description : This script is used to do the trigger the sscm pricing call by clicking on the complete stage button when all the product offerings are complete.
 #   __primary_author__ : GAYATHRI AMARESAN
 #   __create_date : 06/12/2021
 #   © BOSTON HARBOR CONSULTING INC - ALL RIGHTS RESERVED
@@ -66,7 +66,8 @@ class pricing_call:
                                 #Trace.Write("greenbook_entitlement_object_sscm_pricing_call  "+str(greenbook_entitlement_object_sscm_pricing_call))
                                 break
                     if (service_entitlement_object_sscm_pricing_call != "NO")or (greenbook_entitlement_object_sscm_pricing_call != "NO"):
-                        ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.contract_quote_revision_id, 'Fun_type':'cpq_to_sscm'})
+                        #ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.contract_quote_revision_id, 'Fun_type':'cpq_to_sscm'})
+                        Trace.Write("commented the pricing call")
         return True
 
 

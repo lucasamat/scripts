@@ -9,16 +9,10 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import clr
 import System.Net
 import sys
-#import sys
-import datetime
-#import clr
-#import System.Net
-from System.Text.Encoding import UTF8
-from System import Convert
-#from SYDATABASE import SQL
 from SYDATABASE import SQL
 
 Sql = SQL()
+
 def docgeneration(quote,language,quote_revision_record_id):
     requestdata = (
         '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><Quote>'
@@ -28,8 +22,7 @@ def docgeneration(quote,language,quote_revision_record_id):
         +"</Language><QuoteRevision>"
         + str(quote_revision_record_id)
         +"</QuoteRevision></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
-    )
-    Log.Info("2222222222222222      " + str(requestdata))
+    )    
     LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='SAQDOC'")
     LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
     if LOGIN_CREDENTIALS is not None:
@@ -44,7 +37,7 @@ def docgeneration(quote,language,quote_revision_record_id):
 
         authorization = Convert.ToBase64String(binaryAuthorization)
         authorization = "Basic " + authorization
-    Log.Info("testing.............")
+    
     webclient = System.Net.WebClient()
     webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
     webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization

@@ -1,16 +1,16 @@
 # =========================================================================================================================================
 #   __script_name : CQENANCOPR.py
 #   __script_description : THIS SCRIPT IS USED FOR ANCILLARY PRODUCT OPERATIONS(insert,roll down)
-#   __primary_author__ : 
+#   __primary_author__ : SELVI
 #   __create_date :8/23/2021
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import System.Net
 import re
-import time
 import datetime
 import sys
 from SYDATABASE import SQL
+
 Sql = SQL()
 
 class AncillaryProductOperation:
@@ -42,7 +42,6 @@ class AncillaryProductOperation:
 		if self.tablename in ("SAQSAE"):
 			pattern = re.compile(r''+str('ASSEMBLY_ID')+'\s*\=\s*\'([^>]*?)\'')
 			self.assembly = re.search(pattern, self.where_string).group(1)
-
 	
 	def _do_opertion(self):
 		if self.action_type == "INSERT_SERVICE":
@@ -62,8 +61,6 @@ class AncillaryProductOperation:
 			self._entitlement_rolldown()
 		# elif self.action_type == "DELETE_ENT_EQUIPMENT":
 		# 	self._delete_entitlement_tables()
-		
-
 
 	def _insert_service_offering(self):
 		material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION,MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(self.ancillary_obj))
@@ -77,8 +74,7 @@ class AncillaryProductOperation:
 							SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID,UOM_RECORD_ID, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, '{ancillary_object}' AS SERVICE_ID,SERVICE_ID as PAR_SERVICE_ID,SERVICE_DESCRIPTION AS PAR_SERVICE_DESCRIPTION,QUOTE_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID, '{material_record_id}' AS SERVICE_RECORD_ID, '' AS SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
 							WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' 
 							) A""".format(description=description, service_id = self.service_id, material_record_id = material_record_id,QuoteRecordId = self.contract_quote_record_id, RevisionRecordId = self.contract_quote_revision_record_id ,UserName = self.user_name, UserId = self.user_id, ancillary_object = self.ancillary_obj ))
-			
-						
+									
 	def _insert_fab(self):
 		get_service_details = Sql.GetFirst("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
 		Sql.RunQuery(
@@ -166,8 +162,7 @@ class AncillaryProductOperation:
 									addtional_where = " AND FABLOCATION_ID = '{}'".format(self.fab) if self.fab else "",
 									service_type = ""
 								)
-				)
-				
+				)				
 		
 	def _insert_grn(self):
 		addtional_where = ""
@@ -243,8 +238,7 @@ class AncillaryProductOperation:
 							rec = get_service_details.SERVICE_RECORD_ID,
 							addtional_where = addtional_where 
 						)
-			)
-		
+			)		
 	
 	def _equipment_insert(self):
 		addtional_where = ""
@@ -364,8 +358,7 @@ class AncillaryProductOperation:
 						
 						addtional_where = addtional_where 
 					)
-					)
-	
+					)	
 
 	def _insert_assembly(self):
 		addtional_where = ""
@@ -488,12 +481,11 @@ class AncillaryProductOperation:
 						
 						addtional_where = addtional_where 
 			)
-		) 
-		
+		) 		
 
 	def _insert_service_ent(self):
 		get_service_details = Sql.GetList("SELECT SAQTSV.* FROM SAQTSV INNER JOIN MAMTRL ON SAP_PART_NUMBER = SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'  AND PAR_SERVICE_ID = '{}' AND MATERIALCONFIG_TYPE != 'SIMPLE MATERIAL'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
-		anc_insert_dict ={}
+		# anc_insert_dict ={}
 		for addon in get_service_details:
 			ent_disp_val = ent_val_code = AttributeID_Pass = NewValue = ''
 			get_tooltip = ''
@@ -515,15 +507,10 @@ class AncillaryProductOperation:
 			attributesallowedlst=[]
 			attributedefaultvalue = []
 			overallattributeslist =[]
-			attributevalues={}
-			
-		
-				
+			attributevalues={}				
 			#if get_service_details : 
 			ProductVersionObj=Sql.GetFirst("Select product_id AS PRD_ID from product_versions(nolock) where SAPKBId = '"+str(anc_fullresponse['kbId'])+"' AND SAPKBVersion='"+str(anc_fullresponse['kbKey']['version'])+"'")
-			
 			get_existing_record = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,addon.SERVICE_ID, self.service_id))
-
 			HasDefaultvalue=False
 			for rootattribute, rootvalue in anc_fullresponse.items():
 				if rootattribute=="rootItem":
@@ -571,11 +558,11 @@ class AncillaryProductOperation:
 							get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 							ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
 							
-							getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
-							if getslaes_value:
-								getquote_sales_val = getslaes_value.SALESORG_ID
-							get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
-							get_il_sales_list = [value.SALESORG_ID for value in get_il_sales]
+							# getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
+							# if getslaes_value:
+							# 	getquote_sales_val = getslaes_value.SALESORG_ID
+							# get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+							# get_il_sales_list = [value.SALESORG_ID for value in get_il_sales]
 					DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 					if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME:
 						ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
@@ -587,8 +574,7 @@ class AncillaryProductOperation:
 					
 					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS & PENALTY TIED TO KPI":
 						if str(addon.PAR_SERVICE_ID) == "Z0091":
-							AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
-						
+							AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'						
 							NewValue = 'Yes'
 					# entitlement_obj = Sql.GetFirst("select ENTITLEMENT_ID,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {table_name} (nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' and SERVICE_ID = '{service_id}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where  ( ENTITLEMENT_ID like '{att_id}')".format(table_name = 'SAQTSE' ,contract_quote_record_id = self.contract_quote_record_id,quote_revision_record_id = self.contract_quote_revision_record_id,service_id = 'Z0091',att_id = 'AGS_'+str(addon.PAR_SERVICE_ID)+'_PQB_PPCPRM'))
 					#if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "PRICE PER CRITICAL PARAMETER":
@@ -611,8 +597,6 @@ class AncillaryProductOperation:
 					<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 					</QUOTE_ITEM_ENTITLEMENT>
 					""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ent_desc, tool_desc = get_tooltip.replace("'","''") if "'" in get_tooltip else get_tooltip,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
-
-				
 				tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
 				tbrow["QUOTE_ID"]=addon.QUOTE_ID
 				tbrow["ENTITLEMENT_XML"]=insertservice
@@ -639,12 +623,10 @@ class AncillaryProductOperation:
 				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
-				Log.Info('656---verify ancillary insert--')
 				if addon.PAR_SERVICE_ID and NewValue == "Yes":
 					#ancillary insert based on aprent insert start
 					try:						
 						add_where =''
-						Log.Info('656--661---verify ancillary insert--')
 						ServiceId = addon.SERVICE_ID
 						whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(addon.QUOTE_RECORD_ID,addon.SERVICE_ID,self.contract_quote_revision_record_id)
 						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
@@ -687,12 +669,10 @@ class AncillaryProductOperation:
 
 				# except:
 				# 	Trace.Write('592----------')
-					
-	
+
 	def _update_entitlement(self):
 		#Log.Info('attr--685--ttributeList----'+str(self.attributeList))
-		attr_id = value_application = ''
-
+		# attr_id = value_application = ''
 		try:
 			#Log.Info('636--646--700--'+str(self.contract_quote_record_id))
 			get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
@@ -718,7 +698,7 @@ class AncillaryProductOperation:
 								AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
 							elif str(val.ENTITLEMENT_ID) == "AGS_{}_PQB_PPCPRM".format(self.service_id) and NewValue == "Yes":
 								AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
-								value_application = 'YES'
+								# value_application = 'YES'
 							else:
 								if 'AGS_Z0046' in val.ENTITLEMENT_ID:
 									ServiceId = 'Z0046'
@@ -729,6 +709,9 @@ class AncillaryProductOperation:
 								elif 'AGS_Z0100' in val.ENTITLEMENT_ID:
 									ServiceId = 'Z0100'
 									AttributeID_Pass = val.ENTITLEMENT_ID
+								# if 'AGS_Z0091_PRODUCT_TYPE' in val.ENTITLEMENT_ID:
+								# 	AttributeID_Pass = val.ENTITLEMENT_ID
+								# 	ServiceId = 'Z0101'
 							if AttributeID_Pass:
 								#ServiceId = 'Z0046'
 							
@@ -768,7 +751,7 @@ class AncillaryProductOperation:
 
 		ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 		for obj in delete_obj_list:
-			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where})".format(obj = obj, where=  ancillary_where, par_where = self.where_string ))
+			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where}) AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE QUOTE_RECORD_ID='{quote_rec_id}' and SERVICE_ID = '{service_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' )".format(obj = obj, where=  ancillary_where, par_where = self.where_string ,quote_rec_id= self.contract_quote_record_id,revision_rec_id = self.contract_quote_revision_record_id,service_id = self.service_id ))
 
 	def _entitlement_rolldown(self):
 		try:
@@ -788,8 +771,7 @@ class AncillaryProductOperation:
 			get_ancillaryservice = Sql.GetFirst("select * from SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
 			#QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND SERVICE_ID ='{par_service_id}' {addtional_where}
 		
-			if get_ancillaryservice :
-				
+			if get_ancillaryservice :				
 				# get_ancillary_fab = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSFE WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' {}".format(self.contract_quote_record_id, self.contract_quote_revision_record_id, self.service_id, addtional_where))
 				# if get_ancillary_fab:
 				# 	if get_ancillary_fab.cnt == 0:
@@ -858,7 +840,7 @@ class AncillaryProductOperation:
 				# 	JOIN SAQSGE ON SAQSGE.SERVICE_ID = SAQSCO.PAR_SERVICE_ID AND SAQSCO.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID AND SAQSGB.GREENBOOK_RECORD_ID = SAQSGE.GREENBOOK_RECORD_ID
 					
 				# 	WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}'  AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.PAR_SERVICE_ID = '{par_service_id}'  AND ISNULL(SAQSGE.CONFIGURATION_STATUS,'') = 'COMPLETE' AND SAQSCO.GREENBOOK not in (SELECT GREENBOOK FROM SAQSGE M WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{revision_rec_id}' AND M.SERVICE_ID = SAQTSE.SERVICE_ID AND PAR_SERVICE_ID = '{par_service_id}') ) IQ JOIN SAQSFE (NOLOCK) M ON IQ.QTSFBLENT_RECORD_ID = QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID )OQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, revision_rec_id = self.contract_quote_revision_record_id,par_service_id = self.service_id)
-				Log.Info("qtqsge_query_anc---163------"+str(qtqsge_query_anc))
+				
 				Sql.RunQuery(qtqsge_query_anc)
 				
 				# get_ancillary_equp = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSCE WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' {}".format(self.contract_quote_record_id, self.contract_quote_revision_record_id, self.service_id, addtional_where))
@@ -876,7 +858,7 @@ class AncillaryProductOperation:
 					JOIN SAQSCE ON SAQTSE.PAR_SERVICE_ID = SAQSCE.SERVICE_ID AND SAQSCO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID  AND SAQSCO.EQUIPMENT_ID = SAQSCE.EQUIPMENT_ID
 
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS,'') = 'COMPLETE' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.PAR_SERVICE_ID = '{par_service_id}' AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'   AND QTEREV_RECORD_ID = '{revision_rec_id}' AND SERVICE_ID = SAQTSE.SERVICE_ID AND PAR_SERVICE_ID = '{par_service_id}')) IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, ServiceId=self.ancillary_obj, revision_rec_id = self.contract_quote_revision_record_id,par_service_id = self.service_id)
-				Log.Info('@qtqsce_anc_query-renewal----179=---Qt_rec_id--'+str(qtqsce_anc_query))
+				
 				Sql.RunQuery(qtqsce_anc_query)
 
 				# Sql.RunQuery("""UPDATE SAQSCE
@@ -891,13 +873,10 @@ class AncillaryProductOperation:
 				# 					WHERE SRC.QUOTE_RECORD_ID = '{QuoteRecordId}'   AND SRC.QTEREV_RECORD_ID = '{revision_rec_id}' AND SRC.PAR_SERVICE_ID = '{service_id}' )AS IQ
 				# 				)AS OQ
 				# 				ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML AND OQ.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID""".format(QuoteRecordId=self.contract_quote_record_id , revision_rec_id = self.contract_quote_revision_record_id ,service_id = self.service_id ))
-			
-
 				# Duplicate records removed from assembly level entitlement in offering - Start
 				Sql.RunQuery("""DELETE FROM SAQSAE  WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' {}""".format(self.contract_quote_record_id, self.contract_quote_revision_record_id, self.service_id, addtional_where))
 				# Duplicate records removed from assembly level entitlement in offering - End
-				saqsae_insert = """INSERT SAQSAE (KB_VERSION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,QTESRVCOA_RECORD_ID,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,PAR_SERVICE_DESCRIPTION,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_XML,CONFIGURATION_STATUS,QTESRVCOE_RECORD_ID,QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT IQ.*,M.ENTITLEMENT_XML,M.CONFIGURATION_STATUS,M.QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID as QTESRVCOE_RECORD_ID FROM ( SELECT DISTINCT SAQTSE.KB_VERSION,SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQTSE.QTEREV_RECORD_ID,SAQTSE.QTEREV_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQTSE.CPS_MATCH_ID,SAQSCA.GREENBOOK,SAQSCA.GREENBOOK_RECORD_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_DESCRIPTION,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID as QTESRVCOA_RECORD_ID,SAQSCA.PAR_SERVICE_ID,SAQSCA.PAR_SERVICE_RECORD_ID,SAQSCA.PAR_SERVICE_DESCRIPTION ,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID FROM SAQTSE (NOLOCK) JOIN (SELECT * FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCA.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQSCA.PAR_SERVICE_ID = '{par_service_id}' ) SAQSCA ON SAQTSE.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTSE.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID  AND SAQTSE.PAR_SERVICE_ID = SAQSCA.PAR_SERVICE_ID AND SAQTSE.SERVICE_ID = SAQSCA.SERVICE_ID JOIN SAQSAE ON SAQSAE.SERVICE_ID = SAQSCA.PAR_SERVICE_ID AND SAQSCA.QUOTE_RECORD_ID = SAQSAE.QUOTE_RECORD_ID AND SAQSCA.QTEREV_RECORD_ID = SAQSAE.QTEREV_RECORD_ID AND SAQSAE.EQUIPMENT_ID = SAQSCA.EQUIPMENT_ID  WHERE  SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQSCA.PAR_SERVICE_ID = '{par_service_id}' AND ISNULL(SAQSAE.CONFIGURATION_STATUS,'') = 'COMPLETE' ) IQ JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID AND M.PAR_SERVICE_ID = IQ.PAR_SERVICE_ID )IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, par_service_id=self.service_id, revision_rec_id = self.contract_quote_revision_record_id)
-				Log.Info('saqsae_insert--393--renewal-1881-----'+str(saqsae_insert))
+				saqsae_insert = """INSERT SAQSAE (KB_VERSION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,QTESRVCOA_RECORD_ID,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,PAR_SERVICE_DESCRIPTION,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_XML,CONFIGURATION_STATUS,QTESRVCOE_RECORD_ID,QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT IQ.*,M.ENTITLEMENT_XML,M.CONFIGURATION_STATUS,M.QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID as QTESRVCOE_RECORD_ID FROM ( SELECT DISTINCT SAQTSE.KB_VERSION,SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQTSE.QTEREV_RECORD_ID,SAQTSE.QTEREV_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQTSE.CPS_MATCH_ID,SAQSCA.GREENBOOK,SAQSCA.GREENBOOK_RECORD_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_DESCRIPTION,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID as QTESRVCOA_RECORD_ID,SAQSCA.PAR_SERVICE_ID,SAQSCA.PAR_SERVICE_RECORD_ID,SAQSCA.PAR_SERVICE_DESCRIPTION ,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID FROM SAQTSE (NOLOCK) JOIN (SELECT * FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCA.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQSCA.PAR_SERVICE_ID = '{par_service_id}' ) SAQSCA ON SAQTSE.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTSE.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID  AND SAQTSE.PAR_SERVICE_ID = SAQSCA.PAR_SERVICE_ID AND SAQTSE.SERVICE_ID = SAQSCA.SERVICE_ID JOIN SAQSAE ON SAQSAE.SERVICE_ID = SAQSCA.PAR_SERVICE_ID AND SAQSCA.QUOTE_RECORD_ID = SAQSAE.QUOTE_RECORD_ID AND SAQSCA.QTEREV_RECORD_ID = SAQSAE.QTEREV_RECORD_ID AND SAQSAE.EQUIPMENT_ID = SAQSCA.EQUIPMENT_ID  WHERE  SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQSCA.PAR_SERVICE_ID = '{par_service_id}' AND ISNULL(SAQSAE.CONFIGURATION_STATUS,'') = 'COMPLETE' ) IQ JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID AND M.PAR_SERVICE_ID = IQ.PAR_SERVICE_ID )IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, par_service_id=self.service_id, revision_rec_id = self.contract_quote_revision_record_id)				
 				Sql.RunQuery(saqsae_insert)
 
 		except Exception as e:
@@ -917,16 +896,12 @@ class AncillaryProductOperation:
 		
 		ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 		for obj in delete_obj_list:
-			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where} AND CONFIGURATION_STATUS ='INCOMPLETE')".format(obj = obj, where=  ancillary_where, par_where = self.where_string ))
-
-
-
-
+			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where} AND CONFIGURATION_STATUS ='INCOMPLETE') AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE QUOTE_RECORD_ID='{quote_rec_id}' and SERVICE_ID = '{service_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' )".format(obj = obj, where=  ancillary_where, par_where = self.where_string, quote_rec_id=self.contract_quote_record_id,revision_rec_id = self.contract_quote_revision_record_id, service_id = self.service_id ))
 		#delete_table_dict = {'SAQTSE': 'QUOTE_SERVICE_ENTITLEMENT_RECORD_ID','SAQSFE': 'QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID', 'SAQSGE' : 'QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID','SAQSCE':'QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID', 'SAQSAE':'QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID'}
-		delete_table_dict = {}
-		for delete_object,guid in delete_table_dict.items():
-			delete_statement = "DELETE FROM {obj} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND PAR_SERVICE_ID = '{par_service_id}' AND {guid} IN (SELECT {guid} FROM {obj} M WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{revision_rec_id}' AND M.SERVICE_ID = '{par_service_id}' AND M.CONFIGURATION_STATUS ='INCOMPLETE') ".format(obj = delete_object,guid = guid, QuoteRecordId = self.contract_quote_record_id,revision_rec_id = self.contract_quote_revision_record_id , par_service_id = self.service_id  )
-			Sql.RunQuery(delete_statement)
+		# delete_table_dict = {}
+		# for delete_object,guid in delete_table_dict.items():
+		# 	delete_statement = "DELETE FROM {obj} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND PAR_SERVICE_ID = '{par_service_id}' AND {guid} IN (SELECT {guid} FROM {obj} M WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{revision_rec_id}' AND M.SERVICE_ID = '{par_service_id}' AND M.CONFIGURATION_STATUS ='INCOMPLETE') ".format(obj = delete_object,guid = guid, QuoteRecordId = self.contract_quote_record_id,revision_rec_id = self.contract_quote_revision_record_id , par_service_id = self.service_id  )
+		# 	Sql.RunQuery(delete_statement)
 
 	def _delete_operation(self):
 		self._set_quote_service_entitlement_type()
@@ -971,7 +946,7 @@ class AncillaryProductOperation:
 					ancillary_where = re.sub(r'AND EQUIPMENT_ID\s*\=\s*\'[^>]*?\'', '', ancillary_where )
 				else:
 					ancillary_where = re.sub('EQUIPMENT_ID', 'OBJECT_ID', ancillary_where )
-			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}'".format(obj,ancillary_where,self.ancillary_obj))
+			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}' AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(obj,ancillary_where,self.ancillary_obj, self.contract_quote_record_id, self.service_id,self.contract_quote_revision_record_id ))
 		
 		##deleting higher table records based on below level 
 		if self.tablename != "SAQTSE":
@@ -1000,8 +975,7 @@ class AncillaryProductOperation:
 		self.quote_service_entitlement_type = ""
 		##chk ancillary offering
 		
-		if self.tablename != 'SAQTSE' :
-			Trace.Write('yess')
+		if self.tablename != 'SAQTSE' :			
 			where_str = self.where_string.replace('SRC.','').replace('WHERE','')
 		else:
 			where_str = " QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.ancillary_obj)
@@ -1022,11 +996,7 @@ class AncillaryProductOperation:
 					continue
 			# if self.service_id == 'Z0101':
 			# 	self.quote_service_entitlement_type = 'OFFERING + GREENBOOK + GR EQUI'
-		Trace.Write("quote_service_entitlement_type"+str(self.quote_service_entitlement_type))
-	
-	
-	
-	
+		
 try:			
 	ancillary_obj = Param.ancillary_obj
 except :

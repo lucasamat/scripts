@@ -342,6 +342,9 @@ def CommonTreeViewHTMLDetail(
 		)"""	
 		if LEGALSOW == 'LEGAL_SOW':
 			QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' AND RECORD_ID ='AED0A92A-8644-46AE-ACF0-90D6E331E506' " + str(queryStr) + " ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
+		elif ObjectName == "SAQRGG":
+			QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' AND RECORD_ID !='AED0A92A-8644-46AE-ACF0-90D6E331E506' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
+
 		else:
 			QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' AND RECORD_ID !='AED0A92A-8644-46AE-ACF0-90D6E331E506' " + str(queryStr) + " ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
 		#QStr1 = (
@@ -1902,6 +1905,12 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					# 		)								
 					# else:
 					Trace.Write("else 1812"+str(current_obj_api_name))
+					if current_obj_api_name=='CANCELLATION_PERIOD_NOTPER':
+						len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"' 
+						Trace.Write('@421'+current_obj_api_name) 
+					else :
+						len_restrict=""
+
 					# if str(ObjectName) == "SAQIGB" and current_obj_value != "":
 					# 	decimal_val = 2
 					# 	formatting_string = "{0:." + str(decimal_val) + "f}"
@@ -1910,7 +1919,9 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					sec_str += (
 						'<td><input id="'
 						+ str(current_obj_api_name)
-						+ '" type="number" value="'
+						+ '" type="number"' 
+						+len_restrict
+						+'value="'
 						+ current_obj_value
 						+ '" class="form-control related_popup_css" style="'
 						+ str(add_style)

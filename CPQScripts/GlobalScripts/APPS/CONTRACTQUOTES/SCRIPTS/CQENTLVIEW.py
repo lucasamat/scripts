@@ -11,6 +11,7 @@ import System.Net
 from datetime import datetime
 from SYDATABASE import SQL
 import re
+
 Sql = SQL()
 userId = str(User.Id)
 #userName = str(User.UserName)
@@ -34,7 +35,8 @@ class EntitlementView():
 		EntitlementType
 	):
 		quoteid = self.contract_quote_record_id
-		cpsConfigID = get_last_secid = get_tooltip = get_conflict_message = get_conflict_message_id = ''
+		cpsConfigID = get_last_secid = get_tooltip = ''
+		# get_conflict_message = get_conflict_message_id = ''
 		msg_txt = insertservice  = sec_str_boot = sec_bnr = imgstr = dbl_clk_function = getprevdicts = sec_str_cf = sec_str1 = getTlab = getquote_sales_val = ent_temp = ""
 		tablistnew =  []
 		TableObj = ""
@@ -82,7 +84,6 @@ class EntitlementView():
 		elif self.treetopsuperparentparam == "Quote Items":
 			##for Quote items for ADDON Product starts
 			if " - ADDON" in str(self.treesuperparentparam):
-				tree_temp = self.treesuperparentparam.split(" - ")
 				try:
 					if str(self.treesuperparentparam.split("-")[3]):
 						self.treesuperparentparam = self.treesuperparentparam.split("-")[2].strip()	
@@ -104,12 +105,12 @@ class EntitlementView():
 			self.treesuperparentparam = ProductPartnumber = self.treetopsuperparentparam
 			#Trace.Write('comes1'+str(ProductPartnumber))
 		#A055S000P01-9226 start
-		getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(quoteid)+"'")
-		if getslaes_value:
-			getquote_sales_val = getslaes_value.SALESORG_ID
+		# getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(quoteid)+"'")
+		# if getslaes_value:
+		# 	getquote_sales_val = getslaes_value.SALESORG_ID
 		#Trace.Write(str(EntitlementType)+'----getquote_sales_val---2421----'+str(getquote_sales_val))
-		get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
-		get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
+		# get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+		# get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 		if 'Z0101' in TreeParam and TreeParentParam == "Quote Items":
 			EntitlementType = ""
 			TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QUOTE_RECORD_ID = '" + str(self.contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '" + str(self.quote_revision_record_id) + "' AND SERVICE_ID = 'Z0101'")
@@ -135,9 +136,7 @@ class EntitlementView():
 					SALESORG_ID = ParentObj.SALESORG_ID
 					SALESORG_NAME = ParentObj.SALESORG_NAME
 					QTEREV_RECORD_ID = ParentObj.QTEREV_RECORD_ID
-
-				where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"
-				
+				where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"				
 				##add on product entitilement ends
 			###receiving equp entitilement starts
 			elif str(self.treeparam).upper() == "RECEIVING EQUIPMENT" and objname_ent == 'SAQSCO':
@@ -156,9 +155,7 @@ class EntitlementView():
 					SALESORG_ID = ParentObj.SALESORG_ID
 					SALESORG_NAME = ParentObj.SALESORG_NAME
 					QTEREV_RECORD_ID = ParentObj.QTEREV_RECORD_ID
-
-				where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"
-					
+				where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"					
 			###receiving equp entitilement ends
 			else:
 				TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'")
@@ -175,14 +172,16 @@ class EntitlementView():
 					SALESORG_ID = ParentObj.SALESORG_ID
 					SALESORG_NAME = ParentObj.SALESORG_NAME
 					QTEREV_RECORD_ID = ParentObj.QTEREV_RECORD_ID
-				where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"
-						
+				where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"						
 		elif EntitlementType == "TOOLS":
 			TableObj = Sql.GetFirst("select * from SAQSCE (NOLOCK) where QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'")
 			ObjectName = "SAQSCE"
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
-					
-
+		elif EntitlementType == "EVENT":
+			ProductPartnumber = self.treetopsuperparentparam
+			TableObj = Sql.GetFirst("select * from SAQGPE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(self.treesuperparentparam)+"' AND GOT_CODE = '"+str(self.treeparentparam)+"' AND PM_ID = '"+str(self.treeparam)+"' AND SERVICE_ID = '"+str(self.treetopsuperparentparam)+"' ")
+			ObjectName = "SAQGPE"
+			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(self.treesuperparentparam)+"' AND GOT_CODE = '"+str(self.treeparentparam)+"' AND PM_ID = '"+str(self.treeparam)+"' AND SERVICE_ID = '"+str(self.treetopsuperparentparam)+"'"	
 		elif EntitlementType == "ITEMGREENBOOK":
 			ObjectName = "SAQSGE"
 			#service = self.treesuperparentparam
@@ -190,8 +189,7 @@ class EntitlementView():
 			# TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' AND FABLOCATION_ID = '"+ str(self.treeparentparam) + "'")		
 			# where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' AND FABLOCATION_ID = '"+ str(self.treeparentparam) + "'"
 			TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' ")		
-			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' "
-					
+			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' "					
 		elif EntitlementType == "ITEMSPARE":
 			#TableObj = Sql.GetFirst("select SAQIEN.* from SAQIEN (NOLOCK) JOIN QTQITM ON QTQITM.QUOTE_RECORD_ID = SAQIEN.QUOTE_RECORD_ID where QTQITM.QUOTE_ITEM_RECORD_ID = '" + str(RECORD_ID) + "'")
 			#TableObj = Sql.GetFirst("select SAQIPE.* from SAQIPE (NOLOCK) JOIN QTQITM ON QTQITM.QUOTE_RECORD_ID = SAQIPE.QUOTE_RECORD_ID AND QTQITM.SERVICE_ID =SAQIPE.SERVICE_ID where SAQIPE.QUOTE_RECORD_ID = '" + str(quoteid) + "'")	
@@ -200,15 +198,13 @@ class EntitlementView():
 			#join = 'JOIN QTQITM ON QTQITM.QUOTE_RECORD_ID = SAQIEN.QUOTE_RECORD_ID'
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparam) + "'"
 			# join = 'JOIN SAQIFP ON SAQITM.QUOTE_RECORD_ID = SAQIPE.QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID  = SAQIPE.QTEREV_RECORD_ID  AND SAQIFP.SERVICE_ID =SAQIPE.SERVICE_ID'
-			join = ''
+			# join = ''
 		elif EntitlementType == "ITEMS":	
 			TableObj = Sql.GetFirst("select * from SAQIEN (NOLOCK) where QTEITMCOB_RECORD_ID = '" + str(RECORD_ID) + "'")
-			where = "QTEITMCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
-			
+			where = "QTEITMCOB_RECORD_ID = '" + str(RECORD_ID) + "'"			
 		# elif EntitlementType == "FABLOCATION":			
 		# 	TableObj = Sql.GetFirst("select * from SAQSFE (NOLOCK) where  QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparam) + "'")
-		# 	where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND FABLOCATION_ID ='"+str(self.treeparam)+"'"
-					
+		# 	where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND FABLOCATION_ID ='"+str(self.treeparam)+"'"					
 		elif EntitlementType == "BUSINESSUNIT":
 			#TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"'")
 			greenbook_val = self.treeparam
@@ -225,8 +221,7 @@ class EntitlementView():
 			if TableObj is not None:
 				RECORD_ID = str(TableObj.SERVICE_RECORD_ID)
 			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"'"
-			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbook_val)+"'"
-			
+			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbook_val)+"'"			
 		elif EntitlementType == "ASSEMBLY":
 			# TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
 			# where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
@@ -238,11 +233,11 @@ class EntitlementView():
 			quote_item_revision_rec_id = Product.GetGlobal('get_quote_item_service')
 			Trace.Write('quote_item_revision_rec_id--'+str(quote_item_revision_rec_id))
 			if quote_item_revision_rec_id:
-				get_quite_item_service= Sql.GetFirst("select SERVICE_ID from SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(quote_item_revision_rec_id)+"'")
+				get_quite_item_service= Sql.GetFirst("select SERVICE_ID from SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(RECORD_ID)+"'")
 				ProductPartnumber = get_quite_item_service.SERVICE_ID
 				Trace.Write('ProductPartnumber-224-'+str(ProductPartnumber))
-				TableObj = Sql.GetFirst("select * from SAQITE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "'AND QTEITM_RECORD_ID ='"+str(quote_item_revision_rec_id)+"' ")
-				where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "' AND QTEITM_RECORD_ID ='"+str(quote_item_revision_rec_id)+"'"
+				TableObj = Sql.GetFirst("select * from SAQITE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "'AND QTEITM_RECORD_ID ='"+str(RECORD_ID)+"' ")
+				where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "' AND QTEITM_RECORD_ID ='"+str(RECORD_ID)+"'"
 				EntitlementType == "ITEM_ENTITLEMENT"
 				ObjectName = "SAQITE"
 		try:
@@ -252,11 +247,10 @@ class EntitlementView():
 					EntitlementType = "NO_ENTITLEMENT"
 		except:
 			Trace.Write('Treeparam--'+str(self.treeparam))
-		
 
 		if EntitlementType != "NO_ENTITLEMENT":
 			if TableObj is None and (EntitlementType == "EQUIPMENT"):
-				Trace.Write('223----durga---')
+				# Trace.Write('223----durga---')
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 				Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_url':Request_URL,'request_type':"New"})
 				#self.EntitlementRequest(ProductPartnumber,Request_URL,)
@@ -276,21 +270,21 @@ class EntitlementView():
 			overallattributeslist_visible =[]
 			dropdowndisallowlist = attr_tab_list_allow = attr_tab_list_disallow = total_tablist = []
 			validation_dict = {}
-			get_lastsection_val = attrcode = disable_edit = get_requiredicon = ""
+			get_lastsection_val = disable_edit = get_requiredicon = ""
 			# where = ""
 			Product.SetGlobal('Fullresponse_load',str(Fullresponse))
 			for rootattribute, rootvalue in Fullresponse.items():
-				if rootattribute == "conflicts":
-					for conflict in rootvalue:
-						Trace.Write('88---2191-'+str(conflict))
-						for val,key in conflict.items():
-							if str(val) == "explanation":
-								Trace.Write(str(key)+'-2195---'+str(val))
-								get_conflict_message = str(key)
-								try:
-									get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
-								except:
-									get_conflict_message_id = ''
+				# if rootattribute == "conflicts":
+				# 	for conflict in rootvalue:
+				# 		Trace.Write('88---2191-'+str(conflict))
+				# 		for val,key in conflict.items():
+				# 			if str(val) == "explanation":
+				# 				Trace.Write(str(key)+'-2195---'+str(val))
+				# 				get_conflict_message = str(key)
+				# 				try:
+				# 					get_conflict_message_id = re.findall(r'\(ID\s*([^>]*?)\)', get_conflict_message)[0]
+				# 				except:
+				# 					get_conflict_message_id = ''
 				if rootattribute == "rootItem":
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristicGroups":
@@ -328,23 +322,21 @@ class EntitlementView():
 			#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
 			#Trace.Write('total_tablist--'+str(total_tablist))
 			#Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
-			Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
-			#Trace.Write("validation_dict---"+str(validation_dict))
+			Trace.Write('attributedefaultvalue----'+str(attributedefaultvalue))
+			Trace.Write("validation_dict---"+str(validation_dict))
 
 			product_obj = Sql.GetFirst("""SELECT 
 										MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
 									FROM PRODUCTS PDS 
 									INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
 									WHERE SYSTEM_ID ='{SystemId}' and PRVS.SAPKBVersion = '{kb_version}'
-									GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(ProductPartnumber),kb_version = Fullresponse['kbKey']['version'] ))
-			
+									GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(ProductPartnumber),kb_version = Fullresponse['kbKey']['version'] ))			
 			product_tabs_obj = Sql.GetList("""SELECT 
 													TOP 1000 TAB_NAME,TAB_DEFN.SYSTEM_ID, TAB_RANK, TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE
 												FROM TAB_PRODUCTS
 												JOIN TAB_DEFN ON TAB_DEFN.TAB_CODE = TAB_PRODUCTS.TAB_CODE
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} and TAB_NAME not like '$%'
-												ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))
-			
+												ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))			
 			product_attributes_obj = Sql.GetList("""SELECT TOP 1000 PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE, 
 														TAB_PRODUCTS.TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE, ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,PRODUCT_ATTRIBUTES.LABEL AS LABEL, ATTRIBUTE_DEFN.SYSTEM_ID AS SYSTEM_ID, ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC
 													FROM TAB_PRODUCTS
@@ -359,7 +351,7 @@ class EntitlementView():
 			#overall_attribute_list = []	
 			if product_attributes_obj:
 				for product_attribute_obj in product_attributes_obj:
-					overall_attribute ={}
+					# overall_attribute ={}
 					attr_detail = {'attribute_name':product_attribute_obj.STANDARD_ATTRIBUTE_NAME, 
 								'attribute_label':str(product_attribute_obj.LABEL), 
 								'attribute_system_id':str(product_attribute_obj.SYSTEM_ID),
@@ -373,28 +365,19 @@ class EntitlementView():
 						tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID].append(attr_detail)
 					else:
 						tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
-			Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
-		
+			Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))		
 			#Trace.Write('overall_attribute_list-----'+str(overall_attribute_list))
-
-
-
-			# ATTRvalue = Sql.GetList("SELECT Top 100000 ATDF.STANDARD_ATTRIBUTE_NAME,ATDF.SYSTEM_ID,ATDD.ATT_DISPLAY_DESC,PRDAT.LABEL,PRDAT.LINEITEM,PRDAT.STANDARD_ATTRIBUTE_CODE from ATTRIBUTE_DEFN ATDF INNER JOIN PRODUCT_ATTRIBUTES PRDAT ON ATDF.STANDARD_ATTRIBUTE_CODE = PRDAT.STANDARD_ATTRIBUTE_CODE INNER JOIN ATT_DISPLAY_DEFN ATDD on    PRDAT.ATT_DISPLAY = ATDD.ATT_DISPLAY where PRDAT.PRODUCT_ID = '{product_id}'".format(sap_part_no = str(ATTPRD.SYSTEM_ID),product_id = str(ATTPRD.PRD_ID)) )
-			
+			# ATTRvalue = Sql.GetList("SELECT Top 100000 ATDF.STANDARD_ATTRIBUTE_NAME,ATDF.SYSTEM_ID,ATDD.ATT_DISPLAY_DESC,PRDAT.LABEL,PRDAT.LINEITEM,PRDAT.STANDARD_ATTRIBUTE_CODE from ATTRIBUTE_DEFN ATDF INNER JOIN PRODUCT_ATTRIBUTES PRDAT ON ATDF.STANDARD_ATTRIBUTE_CODE = PRDAT.STANDARD_ATTRIBUTE_CODE INNER JOIN ATT_DISPLAY_DEFN ATDD on    PRDAT.ATT_DISPLAY = ATDD.ATT_DISPLAY where PRDAT.PRODUCT_ID = '{product_id}'".format(sap_part_no = str(ATTPRD.SYSTEM_ID),product_id = str(ATTPRD.PRD_ID)) )			
 			# for attr in ATTRvalue:
 			# 	STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE ='{attr_code}' and SYSTEM_ID like '%{sys_id}%' ".format(attr_code = str(attr.STANDARD_ATTRIBUTE_CODE),sys_id = str(attr.SYSTEM_ID) )  )
-
-
 			# attr_dict = {}
 			# ServiceContainer = Product.GetContainerByName("Services")
 			sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
 			multi_select_attr_list = {}
-			getregion=Sql.GetFirst("SELECT REGION from SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quoteid,self.quote_revision_record_id))
-			if getregion:
-				getregionval = getregion.REGION
-				
+			# getregion=Sql.GetFirst("SELECT REGION from SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quoteid,self.quote_revision_record_id))
+			# if getregion:
+			# 	getregionval = getregion.REGION				
 			GetCPSVersion = Sql.GetFirst("SELECT KB_VERSION FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND KB_VERSION IS NOT NULL AND KB_VERSION != ''".format(quoteid,self.quote_revision_record_id))
-
 			if GetCPSVersion :
 				if GetCPSVersion.KB_VERSION is not None and GetCPSVersion.KB_VERSION != Fullresponse["kbKey"]["version"]:
 					sec_str += '<div id="Headerbnr" class="mart_col_back disp_blk"><div class="col-md-12" id="PageAlert_not"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert_notifcatio6" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down"></i><i class="pull-right fa fa-chevron-up"></i></div><div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-info"><label title=" Information : The Knowledge Base of the VC Characteristics has been updated in CPS."><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> Information : The Knowledge Base of the VC Characteristics has been updated in CPS.</label></div></div></div></div>'
@@ -402,19 +385,14 @@ class EntitlementView():
 					sec_str += ''
 			else:
 				Trace.Write("GETCPS VERSION EMPTY!")	
-			
 		
 			desc_list = ["APPROVAL","ENTITLEMENT","DESCRIPTION","REQUIRED","VALUE","VALIDATION","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT"]
-
-			#attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
-			
+			#attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}			
 			attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT":"ENTITLEMENT","DESCRIPTION": "DESCRIPTION","REQUIRED":"*","VALUE": "VALUE","VALIDATION":"VALIDATION","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT"}
-			date_field = []
-			
+			date_field = []			
 			insertservice = ""
-			#Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))		
+			#Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))
 		if TableObj is None and (EntitlementType == "EQUIPMENT"): 
-			Trace.Write('not inserted')
 			getnameentallowed = []
 			if product_tabs_obj:
 				for product_tab_obj in product_tabs_obj:
@@ -453,9 +431,8 @@ class EntitlementView():
 								Section_id = sysectObj.RECORD_ID
 								Section_desc = sysectObj.SECTION_DESC.split('_')
 								Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
-					add_style =  add_style_color = ""
+					add_style = ""
 					sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <thead><tr class="hovergrey">')
-					
 					for key, invs in enumerate(list(desc_list)):
 						invs = str(invs).strip()
 						qstring = attr_dict.get(str(invs)) or ""
@@ -474,7 +451,6 @@ class EntitlementView():
 					#Trace.Write(" tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
 					if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
 						for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
-
 							new_value_dicta = {}
 							attrName = attribute['attribute_name']
 							attrLabel = attribute['attribute_label']	
@@ -845,16 +821,25 @@ class EntitlementView():
 			#Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
 			sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""		
 			## set entitlement_xml for cancel fn A055S000P01-3157 starts
-			previous_entitlement_xml  = Sql.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
-			#Trace.Write('previous_entitlement_xml----'+str(previous_entitlement_xml))	
-			Product.SetGlobal("previous_entitlement_xml", previous_entitlement_xml.ENTITLEMENT_XML)
+			if self.treeparam != 'Quote Items':
+				previous_entitlement_xml  = Sql.GetFirst("select * from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
+				#Trace.Write('previous_entitlement_xml----'+str(previous_entitlement_xml))	
+				#prev_dict['CPS_CONFIGURATION_ID'] = a.CPS_CONFIGURATION_ID
+				# prev_dict['ENTITLEMENT_XML'] = previous_entitlement_xml.ENTITLEMENT_XML
+				# prev_dict['CPS_MATCH_ID'] = previous_entitlement_xml.CPS_MATCH_ID 
+
+				Product.SetGlobal("previous_entitlement_xml", str(previous_entitlement_xml.ENTITLEMENT_XML) )
+				Product.SetGlobal("previous_cps_macth_id", str(previous_entitlement_xml.CPS_MATCH_ID) )
+				Product.SetGlobal("previous_config_id", str(previous_entitlement_xml.CPS_CONFIGURATION_ID) )
+				
+				Product.SetGlobal("previous_config_status", str(previous_entitlement_xml.CONFIGURATION_STATUS ) )
 			## set entitlement_xml for cancel fn A055S000P01-3157 ends
 			list_of_tabs = []
 			getprevdicts +=   ("var dict_new = {};var list_new = [];")	
 			if str(self.treeparentparam).upper() == "ADD-ON PRODUCTS":
 				self.treesuperparentparam = ""
-			Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
-			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber or self.treeparam in ("Quote Items",'Add-On Products' ) :	
+			Trace.Write('self.treeparam----'+str(self.treetopsuperparentparam)+'--'+str(ProductPartnumber))
+			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber or self.treeparam in ("Quote Items",'Add-On Products' ) or  self.treetopsuperparentparam.upper() == ProductPartnumber:	
 				#Trace.Write("@2756------->"+str(self.treeparentparam))
 				
 				for product_tab_obj in product_tabs_obj:
@@ -949,10 +934,9 @@ class EntitlementView():
 							sec_validation = ""
 							new_value_dicta = {}
 							attrName = attribute['attribute_name']
-							attrLabel = attribute['attribute_label']
+							# attrLabel = attribute['attribute_label']
 							attrSysId = attribute['attribute_system_id']
 							attribute_code = attribute['attribute_code']
-
 							#Trace.Write('attrSysId---looping0507--'+str(attrSysId))
 							STDVALUES = Sql.GetFirst("""SELECT TOP 100 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 							A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -990,17 +974,20 @@ class EntitlementView():
 								#Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
 								add_style = ""
 							##validation msg
+							validation_attr = ""
 							if attrSysId in validation_dict.keys():
-								sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+"-0"
-
+								validation_attr = ' onkeypress="return isNumberKey(event);"'
+								if validation_dict[attrSysId]  == '0.00':
+									sec_validation = "Only enter the values in the following range: -&infin; - "+str(validation_dict[attrSysId])
+								else:
+									sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+" - 0"
 							if attrSysId not in attributedefaultvalue:
-								#Trace.Write("add_style----3077----- "+str(attrSysId))
+								Trace.Write("add_style----3077----- "+str(attrSysId))
 								add_style = "color:#1B78D2"
 							#Trace.Write('--attributeEditlst-930----'+str(attributeEditlst))
 							if attrSysId in attributeEditlst :
 								disable_edit = 'disable_edit'
-								edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
-								
+								edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'								
 							else:
 								disable_edit = ''
 								edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
@@ -1008,12 +995,10 @@ class EntitlementView():
 							##info tooltip adding in entitlement grid starts..
 							# info_column = '''<a   data-placement="auto top" data-trigger="focus"  class="bgcccwth10"><i title="{value}" class="fa fa-info-circle fltlt"></i></a>'''.format(value= get_tooltip)
 							##info tooltip adding in entitlement grid ends..
-							disp_val = ""
 							userselectedvalue = []
-							#for val in GetXMLsecField:
-							
+							#for val in GetXMLsecField:							
 							#userselectedvalue = [val.ENTITLEMENT_DESCRIPTION for val in GetXMLsecField if GetXMLsecField]
-							sec_str_cf =sec_str_imt =  dataent = factcurreny = decimal_place = value1234 = sec_str_dt = sec_str_faccur = sec_str_faccur = costimpact = sec_str_primp = priceimp =  sec_str_ipp = ""
+							sec_str_cf =sec_str_imt = sec_str_faccur = sec_str_faccur = sec_str_primp = sec_str_ipp = ""
 							imgstr =""
 							#Trace.Write("inserted_value_list--"+str(inserted_value_list))
 							standard_attr_values = Sql.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
@@ -1054,15 +1039,10 @@ class EntitlementView():
 									#Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
 									# if  str(attrSysId) == val.ENTITLEMENT_NAME:
 									#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
-									#Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))
-									
-									if DType == "Drop Down":
-										
+									#Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))									
+									if DType == "Drop Down":										
 										#Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-										
-										
-										
 										
 										if standard_attr_values and val.ENTITLEMENT_ID == str(attrSysId): 
 											VAR1 = sec_str1 = ""
@@ -1071,28 +1051,21 @@ class EntitlementView():
 												default = ''
 											else:
 												default = 'selected'
-
 											Trace.Write(str(attrSysId)+'--attrSysId----'+str(val.ENTITLEMENT_ID)+'-----982------>'+str(val.ENTITLEMENT_DISPLAY_VALUE))
-											
 											Trace.Write(str(attributes_disallowed_list)+'---dropdowndisallowlist----'+str(dropdowndisallowlist))
 											VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
 											for value in standard_attr_values:
-												if value.SYSTEM_ID in dropdowndisallowlist:
-													
+												if value.SYSTEM_ID in dropdowndisallowlist:												
 													disallow_style = "style = 'display:none'"
 												else:	
 													disallow_style = ""
-												try:
-													
+												try:													
 													if str(val.ENTITLEMENT_DISPLAY_VALUE).strip().upper() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip().upper():
-														Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+'--1028--'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
 														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE).replace("'","''")) )
 														if approval_status:
 															#Trace.Write("imgstr--1-"+str(approval_status.APPROVAL_REQUIRED))
 															if approval_status.APPROVAL_REQUIRED == True:
 																imgstr = '<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
-															
-														
 														selected_option = str(val.ENTITLEMENT_DISPLAY_VALUE)
 														VAR1 += (
 															'<option  id="'+str(value.SYSTEM_ID)+'" value = "'
@@ -1133,7 +1106,6 @@ class EntitlementView():
 															+ str(disallow_style)
 															+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}">{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 														)
-
 											try:
 												if str(attrName) == "Fab Location":
 													disable_edit =''
@@ -1156,7 +1128,6 @@ class EntitlementView():
 													+ str(VAR1)
 													+ "</select>"
 													)
-
 											except:
 												sec_str1 += (
 												'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
@@ -1164,8 +1135,7 @@ class EntitlementView():
 												+ '" type="text"  data-content ="'
 												+ str(attrSysId)
 												+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>{}</select>'.format(VAR1)
-												)
-											
+												)											
 											# if val.ENTITLEMENT_ID == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
 											# 	sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 											# 	sec_str_faccur += ''
@@ -1177,17 +1147,12 @@ class EntitlementView():
 											# 	sec_str_faccur += ''
 											#else:
 											sec_str_imt += ""
-											
-											
 											""" except Exception, e:
 												Trace.Write(str(e)+'error1111')
 												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT) """
 											#Trace.Write("CHKNG_STYLE_J "+str(add_style)+" attrSysId "+str(attrSysId))
-										
-
 									elif DType == "Check Box" :
-										#Trace.Write(str(attrSysId)+'CheckApproval'+str(attrValue))
-										
+										#Trace.Write(str(attrSysId)+'CheckApproval'+str(attrValue))										
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(attr_code = attribute_code )  )
 										if standard_attr_values and val.ENTITLEMENT_ID == str(attrSysId):
 											try:
@@ -1203,7 +1168,6 @@ class EntitlementView():
 												except Exception as e:
 													Trace.Write('except1'+str(e))
 													display_value_arr = str(val.ENTITLEMENT_DISPLAY_VALUE)
-											
 											multi_select_attr_list[attrSysId] = display_value_arr
 											#Trace.Write("multi_select_attr_list"+str(multi_select_attr_list)+'---'+str(display_value_arr))
 											VAR1 = sec_str1 = selected_option = ""
@@ -1214,7 +1178,7 @@ class EntitlementView():
 													disallow_style = ""
 												Trace.Write("checkkkkkk---"+str(val.ENTITLEMENT_VALUE_CODE)+"----"+str(value.STANDARD_ATTRIBUTE_VALUE)+str(attrSysId))
 												try:
-													if not (type(val.ENTITLEMENT_VALUE_CODE) is 'int' or type(val.ENTITLEMENT_VALUE_CODE) is 'float'):
+													if not (type(val.ENTITLEMENT_VALUE_CODE) is 'int' or type(val.ENTITLEMENT_VALUE_CODE) is 'float') and val.ENTITLEMENT_VALUE_CODE:
 														# value_code = eval(val.ENTITLEMENT_VALUE_CODE)
 														value_code = val.ENTITLEMENT_VALUE_CODE.split(',')
 													else:
@@ -1279,8 +1243,6 @@ class EntitlementView():
 												+ "</select>"
 											)
 											#Trace.Write('sec_str1'+str(sec_str1))
-									
-									
 									elif DType == "Free Input, no Matching" :
 										#Trace.Write('val.ENTITLEMENT_NAME------'+str(val.ENTITLEMENT_NAME))
 										if val.ENTITLEMENT_ID == str(attrSysId):
@@ -1300,19 +1262,16 @@ class EntitlementView():
 											# 		imgstr  = ""
 											# else:
 											# 	imgstr  = ""
-
 											if str(attrSysId) in ("AGS_REL_STDATE",'AGS_Z0007_GEN_RELDAT'):
 												datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 												if attrSysId == 'AGS_Z0007_GEN_RELDAT':
-
-													datepicker = "onclick_datepicker('" + attrSysId + "')"
-												
+													datepicker = "onclick_datepicker('" + attrSysId + "')"	
 												sec_str1 += (
 													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 													+ str(attr_value)
-													+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'									
+													+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'
 													+ "</input> "
 												)
 												# sec_str1 += (
@@ -1327,7 +1286,7 @@ class EntitlementView():
 												if attr_value == "DefaultValue":
 													attr_value = ''
 												sec_str1 += (
-													'<input maxlength="255" class="form-control no_border_bg '+str(disable_edit)+'" id = "'
+													'<input maxlength="255" '+str(validation_attr)+' class="form-control no_border_bg '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"  style ="'+str(add_style)+'"  data-content ="'
 													+ str(attr_value)
@@ -1341,13 +1300,11 @@ class EntitlementView():
 													#Trace.Write("@@3089"+str(val.ENTITLEMENT_COST_IMPACT)+str(val.PRICE_METHOD)+str(attrSysId))
 													#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
 													sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
-													#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD
-													
+													#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD													
 												# else:
 												# 	#Trace.Write("@@3093")
 												# 	#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
-												# 	sec_str_imt += 
-													
+												# 	sec_str_imt += 													
 											except Exception as e:
 												#Trace.Write(str(e)+'error1111'+str(attrSysId))
 												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
@@ -1392,11 +1349,12 @@ class EntitlementView():
 									else:
 										new_value_dicta["VALUE"] = str(sec_str_ipp)
 										#Trace.Write("@3323-----"+str(attrSysId))
-									new_value_dicta["VALIDATION"]=str("<abbr id ='"+ str(attrSysId)+"'  class = 'wid90_per requ_validation' title='"+str(sec_validation)+"'>"+str(sec_validation)+"</abbr>")+str(edit_pencil_icon)
+									new_value_dicta["VALIDATION"]="<abbr id ='"+ str(attrSysId)+"'  class = 'wid90_per requ_validation' title='"+sec_validation+"'>"+sec_validation+"</abbr>"+str(edit_pencil_icon)
 									new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>") 
 									new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str(sec_str_primp)
 									new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")						
 							else:
+								Trace.Write("attrSysId-else-"+str(attrSysId)+'--'+str(DType))
 								tab_get_disallow_list.append(attrSysId)
 								if attrSysId not in attributesdisallowedlst and attrSysId:
 									attributesdisallowedlst.append(attrSysId)
@@ -1436,7 +1394,6 @@ class EntitlementView():
 													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 													+ "</option>"
 												)
-										
 											except:
 												#Trace.Write('attrSysId-try-catch--3491-'+str(attrSysId))
 												VAR1 += (
@@ -1462,18 +1419,13 @@ class EntitlementView():
 												+ str(attrSysId)
 												+ '" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
 											)
-
-									
 										#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
-									#sec_str += "</select></td>"
-							
+									#sec_str += "</select></td>"							
 								elif DType == "Check Box":
-									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-									
+									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )									
 									VAR1 = sec_str1 = ""
 									if standard_attr_values:
-										for value in standard_attr_values:
-											
+										for value in standard_attr_values:											
 											VAR1 += (
 												'<option  value = "'
 												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -1489,12 +1441,10 @@ class EntitlementView():
 										+ '" onchange="editent_bt(this)" >'
 										+ str(VAR1)
 										+ "</select>"
-									)
-										
+									)										
 								elif DType == "Free Input, no Matching":
 									STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
-									sec_str1 = ""
-									
+									sec_str1 = ""									
 									if attrValue == "DefaultValue":
 										attrValue = ''
 									attr_value = ""
@@ -1513,8 +1463,7 @@ class EntitlementView():
 									required_symbol_class = str(attrSysId)+' required_symbol'
 									get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title=''>*</abbr>")
 								else:
-									required_symbol_class = ""
-									get_required_icon = ""
+									required_symbol_class = ""									
 								new_value_dicta["APPROVAL"] = ""	
 								new_value_dicta["ENTITLEMENT"] = str(attrName)
 								new_value_dicta["DESCRIPTION"] = get_tooltip
@@ -1530,11 +1479,9 @@ class EntitlementView():
 								new_value_dicta["VALIDATION"] = ""
 								new_value_dicta["CALCULATION FACTOR"] = ""	
 							#Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
-							totaldisallowlist = [item for item in attributesdisallowedlst]
-							
+							totaldisallowlist = [item for item in attributesdisallowedlst]							
 							if new_value_dicta:
 								date_boot_field.append(new_value_dicta)
-
 						tablistdict[Section_id] = date_boot_field					
 						if len(tablistdict) > 0:
 							tablistnew.append(tablistdict)
@@ -1570,7 +1517,7 @@ class EntitlementView():
 		##Adding Audit information section in Entitlement starts...
 		if ent_temp:
 			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
-		if EntitlementType in ("EQUIPMENT","FABLOCATION","BUSINESSUNIT","ASSEMBLY","TOOLS","ITEM_ENTITLEMENT"):
+		if EntitlementType in ("EQUIPMENT","FABLOCATION","BUSINESSUNIT","ASSEMBLY","TOOLS","ITEM_ENTITLEMENT","EVENT"):
 			get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
 			if get_sec :
 				section_id = get_sec.RECORD_ID
@@ -1596,18 +1543,21 @@ class EntitlementView():
 					sefl_api = sefl.API_FIELD_NAME
 					
 					if col_name:
+						Trace.Write('current_obj_value-----'+str(sefl_api))
 						current_obj_value = str(eval("col_name." + str(sefl_api)))
-						#Trace.Write('current_obj_value---'+str(current_obj_value)+'--'+str(sefl_api))
+						
 						if sefl_api in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified") and current_obj_value:
 							try:
 								current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
 							except:
 								pass
 						elif sefl_api in ("CpqTableEntryModifiedBy","CPQTABLEENTRYADDEDBY") and current_obj_value:
-							current_user = Sql.GetFirst(
-								"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + "")
-							current_obj_value = current_user.USERNAME
-
+							try:	
+								current_user = Sql.GetFirst(
+									"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + "")
+								current_obj_value = current_user.USERNAME
+							except:
+								pass
 						sec_str_boot +=(
 							'<td><input id="'
 							+ str(sefl_api)
@@ -1699,11 +1649,6 @@ try:
 	AssemblyId = Param.AssemblyId
 except:
 	AssemblyId = ""
-
-
-
-
-
 EntitlementType = ""
 SectionObjectName = ""
 mode = ""
@@ -1722,7 +1667,6 @@ if SectionList is not None and (
 	or "0EF8591C-4B5A-4EC2-863F-F8229B5FA025" in SectionList
 	or "484F3029-7844-4DE7-BBB4-535A7BAE476E" in SectionList
 ):
-
 	sectionId = tuple(SectionList)
 	sectObj = Sql.GetFirst("SELECT PRIMARY_OBJECT_NAME FROM SYSECT (NOLOCK) WHERE RECORD_ID IN " + str(sectionId) + "")
 	if sectObj is not None:
@@ -1783,7 +1727,10 @@ elif ObjectName == "SAQTSE":
 	#Trace.Write("TOOLS")
 	SectionObjectName = ObjectName
 	EntitlementType = "TOOLS"
-	
+elif ObjectName == "SAQGPM":	
+	#Trace.Write("TOOLS")
+	SectionObjectName = ObjectName
+	EntitlementType = "EVENT"
 # elif ObjectName == "CTCTSE":	
 # 	SectionObjectName = ObjectName
 # 	EntitlementType = "TOOLS"
@@ -1791,7 +1738,6 @@ elif ObjectName == "SAQTSE":
 # 	Trace.Write("ObjectName-else--"+str(ObjectName))
 
 ##calling class
-
 
 entview_class = EntitlementView()
 if action == "VIEW":

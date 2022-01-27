@@ -163,7 +163,7 @@ def do_process(TABLEID, LABLE, VALUE):
                             x = cpq_attr_name.SAPCPQ_ATTRIBUTE_NAME.split("-")
                             length = len(x[len(x)-1])
                             row["SAPCPQ_ATTRIBUTE_NAME"] = str(APP_ID)+ str(int(x[len(x)-1])+1).zfill(length)
-                            
+
             except:                
                 Trace.Write("exept cpq")
             
@@ -197,7 +197,10 @@ def do_process(TABLEID, LABLE, VALUE):
                     if TABLEID == 'SAQTIP':
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
                         # quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME FROM SAQTMT WHERE QUOTE_ID = '"+row["QUOTE_ID"]+"'")
+
                         quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
+                        if str(row['PRIMARY']) == "True":
+                            Sql.RunQuery("UPDATE SAQTIP SET [PRIMARY] = 'false' WHERE PARTY_ROLE = 'SHIP TO' AND QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{qte_rev_id}'".format(qte_rec_id=quote_val.MASTER_TABLE_QUOTE_RECORD_ID,qte_rev_id=quote_val.QTEREV_RECORD_ID))
                         row["QUOTE_RECORD_ID"]=quote_val.MASTER_TABLE_QUOTE_RECORD_ID
                         row["QUOTE_NAME"]=quote_val.QUOTE_NAME
                         row["QTEREV_RECORD_ID"]=quote_val.QTEREV_RECORD_ID
@@ -307,6 +310,12 @@ def do_process(TABLEID, LABLE, VALUE):
                     row["APRCHNSTP_APPROVER_ID"] = "PRO-"+str(row.get("PROFILE_ID"))                                        
                 elif row.get("APPROVER_SELECTION_METHOD").strip() == "GROUP OF USERS" and row.get("ROLE_ID"):               
                     row["APRCHNSTP_APPROVER_ID"] = "ROL-"+str(row.get("ROLE_ID"))
+                elif row.get("APPROVER_SELECTION_METHOD").strip() == "CUSTOM QUERY":
+                    Trace.Write("Entered custom query elif")
+                    custom_query = row.get("CUSTOM_QUERY")
+                    Trace.Write("ROW-->"+str(row))
+
+                
             elif row.get("APRCHNSTP_NAME"):
                 row["APRCHNSTP_NAME"] = row.get("APRCHNSTP_NAME").upper()
             if str(Req_Flag) == "0" and Flag_unique == "True":

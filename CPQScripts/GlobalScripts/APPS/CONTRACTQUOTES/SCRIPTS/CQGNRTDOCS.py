@@ -80,7 +80,7 @@ try:
 	for val in getdynamicrcords:
 		Log.Info('16---spare quote--UNIT_PRICE entry--')
 		extt_price += float(val.UNIT_PRICE)
-		fptotal += float(val.EXTENDED_UNIT_PRICE)
+		fptotal += float(val.EXTENDED_PRICE)
 		Quote.SetGlobal('SubtotalspareTools', str(extt_price))
 		Log.Info('16--75---extt_price--UNIT_PRICE--SAQIFP--SUBTOTSL---'+str(extt_price))
 		Quote.SetGlobal('SubtotalTools', str(extt_price))

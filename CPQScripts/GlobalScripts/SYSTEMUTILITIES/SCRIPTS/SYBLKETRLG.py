@@ -634,8 +634,11 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 		TITLE = "BILLING_DATE"
 	#if str(CLICKEDID) == "SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F" and (TreeParentParam != 'Quote Items' and TreeParentParam != ''):
 	#canedit = "FALSE"	
-	Trace.Write("@175----canedit-------->"+str(canedit))
-	if objh_obj is not None and str(canedit).upper() == "TRUE":
+	Trace.Write("@175----canedit,value-------->"+str(canedit)+','+str(VALUE))
+	if str(Product.GetGlobal("TreeParentLevel0")=="Complementary Products") and TITLE == "CUSTOMER_PART_NUMBER" and str(VALUE)!='':
+		###Edit available only for empty value!!!
+		edt_str = "NO"
+	elif objh_obj is not None and str(canedit).upper() == "TRUE":
 		obj_obj = str(objh_obj.OBJECT_NAME)
 		Trace.Write("object name--"+str(obj_obj))
 		
@@ -657,7 +660,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 				field_lable = str(objd_obj.FIELD_LABEL)
 				datepicker = "onclick_datepicker('" + api_name + "')"
 				if SELECTALL != "noselection":
-					if TITLE != 'NET_PRICE' and TITLE != "PM_FREQUENCY" and TITLE != "QUANTITY" and TITLE!="CUSTOMER_ANNUAL_QUANTITY":
+					if TITLE not in ("NET_PRICE","PM_FREQUENCY","QUANTITY","CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_PART_NUMBER"):
 						edt_str += (
 							'<div   class="row modulebnr brdr">EDIT '
 							+ str(field_lable).upper()
@@ -702,8 +705,11 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						elif data_type.upper() == "PICKLIST":
 							edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
 							pick_val = pick_val.split(",")
-							for value in pick_val:
-								edt_str += "<option>" + str(value) + "</option>"
+							if str(api_name)=="SCHEDULE_MODE" and str(TreeParam)=="Z0110":
+								edt_str +="<option>LOW QUANTITY ONSITE</option>"
+							else:
+								for value in pick_val:
+									edt_str += "<option>" + str(value) + "</option>"
 							edt_str += "</select>"
 						elif data_type.upper() == "DATE":
 							date_field.append(api_name)
@@ -736,7 +742,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
 							edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
 						elif data_type.upper() == "NUMBER":
-							if TITLE not in ('NET_PRICE','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY'):
+							if TITLE not in ('NET_PRICE','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY','CUSTOMER_PART_NUMBER'):
 								Trace.Write("inside number")
 								edt_str += (
 									'<input class="form-control light_yellow wth_80"   id="'
@@ -769,8 +775,11 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						elif data_type.upper() == "PICKLIST":
 							edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
 							pick_val = pick_val.split(",")
-							for value in pick_val:
-								edt_str += "<option>" + str(value) + "</option>"
+							if str(api_name) == "SCHEDULE_MODE" and str(TreeParam) == "Z0110":
+								edt_str +="<option>LOW QUANTITY ONSITE</option>"
+							else:
+								for value in pick_val:
+									edt_str += "<option>" + str(value) + "</option>"
 							edt_str += "</select>"
 						elif data_type.upper() == "DATE":
 							date_field.append(api_name)
@@ -791,7 +800,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 								+ str(VALUE)
 								+ '">'
 							)
-					if TITLE not in ('NET_PRICE','DISCOUNT','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY','NEW_PART') :
+					if TITLE not in ('NET_PRICE','DISCOUNT','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY','NEW_PART','CUSTOMER_PART_NUMBER') :
 						edt_str += "</div></td></tr></tbody></table>"
 						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
 					else:
@@ -807,34 +816,45 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							if k:
 								key = str(k.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID)
 						elif obj_obj == 'SAQRSP':
-							if (str(TreeSuperParentParam)!="Product Offerings" and TreeParam !='Z0092')or (str(TreeSuperParentParam)=="Product Offerings" and TreeParam =='Z0092') :
-								if TITLE=="QUANTITY":
-									field = "Enter Updated Target Quantity to add to your Parts List..."
-									label = "UPDATED TARGET QUANTITY" 
-									input_id = "updatedQuantity"
-									input_type = ""
-									checked = ""
-								else: 
-									field = "Select New Part to Update Parts List..."
-									label = "UPDATED NEW PART"
-									input_id = "updatedNewPart"
-									input_type = "type = \'checkbox\' "
-									checked = "checked" if VALUE == 1 or str(VALUE).upper() =="TRUE" else ""
-								k = Sql.GetFirst("SELECT QUOTE_REV_PO_PRODUCT_LIST_ID FROM SAQRSP WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
-								apply_all = ''
-								if len(list(RECORDID)) > 1:
-									apply_all = '<div class="col-md-12 pt-0 pb-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">Apply changes to</div><div class="txt-col-sec col-md-6 pl-0"><div class="radio"><input type="radio" name="massOrSingleEdit" id="singleEditRadio" checked="checked"><label for="singleEditRadio">The record clicked</label></div><div class="radio"><input type="radio" name="massOrSingleEdit" id="massEditRadio"><label for="massEditRadio">All selected records</label></div></div></div>'
-								edt_str = '<div class="modal-dialog bg-white" id="edit_decrip"><div class="modal-content"><div class="modal-header revision_edit_decripheader"><span class="modal-title">BULK EDIT</span><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="multiedit_RL_cancel();"><span aria-hidden="true">x</span></button></div><div class="fixed-table-body"><div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr" id="seginnerbnr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"><div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;"><div class="product_txt_child"><abbr title="Bulk Edit">Bulk Edit</abbr></div><div class="product_txt_to_top_child help_text" style="float: left;"><abbr title="'+str(field)+'">'+str(field)+'</abbr></div></div></div></div><div class="col-md-12 pt-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">'+str(label)+'</div><div class="txt-col-sec col-md-6 pl-0"><input id="'+str(input_id)+'" class="light_yellow" '+str(input_type)+' value="'+str(VALUE)+'" '+str(checked)+'><span class="lbl"></span></div></div>'+str(apply_all)+'</div><div class="modal-footer"><button id="popupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true" onclick="multiedit_RL_cancel();">CANCEL</button><button onclick="PartsListMultiEdit(this)" id="'+str(input_id)+'_save" data-dismiss="modal" class="btn btn-list-cust">SAVE</button></div> </div></div>'
-								if k:
-									key = str(k.QUOTE_REV_PO_PRODUCT_LIST_ID)
-							else:
-								edt_str = "NO"
-						elif obj_obj == 'SAQSPT':
-							k = Sql.GetFirst("SELECT QUOTE_SERVICE_PART_RECORD_ID FROM SAQSPT WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
+							#if (str(TreeSuperParentParam)!="Product Offerings" and TreeParam !='Z0092')or (str(TreeSuperParentParam)=="Product Offerings" and TreeParam =='Z0092') :
+							if TITLE=="QUANTITY":
+								field = "Enter Updated Target Quantity to add to your Parts List..."
+								label = "UPDATED TARGET QUANTITY" 
+								input_id = "updatedQuantity"
+								input_type = ""
+								checked = ""
+							else: 
+								field = "Select New Part to Update Parts List..."
+								label = "UPDATED NEW PART"
+								input_id = "updatedNewPart"
+								input_type = "type = \'checkbox\' "
+								checked = "checked" if VALUE == 1 or str(VALUE).upper() =="TRUE" else ""
+							k = Sql.GetFirst("SELECT QUOTE_REV_PO_PRODUCT_LIST_ID FROM SAQRSP WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
 							apply_all = ''
 							if len(list(RECORDID)) > 1:
 								apply_all = '<div class="col-md-12 pt-0 pb-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">Apply changes to</div><div class="txt-col-sec col-md-6 pl-0"><div class="radio"><input type="radio" name="massOrSingleEdit" id="singleEditRadio" checked="checked"><label for="singleEditRadio">The record clicked</label></div><div class="radio"><input type="radio" name="massOrSingleEdit" id="massEditRadio"><label for="massEditRadio">All selected records</label></div></div></div>'
-							edt_str = '<div class="modal-dialog bg-white" id="edit_decrip"><div class="modal-content"><div class="modal-header revision_edit_decripheader"><span class="modal-title">BULK EDIT</span><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="multiedit_RL_cancel();"><span aria-hidden="true">x</span></button></div><div class="fixed-table-body"><div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr" id="seginnerbnr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"><div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;"><div class="product_txt_child"><abbr title="Bulk Edit">Bulk Edit</abbr></div><div class="product_txt_to_top_child help_text" style="float: left;"><abbr title="Enter Updated Customer Annual Quantity to add to your Spare Parts...">Enter Updated Customer Annual Quantity to add to your Spare Parts...</abbr></div></div></div></div><div class="col-md-12 pt-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">Updated Quantity</div><div class="txt-col-sec col-md-6 pl-0"><input id="updatedCustomerAnnualQuantity" class="light_yellow" value="'+str(VALUE)+'"></div></div>'+str(apply_all)+'</div><div class="modal-footer"><button id="popupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true" onclick="multiedit_RL_cancel();">CANCEL</button><button onclick="PartsListMultiEdit(this)" id="updatedCustomerAnnualQuantity_save" data-dismiss="modal" class="btn btn-list-cust">SAVE</button></div> </div></div>'
+							edt_str = '<div class="modal-dialog bg-white" id="edit_decrip"><div class="modal-content"><div class="modal-header revision_edit_decripheader"><span class="modal-title">BULK EDIT</span><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="multiedit_RL_cancel();"><span aria-hidden="true">x</span></button></div><div class="fixed-table-body"><div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr" id="seginnerbnr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"><div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;"><div class="product_txt_child"><abbr title="Bulk Edit">Bulk Edit</abbr></div><div class="product_txt_to_top_child help_text" style="float: left;"><abbr title="'+str(field)+'">'+str(field)+'</abbr></div></div></div></div><div class="col-md-12 pt-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">'+str(label)+'</div><div class="txt-col-sec col-md-6 pl-0"><input id="'+str(input_id)+'" class="light_yellow" '+str(input_type)+' value="'+str(VALUE)+'" '+str(checked)+'><span class="lbl"></span></div></div>'+str(apply_all)+'</div><div class="modal-footer"><button id="popupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true" onclick="multiedit_RL_cancel();">CANCEL</button><button onclick="PartsListMultiEdit(this)" id="'+str(input_id)+'_save" data-dismiss="modal" class="btn btn-list-cust">SAVE</button></div> </div></div>'
+							if k:
+								key = str(k.QUOTE_REV_PO_PRODUCT_LIST_ID)
+							# else:
+							# 	edt_str = "NO"
+						elif obj_obj == 'SAQSPT':
+							k = Sql.GetFirst("SELECT QUOTE_SERVICE_PART_RECORD_ID FROM SAQSPT WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
+							apply_all = ''
+							if TITLE =="CUSTOMER_PART_NUMBER":
+								field = "Part Number"
+								ids = "updatedCustomerPartNumber"
+								validation = ""
+								type = "text"
+							else:
+								field =  "Annual Quantity"
+								ids ="updatedCustomerAnnualQuantity"
+								validation ='onkeyup="validateInput()"'
+								type = "number"
+							if len(list(RECORDID)) > 1 and TITLE!="CUSTOMER_PART_NUMBER":
+								apply_all = '<div class="col-md-12 pt-0 pb-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">Apply changes to</div><div class="txt-col-sec col-md-6 pl-0"><div class="radio"><input type="radio" name="massOrSingleEdit" id="singleEditRadio" checked="checked"><label for="singleEditRadio">The record clicked</label></div><div class="radio"><input type="radio" name="massOrSingleEdit" id="massEditRadio"><label for="massEditRadio">All selected records</label></div></div></div>'
+							disabled = "disabled" if VALUE=="" and TITLE == "CUSTOMER_ANNUAL_QUANTITY" else ""
+							edt_str = '<div class="modal-dialog bg-white" id="edit_decrip"><div class="modal-content"><div class="modal-header revision_edit_decripheader"><span class="modal-title">BULK EDIT</span><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="multiedit_RL_cancel();"><span aria-hidden="true">x</span></button></div><div class="fixed-table-body"><div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr" id="seginnerbnr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"><div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;"><div class="product_txt_child"><abbr title="Bulk Edit">Bulk Edit</abbr></div><div class="product_txt_to_top_child help_text" style="float: left;"><abbr title="Enter Updated Customer '+str(field)+' to add to your Spare Parts...">Enter Updated Customer '+str(field)+' to add to your Spare Parts...</abbr></div></div></div></div><div class="col-md-12 pt-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">Updated Customer '+str(field)+'</div><div class="txt-col-sec col-md-6 pl-0"><input id="'+str(ids)+'" type="'+str(type)+'" class="light_yellow" value="'+str(VALUE)+'" '+str(validation)+'><div id="alertMessage" style="font-size:12px;color:red;"></div></div></div>'+str(apply_all)+'</div><div class="modal-footer"><button id="popupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true" onclick="multiedit_RL_cancel();">CANCEL</button><button onclick="PartsListMultiEdit(this)" id="'+str(ids)+'_save" data-dismiss="modal" class="btn btn-list-cust" '+str(disabled)+'>SAVE</button></div> </div></div>'
 							if k:
 								key = str(k.QUOTE_SERVICE_PART_RECORD_ID)
 						else:
@@ -862,7 +882,7 @@ def remove_html_tags(text):
 	return re.sub(clean, "", text)
 
 
-def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,SELECTALL):
+def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,SELECTALL):
 	Sql = SQL()
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -881,13 +901,13 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 	checked = ""
 	date_field = []
 	selected_rows_cpqid = []
-	objh_obj = SqlHelper.GetFirst("select OBJECT_NAME, RECORD_NAME from SYOBJH where RECORD_ID = '" + str(obj_id) + "'")
+	objh_obj = Sql.GetFirst("select OBJECT_NAME, RECORD_NAME from SYOBJH where RECORD_ID = '" + str(obj_id) + "'")
 	if objh_obj is not None:
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
 		item_lines_record_ids = []
 		if (obj_name == "SAQSAP" or obj_name == "SAQRSP" or obj_name == "SAQSPT") and (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeSuperParentParam in ('Comprehensive Services','Complementary Products')):
-			selected_rows = selectPN
+			selected_rows = selectPN if selectPN else selected_rows
 			qury_str = ""
 			Trace.Write(str(CLICKEDID)+'--Values-->'+str(A_Values))
 			if A_Keys!="" and A_Values!="":
@@ -904,7 +924,30 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Sql.RunQuery("""UPDATE SAQRSP SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}' """.format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParentParam,greenbook=TreeParam,qury_str=qury_str))
 				return ""
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQSPT" and TITLE == "CUSTOMER_ANNUAL_QUANTITY"):
-				Sql.RunQuery("""UPDATE SAQSPT SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam,qury_str=qury_str))
+				Sql.RunQuery("""UPDATE SAQSPT SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value = 'NULL' if int(ALLVALUES)==0 else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam,qury_str=qury_str))
+				count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_RECORD_ID= '"+str(Qt_rec_id)+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")
+				###A055S000P01-14322 Updating the schedule mode and delivery mode based on the consigned_parts_value from the entitlement and customer annuality quantity value from the spare parts..
+				if TreeParam == 'Z0110':
+					product_offering_entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}'".format(QuoteRecordId= ContractRecordId,RevisionRecordId=quote_revision_record_id,service_id = TreeParam))
+					entitlement_xml = product_offering_entitlement_obj.ENTITLEMENT_XML
+					quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+					consigned_parts_match_id = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(TreeParam)+'[^>]*?_TSC_ONSTCP</ENTITLEMENT_ID>')
+					consigned_parts_match_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+					for m in re.finditer(quote_item_tag, entitlement_xml):
+						sub_string = m.group(1)
+						consigned_parts_id =re.findall(consigned_parts_match_id,sub_string)
+						consigned_parts_value =re.findall(consigned_parts_match_value,sub_string)
+						if consigned_parts_id and consigned_parts_value:
+							consigned_parts_value = consigned_parts_value[0]
+							break
+					Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = ' ', DELIVERY_MODE = ' '  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' AND CUSTOMER_ANNUAL_QUANTITY IS NULL ".format(QuoteRecordId = ContractRecordId,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
+					Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'ON REQUEST', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' AND CUSTOMER_ANNUAL_QUANTITY < {consigned_parts_value}".format(QuoteRecordId = ContractRecordId,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
+					Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'LOW QUANTITY ONSITE', DELIVERY_MODE = 'ONSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' AND CUSTOMER_ANNUAL_QUANTITY >= {consigned_parts_value}".format(QuoteRecordId = ContractRecordId,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
+				if count.CNT==0:
+					delete_saqris = Sql.RunQuery("DELETE FROM SAQRIS WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
+					delete_saqrit = Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
+					delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
+					update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET NET_PRICE_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id")))
 				return ""
 		for index,rec in enumerate(selected_rows):
 			row = {}
@@ -955,11 +998,94 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				recordslist = str(tuple(recordslist)).replace(',)',')')
 				Trace.Write("recordslist--->"+str(recordslist))
 			##multi select bulk edit..	
-			elif (TreeParentParam == 'Complementary Products' and obj_name == "SAQSPT" and TITLE == "CUSTOMER_ANNUAL_QUANTITY"):
+			elif (TreeParentParam == 'Complementary Products' and obj_name == "SAQSPT"):
 				Sql = SQL()
-				Sql.RunQuery("""UPDATE SAQSPT SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
-			elif str(obj_name) == "SAQSPT":
+				if TITLE == "CUSTOMER_ANNUAL_QUANTITY":
+					value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES
+					Trace.Write('Value-->'+str(value))
+					if int(value)==0:
+						Sql.RunQuery("""UPDATE SAQSPT SET {column} = NULL WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+					else:
+						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+				elif TITLE.split(',') == ["CUSTOMER_PARTICIPATE","CUSTOMER_ACCEPT_PART","CUSTOMER_ANNUAL_QUANTITY"]:
+					if int(ALLVALUES2[index])==0:
+						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}',{column1} = '{value1}',{column2} = NULL WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index],column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+					else:
+						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}',{column1} = '{value1}',{column2} = '{value2}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index],column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+				elif TITLE=="DELIVERY_MODE":
+					Trace.Write('1016-----'+str(VALUE))
+					Sql.RunQuery("""UPDATE SAQSPT SET DELIVERY_MODE = '{value}' {schedule_mode} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=VALUE,schedule_mode= ",SCHEDULE_MODE = 'ON REQUEST'" if str(VALUE)=="OFFSITE" and str(TreeParam)=="Z0110" else "",QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+					#A055S000P01-14051 start
+					get_schedulemode = Sql.GetFirst("SELECT SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+					if get_schedulemode and str(TreeParam) =="Z0108":
+						schedulemthod = get_schedulemode.SCHEDULE_MODE
+						if schedulemthod == "SCHEDULED" and VALUE == "OFFSITE":
+							#Trace.Write('1022-----'+str(VALUE))
+							ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
+						else:
+							ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'DELETE','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
+					#A055S000P01-14051 end
+				elif TITLE=="SCHEDULE_MODE":
+					Sql.RunQuery("""UPDATE SAQSPT SET SCHEDULE_MODE = '{value}' {delivery_mode} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=VALUE,delivery_mode= ",DELIVERY_MODE = 'ONSITE' " if str(VALUE)=="LOW QUANTITY ONSITE" and str(TreeParam)=="Z0110" else "",QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+				elif TITLE=="CUSTOMER_PART_NUMBER":
+					Sql.RunQuery("""UPDATE SAQSPT SET CUSTOMER_PART_NUMBER = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+				count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_RECORD_ID= '"+str(Qt_rec_id)+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")
+				if TreeParam == 'Z0108' or TreeParam == 'Z0110':
+					if TreeParam == 'Z0108':
+						cust_annual_qty = Sql.GetList("SELECT CUSTOMER_ANNUAL_QUANTITY,UNIT_PRICE FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
+						if cust_annual_qty:
+							for annual_qty in cust_annual_qty:
+								Trace.Write("Annual_Qty "+str(annual_qty))
+								if annual_qty.CUSTOMER_ANNUAL_QUANTITY < 10:
+									Trace.Write("Less Than 10")
+									Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'UNSCHEDULED', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY < 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
+								elif annual_qty.CUSTOMER_ANNUAL_QUANTITY >= 10:
+									Trace.Write("Greater Than 10")
+									Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'SCHEDULED', DELIVERY_MODE = 'ONSITE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY >= 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
+								if annual_qty.CUSTOMER_ANNUAL_QUANTITY <= 9 and annual_qty.UNIT_PRICE <= 50:
+									parts_record_query = Sql.GetList("SELECT QUOTE_SERVICE_PART_RECORD_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND UNIT_PRICE <= 50".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
+									for parts in parts_record_query:
+										Sql.RunQuery("DELETE FROM SAQSPT WHERE QUOTE_SERVICE_PART_RECORD_ID = '"+str(parts.QUOTE_SERVICE_PART_RECORD_ID)+"'")
+					else:
+						###A055S000P01-14322 Updating the schedule mode and delivery mode based on the consigned_parts_value from the entitlement and customer annuality quantity value from the spare parts..
+						product_offering_entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}'".format(QuoteRecordId= ContractRecordId,RevisionRecordId=quote_revision_record_id,service_id = TreeParam))
+						entitlement_xml = product_offering_entitlement_obj.ENTITLEMENT_XML
+						quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+						consigned_parts_match_id = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(TreeParam)+'[^>]*?_TSC_ONSTCP</ENTITLEMENT_ID>')
+						consigned_parts_match_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+						for m in re.finditer(quote_item_tag, entitlement_xml):
+							sub_string = m.group(1)
+							consigned_parts_id =re.findall(consigned_parts_match_id,sub_string)
+							consigned_parts_value =re.findall(consigned_parts_match_value,sub_string)
+							if consigned_parts_id and consigned_parts_value:
+								consigned_parts_value = consigned_parts_value[0]
+								break
+						# fpm_spare_parts_object = Sql.GetList("SELECT CUSTOMER_ANNUAL_QUANTITY,UNIT_PRICE FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = '{service_id}' AND CUSTOMER_ANNUAL_QUANTITY < {consigned_parts_value}".format(QuoteRecordId = ContractRecordId,rev_rec_id = quote_revision_record_id,service_id =TreeParam,consigned_parts_value))
+						# for fpm_spare_part in fpm_spare_parts_object:
+						# 	if fpm_spare_part:
+						Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = ' ', DELIVERY_MODE = ' '  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' AND CUSTOMER_ANNUAL_QUANTITY IS NULL ".format(QuoteRecordId = ContractRecordId,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
+						Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'ON REQUEST', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' AND CUSTOMER_ANNUAL_QUANTITY < {consigned_parts_value}".format(QuoteRecordId = ContractRecordId,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
+						Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'LOW QUANTITY ONSITE', DELIVERY_MODE = 'ONSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' AND CUSTOMER_ANNUAL_QUANTITY >= {consigned_parts_value}".format(QuoteRecordId = ContractRecordId,RevisionRecordId = quote_revision_record_id,service_id=TreeParam,consigned_parts_value = consigned_parts_value))
+						
+
+						
+
+				if count.CNT==0:
+					delete_saqris = Sql.RunQuery("DELETE FROM SAQRIS WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
+					delete_saqrit = Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
+					delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
+					update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET NET_PRICE_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id")))
 				
+			elif (TreeParam == 'Customer Information' and obj_name == "SAQICT"):
+				Sql = SQL()
+				if TITLE.split(',') == ["RETURN_NOTIFY_EMAIL","SHIP_NOTIFY_EMAIL"]:
+					if ALLVALUES1:
+						Trace.Write('555 '+str(ALLVALUES1)+'555 '+str(objh_head)+"555 "+str(sql_obj.QUOTE_REV_INVOLVED_PARTY_CONTACT_ID))
+						Sql.RunQuery("""UPDATE SAQICT SET RETURN_NOTIFY_EMAIL = '{value}',SHIP_NOTIFY_EMAIL = '{value1}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value = ALLVALUES[index],value1 = ALLVALUES1[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id=sql_obj.QUOTE_REV_INVOLVED_PARTY_CONTACT_ID))
+
+
+
+			elif str(obj_name) == "SAQSPT":
 				getserid = row.get("QUOTE_SERVICE_PART_RECORD_ID")
 				getpartno = getQn = getAQ = ""
 				getPN = Sql.GetFirst("select  * from SAQSPT where QUOTE_SERVICE_PART_RECORD_ID = '"+str(getserid)+"'")
@@ -975,14 +1101,14 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					sqlforupdatePT += "UPDATE SAQIFP SET ANNUAL_QUANTITY = '{AQ}',EXTENDED_PRICE = (UNIT_PRICE*'{AQ}') where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER in {PN} AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(AQ =str(VALUE) ,CT = str(ContractRecordId),PN=tuple(selectPN),quote_revision_record_id=quote_revision_record_id)
 					#sqlforupdatePT += "UPDATE SAQIFP SET ANNUAL_QUANTITY = '{AQ}',EXTENDED_UNIT_PRICE = '{UP}' where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER in {PN}".format(AQ =str(VALUE) ,CT = str(ContractRecordId),PN=tuple(selectPN))
 					Sql.RunQuery(sqlforupdatePT)
-					sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ},EXTENDED_UNIT_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER in {PN}".format(AQ =VALUE ,CT = str(ContractRecordId),PN=tuple(selectPN))
+					sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ},EXTENDED_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER in {PN}".format(AQ =VALUE ,CT = str(ContractRecordId),PN=tuple(selectPN))
 					Sql.RunQuery(sqlforupdate)
 				else:
 					
 					sqlforupdatePT += "UPDATE SAQIFP SET ANNUAL_QUANTITY = '{AQ}',EXTENDED_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER = '{PN}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(AQ =VALUE ,CT = str(ContractRecordId),PN=getpartno,quote_revision_record_id=quote_revision_record_id)
 					#sqlforupdatePT += "UPDATE SAQIFP SET ANNUAL_QUANTITY = '{AQ}',EXTENDED_UNIT_PRICE = '{UP}' where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER in {PN}".format(AQ =str(VALUE) ,CT = str(ContractRecordId),PN=tuple(selectPN))
 					Sql.RunQuery(sqlforupdatePT)
-					sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ},EXTENDED_UNIT_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER  = '{PN}'".format(AQ =VALUE ,CT = str(ContractRecordId),PN=getpartno)
+					sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ},EXTENDED_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER  = '{PN}'".format(AQ =VALUE ,CT = str(ContractRecordId),PN=getpartno)
 					Sql.RunQuery(sqlforupdate)
 			
 			elif (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeTopSuperParentParam in ('Comprehensive Services','Complementary Products')) and obj_name == "SAQSAP":
@@ -1025,7 +1151,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				getting_cps_tax(quote_id,quote_record_id,item_lines_record_ids)
 			elif TITLE == 'NET_PRICE':
 				
-				a = Sql.GetFirst("SELECT ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
+				a = Sql.GetFirst("SELECT ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
 				
 				if float(a.TARGET_PRICE) != 0.0 or float(a.TARGET_PRICE) != 0.00:
 					discount =(float(a.TARGET_PRICE)-float(VALUE))/float(a.TARGET_PRICE)
@@ -1046,7 +1172,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Trace.Write("number of days---------------->"+str((d2 - d1).days))
 				
 				
-				yoy = float(a.YEAR_OVER_YEAR)
+				yoy = None
 				#VALUE = float(a.SALES_DISCOUNT_PRICE)-amt
 				year1 = float(VALUE)
 				year2 = 0.00
@@ -1134,7 +1260,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			elif TITLE == 'DISCOUNT':
 				if '%' in VALUE:
 					VALUE = VALUE.replace('%','')
-				a = Sql.GetFirst("SELECT ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,FABLOCATION_ID,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
+				a = Sql.GetFirst("SELECT ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,FABLOCATION_ID,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
 				amt = 0.00
 				if float(a.TARGET_PRICE) != 0.0 or float(a.TARGET_PRICE) != 0.00:
 					if "+" not in VALUE and "-" not in VALUE:
@@ -1147,7 +1273,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					else:
 						amt = 0.00
 				
-				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}', DISCOUNT = {discount} WHERE CpqTableEntryId = {cpqid}".format(VALUE=float(amt),cpqid=cpqid,discount=float(VALUE)))
+				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}', WHERE CpqTableEntryId = {cpqid}".format(VALUE=float(amt),cpqid=cpqid))
 
 				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
 
@@ -1163,7 +1289,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Trace.Write("number of days---------------->"+str((d2 - d1).days))
 				
 				
-				yoy = float(a.YEAR_OVER_YEAR)
+				yoy = None
 				#VALUE = amt
 				year1 = float(amt)
 				year2 = 0.00
@@ -1328,7 +1454,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 									SUM(ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
 									SUM(ISNULL(SAQRIT.NET_PRICE, 0)) as NET_PRICE,
 									SUM(ISNULL(SAQRIT.NET_VALUE, 0)) as NET_VALUE,
-                                    SUM(ISNULL(SAQRIT.NET_VALUE_INGL_CURR, 0)) as NET_VALUE_INGL_CURR,
+									SUM(ISNULL(SAQRIT.NET_VALUE_INGL_CURR, 0)) as NET_VALUE_INGL_CURR,
 									SUM(ISNULL(SAQRIT.TAX_AMOUNT, 0)) as TAX_AMOUNT
 									FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQRIT.QTEREV_RECORD_ID, SAQRIT.QUOTE_RECORD_ID,SAQRIT.SERVICE_ID) IQ ON SAQRIS.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQRIS.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID
 						WHERE SAQRIS.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIS.QTEREV_RECORD_ID = '{quote_revision_rec_id}' 	""".format(quote_rec_id = Qt_rec_id ,quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id") ) )
@@ -1680,6 +1806,11 @@ try:
 except:
 	ALLVALUES1 = None
 try:
+	ALLVALUES2 = Param.ALLVALUES2
+	Trace.Write("allvalues2--"+str(list(ALLVALUES2)))
+except:
+	ALLVALUES2 = None
+try:
 	A_Keys = Param.A_Keys
 except:
 	A_Keys = ""
@@ -1699,7 +1830,7 @@ if ELEMENT == "RELATEDEDIT":
 	
 	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL))
 elif ELEMENT == "SAVE":
-	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,SELECTALL))
+	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,SELECTALL))
 else:
 	ApiResponse = ApiResponseFactory.JsonResponse("")
 

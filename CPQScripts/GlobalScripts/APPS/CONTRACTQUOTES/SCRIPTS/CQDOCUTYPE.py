@@ -7,10 +7,9 @@
 # ====================================================================================================================
 import clr
 import System.Net
-from System.Text.Encoding import UTF8
-from System import Convert
 import sys
 from SYDATABASE import SQL
+
 Sql = SQL()
 
 def update_document_type(QuoteRecordId,RevisionRecordId,ServicerecordId):
@@ -29,7 +28,7 @@ def update_document_type(QuoteRecordId,RevisionRecordId,ServicerecordId):
         
     if document_type_obj:
         Sql.RunQuery("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type_obj.DOCTYP_ID,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = QuoteRecordId,RevisionRecordId = RevisionRecordId)) 
-    #Log.Info("CQDOCUTYPE--------->UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type_obj.DOCTYP_ID,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = QuoteRecordId,RevisionRecordId = RevisionRecordId))             
+    
 try:
     QuoteRecordId = Param.QUOTE_RECORD_ID
     RevisionRecordId = Param.QTEREV_RECORD_ID
@@ -37,5 +36,6 @@ try:
 except:
     QuoteRecordId = ""
     RevisionRecordId = "" 
-    ServicerecordId = ""   
+    ServicerecordId = ""
+Log.Info("CQDOCUTYPE called for Quote Record ID--->"+str(QuoteRecordId))   
 update_document_type(QuoteRecordId,RevisionRecordId,ServicerecordId)

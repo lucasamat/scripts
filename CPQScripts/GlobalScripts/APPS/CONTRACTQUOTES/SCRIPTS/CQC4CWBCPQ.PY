@@ -7,7 +7,6 @@
 # ==========================================================================================================================================
 from SYDATABASE import SQL
 import sys
-import datetime 
 Sql = SQL()
 
 def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id,quote_record_id):

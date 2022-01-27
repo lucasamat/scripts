@@ -154,7 +154,8 @@ def create_new_revision(Opertion,cartrev):
 				"PRICINGPROCEDURE_ID" : get_previous_rev_data.PRICINGPROCEDURE_ID,
 				"PRICINGPROCEDURE_NAME" : get_previous_rev_data.PRICINGPROCEDURE_NAME,
 				"PRICINGPROCEDURE_RECORD_ID" :get_previous_rev_data.PRICINGPROCEDURE_RECORD_ID,
-				"CANCELLATION_PERIOD":"89 DAYS",
+				"CANCELLATION_PERIOD":"180",
+				"CANCELLATION_PERIOD_NOTPER":"0",
 				"CONTRACT_VALID_FROM":get_previous_rev_data.CONTRACT_VALID_FROM,
 				"CONTRACT_VALID_TO":get_previous_rev_data.CONTRACT_VALID_TO,
 				"COMPANY_ID":get_previous_rev_data.COMPANY_ID,
@@ -166,7 +167,7 @@ def create_new_revision(Opertion,cartrev):
 		quote_revision_table_info.AddRow(quote_rev_data)
 		Sql.Upsert(quote_revision_table_info)
 		Quote.GetCustomField('QUOTE_REVISION_DESC').Content  = get_previous_rev_data.REVISION_DESCRIPTION
-		Quote.GetCustomField('QUOTE_EXCHANGE_RATE').Content = get_previous_rev_data.EXCHANGE_RATE
+		Quote.GetCustomField('QUOTE_EXCHANGE_RATE').Content = str(get_previous_rev_data.EXCHANGE_RATE)
 		Quote.GetCustomField('QUOTE_PAYMENT_TERM').Content = get_previous_rev_data.PAYMENTTERM_NAME
 		#create new revision -SAQTRV - update-end
 		#get quote data for update in SAQTMT start

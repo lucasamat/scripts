@@ -13,138 +13,23 @@ import re
 import System.Net
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
+from System import Convert
+import re
+
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
+from System.Text.Encoding import UTF8
 #Log.Info('quote_revision_record_id- '+str(quote_revision_record_id))
 def quoteiteminsert(Qt_id):
 	#quote_number = Qt_id[2:12]
 	Log.Info('quote_id---'+str(Qt_id))
-	#quote_Edit = QuoteHelper.Edit(Qt_id)
-	#get_curr = str(Quote.GetCustomField('Currency').Content)
-	# total_cost = 0.00
-	# total_target_price = 0.00
-	# total_ceiling_price = 0.00
-	# total_sls_discount_price = 0.00
-	# total_bd_margin = 0.00
-	# total_bd_price = 0.00
-	# total_sales_price = 0.00
-	# total_yoy = 0.00
-	# total_year_1 = 0.00
-	# total_year_2 = 0.00
-	# total_year_3 = 0.00
-	# total_year_4 = 0.00
-	# total_year_5 = 0.00
-	# total_tax = 0.00
-	# total_extended_price = 0.00
-	# total_model_price = 0.00
-	# items_data = {}
+	
 	
 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
 	get_exch_rate = Sql.GetFirst("SELECT * FROM SAQTRV where QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(Qt_id,get_rev_rec_id.QTEREV_RECORD_ID))
-	# get_curr = get_rev_rec_id.QUOTE_CURRENCY
-	# items_obj = Sql.GetList("SELECT SERVICE_ID, LINE,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE, ISNULL(MODEL_PRICE, 0) as MODEL_PRICE, ISNULL(CEILING_PRICE, 0) as CEILING_PRICE, ISNULL(SALES_DISCOUNT_PRICE, 0) as SALES_DISCOUNT_PRICE, ISNULL(BD_PRICE, 0) as BD_PRICE,ISNULL(BD_PRICE_MARGIN, 0) as BD_PRICE_MARGIN, ISNULL(NET_PRICE, 0) as NET_PRICE, ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, ISNULL(NET_VALUE, 0) as NET_VALUE, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_id,get_rev_rec_id.QTEREV_RECORD_ID))
-	# if items_obj:
-	# 	for item_obj in items_obj:
-	# 		items_data[int(float(item_obj.LINE))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_3':item_obj.YEAR_3, 'YEAR_4':item_obj.YEAR_4, 'YEAR_5':item_obj.YEAR_5, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY, 'MODEL_PRICE':item_obj.MODEL_PRICE, 'CEILING_PRICE':item_obj.CEILING_PRICE, 'SALES_DISCOUNT_PRICE':item_obj.SALES_DISCOUNT_PRICE, 'BD_PRICE':item_obj.BD_PRICE, 'NET_PRICE':item_obj.NET_PRICE, 'BD_PRICE_MARGIN':item_obj.BD_PRICE_MARGIN, 'NET_VALUE' :item_obj.NET_VALUE}
-	# quote_Edit = QuoteHelper.Edit(Qt_id)
-	# for item in Quote.MainItems:
-	# 	item_number = int(item.RolledUpQuoteItem)
-	# 	if item_number in items_data.keys():
-	# 		if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
-	# 			item_data = items_data.get(item_number)
-	# 			item.TOTAL_COST.Value = float(item_data.get('TOTAL_COST'))					
-	# 			total_cost += float(item_data.get('TOTAL_COST'))
-	# 			item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
-				
-	# 			item.MODEL_PRICE.Value = item_data.get('MODEL_PRICE')
-	# 			item.CEILING_PRICE.Value = item_data.get('CEILING_PRICE')
-	# 			item.SALES_DISCOUNT_PRICE.Value = item_data.get('SALES_DISCOUNT_PRICE')
-	# 			item.BD_PRICE.Value = item_data.get('BD_PRICE')
-	# 			item.NET_PRICE.Value = item_data.get('NET_PRICE')
-	# 			item.BD_PRICE_MARGIN.Value = item_data.get('BD_PRICE_MARGIN')
-
-	# 			total_target_price += item.TARGET_PRICE.Value
-	# 			total_ceiling_price += item.CEILING_PRICE.Value
-	# 			total_sls_discount_price += item.SALES_DISCOUNT_PRICE.Value
-	# 			total_bd_margin += item.BD_PRICE_MARGIN.Value
-	# 			total_bd_price += item.BD_PRICE.Value
-	# 			total_model_price += item.MODEL_PRICE.Value
-	# 			total_sales_price += item.NET_PRICE.Value
-	# 			item.YEAR_OVER_YEAR.Value = item_data.get('YEAR_OVER_YEAR')
-	# 			total_yoy += item.YEAR_OVER_YEAR.Value
-	# 			item.YEAR_1.Value = item_data.get('YEAR_1')
-	# 			total_year_1 += item.YEAR_1.Value
-	# 			item.YEAR_2.Value = item_data.get('YEAR_2')
-	# 			total_year_2 += item.YEAR_2.Value
-	# 			item.YEAR_3.Value = item_data.get('YEAR_3')
-	# 			total_year_3 += item.YEAR_3.Value
-	# 			item.YEAR_4.Value = item_data.get('YEAR_4')
-	# 			total_year_4 += item.YEAR_4.Value
-	# 			item.YEAR_5.Value = item_data.get('YEAR_5')
-	# 			total_year_5 += item.YEAR_5.Value
-	# 			total_tax += item.TAX.Value
-	# 			item.NET_VALUE.Value = item_data.get('NET_VALUE')
-	# 			total_extended_price += item.NET_VALUE.Value	
-	# 			item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
 	
-
-	# 			Log.Info('SALES_DISCOUNT_PRICE--'+str(item.SALES_DISCOUNT_PRICE.Value))
-	# ##controlling decimal based on currency
-	# if get_curr:
-	# 	get_decimal_place = Sql.GetFirst("SELECT * FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(get_curr))
-	# 	if get_decimal_place:
-	# 		decimal_value = get_decimal_place.DISPLAY_DECIMAL_PLACES
-	# 		formatting_string = "{0:." + str(decimal_value) + "f}"
-			
-	# 		total_cost =formatting_string.format(total_cost)
-	# 		total_target_price =formatting_string.format(total_target_price)
-	# 		total_ceiling_price =formatting_string.format(total_ceiling_price)
-	# 		total_sls_discount_price =formatting_string.format(total_sls_discount_price)
-	# 		total_sales_price =formatting_string.format(total_sales_price)
-	# 		total_year_1 =formatting_string.format(total_year_1)
-	# 		total_year_2 =formatting_string.format(total_year_2)
-	# 		total_year_3 =formatting_string.format(total_year_3)
-	# 		total_year_4 =formatting_string.format(total_year_4)
-	# 		total_year_5 =formatting_string.format(total_year_5)
-	# 		total_tax =formatting_string.format(total_tax)
-	# 		total_extended_price =formatting_string.format(total_extended_price)
-	# 		total_model_price =formatting_string.format(total_model_price)
-	# 		total_bd_price =formatting_string.format(total_bd_price)
-
-
-	# Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
-	# Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
-	# Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
-	# Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = str(total_sls_discount_price) + " " + get_curr
-	# Quote.GetCustomField('BD_PRICE_MARGIN').Content =str(total_bd_margin) + " %"
-	# Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = str(total_bd_price) + " %"
-	# Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_sales_price) + " " + get_curr
-	# Quote.GetCustomField('YEAR_OVER_YEAR').Content =str(total_yoy) + " %"
-	# Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
-	# Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
-	# Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + get_curr
-	# Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
-	# Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
-	
-	# Quote.GetCustomField('MODEL_PRICE').Content = str(total_model_price) + " " + get_curr
-	# Quote.GetCustomField('BD_PRICE').Content = str(total_bd_price) + " " + get_curr
-	
-	
-
-	#Quote.Save()
 	get_exch_rate = get_exch_rate.EXCHANGE_RATE
-	# Sql.RunQuery("""UPDATE SAQRIT 
-	# 			SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0) 
-	# 			FROM SAQRIT (NOLOCK)
-	# 				WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' """.format(QuoteRecordId=get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID,rev =get_rev_rec_id.QTEREV_RECORD_ID ))
-	# Sql.RunQuery("""UPDATE SAQRIT 
-	# 	SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(get_exch_rate)+""" , 
-	# 	NET_VALUE_INGL_CURR = NET_VALUE*"""+str(get_exch_rate)+""",
-	# 	UNIT_PRICE_INGL_CURR =  UNIT_PRICE*"""+str(get_exch_rate)+"""
-	# 	FROM SAQRIT (NOLOCK)
-	# 		WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' """.format(QuoteRecordId=get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID, rev =get_rev_rec_id.QTEREV_RECORD_ID))
-	
-	
+
 	##updating saqris
 	Sql.RunQuery("""UPDATE SAQRIS 
 							SET UNIT_PRICE_INGL_CURR = IQ.UNIT_PRICE_INGL_CURR, 
@@ -176,31 +61,25 @@ def quoteiteminsert(Qt_id):
 						WHERE SAQRIS.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIS.QTEREV_RECORD_ID='{rev}' """.format( QuoteRecordId= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,rev =get_rev_rec_id.QTEREV_RECORD_ID))
 						
 	##updating quote summary values in saqtrv
-	get_saqtrv_price = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'".format(QuoteRecordId=get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID,rev =get_rev_rec_id.QTEREV_RECORD_ID))
-	net_price_ingl = 0
-	net_value_ingl = 0
-	tax_amt_ingl = 0
-	#net_price = 0
-	# if get_saqtrv_price:
-	# 	if get_saqtrv_price.NET_PRICE_INGL_CURR:
-	# 		net_price_ingl = get_saqtrv_price.NET_PRICE_INGL_CURR
-	# 	if get_saqtrv_price.NET_VALUE_INGL_CURR:
-	# 		net_value_ingl = get_saqtrv_price.NET_VALUE_INGL_CURR
-	# 	if get_saqtrv_price.TAX_AMOUNT_INGL_CURR:
-	# 		tax_amt_ingl = get_saqtrv_price.TAX_AMOUNT_INGL_CURR
 	total_credit = 0
 	get_credit_val = Sql.GetFirst("""SELECT * FROM SAQRIS WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID='Z0116' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
 	if get_credit_val:
 		if get_credit_val.NET_PRICE_INGL_CURR:
 			total_credit = get_credit_val.NET_PRICE_INGL_CURR
-	
+	##A055S000P01-13894
+	update_revision_status = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQIFP WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND PRICING_STATUS = 'ERROR'""".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID))
+	rev_status =""
+	if update_revision_status:
+		rev_status ="ON HOLD - COSTING"
+	else:
+		rev_status ="PRICED"
 	Sql.RunQuery("""UPDATE SAQTRV
 						SET 
 						SAQTRV.TAX_AMOUNT_INGL_CURR = IQ.TAX_AMOUNT_INGL_CURR,						
 						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
-						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR - """+str(total_credit)+""",
-						SAQTRV.CREDIT_INGL_CURR	= """+str(total_credit)+"""
-									
+						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
+						SAQTRV.CREDIT_INGL_CURR	= """+str(total_credit)+""",
+						SAQTRV.REVISION_STATUS	= '"""+str(rev_status)+"""'		
 						FROM SAQTRV (NOLOCK)
 						INNER JOIN (SELECT SAQRIS.QUOTE_RECORD_ID, SAQRIS.QTEREV_RECORD_ID,
 									SUM(ISNULL(SAQRIS.TAX_AMOUNT_INGL_CURR, 0)) as TAX_AMOUNT_INGL_CURR,
@@ -209,7 +88,7 @@ def quoteiteminsert(Qt_id):
 									SUM(ISNULL(SAQRIS.NET_VALUE, 0)) as NET_VALUE,
 									SUM(ISNULL(SAQRIS.NET_VALUE_INGL_CURR, 0)) as NET_VALUE_INGL_CURR,
 									SUM(ISNULL(SAQRIS.TAX_AMOUNT, 0)) as TAX_AMOUNT
-									FROM SAQRIS (NOLOCK) WHERE SAQRIS.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIS.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQRIS.QTEREV_RECORD_ID, SAQRIS.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
+									FROM SAQRIS (NOLOCK) WHERE SAQRIS.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIS.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID !='Z0117' GROUP BY SAQRIS.QTEREV_RECORD_ID, SAQRIS.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
 						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ) )
 
 	# SUM(ISNULL(SAQITM.YEAR_1_INGL_CURR, 0)) as YEAR_1_INGL_CURR,
@@ -218,14 +97,111 @@ def quoteiteminsert(Qt_id):
 	# SUM(ISNULL(SAQITM.YEAR_4_INGL_CURR, 0)) as YEAR_4_INGL_CURR,
 	# SUM(ISNULL(SAQITM.YEAR_5_INGL_CURR, 0)) as YEAR_5_INGL_CURR
 	#updating value to quote summary ends
+	try:
+		get_services = Sql.GetList("SELECT SERVICE_ID from SAQTSE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
+		get_services_list = []
+		for val in get_services:
+			if val.SERVICE_ID:
+				get_services_list.append(val.SERVICE_ID)
+		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+		if LOGIN_CREDENTIALS is not None:
+			Login_Username = str(LOGIN_CREDENTIALS.Username)
+			Login_Password = str(LOGIN_CREDENTIALS.Password)
+			authorization = Login_Username+":"+Login_Password
+			binaryAuthorization = UTF8.GetBytes(authorization)
+			authorization = Convert.ToBase64String(binaryAuthorization)
+			authorization = "Basic " + authorization
 
+
+			webclient = System.Net.WebClient()
+			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+			
+			result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_record_id,Rev_Id = revision)
+			
+			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
+			Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
+	except:
+		Log.Info('error in Billing')	
 	return "True"
+
+def voucher_amt_update(Qt_id):
+	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
+	try:
+		##updating price for z0117
+		check_record = Sql.GetFirst("SELECT count(*) as cnt FROM SAQRIT WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' AND ISNULL(STATUS,'') = 'ACQUIRING' or ISNULL(STATUS,'') = ''".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID) )
+		if check_record.cnt > 0:
+			get_greenbook_record = Sql.GetList("SELECT DISTINCT GREENBOOK,ENTITLEMENT_XML,SERVICE_ID,PAR_SERVICE_ID FROM SAQSGE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' ".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID))
+			tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_Z0117_PQB_VCRAMT</ENTITLEMENT_ID>')
+			entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			if get_greenbook_record:
+				for record in get_greenbook_record:
+					get_voucher_value = ''
+					for quote_item_tag in re.finditer(tag_pattern, record.ENTITLEMENT_XML):
+						quote_item_tag_content = quote_item_tag.group(1)
+						entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)	
+						if entitlement_id_tag_match:
+							entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
+							if entitlement_display_value_tag_match:
+								get_voucher_value = entitlement_display_value_tag_match[0].upper()
+								break
+					Trace.Write("get_voucher_value-"+str(record.GREENBOOK)+"-"+str(get_voucher_value))
+					Sql.RunQuery("UPDATE SAQICO SET STATUS = 'ACQUIRED', CNTPRI_INGL_CURR = '{voucher_amt}' FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' AND GREENBOOK = '{grnbok}' ".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value,grnbok = record.GREENBOOK  ))
+			
+					Sql.RunQuery("""UPDATE SAQRIT 
+						SET 
+						YEAR_1 = '{voucher_amt}',
+						YEAR_1_INGL_CURR = '{voucher_amt}'
+					FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117' AND GREENBOOK = '{grnbok}' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value,grnbok = record.GREENBOOK  ))
+					
+			Sql.RunQuery("""UPDATE SAQRIT SET YEAR_2 = CNTPRI_INGL_CURR ,YEAR_2_INGL_CURR = CNTPRI_INGL_CURR FROM SAQRIT (NOLOCK) INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GREENBOOK AND YEAR = 'YEAR 2' WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID = 'Z0117' AND YEAR = 'YEAR 2' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value  ))
+
+			Sql.RunQuery("""UPDATE SAQRIT SET YEAR_3 = CNTPRI_INGL_CURR ,YEAR_3_INGL_CURR = CNTPRI_INGL_CURR FROM SAQRIT (NOLOCK) INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GREENBOOK AND YEAR = 'YEAR 3' WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID = 'Z0117'  AND YEAR = 'YEAR 3' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value  ))
+
+			Sql.RunQuery("""UPDATE SAQRIT SET YEAR_4 = CNTPRI_INGL_CURR ,YEAR_4_INGL_CURR = CNTPRI_INGL_CURR FROM SAQRIT (NOLOCK) INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GREENBOOK AND YEAR = 'YEAR 4' WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID = 'Z0117'  AND YEAR = 'YEAR 4' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value  ))
+
+			Sql.RunQuery("""UPDATE SAQRIT SET YEAR_5 = CNTPRI_INGL_CURR ,YEAR_5_INGL_CURR = CNTPRI_INGL_CURR FROM SAQRIT (NOLOCK) INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GREENBOOK AND YEAR = 'YEAR 5' WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID = 'Z0117'  AND YEAR = 'YEAR 5' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value ))
+
+			Sql.RunQuery("""UPDATE SAQRIT SET
+						NET_PRICE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0), 
+						NET_PRICE_INGL_CURR = ISNULL(YEAR_1_INGL_CURR,0) + ISNULL(YEAR_2_INGL_CURR,0) + ISNULL(YEAR_3_INGL_CURR,0) + ISNULL(YEAR_4_INGL_CURR,0) + ISNULL(YEAR_5_INGL_CURR,0)
+					FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117'  """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value  ))
+			
+			Sql.RunQuery("""UPDATE SAQRIT 
+						SET STATUS = 'ACQUIRED', 
+						NET_VALUE = ISNULL(NET_PRICE, 0) + ISNULL(TAX_AMOUNT,0), 
+						NET_VALUE_INGL_CURR =ISNULL(NET_PRICE_INGL_CURR, 0) + ISNULL(TAX_AMOUNT, 0)
+					FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID = 'Z0117'  """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID,voucher_amt = get_voucher_value ))
+
+
+
+	except:
+		Log.Info("error in voucher")
+
+def quoteitemupdate(Qt_id):
+    delete_saqris = Sql.RunQuery("DELETE FROM SAQRIS WHERE QUOTE_ID = '{}'".format(Qt_id))
+    delete_saqrit = Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_ID = '{}'".format(Qt_id))
+    delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_ID = '{}'".format(Qt_id))
+    update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET NET_PRICE_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_ID = '{}'".format(Qt_id))
+    
 try: 
 	Qt_id = Param.QT_REC_ID
 except:
 	Qt_id = ""
+try:
+   	Action = Param.Operation
+except:
+	Action= ""
 
 try:
-	calling_function = quoteiteminsert(Qt_id)
+	if Action == 'Delete':
+		calling_function = quoteitemupdate(Qt_id)
+	elif  Action == 'VOUCHER_UPDATE':
+		voucher_amt_update(Qt_id)
+	else:    
+		voucher_amt_update(Qt_id)
+		calling_function = quoteiteminsert(Qt_id)
+	
 except Exception as e:
 	Log.Info('pricing error-'+str(e))

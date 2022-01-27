@@ -713,6 +713,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	# if 'Z0007' in get_serviceid:
 	# 	objectName = 'SAQSCE'
 	# 	obj_list = ['SAQTSE','SAQSGE','SAQSAE']
+	obj_list = []
 	if objectName == 'SAQTSE':
 		obj_list = ['SAQSCE','SAQSGE','SAQSAE']
 	# elif objectName == 'SAQSFE':
@@ -721,6 +722,8 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	elif objectName == 'SAQSGE':
 		obj_list = ['SAQSCE','SAQSAE']
 		is_changed = True
+	if objectName in ('SAQTSE','SAQSGE') and get_serviceid == 'Z0009':
+		obj_list.append('SAQGPE')
 	#and 'Z0007' not in get_serviceid
 	elif objectName == 'SAQSCE' :
 		obj_list = ['SAQSAE']
@@ -1110,6 +1113,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					{}
 					FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
 					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userid,datetimenow,update_field_str,objectName,obj,join,where)
+					Log.Info('update_query--863----'+str(update_query))
 					Sql.RunQuery(update_query)
 
 					

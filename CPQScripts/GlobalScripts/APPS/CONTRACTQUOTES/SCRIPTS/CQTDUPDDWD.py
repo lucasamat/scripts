@@ -145,6 +145,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 	def _insert_spare_parts(self):
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
 		spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.contract_quote_id, datetime_string)		
+		#Trace.Write("Temp Table ===> "+str(spare_parts_temp_table_name))
 		try:
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
 			
@@ -234,7 +235,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
 							JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.SERVICE_ID = '{ServiceId}'
 							JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
-							WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 ) IQ
+							WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') <> '05') IQ
 							""".format(
 										TempTable=spare_parts_temp_table_name,
 										ServiceId=self.tree_param,									
@@ -247,6 +248,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		except Exception:
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")		
 	
+
 	def _do_opertion(self):
 		for sheet_data in self.upload_data:	
 			if not sheet_data.Value:	
@@ -255,8 +257,17 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			if xls_spare_records:
 				header = list(xls_spare_records[0]) + ['QUOTE_RECORD_ID','QTEREV_RECORD_ID']
 				self.columns = ",".join(header)
+				modified_records = []
+				for spare_record in xls_spare_records[1:]:
+					modified_records.append(str(tuple([float(spare_val) if type(spare_val) == "<type 'Decimal'>" else spare_val for spare_val in spare_record])))
+
+				#self.records = ', '.join(map(str, modified_records)).replace("None","null").replace("'","''")
 				self.records = ', '.join(map(str, [str(tuple(list(spare_record)+[self.contract_quote_record_id, self.contract_quote_revision_record_id])) for spare_record in xls_spare_records[1:]])).replace("None","null").replace("'","''")
+				Trace.Write("Records000 ===> "+str(self.records))
 				self.records = self.records.replace("True","1").replace("False","0")
+				Trace.Write("Records111 ===> "+str(self.records))
+				self.records = re.sub(r"<?[a-zA-Z0-9_.\[ \]]+>", "0.00", self.records)
+				Trace.Write("Records222 ===> "+str(self.records))
 			# for index, data in enumerate(list(sheet_data.Value)):
 			# 	if index == 0:
 			# 		self.columns = ",".join(data)

@@ -28,7 +28,7 @@ login_is_admin = User.IsAdmin
 
 def insert_items_billing_plan(contract_quote_record_id=None, total_months=1, billing_date=''):     
 	Sql.RunQuery("""INSERT SAQIBP (
-					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
+					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_TYPE, 
 					LINE, QUOTE_ID, QTEITM_RECORD_ID, 
 					QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,
 					BILLING_DATE, BILLING_YEAR,
@@ -39,8 +39,6 @@ def insert_items_billing_plan(contract_quote_record_id=None, total_months=1, bil
 				) 
 				SELECT 
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
-					SAQICO.WARRANTY_END_DATE as BILLING_END_DATE,
-					SAQICO.WARRANTY_START_DATE as BILLING_START_DATE,
 					SAQTSE.ENTITLEMENT_VALUE_CODE as BILLING_TYPE,
 					SAQICO.LINE AS LINE,                                       
 					SAQICO.QUOTE_ID,
@@ -1441,6 +1439,13 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 					#generate_year_based_billing_matrix(newdict)
 				if TableName == 'SAQTIP':
 					Trace.Write('SAQTIP_CHK_J '+str(RECORD['PARTY_ROLE']))
+					Sql.RunQuery("UPDATE SAQTIP SET [PRIMARY] = 'false' WHERE PARTY_ROLE = 'SHIP TO' AND QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{qte_rev_id}'".format(qte_rec_id=Product.GetGlobal("contract_quote_record_id"),qte_rev_id=quote_revision_record_id))
+
+					saqtip_ship_to_update_query = "UPDATE SAQTIP SET PARTY_ID = {party_id}, [PRIMARY] = '{primary}' WHERE QUOTE_INVOLVED_PARTY_RECORD_ID = '{ship_to_id}'".format(party_id=RECORD['PARTY_ID'],primary=RECORD['PRIMARY'],ship_to_id=RECORD['QUOTE_INVOLVED_PARTY_RECORD_ID'])
+ 
+
+					Sql.RunQuery(saqtip_ship_to_update_query)
+
 					account_details = Sql.GetFirst("SELECT * FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(RECORD['PARTY_ID'])+"'")
 					send_n_receive_acunt = "UPDATE SAQSRA SET ACCOUNT_ID = '{}', ACCOUNT_NAME = '{}', ACCOUNT_RECORD_ID = '{}', ADDRESS_1 = '{}', CITY = '{}', COUNTRY = '{}', COUNTRY_RECORD_ID = '{}', PHONE = '{}', STATE = '{}', STATE_RECORD_ID = '{}', POSTAL_CODE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND RELOCATION_TYPE = '{}'".format(str(account_details.ACCOUNT_ID), str(account_details.ACCOUNT_NAME), str(account_details.ACCOUNT_RECORD_ID), str(account_details.ADDRESS_1), str(account_details.CITY), str(account_details.COUNTRY), str(account_details.COUNTRY_RECORD_ID), str(account_details.PHONE), str(account_details.STATE), str(account_details.STATE_RECORD_ID), str(account_details.POSTAL_CODE), Product.GetGlobal("contract_quote_record_id"), quote_revision_record_id, str(RECORD['PARTY_ROLE']))
 					Sql.RunQuery(send_n_receive_acunt)
