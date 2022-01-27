@@ -36,5 +36,6 @@ try:
 except:
     QuoteRecordId = ""
     RevisionRecordId = "" 
-    ServicerecordId = ""   
+    ServicerecordId = ""
+Log.Info("CQDOCUTYPE called for Quote Record ID--->"+str(QuoteRecordId))   
 update_document_type(QuoteRecordId,RevisionRecordId,ServicerecordId)
