@@ -1149,14 +1149,17 @@ class Entitlements:
 							Trace.Write("condition satisfied")
 							if entitlement_value in ("Event Based","Flex Event Based"):
 								Trace.Write("if condition satisfied")
-								ScriptExecutor.ExecuteGlobal(
-									"CQCRUDOPTN",
-								{
-									"NodeType"   : "COVERED OBJ MODEL",
-									"ActionType" : "ADD_COVERED_OBJ",
-									"applied_preventive_maintainence_quote_type_changed": "Yes"
-								},
-							)
+								try:
+									ScriptExecutor.ExecuteGlobal(
+											"CQCRUDOPTN",
+										{
+											"NodeType"   : "COVERED OBJ MODEL",
+											"ActionType" : "ADD_COVERED_OBJ",
+											"applied_preventive_maintainence_quote_type_changed": "Yes"
+										},
+									)
+								except Exception as e:
+									Trace.Write("Exception While running CQCRUDOPTN "+str(e))
 							Trace.Write("script called")
 						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004','Z0009') :
 							#ancillary_object = 'A6200'
