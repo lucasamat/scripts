@@ -105,6 +105,8 @@ class SyncFPMQuoteAndHanaDatabase:
         datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
         spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.quote_record_id, datetime_string)
         spare_parts_temp_table_name = re.sub(r'-','_',spare_parts_temp_table_name)
+        Log.Info("Columns--->"+str(self.columns))
+        Log.Info("Values---->"+str(self.records))
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
             spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
@@ -292,6 +294,7 @@ class SyncFPMQuoteAndHanaDatabase:
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
                         Log.Info("Eachrecord-->"+str(rec))
+                        Log.Info("EachValues-->"+str(ele.group(2)))
                     if str(ele.group(1)) == 'PART_DESCRIPTION':
                         partdesc = ele.group(2) or ''
                         partdesc = re.sub(r"'|\\","",partdesc)
