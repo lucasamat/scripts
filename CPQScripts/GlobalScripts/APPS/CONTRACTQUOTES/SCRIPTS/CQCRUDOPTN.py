@@ -3185,7 +3185,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		self.all_values = kwargs.get('all_values')
 		self.applied_preventive_maintainence_quote_type_changed = kwargs.get('applied_preventive_maintainence_quote_type_changed')
 		self.node_id = ""
-	
+	if self.applied_preventive_maintainence_quote_type_changed == "Yes":
+		quote_type_attribute_value = "Event Based"
+		self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed)
 	def get_results(self, query_string, table_total_rows):
 		for offset_skip_count in range(0, table_total_rows+1, 1000):
 			pagination_condition = "WHERE SNO>={Skip_Count} AND SNO<={Fetch_Count}".format(Skip_Count=offset_skip_count+1, Fetch_Count=offset_skip_count+1000)
