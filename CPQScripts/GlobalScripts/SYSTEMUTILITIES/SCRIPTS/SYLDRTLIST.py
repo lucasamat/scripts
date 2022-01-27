@@ -8645,6 +8645,7 @@ class SYLDRTLIST:
 										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
 						QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif  str(RECORD_ID) == "SYOBJR-34575":
+						Trace.Write('8648---')
 						if delivery_date_column:                        
 							pivot_columns = ",".join(['[{}]'.format(delivery_date) for delivery_date in delivery_date_column])					Qustr = " where " + str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"		
 							if Qustr:
