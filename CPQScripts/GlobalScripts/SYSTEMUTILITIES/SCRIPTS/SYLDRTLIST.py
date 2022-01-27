@@ -2184,9 +2184,7 @@ class SYLDRTLIST:
 							get_gb_val = Sql.GetFirst("SELECT GREENBOOK FROM SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID= '"+str(quote_item_revision_rec_id)+"'")
 							if get_gb_val:
 								Qustr += "AND QTEITM_RECORD_ID = '"+str(quote_item_revision_rec_id)+"' AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
-						if str(RECORD_ID) == "SYOBJR-00030":
-							Trace.Write("got_code-----")
-							Qustr += " AND GREENBOOK = '"+str(TreeParam)+"' AND SERVICE_ID  = '"+str(TreeParentParam)+"' "
+						
 						if str(RECORD_ID) == "SYOBJR-98872":
 							Wh_API_NAMEs +=",LINE"
 						if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825","SYOBJR-00016"):
@@ -2695,7 +2693,24 @@ class SYLDRTLIST:
 						+ ""
 					)
 					
-					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' "
+					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
+				elif RECORD_ID == "SYOBJR-00030":
+					Qury_str = (
+						"select DISTINCT top "
+						+ str(PerPage)
+						+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by CpqTableEntryId"
+						+ ") AS ROW, * from "
+						+ str(ObjectName)
+						+ " (nolock) "
+						+ str(Qustr)
+						+ " AND SERVICE_ID = '"+str(TreeParentParam)+"' AND GREENBOOK = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
+						+ str(Page_start)
+						+ " and "
+						+ str(Page_End)
+						+ ""
+					)
+					
+					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeParentParam)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 				elif RECORD_ID == "SYOBJR-95556":
 					Qury_str = (
 						"select DISTINCT top "
@@ -5409,17 +5424,7 @@ class SYLDRTLIST:
 						
 					except:
 						pass
-				elif "QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID" in lookup_disply_list and ObjectName == "SAQRGG":
-					Trace.Write("saqrgg==")
-					try:
-						lookup_disply_list.remove("QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID")
-						lookup_disply_list.remove("GOT_CODE")
-						lookup_disply_list.remove("GREENBOOK")
-						lookup_disply_list.remove("SERVICE_ID")
-						lookup_disply_list.remove("SERVICE_DESCRIPTION")
-						
-					except:
-						pass
+				
 			lookup_str = ",".join(list(lookup_disply_list))
 			obj_str = ",".join(list(eval(Columns)))
 			if lookup_str != "":
@@ -7293,7 +7298,25 @@ class SYLDRTLIST:
 						+ ""
 						)
 					
-						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " "
+						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
+					elif RECORD_ID == "SYOBJR-00030":
+						Qustr += " where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '"+str(TreeParentParam)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
+						Qury_str = (
+							"select DISTINCT top "
+							+ str(PerPage)
+							+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by CpqTableEntryId"
+							+ ") AS ROW, * from "
+							+ str(ObjectName)
+							+ " (nolock) "
+							+ str(Qustr)
+							+ " ) m where m.ROW BETWEEN "
+							+ str(Page_start)
+							+ " and "
+							+ str(Page_End)
+							+ ""
+						)
+						
+						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeParentParam)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 					elif str(RECORD_ID) == "SYOBJR-98815":                        
 						#Qustr = "where SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"'"
 						splitTP = TP.split('-')
@@ -8558,7 +8581,26 @@ class SYLDRTLIST:
 								+ ""
 								)
 						
-							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " "
+							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
+						elif RECORD_ID == "SYOBJR-00030":
+							Qustr += " where QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '"+str(TreeParentParam)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
+							Qury_str = (
+								"select DISTINCT top "
+								+ str(PerPage)
+								+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by "
+								+ str(Wh_API_NAMEs)
+								+ ") AS ROW, * from "
+								+ str(ObjectName)
+								+ " (nolock) "
+								+ str(Qustr)
+								+ " ) m where m.ROW BETWEEN "
+								+ str(Page_start)
+								+ " and "
+								+ str(Page_End)
+								+ ""
+								)
+						
+							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeParentParam)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 						elif str(RECORD_ID) == "SYOBJR-98815":                            
 							splitTP = TP.split('-')
 							TP = splitTP[1]
@@ -8632,11 +8674,7 @@ class SYLDRTLIST:
 							get_gb_val = Sql.GetFirst("SELECT GREENBOOK FROM SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID= '"+str(quote_item_revision_rec_id)+"'")
 							if get_gb_val:
 								Qustr += "  where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "'  AND QTEITM_RECORD_ID = '"+str(quote_item_revision_rec_id)+"' AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
-						elif str(RECORD_ID) == "SYOBJR-00030":
-							Trace.Write("got_code-----")
-							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
-							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-							Qustr = " where QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND SERVICE_ID  = '"+str(TreeParentParam)+"' "
+						
 						else:
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 				
