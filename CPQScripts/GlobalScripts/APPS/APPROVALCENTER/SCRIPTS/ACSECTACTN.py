@@ -2145,6 +2145,9 @@ class approvalCenter:
 															if Product.GetGlobal("TreeParentLevel1") != 'Approvals':
 																
 																req_status = '''<a class ='' id="approve_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="approve_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(ApprovedIcon)+ '''" alt=""></a><a class ='' id="reject_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="reject_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(RejectIcon)+ '''" alt=""></a>'''
+																if data.APRCHN_ID == 'SELFAPPR':
+																	req_status = '''<a class ='' id="approve_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="approve_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(ApprovedIcon)+ '''" alt=""></a>'''
+
 																
 															else:
 																req_status = '''<img title='Approval Required' src="'''+str(clock_exe)+'''">'''
@@ -2152,6 +2155,7 @@ class approvalCenter:
 															req_status = '''<img title='Approval Required' src="'''+str(clock_exe)+'''">'''
 														if ('REJECTED' in steps_status):
 															req_status = ""
+													 
 													elif str(data.APPROVALSTATUS) == "APPROVED":
 														req_status = '''<img title = 'Approved' src="'''+str(LargeTickgreen)+'''">'''
 													elif str(data.APPROVALSTATUS) == "REJECTED":
