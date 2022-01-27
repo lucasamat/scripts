@@ -14,15 +14,12 @@ import System.Net
 import SYCNGEGUID as CPQID
 import CQPARTIFLW
 import CQADDONPRD
+import CQIFLSPARE
+import CQVLDRIFLW
 from SYDATABASE import SQL
-import System.Net
-#from CQPARTSINS import SyncFPMQuoteAndHanaDatabase		
-#from datetime import datetime
-#from datetime import datetime
-#import time
+
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
-import CQVLDRIFLW
 webclient = System.Net.WebClient()
 
 
