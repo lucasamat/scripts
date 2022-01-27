@@ -19,6 +19,7 @@ from datetime import timedelta , date
 import CQCPQC4CWB
 import CQREVSTSCH
 import CQPARTIFLW
+import CQIFLSPARE
 #from datetime import datetime, timedelta
 
 Sql = SQL()
@@ -1766,7 +1767,29 @@ class SyncQuoteAndCustomTables:
 
 
 										#calling CQPARTSINS
-										ScriptExecutor.ExecuteGlobal('CQPARTSINS')										
+										#ScriptExecutor.ExecuteGlobal('CQPARTSINS')	
+										#iflow for spare pricing
+										requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
+										webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+										webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
+										response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
+										response=response.replace("null",'""')
+										response=eval(response)	
+										auth="Bearer"+' '+str(response['access_token'])
+
+										get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+
+										contract_quote_id = contract_quote_obj.QUOTE_ID 
+										get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+										if get_sales_ifo:
+											sales_id = get_sales_ifo.SALESORG_ID
+											validfrom =get_sales_ifo.CONTRACT_VALID_FROM
+											validto =get_sales_ifo.CONTRACT_VALID_TO
+											pricelist =get_sales_ifo.PRICELIST_ID
+											pricegroup =get_sales_ifo.PRICEGROUP_ID
+								
+
+										CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),soldto,shipto,salesorg,pricelist,pricegroup,customerparticipate,participate6kw,partnumbers,validfrom,validto,str(contract_quote_id),str(quote_revision_record_id),accesstoken)							
 
 									#A055S000P01-14047 start
 									try:
