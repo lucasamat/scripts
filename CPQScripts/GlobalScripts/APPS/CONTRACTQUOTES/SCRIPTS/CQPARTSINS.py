@@ -270,13 +270,15 @@ class SyncFPMQuoteAndHanaDatabase:
             response = ','.join(str(ele) for ele in self.response)
             Log.Info("PrepareBackuptable----->2"+str(response))
             response=response.replace("null",'""')
+            response=response.replace("None",'""')
             response=response.replace("true",'1')
             response=response.replace("false",'0')
             response=response.replace("YES",'1')
             response=response.replace("NO",'0')
             response = re.sub(r'\[|\]|\(|\)','',response)
             pattern = re.compile(r'(\{[^>]*?\})')
-            pattern2 = re.compile(r'\"([^>]*?)\"\:(\"[^>]*?\")')
+            #pattern2 = re.compile(r'\"([^>]*?)\"\:(\"[^>]*?\")')
+            pattern2 = re.compile(r'\'([^>]*?)\'\s*\:\s*([^>]*?)(?:\,|\})')
             self.columns = 'QUOTE_RECORD_ID,QTEREV_RECORD_ID'
             value  = """(\''{}\'',\''{}\''""".format(self.quote_record_id,self.quote_revision_id)
             col_flag = 0
