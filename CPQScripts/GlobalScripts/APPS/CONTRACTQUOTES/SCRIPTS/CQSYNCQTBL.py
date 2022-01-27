@@ -1790,7 +1790,7 @@ class SyncQuoteAndCustomTables:
 											validto =get_sales_ifo.CONTRACT_VALID_TO
 											pricelist =get_sales_ifo.PRICELIST_ID
 											pricegroup =get_sales_ifo.PRICEGROUP_ID
-										CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),soldto =str(account_info.get('SOLD TO')),shipto =str(account_info.get('SHIP TO')),salesorg = salesorg,pricelist = pricelist,pricegroup =pricegroup,customerparticipate='Yes',participate6kw='Yes',partnumbers= 'Yes',validfrom = validfrom,validto = validto,contract_quote_id = contract_quote_id,quote_revision_record_id = quote_revision_record_id,accesstoken =auth)					
+										CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,contract_quote_id,quote_revision_record_id,auth)					
 									#A055S000P01-14047 start
 									try:
 										if val == "Z0108":
