@@ -7265,21 +7265,22 @@ class SYLDRTLIST:
 						)
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)+ " AND SERVICE_ID NOT LIKE '%BUNDLE%' "
 					elif RECORD_ID == "SYOBJR-95555":
-    						Qury_str = (
-							"select DISTINCT top "
-							+ str(PerPage)
-							+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by "
-							+ str(Wh_API_NAMEs)
-							+ ") AS ROW, * from "
-							+ str(ObjectName)
-							+ " (nolock) "
-							+ str(Qustr)
-							+ " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
-							+ str(Page_start)
-							+ " and "
-							+ str(Page_End)
-							+ ""
-							)
+						Qustr += " where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' "
+						Qury_str = (
+						"select DISTINCT top "
+						+ str(PerPage)
+						+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by "
+						+ str(Wh_API_NAMEs)
+						+ ") AS ROW, * from "
+						+ str(ObjectName)
+						+ " (nolock) "
+						+ str(Qustr)
+						+ ") m where m.ROW BETWEEN "
+						+ str(Page_start)
+						+ " and "
+						+ str(Page_End)
+						+ ""
+						)
 					
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
 					elif str(RECORD_ID) == "SYOBJR-98815":                        
