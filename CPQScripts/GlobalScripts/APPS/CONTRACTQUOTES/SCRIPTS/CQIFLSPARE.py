@@ -48,7 +48,7 @@ def iflow_pullspareparts_call(user,soldto,shipto,salesorg,pricelist,pricegroup,c
         +str(accesstoken)
         +"</AccessToken></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
     )
-    LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='SAQIFP'")
+    LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='SAQSPT'")
     LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
     if LOGIN_CREDENTIALS is not None:
         Login_Username = str(LOGIN_QUERY.Username)
