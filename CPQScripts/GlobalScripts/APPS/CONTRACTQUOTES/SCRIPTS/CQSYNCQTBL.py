@@ -1778,19 +1778,19 @@ class SyncQuoteAndCustomTables:
 										auth="Bearer"+' '+str(response['access_token'])
 
 										get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+										account_info = {}
+										for keyobj in get_party_role:
+											account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
 
 										contract_quote_id = contract_quote_obj.QUOTE_ID 
 										get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 										if get_sales_ifo:
-											sales_id = get_sales_ifo.SALESORG_ID
+											salesorg = get_sales_ifo.SALESORG_ID
 											validfrom =get_sales_ifo.CONTRACT_VALID_FROM
 											validto =get_sales_ifo.CONTRACT_VALID_TO
 											pricelist =get_sales_ifo.PRICELIST_ID
 											pricegroup =get_sales_ifo.PRICEGROUP_ID
-								
-
-										CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),soldto,shipto,salesorg,pricelist,pricegroup,customerparticipate,participate6kw,partnumbers,validfrom,validto,str(contract_quote_id),str(quote_revision_record_id),accesstoken)							
-
+										CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),soldto =str(account_info.get('SOLD TO')),shipto =str(account_info.get('SHIP TO')),salesorg,pricelist,pricegroup,customerparticipate='Yes',participate6kw='Yes',partnumbers= 'Yes',validfrom,validto,str(contract_quote_id),(quote_revision_record_id),accesstoken =auth)					
 									#A055S000P01-14047 start
 									try:
 										if val == "Z0108":
