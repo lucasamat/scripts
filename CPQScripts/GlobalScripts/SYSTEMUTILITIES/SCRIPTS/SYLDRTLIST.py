@@ -8648,9 +8648,9 @@ class SYLDRTLIST:
 					elif  str(RECORD_ID) == "SYOBJR-34575":
 						Trace.Write('8648---')
 						if delivery_date_column:                        
-							pivot_columns = ",".join(['[{}]'.format(delivery_date) for delivery_date in delivery_date_column])					Qustr = " where " + str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"		
+							pivot_columns = ",".join(['[{}]'.format(delivery_date) for delivery_date in delivery_date_column])
+							Qustr = " where " + str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"		
 							if Qustr:
-								
 								Qustr += " AND DELIVERY_SCHED_DATE  BETWEEN '{}' AND '{}'".format(delivery_date_column[0], delivery_date_column[-1])
 							pivot_query_str = """
 										SELECT ROW_NUMBER() OVER(ORDER BY QTEREVSPT_RECORD_ID )
