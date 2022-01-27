@@ -19,17 +19,12 @@ Sql = SQL()
 webclient = System.Net.WebClient()
 
 class SyncFPMQuoteAndHanaDatabase:
-    def __init__(self,Quote):
-        self.quote = Quote
+    def __init__(self):
         self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = ''
         try:
-            self.quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-            self.quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
-        except:
-            saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID from SAQTRV where QUOTE_ID = '"+str(Param.QuoteID)+"'")
-            self.quote_record_id = saqtrv_obj.QUOTE_RECORD_ID
-            self.quote_revision_id = saqtrv_obj.QUOTE_REVISION_RECORD_ID
-            
+            self.quote_id = Param.CPQ_Columns["QuoteID"]
+        except Exception:
+            Log.Info("@@@Self Quote ID is Missing@@@")
         self.datetime_value = datetime.datetime.now()
         self.account_info = {}
         self.fetch_quotebasic_info()
@@ -244,15 +239,17 @@ class SyncFPMQuoteAndHanaDatabase:
         update_salesuom_conv= """UPDATE SAQSPT SET SAQSPT.SALESUOM_CONVERSION_FACTOR = M.CONVERSION_QUANTITY FROM SAQSPT S INNER JOIN MAMUOC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE S.BASEUOM_ID=M.BASEUOM_ID AND  S.SALESUOM_ID=M.CONVERSIONUOM_ID AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id ,quote_revision_rec_id =self.quote_revision_id)
         Sql.RunQuery(update_salesuom_conv)
     
-    def fetch_quotebasic_info(self):
-        saqtrv_obj = Sql.GetFirst("select QUOTE_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_id)+"'")
+    def fetch_quotebasic_info(self,quote_id):
+        saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_ID = '"+str(self.quote_id)+"'")
         if saqtrv_obj:
             self.sales_org_id = saqtrv_obj.SALESORG_ID
             self.sales_recd_id = saqtrv_obj.SALESORG_RECORD_ID
             self.qt_rev_id = saqtrv_obj.QTEREV_ID
-            self.quote_id = saqtrv_obj.QUOTE_ID
             self.contract_valid_from = saqtrv_obj.CONTRACT_VALID_FROM
             self.contract_valid_to = saqtrv_obj.CONTRACT_VALID_TO
+            self.quote_revision_id = saqtrv_obj.QUOTE_REVISION_RECORD_ID
+            self.quote_record_id = saqtrv_obj.QUOTE_RECORD_ID
+            
         get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
         for keyobj in get_party_role:
             self.account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
@@ -319,6 +316,14 @@ class SyncFPMQuoteAndHanaDatabase:
 
 Log.Info("CQPARTINS script called --> from CPI")
 Log.Info("Param.CPQ_Column----"+str(type(Param)))
+Log.Info("Param.CPQ_Column----QuoteID---"+str(Param.CPQ_Columns["QuoteID"]))
+if Param.CPQ_Columns["QuoteID"]:
+    fpm_obj = SyncFPMQuoteAndHanaDatabase()
+    fpm_obj.prepare_backup_table()
+    fpm_obj._insert_spare_parts()
+    fpm_obj.update_records_saqspt()
+    
+'''
 if Param:
     try:
         Log.Info("Param cpq val--"+' '.join(map(str, Param.CPQ_Columns["Response"])))
@@ -329,6 +334,8 @@ try:
 	parameters['Action'] = Param.Action
 except Exception:
 	parameters['Action'] = 'Default'
+try:
+    parameters[]
 
 if parameters['Action'] == 'AddParts':
     fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
@@ -345,3 +352,4 @@ else:
     fpm_obj.prepare_backup_table()
     fpm_obj._insert_spare_parts()
     fpm_obj.update_records_saqspt()
+'''
