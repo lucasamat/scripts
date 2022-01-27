@@ -28,7 +28,7 @@ class SyncFPMQuoteAndHanaDatabase:
         except Exception:
             Log.Info("@@@Self Quote ID is Missing@@@")
         try:
-            self.response = str(Param.CPQ_Columns["Response"])
+            self.response = Param.CPQ_Columns["Response"]
         except Exception:
             Log.Info("@@@Self Response is Missing@@@")
         
@@ -267,7 +267,6 @@ class SyncFPMQuoteAndHanaDatabase:
         
     def prepare_backup_table(self):
         if self.response:
-            Log.Info("PrepareBackuptable--->"+str(self.response))
             response = ','.join(str(ele) for ele in self.response)
             Log.Info("PrepareBackuptable--->2"+str(response))
             response=response.replace("null",'""')
@@ -275,7 +274,7 @@ class SyncFPMQuoteAndHanaDatabase:
             response=response.replace("false",'0')
             response=response.replace("YES",'1')
             response=response.replace("NO",'0')
-            response = re.sub(r'\[|\]','',response)
+            response = re.sub(r'\[|\]|\(|\)','',response)
             pattern = re.compile(r'(\{[^>]*?\})')
             pattern2 = re.compile(r'\"([^>]*?)\"\:(\"[^>]*?\")')
             self.columns = 'QUOTE_RECORD_ID,QTEREV_RECORD_ID'
