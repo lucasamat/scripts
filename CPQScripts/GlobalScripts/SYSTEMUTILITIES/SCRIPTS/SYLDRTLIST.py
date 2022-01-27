@@ -2695,7 +2695,7 @@ class SYLDRTLIST:
 						+ ""
 					)
 					
-					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
+					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' "
 				elif RECORD_ID == "SYOBJR-95556":
 					Qury_str = (
 						"select DISTINCT top "
@@ -7293,7 +7293,7 @@ class SYLDRTLIST:
 						+ ""
 						)
 					
-						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
+						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " "
 					elif str(RECORD_ID) == "SYOBJR-98815":                        
 						#Qustr = "where SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"'"
 						splitTP = TP.split('-')
@@ -8558,7 +8558,7 @@ class SYLDRTLIST:
 								+ ""
 								)
 						
-							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
+							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " "
 						elif str(RECORD_ID) == "SYOBJR-98815":                            
 							splitTP = TP.split('-')
 							TP = splitTP[1]
