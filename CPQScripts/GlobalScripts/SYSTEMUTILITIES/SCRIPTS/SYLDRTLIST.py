@@ -5220,6 +5220,7 @@ class SYLDRTLIST:
 		Wh_OBJECT_NAME = ""
 		Query_Obj =  ""
 		billing_date_column = delivery_date_column = ''
+		delivery_list =[]
 		if obj_obj is not None:
 			Columns = obj_obj.COLUMNS
 			Obj_Name = obj_obj.OBJ_REC_ID
