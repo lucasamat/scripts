@@ -8530,6 +8530,7 @@ class SYLDRTLIST:
 							)
 							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)+ " AND SERVICE_ID NOT LIKE '%BUNDLE%' "
 						elif RECORD_ID == "SYOBJR-95555":
+							Qustr += " where QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' "
 							Qury_str = (
 								"select DISTINCT top "
 								+ str(PerPage)
@@ -8539,7 +8540,7 @@ class SYLDRTLIST:
 								+ str(ObjectName)
 								+ " (nolock) "
 								+ str(Qustr)
-								+ " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
+								+ " ) m where m.ROW BETWEEN "
 								+ str(Page_start)
 								+ " and "
 								+ str(Page_End)
