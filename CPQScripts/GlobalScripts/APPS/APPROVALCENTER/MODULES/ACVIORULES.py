@@ -807,7 +807,7 @@ class ViolationConditions:
 
                                     
                                     
-                                    getCustomQuery = Sql.GetFirst("SELECT CpqTableEntryId,CUSTOM_QUERY FROM ACACSA (NOLOCK) WHERE APPROVER_SELECTION_METHOD = ' CUSTOM QUERY' AND APRCHN_RECORD_ID = '{}' AND APRCHNSTP_RECORD_ID = '{}'".format(str(val.APPROVAL_CHAIN_RECORD_ID),result.APPROVAL_CHAIN_STEP_RECORD_ID))
+                                    getCustomQuery = Sql.GetFirst("SELECT CpqTableEntryId,CUSTOM_QUERY,APRCHN_ID FROM ACACSA (NOLOCK) WHERE APPROVER_SELECTION_METHOD = ' CUSTOM QUERY' AND APRCHN_RECORD_ID = '{}' AND APRCHNSTP_RECORD_ID = '{}'".format(str(val.APPROVAL_CHAIN_RECORD_ID),result.APPROVAL_CHAIN_STEP_RECORD_ID))
                                     if getCustomQuery is not None:
                                         CustomQuery = str(getCustomQuery.CUSTOM_QUERY).upper()
                                         CustomQuery = str(CustomQuery.split("WHERE")[1]).lstrip()
@@ -819,7 +819,10 @@ class ViolationConditions:
                                         Trace.Write("777777 ACAPTX--------->"+str(Rulebodywithcondition))
                                         b = Sql.RunQuery(Rulebodywithcondition)
 
+                                        if getCustomQuery.APRCHN_ID == 'SELFAPPR':
+                                            Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'REQUESTED' WHERE APPROVAL_RECORD_ID = '{}'".format(GetLatestApproval.APPROVAL_RECORD_ID))
 
+                                            Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'APPROVAL PENDING' WHERE QUOTE_REVISION_RECORD_ID ='{}'".format(RecordId))
                                     else:
                                         where_conditon += """GROUP BY APPRO.USER_RECORD_ID,ACAPCH.APRCHN_ID,
                                     ACAPCH.APPROVAL_CHAIN_RECORD_ID ,APPRO.APRCHNSTP_APPROVER_ID ,
