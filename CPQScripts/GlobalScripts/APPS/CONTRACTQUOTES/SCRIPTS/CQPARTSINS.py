@@ -23,6 +23,15 @@ class SyncFPMQuoteAndHanaDatabase:
         self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = ''
         self.datetime_value = datetime.datetime.now()
         self.account_info = {}
+        try:
+            self.quote_id = str(Param.CPQ_Columns["QuoteID"])
+        except Exception:
+            Log.Info("@@@Self Quote ID is Missing@@@")
+        try:
+            self.response = str(Param.CPQ_Columns["Response"])
+        except Exception:
+            Log.Info("@@@Self Response is Missing@@@")
+        
              
     def pull_fpm_parts_hana(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=16c3719c-d099-42d4-921c-765f4cee223a&password=mKv2~uXpeRD9SrD2DTW09Lk2GQ&scope=hanasafeaccess"
@@ -313,17 +322,8 @@ class SyncFPMQuoteAndHanaDatabase:
 Log.Info("CQPARTINS script called --> from CPI")
 Log.Info("Param.CPQ_Column----"+str(type(Param)))
 Log.Info("Param.CPQ_Column----QuoteID---"+str(Param.CPQ_Columns["QuoteID"]))
-fpm_obj = SyncFPMQuoteAndHanaDatabase()
 if Param.CPQ_Columns["QuoteID"]:
-    try:
-        self.quote_id = str(Param.CPQ_Columns["QuoteID"])
-    except Exception:
-        Log.Info("@@@Self Quote ID is Missing@@@")
-    try:
-        self.response = str(Param.CPQ_Columns["Response"])
-    except Exception:
-        Log.Info("@@@Self Response is Missing@@@")
-    
+    fpm_obj = SyncFPMQuoteAndHanaDatabase()
     fpm_obj.fetch_quotebasic_info()
     fpm_obj.prepare_backup_table()
     fpm_obj._insert_spare_parts()
