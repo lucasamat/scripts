@@ -6366,9 +6366,9 @@ else:
 			inclusion = 0
 		##Added the param to insert the pmsa related child tables when the user is changing the quote type from tool based to event based or flex based...
 		try:
-			applied_preventive_maintainence_quote_type_chaged = Param.applied_preventive_maintainence_quote_type_chaged
+			applied_preventive_maintainence_quote_type_changed = Param.applied_preventive_maintainence_quote_type_changed
 		except:
-			applied_preventive_maintainence_quote_type_chaged = "No"
+			applied_preventive_maintainence_quote_type_changed = "No"
 		
 	except Exception as e:
 		Trace.Write('error-'+str(e))
