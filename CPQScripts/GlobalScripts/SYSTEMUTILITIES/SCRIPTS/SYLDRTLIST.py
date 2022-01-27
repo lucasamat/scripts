@@ -8619,6 +8619,8 @@ class SYLDRTLIST:
 								Qustr += "  where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "'  AND QTEITM_RECORD_ID = '"+str(quote_item_revision_rec_id)+"' AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
 						elif str(RECORD_ID) == "SYOBJR-00030":
 							Trace.Write("got_code-----")
+							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
+							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 							Qustr = "QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND SERVICE_ID  = '"+str(TreeParentParam)+"' "
 						else:
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
