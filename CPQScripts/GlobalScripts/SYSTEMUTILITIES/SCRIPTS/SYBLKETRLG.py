@@ -1066,6 +1066,15 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 									parts_record_query = Sql.GetList("SELECT QUOTE_SERVICE_PART_RECORD_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND UNIT_PRICE <= 50".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
 									for parts in parts_record_query:
 										Sql.RunQuery("DELETE FROM SAQSPT WHERE QUOTE_SERVICE_PART_RECORD_ID = '"+str(parts.QUOTE_SERVICE_PART_RECORD_ID)+"'")
+								#A055S000P01-14051 start
+								get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE,SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+								if get_schedulemode and str(TreeParam) =="Z0108":
+									delivery_method = get_schedulemode.DELIVERY_MODE
+									sch_mode = get_schedulemode.SCHEDULE_MODE
+									if delivery_method == "OFFSITE" and sch_mode == "SCHEDULED" and str(TreeParam) == 'Z0108':
+										ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108','QTY':annual_qty})
+									
+								#A055S000P01-14051 end
 					else:
 						###A055S000P01-14322 Updating the schedule mode and delivery mode based on the consigned_parts_value from the entitlement and customer annuality quantity value from the spare parts..
 						product_offering_entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}'".format(QuoteRecordId= ContractRecordId,RevisionRecordId=quote_revision_record_id,service_id = TreeParam))
