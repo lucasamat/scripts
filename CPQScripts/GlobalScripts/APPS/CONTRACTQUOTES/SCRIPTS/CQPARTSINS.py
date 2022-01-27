@@ -279,12 +279,14 @@ class SyncFPMQuoteAndHanaDatabase:
             response = re.sub(r'\[|\]|\(|\)','',response)
             pattern = re.compile(r'(\{[^>]*?\})')
             #pattern2 = re.compile(r'\"([^>]*?)\"\:(\"[^>]*?\")')
-            pattern2 = re.compile(r"\'([^>]*?)\'\s*\:\s*([^>]*?)(?:\,|\})")
+            #pattern2 = re.compile(r"\'([^>]*?)\'\s*\:\s*([^>]*?)(?:\,|\})")
+            pattern2 = re.compile(r'([^>]*?)\s*:\s*([^>]*?)(?:\,|\})')
             self.columns = 'QUOTE_RECORD_ID,QTEREV_RECORD_ID'
             value  = '''(\"{}\",\"{}\"'''.format(self.quote_record_id,self.quote_revision_id)
             col_flag = 0
             for record in re.finditer(pattern, response):
-                rec = re.sub(r'\{|\}','',record.group(1))
+                #rec = re.sub(r'\{|\}','',record.group(1))
+                rec = record.group(1)
                 temp_value = value
                 for ele in re.finditer(pattern2,rec):
                     if col_flag == 0:
