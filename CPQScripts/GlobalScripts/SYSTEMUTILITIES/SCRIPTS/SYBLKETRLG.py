@@ -1042,7 +1042,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					if get_schedulemode and str(TreeParam) =="Z0108":
 						delivery_method = get_schedulemode.DELIVERY_MODE
 						if delivery_method == "OFFSITE" and VALUE == "SCHEDULED":
-							#Trace.Write('1022-----'+str(VALUE))
 							ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
 						else:
 							ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'DELETE','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
