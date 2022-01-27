@@ -283,7 +283,8 @@ class SyncFPMQuoteAndHanaDatabase:
             pattern = re.compile(r'(\{[^>]*?\})')
             #pattern2 = re.compile(r'\"([^>]*?)\"\:(\"[^>]*?\")')
             #pattern2 = re.compile(r"\'([^>]*?)\'\s*\:\s*([^>]*?)(?:\,|\})")
-            pattern2 = re.compile(r'([^>]*?)\s*:\s*([^>]*?)(?:\,|\})')
+            #pattern2 = re.compile(r'([^>]*?)\s*:\s*([^>]*?)(?:\,|\})')
+            pattern2 = re.compile(r'(\"[^>]*?\")\s*:\s*(\"[^>]*?\")')
             self.columns = 'QUOTE_RECORD_ID,QTEREV_RECORD_ID'
             value  = '''(\"{}\",\"{}\"'''.format(self.quote_record_id,self.quote_revision_id)
             col_flag = 0
