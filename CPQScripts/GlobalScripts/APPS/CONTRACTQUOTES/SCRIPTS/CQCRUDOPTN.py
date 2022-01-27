@@ -1687,7 +1687,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 				elif self.tree_param == 'Z0110':
 					delivery_mode = " "
 					schedule_mode= " "
-				#iflow for spare pricing
+				#iflow for spare parts...
 				requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
 				webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
 				webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
