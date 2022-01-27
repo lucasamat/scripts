@@ -4703,7 +4703,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id'),
 				SAQSCA = str(SAQSCA),
-				additional_where = additional_where
+				additional_where = kwargs.get('additional_where')
 				))
 		#TKM_end_time = time.time()
 		
