@@ -5264,26 +5264,24 @@ class SYLDRTLIST:
 				except:
 					pass
 			if Wh_OBJECT_NAME == 'SAQSPD':
-				Trace.Write('5267----')
-				try:
-					item_delivery_plans_obj = Sql.GetList("""SELECT FORMAT(DELIVERY_SCHED_DATE, 'MM-dd-yyyy') as DELIVERY_SCHED_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE)
-										AS ROW, * FROM (SELECT DISTINCT DELIVERY_SCHED_DATE
-															FROM SAQSPD (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' 
-															GROUP BY DELIVERY_SCHED_DATE,QTEREVSPT_RECORD_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
-																contract_quote_record_id, quote_revision_record_id, 1, 52))
-					count = 0
-					if item_delivery_plans_obj:
-						delivery_date_column = [item_delivery_plans_obj.DELIVERY_SCHED_DATE for item_delivery_plans_obj in item_delivery_plans_obj]
-						for delivery_data in delivery_date_column:
-							count += 1
-							Delivery = 'Delivery {}'.format(count)
-							delivery_date_column_joined = ",".join(["'{}'".format(Delivery)])
-							delivery_list.append('{}'.format(Delivery))
-							delivery_date_joined =",".join(["'{}'".format(delivery_data)])
-							
-							Columns = Columns.replace(']', ','+delivery_date_joined+']')
-				except:
-					pass
+				Trace.Write('5267--contract_quote_record_id--'+str(contract_quote_record_id))
+				item_delivery_plans_obj = Sql.GetList("""SELECT FORMAT(DELIVERY_SCHED_DATE, 'MM-dd-yyyy') as DELIVERY_SCHED_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE)
+									AS ROW, * FROM (SELECT DISTINCT DELIVERY_SCHED_DATE
+														FROM SAQSPD (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' 
+														GROUP BY DELIVERY_SCHED_DATE,QTEREVSPT_RECORD_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+															contract_quote_record_id, Quote.GetGlobal("quote_revision_record_id"), 1, 52))
+				count = 0
+				if item_delivery_plans_obj:
+					delivery_date_column = [item_delivery_plans_obj.DELIVERY_SCHED_DATE for item_delivery_plans_obj in item_delivery_plans_obj]
+					for delivery_data in delivery_date_column:
+						count += 1
+						Delivery = 'Delivery {}'.format(count)
+						delivery_date_column_joined = ",".join(["'{}'".format(Delivery)])
+						delivery_list.append('{}'.format(Delivery))
+						delivery_date_joined =",".join(["'{}'".format(delivery_data)])
+						
+						Columns = Columns.replace(']', ','+delivery_date_joined+']')
+			
 			CurrentObj = Sql.GetFirst(
 				"select API_NAME, OBJECT_NAME from  SYOBJD (nolock) where PARENT_OBJECT_RECORD_ID = '"
 				+ str(PARENT_LOOKUP_REC_ID)
