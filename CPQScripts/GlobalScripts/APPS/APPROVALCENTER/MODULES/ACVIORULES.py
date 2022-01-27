@@ -616,6 +616,14 @@ class ViolationConditions:
                                                 Trace.Write("FLAG SET TO 1")
                                                 break
                     #A055S000P01-15007 END
+                    #A055S000P01-3687 START
+                    elif "ACAPMA" in result.WHERE_CONDITION_01:
+                        getData = Sql.GetFirst("SELECT CpqTableEntryId FROM ACAPMA (NOLOCK) WHERE {} '{}'".format(result.WHERE_CONDITION_01,RecordId))
+                        if getData is None:
+                            fflag = 1
+                        else:
+                            fflag = 2
+                    #A055S000P01-3687 END
                     else:
                         Select_Query = (
                             "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE (" + str(result.WHERE_CONDITION_01) + ")"
