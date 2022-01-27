@@ -5411,7 +5411,7 @@ class SYLDRTLIST:
 						pass
 				elif "QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID" in lookup_disply_list and ObjectName == "SAQRGG":
 					Trace.Write("saqrgg==")
-                    try:
+					try:
 						lookup_disply_list.remove("QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID")
 						lookup_disply_list.remove("GOT_CODE")
 						lookup_disply_list.remove("GREENBOOK")
