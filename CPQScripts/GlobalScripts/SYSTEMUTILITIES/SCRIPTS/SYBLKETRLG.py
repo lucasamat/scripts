@@ -1013,9 +1013,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						delivery_method = get_schedulemode.DELIVERY_MODE
 						sch_mode = get_schedulemode.SCHEDULE_MODE
 						if delivery_method == "OFFSITE" and sch_mode == "SCHEDULED" and str(TreeParam) == 'Z0108':
-							ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
-						else:
-							ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'DELETE_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
+							ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108','QTY':value})
+						#else:
+							#ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'DELETE_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
 					#A055S000P01-14051 end
 				elif TITLE.split(',') == ["CUSTOMER_PARTICIPATE","CUSTOMER_ACCEPT_PART","CUSTOMER_ANNUAL_QUANTITY"]:
 					if int(ALLVALUES2[index])==0:
