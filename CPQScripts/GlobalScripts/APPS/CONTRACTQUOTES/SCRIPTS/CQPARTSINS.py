@@ -268,7 +268,8 @@ class SyncFPMQuoteAndHanaDatabase:
     def prepare_backup_table(self):
         if self.response:
             Log.Info("PrepareBackuptable--->"+str(self.response))
-            response = self.response
+            response = ' '.join(map(str,self.response))
+            Log.Info("PrepareBackuptable--->2"+str(response))
             response=response.replace("null",'""')
             response=response.replace("true",'1')
             response=response.replace("false",'0')
