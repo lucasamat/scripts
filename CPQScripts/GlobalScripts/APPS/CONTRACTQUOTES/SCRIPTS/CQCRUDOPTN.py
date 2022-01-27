@@ -5490,6 +5490,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						elif (self.tree_param in ("Z0092","Z0099") and pm_event_attribute_value == "Included - Quarterly and Above"):
 							additional_where = "AND MAEAPK.PM_LEVEL == 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance' AND MAEAPK.PM_ID = 'Quarterly' AND MAEAPK.PM_ID = 'Semi-Annual' AND MAEAPK.PM_ID = 'Annual'"
 						Trace.Write("additional_where_chk "+str(additional_where))
+						
 						if pm_event_attribute_id and self.tree_param != 'Z0009':
 							pm_event_attribute_value =re.findall(pattern_name,sub_string)
 							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
