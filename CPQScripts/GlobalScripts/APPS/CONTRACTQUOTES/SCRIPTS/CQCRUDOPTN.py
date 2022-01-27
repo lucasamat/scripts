@@ -4680,10 +4680,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	
 	def applied_preventive_maintainence(self, **kwargs):
 		# ##Deleting the SAQSAP and SAQSKP TABLE records when the user is changing the quote type from Tool Based to other values...
-		# if self.tree_param == "Z0009":
-		# 	delete_obj_list = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP"]
-		# 	for object in delete_obj_list:
-		# 		Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(object,self.contract_quote_record_id, self.service_id,self.contract_quote_revision_record_id ))
+		#if self.tree_param == "Z0009":
+		delete_obj_list = ["SAQSAP","SAQSKP"]
+		for object in delete_obj_list:
+			Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(object,self.contract_quote_record_id, self.service_id,self.contract_quote_revision_record_id ))
 		
 		self._process_query("""INSERT SAQRGG (
 				GOT_CODE,
