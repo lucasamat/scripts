@@ -4718,7 +4718,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		if kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes":
 			delete_obj_list = ["SAQSCA","SAQSAP","SAQSKP"]
 			for object in delete_obj_list:
-				Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(object,self.contract_quote_record_id, self.tree_param,self.contract_quote_revision_record_id ))
+				Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(object,self.contract_quote_record_id, self.tree_param,self.quote_revision_record_id ))
 			self._process_query("""INSERT SAQRGG (
 					GOT_CODE,
 					GOTCODE_RECORD_ID,
