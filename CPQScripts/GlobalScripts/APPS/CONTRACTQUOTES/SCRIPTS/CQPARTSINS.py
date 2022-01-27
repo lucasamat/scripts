@@ -270,6 +270,7 @@ class SyncFPMQuoteAndHanaDatabase:
             response = ','.join(str(ele) for ele in self.response)
             Log.Info("PrepareBackuptable----->2"+str(response))
             response=response.replace("null",'""')
+            response=response.replace("'",'"')
             response=response.replace("None",'""')
             response=response.replace("true",'1')
             response=response.replace("false",'0')
@@ -284,11 +285,11 @@ class SyncFPMQuoteAndHanaDatabase:
             col_flag = 0
             for record in re.finditer(pattern, response):
                 rec = re.sub(r'\{|\}','',record.group(1))
-                Log.Info("Eachrecord-->"+str(rec))
                 temp_value = value
                 for ele in re.finditer(pattern2,rec):
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
+                        Log.Info("Eachrecord-->"+str(rec))
                     if str(ele.group(1)) == 'PART_DESCRIPTION':
                         partdesc = ele.group(2) or ''
                         partdesc = re.sub(r"'|\\","",partdesc)
