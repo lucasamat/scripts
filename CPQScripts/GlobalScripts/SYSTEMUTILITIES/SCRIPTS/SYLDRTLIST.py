@@ -5264,6 +5264,7 @@ class SYLDRTLIST:
 				except:
 					pass
 			if Wh_OBJECT_NAME == 'SAQSPD':
+				Trace.Write('5267----')
 				try:
 					item_delivery_plans_obj = Sql.GetList("""SELECT FORMAT(DELIVERY_SCHED_DATE, 'MM-dd-yyyy') as DELIVERY_SCHED_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE)
 										AS ROW, * FROM (SELECT DISTINCT DELIVERY_SCHED_DATE
