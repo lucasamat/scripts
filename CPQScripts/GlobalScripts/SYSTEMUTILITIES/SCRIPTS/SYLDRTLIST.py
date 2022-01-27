@@ -99,6 +99,7 @@ class SYLDRTLIST:
 		table_header = ""
 		TreeParam = Product.GetGlobal("TreeParam")
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 		
 		if str(PerPage) == "" and str(PageInform) == "":
 			Page_start = 1
@@ -2687,7 +2688,7 @@ class SYLDRTLIST:
 						+ str(ObjectName)
 						+ " (nolock) "
 						+ str(Qustr)
-						+ " AND GOT_CODE = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
+						+ " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
 						+ str(Page_start)
 						+ " and "
 						+ str(Page_End)
@@ -7273,7 +7274,7 @@ class SYLDRTLIST:
 							+ str(ObjectName)
 							+ " (nolock) "
 							+ str(Qustr)
-							+ " AND GOT_CODE = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
+							+ " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
 							+ str(Page_start)
 							+ " and "
 							+ str(Page_End)
@@ -8537,7 +8538,7 @@ class SYLDRTLIST:
 								+ str(ObjectName)
 								+ " (nolock) "
 								+ str(Qustr)
-								+ " AND GOT_CODE = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
+								+ " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
 								+ str(Page_start)
 								+ " and "
 								+ str(Page_End)
