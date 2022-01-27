@@ -1013,7 +1013,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					else:
 						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}',{column1} = '{value1}',{column2} = '{value2}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index],column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				elif TITLE=="DELIVERY_MODE":
-					Trace.Write('1016-----')
+					Trace.Write('1016-------')
 					Sql.RunQuery("""UPDATE SAQSPT SET DELIVERY_MODE = '{value}' {schedule_mode} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=VALUE,schedule_mode= ",SCHEDULE_MODE = 'ON REQUEST'" if str(VALUE)=="OFFSITE" and str(TreeParam)=="Z0110" else "",QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				elif TITLE=="SCHEDULE_MODE":
 					Sql.RunQuery("""UPDATE SAQSPT SET SCHEDULE_MODE = '{value}' {delivery_mode} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=VALUE,delivery_mode= ",DELIVERY_MODE = 'ONSITE' " if str(VALUE)=="LOW QUANTITY ONSITE" and str(TreeParam)=="Z0110" else "",QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
