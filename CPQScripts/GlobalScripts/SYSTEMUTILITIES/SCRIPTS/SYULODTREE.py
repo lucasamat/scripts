@@ -2238,6 +2238,7 @@ class TreeView:
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_NET_PRMALB</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included - All PM|Included - Monthly and Above|Included - Quarterly and Above|Included - All PM (PDC/MPS))</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="PM Events"
+													
 												elif subtab_temp_variable in ('Service Inclusions','Greenbook Inclusions') :
 													# if service_id in ('Z0092') and subtab_temp_variable != 'Greenbook Inclusions':
 													# 	Trace.Write(" Inclusions")
