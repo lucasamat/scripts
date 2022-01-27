@@ -1665,7 +1665,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 				Trace.Write('###PART_NOS-->'+str(part_nos))
 				Trace.Write('###values-->'+str(self.values))
 				#calling CQPARTSINS
-				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"Action": "AddParts","partno":part_nos})
+				#ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"Action": "AddParts","partno":part_nos})
 			if self.action_type == "ADD_SPARE_PART":
 				parts_value = 0
 				Service_Id = self.tree_param
