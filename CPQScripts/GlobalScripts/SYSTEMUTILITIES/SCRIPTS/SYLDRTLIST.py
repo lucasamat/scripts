@@ -2683,7 +2683,7 @@ class SYLDRTLIST:
 					Qury_str = (
 						"select DISTINCT top "
 						+ str(PerPage)
-						+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by CpqTableEntryId"
+						+ " * from ( select ROW_NUMBER() OVER(order by CpqTableEntryId"
 						+ ") AS ROW, * from "
 						+ str(ObjectName)
 						+ " (nolock) "
@@ -7280,7 +7280,7 @@ class SYLDRTLIST:
 						Qury_str = (
 						"select DISTINCT top "
 						+ str(PerPage)
-						+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by "
+						+ " * from ( select ROW_NUMBER() OVER(order by "
 						+ str(Wh_API_NAMEs)
 						+ ") AS ROW, * from "
 						+ str(ObjectName)
@@ -8545,7 +8545,7 @@ class SYLDRTLIST:
 							Qury_str = (
 								"select DISTINCT top "
 								+ str(PerPage)
-								+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by "
+								+ " * from ( select ROW_NUMBER() OVER(order by "
 								+ str(Wh_API_NAMEs)
 								+ ") AS ROW, * from "
 								+ str(ObjectName)
