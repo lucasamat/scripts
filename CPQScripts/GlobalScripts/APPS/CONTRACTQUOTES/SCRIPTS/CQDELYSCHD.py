@@ -7,8 +7,24 @@
 
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
-import datetime
 import sys
 import System.Net
+import datetime
+import time
+from datetime import timedelta , date
 
 Sql = SQL()
+
+#A055S000P01-14051 start
+def insert_deliveryschedule_request(rec_id,QuoteRecordId,rev_rec_id):
+    Trace.Write('rec_id--'+str(rec_id))
+
+    return 'Data'
+
+
+Action =Param.Action
+rec_id =Param.rec_id
+QuoteRecordId = Param.QuoteRecordId
+rev_rec_id = Param.rev_rec_id
+if Action == "INSERT":
+    insert_deliverydetails = insert_deliveryschedule_request(rec_id,QuoteRecordId,rev_rec_id)
