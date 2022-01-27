@@ -518,7 +518,15 @@ class approvalCenter:
 				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			except Exception, e:
 				Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
-
+			#iflow for approver insert
+			contract_quote_id = SqlHelper.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			approver_insert = SqlHelper.GetFirst("Select OWNER_ID FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' ".format(contract_quote_id.QUOTE_ID))
+			if approver_insert:
+				Trace.Write("Approver_insert")
+				CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			else:
+				Trace.Write("delete_approver")
+				CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			rejecttresponse = self.sendmailNotification("Reject", CurrentTransId)
 			Notificationresponse = self.sendmailNotification("Notification",CurrentTransId)
 			UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.COMPLETED_BY = '{UserName}',ACACHR.COMPLETEDBY_RECORD_ID='{UserId}', COMPLETED_DATE = '{datetime_value}' WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
@@ -1224,7 +1232,15 @@ class approvalCenter:
 					CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				except Exception, e:
 					Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
-
+				#iflow for approver insert
+				contract_quote_id = SqlHelper.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				approver_insert = SqlHelper.GetFirst("Select OWNER_ID FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' ".format(contract_quote_id.QUOTE_ID))
+				if approver_insert:
+					Trace.Write("Approver_insert")
+					CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				else:
+					Trace.Write("delete_approver")
+					CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				if submit.APPROVAL_METHOD == "PARALLEL STEP APPROVAL":
 					requestresponse = self.sendmailNotification("ParallelRequest")
 				else:
@@ -1373,7 +1389,15 @@ class approvalCenter:
 				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			except Exception, e:
 				Trace.Write("EXCEPTION: QUOTE WRITE BACK " +str(e))
-
+			#iflow for approver insert
+			contract_quote_id = SqlHelper.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			approver_insert = SqlHelper.GetFirst("Select OWNER_ID FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' ".format(contract_quote_id.QUOTE_ID))
+			if approver_insert:
+				Trace.Write("Approver_insert")
+				CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			else:
+				Trace.Write("delete_approver")
+				CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			if parallel == "True":
 				requestresponse = self.sendmailNotification("ParallelRequest")
 			else:
@@ -1509,9 +1533,18 @@ class approvalCenter:
 							##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 							CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 							CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+
 						except Exception, e:
 							Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
-
+						#iflow for approver insert
+						contract_quote_id = SqlHelper.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						approver_insert = SqlHelper.GetFirst("Select OWNER_ID FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' ".format(contract_quote_id.QUOTE_ID))
+						if approver_insert:
+							Trace.Write("Approver_insert")
+							CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						else:
+							Trace.Write("delete_approver")
+							CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				#self.QuoteNumber = RecalledRecId
 			#except Exception, e:
 			#    self.exceptMessage = (
