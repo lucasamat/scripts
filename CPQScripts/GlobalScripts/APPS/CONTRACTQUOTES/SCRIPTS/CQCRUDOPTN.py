@@ -5602,8 +5602,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				# except:
 				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
 		if self.applied_preventive_maintainence_quote_type_changed == "Yes":
-			quote_type_attribute_value = "Event Based"
-			self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
+				quote_type_attribute_value = "Event Based"
+				self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed)
 		return True
 	
 	def _update(self):
