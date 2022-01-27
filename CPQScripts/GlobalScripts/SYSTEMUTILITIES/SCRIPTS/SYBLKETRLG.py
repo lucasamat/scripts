@@ -1021,7 +1021,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					if get_schedulemode:
 						schedulemthod = get_schedulemode.SCHEDULE_MODE
 						if schedulemthod == "OFFSITE" and VALUE == "SCHEDULED":
-							Trace.Write('1022-----')
+							Trace.Write('1022-----'+str(VALUE))
 				elif TITLE=="SCHEDULE_MODE":
 					Sql.RunQuery("""UPDATE SAQSPT SET SCHEDULE_MODE = '{value}' {delivery_mode} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=VALUE,delivery_mode= ",DELIVERY_MODE = 'ONSITE' " if str(VALUE)=="LOW QUANTITY ONSITE" and str(TreeParam)=="Z0110" else "",QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				elif TITLE=="CUSTOMER_PART_NUMBER":
