@@ -43,7 +43,7 @@ class ContractQuoteItem:
 		self._get_material_type()
 		self._get_ancillary_product()
 		self._get_billing_type()
-		self._get_consumable_val()
+
 	
 	def set_contract_quote_related_details(self):
 		contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, SALE_TYPE, C4C_QUOTE_ID, QTEREV_ID, QUOTE_CURRENCY, QUOTE_CURRENCY_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
@@ -1989,6 +1989,7 @@ class ContractQuoteItem:
 
 	def _do_opertion(self):		
 		self._set_quote_service_entitlement_type()
+		self._get_consumable_val()
 		Log.Info("===> _do_opertion 0000")
 		if self.action_type == "INSERT_LINE_ITEMS":		
 			Log.Info("===> _do_opertion 1111")	
