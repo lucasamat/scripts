@@ -2185,7 +2185,7 @@ class SYLDRTLIST:
 								Qustr += "AND QTEITM_RECORD_ID = '"+str(quote_item_revision_rec_id)+"' AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
 						if str(RECORD_ID) == "SYOBJR-00030":
 							Trace.Write("got_code-----")
-							Qustr += " QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND SERVICE_ID  = '"+str(TreeParentParam)+"' "
+							Qustr += " AND GREENBOOK = '"+str(TreeParam)+"' AND SERVICE_ID  = '"+str(TreeParentParam)+"' "
 						if str(RECORD_ID) == "SYOBJR-98872":
 							Wh_API_NAMEs +=",LINE"
 						if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825","SYOBJR-00016"):
@@ -8619,7 +8619,7 @@ class SYLDRTLIST:
 								Qustr += "  where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "'  AND QTEITM_RECORD_ID = '"+str(quote_item_revision_rec_id)+"' AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
 						elif str(RECORD_ID) == "SYOBJR-00030":
 							Trace.Write("got_code-----")
-							Qustr += "AND GREENBOOK = '"+str(TreeParam)+"' AND SERVICE_ID  = '"+str(TreeParentParam)+"' "
+							Qustr = "QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND SERVICE_ID  = '"+str(TreeParentParam)+"' "
 						else:
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 				
