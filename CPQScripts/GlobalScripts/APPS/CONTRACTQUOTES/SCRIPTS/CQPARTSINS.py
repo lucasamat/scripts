@@ -321,7 +321,7 @@ Log.Info("CQPARTINS script called --> from CPI")
 Log.Info("Param.CPQ_Column----"+str(type(Param)))
 if Param:
     try:
-        Log.Info("Param cpq val--"+' '.join(map(str, Param.CPQ_Columns)))
+        Log.Info("Param cpq val--"+' '.join(map(str, Param.CPQ_Columns["QuoteID"])))
     except Exception:
         Log.Info(str(Param))
 parameters={}
