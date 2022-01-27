@@ -2694,7 +2694,7 @@ class SYLDRTLIST:
 						+ ""
 					)
 					
-					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
+					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' "
 				elif RECORD_ID == "SYOBJR-00030":
 					Qury_str = (
 						"select DISTINCT top "
@@ -2716,19 +2716,19 @@ class SYLDRTLIST:
 					Qury_str = (
 						"select DISTINCT top "
 						+ str(PerPage)
-						+ " * from ( select TOP 10 ROW_NUMBER() OVER(order by CpqTableEntryId"
+						+ " * from ( select ROW_NUMBER() OVER(order by CpqTableEntryId"
 						+ ") AS ROW, * from "
 						+ str(ObjectName)
 						+ " (nolock) "
 						+ str(Qustr)
-						+ " AND PM_ID = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
+						+ " AND SERVICE_ID = '"+str(TopTreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeSuperParentParam)+"' AND GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
 						+ str(Page_start)
 						+ " and "
 						+ str(Page_End)
 						+ ""
 					)
 					
-					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND PM_ID = '"+str(TreeParam)+"' "
+					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TopTreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeSuperParentParam)+"' AND GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' "
 				
 				try:
 					Query_Obj = Sql.GetList(str(Qury_str))
@@ -7300,7 +7300,7 @@ class SYLDRTLIST:
 						+ ""
 						)
 					
-						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
+						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + "  "
 					elif RECORD_ID == "SYOBJR-00030":
 						Qustr += " where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '"+str(TreeParentParam)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 						Qury_str = (
@@ -8583,7 +8583,7 @@ class SYLDRTLIST:
 								+ ""
 								)
 						
-							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND GOT_CODE = '"+str(TreeParam)+"' "
+							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " "
 						elif RECORD_ID == "SYOBJR-00030":
 							Qustr += " where QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '"+str(TreeParentParam)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 							Qury_str = (
