@@ -32,9 +32,10 @@ class ContractQuoteItem:
 		self.pricing_temp_table = ''
 		self.quote_line_item_temp_table = '' 
 		self.quote_service_entitlement_type = ''
-		self._ent_billing_type = ""
+		self.get_billing_type_val = ""
 		self.parent_service_id = ""
 		self.source_object_name = ''
+		self._ent_consumable = ''
 		self.where_condition_string = kwargs.get('where_condition_string') 
 		self.set_contract_quote_related_details()
 		self._set_service_type()
@@ -42,6 +43,7 @@ class ContractQuoteItem:
 		self._get_material_type()
 		self._get_ancillary_product()
 		self._get_billing_type()
+		self._get_consumable_val()
 	
 	def set_contract_quote_related_details(self):
 		contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, SALE_TYPE, C4C_QUOTE_ID, QTEREV_ID, QUOTE_CURRENCY, QUOTE_CURRENCY_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
@@ -67,6 +69,26 @@ class ContractQuoteItem:
 			self.is_spare_service = True
 		else:
 			self.is_spare_service = False
+		return True
+
+	def _get_consumable_val(self):
+		self._ent_consumable =''
+		if self.service_id == 'Z0092':
+			get_consumable = Sql.GetFirst("select ENTITLEMENT_XML,SERVICE_ID from SAQTSE where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{get_service}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,get_service = self.service_id))
+			if get_consumable:
+				updateentXML = get_consumable.ENTITLEMENT_XML
+				pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+				pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_Z0092_TSC_CONSUM</ENTITLEMENT_ID>')
+				
+				pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+				for m in re.finditer(pattern_tag, updateentXML):
+					sub_string = m.group(1)
+					get_ent_id = re.findall(pattern_id,sub_string)
+					get_ent_val= re.findall(pattern_name,sub_string)
+					if get_ent_id:
+						self._ent_consumable = str(get_ent_val[0])
+						break
+			
 		return True
 
 	def _set_fpm_service_type(self):
@@ -192,7 +214,7 @@ class ContractQuoteItem:
 		if self.is_ancillary == True or self.service_id == 'Z0116':
 			dynamic_value_for_status = "'ACQUIRED' AS STATUS,'0' AS NET_PRICE_INGL_CURR, "
 			dynamic_col_names = " NET_PRICE_INGL_CURR,"
-			if self.service_id == 'Z0046' and self._ent_billing_type.upper() == 'VARIABLE':
+			if self.service_id == 'Z0046' and self.get_billing_type_val.upper() == 'VARIABLE':
 				dynamic_value_for_status += " '0' AS ESTVAL_INGL_CURR,  '0' AS DISCOUNT_AMOUNT_INGL_CURR,"
 				dynamic_col_names += "ESTVAL_INGL_CURR, DISCOUNT_AMOUNT_INGL_CURR,"
 		else:
@@ -922,14 +944,11 @@ class ContractQuoteItem:
 		if service_entitlement_obj:
 			quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 			entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.service_id)+'_PQB_QTITST</ENTITLEMENT_ID>')
-			##getting billing type
-			billing_type_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.service_id)+'_PQB_BILTYP</ENTITLEMENT_ID>')
 
 			entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 			for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obj.ENTITLEMENT_XML):
 				quote_item_tag_content = quote_item_tag.group(1)
 				entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)	
-				entitlement_billing_id_tag_match = re.findall(billing_type_pattern,quote_item_tag_content)
 				
 				if entitlement_id_tag_match:
 					entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
@@ -946,17 +965,12 @@ class ContractQuoteItem:
 						elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING + SCH. MAIN. EVENT'):
 							self.source_object_name = 'SAQGPE'
 						break
-				elif entitlement_billing_id_tag_match:
-					ent_billing_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
-					if ent_billing_display_value_tag_match:
-						self._ent_billing_type = ent_billing_display_value_tag_match[0].upper()
 				
 				else:
 					continue
 			# if self.service_id == 'Z0101':
 			# 	self.quote_service_entitlement_type = 'OFFERING + GREENBOOK + GR EQUI'
 			Log.Info(str(self.contract_quote_id)+"_set_quote_service_entitlement_type ===> 2"+str(self.quote_service_entitlement_type))
-			Trace.Write("_ent_billing_type--"+str(self._ent_billing_type))
 
 	def _quote_items_summary_insert(self, update=False):
 		if self.source_object_name:	
@@ -1098,7 +1112,7 @@ class ContractQuoteItem:
 		if self.is_ancillary == True:
 			dynamic_global_curr_columns = " '0' AS NET_VALUE_INGL_CURR, '0' AS NET_PRICE_INGL_CURR,"
 			dynamic_columns = "NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR,"
-			if self.service_id == 'Z0046' and self._ent_billing_type.upper() == 'VARIABLE':
+			if self.service_id == 'Z0046' and self.get_billing_type_val.upper() == 'VARIABLE':
 				dynamic_global_curr_columns += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR,"
 				dynamic_columns += "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
 		
@@ -1853,9 +1867,9 @@ class ContractQuoteItem:
 		)
 
 	def _insert_quote_item_forecast_parts(self):
-		Trace.Write("par_Service_id---"+str(self.parent_service_id))
+		Trace.Write("_ent_consumable---"+str(self._ent_consumable)+"par_Service_id---"+str(self.parent_service_id) )
 			
-		if self.service_id == 'Z0100' : 
+		if self.service_id == 'Z0101' and self._ent_consumable.upper() == 'SOME INCLUSIONS' : 
 			Sql.RunQuery("""INSERT SAQRIP (QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID,  QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, NEW_PART ) 
 			SELECT 
 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,
@@ -1888,7 +1902,7 @@ class ContractQuoteItem:
 				CQPARTIFLW.iflow_pricing_call(str(self.user_name),str(self.contract_quote_id),str(self.contract_quote_revision_record_id))
 			except:
 				Log.Info("PART PRICING IFLOW ERROR!")
-		else:
+		elif not (self.service_id == 'Z0100' and self._ent_consumable.upper() == 'SOME INCLUSIONS' and self.parent_service_id == 'Z0092'):
 			Sql.RunQuery("""INSERT SAQRIP (QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, NEW_PART ) 
 				SELECT 
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,
