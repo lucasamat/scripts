@@ -4485,7 +4485,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						)
 			)
 		
-	def _insert_quote_service_preventive_maintenance_kit_parts(self, **kwargs):
+	def _insert_quote_service_preventive_maintenance_kit_parts(self, **kwargs, additional_where):
 		# Sql.RunQuery("""DELETE FROM SAQSAP WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(contract_quote_record_id = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		# Sql.RunQuery("""DELETE FROM SAQSKP WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(contract_quote_record_id = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		#TKM_start_time = time.time()
@@ -4496,6 +4496,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		SAQSCA_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA)+"'' ) BEGIN DROP TABLE "+str(SAQSCA)+" END  ' ")
 		sure0090 = SqlHelper.GetFirst("sp_executesql @T=N'SELECT * INTO "+str(SAQSCA)+" FROM SAQSCA(NOLOCK) WHERE QUOTE_RECORD_ID = ''"+str(CRMQT.QUOTE_RECORD_ID)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_record_id)+"''  ' ")
 		#Suresh Ended
+		
 		self._process_query("""INSERT SAQSAP (
 				ASSEMBLY_ID,
 				ASSEMBLY_DESCRIPTION,
@@ -4571,7 +4572,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				LEFT JOIN MATKTN(NOLOCK) ON MATKTN.KIT_ID = MAEAPK.KIT_ID AND MATKTN.KIT_NUMBER = MAEAPK.KIT_NUMBER
 				JOIN MAPMEV(NOLOCK) ON MAPMEV.PM_NAME = MAEAPK.PM_NAME 
 				JOIN SAQTRV(NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID 
-				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}' ) PM """.format(
+				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {additional_where} SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}' ) PM """.format(
 				UserName=self.user_name,
 				TreeParam=self.tree_param,
 				QuoteId = self.contract_quote_id,
@@ -4579,7 +4580,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionId=self.quote_revision_id,
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id'),
-				SAQSCA = str(SAQSCA)
+				SAQSCA = str(SAQSCA),
+				additional_where = additional_where
 				)
 			)
 		
@@ -4659,7 +4661,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				JOIN MAPMEV(NOLOCK) ON MAPMEV.PM_NAME = SAQSAP.PM_NAME 
 				JOIN MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQSAP.KIT_ID
 				JOIN MAMTRL(NOLOCK) ON MAMTRL.SAP_PART_NUMBER = MAKTPT.PART_NUMBER
-				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}') KP """.format(
+				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {additional_where} SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}') KP """.format(
 				UserName=self.user_name,
 				TreeParam=self.tree_param,
 				QuoteId = self.contract_quote_id,
@@ -4667,7 +4669,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionId=self.quote_revision_id,
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id'),
-				SAQSCA = str(SAQSCA)
+				SAQSCA = str(SAQSCA),
+				additional_where = additional_where
 				))
 		#TKM_end_time = time.time()
 		
@@ -5479,11 +5482,19 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						sub_string = value.group(1)
 						pm_event_attribute_id =re.findall(pattern_id,sub_string)
 						quote_type_attribute_id =re.findall(quote_type_id,sub_string)
+						additional_where = ''
+						if (self.tree_param in ("Z0035","Z0091","Z0009","Z0004") and pm_event_attribute_value == "Included - All PM"):
+							additional_where = "AND MAEAPK.PM_LEVEL == 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance'"
+						elif (self.tree_param in ("Z0035","Z0091",) and pm_event_attribute_value == "Included - Monthly and Above"):
+							additional_where = "AND MAEAPK.PM_LEVEL == 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance' AND MAEAPK.PM_ID = 'Monthly' AND MAEAPK.PM_ID = 'Quarterly' AND MAEAPK.PM_ID = 'Semi-Annual' AND MAEAPK.PM_ID = 'Annual'"
+						elif (self.tree_param in ("Z0092","Z0099") and pm_event_attribute_value == "Included - Quarterly and Above"):
+							additional_where = "AND MAEAPK.PM_LEVEL == 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance' AND MAEAPK.PM_ID = 'Quarterly' AND MAEAPK.PM_ID = 'Semi-Annual' AND MAEAPK.PM_ID = 'Annual'"
+						Trace.Write("additional_where_chk "+str(additional_where))
 						if pm_event_attribute_id and self.tree_param != 'Z0009':
 							pm_event_attribute_value =re.findall(pattern_name,sub_string)
 							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
 							if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
-								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
+								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where)
 							pm_event_flag=1
 						if quote_type_attribute_id and self.tree_param == 'Z0009':
 							quote_type_attribute_value =re.findall(pattern_name,sub_string)
@@ -5493,7 +5504,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								else:
 									pm_event_attribute_value =re.findall(pattern_name,sub_string)
 									if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
-										self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
+										self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where)
 							qte_type_flag=1
 						if self.tree_param == 'Z0009' and qte_type_flag == 1:
 							break
