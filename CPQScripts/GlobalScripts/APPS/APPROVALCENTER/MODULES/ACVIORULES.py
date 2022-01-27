@@ -336,7 +336,7 @@ class ViolationConditions:
             +'-'+SAQDLT.MEMBER_ID) AS APRCHNSTPTRX_ID
             ,ACAPMA.APPROVAL_ID AS APPROVAL_ID
             ,SAQDLT.MEMBER_NAME AS APPROVAL_RECIPIENT
-            ,SAQDLT.MEMBER_RECORD_ID AS APPROVAL_RECIPIENT_RECORD_ID
+            ,'{Get_UserID}' AS APPROVAL_RECIPIENT_RECORD_ID
             ,ACAPMA.APPROVAL_RECORD_ID AS APPROVAL_RECORD_ID
             ,ACACSS.APPROVALSTATUS AS APPROVALSTATUS
             ,ACACST.APPROVE_TEMPLATE_ID AS APPROVE_TEMPLATE_ID
@@ -818,6 +818,8 @@ class ViolationConditions:
                                         Rulebodywithcondition = Transcationrulebody + where_conditon
                                         Trace.Write("777777 ACAPTX--------->"+str(Rulebodywithcondition))
                                         b = Sql.RunQuery(Rulebodywithcondition)
+
+
                                     else:
                                         where_conditon += """GROUP BY APPRO.USER_RECORD_ID,ACAPCH.APRCHN_ID,
                                     ACAPCH.APPROVAL_CHAIN_RECORD_ID ,APPRO.APRCHNSTP_APPROVER_ID ,
