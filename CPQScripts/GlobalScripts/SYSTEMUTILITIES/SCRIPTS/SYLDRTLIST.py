@@ -8653,7 +8653,8 @@ class SYLDRTLIST:
 							Trace.Write('8648---delivery_date_column--pivot_columns----'+str(pivot_columns))
 							Qustr = " where " + str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 							Trace.Write('8648---ATTRIBUTE_VALUE_STR---'+str(ATTRIBUTE_VALUE_STR))
-							Trace.Write('8648---Wh_API_NAME---'+str(Wh_API_NAME)+'--RecAttValue----'+str(RecAttValue))	
+							Trace.Write('8648---Wh_API_NAME---'+str(Wh_API_NAME)+'--RecAttValue----'+str(RecAttValue))
+							column_before_delivery_pivot_change = 'QTEREVSPT_RECORD_ID,PART_DESCRIPTION,QUANTITY,DELIVERY_SCHED_DATE,CPQTABLEENTRYMODIFIEDBY,CPQTABLEENTRYDATEMODIFIED,QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED'
 							if Qustr:
 								Qustr += " AND DELIVERY_SCHED_DATE  BETWEEN '{}' AND '{}'".format(delivery_date_column[0], delivery_date_column[-1])
 							pivot_query_str = """
