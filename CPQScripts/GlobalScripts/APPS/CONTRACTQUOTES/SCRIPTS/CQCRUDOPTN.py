@@ -3185,9 +3185,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		self.all_values = kwargs.get('all_values')
 		self.applied_preventive_maintainence_quote_type_changed = kwargs.get('applied_preventive_maintainence_quote_type_changed')
 		self.node_id = ""
-	if self.applied_preventive_maintainence_quote_type_changed == "Yes":
-		quote_type_attribute_value = "Event Based"
-		self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed)
+
 	def get_results(self, query_string, table_total_rows):
 		for offset_skip_count in range(0, table_total_rows+1, 1000):
 			pagination_condition = "WHERE SNO>={Skip_Count} AND SNO<={Fetch_Count}".format(Skip_Count=offset_skip_count+1, Fetch_Count=offset_skip_count+1000)
@@ -4717,6 +4715,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		return True
 	
 	def applied_preventive_maintainence(self, **kwargs):
+		Trace.Write("adding treaces to check")
 		###Deleting the SAQSCA,SAQSAP and SAQSKP TABLE records when the user is changing the quote type from Tool Based to other values...
 		if kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes":
 			delete_obj_list = ["SAQSCA","SAQSAP","SAQSKP"]
@@ -5438,6 +5437,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 
 	
 	def _create(self):
+		Trace.Write("inside create")
 		if self.action_type == "ADD_COVERED_OBJ":
 			covered_start_time = time.time()
 			master_object_name = "SAQFEQ"
@@ -5604,8 +5604,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				# except:
 				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
 		if self.applied_preventive_maintainence_quote_type_changed == "Yes":
+				Trace.Write("applied_preventive_maintainence_quote_type_changed --->")
 				quote_type_attribute_value = "Event Based"
+				Trace.Write("applied_preventive_maintainence_quote_type_changed --->")
 				self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed)
+				Trace.Write("applied_preventive_maintainence_quote_type_changed --->")
 		return True
 	
 	def _update(self):
