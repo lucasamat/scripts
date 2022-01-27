@@ -4693,7 +4693,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				JOIN MAPMEV(NOLOCK) ON MAPMEV.PM_NAME = SAQSAP.PM_NAME 
 				JOIN MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQSAP.KIT_ID
 				JOIN MAMTRL(NOLOCK) ON MAMTRL.SAP_PART_NUMBER = MAKTPT.PART_NUMBER
-				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {additional_where} SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}') KP """.format(
+				WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}') KP """.format(
 				UserName=self.user_name,
 				TreeParam=self.tree_param,
 				QuoteId = self.contract_quote_id,
@@ -4701,8 +4701,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				RevisionId=self.quote_revision_id,
 				RevisionRecordId=self.quote_revision_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id'),
-				SAQSCA = str(SAQSCA),
-				additional_where = kwargs.get('additional_where')
+				SAQSCA = str(SAQSCA)
 				))
 		#TKM_end_time = time.time()
 		
@@ -5522,7 +5521,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							pm_event_attribute_value =re.findall(pattern_name,sub_string)
 							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
 							additional_where = ''
-							
+
 							Trace.Write("555 "+str(self.tree_param)+" 555 "+str(pm_event_attribute_value))
 							if (self.tree_param in ("Z0035","Z0091","Z0009","Z0004") and "Included - All PM" in pm_event_attribute_value):
 								additional_where = " MAEAPK.PM_LEVEL = 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance' AND"
