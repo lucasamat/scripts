@@ -1785,24 +1785,21 @@ class SyncQuoteAndCustomTables:
 										contract_quote_id = contract_quote_obj.QUOTE_ID 
 										get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 										
-										cv=str(get_sales_ifo.CONTRACT_VALID_FROM)
-										(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
-										cd = '0'+str(cd) if len(cd)==1 else cd
-										cm = '0'+str(cm) if len(cm)==1 else cm        
-										cvf = cy+cm+cd
-
-										cv=str(get_sales_ifo.CONTRACT_VALID_TOo)
-										(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
-										cd = '0'+str(cd) if len(cd)==1 else cd
-										cm = '0'+str(cm) if len(cm)==1 else cm        
-										cvt = cy+cm+cd
-										
 										if get_sales_ifo:
 											salesorg = get_sales_ifo.SALESORG_ID
-											validfrom =cvf
-											validto =cvt
 											pricelist =get_sales_ifo.PRICELIST_ID
 											pricegroup =get_sales_ifo.PRICEGROUP_ID
+											cv=str(get_sales_ifo.CONTRACT_VALID_FROM)
+											(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+											cd = '0'+str(cd) if len(cd)==1 else cd
+											cm = '0'+str(cm) if len(cm)==1 else cm        
+											validfrom = cy+cm+cd
+											cv=str(get_sales_ifo.CONTRACT_VALID_TO)
+											(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+											cd = '0'+str(cd) if len(cd)==1 else cd
+											cm = '0'+str(cm) if len(cm)==1 else cm        
+											validto = cy+cm+cd
+										
 										CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,contract_quote_id,quote_revision_record_id,auth)					
 									#A055S000P01-14047 start
 									try:
