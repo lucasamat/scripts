@@ -34,7 +34,9 @@ def insert_deliveryschedule_request(rec_id,QuoteRecordId,rev_rec_id,Service_id):
     except:
         pass
     return 'Data'
-
+def delete_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id):
+    Trace.Write('38----')
+    return 'data'
 
 Action =Param.Action
 rec_id =Param.rec_id
@@ -43,3 +45,5 @@ rev_rec_id = Param.rev_rec_id
 Service_id = Param.Service_id
 if Action == "INSERT":
     insert_deliverydetails = insert_deliveryschedule_request(rec_id,QuoteRecordId,rev_rec_id,Service_id)
+elif Action == "DELETE":
+    delete_deliverydetails = delete_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id)
