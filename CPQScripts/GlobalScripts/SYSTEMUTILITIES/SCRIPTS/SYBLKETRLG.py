@@ -1030,8 +1030,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					#A055S000P01-14051 start
 					get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 					if get_schedulemode and str(TreeParam) =="Z0108":
-						schedulemthod = get_schedulemode.SCHEDULE_MODE
-						if schedulemthod == "OFFSITE" and VALUE == "SCHEDULED":
+						delivery_method = get_schedulemode.DELIVERY_MODE
+						if delivery_method == "OFFSITE" and VALUE == "SCHEDULED":
 							#Trace.Write('1022-----'+str(VALUE))
 							ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
 						else:
