@@ -545,7 +545,8 @@ class SYLDRTLIST:
 					else:
 						attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
 					#Trace.Write("attr_list_j"+str(attr_list))
-					if (
+					val_type=type(attr.LOOKUP_API_NAME)
+					if (str(val_type)!="<type 'DBNull>'" and 
 						str(attr.LOOKUP_API_NAME) != ""
 						and str(attr.LOOKUP_API_NAME) is not None
 						and str(attr.LOOKUP_API_NAME) not in ["CONTROLLING_FIELD", "DEPENDENT_FIELD"]
@@ -5379,7 +5380,8 @@ class SYLDRTLIST:
 
 					attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
 					if attr is not None:
-						if (
+						val_type=type(attr.LOOKUP_API_NAME)
+						if (str(val_type)!="<type 'DBNull>'" and 
 							attr.LOOKUP_API_NAME is not None
 							and attr.LOOKUP_API_NAME != ""
 							and str(attr.LOOKUP_API_NAME) not in ["CONTROLLING_FIELD", "DEPENDENT_FIELD"]
