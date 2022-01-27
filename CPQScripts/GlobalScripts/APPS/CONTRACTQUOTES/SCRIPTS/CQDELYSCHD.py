@@ -40,12 +40,30 @@ def delete_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id):
 	if get_delivery_schedule_details:
 		delete_delivery_schedules = Sql.RunQuery("DELETE  FROM SAQSPD where QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and QTEREVSPT_RECORD_ID = '{rec_id}'".format(contract_rec_id= QuoteRecordId,qt_rev_id = rev_rec_id,rec_id=rec_id) )
 	return 'data'
-
-Action =Param.Action
-rec_id =Param.rec_id
-QuoteRecordId = Param.QuoteRecordId
-rev_rec_id = Param.rev_rec_id
-Service_id = Param.Service_id
+try:
+	Action =Param.Action
+except:
+	Action = ""
+try:
+	rec_id =Param.rec_id
+except:
+	rec_id = ''
+try:
+	QuoteRecordId = Param.QuoteRecordId
+except:
+	QuoteRecordId = ''
+try:
+	rev_rec_id = Param.rev_rec_id
+except:
+	rev_rec_id = ''
+try:
+	Service_id = Param.Service_id
+except:
+	Service_id = ''
+try:
+	QTY = Param.QTY
+except:
+	QTY = ''
 if Action == "INSERT":
 	insert_deliverydetails = insert_deliveryschedule_request(rec_id,QuoteRecordId,rev_rec_id,Service_id)
 elif Action == "DELETE":
