@@ -280,7 +280,7 @@ class SyncFPMQuoteAndHanaDatabase:
             #pattern2 = re.compile(r'\"([^>]*?)\"\:(\"[^>]*?\")')
             pattern2 = re.compile(r'\'([^>]*?)\'\s*\:\s*([^>]*?)(?:\,|\})')
             self.columns = 'QUOTE_RECORD_ID,QTEREV_RECORD_ID'
-            value  = """(\''{}\'',\''{}\''""".format(self.quote_record_id,self.quote_revision_id)
+            value  = '''(\"{}\",\"{}\"'''..format(self.quote_record_id,self.quote_revision_id)
             col_flag = 0
             for record in re.finditer(pattern, response):
                 rec = re.sub(r'\{|\}','',record.group(1))
@@ -297,6 +297,7 @@ class SyncFPMQuoteAndHanaDatabase:
                 #if col_flag == 0:
                 #	self.columns +=')'
                 temp_value +=')'
+                temp_value = re.sub(r"'",'"',temp_value)
                 temp_value = re.sub(r'"',"''",temp_value)
                 if self.records == '':
                     self.records = temp_value
