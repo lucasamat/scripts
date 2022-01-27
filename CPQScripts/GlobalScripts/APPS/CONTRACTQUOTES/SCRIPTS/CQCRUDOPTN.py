@@ -5523,12 +5523,12 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							additional_where = ''
 							Trace.Write("555 "+str(self.tree_param)+" 555 "+str(pm_event_attribute_value))
 							if (self.tree_param in ("Z0035","Z0091","Z0009","Z0004") and "Included - All PM" in pm_event_attribute_value):
-								additional_where = "AND MAEAPK.PM_LEVEL == 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance'"
+								additional_where = " MAEAPK.PM_LEVEL == 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance'"
 								Trace.Write("additional_where_chk_1 "+str(additional_where))
 							elif (self.tree_param in ("Z0035","Z0091",) and "Included - Monthly and Above" in pm_event_attribute_value):
-								additional_where = "AND MAEAPK.PM_LEVEL == 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance' AND MAEAPK.PM_ID = 'Monthly' AND MAEAPK.PM_ID = 'Quarterly' AND MAEAPK.PM_ID = 'Semi-Annual' AND MAEAPK.PM_ID = 'Annual'"
+								additional_where = " MAEAPK.PM_LEVEL == 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance' AND MAEAPK.PM_ID = 'Monthly' AND MAEAPK.PM_ID = 'Quarterly' AND MAEAPK.PM_ID = 'Semi-Annual' AND MAEAPK.PM_ID = 'Annual'"
 							elif (self.tree_param in ("Z0092","Z0099") and "Included - Quarterly and Above" in pm_event_attribute_value):
-								additional_where = "AND MAEAPK.PM_LEVEL == 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance' AND MAEAPK.PM_ID = 'Quarterly' AND MAEAPK.PM_ID = 'Semi-Annual' AND MAEAPK.PM_ID = 'Annual'"
+								additional_where = " MAEAPK.PM_LEVEL == 'Chamber / Module PM' AND MAEAPK.PM_LEVEL = 'Scheduled Maintenance' AND MAEAPK.PM_ID = 'Quarterly' AND MAEAPK.PM_ID = 'Semi-Annual' AND MAEAPK.PM_ID = 'Annual'"
 							Trace.Write("additional_where_chk "+str(additional_where))
 							if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
 								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
