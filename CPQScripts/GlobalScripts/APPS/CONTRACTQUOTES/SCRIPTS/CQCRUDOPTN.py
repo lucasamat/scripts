@@ -5437,8 +5437,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 
 	
 	def _create(self):
-		Trace.Write("inside create")
+		Trace.Write("inside create"+str(self.action_type))
 		if self.action_type == "ADD_COVERED_OBJ":
+			Trace.Write("add covered object")
 			covered_start_time = time.time()
 			master_object_name = "SAQFEQ"
 			if self.values:
@@ -5603,6 +5604,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				# 	CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"PREDEFINED DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
 				# except:
 				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
+			Trace.Write("self.applied_preventive_maintainence_quote_type_changed "+str(self.applied_preventive_maintainence_quote_type_changed))
 			if self.applied_preventive_maintainence_quote_type_changed == "Yes":
 				Trace.Write("applied_preventive_maintainence_quote_type_changed --->")
 				quote_type_attribute_value = "Event Based"
