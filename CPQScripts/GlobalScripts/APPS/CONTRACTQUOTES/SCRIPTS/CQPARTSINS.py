@@ -21,24 +21,9 @@ webclient = System.Net.WebClient()
 class SyncFPMQuoteAndHanaDatabase:
     def __init__(self):
         self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = ''
-        try:
-            self.quote_id = Param.CPQ_Columns["QuoteID"]
-        except Exception:
-            Log.Info("@@@Self Quote ID is Missing@@@")
         self.datetime_value = datetime.datetime.now()
         self.account_info = {}
-        self.fetch_quotebasic_info()
-        cv=str(self.contract_valid_from)
-        (cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
-        cd = '0'+str(cd) if len(cd)==1 else cd
-        cm = '0'+str(cm) if len(cm)==1 else cm        
-        self.cvf = cy+cm+cd
-        cv=str(self.contract_valid_to)
-        (cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
-        cd = '0'+str(cd) if len(cd)==1 else cd
-        cm = '0'+str(cm) if len(cm)==1 else cm        
-        self.cvt = cy+cm+cd
-        
+             
     def pull_fpm_parts_hana(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=16c3719c-d099-42d4-921c-765f4cee223a&password=mKv2~uXpeRD9SrD2DTW09Lk2GQ&scope=hanasafeaccess"
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
@@ -259,7 +244,18 @@ class SyncFPMQuoteAndHanaDatabase:
             self.service_id = saqtsv_obj.SERVICE_ID
             self.service_desc = saqtsv_obj.SERVICE_DESCRIPTION
             self.service_record_id = saqtsv_obj.SERVICE_RECORD_ID
-            
+        
+        cv=str(self.contract_valid_from)
+        (cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+        cd = '0'+str(cd) if len(cd)==1 else cd
+        cm = '0'+str(cm) if len(cm)==1 else cm        
+        self.cvf = cy+cm+cd
+        cv=str(self.contract_valid_to)
+        (cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+        cd = '0'+str(cd) if len(cd)==1 else cd
+        cm = '0'+str(cm) if len(cm)==1 else cm        
+        self.cvt = cy+cm+cd
+        
     def prepare_backup_table(self):
         if self.response:
             response = self.response
@@ -317,8 +313,18 @@ class SyncFPMQuoteAndHanaDatabase:
 Log.Info("CQPARTINS script called --> from CPI")
 Log.Info("Param.CPQ_Column----"+str(type(Param)))
 Log.Info("Param.CPQ_Column----QuoteID---"+str(Param.CPQ_Columns["QuoteID"]))
+fpm_obj = SyncFPMQuoteAndHanaDatabase()
 if Param.CPQ_Columns["QuoteID"]:
-    fpm_obj = SyncFPMQuoteAndHanaDatabase()
+    try:
+        self.quote_id = str(Param.CPQ_Columns["QuoteID"])
+    except Exception:
+        Log.Info("@@@Self Quote ID is Missing@@@")
+    try:
+        self.response = str(Param.CPQ_Columns["Response"])
+    except Exception:
+        Log.Info("@@@Self Response is Missing@@@")
+    
+    fpm_obj.fetch_quotebasic_info()
     fpm_obj.prepare_backup_table()
     fpm_obj._insert_spare_parts()
     fpm_obj.update_records_saqspt()
