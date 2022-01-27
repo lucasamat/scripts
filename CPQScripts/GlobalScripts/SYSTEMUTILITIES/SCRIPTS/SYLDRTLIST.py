@@ -5369,6 +5369,7 @@ class SYLDRTLIST:
 							and str(attr.LOOKUP_API_NAME) not in ["CONTROLLING_FIELD", "DEPENDENT_FIELD"]
 						):
 							lookup_disply_list.append(str(attr.API_NAME))
+							Trace.Write("lookup_disply_list====="+str(lookup_disply_list))
 						checkbox_list = [
 							inn.API_NAME
 							for inn in Objd_Obj
