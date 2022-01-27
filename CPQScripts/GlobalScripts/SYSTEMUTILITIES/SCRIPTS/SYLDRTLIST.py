@@ -5409,6 +5409,16 @@ class SYLDRTLIST:
 						
 					except:
 						pass
+				elif "QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID" in lookup_disply_list and ObjectName == "SAQRGG":
+                    try:
+						lookup_disply_list.remove("QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID")
+						lookup_disply_list.remove("GOT_CODE")
+						lookup_disply_list.remove("GREENBOOK")
+						lookup_disply_list.remove("SERVICE_ID")
+						lookup_disply_list.remove("SERVICE_DESCRIPTION")
+						
+					except:
+						pass
 			lookup_str = ",".join(list(lookup_disply_list))
 			obj_str = ",".join(list(eval(Columns)))
 			if lookup_str != "":
