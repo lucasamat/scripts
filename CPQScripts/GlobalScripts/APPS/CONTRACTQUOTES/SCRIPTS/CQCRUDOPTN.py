@@ -3184,7 +3184,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		self.values = kwargs.get('values')
 		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')
-		self.applied_preventive_maintainence_quote_type_chaged = kwargs.get('applied_preventive_maintainence_quote_type_chaged')
+		self.applied_preventive_maintainence_quote_type_changed = kwargs.get('applied_preventive_maintainence_quote_type_changed')
 		self.node_id = ""
 	
 	def get_results(self, query_string, table_total_rows):
@@ -4717,7 +4717,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	
 	def applied_preventive_maintainence(self, **kwargs):
 		###Deleting the SAQSCA,SAQSAP and SAQSKP TABLE records when the user is changing the quote type from Tool Based to other values...
-		if kwargs.get('applied_preventive_maintainence_quote_type_chaged') == "Yes":
+		if kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes":
 			delete_obj_list = ["SAQSCA","SAQSAP","SAQSKP"]
 			for object in delete_obj_list:
 				Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(object,self.contract_quote_record_id, self.service_id,self.contract_quote_revision_record_id ))
@@ -5535,7 +5535,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							quote_type_attribute_value =re.findall(pattern_name,sub_string)
 							if  quote_type_attribute_value:
 								if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
-									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_chaged = applied_preventive_maintainence_quote_type_chaged)
+									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
 								else:
 									pm_event_attribute_value =re.findall(pattern_name,sub_string)
 									if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
@@ -5600,7 +5600,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				# 	Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
 				# 	CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"PREDEFINED DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
 				# except:
-				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")			
+				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
+		if self.applied_preventive_maintainence_quote_type_changed == "Yes":
+			quote_type_attribute_value = "Event Based"
+			self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
 		return True
 	
 	def _update(self):
