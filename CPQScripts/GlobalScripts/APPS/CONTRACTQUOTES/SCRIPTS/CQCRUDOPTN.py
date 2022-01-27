@@ -5117,7 +5117,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					qte_type_flag=0
 					updateentXML = service_entitlement_obj.ENTITLEMENT_XML
 					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-					pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
+					pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_NET_PRMALB</ENTITLEMENT_ID>')
 					pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 					quote_type_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
 					for value in re.finditer(pattern_tag, updateentXML):
@@ -5126,7 +5126,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						quote_type_attribute_id =re.findall(quote_type_id,sub_string)
 						if pm_event_attribute_id and self.tree_param != 'Z0009':
 							pm_event_attribute_value =re.findall(pattern_name,sub_string)
-							if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based"):
+							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
+							if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded":
 								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
 							pm_event_flag=1
 						if quote_type_attribute_id and self.tree_param == 'Z0009':
@@ -5136,7 +5137,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value)
 								else:
 									pm_event_attribute_value =re.findall(pattern_name,sub_string)
-									if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based"):
+									if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based" or pm_event_attribute_value != "Excluded":):
 										self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
 							qte_type_flag=1
 						if self.tree_param == 'Z0009' and qte_type_flag == 1:
