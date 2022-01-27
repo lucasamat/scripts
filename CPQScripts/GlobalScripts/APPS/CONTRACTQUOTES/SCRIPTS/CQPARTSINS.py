@@ -105,6 +105,7 @@ class SyncFPMQuoteAndHanaDatabase:
         datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
         spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.quote_record_id, datetime_string)
         spare_parts_temp_table_name = re.sub(r'-','_',spare_parts_temp_table_name)
+        self.columns = re.sub(r'\"|\{','',self.columns)
         Log.Info("Columns--->"+str(self.columns))
         Log.Info("Values---->"+str(self.records))
         try:
@@ -293,8 +294,6 @@ class SyncFPMQuoteAndHanaDatabase:
                 for ele in re.finditer(pattern2,rec):
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
-                        Log.Info("Eachrecord-->"+str(rec))
-                        Log.Info("EachValues-->"+str(ele.group(2)))
                     if str(ele.group(1)) == 'PART_DESCRIPTION':
                         partdesc = ele.group(2) or ''
                         partdesc = re.sub(r"'|\\","",partdesc)
