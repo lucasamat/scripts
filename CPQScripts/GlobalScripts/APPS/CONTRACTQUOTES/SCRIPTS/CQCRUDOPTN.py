@@ -15,6 +15,7 @@ import SYCNGEGUID as CPQID
 import CQPARTIFLW
 import CQADDONPRD
 from SYDATABASE import SQL
+import System.Net
 #from CQPARTSINS import SyncFPMQuoteAndHanaDatabase		
 #from datetime import datetime
 #from datetime import datetime
@@ -22,6 +23,7 @@ from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 import CQVLDRIFLW
+webclient = System.Net.WebClient()
 
 
 try:
