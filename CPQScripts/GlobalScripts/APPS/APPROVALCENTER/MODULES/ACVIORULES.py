@@ -657,8 +657,8 @@ class ViolationConditions:
                         Log.Info("if flag")
                         Trace.Write("if flag")
                     elif fflag == 2:
-                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                        Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
+                        #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
+                        #Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                         SqlQuery = None
                         Log.Info("elif flag")
                         Trace.Write("elif flag")
