@@ -3807,6 +3807,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		
 	
 	def _insert_quote_service_covered_assembly(self, **kwargs):
+		Trace.Write("pmevents_changes_insert_chk "+str(self.pmevents_changes_insert))
 		if self.pmevents_changes_insert == "Yes":
 			self._process_query(
 						"""
