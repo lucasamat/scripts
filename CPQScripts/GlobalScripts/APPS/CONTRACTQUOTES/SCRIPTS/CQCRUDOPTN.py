@@ -5696,6 +5696,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			if self.pmevents_changes_insert == "Yes":
 				service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
 				if service_entitlement_obj is not None:
+					import re
 					pm_event_flag=0
 					qte_type_flag=0
 					updateentXML = service_entitlement_obj.ENTITLEMENT_XML
