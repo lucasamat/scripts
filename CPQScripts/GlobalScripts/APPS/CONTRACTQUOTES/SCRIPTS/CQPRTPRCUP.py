@@ -155,9 +155,9 @@ if part_query or ancillary_part_query or fpm_part_query:
 					requestdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">  <soapenv:Body> <cpq_columns><root> {"docCurrency":"'+curr+'","locCurrency":"'+glb_curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(s)+']} </root> <CPSToken>'+str(response['access_token'])+'</CPSToken></cpq_columns> </soapenv:Body></soapenv:Envelope>'
 				else:
 					Log.Info("**Multiple-Partids**")
-					for index,p in enumerate(zip(partids,quantity)):
-						p=p[0]
-						q=p[1]
+					for index,val in enumerate(zip(partids,quantity)):
+						p=val[0]
+						q=val[1]
 						if q<=0 or q=='':
 							q=1
 						q=int(q)
