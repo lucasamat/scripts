@@ -1162,6 +1162,20 @@ class Entitlements:
 								except Exception as e:
 									Trace.Write("Exception While running CQCRUDOPTN "+str(e))
 							Trace.Write("script called")
+						if key in ( "AGS_{}_NET_PRMALB".format(serviceId)) and str(tableName) in ('SAQTSE'):
+							Sql.RunQuery("DELETE FROM SAQSAP WHERE QUOTE_RECORD_ID = {} AND QTEREV_RECORD_ID = {} AND SERVICE_ID = {}".format(self.ContractRecordId,self.revision_recordid,serviceId))
+							try:
+								ScriptExecutor.ExecuteGlobal(
+										"CQCRUDOPTN",
+									{
+										"NodeType"   : "COVERED OBJ MODEL",
+										"ActionType" : "ADD_COVERED_OBJ",
+										"Opertion"    : "ADD",
+									},
+								)
+							except Exception as e:
+								Trace.Write("Exception While running CQCRUDOPTN "+str(e))
+							Trace.Write("script called")
 						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004','Z0009') :
 							#ancillary_object = 'A6200'
 							if entitlement_value.upper() == "YES":
