@@ -3267,6 +3267,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		self.all_values = kwargs.get('all_values')
 		self.applied_preventive_maintainence_quote_type_changed = kwargs.get('applied_preventive_maintainence_quote_type_changed')
 		self.pmevents_changes_insert =  kwargs.get('pmevents_changes_insert')
+		self.pm_entlmnt_val = kwargs.get('pm_entlmnt_val')
 		self.node_id = ""
 
 	def get_results(self, query_string, table_total_rows):
@@ -5783,6 +5784,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
 			Trace.Write("self.applied_preventive_maintainence_quote_type_changed "+str(self.applied_preventive_maintainence_quote_type_changed))
 			Trace.Write("self.pmevents_changes_insert "+str(self.pmevents_changes_insert))
+			Trace.Write("self.pm_entlmnt_val"+str(pm_entlmnt_val))
 			if self.applied_preventive_maintainence_quote_type_changed == "Yes":
 				Trace.Write("applied_preventive_maintainence_quote_type_changed --->1")
 				quote_type_attribute_value = "Event Based"
@@ -6611,6 +6613,10 @@ else:
 			pmevents_changes_insert = Param.pmevents_changes_insert
 		except:
 			pmevents_changes_insert = "No"
+		try:
+			pm_entlmnt_val = Param.pm_entlmnt_val
+		except:
+			pm_entlmnt_val = ""
 	except Exception as e:
 		Trace.Write('error-'+str(e))
 		pass	
@@ -6618,7 +6624,7 @@ else:
 node_object = Factory(node_type)(
 	opertion=opertion, action_type=action_type, table_name=table_name, values=values, 
 	all_values=all_values, trigger_from=trigger_from, contract_quote_record_id=contract_quote_record_id, 
-	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,inclusion = inclusion,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed,pmevents_changes_insert= pmevents_changes_insert
+	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,inclusion = inclusion,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed,pmevents_changes_insert= pmevents_changes_insert,pm_entlmnt_val=pm_entlmnt_val
 )
 
 if opertion == "INSERT":
