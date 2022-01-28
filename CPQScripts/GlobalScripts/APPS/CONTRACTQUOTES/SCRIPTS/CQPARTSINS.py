@@ -38,7 +38,7 @@ class SyncFPMQuoteAndHanaDatabase:
         spare_parts_temp_table_name = re.sub(r'-','_',spare_parts_temp_table_name)
         self.columns = re.sub(r'\"|\{','',self.columns)
         Log.Info("Columns--->"+str(self.columns))
-        #Log.Info("Values---->"+str(self.records))
+        Log.Info("Values---->"+str(self.records))
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
             spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
