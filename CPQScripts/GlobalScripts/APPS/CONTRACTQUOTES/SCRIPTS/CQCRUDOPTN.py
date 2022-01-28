@@ -1028,7 +1028,45 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					elif self.tree_param == 'Z0110':
 						delivery_mode = " "
 						schedule_mode= " "
-					self._process_query("""
+					if self.tree_param in ('Z0108','Z0110'):
+						#iflow for spare parts...
+						requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
+						webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+						webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
+						response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
+						response=response.replace("null",'""')
+						response=eval(response)	
+						auth="Bearer"+' '+str(response['access_token'])
+
+						get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+						account_info = {}
+						for keyobj in get_party_role:
+							account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
+		
+						get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_record_id)+"'")
+						
+						if get_sales_ifo:
+							salesorg = get_sales_ifo.SALESORG_ID
+							pricelist =get_sales_ifo.PRICELIST_ID
+							pricegroup =get_sales_ifo.PRICEGROUP_ID
+							cv=str(get_sales_ifo.CONTRACT_VALID_FROM)
+							(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+							cd = '0'+str(cd) if len(cd)==1 else cd
+							cm = '0'+str(cm) if len(cm)==1 else cm        
+							validfrom = cy+cm+cd
+							cv=str(get_sales_ifo.CONTRACT_VALID_TO)
+							(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+							cd = '0'+str(cd) if len(cd)==1 else cd
+							cm = '0'+str(cm) if len(cm)==1 else cm        
+							validto = cy+cm+cd
+						
+						part_numbers=''
+						part_numbers= [spare_part for spare_part in self.values[0].splitlines()]
+						part_numbers=part_numbers.replace("'",'"')
+						Trace.Write('### Part Number for CQIFLSPARE-->'+str(part_numbers))
+						CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes',part_numbers,validfrom,validto,self.contract_quote_id,self.quote_revision_record_id,auth)
+    				else:	
+						self._process_query("""
 									INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 									SELECT DISTINCT
 										CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID,
