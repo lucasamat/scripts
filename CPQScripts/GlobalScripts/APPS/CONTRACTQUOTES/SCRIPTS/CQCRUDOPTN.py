@@ -5694,51 +5694,51 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				Trace.Write("applied_preventive_maintainence_quote_type_changed --->3")
 			if self.pmevents_changes_insert == "Yes":
 				service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
-								if service_entitlement_obj is not None:
-									pm_event_flag=0
-									qte_type_flag=0
-									updateentXML = service_entitlement_obj.ENTITLEMENT_XML
-									pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-									pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_NET_PRMALB</ENTITLEMENT_ID>')
-									pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-									quote_type_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-									for value in re.finditer(pattern_tag, updateentXML):
-										sub_string = value.group(1)
-										pm_event_attribute_id =re.findall(pattern_id,sub_string)
-										quote_type_attribute_id =re.findall(quote_type_id,sub_string)
+				if service_entitlement_obj is not None:
+					pm_event_flag=0
+					qte_type_flag=0
+					updateentXML = service_entitlement_obj.ENTITLEMENT_XML
+					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+					pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_NET_PRMALB</ENTITLEMENT_ID>')
+					pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+					quote_type_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+					for value in re.finditer(pattern_tag, updateentXML):
+						sub_string = value.group(1)
+						pm_event_attribute_id =re.findall(pattern_id,sub_string)
+						quote_type_attribute_id =re.findall(quote_type_id,sub_string)
 
-										if pm_event_attribute_id and self.tree_param != 'Z0009':
-											pm_event_attribute_value =re.findall(pattern_name,sub_string)
-											# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
-											additional_where = ''
+						if pm_event_attribute_id and self.tree_param != 'Z0009':
+							pm_event_attribute_value =re.findall(pattern_name,sub_string)
+							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
+							additional_where = ''
 
-											Trace.Write("555 "+str(self.tree_param)+" 555 "+str(pm_event_attribute_value))
-											if (self.tree_param in ("Z0035","Z0091","Z0009","Z0004") and "Included - All PM" in pm_event_attribute_value):
-												additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND"
-												Trace.Write("additional_where_chk_1 "+str(additional_where))
-											elif (self.tree_param in ("Z0035","Z0091",) and "Included - Monthly and Above" in pm_event_attribute_value):
-												additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance' OR MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly' OR MAEAPK.PM_ID = 'Semi-Annual' OR MAEAPK.PM_ID = 'Annual') AND"
-											elif (self.tree_param in ("Z0092","Z0099") and ("Included - Quarterly and Above" in pm_event_attribute_value or "Included - Qtrly and Above" in pm_event_attribute_value)):
-												additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance' OR MAEAPK.PM_ID = 'Quarterly' OR MAEAPK.PM_ID = 'Semi-Annual' OR MAEAPK.PM_ID = 'Annual') AND"
-												Trace.Write("additional_where_chk "+str(additional_where))
-											if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
-												self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
-												pm_event_flag=1
-										if quote_type_attribute_id and self.tree_param == 'Z0009':
-											quote_type_attribute_value =re.findall(pattern_name,sub_string)
-											if  quote_type_attribute_value:
-												if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
-													self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
-												else:
-													pm_event_attribute_value =re.findall(pattern_name,sub_string)
-													if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
-														self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
-											qte_type_flag=1
-										if self.tree_param == 'Z0009' and qte_type_flag == 1:
-											break
-										else:
-											if pm_event_flag == 1:
-												break
+							Trace.Write("555 "+str(self.tree_param)+" 555 "+str(pm_event_attribute_value))
+							if (self.tree_param in ("Z0035","Z0091","Z0009","Z0004") and "Included - All PM" in pm_event_attribute_value):
+								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND"
+								Trace.Write("additional_where_chk_1 "+str(additional_where))
+							elif (self.tree_param in ("Z0035","Z0091",) and "Included - Monthly and Above" in pm_event_attribute_value):
+								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance' OR MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly' OR MAEAPK.PM_ID = 'Semi-Annual' OR MAEAPK.PM_ID = 'Annual') AND"
+							elif (self.tree_param in ("Z0092","Z0099") and ("Included - Quarterly and Above" in pm_event_attribute_value or "Included - Qtrly and Above" in pm_event_attribute_value)):
+								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance' OR MAEAPK.PM_ID = 'Quarterly' OR MAEAPK.PM_ID = 'Semi-Annual' OR MAEAPK.PM_ID = 'Annual') AND"
+								Trace.Write("additional_where_chk "+str(additional_where))
+							if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
+								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
+								pm_event_flag=1
+						if quote_type_attribute_id and self.tree_param == 'Z0009':
+							quote_type_attribute_value =re.findall(pattern_name,sub_string)
+							if  quote_type_attribute_value:
+								if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
+									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
+								else:
+									pm_event_attribute_value =re.findall(pattern_name,sub_string)
+									if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
+										self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
+							qte_type_flag=1
+						if self.tree_param == 'Z0009' and qte_type_flag == 1:
+							break
+						else:
+							if pm_event_flag == 1:
+								break
 		return True
 	
 	def _update(self):
