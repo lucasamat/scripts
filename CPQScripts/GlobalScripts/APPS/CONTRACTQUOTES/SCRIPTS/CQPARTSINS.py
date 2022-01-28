@@ -183,7 +183,7 @@ class SyncFPMQuoteAndHanaDatabase:
 
     def fetch_quotebasic_info(self):
         saqtmt_obj = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE  QUOTE_ID = '{}'".format(self.quote_id))
-        if saqtrv_obj:
+        if saqtmt_obj:
             self.contract_valid_from = saqtmt_obj.CONTRACT_VALID_FROM
             self.contract_valid_to = saqtmt_obj.CONTRACT_VALID_TO
                 
