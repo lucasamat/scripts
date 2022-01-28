@@ -4683,7 +4683,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQSCA.PAR_SERVICE_ID,
 					SAQSCA.PAR_SERVICE_RECORD_ID
 					FROM SAQSCO (NOLOCK) 
-					JOIN {SAQSCA} SAQSCA(NOLOCK) ON SAQSCA.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQSCA.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
+					JOIN SAQSCA(NOLOCK) ON SAQSCA.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQSCA.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
 					JOIN MAEAPK (NOLOCK) ON MAEAPK.ASSEMBLY_ID = SAQSCA.ASSEMBLY_ID AND MAEAPK.EQUIPMENT_ID =  SAQSCA.EQUIPMENT_ID 
 					LEFT JOIN MAMKIT(NOLOCK) ON MAMKIT.KIT_ID =  MAEAPK.KIT_ID 
 					LEFT JOIN MATKTN(NOLOCK) ON MATKTN.KIT_ID = MAEAPK.KIT_ID AND MATKTN.KIT_NUMBER = MAEAPK.KIT_NUMBER
@@ -5659,7 +5659,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				record_ids = str(str(record_ids)[1:-1].replace("'",""))
 				parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 				Trace.Write("record_ids--->"+str(record_ids))
-				primaryQueryItems = SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT SAQFEQ.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, SAQFEQ.QUOTE_ID, SAQFEQ.QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM SAQFEQ (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID'")
+				primaryQueryItems = Sql.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT SAQFEQ.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, SAQFEQ.QUOTE_ID, SAQFEQ.QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM SAQFEQ (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID'")
 				#self._process_query("""INSERT INTO SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID) 
 				#                        SELECT SAQFEQ.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, 'IN PROGRESS' as BATCH_STATUS, SAQFEQ.QUOTE_ID, SAQFEQ.QUOTE_RECORD_ID, '{BatchGroupRecordId}' as BATCH_GROUP_RECORD_ID FROM SAQFEQ (NOLOCK) JOIN splitstring('{QuoteEquipmentRecordIds}')
 				#                        ON NAME = SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID """.format(BatchGroupRecordId=batch_group_record_id, QuoteEquipmentRecordIds=str(record_ids)[1:-1].replace("'","")))
@@ -5819,7 +5819,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						pm_event_attribute_id =re.findall(pattern_id,sub_string)
 						quote_type_attribute_id =re.findall(quote_type_id,sub_string)
 						additional_where = ""
-						
+
 						if pm_event_attribute_id and self.tree_param != 'Z0009':
 							pm_event_attribute_value = str(pm_entlmnt_val)
 							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
