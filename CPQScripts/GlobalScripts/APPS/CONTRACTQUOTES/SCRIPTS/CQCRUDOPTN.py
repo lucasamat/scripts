@@ -5694,6 +5694,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed)
 				Trace.Write("applied_preventive_maintainence_quote_type_changed --->3")
 			if self.pmevents_changes_insert == "Yes":
+				batch_group_record_id  = ""
 				service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
 				if service_entitlement_obj is not None:
 					import re
