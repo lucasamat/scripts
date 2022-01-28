@@ -2068,7 +2068,7 @@ class Entitlements:
 				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtse_obj.QUOTE_ID}})
 		except:
 			Log.Info("Customer Wants to Participate--> 'NO' Failed to delete!!!")
-		Trace.Write('attriburesrequired_list---'+str(attriburesrequired_list))
+			Trace.Write('attriburesrequired_list---'+str(attriburesrequired_list))
 		# Trace.Write('get_conflict_message--2043----'+str(get_conflict_message))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
