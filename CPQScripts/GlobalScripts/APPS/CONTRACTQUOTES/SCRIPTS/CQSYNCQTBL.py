@@ -1865,8 +1865,7 @@ class SyncQuoteAndCustomTables:
 								#Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
 							if equipment_data:
 								#Log.Info(""""EQUIPMENTS INSERT""")
-								
-								for fab_location_id, value in equipment_data.items():									
+								for fab_location_id, value in equipment_data.items():			
 									SAQFEQ_start = time.time()
 									equipment_insert = Sql.RunQuery("""
 																	INSERT SAQFEQ
@@ -1879,7 +1878,6 @@ class SyncQuoteAndCustomTables:
 									SAQFEQ_end = time.time()									
 								fab_equip_assem_start_time = time.time()
 								#Log.Info("fab_equip_assem_start_time start ==> "+str(fab_equip_assem_start_time))
-
 								SAQFGB_start = time.time()
 								greenbook_detail_insert = Sql.RunQuery(""" INSERT SAQFGB ( 
 								QTEREV_RECORD_ID,QTEREV_ID,FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_FAB_LOC_GB_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified
@@ -1916,7 +1914,7 @@ class SyncQuoteAndCustomTables:
 									##Get the SAQFEQ table autonumber record id values to insert into SAQSCO...
 
 									quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
-									
+									Log.Info("quote_fab_equipments_record_id@@@@@@@"+len(quote_fab_equipments_record_id))
 									##Get the service id to send the param value for CQCRUDOPTN script..
 									service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
 									##Get the SERVICE_TYPE to send the param value for CQCRUDOPTN script..
