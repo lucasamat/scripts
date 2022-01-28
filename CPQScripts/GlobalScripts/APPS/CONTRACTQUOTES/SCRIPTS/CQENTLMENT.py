@@ -2054,9 +2054,10 @@ class Entitlements:
 		#Trace.Write('###2116 for FPM CALL')
 		#calling CQPARTSINS
 		try:
+			Trace.Write('2052----------'+str(self.treeparam))
 			saqtse_obj = Sql.GetFirst("SELECT ENTITLEMENT_XML, QUOTE_ID FROM SAQTSE WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"'")
 			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(self.service_id)+'_TSC_FPMEXC)</ENTITLEMENT_ID>')
+			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(self.treeparam)+'_TSC_FPMEXC)</ENTITLEMENT_ID>')
 			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 			customer_wants_participate=''
 			for m in re.finditer(pattern_tag, saqtse_obj.ENTITLEMENT_XML):
