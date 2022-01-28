@@ -2049,10 +2049,22 @@ class Entitlements:
 		#Trace.Write('###2116 for FPM CALL')
 		#calling CQPARTSINS
 		try:
-			saqtmt_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
-			ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtmt_obj.QUOTE_ID}})
+			saqtse_obj = Sql.GetFirst("SELECT ENTITLEMENT_XML, QUOTE_ID FROM SAQTSE WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"'")
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(self.service_id)+'_TSC_FPMEXC)</ENTITLEMENT_ID>')
+			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			customer_wants_participate=''
+			for m in re.finditer(pattern_tag, saqtse_obj.ENTITLEMENT_XML):
+				sub_string = m.group(1)
+				get_ent_id = re.findall(pattern_id,sub_string)
+				if get_ent_id:
+					get_ent_val= re.findall(pattern_name,sub_string)
+					customer_wants_participate = get_ent_val[0]
+					break
+			if customer_wants_participate == 'No':
+				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtse_obj.QUOTE_ID}})
 		except:
-			pass
+			Log.Info("Customer Wants to Participate--> 'NO' Failed to delete!!!")
 		Trace.Write('attriburesrequired_list---'+str(attriburesrequired_list))
 		# Trace.Write('get_conflict_message--2043----'+str(get_conflict_message))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
