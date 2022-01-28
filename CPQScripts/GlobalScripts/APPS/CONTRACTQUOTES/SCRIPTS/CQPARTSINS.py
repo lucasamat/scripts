@@ -179,7 +179,7 @@ class SyncFPMQuoteAndHanaDatabase:
             for index in range(0, get_totalweeks):
                 delivery_week_date="DATEADD(week, {weeks}, '{DeliveryDate}')".format(weeks=index, DeliveryDate=start_date.strftime('%m/%d/%Y'))
                 
-                getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= self.quote_record_id,qt_rev_id = self.quote_revision_id))
+                getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,PART_DESCRIPTION,PART_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= self.quote_record_id,qt_rev_id = self.quote_revision_id))
 
     def fetch_quotebasic_info(self):
         saqtmt_obj = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE  QUOTE_ID = '{}'".format(self.quote_id))
@@ -219,6 +219,7 @@ class SyncFPMQuoteAndHanaDatabase:
     def prepare_backup_table(self):
         if self.response:
             response = ','.join(str(ele) for ele in self.response)
+            record_count=0
             Log.Info("PrepareBackuptable----->2"+str(response))
             response=response.replace("null",'""')
             response=response.replace("'",'"')
@@ -238,6 +239,7 @@ class SyncFPMQuoteAndHanaDatabase:
             col_flag = 0
             for record in re.finditer(pattern, response):
                 #rec = re.sub(r'\{|\}','',record.group(1))
+                record_count +=1
                 rec = record.group(1)
                 temp_value = value
                 for ele in re.finditer(pattern2,rec):
@@ -260,6 +262,7 @@ class SyncFPMQuoteAndHanaDatabase:
                     self.records += ', '+temp_value
                 temp_value =''
                 col_flag=1
+            Log.Info("Total Records from HANA::"+str(record_count))
     
     def delete_child_records_6kw(self):
         Trace.Write('Delete Child called!!!')
