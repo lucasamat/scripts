@@ -5819,6 +5819,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						pm_event_attribute_id =re.findall(pattern_id,sub_string)
 						quote_type_attribute_id =re.findall(quote_type_id,sub_string)
 						additional_where = ""
+						
 						if pm_event_attribute_id and self.tree_param != 'Z0009':
 							pm_event_attribute_value = str(pm_entlmnt_val)
 							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
