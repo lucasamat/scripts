@@ -1109,10 +1109,10 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
 					TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
 					TGT.CpqTableEntryModifiedBy = {},
-					TGT.CpqTableEntryDateModified = '{}'
-					{}
+					TGT.CpqTableEntryDateModified = '{}',
+					TGT.CONFIGURATION_STATUS = '{}'
 					FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
-					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userid,datetimenow,update_field_str,objectName,obj,join,where)
+					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userid,datetimenow,getinnercon.CONFIGURATION_STATUS,objectName,obj,join,where)
 					Log.Info('update_query--863----'+str(update_query))
 					Sql.RunQuery(update_query)
 
