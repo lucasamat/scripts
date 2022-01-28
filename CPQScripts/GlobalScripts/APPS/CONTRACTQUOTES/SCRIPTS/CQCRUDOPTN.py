@@ -1065,7 +1065,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						part_numbers=part_numbers.replace("'",'"')
 						Trace.Write('### Part Number for CQIFLSPARE-->'+str(part_numbers))
 						CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes',part_numbers,validfrom,validto,self.contract_quote_id,self.quote_revision_record_id,auth)
-    				else:	
+					else:	
 						self._process_query("""
 									INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 									SELECT DISTINCT
@@ -1633,7 +1633,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					
 					CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,contract_quote_id,quote_revision_record_id,auth)
 					'''
-     				if OfferingRow_detail.get("SERVICE_ID") == "Z0108":
+					if OfferingRow_detail.get("SERVICE_ID") == "Z0108":
 						get_forecast_info = """Insert SAQSPT (QUOTE_SERVICE_PART_RECORD_ID,BASEUOM_ID,BASEUOM_RECORD_ID,CUSTOMER_PART_NUMBER,CUSTOMER_PART_NUMBER_RECORD_ID,DELIVERY_MODE,EXTENDED_UNIT_PRICE,PART_NUMBER,PART_DESCRIPTION,PART_RECORD_ID,PRDQTYCON_RECORD_ID,CUSTOMER_ANNUAL_QUANTITY,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_RECORD_ID,SALESUOM_CONVERSION_FACTOR,SALESUOM_ID,SALESUOM_RECORD_ID,SCHEDULE_MODE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,UNIT_PRICE,VALID_FROM_DATE,VALID_TO_DATE,DELIVERY_INTERVAL,MATPRIGRP_ID,MATPRIGRP_NAME,MATPRIGRP_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,QTEREV_ID,	
 						QTEREV_RECORD_ID,PRICE_REQUEST_ID,PRICE_REQUEST_STATUS,PRICE_REQUEST_TYPE,	
 						CORE_CREDIT_PRICE,CUSTOMER_PARTICIPATE,CUSTOMER_ACCEPT_PART,EXCHANGE_ELIGIBLE,INCLUDED,MATERIALSTATUS_ID,MATERIALSTATUS_RECORD_ID,NEW_PART,ODCC_FLAG,PROD_INSP_MEMO,RETURN_TYPE,SHELF_LIFE,SHPACCOUNT_ID,SHPACCOUNT_RECORD_ID,STPACCOUNT_ID,STPACCOUNT_RECORD_ID,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND) SELECT
@@ -1771,7 +1771,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 				account_info = {}
 				for keyobj in get_party_role:
 					account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
- 
+
 				get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_record_id)+"'")
 				
 				if get_sales_ifo:
@@ -4841,7 +4841,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					RevisionRecordId=self.quote_revision_record_id
 					)
 				)
-   
+
 			self._process_query("""INSERT SAQGPM(CHAMBER_QUANTITY,
 					GOT_CODE,
 					GOTCODE_RECORD_ID,
@@ -4895,7 +4895,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQRGG.QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID as QTEREVGOT_RECORD_ID
 					FROM SAQRGG (NOLOCK) 
 					JOIN SAQSCO(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID AND SAQRGG.SERVICE_RECORD_ID = SAQSCO.SERVICE_RECORD_ID AND SAQRGG.GREENBOOK_RECORD_ID = SAQSCO.GREENBOOK_RECORD_ID
-                    JOIN MAEQUP(NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID
+					JOIN MAEQUP(NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID
 					JOIN MAEAPK(NOLOCK) ON MAEAPK.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID AND MAEAPK.ASSEMBLY_ID = MAEQUP.EQUIPMENT_ID 
 					WHERE SAQRGG.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRGG.
 					QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRGG.SERVICE_ID = '{TreeParam}' AND  MAEAPK.PM_LEVEL IN {pm_level_value}) pmsa_pmevents  LEFT JOIN SAQGPM (NOLOCK) AS pm on pmsa_pmevents.QUOTE_RECORD_ID = pm.QUOTE_RECORD_ID AND pmsa_pmevents.QTEREV_RECORD_ID = pm.QTEREV_RECORD_ID AND pmsa_pmevents.SERVICE_RECORD_ID = pm.SERVICE_RECORD_ID AND pmsa_pmevents.GREENBOOK_RECORD_ID = pm.GREENBOOK_RECORD_ID and pmsa_pmevents.GOTCODE_RECORD_ID = pm.GOTCODE_RECORD_ID and pmsa_pmevents.PM_RECORD_ID = pm.PM_RECORD_ID
@@ -4996,7 +4996,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 										JOIN SAQGPA (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_RECORD_ID = SAQGPA.EQUIPMENT_RECORD_ID
 										WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}'
 										)IQ ON SAQGPA.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQGPA.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param ))
-   
+
 			self._process_query(
 					"""INSERT SAQSKP (
 						ASSEMBLY_ID,
@@ -5144,11 +5144,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 											JOIN SAQGPE (NOLOCK) ON SAQSGE.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND SAQSGE.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND SAQSGE.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID
 											WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSGE.SERVICE_ID = '{TreeParam}'
 											)IQ ON SAQGPE.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQGPE.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
-    
+	
 
-   
-   
-   
+
+
+
 		else:
 			self._process_query("""INSERT SAQRGG (
 					GOT_CODE,
@@ -5429,7 +5429,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					JOIN SAQSCO (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQSCO.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SYSPBT.QTEREV_RECORD_ID
 					JOIN SAQGPA (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQGPA.QTEREV_RECORD_ID
 					AND SAQGPA.EQUIPMENT_ID =  SAQSCO.EQUIPMENT_ID AND SAQGPA.SERVICE_RECORD_ID =  SAQSCO.SERVICE_RECORD_ID AND SAQGPA.GREENBOOK_RECORD_ID =  SAQSCO.GREENBOOK_RECORD_ID
-                    JOIN MAEQUP (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQGPA.ASSEMBLY_ID  AND MAEQUP.PAR_EQUIPMENT_RECORD_ID = SAQGPA.EQUIPMENT_RECORD_ID
+					JOIN MAEQUP (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQGPA.ASSEMBLY_ID  AND MAEQUP.PAR_EQUIPMENT_RECORD_ID = SAQGPA.EQUIPMENT_RECORD_ID
 					JOIN SAQGPM (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQGPM.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQGPM.QTEREV_RECORD_ID AND SAQSCO.SERVICE_RECORD_ID =  SAQGPM.SERVICE_RECORD_ID AND SAQSCO.GREENBOOK_RECORD_ID =  SAQGPM.GREENBOOK_RECORD_ID  AND
 					SAQGPA.QUOTE_RECORD_ID = SAQGPM.QUOTE_RECORD_ID AND SAQGPA.QTEREV_RECORD_ID = SAQGPM.QTEREV_RECORD_ID AND
 					SAQGPA.SERVICE_RECORD_ID =  SAQGPM.SERVICE_RECORD_ID AND SAQGPA.GREENBOOK_RECORD_ID =  SAQGPM.GREENBOOK_RECORD_ID AND SAQGPA.GOTCODE_RECORD_ID =  SAQGPM.GOTCODE_RECORD_ID AND SAQGPA.GOTCODE_RECORD_ID =  SAQGPM.GOTCODE_RECORD_ID AND SAQGPA.PM_RECORD_ID =  SAQGPM.PM_RECORD_ID
@@ -5607,12 +5607,12 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								Trace.Write("additional_where_chk_1 "+str(additional_where))
 							elif (self.tree_param in ("Z0035","Z0091",) and "Included - Monthly and Above" in pm_event_attribute_value):
 								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance' OR MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly' OR MAEAPK.PM_ID = 'Semi-Annual' OR MAEAPK.PM_ID = 'Annual') AND"
-							elif (self.tree_param in ("Z0092","Z0099") and ("Included - Quarterly and Above" in pm_event_attribute_value or "Included - Qtrly and Above" in pm_event_attribute_value):
+							elif (self.tree_param in ("Z0092","Z0099") and ("Included - Quarterly and Above" in pm_event_attribute_value or "Included - Qtrly and Above" in pm_event_attribute_value)):
 								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance' OR MAEAPK.PM_ID = 'Quarterly' OR MAEAPK.PM_ID = 'Semi-Annual' OR MAEAPK.PM_ID = 'Annual') AND"
-							Trace.Write("additional_where_chk "+str(additional_where))
+								Trace.Write("additional_where_chk "+str(additional_where))
 							if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
 								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
-							pm_event_flag=1
+								pm_event_flag=1
 						if quote_type_attribute_id and self.tree_param == 'Z0009':
 							quote_type_attribute_value =re.findall(pattern_name,sub_string)
 							if  quote_type_attribute_value:
