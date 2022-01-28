@@ -1175,7 +1175,8 @@ class Entitlements:
 										"NodeType"   : "COVERED OBJ MODEL",
 										"ActionType" : "ADD_COVERED_OBJ",
 										"Opertion"    : "ADD",
-										"pmevents_changes_insert" : "Yes"
+										"pmevents_changes_insert" : "Yes",
+										"pm_entlmnt_val" : entitlement_value
 									},
 								)
 							except Exception as e:
