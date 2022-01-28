@@ -2062,6 +2062,7 @@ class Entitlements:
 					customer_wants_participate = get_ent_val[0]
 					break
 			if customer_wants_participate == 'No':
+				Log.Info("CWP=====>"+str(customer_wants_participate))
 				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtse_obj.QUOTE_ID}})
 		except:
 			Log.Info("Customer Wants to Participate--> 'NO' Failed to delete!!!")
