@@ -6498,7 +6498,10 @@ else:
 			applied_preventive_maintainence_quote_type_changed = Param.applied_preventive_maintainence_quote_type_changed
 		except:
 			applied_preventive_maintainence_quote_type_changed = "No"
-		
+		try:
+			pmevents_changes_insert = Param.pmevents_changes_insert
+		except:
+			pmevents_changes_insert = "No"
 	except Exception as e:
 		Trace.Write('error-'+str(e))
 		pass	
