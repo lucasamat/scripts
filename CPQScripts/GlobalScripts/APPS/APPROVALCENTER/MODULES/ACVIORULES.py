@@ -536,7 +536,7 @@ class ViolationConditions:
             CHSqlObjs = Sql.GetList(
                 "SELECT APPROVAL_CHAIN_RECORD_ID,APRCHN_ID FROM ACAPCH (NOLOCK) WHERE APROBJ_RECORD_ID = '"
                 + str(Objh_Id)
-                + "' ORDER BY APRCHN_ID"
+                + "'"
             )
             for index, val in enumerate(CHSqlObjs):
                 CSSqlObjs = Sql.GetList(
