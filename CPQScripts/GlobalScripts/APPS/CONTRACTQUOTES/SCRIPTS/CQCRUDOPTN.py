@@ -5703,6 +5703,16 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				Trace.Write("applied_preventive_maintainence_quote_type_changed --->3")
 			if self.pmevents_changes_insert == "Yes":
 				batch_group_record_id = str(Guid.NewGuid()).upper()
+				equipment_record_ids = []
+				parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
+				service_equipment_query = Sql.GetList("SELECT QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
+				for service_equipment in service_equipment_query:
+					equipment_record_ids.append(service_equipment.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)
+
+				record_ids = str(equipment_record_ids).replace("'","").replace("[","").replace("]","")
+				Trace.Write("record_ids--->"+str(record_ids))
+				primaryQueryItems = SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT SAQFEQ.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, SAQFEQ.QUOTE_ID, SAQFEQ.QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM SAQFEQ (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID'")
+
 				service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
 				if service_entitlement_obj is not None:
 					import re
