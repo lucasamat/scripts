@@ -664,7 +664,8 @@ class SYLDRTLIST:
 				RECORD_ID=str(RECORD_ID)
 			)
 			OrderBy_obj = Sql.GetFirst(orderStr)
-			
+
+			Trace.Write("cm_to_009_INSIDE_CONDITION"+str(Qstn_REC_ID)+"kkkkkk"+str(Wh_API_NAME))
 			if Qstn_REC_ID != "" and Wh_API_NAME != "":
 				Trace.Write("cm_to_009_INSIDE_COND")                
 				if OrderBy_obj is not None:
