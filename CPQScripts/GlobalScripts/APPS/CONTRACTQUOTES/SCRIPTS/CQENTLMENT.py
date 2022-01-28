@@ -2049,7 +2049,8 @@ class Entitlements:
 		#Trace.Write('###2116 for FPM CALL')
 		#calling CQPARTSINS
 		try:
-			ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"Action": "Delete"})
+			saqtmt_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
+			ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtmt_obj.QUOTE_ID}})
 		except:
 			pass
 		Trace.Write('attriburesrequired_list---'+str(attriburesrequired_list))
