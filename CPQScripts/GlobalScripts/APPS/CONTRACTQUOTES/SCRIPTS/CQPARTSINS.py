@@ -12,8 +12,9 @@ import sys
 import System.Net
 import re
 import datetime
+import time
 import CQPARTIFLW
-
+from datetime import timedelta , date
 Sql = SQL()
 webclient = System.Net.WebClient()
 
@@ -166,6 +167,20 @@ class SyncFPMQuoteAndHanaDatabase:
         update_salesuom_conv= """UPDATE SAQSPT SET SAQSPT.SALESUOM_CONVERSION_FACTOR = M.CONVERSION_QUANTITY FROM SAQSPT S INNER JOIN MAMUOC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE S.BASEUOM_ID=M.BASEUOM_ID AND  S.SALESUOM_ID=M.CONVERSIONUOM_ID AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id ,quote_revision_rec_id =self.quote_revision_id)
         Sql.RunQuery(update_salesuom_conv)
     
+
+    def insert_delivery_schedule(self):
+        if str(self.service_id) == "Z0108":
+            Log.Info('172--insert_delivery_schedule--')
+            start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(str(self.contract_valid_from)), '%m/%d/%Y')
+            end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(str(self.contract_valid_to)), '%m/%d/%Y')
+            diff1 = end_date - start_date
+            get_totalweeks,remainder = divmod(diff1.days,7)
+            for index in range(0, get_totalweeks):
+                delivery_week_date="DATEADD(week, {weeks}, '{DeliveryDate}')".format(weeks=index, DeliveryDate=start_date.strftime('%m/%d/%Y'))
+                Log.Info('172--insert_delivery_schedule-delivery_week_date-')
+                Log.Info("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,PART_DESCRIPTION,PART_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= self.quote_record_id,qt_rev_id = self.quote_revision_id))
+                getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,PART_DESCRIPTION,PART_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= self.quote_record_id,qt_rev_id = self.quote_revision_id))
+
     def fetch_quotebasic_info(self):
         saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_ID = '"+str(self.quote_id)+"'")
         if saqtrv_obj:
@@ -266,6 +281,7 @@ if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     fpm_obj.prepare_backup_table()
     fpm_obj._insert_spare_parts()
     fpm_obj.update_records_saqspt()
+    fpm_obj.insert_delivery_schedule()
     try:
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(Param.CPQ_Columns["QuoteID"]),str(Param.CPQ_Columns["RevisionRecordID"]))
     except Exception:
