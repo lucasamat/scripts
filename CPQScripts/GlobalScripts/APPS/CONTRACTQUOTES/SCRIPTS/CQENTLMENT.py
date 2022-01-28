@@ -16,6 +16,7 @@ import datetime
 import CQENTIFLOW
 import ACVIORULES
 import Webcom.Configurator.Scripting.Test.TestProduct
+import CQIFLSPARE
 
 userId = str(User.Id)
 userName = str(User.UserName)
@@ -2069,7 +2070,6 @@ class Entitlements:
 		#Trace.Write('###2116 for FPM CALL')
 		#calling CQPARTSINS
 		try:
-			Trace.Write('2052----------'+str(self.treeparam))
 			saqtse_obj = Sql.GetFirst("SELECT ENTITLEMENT_XML, QUOTE_ID FROM SAQTSE WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"'")
 			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(self.treeparam)+'_TSC_FPMEXC)</ENTITLEMENT_ID>')
@@ -2087,9 +2087,43 @@ class Entitlements:
 				Trace.Write('2066----------'+str(saqtse_obj.QUOTE_ID))
 
 				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtse_obj.QUOTE_ID}})
+			elif customer_wants_participate == 'Yes':
+				#iflow for spare parts...
+				requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
+				webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+				webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
+				response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
+				response=response.replace("null",'""')
+				response=eval(response)	
+				auth="Bearer"+' '+str(response['access_token'])
+
+				get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+				account_info = {}
+				for keyobj in get_party_role:
+					account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
+ 
+				get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_record_id)+"'")
+				
+				if get_sales_ifo:
+					salesorg = get_sales_ifo.SALESORG_ID
+					pricelist =get_sales_ifo.PRICELIST_ID
+					pricegroup =get_sales_ifo.PRICEGROUP_ID
+					cv=str(get_sales_ifo.CONTRACT_VALID_FROM)
+					(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+					cd = '0'+str(cd) if len(cd)==1 else cd
+					cm = '0'+str(cm) if len(cm)==1 else cm        
+					validfrom = cy+cm+cd
+					cv=str(get_sales_ifo.CONTRACT_VALID_TO)
+					(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+					cd = '0'+str(cd) if len(cd)==1 else cd
+					cm = '0'+str(cm) if len(cm)==1 else cm        
+					validto = cy+cm+cd
+				
+				CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.contract_quote_id,self.quote_revision_record_id,auth)
+
+
 		except:
 			Log.Info("Customer Wants to Participate--> 'NO' Failed to delete!!!")
-			Trace.Write('attriburesrequired_list---'+str(attriburesrequired_list))
 		# Trace.Write('get_conflict_message--2043----'+str(get_conflict_message))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
