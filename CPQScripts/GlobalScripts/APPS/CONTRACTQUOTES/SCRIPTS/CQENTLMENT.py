@@ -2587,7 +2587,7 @@ class Entitlements:
 					</div>
 					</div>
 					</div>"""
-		Trace.Write("555 "+str(Quote.GetGlobal("contract_quote_record_id")+" 555 "+str(Quote.GetGlobal("quote_revision_record_id"))+" 555 "+str(tree_param))
+		Trace.Write("555 "+str(Quote.GetGlobal("contract_quote_record_id"))+" 555 "+str(Quote.GetGlobal("quote_revision_record_id"))+" 555 "+str(tree_param))
 		Trace.Write(" 555 "+str(serviceId))
 		# Sql.RunQuery("DELETE FROM SAQSAP WHERE QUOTE_RECORD_ID = {} AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = {}".format(Quote.GetGlobal("quote_revision_record_id")))
 		# if str(serviceId) in ("Z0009") and key in ( "AGS_{}_PQB_QTETYP".format(serviceId)) and str(tableName) in ('SAQTSE'):
