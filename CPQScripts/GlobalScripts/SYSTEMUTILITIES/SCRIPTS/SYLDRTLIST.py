@@ -665,7 +665,8 @@ class SYLDRTLIST:
 			)
 			OrderBy_obj = Sql.GetFirst(orderStr)
 			
-			if Qstn_REC_ID != "" and Wh_API_NAME != "":                
+			if Qstn_REC_ID != "" and Wh_API_NAME != "":
+				Trace.Write("cm_to_009_INSIDE_COND")                
 				if OrderBy_obj is not None:
 					if OrderBy_obj.ORDERS_BY:
 						Wh_API_NAMEs = OrderBy_obj.ORDERS_BY
