@@ -1154,8 +1154,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						BatchGroupRecordId=batch_group_record_id,
 						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
 						UserId=self.user_id, delivery_mode= delivery_mode, schedule_mode = schedule_mode
-					)
-					)
+						)
+						)
 					# spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
 					# if spareparts_config_status_count.COUNT > 0:
 					# 	data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":self.contract_quote_record_id, "ContractQuoteRevisionRecordId":self.quote_revision_record_id, "ServiceId":self.tree_param, "ActionType":'INSERT_LINE_ITEMS'})
