@@ -171,8 +171,11 @@ class SyncFPMQuoteAndHanaDatabase:
     def insert_delivery_schedule(self):
         if str(self.service_id) == "Z0108":
             Log.Info('172--insert_delivery_schedule--')
-            start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(str(self.contract_valid_from)), '%m/%d/%Y')
-            end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(str(self.contract_valid_to)), '%m/%d/%Y')
+            quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.quote_record_id,self.quote_revision_id))
+            contract_start_date = quotedetails.CONTRACT_VALID_FROM
+            contract_end_date = quotedetails.CONTRACT_VALID_TO
+            start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
+            end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
             diff1 = end_date - start_date
             get_totalweeks,remainder = divmod(diff1.days,7)
             for index in range(0, get_totalweeks):
