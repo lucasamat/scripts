@@ -1528,7 +1528,7 @@ class Entitlements:
 				Sql.RunQuery(UpdateEntitlement)
 				#Trace.Write("TEST COMMIT")
 				#15007 START
-				Trace.Write("PMevents changes started")
+				Trace.Write("PMevents changes started "+str(key)+" - "+str(tableName))
 				if key in ( "AGS_{}_NET_PRMALB".format(serviceId)) and str(tableName) in ('SAQTSE'):
 					Sql.RunQuery("DELETE FROM SAQSAP WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId))
 					try:
