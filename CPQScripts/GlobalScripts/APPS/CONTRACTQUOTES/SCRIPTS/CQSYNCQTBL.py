@@ -1914,7 +1914,7 @@ class SyncQuoteAndCustomTables:
 									##Get the SAQFEQ table autonumber record id values to insert into SAQSCO...
 
 									quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
-									#Log.Info("quote_fab_equipments_record_id@@@@@@@"+len(quote_fab_equipments_record_id))
+									Log.Info("quote_fab_equipments_record_id@@@@@@@"+len(quote_fab_equipments_record_id))
 									##Get the service id to send the param value for CQCRUDOPTN script..
 									service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
 									##Get the SERVICE_TYPE to send the param value for CQCRUDOPTN script..
