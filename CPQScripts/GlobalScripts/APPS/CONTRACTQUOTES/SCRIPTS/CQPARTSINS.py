@@ -5,8 +5,6 @@
 #   __create_date :09-01-2022
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-#from logging import exception
-#from ast import Param
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import clr
@@ -33,74 +31,6 @@ class SyncFPMQuoteAndHanaDatabase:
         except Exception:
             Log.Info("@@@Self Response is Missing@@@")
              
-    def pull_fpm_parts_hana(self):
-        requestdata = "client_id=application&grant_type=client_credentials&username=16c3719c-d099-42d4-921c-765f4cee223a&password=mKv2~uXpeRD9SrD2DTW09Lk2GQ&scope=hanasafeaccess"
-        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic MTZjMzcxOWMtZDA5OS00MmQ0LTkyMWMtNzY1ZjRjZWUyMjNhOm1LdjJ+dVhwZVJEOVNyRDJEVFcwOUxrMkdR"
-        response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
-        response=response.replace("null",'""')
-        response=eval(response)
-        auth="Bearer"+' '+str(response['access_token'])
-        requestdata = '{"query":"select * from SAFPLT"}'
-        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
-        self.response = webclient.UploadString('https://hannaconnection.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
-    
-    def pull_requestto_hana(self):
-        requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
-        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
-        response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
-        response=response.replace("null",'""')
-        response=eval(response)
-        auth="Bearer"+' '+str(response['access_token'])
-        requestdata = '{"soldtoParty":"'+str(self.account_info['SOLD TO'])+'","shiptoparty":"'+str(self.account_info['SHIP TO'])+'","salesOrg":"'+str(self.sales_org_id)+'","priceList":"","priceGroup":"","validTo":"'+str(self.cvt)+'","validFrom":"'+str(self.cvf)+'",	"participatewith6k":"Yes","customParticipaton":"Yes"}'
-        #requestdata = '{"soldtoParty":"10002301","shiptoparty":"10002428","salesOrg":"2070","priceList":"","priceGroup":"","validTo":"20220616","validFrom":"20210518",	"participatewith6k":"Yes","customParticipaton":"Yes","partNumber":["0190-14140","0190-14140","0010-22985","0190-53753"]}'
-        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
-        self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
-    
-    def add_parts_requestto_hana(self,part_ids):
-        part_ids = str(part_ids)
-        part_ids = re.sub(r"'",'"',part_ids)
-        Log.Info(str(part_ids))
-        requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
-        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
-        response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
-        response=response.replace("null",'""')
-        response=eval(response)
-        auth="Bearer"+' '+str(response['access_token'])
-        #requestdata = '{"soldtoParty":"'+str(self.account_info['SOLD TO'])+'","shiptoparty":"'+str(self.account_info['SHIP TO'])+'","salesOrg":"'+str(self.sales_org_id)+'","priceList":"","priceGroup":"","validTo":"20220616","validFrom":"20210518",	"participatewith6k":"Yes","customParticipaton":"Yes","partNumber":'+str(part_ids)+'}'
-        requestdata = '{"soldtoParty":"10002301","shiptoparty":"10002428","salesOrg":"2070","priceList":"","priceGroup":"","validTo":"20220616","validFrom":"20210518",	"participatewith6k":"Yes","customParticipaton":"Yes","partNumber":'+str(part_ids)+'}'
-        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
-        self.response = webclient.UploadString('https://fpmxc.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
-        
-    def insert_records_saqspt(self):
-        if self.response:
-            response = self.response
-            response=response.replace("null",'""')
-            response=response.replace("true",'"1"')
-            response=response.replace("false",'"0"')
-            response=response.replace("YES",'"1"')
-            response=response.replace("NO",'"0"')
-            response = re.sub(r'\[|\]','',response)
-            saqspt_table_info = Sql.GetTable("SAQSPT")
-            pattern = re.compile(r'(\{[^>]*?\})')
-            saqspt_table_info={"QUOTE_SERVICE_PART_RECORD_ID": str(Guid.NewGuid()).upper(),"SALESORG_ID":self.sales_org_id,"SALESORG_RECORD_ID":self.sales_recd_id,"QTEREV_ID":self.qt_rev_id,"QUOTE_ID":self.quote_id,"VALID_FROM_DATE":self.contract_valid_from,"VALID_TO_DATE":self.contract_valid_to,"QTEREV_RECORD_ID":self.quote_revision_id,"QUOTE_RECORD_ID":self.quote_record_id,}
-            for record in re.finditer(pattern, response):
-                rec = re.sub(r'\{|\}','',record.group(1))
-                saqspt_dict = {}
-                for ele in rec.split('","'):
-                    ele = re.sub(r'\"','',ele)
-                    (key,value)=ele.split(':')
-                    if key == 'FPM_PART_LIST_RECORD_ID':
-                        continue
-                    saqspt_dict[key]=value
-                saqspt_table_info.AddRow(saqspt_dict)
-                Sql.Upsert(saqspt_table_info)
-
     def _insert_spare_parts(self):
         datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
         spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.quote_record_id, datetime_string)
@@ -315,25 +245,22 @@ class SyncFPMQuoteAndHanaDatabase:
     
     def delete_child_records_6kw(self):
         Trace.Write('Delete Child called!!!')
-        saqtse_obj = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"'")
-        pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-        pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(self.service_id)+'_TSC_FPMEXC)</ENTITLEMENT_ID>')
-        pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-        customer_wants_participate=''
-        for m in re.finditer(pattern_tag, saqtse_obj.ENTITLEMENT_XML):
-            sub_string = m.group(1)
-            get_ent_id = re.findall(pattern_id,sub_string)
-            if get_ent_id:
-                get_ent_val= re.findall(pattern_name,sub_string)
-                customer_wants_participate = get_ent_val[0]
-                break
-        if customer_wants_participate == 'No':
-            Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
+        Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
 Log.Info("CQPARTINS script called --> from CPI")
 Log.Info("Param.CPQ_Column----"+str(type(Param)))
 Log.Info("Param.CPQ_Column----QuoteID---"+str(Param.CPQ_Columns["QuoteID"]))
-if Param.CPQ_Columns["QuoteID"]:
+Parameter = {}
+try:
+    Parameter["Action"] = Param.CPQ_Columns["Action"]
+except Exception:
+    Parameter["Action"] = 'Default'
+
+if Parameter["Action"] == 'Delete':
+    fpm_obj = SyncFPMQuoteAndHanaDatabase()
+    fpm_obj.fetch_quotebasic_info()
+    fpm_obj.delete_child_records_6kw()    
+if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     fpm_obj = SyncFPMQuoteAndHanaDatabase()
     fpm_obj.fetch_quotebasic_info()
     fpm_obj.prepare_backup_table()
@@ -343,33 +270,3 @@ if Param.CPQ_Columns["QuoteID"]:
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(Param.CPQ_Columns["QuoteID"]),str(Param.CPQ_Columns["RevisionRecordID"]))
     except Exception:
         Log.Info("PART PRICING IFLOW ERROR!")
-'''
-if Param:
-    try:
-        Log.Info("Param cpq val--"+' '.join(map(str, Param.CPQ_Columns["Response"])))
-    except Exception:
-        Log.Info(str(Param))
-parameters={}
-try:
-	parameters['Action'] = Param.Action
-except Exception:
-	parameters['Action'] = 'Default'
-try:
-    parameters[]
-
-if parameters['Action'] == 'AddParts':
-    fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
-    fpm_obj.add_parts_requestto_hana(Param.partno)
-    fpm_obj.prepare_backup_table()
-    fpm_obj._insert_spare_parts()
-    fpm_obj.update_records_saqspt()
-elif parameters['Action'] == 'Delete':
-    fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
-    fpm_obj.delete_child_records_6kw()
-else:
-    fpm_obj = SyncFPMQuoteAndHanaDatabase(Quote)
-    fpm_obj.pull_requestto_hana()
-    fpm_obj.prepare_backup_table()
-    fpm_obj._insert_spare_parts()
-    fpm_obj.update_records_saqspt()
-'''
