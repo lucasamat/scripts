@@ -14,6 +14,7 @@ import sys
 import System.Net
 import re
 import datetime
+import CQPARTIFLW
 
 Sql = SQL()
 webclient = System.Net.WebClient()
@@ -31,7 +32,6 @@ class SyncFPMQuoteAndHanaDatabase:
             self.response = Param.CPQ_Columns["Response"]
         except Exception:
             Log.Info("@@@Self Response is Missing@@@")
-        
              
     def pull_fpm_parts_hana(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=16c3719c-d099-42d4-921c-765f4cee223a&password=mKv2~uXpeRD9SrD2DTW09Lk2GQ&scope=hanasafeaccess"
@@ -107,7 +107,7 @@ class SyncFPMQuoteAndHanaDatabase:
         spare_parts_temp_table_name = re.sub(r'-','_',spare_parts_temp_table_name)
         self.columns = re.sub(r'\"|\{','',self.columns)
         Log.Info("Columns--->"+str(self.columns))
-        Log.Info("Values---->"+str(self.records))
+        #Log.Info("Values---->"+str(self.records))
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
             spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
@@ -339,7 +339,10 @@ if Param.CPQ_Columns["QuoteID"]:
     fpm_obj.prepare_backup_table()
     fpm_obj._insert_spare_parts()
     fpm_obj.update_records_saqspt()
-    
+    try:
+        CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(Param.CPQ_Columns["QuoteID"]),str(Param.CPQ_Columns["RevisionRecordID"]))
+    except Exception:
+        Log.Info("PART PRICING IFLOW ERROR!")
 '''
 if Param:
     try:
