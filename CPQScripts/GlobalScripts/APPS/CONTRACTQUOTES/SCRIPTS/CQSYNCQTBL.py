@@ -1937,8 +1937,8 @@ class SyncQuoteAndCustomTables:
 															"ServiceType" : service_type,
 														},
 													)
-							except:
-								Log.Info("EXCEPTION: Iteration Over non sequence for none type")
+							except Exception as e:
+								Log.Info("EXCEPTION: Iteration Over non sequence for none type"+str(e))
 							##A055S000P01-10174 code ends...
 						
 						payload_table_info = Sql.GetTable("SYINPL")
