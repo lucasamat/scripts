@@ -1531,6 +1531,8 @@ class Entitlements:
 				###to update match id at all level while saving starts
 				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
 				ent_tables_list = ['SAQTSE','SAQSGE','SAQSCE','SAQSAE']
+				if serviceId == 'Z0009':
+					ent_tables_list.append('SAQGPE')
 				#ent_tables_list.remove(tableName)
 				if get_match_id:
 					for table in ent_tables_list:
@@ -2386,6 +2388,8 @@ class Entitlements:
 			Sql.RunQuery(UpdateEntitlement)	
 		####to update match id at all level while cancelling starts
 		ent_tables_list = ['SAQTSE','SAQSGE','SAQSCE','SAQSAE']
+		if serviceId == 'Z0009':
+			ent_tables_list.append('SAQGPE')
 		#ent_tables_list.remove(tableName)
 		for table in ent_tables_list:
 			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, cpsmatc_incr, self.ContractRecordId,self.revision_recordid, serviceId)
