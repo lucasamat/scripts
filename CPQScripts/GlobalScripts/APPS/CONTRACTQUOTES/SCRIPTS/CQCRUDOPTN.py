@@ -1061,7 +1061,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 							validto = cy+cm+cd
 						
 						part_numbers=''
-						part_numbers= [spare_part for spare_part in self.values[0].splitlines()]
+						part_numbers= str([spare_part for spare_part in self.values[0].splitlines()])
 						part_numbers=part_numbers.replace("'",'"')
 						Trace.Write('### Part Number for CQIFLSPARE-->'+str(part_numbers))
 						CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes',part_numbers,validfrom,validto,self.contract_quote_id,self.quote_revision_record_id,auth)
