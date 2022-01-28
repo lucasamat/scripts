@@ -1325,6 +1325,7 @@ class SYLDRTLIST:
 									"select count(*) as cnt FROM SAQICO where QUOTE_ID = '{}'".format(str(qt_rec_id.QUOTE_ID))
 							)
 					elif str(RECORD_ID) == "SYOBJR-00009":
+						Trace.Write("cm_to_009")
 						# if Quote.GetCustomField('PRICING_PICKLIST').Content == '':
 						#     Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
 						if getyears == 1:
@@ -1370,7 +1371,8 @@ class SYLDRTLIST:
 									+ str(quote_revision_record_id)
 									+ "' and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"'"
 							)                                
-						else:    
+						else: 
+							Trace.Write("cm_to_0009")   
 							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 							acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
 							exclamation = '<img title="Approval Required" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
