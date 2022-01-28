@@ -170,10 +170,8 @@ class SyncFPMQuoteAndHanaDatabase:
 
     def insert_delivery_schedule(self):
         if str(self.service_id) == "Z0108":
-            Log.Info('172--insert_delivery_schedule--')
-            quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.quote_record_id,self.quote_revision_id))
-            contract_start_date = quotedetails.CONTRACT_VALID_FROM
-            contract_end_date = quotedetails.CONTRACT_VALID_TO
+            contract_start_date = self.contract_valid_from
+            contract_end_date = self.contract_valid_to
             start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
             end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
             diff1 = end_date - start_date
@@ -184,13 +182,16 @@ class SyncFPMQuoteAndHanaDatabase:
                 getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,PART_DESCRIPTION,PART_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= self.quote_record_id,qt_rev_id = self.quote_revision_id))
 
     def fetch_quotebasic_info(self):
-        saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_ID = '"+str(self.quote_id)+"'")
+        saqtmt_obj = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE  QUOTE_ID = '{}'".format(self.quote_id))
+        if saqtrv_obj:
+            self.contract_valid_from = saqtmt_obj.CONTRACT_VALID_FROM
+            self.contract_valid_to = saqtmt_obj.CONTRACT_VALID_TO
+                
+        saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID from SAQTRV where QUOTE_ID = '"+str(self.quote_id)+"'")
         if saqtrv_obj:
             self.sales_org_id = saqtrv_obj.SALESORG_ID
             self.sales_recd_id = saqtrv_obj.SALESORG_RECORD_ID
             self.qt_rev_id = saqtrv_obj.QTEREV_ID
-            self.contract_valid_from = saqtrv_obj.CONTRACT_VALID_FROM
-            self.contract_valid_to = saqtrv_obj.CONTRACT_VALID_TO
             self.quote_revision_id = saqtrv_obj.QUOTE_REVISION_RECORD_ID
             self.quote_record_id = saqtrv_obj.QUOTE_RECORD_ID
             
