@@ -2150,7 +2150,7 @@ class ContractQuoteItem:
 				WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQRIS.SERVICE_RECORD_ID,'') = '') IQ			
 		""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, ItemSummaryLastLineNo=summary_last_line_no, condition_str = condition_str) 
 		)
-		self.getting_cps_tax(self.service_id)
+		#self.getting_cps_tax(self.service_id)
 		return True		
 
 	def getting_cps_tax(self,service_id):
