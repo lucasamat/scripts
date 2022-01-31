@@ -1207,7 +1207,7 @@ class Entitlements:
 							if entitlement_value == "Yes":
 								ancillary_object_dict['Z0048'] = "INSERT"
 							else:
-								ancillary_object_dict['Z0048'] = "INSERT"
+								ancillary_object_dict['Z0048'] = "DELETE"
 						#(key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId in ("Z0035")) or
 						elif "GEN_IDLALW" in key:
 							Trace.Write("1125 entvalue"+str(entitlement_value))
