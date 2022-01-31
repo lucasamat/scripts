@@ -4015,7 +4015,7 @@ class SYLDRTLIST:
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns2:
-						table_header += '<th colspan="12" '+rowspan_level1+'  data-align="center"><div>CONTRACT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+						table_header += '<th colspan="11" '+rowspan_level1+'  data-align="center"><div>CONTRACT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
@@ -4147,7 +4147,7 @@ class SYLDRTLIST:
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns2:
-						table_header += '<th colspan="6" '+rowspan_level1+'  data-align="center"><div>PRICE INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+						table_header += '<th colspan="7" '+rowspan_level1+'  data-align="center"><div>PRICE INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
