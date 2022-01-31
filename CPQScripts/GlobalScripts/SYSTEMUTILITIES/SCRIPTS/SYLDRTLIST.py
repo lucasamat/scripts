@@ -409,11 +409,21 @@ class SYLDRTLIST:
 														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'
 														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
 															contract_quote_record_id,TreeParam, quote_revision_record_id, start, end))
+					try:
+						get_year_max = Sql.GetFirst("SELECT max(CpqTableEntryId) as cpqid,SUM(BILLING_VALUE) as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"'")
+						get_total_amt = Sql.GetFirst("SELECT  BILLING_VALUE,ANNUAL_BILLING_AMOUNT from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' and CpqTableEntryId = '"+str(get_year_max.cpqid)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'")
+						get_diff = get_total_amt.ANNUAL_BILLING_AMOUNT-get_year_max.billval
+						rem_add_year = get_total_amt.BILLING_VALUE+get_diff
+						update_billing_val = "UPDATE SAQIBP SET BILLING_VALUE={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=get_year_max.cpqid,quote_revision_rec_id=quote_revision_record_id)
+						Sql.RunQuery(update_billing_val)
+					except:
+						pass
 				if item_billing_plans_obj:
 					billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]
 					get_last_date_billmatxirx = billing_date_column[-1]
 					billing_date_column_joined = ",".join(["'{}'".format(billing_data) for billing_data in billing_date_column])
-					Columns = Columns.replace(']', ','+billing_date_column_joined+']')   
+					Columns = Columns.replace(']', ','+billing_date_column_joined+']')
+				
 			# Billing Matrix - Pivot - End
 			CurrentObj = Sql.GetFirst(
 				"select API_NAME, OBJECT_NAME from  SYOBJD (NOLOCK) where PARENT_OBJECT_RECORD_ID = '"
