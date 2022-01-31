@@ -4001,7 +4001,27 @@ class SYLDRTLIST:
 				# 	continue
 				
 				#normal+Collapsaible+normal
-				
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('QUANTITY','GREENBOOK','FABLOCATION_ID','CNTYER','TENVGC','TNTVGC','TNTMGC','BILTYP','PRINT_FLAG','YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO'):
+					align = ''
+					rowspan_level1 = ""
+					if not table_group_columns2:
+						table_header += '<th colspan="7" '+rowspan_level1+'  data-align="center"><div>CONTRACT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns2 += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','GOT_CODE','ASSEMBLY_ID','PM_ID','KIT_NAME','KIT_NUMBER','KPU','TOOL_CONFIGURATION'):
 					align = ''
 					rowspan_level1 = ""
@@ -4089,29 +4109,7 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)           
-					continue
-
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('QUANTITY','GREENBOOK','FABLOCATION_ID','CNTYER','TENVGC','TNTVGC','TNTMGC','BILTYP','PRINT_FLAG','YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns2:
-						table_header += '<th colspan="7" '+rowspan_level1+'  data-align="center"><div>CONTRACT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns2 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
+					continue				
 
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('ATGKEC','ATGKEP','NWPTOC','NWPTOP','AMNCCI','AMNPPI'):
 					align = ''
