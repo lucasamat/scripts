@@ -818,7 +818,7 @@ class EntitlementView():
 				if val.IS_DEFAULT == '1':
 					#Trace.Write(str(val.ENTITLEMENT_NAME)+'--2910------'+str(val.IS_DEFAULT))
 					attributedefaultvalue.append(val.ENTITLEMENT_ID)
-			#Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
+			Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
 			sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""		
 			## set entitlement_xml for cancel fn A055S000P01-3157 starts
 			if self.treeparam != 'Quote Items':
