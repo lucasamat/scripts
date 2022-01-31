@@ -13,7 +13,7 @@ from System.Net import WebRequest
 from System.Net import HttpWebResponse
 from Microsoft.Scripting import SourceCodeKind
 from IronPython.Hosting import Python
-
+import re
 import System.Net
 import sys
 import datetime
@@ -107,6 +107,31 @@ try:
 				#Log.Info("type condition--->")
 				price = [price]
 			#Log.Info("456789 type(price) --->"+str(type(price)))
+			try:
+				get_billing_type_val = ''
+				if price and len(price) > 0:	
+					Itemidinfo = str(price[0]["itemId"]).split(";")
+					QUOTE = str(Itemidinfo[1])
+					Log.Info("QUOTE-billing-"+str(QUOTE))
+					get_revision = Sql.GetFirst("SELECT * FROM SAQTMT WHERE QUOTE_ID = '{}'".format(QUOTE))
+					
+					get_billing_type = Sql.GetFirst("select ENTITLEMENT_XML,SERVICE_ID from SAQTSE where QUOTE_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = 'Z0100'".format(QuoteId =QUOTE ,RevisionRecordId=get_revision.QTEREV_RECORD_ID))
+					if get_billing_type:
+						updateentXML = get_billing_type.ENTITLEMENT_XML
+						pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+						pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_Z0100_PQB_BILTYP</ENTITLEMENT_ID>')
+						
+						pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+						for m in re.finditer(pattern_tag, updateentXML):
+							sub_string = m.group(1)
+							get_ent_id = re.findall(pattern_id,sub_string)
+							get_ent_val= re.findall(pattern_name,sub_string)
+							if get_ent_id:
+								get_billing_type_val = str(get_ent_val[0])
+								break
+			except:
+				get_billing_type_val = ''
+			Log.Info("get_billing_type-"+str(get_billing_type))
 			for i in price:	
 				insert_data = []	
 				Itemidinfo = str(i["itemId"]).split(";")
@@ -275,8 +300,12 @@ try:
 							if GetEquipment_count:
 								GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE)/"+str(GetEquipment_count.CNT)+" AS TOTAL_UNIT, SUM(EXTENDED_PRICE)/"+str(GetEquipment_count.CNT)+"  AS TOTAL_EXT FROM SAQRSP WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0100'".format( QUOTE,revision_rec_id))
 								#Log.Info("QTPOSTPTPR TOTAL111 ==> "+str(GetSum.TOTAL_UNIT))
-								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE = {total_unit}, NET_PRICE ={total_net},YEAR_1 = {total_net}  FROM SAQRIT
-									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
+								if get_billing_type_val.upper() == 'VARIABLE':
+									pricing_field = "ESTIMATED_VALUE"
+								else:
+									pricing_field = "NET_PRICE"
+								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE = {total_unit}, {pricing_field} ={total_net},YEAR_1 = {total_net}  FROM SAQRIT
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field = pricing_field))
 								Sql.RunQuery("""UPDATE SAQRIT 
 												SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0),
 												YEAR_1_INGL_CURR = YEAR_1 + ISNULL(EXCHANGE_RATE, 0),
@@ -307,8 +336,12 @@ try:
 							if GetEquipment_count:
 								GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE_INGL_CURR)/"+str(GetEquipment_count.CNT)+" AS TOTAL_UNIT, SUM(EXTENDED_PRICE_INGL_CURR)/"+str(GetEquipment_count.CNT)+"  AS TOTAL_EXT FROM SAQRSP WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0100'".format( QUOTE,revision_rec_id))
 								#Log.Info("QTPOSTPTPR TOTAL111222 ==> "+str(GetSum.TOTAL_UNIT))
-								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = {total_unit}, NET_PRICE_INGL_CURR ={total_net}  FROM SAQRIT
-									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
+								if get_billing_type_val.upper() == 'VARIABLE':
+									pricing_field = "ESTVAL_INGL_CURR"
+								else:
+									pricing_field = "NET_PRICE_INGL_CURR"
+								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = {total_unit}, {pricing_field} ={total_net}  FROM SAQRIT
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field= pricing_field))
 								Sql.RunQuery("""UPDATE SAQRIT 
 												SET NET_VALUE_INGL_CURR = NET_PRICE_INGL_CURR + ISNULL(TAX_AMOUNT, 0) 
 												FROM SAQRIT (NOLOCK)
