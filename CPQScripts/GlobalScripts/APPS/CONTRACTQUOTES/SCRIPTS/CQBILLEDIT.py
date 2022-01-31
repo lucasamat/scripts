@@ -28,37 +28,37 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 		getannual_amt = value[3]
 		Trace.Write('gettotalamount-----'+str(getannual_amt))
 		
-		if float(getannual_amt.replace(',','')) > float(getedited_amt):
+		if float(getannual_amt) > float(getedited_amt):
 			sqlforupdatePT = "UPDATE SAQIBP SET BILLING_VALUE = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
-			getmonthvalue = Sql.GetFirst("select * from QT__Billing_Matrix_Header where QUOTE_RECORD_ID ='{CT}' and YEAR  = {BL}".format(BL =int(SubTab),CT = str(ContractRecordId)))
-			if getmonthvalue:
-				if getmonthvalue.MONTH_1 == getmonthavl:
-					getmonthavle = "MONTH_1"
-				elif getmonthvalue.MONTH_2 == getmonthavl:
-					getmonthavle = "MONTH_2"
-				elif getmonthvalue.MONTH_3 == getmonthavl:
-					getmonthavle = "MONTH_3"
-				elif getmonthvalue.MONTH_4 == getmonthavl:
-					getmonthavle = "MONTH_4"
-				elif getmonthvalue.MONTH_5 == getmonthavl:
-					getmonthavle = "MONTH_5"
-				elif getmonthvalue.MONTH_6 == getmonthavl:
-					getmonthavle = "MONTH_6"
-				elif getmonthvalue.MONTH_7 == getmonthavl:
-					getmonthavle = "MONTH_7"
-				elif getmonthvalue.MONTH_8 == getmonthavl:
-					getmonthavle = "MONTH_8"
-				elif getmonthvalue.MONTH_9 == getmonthavl:
-					getmonthavle = "MONTH_9"
-				elif getmonthvalue.MONTH_10 == getmonthavl:
-					getmonthavle = "MONTH_10"
-				elif getmonthvalue.MONTH_11 == getmonthavl:
-					getmonthavle = "MONTH_11"
-				else:
-					getmonthavle = "MONTH_12"
-			sqlforupdate = "UPDATE QT__BM_YEAR_1 SET {gmon} = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_YEAR = {BL}".format(BL =int(SubTab) ,gmon = getmonthavle,BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
+			# getmonthvalue = Sql.GetFirst("select * from QT__Billing_Matrix_Header where QUOTE_RECORD_ID ='{CT}' and YEAR  = {BL}".format(BL =int(SubTab),CT = str(ContractRecordId)))
+			# if getmonthvalue:
+			# 	if getmonthvalue.MONTH_1 == getmonthavl:
+			# 		getmonthavle = "MONTH_1"
+			# 	elif getmonthvalue.MONTH_2 == getmonthavl:
+			# 		getmonthavle = "MONTH_2"
+			# 	elif getmonthvalue.MONTH_3 == getmonthavl:
+			# 		getmonthavle = "MONTH_3"
+			# 	elif getmonthvalue.MONTH_4 == getmonthavl:
+			# 		getmonthavle = "MONTH_4"
+			# 	elif getmonthvalue.MONTH_5 == getmonthavl:
+			# 		getmonthavle = "MONTH_5"
+			# 	elif getmonthvalue.MONTH_6 == getmonthavl:
+			# 		getmonthavle = "MONTH_6"
+			# 	elif getmonthvalue.MONTH_7 == getmonthavl:
+			# 		getmonthavle = "MONTH_7"
+			# 	elif getmonthvalue.MONTH_8 == getmonthavl:
+			# 		getmonthavle = "MONTH_8"
+			# 	elif getmonthvalue.MONTH_9 == getmonthavl:
+			# 		getmonthavle = "MONTH_9"
+			# 	elif getmonthvalue.MONTH_10 == getmonthavl:
+			# 		getmonthavle = "MONTH_10"
+			# 	elif getmonthvalue.MONTH_11 == getmonthavl:
+			# 		getmonthavle = "MONTH_11"
+			# 	else:
+			# 		getmonthavle = "MONTH_12"
+			#sqlforupdate = "UPDATE QT__BM_YEAR_1 SET {gmon} = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_YEAR = {BL}".format(BL =int(SubTab) ,gmon = getmonthavle,BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
 			Sql.RunQuery(sqlforupdatePT)
-			Sql.RunQuery(sqlforupdate)
+			#Sql.RunQuery(sqlforupdate)
 			
 			#to update total amount
 			
