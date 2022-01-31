@@ -478,7 +478,7 @@ class EntitlementView():
 								add_style = ""
 							Trace.Write('---attributeEditlst--'+str(attributeEditlst))
 							if attrSysId not in attributedefaultvalue:
-								#Trace.Write("add_style----3077----- "+str(attrSysId))
+								Trace.Write("add_style---481--- "+str(attrSysId))
 								add_style = "color:#1B78D2"
 							# if attrSysId in attributedefaultvalue:
 							# 	add_style_color = ";color: red"
