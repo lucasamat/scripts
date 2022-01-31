@@ -5703,12 +5703,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						sub_string = value.group(1)
 						pm_event_attribute_id =re.findall(pattern_id,sub_string)
 						quote_type_attribute_id =re.findall(quote_type_id,sub_string)
-
+						additional_where = ""
 						if pm_event_attribute_id and self.tree_param != 'Z0009':
 							pm_event_attribute_value =str(pm_entlmnt_val)
 							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
-							additional_where = ''
-
 							Trace.Write("555 "+str(self.tree_param)+" 555 "+str(pm_event_attribute_value))
 							if (self.tree_param in ("Z0035","Z0091","Z0009","Z0004") and "Included - All PM" in pm_event_attribute_value):
 								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND"
