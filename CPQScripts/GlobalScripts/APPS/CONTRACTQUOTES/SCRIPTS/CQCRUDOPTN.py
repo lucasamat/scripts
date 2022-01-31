@@ -4690,7 +4690,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					LEFT JOIN MATKTN(NOLOCK) ON MATKTN.KIT_ID = MAEAPK.KIT_ID AND MATKTN.KIT_NUMBER = MAEAPK.KIT_NUMBER
 					JOIN MAPMEV(NOLOCK) ON MAPMEV.PM_NAME = MAEAPK.PM_NAME 
 					JOIN SAQTRV(NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID 
-					WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {additional_where} SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}' ) PM """.format(
+					WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {additional_where} SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}' ) PM """.format(
 					UserName=self.user_name,
 					TreeParam=self.tree_param,
 					QuoteId = self.contract_quote_id,
@@ -5863,7 +5863,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 											additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND"
 											Trace.Write("additional_where_chk_1 "+str(additional_where))
 										self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
-										
+
 							qte_type_flag=1
 						if self.tree_param == 'Z0009' and qte_type_flag == 1:
 							break
