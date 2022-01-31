@@ -1060,7 +1060,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 									Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'UNSCHEDULED', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY < 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
 								elif annual_qty.CUSTOMER_ANNUAL_QUANTITY >= 10:
 									Trace.Write("Greater Than 10")
-									Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'SCHEDULED', DELIVERY_MODE = 'ONSITE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY >= 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
+									Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'SCHEDULED', DELIVERY_MODE = 'OFFSITE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY >= 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
 								if annual_qty.CUSTOMER_ANNUAL_QUANTITY <= 9 and annual_qty.UNIT_PRICE <= 50:
 									parts_record_query = Sql.GetList("SELECT QUOTE_SERVICE_PART_RECORD_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND UNIT_PRICE <= 50".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
 									for parts in parts_record_query:
