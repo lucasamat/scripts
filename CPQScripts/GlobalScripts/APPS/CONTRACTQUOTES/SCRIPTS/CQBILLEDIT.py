@@ -125,21 +125,25 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 	#return 'save','savebill'
 try:
 	GET_DICT =list(Param.billdict)
-	totalyear = Param.totalyear
+	
 	getedited_amt = Param.getedited_amt
 except:
 	Trace.Write('131---')
 	GET_DICT = []
-	totalyear = "" 
+	#totalyear = "" 
 	getedited_amt = ""
 try:
-	deliverydict =list(Param.deliverydict)
 	totalyear = Param.totalyear
+except:
+	totalyear = ""
+try:
+	deliverydict =list(Param.deliverydict)
+	#totalyear = Param.totalyear
 	getedited_amt = Param.getedited_amt
 	deliveryEdit = Param.deliveryEdit
 except:
 	deliverydict = []
-	totalyear = "" 
+	#totalyear = "" 
 	getedited_amt = deliveryEdit = ""
 #GET_DICT =list(Param.billdict)
 #totalyear = Param.totalyear
