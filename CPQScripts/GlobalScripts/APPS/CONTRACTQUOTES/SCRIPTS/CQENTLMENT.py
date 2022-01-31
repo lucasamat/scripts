@@ -1203,7 +1203,7 @@ class Entitlements:
 								ancillary_object_dict['Z0046'] = "DELETE"
 								#Quote.SetGlobal("ANCILLARY","NO")
 								#ancillary_flag = "DELETE"
-						elif key == 'AGS_{}_KPI_BPTKPI'.format(serviceId) and serviceId in ("Z0091","Z0035","Z0090","Z0092"): 
+						elif key == 'AGS_{}_KPI_BPTKPI'.format(serviceId) and serviceId in ("Z0091","Z0035","Z0090"): 
 							if entitlement_value == "Yes":
 								ancillary_object_dict['Z0048'] = "INSERT"
 							else:
