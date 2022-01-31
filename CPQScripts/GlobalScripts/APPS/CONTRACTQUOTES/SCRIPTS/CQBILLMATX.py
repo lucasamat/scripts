@@ -121,6 +121,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 		get_val = 1
 	else:				
 		get_val =12
+	amount_column_split = amount_column.replace('_',' ')
 	#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5	
 	if str(get_billing_type).upper() == "FIXED" and get_billing_type != '':
 		#join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK"
@@ -153,7 +154,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					SAQSCO.QTEREV_ID,
 					SAQSCO.QTEREV_RECORD_ID,
 					{BillingDate} as BILLING_DATE,
-					'{amount_column}' as BILLING_YEAR,
+					'{amount_column_split}' as BILLING_YEAR,
 					SAQSCO.EQUIPMENT_DESCRIPTION,
 					SAQSCO.EQUIPMENT_ID,
 					SAQSCO.EQUIPMENT_RECORD_ID,
@@ -175,7 +176,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					RevisionRecordId=quote_revision_rec_id,
 					BillingDate=billing_date,billing_end_date=billing_end_date,
 					get_val=get_val,
-					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
+					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 		Sql.RunQuery(""" INSERT SAQIBP (
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
 					QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
@@ -200,7 +201,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					SAQRIT.QTEREV_ID,
 					SAQRIT.QTEREV_RECORD_ID,
 					{BillingDate} as BILLING_DATE,
-					'{amount_column}' as BILLING_YEAR,
+					'{amount_column_split}' as BILLING_YEAR,
 					'' as EQUIPMENT_DESCRIPTION,
 					SAQRIT.OBJECT_ID as EQUIPMENT_ID,
 					'' as EQUIPMENT_RECORD_ID,
@@ -222,7 +223,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
 					BillingDate=billing_date,
 					get_val=get_val,
-					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
+					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 	else:		
 		Sql.RunQuery("""INSERT SAQIBP (
 					
@@ -249,7 +250,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					SAQSCO.QTEREV_ID,
 					SAQSCO.QTEREV_RECORD_ID,
 					{BillingDate} as BILLING_DATE,						
-					'{amount_column}' as BILLING_YEAR,
+					'{amount_column_split}' as BILLING_YEAR,
 					SAQSCO.EQUIPMENT_DESCRIPTION,
 					SAQSCO.EQUIPMENT_ID,									
 					SAQSCO.EQUIPMENT_RECORD_ID,						
@@ -271,7 +272,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
 					BillingDate=billing_date,
 					get_val=get_val,
-					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
+					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 		Sql.RunQuery("""INSERT SAQIBP (					
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
 					QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
@@ -297,7 +298,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					QTEREV_ID,
 					QTEREV_RECORD_ID,
 					{BillingDate} as BILLING_DATE,						
-					'{amount_column}' as BILLING_YEAR,
+					'{amount_column_split}' as BILLING_YEAR,
 					'' as EQUIPMENT_DESCRIPTION,
 					'' as EQUIPMENT_ID,									
 					'' as EQUIPMENT_RECORD_ID,						
@@ -318,7 +319,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					RevisionRecordId=quote_revision_rec_id,
 					BillingDate=billing_date,billing_end_date=billing_end_date,
 					get_val=get_val,
-					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column))
+					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 	if service_id == 'Z0116':
 		update_annual_bill_amt  = Sql.GetFirst("SELECT SUM(YEAR_1) as YEAR1 from SAQRIT (NOLOCK) where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'  and SERVICE_ID = 'Z0116' GROUP BY SERVICE_ID,GREENBOOK".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id))
 		if update_annual_bill_amt:
