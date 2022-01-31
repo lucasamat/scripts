@@ -42,7 +42,8 @@ class EntitlementView():
 		TableObj = ""
 		ChangedList = totaldisallowlist = section_not_list = []
 		Trace.Write("EntitlementType"+str(EntitlementType))
-
+		
+		attributedefaultvalue = []
 		#Trace.Write('TreeSuperParentParam'+'--'+str(self.treesupertopparentparam)+'--'+str(self.treetopsuperparentparam))
 		objname_ent = "" ##add on product entitilement obj declare
 		if self.treesuperparentparam == "Product Offerings":		
@@ -786,7 +787,6 @@ class EntitlementView():
 		else:
 			getnameentallowed = []
 			multi_select_attr_list = {}
-			attributedefaultvalue = []
 			Trace.Write("after inserting in table")
 			#Trace.Write('after inserting in table---ObjectName-----'+str(ObjectName))
 			#Trace.Write('after inserting in table---where-----'+str(where))
