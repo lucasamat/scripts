@@ -2075,7 +2075,7 @@ class ContractQuoteItem:
 		self.getting_cps_tax(self.service_id)
 		return True		
 
-	def getting_cps_tax(self,Service_id):
+	def getting_cps_tax(self,service_id):
 		Trace.Write("Function_call_cps")
 		webclient = System.Net.WebClient()
 		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
@@ -2110,7 +2110,7 @@ class ContractQuoteItem:
 		#TreeParam = Product.GetGlobal("TreeParam")	
 		#Service_id = TreeParam.split('-')[1].strip()
 		if item_obj:			
-			item_string = '{"itemId":"'+str(itemid)+'","externalId":null,"quantity":{"value":'+str(1)+',"unit":"EA"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(Service_id)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-LAND1","values":["'+country+'"]},{"name":"KOMK-ALAND","values":["'+country+'"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMP-TAXM1","values":["'+str(item_obj)+'"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(div)+'"]},{"name":"KOMP-PMATN","values":["'+str(Service_id)+'"]},{"name":"KOMK-WAERK","values":["'+str(curr)+'"]},{"name":"KOMK-HWAER","values":["'+str(curr)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-ZZKTOKD","values":["KUNA"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
+			item_string = '{"itemId":"'+str(itemid)+'","externalId":null,"quantity":{"value":'+str(1)+',"unit":"EA"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(service_id)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-LAND1","values":["'+country+'"]},{"name":"KOMK-ALAND","values":["'+country+'"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMP-TAXM1","values":["'+str(item_obj)+'"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(div)+'"]},{"name":"KOMP-PMATN","values":["'+str(service_id)+'"]},{"name":"KOMK-WAERK","values":["'+str(curr)+'"]},{"name":"KOMK-HWAER","values":["'+str(curr)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-ZZKTOKD","values":["KUNA"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
 			requestdata = '{"docCurrency":"'+curr+'","locCurrency":"'+curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(item_string)+']}'
 			Trace.Write("requestdata======>>>> "+str(requestdata))
 			response1 = webclient.UploadString(Request_URL,str(requestdata))			
@@ -2127,7 +2127,7 @@ class ContractQuoteItem:
 				if data['conditionType'] == 'ZWSC' and data['conditionTypeDescription'] == 'VAT Asia':
 					tax_percentage = data['conditionRate']
 					break
-			update_tax = "UPDATE SAQRIS SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQRIS.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIS.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SERVICE_ID = '{Service_id}'".format(TaxPercentage=tax_percentage,Service_id=Service_id,QuoteRecordId = self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id)
+			update_tax = "UPDATE SAQRIS SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQRIS.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIS.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SERVICE_ID = '{service_id}'".format(TaxPercentage=tax_percentage,service_id=service_id,QuoteRecordId = self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id)
 			Sql.RunQuery(update_tax)
 
 	def _do_opertion(self):		
