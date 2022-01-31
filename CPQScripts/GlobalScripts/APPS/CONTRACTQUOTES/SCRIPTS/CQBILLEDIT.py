@@ -138,7 +138,7 @@ try:
 	getedited_amt = Param.getedited_amt
 	deliveryEdit = Param.deliveryEdit
 except:
-	GET_DICT = []
+	deliverydict = []
 	totalyear = "" 
 	getedited_amt = deliveryEdit = ""
 #GET_DICT =list(Param.billdict)
