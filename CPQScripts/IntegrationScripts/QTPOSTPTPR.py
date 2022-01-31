@@ -131,7 +131,7 @@ try:
 								break
 			except:
 				get_billing_type_val = ''
-			Log.Info("get_billing_type-"+str(get_billing_type))
+			Log.Info("get_billing_type-"+str(get_billing_type_val))
 			for i in price:	
 				insert_data = []	
 				Itemidinfo = str(i["itemId"]).split(";")
