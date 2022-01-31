@@ -279,6 +279,7 @@ class SyncFPMQuoteAndHanaDatabase:
 Log.Info("CQPARTINS script called --> from CPI")
 Log.Info("Param.CPQ_Column----"+str(type(Param)))
 Log.Info("Param.CPQ_Column----QuoteID---"+str(Param.CPQ_Columns["QuoteID"]))
+Log.Info("ChangedRes---->"+str(Param.CPQ_Columns["Response"]["root"]["KYMA_DATA"]["SAFPLT"]))
 Parameter = {}
 try:
     Parameter["Action"] = Param.CPQ_Columns["Action"]
