@@ -1807,7 +1807,7 @@ def Related_Sub_Banner(
             ThirdLable = "Greenbook"
             ThirdValue = str(TreeParentParam)
             FourthLable = "Got Code"
-            FifthValue = str(TreeParam)
+            FourthValue = str(TreeParam)
         elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Credits") and subTabName != "Assembly Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
             if subTabName =='Entitlements' and str(ObjName) == "SAQSAO" and TreeParam == "Add-On Products" :
                 Trace.Write("addon entitlement")
