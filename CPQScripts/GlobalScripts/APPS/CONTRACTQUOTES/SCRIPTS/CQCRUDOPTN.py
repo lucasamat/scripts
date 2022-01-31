@@ -5014,6 +5014,14 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					)
 				)
 
+			Sql.RunQuery("""UPDATE SAQGPM
+						SET
+						SAQGPM.CHAMBER_QUANTITY = assembly.cnt
+						FROM SAQGPM (NOLOCK)
+						INNER JOIN (select DISTINCT MAEAPK.PM_ID, count(MAEQUP.EQUIPMENT_ID) as cnt,SAQSCO.QUOTE_ID from SAQSCO
+						join MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID
+						join MAEAPK (NOLOCK) ON MAEAPK.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID AND MAEAPK.ASSEMBLY_ID = MAEQUP.EQUIPMENT_ID where SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAEAPK.PM_LEVEL IN {pm_level_value} GROUP BY SAQSCO.EQUIPMENT_ID, MAEQUP.EQUIPMENT_ID, MAEAPK.PM_ID,SAQSCO.QUOTE_ID) assembly ON SAQGPM.QUOTE_RECORD_ID = assembly.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = assembly.QTEREV_RECORD_ID WHERE SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID = '{TreeParam}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param, pm_level_value = ('Scheduled Maintenance','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value') != "Tool based") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance')))
+
 			self._process_query(
 				"""INSERT SAQGPA (
 						ASSEMBLY_ID,
@@ -5378,7 +5386,13 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					pm_level_value = ('Scheduled Maintenance','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value') != "Tool based") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance')
 					)
 				)
-
+			Sql.RunQuery("""UPDATE SAQGPM
+						SET
+						SAQGPM.CHAMBER_QUANTITY = assembly.cnt
+						FROM SAQGPM (NOLOCK)
+						INNER JOIN (select DISTINCT MAEAPK.PM_ID, count(MAEQUP.EQUIPMENT_ID) as cnt,SAQSCO.QUOTE_ID from SAQSCO
+						join MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID
+						join MAEAPK (NOLOCK) ON MAEAPK.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID AND MAEAPK.ASSEMBLY_ID = MAEQUP.EQUIPMENT_ID where SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAEAPK.PM_LEVEL IN {pm_level_value} GROUP BY SAQSCO.EQUIPMENT_ID, MAEQUP.EQUIPMENT_ID, MAEAPK.PM_ID,SAQSCO.QUOTE_ID) assembly ON SAQGPM.QUOTE_RECORD_ID = assembly.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = assembly.QTEREV_RECORD_ID WHERE SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID = '{TreeParam}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param, pm_level_value = ('Scheduled Maintenance','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value') != "Tool based") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance')))
 			self._process_query(
 				"""INSERT SAQGPA (
 						ASSEMBLY_ID,
