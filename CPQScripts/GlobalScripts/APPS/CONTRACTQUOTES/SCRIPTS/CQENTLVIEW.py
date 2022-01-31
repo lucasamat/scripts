@@ -981,9 +981,11 @@ class EntitlementView():
 									sec_validation = "Only enter the values in the following range: -&infin; - "+str(validation_dict[attrSysId])
 								else:
 									sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+" - 0"
-							if attrSysId not in attributedefaultvalue:
+							if attrSysId  in attributedefaultvalue:
 								Trace.Write("add_style----3077----- "+str(attrSysId))
 								add_style = "color:#1B78D2"
+							else:
+								add_style = ""
 							#Trace.Write('--attributeEditlst-930----'+str(attributeEditlst))
 							if attrSysId in attributeEditlst :
 								disable_edit = 'disable_edit'
