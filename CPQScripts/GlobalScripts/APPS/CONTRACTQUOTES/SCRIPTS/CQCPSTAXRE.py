@@ -88,7 +88,7 @@ try:
     Fun_type = Param.Fun_type
     if len(Fun_type) > 0:
         if str(Fun_type).upper() == 'CPQ_TO_ECC':
-            Funtion_call = cpq_to_crm(service_id)
+            Funtion_call = getting_cps_tax(service_id)
 
 
 except:
