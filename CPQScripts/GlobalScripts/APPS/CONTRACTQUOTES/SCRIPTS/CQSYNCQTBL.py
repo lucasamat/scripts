@@ -1907,7 +1907,81 @@ class SyncQuoteAndCustomTables:
 							##A055S000P01-10174 code starts...
 							try:
 								for service_level_equipment_json_data in payload_json.get('SAQSCO'):
-									##Fetching the records from SAQFEQ to insert the equipments in to SAQSCO table for service level...
+									items  = str(service_level_equipment_json_data.get('EQUIPMENT_IDS'))
+									elements = items.split(',')
+									count = 1;
+									elementframe=''
+									for ele in elements:
+										if elementframe == '':
+											elementframe = ele
+										else:
+											elementframe += ', ' + ele
+										if count == 1000:
+											quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = elementframe,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+											##Get the service type based on the service....
+											quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+											##Get the SAQFEQ table autonumber record id values to insert into SAQSCO...
+
+											quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
+											Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
+											##Get the service id to send the param value for CQCRUDOPTN script..
+											service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
+											##Get the SERVICE_TYPE to send the param value for CQCRUDOPTN script..
+											service_type = quote_service_obj.SERVICE_TYPE
+											##Get the SAQTMT table record (quote record id)...
+											quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+											Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
+											##Calling the script to insert SAQSCO,SAQSCA,SAQSFB,SAQSGB,SAQSAP and SAQSKP table data......
+											
+											ScriptExecutor.ExecuteGlobal(
+																	"CQCRUDOPTN",
+																{
+																	"NodeType"   : "COVERED OBJ MODEL",
+																	"ActionType" : "ADD_COVERED_OBJ",
+																	"Opertion"    : "ADD",
+																	"AllValues"  : False,
+																	"TriggerFrom"   : "python_script",
+																	"Values"	  : quote_fab_equipments_record_id,
+																	"ServiceId"  : service_id,
+																	"ServiceType" : service_type,
+																},
+															)
+											count=0
+											elementframe=''
+										count += 1
+									if count != 0:
+										quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = elementframe,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+										##Get the service type based on the service....
+										quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+										##Get the SAQFEQ table autonumber record id values to insert into SAQSCO...
+
+										quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
+										Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
+										##Get the service id to send the param value for CQCRUDOPTN script..
+										service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
+										##Get the SERVICE_TYPE to send the param value for CQCRUDOPTN script..
+										service_type = quote_service_obj.SERVICE_TYPE
+										##Get the SAQTMT table record (quote record id)...
+										quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+										Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
+										##Calling the script to insert SAQSCO,SAQSCA,SAQSFB,SAQSGB,SAQSAP and SAQSKP table data......
+										
+										ScriptExecutor.ExecuteGlobal(
+																"CQCRUDOPTN",
+															{
+																"NodeType"   : "COVERED OBJ MODEL",
+																"ActionType" : "ADD_COVERED_OBJ",
+																"Opertion"    : "ADD",
+																"AllValues"  : False,
+																"TriggerFrom"   : "python_script",
+																"Values"	  : quote_fab_equipments_record_id,
+																"ServiceId"  : service_id,
+																"ServiceType" : service_type,
+															},
+														)
+
+
+									'''##Fetching the records from SAQFEQ to insert the equipments in to SAQSCO table for service level...
 									quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = service_level_equipment_json_data.get('EQUIPMENT_IDS'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 									##Get the service type based on the service....
 									quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
@@ -1936,7 +2010,7 @@ class SyncQuoteAndCustomTables:
 															"ServiceId"  : service_id,
 															"ServiceType" : service_type,
 														},
-													)
+													)'''
 							except Exception as e:
 								Log.Info("EXCEPTION: Iteration Over non sequence for none type"+str(e))
 							##A055S000P01-10174 code ends...
