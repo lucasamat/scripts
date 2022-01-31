@@ -2076,7 +2076,7 @@ class ContractQuoteItem:
 		return True		
 
 	def getting_cps_tax(self,service_id):
-		Trace.Write("Function_call_cps")
+		Log.Info("Function_call_cps")
 		webclient = System.Net.WebClient()
 		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0=";
@@ -2127,6 +2127,7 @@ class ContractQuoteItem:
 				if data['conditionType'] == 'ZWSC' and data['conditionTypeDescription'] == 'VAT Asia':
 					tax_percentage = data['conditionRate']
 					break
+			Log.Info("tax_percentage"+str(tax_percentage))
 			update_tax = "UPDATE SAQRIS SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQRIS.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIS.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SERVICE_ID = '{service_id}'".format(TaxPercentage=tax_percentage,service_id=service_id,QuoteRecordId = self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id)
 			Sql.RunQuery(update_tax)
 
