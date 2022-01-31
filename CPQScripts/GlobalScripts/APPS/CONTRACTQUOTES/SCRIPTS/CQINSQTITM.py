@@ -2130,8 +2130,6 @@ class ContractQuoteItem:
 			update_tax = "UPDATE SAQRIS SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQRIS.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIS.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SERVICE_ID = '{Service_id}'".format(TaxPercentage=tax_percentage,Service_id=Service_id,QuoteRecordId = self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id)
 			Sql.RunQuery(update_tax)
 
-
-
 	def _do_opertion(self):		
 		self._set_quote_service_entitlement_type()
 		self._get_consumable_val()
