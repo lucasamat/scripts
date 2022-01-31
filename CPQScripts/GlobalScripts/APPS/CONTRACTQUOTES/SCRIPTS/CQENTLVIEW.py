@@ -322,7 +322,7 @@ class EntitlementView():
 			#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
 			#Trace.Write('total_tablist--'+str(total_tablist))
 			#Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
-			Trace.Write('attributedefaultvalue----'+str(attributedefaultvalue))
+			Trace.Write('attributedefaultvalue--325--'+str(attributedefaultvalue))
 			Trace.Write("validation_dict---"+str(validation_dict))
 
 			product_obj = Sql.GetFirst("""SELECT 
