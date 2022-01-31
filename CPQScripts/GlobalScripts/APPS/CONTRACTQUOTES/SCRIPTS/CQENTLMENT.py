@@ -1442,31 +1442,31 @@ class Entitlements:
 
 								STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL = '{display_vals}' ".format(sys_id=key,display_vals = display_vals.replace("'","''") if  "'"  in display_vals else display_vals, prd_id = product_obj.PRD_ID))
 								if STANDARD_ATTRIBUTE_VALUES:
-									if key == "AGS_Z0091_PQB_PPCPRM" and display_vals == "Yes":
-										Trace.Write("@1641-----"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
-										total_price = 0.00
-										for i in range(1,11):
-											if i < 9:
-												x = "AGS_Z0046_PQB_AP0{}FU".format(str(i))
-											else:
-												x = "AGS_Z0046_PQB_AP{}FU".format(str(i))
-											Trace.Write("x="+str(x))
-											y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
-											Trace.Write("y="+str(y))
-											try:
-												if ENT_IP_DICT[x] and ENT_IP_DICT[y]:
-													total_price += float(str(ENT_IP_DICT[x]).split("||")[0]) * float(str(ENT_IP_DICT[y]).split("||")[0])
-											except:
-												total_price = total_price
-												break
-										Trace.Write("total price = "+str(total_price))
-										getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
-										import datetime as dt
-										fmt = '%m/%d/%Y'
-										d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
-										d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
-										days = (d2 - d1).days
-										# total = (total_price/365)*int(days)
+									# if key == "AGS_Z0091_PQB_PPCPRM" and display_vals == "Yes":
+									# 	Trace.Write("@1641-----"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
+									# 	total_price = 0.00
+									# 	for i in range(1,11):
+									# 		if i < 9:
+									# 			x = "AGS_Z0046_PQB_AP0{}FU".format(str(i))
+									# 		else:
+									# 			x = "AGS_Z0046_PQB_AP{}FU".format(str(i))
+									# 		Trace.Write("x="+str(x))
+									# 		y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
+									# 		Trace.Write("y="+str(y))
+									# 		try:
+									# 			if ENT_IP_DICT[x] and ENT_IP_DICT[y]:
+									# 				total_price += float(str(ENT_IP_DICT[x]).split("||")[0]) * float(str(ENT_IP_DICT[y]).split("||")[0])
+									# 		except:
+									# 			total_price = total_price
+									# 			break
+									# 	Trace.Write("total price = "+str(total_price))
+									# 	getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
+									# 	import datetime as dt
+									# 	fmt = '%m/%d/%Y'
+									# 	d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
+									# 	d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
+									# 	days = (d2 - d1).days
+									# 	# total = (total_price/365)*int(days)
 										#UPDATE TOTAL PRICE IN SAQTRV
 										#Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = {} WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,self.revision_recordid))
 										#objects = ["SAQSFE","SAQSGE","SAQSCE"]
