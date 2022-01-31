@@ -4011,7 +4011,7 @@ class SYLDRTLIST:
 				# 	continue
 				
 				#normal+Collapsaible+normal
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('QUANTITY','GREENBOOK','FABLOCATION_ID','CNTYER','TENVGC','TNTVGC','TNTMGC','BILTYP','PRINT_FLAG','YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('QUANTITY','GREENBOOK','FABLOCATION_ID','CNTYER','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','TENVGC','TNTVGC','TNTMGC','BILTYP','PRINT_FLAG'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns2:
@@ -4032,7 +4032,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','GOT_CODE','ASSEMBLY_ID','PM_ID','KIT_NAME','KIT_NUMBER','KPU','TOOL_CONFIGURATION'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('GOT_CODE','ASSEMBLY_ID','PM_ID','PM_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOLCFG'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns:
