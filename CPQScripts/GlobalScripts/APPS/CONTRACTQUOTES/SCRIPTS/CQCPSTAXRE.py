@@ -80,6 +80,15 @@ try:
 			Log.Info("tax_percentage"+str(tax_percentage))
 			update_tax = "UPDATE SAQRIS SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQRIS.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIS.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SERVICE_ID = '{service_id}'".format(TaxPercentage=tax_percentage,service_id=service_id,QuoteRecordId = contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_record_id)
 			Sql.RunQuery(update_tax)
+
+
+    service_id = Param.service_id
+    Fun_type = Param.Fun_type
+	if len(Fun_type) > 0:
+        if str(Fun_type).upper() == 'CPQ_TO_ECC':
+			Funtion_call = cpq_to_crm(service_id)
+
+
 except:
 	Log.Info("CQCPSTAXRE ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("CQCPSTAXRE ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
