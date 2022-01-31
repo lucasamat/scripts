@@ -128,6 +128,7 @@ try:
 	totalyear = Param.totalyear
 	getedited_amt = Param.getedited_amt
 except:
+	Trace.Write('131---')
 	GET_DICT = []
 	totalyear = "" 
 	getedited_amt = ""
