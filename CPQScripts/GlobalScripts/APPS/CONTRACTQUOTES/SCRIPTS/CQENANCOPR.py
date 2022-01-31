@@ -694,9 +694,9 @@ class AncillaryProductOperation:
 							AttributeID_Pass =""						
 							add_where =''
 							NewValue = val.ENTITLEMENT_DISPLAY_VALUE
-							if str(val.ENTITLEMENT_ID) == "AGS_{}_KPI_BPTKPI".format(self.service_id) and NewValue == "Yes":
-								AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
-							elif str(val.ENTITLEMENT_ID) == "AGS_{}_PQB_PPCPRM".format(self.service_id) and NewValue == "Yes":
+							# if str(val.ENTITLEMENT_ID) == "AGS_{}_KPI_BPTKPI".format(self.service_id) and NewValue == "Yes":
+							# 	AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
+							if str(val.ENTITLEMENT_ID) == "AGS_{}_PQB_PPCPRM".format(self.service_id) and NewValue == "Yes":
 								AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
 								# value_application = 'YES'
 							else:
@@ -708,6 +708,9 @@ class AncillaryProductOperation:
 									AttributeID_Pass = val.ENTITLEMENT_ID
 								elif 'AGS_Z0100' in val.ENTITLEMENT_ID:
 									ServiceId = 'Z0100'
+									AttributeID_Pass = val.ENTITLEMENT_ID
+								elif 'AGS_Z0048' in val.ENTITLEMENT_ID:
+									ServiceId = 'Z0048'
 									AttributeID_Pass = val.ENTITLEMENT_ID
 								# if 'AGS_Z0091_PRODUCT_TYPE' in val.ENTITLEMENT_ID:
 								# 	AttributeID_Pass = val.ENTITLEMENT_ID
