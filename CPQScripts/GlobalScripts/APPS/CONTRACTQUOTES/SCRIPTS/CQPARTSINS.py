@@ -43,6 +43,9 @@ class SyncFPMQuoteAndHanaDatabase:
         Log.Info("Columns--->"+str(self.columns))
         Log.Info("Values---->"+str(self.records))
         Log.Info("TempTableName--->"+str(spare_parts_temp_table_name))
+        temp_table_count = SqlHelper.GetFirst(" SELECT count(*) FROM "+str(spare_parts_temp_table_name)+" ")
+        Log.Info("TempTablecount--->"+str(temp_table_count))
+
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
             spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
