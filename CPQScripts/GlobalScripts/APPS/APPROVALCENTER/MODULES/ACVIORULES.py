@@ -559,7 +559,7 @@ class ViolationConditions:
                     # )
                     #A055S000P01-15007 START
                     fflag = 0
-                    if "PRENVL" in result.WHERE_CONDITION_01:
+                    if "PRENVL" in result.WHERE_CONDITION_01 and result.APRCHNSTP_NUMBER == '1':
                         fflag = 2
                         if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
                             splitval = str(result.WHERE_CONDITION_01).split("OR")[0]
