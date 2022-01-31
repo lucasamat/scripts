@@ -2014,14 +2014,14 @@ def POPUPLISTVALUEADDNEW(
 				Header_details = {
 					"CREDITVOUCHER_RECORD_ID": "KEY",
 					"ZAFTYPE":"ZAF TYPE",
-					"UNAPPLIED_BALANCE": "CREDIT AMOUNT",
+					"UNBL_INGL_CURR": "CREDIT AMOUNT",
 					"CREDIT_APPLIED": "APPLIED CREDIT",
 				}
 				ordered_keys = [
 					#"ADD_ON_PRODUCT_RECORD_ID",
 					"CREDITVOUCHER_RECORD_ID",
 					"ZAFTYPE",
-					"UNAPPLIED_BALANCE",
+					"UNBL_INGL_CURR",
 					"CREDIT_APPLIED"
 				]
 				Objd_Obj = Sql.GetList(
