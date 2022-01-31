@@ -34,7 +34,9 @@ class SyncFPMQuoteAndHanaDatabase:
              
     def _insert_spare_parts(self):
         datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
-        spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.quote_record_id, datetime_string)
+        uid=str(Guid.NewGuid()).upper()
+        uids=uid.split('-')
+        spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}_{}".format(self.quote_record_id, datetime_string,str(uids[0]))
         spare_parts_temp_table_name = re.sub(r'-','_',spare_parts_temp_table_name)
         self.columns = re.sub(r'\"|\{','',self.columns)
         self.columns = re.sub(r',,',',',self.columns)
