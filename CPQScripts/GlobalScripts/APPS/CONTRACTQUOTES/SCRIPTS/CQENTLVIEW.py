@@ -480,6 +480,8 @@ class EntitlementView():
 							if attrSysId not in attributedefaultvalue:
 								Trace.Write("add_style---481--- "+str(attrSysId))
 								add_style = "color:#1B78D2"
+							else:
+								add_style = ""
 							# if attrSysId in attributedefaultvalue:
 							# 	add_style_color = ";color: red"
 							# else:
@@ -813,11 +815,11 @@ class EntitlementView():
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
 			
 			Trace.Write('---766---get_attr_leve_based_list-----'+str(list(get_attr_leve_based_list)))
-			for val in GetXMLsecField:
+			#for val in GetXMLsecField:
 				#Trace.Write(str(val.ENTITLEMENT_NAME)+'--ENT___NAME---2908----'+str(val.IS_DEFAULT))
-				if val.IS_DEFAULT == '1':
+				#if val.IS_DEFAULT == '1':
 					#Trace.Write(str(val.ENTITLEMENT_NAME)+'--2910------'+str(val.IS_DEFAULT))
-					attributedefaultvalue.append(val.ENTITLEMENT_ID)
+					#attributedefaultvalue.append(val.ENTITLEMENT_ID)
 			Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
 			sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""		
 			## set entitlement_xml for cancel fn A055S000P01-3157 starts
@@ -981,7 +983,7 @@ class EntitlementView():
 									sec_validation = "Only enter the values in the following range: -&infin; - "+str(validation_dict[attrSysId])
 								else:
 									sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+" - 0"
-							if attrSysId  in attributedefaultvalue:
+							if attrSysId  not in attributedefaultvalue:
 								Trace.Write("add_style----3077----- "+str(attrSysId))
 								add_style = "color:#1B78D2"
 							else:
