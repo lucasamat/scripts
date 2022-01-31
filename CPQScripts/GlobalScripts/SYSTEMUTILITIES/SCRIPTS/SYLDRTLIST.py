@@ -1881,7 +1881,7 @@ class SYLDRTLIST:
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start						
 						if billing_date_column:                        
 							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
-							Trace.Write('pivot_columns--'+str(pivot_columns))						
+							Trace.Write('pivot_columns--'+str(type(pivot_columns)))						
 							if Qustr:
 								if str(TreeParentParam)== "Billing":
 									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
