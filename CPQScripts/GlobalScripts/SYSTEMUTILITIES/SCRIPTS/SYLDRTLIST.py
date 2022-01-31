@@ -143,7 +143,7 @@ class SYLDRTLIST:
 		#TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 		
 		crnt_prd_val = str(CurrentModuleObj.APP_ID) or ""
-		Product_Name = ""
+		Product_Name = get_last_date_billmatxirx = ""
 		tabs = Product.Tabs or "Quotes"       
 		for tab in tabs:
 			list_of_tabs.append(tab.Name)
@@ -411,7 +411,7 @@ class SYLDRTLIST:
 															contract_quote_record_id,TreeParam, quote_revision_record_id, start, end))
 				if item_billing_plans_obj:
 					billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]
-					Trace.Write('billing_date_column---'+str(billing_date_column))
+					get_last_date_billmatxirx = billing_date_column[-1]
 					billing_date_column_joined = ",".join(["'{}'".format(billing_data) for billing_data in billing_date_column])
 					Columns = Columns.replace(']', ','+billing_date_column_joined+']')   
 			# Billing Matrix - Pivot - End
