@@ -3603,11 +3603,11 @@ class SYLDRTLIST:
 			# Item Covered Object Column Grouping - Start
 			table_group_columns = ''
 			table_group_columns_delivery = ''
-			#table_group_columns1 = ''
+			table_group_columns1 = ''
 			table_group_columns2 = ''
 			table_group_columns_delivery2 =''
-			#table_group_columns3 = ''
-			#table_group_columns4 = ''
+			table_group_columns3 = ''
+			table_group_columns4 = ''
 			#table_group_columns5 = ''
 			#A055S000P01-4401 pricing view
 			##cost grouping
@@ -4014,13 +4014,13 @@ class SYLDRTLIST:
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('QUANTITY','GREENBOOK','FABLOCATION_ID','CNTYER','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','TENVGC','TNTVGC','TNTMGC','BILTYP','PRINT_FLAG'):
 					align = ''
 					rowspan_level1 = ""
-					if not table_group_columns2:
+					if not table_group_columns:
 						table_header += '<th colspan="11" '+rowspan_level1+'  data-align="center"><div>CONTRACT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					table_group_columns2 += (
+					table_group_columns += (
 								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="'
@@ -4035,13 +4035,13 @@ class SYLDRTLIST:
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('GOT_CODE','ASSEMBLY_ID','PM_ID','PM_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOLCFG'):
 					align = ''
 					rowspan_level1 = ""
-					if not table_group_columns:
+					if not table_group_columns1:
 						table_header += '<th colspan="8" '+rowspan_level1+'  data-align="center"><div>OBJECT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					table_group_columns += (
+					table_group_columns1 += (
 								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="'
@@ -4124,13 +4124,13 @@ class SYLDRTLIST:
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('ATGKEC','ATGKEP','NWPTOC','NWPTOP','AMNCCI','AMNPPI'):
 					align = ''
 					rowspan_level1 = ""
-					if not table_group_columns2:
+					if not table_group_columns3:
 						table_header += '<th colspan="6" '+rowspan_level1+'  data-align="center"><div>CAT 4 INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cat_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					table_group_columns2 += (
+					table_group_columns3 += (
 								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="'
@@ -4146,13 +4146,13 @@ class SYLDRTLIST:
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TRGPRC','SLSPRC','BDVPRC','CELPRC','USRPRC','TGADJP','YOYPCT'):
 					align = ''
 					rowspan_level1 = ""
-					if not table_group_columns2:
+					if not table_group_columns4:
 						table_header += '<th colspan="7" '+rowspan_level1+'  data-align="center"><div>PRICE INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					table_group_columns2 += (
+					table_group_columns4 += (
 								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="'
@@ -4495,14 +4495,14 @@ class SYLDRTLIST:
 			grouping_columns = ""
 			if table_group_columns:
 				grouping_columns += table_group_columns
-			# if table_group_columns1:
-			# 	grouping_columns += table_group_columns1
+			if table_group_columns1:
+				grouping_columns += table_group_columns1
 			if table_group_columns2:
 				grouping_columns += table_group_columns2
-			# if table_group_columns3:
-			# 	grouping_columns += table_group_columns3
-			# if table_group_columns4:
-			# 	grouping_columns += table_group_columns4
+			if table_group_columns3:
+				grouping_columns += table_group_columns3
+			if table_group_columns4:
+				grouping_columns += table_group_columns4
 			# if table_group_columns5:
 			# 	grouping_columns += table_group_columns5 
 			table_header += "<tr >{}</tr>".format(grouping_columns)
