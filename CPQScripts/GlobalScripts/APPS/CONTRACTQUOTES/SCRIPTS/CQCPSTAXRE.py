@@ -9,4 +9,8 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import System.Net
 import re
 import datetime
+from System.Text.Encoding import UTF8
+from System import Convert
+import sys
 from SYDATABASE import SQL
+Sql = SQL()
