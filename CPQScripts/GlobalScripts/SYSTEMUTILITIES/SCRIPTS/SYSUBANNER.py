@@ -2314,8 +2314,10 @@ def Related_Sub_Banner(
         PrimaryValue = str(TopSuperParentParam)
         SecondLable = "Greenbook"
         SecondValue = str(TreeSuperParentParam)
-        ThirdLable = "PM ID"
-        ThirdValue = str(TreeParam)
+        ThirdLable = "Got Code"
+        ThirdValue = str(TreeParentParam)
+        FourthLable = "PM ID"
+        FourthValue = str(TreeParam)
     elif ObjName == "SAQSGB" and TreeTopSuperParentParam == "Product Offerings" and (subTabName in("Equipment Details","Equipment Entitlements","Equipment Assemblies")):
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         PrimaryLable = "Product Offering ID"
