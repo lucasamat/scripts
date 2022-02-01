@@ -16,6 +16,7 @@ from SYDATABASE import SQL
 import CQCPQC4CWB
 import CQREVSTSCH
 import re
+import time
 
 Sql = SQL()
 #from PAUPDDRYFG import DirtyFlag
@@ -150,6 +151,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 		##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		time.sleep(5)
 		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	 
 	if Product.GetGlobal("TreeParentLevel2") == "Quote Items":
@@ -790,6 +792,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
 						##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 						CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
+						time.sleep(5)
 						CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
 						if get_status.upper() == "APPROVED":
 							##Updating the Revision Approved Date while changing the status to Approved...
