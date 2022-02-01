@@ -30,6 +30,7 @@ ScriptExecutor = ScriptExecutor
 class SyncQuoteAndCustomTables:
 	def __init__(self, Quote):
 		#Log.Info("==========================>111111111111")
+		self.quote_start_time = time.time()
 		self.quote = Quote
 		#Log.Info("++++++++ QUote " + str(Quote.GetCustomField("STPAccountID").Content))
 		# self.user_id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
@@ -2032,9 +2033,12 @@ class SyncQuoteAndCustomTables:
 			Log.Info("SYPOSTINSG ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))        
 
 		sync_end_time = time.time()
+		quote_end_time = time.time()
 		# Log.Info("SALETYPE_J "+str(SalesType.get(payload_json.get("SalesType"))))
 
 		Log.Info("Sync end==> "+str(sync_end_time - sync_start_time))   
+		Log.Info("Quote CreationTime==> "+str(quote_end_time - self.quote_start_time)) 
+
 	##A055S000P01-8690 starts..
 	def salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail):
 		Sql.RunQuery("""INSERT SAQDLT (
