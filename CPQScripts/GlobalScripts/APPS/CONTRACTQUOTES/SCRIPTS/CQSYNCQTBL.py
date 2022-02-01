@@ -1517,11 +1517,14 @@ class SyncQuoteAndCustomTables:
 							if employee_object is not None:
 								Sql.RunQuery("""UPDATE SAQTMT SET OWNER_ID ='{owner_id}',OWNER_NAME = '{owner_name}',OWNER_RECORD_ID = '{owner_record_id}' WHERE QUOTE_ID = '{Quote_Id}'""".format(Quote_Id = contract_quote_data.get('C4C_QUOTE_ID'),owner_id = employee_object.EMPLOYEE_ID,owner_name = employee_object.FIRST_NAME+" "+employee_object.LAST_NAME,owner_record_id = employee_object.EMPLOYEE_RECORD_ID))
 						##A055S000P01-8690 endss..
-						if custom_fields_detail.get("PrimaryContactName"):							
+						if custom_fields_detail.get("PrimaryContactName"):	
+							Log.Info("coming inside Primary contact")						
 							employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = N'{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 							if payload_json.get('SAQICT'):
+								Log.Info("SAQICT is available")	
 								if employee_obj is None:
+									Log.Info("Employee none")	
 									for employee in payload_json.get('SAQICT'):
 										country_obj = Sql.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
 										salesorg_obj = Sql.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
@@ -1548,13 +1551,15 @@ class SyncQuoteAndCustomTables:
 										employee_dict["ADDUSR_RECORD_ID"] = User.Id
 										tableInfo = Sql.GetTable("SAEMPL")
 										tablerow = employee_dict
-										tableInfo.AddRow(tablerow)										
+										tableInfo.AddRow(tablerow)
+										Log.Info("Employee insert")											
 										Sql.Upsert(tableInfo)
 
 							employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = N'{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
-							if contact_master_table is None:								
+							if contact_master_table is None:	
+								Log.Info("Contact Master")								
 								for employee in payload_json.get('SAQICT'):									
 									contact_master_table_update = {
 										"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1582,7 +1587,8 @@ class SyncQuoteAndCustomTables:
 									Log.Info("contact_master_table_update---"+str(contact_master_table_update))
 									tableInfo = Sql.GetTable("SACONT")
 									tablerow = contact_master_table_update
-									tableInfo.AddRow(tablerow)									
+									tableInfo.AddRow(tablerow)	
+									Log.Info("Contact Master Update")									
 									Sql.Upsert(tableInfo)
 							else:
 								for employee in payload_json.get('SAQICT'):
@@ -1619,6 +1625,7 @@ class SyncQuoteAndCustomTables:
 									"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
 								}
 								quote_involved_party_contact_table_info.AddRow(contact_info_update)
+								Log.Info("SAQICT Insert")	
 								Sql.Upsert(quote_involved_party_contact_table_info)
 						
 						if contract_quote_obj and payload_json.get('SalesType') and payload_json.get('OpportunityType'):
