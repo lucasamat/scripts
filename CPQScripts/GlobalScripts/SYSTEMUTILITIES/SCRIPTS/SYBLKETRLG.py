@@ -888,6 +888,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+	TreeSuperTopParentParam = Product.GetGlobal("TreeParentLevel3")
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
 	value_list = []
@@ -906,19 +907,22 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
 		item_lines_record_ids = []
-		if (obj_name == "SAQSAP" or obj_name == "SAQRSP" or obj_name == "SAQSPT") and (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeSuperParentParam in ('Comprehensive Services','Complementary Products')):
+		if (obj_name in ('SAQSAP','SAQRSP','SAQSPT','SAQGPA') and (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeSuperParentParam in ('Comprehensive Services','Complementary Products') or (TreeSuperTopParentParam == "Comprehensive Services")):
 			selected_rows = selectPN if selectPN else selected_rows
 			qury_str = ""
 			Trace.Write(str(CLICKEDID)+'--Values-->'+str(A_Values))
 			if A_Keys!="" and A_Values!="":
 				for key,val in zip(A_Keys,A_Values):
 					if(val!=""):
-						if key=="QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID" or key=="QUOTE_REV_PO_PRODUCT_LIST_ID" or key =="QUOTE_SERVICE_PART_RECORD_ID":
+						if key in ("QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID","QUOTE_REV_PO_PRODUCT_LIST_ID","QUOTE_SERVICE_PART_RECORD_ID","QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"):
 							key="CpqTableEntryId"
 							val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 						qury_str+=" "+key+" LIKE '%"+val+"%' AND "
 			if(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQSAP" and TITLE == "PM_FREQUENCY"):
 				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam,qury_str=qury_str))
+				return ""
+			elif(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQGPA" and TITLE == "PM_FREQUENCY"):
+    			Sql.RunQuery("""UPDATE SAQGPA SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}' AND GOT_CODE = '{got_code}' AND PM_ID = '{pm_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeTopSuperParentParam,greenbook=TreeSuperParentParam,got_code=TreeParentParam,pm_id=TreeParam,qury_str=qury_str))
 				return ""
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQRSP" and (TITLE == "QUANTITY" or TITLE=="NEW_PART")):
 				Sql.RunQuery("""UPDATE SAQRSP SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}' """.format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParentParam,greenbook=TreeParam,qury_str=qury_str))
