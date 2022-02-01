@@ -747,6 +747,10 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
+
+def save_annualiziedgrid_inline(Qt_rec_id,values, MODE):
+	Trace.Write("value===values"+str(values))
+
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
@@ -1400,6 +1404,7 @@ def constructapprovalchaininformation(MODE,record_id):
 	#Trace.Write(str(sec_str))
 	return sec_str,cancel_save
 
+
 # commented the code(Approvals node functionality in Quotes explorer) -start
 
 # def aprvrapproved():
@@ -1508,6 +1513,9 @@ elif ACTION == "CBC_SAVE":
 	MODE = "SAVE"
 	Quote = Quote.GetGlobal("contract_quote_record_id")
 	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id, Quote, MODE))
+elif ACTION == "ANNUAL_ITEM_SAVE":
+	MODE = "SAVE"
+	ApiResponse = ApiResponseFactory.JsonResponse(save_annualiziedgrid_inline(Qt_rec_id, values, MODE))		
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
