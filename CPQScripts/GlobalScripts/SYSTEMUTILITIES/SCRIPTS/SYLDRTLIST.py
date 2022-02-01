@@ -3571,7 +3571,7 @@ class SYLDRTLIST:
 				+ str(list(eval(Columns)))
 				+ ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList, "ACTION" : "PRODUCT_ONLOAD_FILTER",  "SortColumn":SortColumn, "SortColumnOrder": SortColumnOrder, "PerPage": PerPage, "PageInform": PageInform, "PR_CURR": PR_CURR, "TP": TP ,"SUBTAB":"'
 				+ str(SubTab)
-				+'"}, function(data) { debugger; console.log(data);$("'
+				+'"}, function(data) { debugger; console.log("data----",data);$("'
 				+ str(table_ids)
 				+ '").bootstrapTable("load", data[0] );if (document.getElementById(\''
 				+ str(table_id)
