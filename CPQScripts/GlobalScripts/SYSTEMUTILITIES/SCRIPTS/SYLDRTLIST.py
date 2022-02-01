@@ -9464,9 +9464,10 @@ class SYLDRTLIST:
 			# buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>" 
 
 			SAQICO_dbl_clk_function += (    
-				'$("'   
-				+ str(table_ids)    
-				+ '").on("dbl-click-cell.bs.table", onClickCell); $("'  
+				# $("'   
+				# + str(table_ids)    
+				# + '").on("dbl-click-cell.bs.table", onClickCell);
+				'$("'  
 				+ str(table_ids)    
 				+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'  
 				+ str(table_ids)    
