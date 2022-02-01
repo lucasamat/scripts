@@ -366,7 +366,7 @@ class ContractQuoteItem:
 			)		
 		
 
-		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QTEREV_RECORD_ID}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
+		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
 
 		# Target (Sales) Price Discount %
 		Sql.RunQuery("""UPDATE SAQICO
@@ -445,11 +445,11 @@ class ContractQuoteItem:
 					)
 			
 			table_insert = SqlHelper.GetFirst(
-				"sp_executesql @T=N'INSERT "+str(SAQICO_BKP)+" SELECT DISTINCT QTEITM_RECORD_ID FROM (SELECT DISTINCT QTEITM_RECORD_ID, ROW_NUMBER()OVER(ORDER BY QTEITM_RECORD_ID) AS SNO FROM (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.contract_quote_revision_record_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"' )A) A WHERE SNO>= "+str(start_count)+" AND SNO<="+str(end_count)+""
+				"sp_executesql @T=N'INSERT "+str(SAQICO_BKP)+" SELECT DISTINCT QTEITM_RECORD_ID FROM (SELECT DISTINCT QTEITM_RECORD_ID, ROW_NUMBER()OVER(ORDER BY QTEITM_RECORD_ID) AS SNO FROM (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'' )A) A WHERE SNO>= "+str(start_count)+" AND SNO<="+str(end_count)+" '"
 					)
 			
 			table_insert = SqlHelper.GetFirst(
-				"sp_executesql @T=N'SELECT * INTO "+str(SAQITE_BKP)+" FROM SAQITE (NOLOCK) JOIN "+str(SAQICO_BKP)+" SAQICO_BKP ON SAQITE.QTEITM_RECORD_ID = SAQICO_BKP.QTEITM_RECORD_ID  WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"''  '")
+				"sp_executesql @T=N'SELECT * INTO "+str(SAQITE_BKP)+" FROM SAQITE (NOLOCK) JOIN "+str(SAQICO_BKP)+" SAQICO_BKP ON SAQITE.QTEITM_RECORD_ID = SAQICO_BKP.QTEITM_RECORD_ID  WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' '")
 			
 			start_count = start_count + 500
 			end_count = end_count + 500
