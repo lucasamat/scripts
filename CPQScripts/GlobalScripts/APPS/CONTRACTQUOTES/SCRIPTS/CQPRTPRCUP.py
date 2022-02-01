@@ -67,7 +67,7 @@ if GetPricingProcedure is not None:
 	dis = GetPricingProcedure.DISTRIBUTIONCHANNEL_ID
 	salesorg = GetPricingProcedure.SALESORG_ID
 	div = GetPricingProcedure.DIVISION_ID
-	exch = GetPricingProcedure.EXCHANGE_RATE_TYPE or 'F'
+	exch = GetPricingProcedure.EXCHANGE_RATE_TYPE or 'M'
 	contract_quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
 
 	#taxk1 = GetPricingProcedure.CUSTAXCLA_ID
@@ -102,7 +102,7 @@ Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 
 
 start = 1
-end = 1000
+end = 100
 L = 1
 
 # Taxm1Qurey=Sql.GetFirst("SELECT ISNULL(SRVTAXCLA_ID,1) as SRVTAXCLA_ID FROM SAQITM (NOLOCK) WHERE QUOTE_ID ='{quote}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(quote=QUOTE, revision_rec_id = revision))
@@ -132,8 +132,8 @@ if part_query or ancillary_part_query or fpm_part_query:
 		if get_part_query:      
 			partids = [p.PART_NUMBER for p in get_part_query]
 			quantity = [q.ANNUAL_QUANTITY for q in get_part_query]  
-			start = start + 1000
-			end = end + 1000
+			start = start + 100
+			end = end + 100
 			requestdata = ''
 			for currencies in ('docCurrency','globalCurrency'):
 				if len(partids) == 1:
