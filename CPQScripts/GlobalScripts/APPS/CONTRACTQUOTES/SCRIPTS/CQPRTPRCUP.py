@@ -102,7 +102,7 @@ Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 
 
 start = 1
-end = 50
+end = 10
 L = 1
 
 # Taxm1Qurey=Sql.GetFirst("SELECT ISNULL(SRVTAXCLA_ID,1) as SRVTAXCLA_ID FROM SAQITM (NOLOCK) WHERE QUOTE_ID ='{quote}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(quote=QUOTE, revision_rec_id = revision))
@@ -132,8 +132,8 @@ if part_query or ancillary_part_query or fpm_part_query:
 		if get_part_query:      
 			partids = [p.PART_NUMBER for p in get_part_query]
 			quantity = [q.ANNUAL_QUANTITY for q in get_part_query]  
-			start = start + 50
-			end = end + 50
+			start = start + 10
+			end = end + 10
 			requestdata = ''
 			for currencies in ('docCurrency','globalCurrency'):
 				if len(partids) == 1:
@@ -176,7 +176,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 					start_time = time.time()
 					#requestdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">  <soapenv:Body> <cpq_columns><root>  {"docCurrency":"'+curr+'","locCurrency":"'+curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(s)+']} </root> <CPSToken>'+str(response['access_token'])+'</CPSToken></cpq_columns> </soapenv:Body></soapenv:Envelope>'
 					requestdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">  <soapenv:Body> <cpq_columns><root>  {"docCurrency":"'+curr+'","locCurrency":"'+glb_curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(s)+']} </root> <CPSToken>'+str(response['access_token'])+'</CPSToken></cpq_columns> </soapenv:Body></soapenv:Envelope>'
-				Log.Info("requestdata==>"+str(requestdata))
+				#Log.Info("requestdata==>"+str(requestdata))
 				#response1 = webclient.UploadString(Request_URL,str(requestdata))
 				
 			LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
