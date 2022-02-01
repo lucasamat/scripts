@@ -2254,6 +2254,7 @@ class ContractQuoteItem:
 					self._quote_items_summary_insert()
 					self._simple_fpm_quote_items_insert()
 					self._insert_quote_item_fpm_forecast_parts()
+					self._insert_item_level_delivery_schedule()
 					self._simple_fpm_quote_annualized_items_insert()
 					self._quote_items_fpm_entitlement_insert()
 			elif self.is_simple_service == True:
@@ -2301,6 +2302,7 @@ class ContractQuoteItem:
 						self._quote_items_summary_insert()
 						self._simple_fpm_quote_items_insert()
 						self._insert_quote_item_fpm_forecast_parts()
+						self.self._insert_item_level_delivery_schedule()
 						self._simple_fpm_quote_annualized_items_insert()
 						self._quote_items_fpm_entitlement_insert()
 				else:
