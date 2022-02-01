@@ -405,7 +405,8 @@ Trace.Write("parts_list---"+str(parts_list)+"--parts_list---inside"+str(action_t
 
 if str(parts_list) == 'True':
 	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
-
+elif str(billing_matrix) == 'True':
+	Quote.GetCustomField('Billing_Matrix').Content = 'YES'
 if action_type == "DOCUMENT":
 	Trace.Write("inside"+str(action_type))
 	ApiResponse = ApiResponseFactory.JsonResponse(language_select())
