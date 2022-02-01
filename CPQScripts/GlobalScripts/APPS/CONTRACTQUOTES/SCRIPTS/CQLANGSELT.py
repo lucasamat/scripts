@@ -389,7 +389,18 @@ try:
 	parts_list = Param.parts_list
 except:
 	parts_list = ''
-
+try:
+	billing_matrix = Param.billing_matrix
+except:
+	billing_matrix = ''
+try:
+	delivery_schedule = Param.delivery_schedule
+except:
+	delivery_schedule = ''
+try:
+	parts_list_include = Param.parts_list_include
+except:
+	parts_list_include = ''
 Trace.Write("parts_list---"+str(parts_list)+"--parts_list---inside"+str(action_type))
 
 if str(parts_list) == 'True':
