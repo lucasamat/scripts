@@ -428,8 +428,8 @@ class ContractQuoteItem:
 		# 		Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(temp_equipment_entitlement_table)+"'' ) BEGIN DROP TABLE "+str(temp_equipment_entitlement_table)+" END  ' ")
 		# Entitlement Columns Insert
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
-		SAQICO_BKP = "SAQICO_BKP_".format(self.contract_quote_id, datetime_string)
-		SAQITE_BKP = "SAQITE_BKP".format(self.contract_quote_id, datetime_string)
+		SAQICO_BKP = "SAQICO_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
+		SAQITE_BKP = "SAQITE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
 
 		SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
 					
