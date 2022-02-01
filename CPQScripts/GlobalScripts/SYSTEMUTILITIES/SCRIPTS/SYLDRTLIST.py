@@ -9271,7 +9271,6 @@ class SYLDRTLIST:
 							new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
 						else:
 							Trace.Write("8886")
-							Trace.Write("8886"+str(value1234))
 							new_dict[value123] = value1234.upper() 
 					if value123 in edit_field:                      
 						value1234 = value1234.replace('"', "&quot;")
