@@ -9281,9 +9281,9 @@ class SYLDRTLIST:
 						if value123 in checkbox_list:
 							new_dict[value123] = value1234
 						else:
-							value1234 = str(value1234).replace('"', "&quot;")
-							value1234 = str(value1234).replace("<p>", " ")
-							value1234 = str(value1234).replace("</p>", " ")
+							value1234 = value1234.replace('"', "&quot;")
+							value1234 = value1234.replace("<p>", " ")
+							value1234 = value1234.replace("</p>", " ")
 
 							if value123 in [
 								"ERROR",
