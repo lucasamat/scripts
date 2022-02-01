@@ -102,7 +102,7 @@ Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 
 
 start = 1
-end = 100
+end = 50
 L = 1
 
 # Taxm1Qurey=Sql.GetFirst("SELECT ISNULL(SRVTAXCLA_ID,1) as SRVTAXCLA_ID FROM SAQITM (NOLOCK) WHERE QUOTE_ID ='{quote}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(quote=QUOTE, revision_rec_id = revision))
@@ -132,8 +132,8 @@ if part_query or ancillary_part_query or fpm_part_query:
 		if get_part_query:      
 			partids = [p.PART_NUMBER for p in get_part_query]
 			quantity = [q.ANNUAL_QUANTITY for q in get_part_query]  
-			start = start + 100
-			end = end + 100
+			start = start + 50
+			end = end + 50
 			requestdata = ''
 			for currencies in ('docCurrency','globalCurrency'):
 				if len(partids) == 1:
