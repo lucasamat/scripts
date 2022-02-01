@@ -113,12 +113,12 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		if get_spare_qty:
 			saqspt_total_qty = get_spare_qty.CUSTOMER_ANNUAL_QUANTITY
 		Trace.Write('---saqspd_total_qty--'+str(saqspd_total_qty))
-		Trace.Write('---saqspt_total_qty--'+str(saqspt_total_qty))
+		Trace.Write('---edited--qty----'+str(val.split('#')[2]))
 		if saqspt_total_qty:
 			Trace.Write('118----')
 			saqspd_total_qty = float(saqspd_total_qty)
 			saqspt_total_qty = float(saqspt_total_qty)
-			get_total_qty =  float(saqspd_total_qty)+float(val.split('#')[2])
+			get_total_qty =  saqspd_total_qty+float(val.split('#')[2])
 			Trace.Write("get_total_qty---"+str(get_total_qty)'----121--saqspt_total_qty--'+str(type(val.split('#')[2])))
 			if float(saqspd_total_qty) < float(saqspt_total_qty):
 				Trace.Write('---saqspd_total_qty-inside qty check-'+str(saqspd_total_qty))
