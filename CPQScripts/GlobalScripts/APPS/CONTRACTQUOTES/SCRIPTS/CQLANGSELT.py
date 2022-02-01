@@ -162,7 +162,8 @@ def _insert_subtotal_by_offerring_quote_table():
 
 get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 def insert_spare_doc(parts_list):
-	_insert_subtotal_by_offerring_quote_table()
+	if Quote.GetCustomField('INCLUDE_ITEMS').Content == 'YES':
+		_insert_subtotal_by_offerring_quote_table()
 	if str(parts_list) == 'True':
 		Trace.Write('93------')
 		Log.Info('SAQDOC---documents-')
@@ -404,6 +405,7 @@ except:
 Trace.Write("parts_list---"+str(parts_list)+"--parts_list---inside"+str(action_type))
 
 if str(parts_list) == 'True':
+	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
 	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
 elif str(billing_matrix) == 'True':
 	Quote.GetCustomField('Billing_Matrix').Content = 'YES'
