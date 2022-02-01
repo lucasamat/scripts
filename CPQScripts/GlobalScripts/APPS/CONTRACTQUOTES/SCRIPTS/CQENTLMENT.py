@@ -430,6 +430,7 @@ class Entitlements:
 		attributesdisallowedlst = []
 		attributesallowedlst = []
 		attributeReadonlylst = []
+		attriburesdisrequired_list =[]
 		attriburesrequired_list =[]
 		attributeEditonlylst = []
 		attr_tab_list_allow = []
@@ -595,8 +596,10 @@ class Entitlements:
 											attributesdisallowedlst.append(prdvalue["id"])
 										if prdvalue["visible"] == "true":							
 											attributesallowedlst.append(prdvalue["id"])
-										if prdvalue["required"] == "false":
+										if prdvalue["required"] == "true":
 											attriburesrequired_list.append(prdvalue["id"])
+										if prdvalue["required"] == "false":
+											attriburesdisrequired_list.append(prdvalue["id"])
 										if prdvalue["readOnly"] == "true":
 											attributeReadonlylst.append(prdvalue["id"])
 										if prdvalue["readOnly"] == "false":
@@ -833,8 +836,10 @@ class Entitlements:
 										attributesdisallowedlst.append(prdvalue["id"])
 									if prdvalue["visible"] == "true":							
 										attributesallowedlst.append(prdvalue["id"])
-									if prdvalue["required"] == "false":
+									if prdvalue["required"] == "true":
 										attriburesrequired_list.append(prdvalue["id"])
+									if prdvalue["required"] == "false":
+										attriburesdisrequired_list.append(prdvalue["id"])
 									if prdvalue["readOnly"] == "true":
 										attributeReadonlylst.append(prdvalue["id"])
 									if prdvalue["readOnly"] == "false":
@@ -2140,7 +2145,7 @@ class Entitlements:
 		# Trace.Write('get_conflict_message--2043----'+str(get_conflict_message))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
-		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesrequired_list
+		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesdisrequired_list,attriburesrequired_list
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
@@ -2300,7 +2305,7 @@ class Entitlements:
 				attributeReadonlylst = []
 				attributeEditonlylst = []
 				attributedefaultvalue = []
-				attriburesrequired_list =[]
+				attriburesdisrequired_list =[]
 				attributevalues = {}
 				get_conflict_message = get_conflict_message_id= ''		
 				for rootattribute, rootvalue in Fullresponse.items():
@@ -2330,7 +2335,7 @@ class Entitlements:
 									if prdvalue["readOnly"] == "false":
 										attributeEditonlylst.append(prdvalue["id"])
 									if prdvalue["required"] == "false":
-										attriburesrequired_list.append(prdvalue["id"])
+										attriburesdisrequired_list.append(prdvalue["id"])
 									for attribute in prdvalue["values"]:
 										#Trace.Write("attribute---"+str(attribute))
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
@@ -2429,14 +2434,14 @@ class Entitlements:
 		#self.ent_update(tableName,valcode, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
 		Trace.Write("Updated Successfully!!")
 		#Trace.Write('response2--Fullresponse--------'+str(Fullresponse))
-		#Trace.Write("attriburesrequired_list-------"+str(attriburesrequired_list))
+		#Trace.Write("attriburesdisrequired_list-------"+str(attriburesdisrequired_list))
 		'''try:			
 			CQENTIFLOW.iflow_entitlement(tableName,where)
 		except Exception, e:
 			Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 			Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))'''
-		attributevalues = attributeReadonlylst = attributeEditonlylst = attributedefaultvalue= attriburesrequired_list = ''
-		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,valdisplaycode,attributedefaultvalue,attriburesrequired_list
+		attributevalues = attributeReadonlylst = attributeEditonlylst = attributedefaultvalue= attriburesdisrequired_list = ''
+		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,valdisplaycode,attributedefaultvalue,attriburesdisrequired_list
 
 	def Rolldown(self):
 		configuration_status =''		
