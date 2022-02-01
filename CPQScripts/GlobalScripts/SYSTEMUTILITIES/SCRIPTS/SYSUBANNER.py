@@ -3137,9 +3137,9 @@ def Related_Sub_Banner(
             sec_rel_sub_bnr += ('<button id="delivery_save" onclick="showSdeliverysave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="delivery_cancel" onclick="showSdeliverycancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>')
         else:
             Trace.Write("TreeParam-->"+str(TreeParam))
-            Trace.Write("TabName-->"+str(TabName))
             Trace.Write("subTabName-->"+str(subTabName))
-            Trace.Write("Involved Parties button")
+            Trace.Write("Multi_buttons--->"+str(multi_buttons))
+            Trace.Write("Single_button--->"+str(add_button))
             if str(multi_buttons) != "": ##adding dynamic buttons from SYPGAC if we have more than one button
                 #Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
