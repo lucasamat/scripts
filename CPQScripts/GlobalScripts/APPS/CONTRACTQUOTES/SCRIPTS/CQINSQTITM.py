@@ -431,9 +431,7 @@ class ContractQuoteItem:
 		SAQICO_BKP = "SAQICO_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
 		SAQITE_BKP = "SAQITE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
 
-		SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
-					
-		SAQITE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQITE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQITE_BKP)+" END  ' ")
+		
 
 		start_count = 1
 		end_count = 500
@@ -443,6 +441,10 @@ class ContractQuoteItem:
 			quote_items_obj = SqlHelper.GetFirst(
 						"SELECT DISTINCT QTEITM_RECORD_ID FROM (SELECT DISTINCT QTEITM_RECORD_ID, ROW_NUMBER()OVER(ORDER BY QTEITM_RECORD_ID) AS SNO FROM (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.contract_quote_revision_record_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"' )A) A WHERE SNO>= "+str(start_count)+" AND SNO<="+str(end_count)+""
 					)
+			
+			SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str		(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
+					
+			SAQITE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQITE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQITE_BKP)+" END  ' ")
 			
 			table_insert = SqlHelper.GetFirst(
 				"sp_executesql @T=N'INSERT "+str(SAQICO_BKP)+" SELECT DISTINCT QTEITM_RECORD_ID FROM (SELECT DISTINCT QTEITM_RECORD_ID, ROW_NUMBER()OVER(ORDER BY QTEITM_RECORD_ID) AS SNO FROM (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'' )A) A WHERE SNO>= "+str(start_count)+" AND SNO<="+str(end_count)+" '"
