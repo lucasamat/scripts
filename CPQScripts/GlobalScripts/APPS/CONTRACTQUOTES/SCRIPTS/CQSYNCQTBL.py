@@ -1392,7 +1392,7 @@ class SyncQuoteAndCustomTables:
 						response_SAQTMT = webclient.UploadString(str(LOGIN_CRE.URL), str(requestdata))
 						
 					payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(contract_quote_data.get('C4C_QUOTE_ID')))
-					#Log.Info("J_PrimaryContactName_CHK_J"+str(custom_fields_detail.get("PrimaryContactName")))
+					Log.Info("J_PrimaryContactName_CHK_J"+str(custom_fields_detail.get("PrimaryContactName")))
 					
 					if payload_json_obj:
 						contract_quote_obj = None
