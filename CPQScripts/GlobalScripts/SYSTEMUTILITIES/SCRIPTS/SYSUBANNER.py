@@ -3140,8 +3140,7 @@ def Related_Sub_Banner(
             Trace.Write("subTabName-->"+str(subTabName))
             Trace.Write("Multi_buttons--->"+str(multi_buttons))
             Trace.Write("Single_button--->"+str(add_button))
-            if str(multi_buttons): ##adding dynamic buttons from SYPGAC if we have more than one button
-                Trace.Write("In Multibutton"+str(multi_buttons))
+            if len(multi_buttons)>0: ##adding dynamic buttons from SYPGAC if we have more than one button
                 for btn in multi_buttons:
                     #Trace.Write("btn---"+str(btn))
                     if ('SPLIT' in btn or 'EDIT' in btn) and subTabName =='Items':
@@ -3176,8 +3175,7 @@ def Related_Sub_Banner(
                     # else: commented because of duplicate button
                     #     Trace.Write("btn222"+str(btn))
                     #     sec_rel_sub_bnr += (btn)
-            elif str(add_button): ##adding dynamic buttons from SYPGAC if we have only one button
-                Trace.Write("In Single button"+str(add_button))
+            elif str(add_button)!='': ##adding dynamic buttons from SYPGAC if we have only one button
                 sec_rel_sub_bnr+= str(add_button)
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
         sec_rel_sub_bnr += "<div id = 'multibtn_drpdwn'></div>"
