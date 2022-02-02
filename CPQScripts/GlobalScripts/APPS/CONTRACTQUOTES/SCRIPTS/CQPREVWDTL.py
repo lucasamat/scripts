@@ -751,7 +751,9 @@ def savecbc(Qt_rec_id, Quote, MODE):
 def save_annualiziedgrid_inline(Quote,values, MODE):
 	Trace.Write("value===values"+str(values))
 	for data in values:
-		Trace.Write("data_values"+str(data))
+		records =list(data.values)
+		
+		#Trace.Write("data_values"+str(data.values))
 	
 	#for index,j in enumerate(values['KEY']):
 		#j = j.replace("SAQICO-","")
@@ -1475,6 +1477,7 @@ except:
 	quote_revision_record_id = ""
 try:
 	values = Param.VALUES
+	Trace.Write("paramvalues"+str(Param.VALUES))
 except:
 	values = ""
 if ACTION == 'QIPOPUPSER':
