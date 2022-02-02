@@ -96,7 +96,7 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 	get_delivery_date_list =[]
 	get_delivery_qty_list = []
 	get_spare_rec_list= []
-	
+	savebill = ''
 	saqspd_total_qty = 0
 	saqspt_total_qty =0
 	for val in deliverydict:
@@ -133,7 +133,7 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 			#Update_delivery_details_query = Sql.RunQuery(Update_delivery_details)
 			savebill = 'NOTSAVE'
 			#return 'not saved',savebill
-	return 'save','savebill'
+	return 'save',savebill
 try:
 	GET_DICT =list(Param.billdict)
 	
