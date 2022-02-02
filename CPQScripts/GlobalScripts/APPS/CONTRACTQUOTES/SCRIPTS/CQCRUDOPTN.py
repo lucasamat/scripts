@@ -5721,7 +5721,20 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				
 				#SAQSCA_start_time = time.time()
 				Trace.Write("@4546-5576--------"+str(record_ids))
-				self._insert_quote_service_covered_assembly(batch_group_record_id=batch_group_record_id)				
+				import re
+				service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
+				if service_entitlement_object is not None:
+					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+					quote_type_attribute = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+					quote_type_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+					XML = service_entitlement_object.ENTITLEMENT_XML
+					for values in re.finditer(pattern_tag, XML):
+						sub_string = values.group(1)
+						quotetype_id =re.findall(quote_type_attribute,sub_string)
+						quotetype_value =re.findall(quote_type_attribute_value,sub_string)
+						Trace.Write("quotetype_value -----"+str(quotetype_value))
+						if quotetype_value ==  "Tool based":
+							self._insert_quote_service_covered_assembly(batch_group_record_id=batch_group_record_id)				
 				self._insert_quote_service_fab_location(batch_group_record_id=batch_group_record_id)
 				#SAQSCA_end_time = time.time()
 				
