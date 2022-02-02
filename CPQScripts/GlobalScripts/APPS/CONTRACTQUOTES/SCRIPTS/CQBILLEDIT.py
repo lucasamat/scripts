@@ -124,6 +124,8 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		get_current_details = Sql.GetFirst("SELECT SUM(QUANTITY) as total FROM SAQSPD where QUOTE_RECORD_ID ='{ContractRecordId}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE not in {deliverydates}".format(ContractRecordId=ContractRecordId,quote_revision_record_id=quote_revision_record_id,rev_spare_rec_id=sp_rec,deliverydates=str(tuple(get_delivery_date_list)).replace(',)',')')))
 		if get_current_details:
 			saqspd_total_qty = get_current_details.total
+		get_totalqty = partrec[sp_rec]
+		Trace.Write('get_totalqty---'+str(get_totalqty))
 		get_delivery_total = float(saqspd_total_qty)+float(delivery_quantity_add)
 		Trace.Write('get_delivery_total---'+str(get_delivery_total)+'---saqspt_total_qty--'+str(saqspt_total_qty))
 		if get_delivery_total < saqspt_total_qty:
