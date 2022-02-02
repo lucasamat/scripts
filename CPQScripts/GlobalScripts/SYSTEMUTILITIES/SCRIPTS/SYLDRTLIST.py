@@ -1458,7 +1458,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,GOT_CODE,ASSEMBLY_ID,PM_ID,KIT_NAME,KIT_NUMBER,KPU,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],LINE,TENVGC,TNTVGC,TNTMGC, BILTYP,PRINT_FLAG,PM_LEVEL,TOLCFG,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,AMNCCI,AMNPPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,USRPRC,TGADJP,YOYPCT,CNTYER,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY CpqTableEntryId) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,GOT_CODE,ASSEMBLY_ID,PM_ID,KIT_NAME,KIT_NUMBER,KPU,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],LINE,TENVGC,TNTVGC,TNTMGC, BILTYP,PRINT_FLAG,PM_LEVEL,TOLCFG,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,AMNCCI,AMNPPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,USRPRC,TGADJP,YOYPCT,CNTYER,STADTE,ENDDTE,EQNODE,PROCES,SPSPCT,UIMVCI,UIMVPI,CAVVCI,CAVVPI,ATGKEY,BCHPGC,BHCPVT,CTPDFP,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY CpqTableEntryId) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
 										+ str(Page_start)
@@ -4014,7 +4014,7 @@ class SYLDRTLIST:
 				# 	continue
 				
 				#normal+Collapsaible+normal
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('QUANTITY','GREENBOOK','FABLOCATION_ID','CNTYER','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','TENVGC','TNTVGC','TNTMGC','BILTYP','PRINT_FLAG'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('QUANTITY','GREENBOOK','FABLOCATION_ID','CNTYER','STADTE','ENDDTE','TENVGC','TNTVGC','TNTMGC','BILTYP','PRINT_FLAG'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns:
@@ -4035,11 +4035,11 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('GOT_CODE','ASSEMBLY_ID','PM_ID','PM_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOLCFG'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('GOT_CODE','ASSEMBLY_ID','EQNODE','PROCES','PM_ID','PM_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOLCFG'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns1:
-						table_header += '<th colspan="8" '+rowspan_level1+'  data-align="center"><div>OBJECT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+						table_header += '<th colspan="10" '+rowspan_level1+'  data-align="center"><div>OBJECT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
@@ -4102,11 +4102,11 @@ class SYLDRTLIST:
 				# 				+ "</th>"
 				# 			)           
 				# 	continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('WTYSTE','WTYEND','WTYDAY','INWRTY'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('SPSPCT','WTYSTE','WTYEND','WTYDAY','INWRTY'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns2:
-						table_header += '<th colspan="4" '+rowspan_level1+'  data-align="center"><div>WARRANTY INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="warranty_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+						table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div>WARRANTY INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="warranty_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
@@ -4124,11 +4124,11 @@ class SYLDRTLIST:
 							)           
 					continue				
 
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('ATGKEC','ATGKEP','NWPTOC','NWPTOP','AMNCCI','AMNPPI'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('UIMVCI','UIMVPI','CAVVCI','CAVVPI','ATGKEY','ATGKEC','ATGKEP','NWPTOC','NWPTOP','AMNCCI','AMNPPI'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns3:
-						table_header += '<th colspan="6" '+rowspan_level1+'  data-align="center"><div>CAT 4 INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cat_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+						table_header += '<th colspan="11" '+rowspan_level1+'  data-align="center"><div>CAT 4 INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cat_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
@@ -4146,7 +4146,7 @@ class SYLDRTLIST:
 							)           
 					continue
 
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TRGPRC','SLSPRC','BDVPRC','CELPRC','USRPRC','TGADJP','YOYPCT'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TRGPRC','SLSPRC','BDVPRC','CELPRC','USRPRC','YOYPCT','TGADJP','BCHPGC','BHCPVT','CTPDFP'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns4:
@@ -6649,6 +6649,134 @@ class SYLDRTLIST:
 								QuryCount_str = (
 										"select count(*) as cnt FROM SAQICO where "+ str(ATTRIBUTE_VALUE_STR)+" SERVICE_ID = '"+ str(LineAndEquipIDList)+"' and FABLOCATION_ID = '"+str(TreeParam)+"'  and QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and LINE_ITEM_ID = '"+str(TreeParentParam.split(' -')[0])+"'"
 								)
+
+					elif str(RECORD_ID) == "SYOBJR-00009":
+						if Quote.GetCustomField('PRICING_PICKLIST').Content == '':
+							Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
+						if getyears == 1:
+							col_year =  'YEAR_1'
+						elif getyears == 2:
+							col_year =  'YEAR_1,YEAR_2'
+						elif getyears == 3:
+							col_year =  'YEAR_1,YEAR_2,YEAR_3'
+						elif getyears == 4:
+							col_year =  'YEAR_1,YEAR_2,YEAR_3,YEAR_4'
+						else:
+							col_year = 'YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5'        
+						if Product.GetGlobal("TreeParentLevel2") == "Quote Items":
+							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
+							acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
+							exclamation = '<img title="Approval Required" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
+							error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
+							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
+							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
+							TreeParentParam = Product.GetGlobal("TreeParentLevel1")
+							
+							try:
+								if str(TreeParentParam.split("-")[4]):
+									ServiceId = TreeParentParam.split("-")[-3].strip()
+							except:
+								ServiceId = TreeParentParam.split("-")[1].strip()                            
+							Qury_str = ("SELECT DISTINCT TOP " + str(PerPage) + " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE,NET_VALUE,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,LINE_ITEM_ID,YEAR_1,YEAR_2,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALESORG_RECORD_ID,SALES_DISCOUNT_PRICE,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],LINE,TENVGC,TNTVGC,TNTMGC, BILTYP,PRINT_FLAG,PM_LEVEL,TOLCFG,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,AMNCCI,AMNPPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,USRPRC,TGADJP,YOYPCT,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue) +"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"') m where m.ROW BETWEEN " + str(Page_start) + " AND " + str(Page_End) )
+							
+							QuryCount_str = (
+								"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQICO (nolock) WHERE QUOTE_RECORD_ID = '"
+									+ str(RecAttValue)
+									+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"' "
+							)    
+						else:
+							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
+							acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
+							exclamation = '<img title="Approval Required" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
+							error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
+							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
+							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
+							qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
+							if TreeParam == "Quote Items":
+								Trace.Write("c1")
+								##A055S000P01-4578 strts
+								#Trace.Write('xchk--')
+								saqico_cols =""
+								#pricing_curr = pricing_picklist_value
+									
+								# if pricing_picklist_value == 'Document Currency':
+								# 	saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, SALES_DISCOUNT_PRICE,TAX_AMOUNT, "+col_year
+								# 	Trace.Write('DocumentCurr----'+str(saqico_cols)) 
+								# else:
+								# 	##Global Currency
+								# 	gl_str = "_INGL_CURR"
+								# 	col_year = col_year.split(',')
+								# 	col_year = ','.join([i+gl_str for i in col_year])
+								# 	saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, SLSDIS_PRICE_INGL_CURR,TAX_AMOUNT_INGL_CURR, "+col_year
+								# 	Trace.Write('GlobalCurr----'+str(saqico_cols))
+								# Qury_str = (
+								# 	"select top "
+								# 		+ str(PerPage)
+								# 		+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, EQUIPMENT_ID,SERVICE_ID,LINE_ITEM_ID,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,YEAR_OVER_YEAR,SERIAL_NO, "+saqico_cols+", GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, TARGET_PRICE_MARGIN,++ SALDIS_PERCENT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE, PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+								# 		+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
+								# 		+ str(qt_rec_id.QUOTE_ID)
+								# 		+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
+								# 		+ str(Page_start)
+								# 		+ " and "
+								# 		+ str(Page_End)+" ORDER BY "+ str(Wh_API_NAMEs)
+								# )
+								Qury_str = (
+									"select top "
+										+ str(PerPage)
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,GOT_CODE,ASSEMBLY_ID,PM_ID,KIT_NAME,KIT_NUMBER,KPU,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],LINE,TENVGC,TNTVGC,TNTMGC, BILTYP,PRINT_FLAG,PM_LEVEL,TOLCFG,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,AMNCCI,AMNPPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,USRPRC,TGADJP,YOYPCT,CNTYER,STADTE,ENDDTE,EQNODE,PROCES,SPSPCT,UIMVCI,UIMVPI,CAVVCI,CAVVPI,ATGKEY,BCHPGC,BHCPVT,CTPDFP,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+										+") AS ROW, * from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"
+										+ str(qt_rec_id.QUOTE_ID)
+										+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
+										+ str(Page_start)
+										+ " and "
+										+ str(Page_End)+" ORDER BY "+ str(Wh_API_NAMEs)
+								)
+								##A055S000P01-4578 ends
+								QuryCount_str = (
+										"select count(*) as cnt FROM SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+							elif TreeParentParam == "Quote Items": 
+								try:
+									if str(TreeParam.split("-")[3]):
+										LineAndEquipIDList = TreeParam.split(' - ')[-2].strip()
+									else:
+										LineAndEquipIDList = TreeParam.split(' - ')[1].strip() 
+								except:
+									LineAndEquipIDList = TreeParam.split('-')[1].strip()
+								Qury_str = (
+									"select top "
+										+ str(PerPage)
+										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, SERVICE_ID, EQUIPMENT_ID,LINE_ITEM_ID,YEAR_1, SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,MODEL_PRICE, SALES_DISCOUNT_PRICE, NET_VALUE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+										+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
+										+ str(qt_rec_id.QUOTE_ID)
+										+ "' AND SERVICE_ID = '"
+										+ str(LineAndEquipIDList)
+										+ "' and LINE_ITEM_ID = '"+str(TreeParam.split(' -')[0])+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
+										+ str(Page_start)
+										+ " and "
+										+ str(Page_End)
+								)
+								QuryCount_str = (
+										"select count(*) as cnt FROM SAQICO (NOLOCK) where SERVICE_ID = '"+ str(LineAndEquipIDList) + "' and QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and LINE_ITEM_ID = '"+str(TreeParam.split(' -')[0])+"'"
+								)
+							elif TreeSuperParentParam == "Quote Items":                                    
+								LineAndEquipIDList = TreeParentParam.split('-')[1].strip()
+								Qury_str = (
+									"select top "
+										+ str(PerPage)
+										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, SERVICE_ID, EQUIPMENT_ID,LINE_ITEM_ID,YEAR_1, SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, TARGET_PRICE, SALES_DISCOUNT_PRICE, CEILING_PRICE,NET_VALUE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+										+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
+										+ str(qt_rec_id.QUOTE_ID)
+										+ "' AND SERVICE_ID = '"
+										+ str(LineAndEquipIDList)
+										+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND FABLOCATION_ID = '"+str(TreeParam)+"' and LINE_ITEM_ID = '"+str(TreeParentParam.split(' -')[0])+"') m where m.ROW BETWEEN "
+										+ str(Page_start)
+										+ " and "
+										+ str(Page_End)
+								)
+								QuryCount_str = (
+										"select count(*) as cnt FROM SAQICO (NOLOCK) where SERVICE_ID = '"+ str(LineAndEquipIDList)+"' and FABLOCATION_ID = '"+str(TreeParam)+"'  and QUOTE_ID = '"+ str(qt_rec_id.QUOTE_ID)+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and LINE_ITEM_ID = '"+str(TreeParentParam.split(' -')[0])+"'".format(
+											LineAndEquipIDList[1],str(TreeParam) ,str(qt_rec_id.QUOTE_ID)))
 							
 
 					elif str(RECORD_ID) == 'SYOBJR-98799':     
@@ -8136,7 +8264,7 @@ class SYLDRTLIST:
 									Qury_str = (
 										"select top "
 											+ str(PerPage)
-											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,GOT_CODE,ASSEMBLY_ID,PM_ID,KIT_NAME,KIT_NUMBER,KPU,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],LINE,TENVGC,TNTVGC,TNTMGC, BILTYP,PRINT_FLAG,PM_LEVEL,TOLCFG,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,AMNCCI,AMNPPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,USRPRC,TGADJP,YOYPCT,CNTYER,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,OBJECT_ID,OBJECT_TYPE,QUANTITY,EQUIPMENT_ID,GOT_CODE,ASSEMBLY_ID,PM_ID,KIT_NAME,KIT_NUMBER,KPU,SSCM_PM_FREQUENCY,ADJ_PM_FREQUENCY,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],LINE,TENVGC,TNTVGC,TNTMGC, BILTYP,PRINT_FLAG,PM_LEVEL,TOLCFG,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,AMNCCI,AMNPPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,USRPRC,TGADJP,YOYPCT,CNTYER,STADTE,ENDDTE,EQNODE,PROCES,SPSPCT,UIMVCI,UIMVPI,CAVVCI,CAVVPI,ATGKEY,BCHPGC,BHCPVT,CTPDFP,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 											+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
 											+ str(qt_rec_id.QUOTE_ID)
 											+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
