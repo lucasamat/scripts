@@ -118,7 +118,21 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		get_current_details = Sql.GetFirst("SELECT SUM(QUANTITY) as total FROM SAQSPD where QUOTE_RECORD_ID ='{ContractRecordId}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE not in {deliverydates}".format(ContractRecordId=ContractRecordId,quote_revision_record_id=quote_revision_record_id,rev_spare_rec_id=sp_rec,deliverydates=str(tuple(get_delivery_date_list)).replace(',)',')')))
 		if get_current_details:
 			saqspd_total_qty = get_current_details.total
-	return 'save','savebill'
+		get_delivery_total = float(saqspd_total_qty)+float(delivery_quantity_add)
+		Trace.Write('get_delivery_total---'+str(get_delivery_total))
+		if get_delivery_total < saqspt_total_qty:
+			Trace.Write('124-----')
+			Update_delivery_details = "UPDATE SAQSPD SET QUANTITY={qty} where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE = '{del_sch_date}'".format(qty= qty,qt_rec_id = str(ContractRecordId),rev_spare_rec_id=sp_rec,del_sch_date = deldate, revision_rec_id = quote_revision_record_id)
+			Update_delivery_details_query = Sql.RunQuery(Update_delivery_details)
+			savebill =''
+			return 'save',savebill
+		else:
+			Trace.Write('118-126-----')
+			#Update_delivery_details = "UPDATE SAQSPD SET QUANTITY={qty} where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE = '{del_sch_date}'".format(qty= val.split('#')[2],qt_rec_id = str(ContractRecordId),rev_spare_rec_id=spare_rc,del_sch_date = val.split('#')[1], revision_rec_id = quote_revision_record_id)
+			#Update_delivery_details_query = Sql.RunQuery(Update_delivery_details)
+			savebill = 'NOTSAVE'
+			return 'not saved',savebill
+	#return 'save','savebill'
 try:
 	GET_DICT =list(Param.billdict)
 	
