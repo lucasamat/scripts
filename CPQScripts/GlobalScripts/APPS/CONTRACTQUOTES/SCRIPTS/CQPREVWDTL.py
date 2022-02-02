@@ -752,8 +752,8 @@ def save_annualiziedgrid_inline(Quote,values, MODE):
 	Trace.Write("value===values"+str(values))
 	#for data in values:	
 	#	Trace.Write("data_values"+str(data))
-	for x in range(len(values)): 
-		Trace.Write("list"+str(values[x])) 
+	#for x in range(len(values)): 
+	Trace.Write("list"+str(values[0])) 
 	#for index,j in enumerate(values['KEY']):
 		#j = j.replace("SAQICO-","")
 	#	Trace.Write("UPDATE SAQICO SET ATGKEC = '"+str(values['ATGKEC'][index])+"' AND ATGKEP= '"+str(values['ATGKEP'][index])+"' WHERE CpqTableEntryId = '"+str(j)+"' ")
