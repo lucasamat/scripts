@@ -126,14 +126,14 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 			Update_delivery_details = "UPDATE SAQSPD SET QUANTITY={qty} where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE = '{del_sch_date}'".format(qty= qty,qt_rec_id = str(ContractRecordId),rev_spare_rec_id=sp_rec,del_sch_date = deldate, revision_rec_id = quote_revision_record_id)
 			Update_delivery_details_query = Sql.RunQuery(Update_delivery_details)
 			savebill =''
-			return 'save',savebill
+			#return 'save',savebill
 		else:
 			Trace.Write('118-126-----')
 			#Update_delivery_details = "UPDATE SAQSPD SET QUANTITY={qty} where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE = '{del_sch_date}'".format(qty= val.split('#')[2],qt_rec_id = str(ContractRecordId),rev_spare_rec_id=spare_rc,del_sch_date = val.split('#')[1], revision_rec_id = quote_revision_record_id)
 			#Update_delivery_details_query = Sql.RunQuery(Update_delivery_details)
 			savebill = 'NOTSAVE'
-			return 'not saved',savebill
-	#return 'save','savebill'
+			#return 'not saved',savebill
+	return 'save','savebill'
 try:
 	GET_DICT =list(Param.billdict)
 	
