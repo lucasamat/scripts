@@ -749,9 +749,9 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	return True
 
 def save_annualiziedgrid_inline(Quote,values, MODE):
-	#Trace.Write("value===values"+str(values))
+	Trace.Write("value===values"+str(values))
 	for data in values:
-		Trace.Write("data_values"+str(values))
+		Trace.Write("data_values"+str(data))
 	
 	#for index,j in enumerate(values['KEY']):
 		#j = j.replace("SAQICO-","")
