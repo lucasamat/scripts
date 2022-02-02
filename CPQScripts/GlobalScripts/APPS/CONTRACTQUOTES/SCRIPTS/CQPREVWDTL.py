@@ -1477,7 +1477,7 @@ except:
 	quote_revision_record_id = ""
 try:
 	values = Param.VALUES
-	Trace.Write("paramvalues"+str(Param.VALUES))
+	Trace.Write("paramvalues"+str(list(values)))
 except:
 	values = ""
 if ACTION == 'QIPOPUPSER':
