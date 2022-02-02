@@ -287,6 +287,11 @@ class SYLDRTLIST:
 							Columns = [ele for ele in  eval(Columns) if ele not in rem_list_sp]
 							Columns.extend(['UNIT_PRICE','EXTENDED_PRICE'])
 							Columns = str(Columns)
+						
+						if RECORD_ID == "SYOBJR-00009":
+							Trace.Write("QUOTE_ITEM_COVERED_OBJECT_RECORD_ID=======")                                
+							rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
+							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 			
 			#Hide columns in Related list based on Quote type End
 			Obj_Name = obj_obj.OBJ_REC_ID            
