@@ -748,7 +748,7 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
 
-def save_annualiziedgrid_inline(Qt_rec_id,values, MODE):
+def save_annualiziedgrid_inline(Quote,values, MODE):
 	Trace.Write("value===values"+str(values))
 
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
@@ -1515,7 +1515,8 @@ elif ACTION == "CBC_SAVE":
 	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id, Quote, MODE))
 elif ACTION == "ANNUAL_ITEM_SAVE":
 	MODE = "SAVE"
-	ApiResponse = ApiResponseFactory.JsonResponse(save_annualiziedgrid_inline(Qt_rec_id, values, MODE))		
+	Quote = Quote.GetGlobal("contract_quote_record_id")
+	ApiResponse = ApiResponseFactory.JsonResponse(save_annualiziedgrid_inline(Quote, values, MODE))		
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
