@@ -41,6 +41,11 @@ gettoolquote=Sql.GetFirst("select QUOTE_TYPE,QUOTE_ID from SAQTMT where MASTER_T
 update_rev_expire_date  = "UPDATE SAQTRV SET REV_EXPIRE_DATE = CONVERT(date,DATEADD(DAY, 90, GETDATE())) where QUOTE_RECORD_ID ='{quote_record_id}'".format(quote_record_id=contract_quote_record_id)
 Sql.RunQuery(update_rev_expire_date)
 
+def _insert_item_level_delivery_schedule():
+	insert_item_level_delivery_schedule = "INSERT SAQIPD (QUOTE_REV_ITEM_PART_DELIVERY_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,LINE,PART_DESCRIPTION,PART_NUMBER,PART_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUANTITY,QUOTE_ID,QTEITMPRT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID) select QUOTE_REV_ITEM_PART_DELIVERY_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,LINE,PART_DESCRIPTION,PART_NUMBER,PART_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUANTITY,QUOTE_ID,QTEITMPRT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQIPD where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID= '{rev_rec_id}'".format(QuoteRecordId=contract_quote_record_id,rev_rec_id=quote_revision_record_id)
+	Log.Info('insert_item_level_delivery_schedule==='+str(insert_item_level_delivery_schedule))
+	Sql.RunQuery(insert_item_level_delivery_schedule)
+
 
 #A055S000P01-10549-end
 def _insert_subtotal_by_offerring_quote_table():
