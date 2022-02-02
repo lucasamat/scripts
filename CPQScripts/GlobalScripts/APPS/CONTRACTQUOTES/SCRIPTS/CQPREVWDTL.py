@@ -750,9 +750,9 @@ def savecbc(Qt_rec_id, Quote, MODE):
 
 def save_annualiziedgrid_inline(Quote,values, MODE):
 	Trace.Write("value===values"+str(values))
-	response =""
-	response = ','.join(str(ele) for ele in values)
-	Trace.Write("response"+str(response))
+	#response =""
+	#response = ','.join(str(ele) for ele in values)
+	#Trace.Write("response"+str(response))
 	for data in values:	
 		Trace.Write("data_values"+str(data))
 	
