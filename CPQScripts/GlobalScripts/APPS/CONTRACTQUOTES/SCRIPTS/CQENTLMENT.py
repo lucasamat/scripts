@@ -1973,8 +1973,15 @@ class Entitlements:
 						if 'Z0046' in AttributeID and serviceId == 'Z0091':
 							serviceId = 'Z0046'
 						get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
-						if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
+						Fullresponse = 	{}
+						cpsmatc_incr = ''
+						attribute_code = ''
+						if get_ent_type:
+							if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
+								Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+						else:
 							Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+						if Fullresponse and cpsmatc_incr:
 							Trace.Write("Fullresponse"+str(Fullresponse))
 							Trace.Write("tableName--894---"+str(tableName))
 							Trace.Write("cpsmatc_incr--894---"+str(cpsmatc_incr))
@@ -2041,6 +2048,7 @@ class Entitlements:
 										#Trace.Write("attr_prices--912=-----"+str(attr)+str(data_dict))
 										data_dict.update(attr_value)
 										attr_level_pricing.append(data_dict)
+										
 										#Trace.Write("attr_prices----"+str(attr))
 										# data_dict = {'key':AttributeID}
 										# data_dict.update(attr_value)
