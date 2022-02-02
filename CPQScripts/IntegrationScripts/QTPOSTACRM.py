@@ -85,6 +85,7 @@ try:
 			response_MAMSOP = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 
 	def cpq_to_ecc(Qt_id,Rev_id):
+		Log.Info("====> QTPOSTACRM for---cpq_to_ecc")
 		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
 		if LOGIN_CREDENTIALS is not None:
 			Login_Username = str(LOGIN_CREDENTIALS.Username)
