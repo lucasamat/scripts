@@ -2723,7 +2723,7 @@ class SYLDRTLIST:
 							+ str(PerPage)
 							+ " "
 							+ str(select_obj_str)
-							+ ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(partition by SAQSPT.PART_NUMBER order by SAQSPT.PART_NUMBER) AS ROW, * from "
+							+ ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(partition by SAQSPT.PART_NUMBER order by SAQSPT.PAR_PART_NUMBER) AS ROW, * from "
 							+ str(ObjectName)
 							+ " (nolock) "
 							+ str(Qustr)
