@@ -2232,7 +2232,6 @@ class SYLDRTLIST:
 						)
 						
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
-						Trace.Write('@2230-->'+str(Qury_str))
 				if RECORD_ID == "SYOBJR-94442" and str(current_tab) == "Tab":                    
 					Qury_str = (
 						"SELECT TOP "
@@ -2717,6 +2716,25 @@ class SYLDRTLIST:
 					)
 					
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' "
+				elif RECORD_ID == "SYOBJR-00005":
+					Trace.Write('@2720-->')
+					Qury_str = (
+							"select DISTINCT top "
+							+ str(PerPage)
+							+ " "
+							+ str(select_obj_str)
+							+ ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(partition by SAQSPT.PART_NUMBER order by SAQSPT.PART_NUMBER) AS ROW, * from "
+							+ str(ObjectName)
+							+ " (nolock) "
+							+ str(Qustr)
+							+ " ORDER BY ROW,SAQSPT.CUSTOMER_PART_NUMBER) m where m.ROW BETWEEN "
+							+ str(Page_start)
+							+ " and "
+							+ str(Page_End)
+							+ ""
+						)
+						
+					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 				elif RECORD_ID == "SYOBJR-00030":
 					Qury_str = (
 						"select DISTINCT top "
