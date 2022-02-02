@@ -5732,7 +5732,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						sub_string = values.group(1)
 						quotetype_id =re.findall(quote_type_attribute,sub_string)
 						quotetype_value =re.findall(quote_type_attribute_value,sub_string)
-						Trace.Write("quotetype_value -----"+str(quotetype_value))
+						#Trace.Write("quotetype_value -----"+str(quotetype_value))
 						if quotetype_value ==  "Tool based":
 							self._insert_quote_service_covered_assembly(batch_group_record_id=batch_group_record_id)				
 				self._insert_quote_service_fab_location(batch_group_record_id=batch_group_record_id)
@@ -5836,10 +5836,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				Entitlement_end_time = time.time()
 				#Log.Info("Entitlement end==> "+str(Entitlement_end_time - Entitlement_start_time))
 
-				# self._process_query(
-				# 	"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-				# 		BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
-				# 	))
+				self._process_query(
+					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
+					))
 				covered_end_time = time.time()
 				#Log.Info("ADD_COVERED_OBJ end==> "+str(covered_end_time - covered_start_time) +" QUOTE ID----"+str(self.contract_quote_id))
 				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='CMP' """.format(str(self.contract_quote_record_id),self.quote_revision_record_id))
@@ -5848,16 +5848,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				# 	CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"PREDEFINED DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
 				# except:
 				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
-			Trace.Write("self.applied_preventive_maintainence_quote_type_changed "+str(self.applied_preventive_maintainence_quote_type_changed))
-			Trace.Write("self.pmevents_changes_insert "+str(self.pmevents_changes_insert))
-			Trace.Write("self.pm_entlmnt_val"+str(pm_entlmnt_val))
 			if self.applied_preventive_maintainence_quote_type_changed == "Yes":
-				Trace.Write("applied_preventive_maintainence_quote_type_changed --->1")
 				quote_type_attribute_value = "Event Based"
 				batch_group_record_id = ""
-				Trace.Write("applied_preventive_maintainence_quote_type_changed --->2")
 				self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed)
-				Trace.Write("applied_preventive_maintainence_quote_type_changed --->3")
 			if self.pmevents_changes_insert == "Yes":
 				batch_group_record_id = str(Guid.NewGuid()).upper()
 				equipment_record_ids = []
@@ -5867,7 +5861,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					equipment_record_ids.append(service_equipment.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)
 
 				record_ids = str(equipment_record_ids).replace("'","").replace("[","").replace("]","")
-				Trace.Write("record_ids--->"+str(record_ids))
 				# primaryQueryItems = Sql.RunQuery("INSERT SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT SAQFEQ.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, 'IN PROGRESS' as BATCH_STATUS, SAQFEQ.QUOTE_ID, SAQFEQ.QUOTE_RECORD_ID, '"+str(batch_group_record_id)+"' as BATCH_GROUP_RECORD_ID,'"+str(self.quote_revision_record_id)+"' as QTEREV_RECORD_ID FROM SAQFEQ (NOLOCK) JOIN splitstring('"+record_ids+"') ON ltrim(rtrim(NAME)) = SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID")
 
 				service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
@@ -5894,12 +5887,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							Trace.Write("555 "+str(self.tree_param)+" 555 "+str(pm_event_attribute_value))
 							if (self.tree_param in ("Z0035","Z0091","Z0009","Z0004") and "Included - All PM" in pm_event_attribute_value):
 								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND"
-								Trace.Write("additional_where_chk_1 "+str(additional_where))
 							elif (self.tree_param in ("Z0035","Z0091",) and "Included - Monthly and Above" in pm_event_attribute_value):
 								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND (MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly' OR MAEAPK.PM_ID = 'Semi-Annual' OR MAEAPK.PM_ID = 'Annual') AND"
 							elif (self.tree_param in ("Z0092","Z0099") and ("Included - Quarterly and Above" in pm_event_attribute_value or "Included - Qtrly and Above" in pm_event_attribute_value)):
 								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND (MAEAPK.PM_ID = 'Quarterly' OR MAEAPK.PM_ID = 'Semi-Annual' OR MAEAPK.PM_ID = 'Annual') AND"
-								Trace.Write("additional_where_chk "+str(additional_where))
 							elif (self.tree_param in ("Z0099") and ("Included - Monthly and Above" in pm_event_attribute_value)):
 								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND (MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly' OR MAEAPK.PM_ID = 'Semi-Annual' OR MAEAPK.PM_ID = 'Annual') AND"
 							if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded" or (self.tree_param in ("Z0099") and "Included - All PM" not in pm_event_attribute_value)):
