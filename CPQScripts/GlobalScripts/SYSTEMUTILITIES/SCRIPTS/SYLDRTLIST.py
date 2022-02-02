@@ -470,7 +470,7 @@ class SYLDRTLIST:
 			table_header = (
 				'<table id="'
 				+ table_id
-				+ '" data-pagination="false" data-filter-control="true" class = "items_grid"  data-maintain-selected="true" data-locale = "en-US"><thead>'
+				+ '" data-pagination="false" data-filter-control="true"  data-maintain-selected="true" data-locale = "en-US"><thead>'
 			)
 		else:
 			table_header = (
