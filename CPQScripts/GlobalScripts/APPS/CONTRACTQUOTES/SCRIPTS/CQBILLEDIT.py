@@ -15,6 +15,13 @@ Sql = SQL()
 ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 get_total_qty =0
+delivery_quantity_add =0
+get_delivery_date_list =[]
+get_delivery_qty_list = []
+get_spare_rec_list= []
+
+saqspd_total_qty = 0
+saqspt_total_qty =0
 def remove_list(t):
 	return t[3:]
 
@@ -92,13 +99,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 
 def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 	#Trace.Write('98-----deliverydict-'+str(deliverydict))
-	delivery_quantity_add =0
-	get_delivery_date_list =[]
-	get_delivery_qty_list = []
-	get_spare_rec_list= []
 	
-	saqspd_total_qty = 0
-	saqspt_total_qty =0
 	for val in deliverydict:
 		spare_rc = val.split('#')[0]
 		get_spare_rec_list.append(spare_rc)
