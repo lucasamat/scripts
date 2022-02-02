@@ -2232,7 +2232,7 @@ class SYLDRTLIST:
 						)
 						
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
-
+						Trace.Write('@2230-->'+str(Qury_str))
 				if RECORD_ID == "SYOBJR-94442" and str(current_tab) == "Tab":                    
 					Qury_str = (
 						"SELECT TOP "
