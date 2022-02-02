@@ -4575,7 +4575,7 @@ class SYLDRTLIST:
 
 		else:
 			if RECORD_ID != "SYOBJR-00009":
-    			local_variable = "PM_FrequencyBulkedit" if RECORD_ID == "SYOBJR-95556" else "PartsListBulkedit"
+				local_variable = "PM_FrequencyBulkedit" if RECORD_ID == "SYOBJR-95556" else "PartsListBulkedit"
 				Trace.Write('@4578'+str(local_variable)+''+str(RECORD_ID))
 				dbl_clk_function += (
 					'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
