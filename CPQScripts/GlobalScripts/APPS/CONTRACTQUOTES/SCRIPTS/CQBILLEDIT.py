@@ -107,7 +107,7 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		Trace.Write('---get_delivery_recs--'+str(get_delivery_recs)+'--spare_rc---'+str(type(get_delivery_recs)))
 		Trace.Write('--delivery_quantity-'+str(delivery_quantity))
 		get_current_details = Sql.GetFirst("SELECT SUM(QUANTITY) as total FROM SAQSPD where QUOTE_RECORD_ID ='{ContractRecordId}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE not in {deliverydates}".format(ContractRecordId=ContractRecordId,quote_revision_record_id=quote_revision_record_id,rev_spare_rec_id=spare_rc,deliverydates=get_delivery_recs))
-		if get_current_details:
+		'''if get_current_details:
 			saqspd_total_qty = get_current_details.total
 		get_spare_qty = Sql.GetFirst("SELECT CUSTOMER_ANNUAL_QUANTITY from SAQSPT where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and QUOTE_SERVICE_PART_RECORD_ID='{rev_spare_rec_id}'".format(revision_rec_id = quote_revision_record_id,rev_spare_rec_id=spare_rc,qt_rec_id = str(ContractRecordId)))
 		if get_spare_qty:
@@ -134,8 +134,8 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 				return 'not saved',savebill
 		else:
 			savebill = 'NOTSAVE'
-			return 'not saved',savebill
-	#return 'save','savebill'
+			return 'not saved',savebill'''
+	return 'save','savebill'
 try:
 	GET_DICT =list(Param.billdict)
 	
