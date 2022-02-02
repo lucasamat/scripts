@@ -13,7 +13,9 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import System.Net
 #import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
-
+import datetime
+import time
+from datetime import timedelta , date
 Sql = SQL()
 
 class ContractQuoteSpareOpertion:
@@ -141,6 +143,23 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		ContractQuoteSpareOpertion.__init__(self,  **kwargs)
 		self.columns = ""
 		self.records = ""
+
+	def insert_delivery_schedule(self):
+		try:
+			if str(self.tree_param) == "Z0108":
+				quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
+				contract_start_date = quotedetails.CONTRACT_VALID_FROM
+				contract_end_date = quotedetails.CONTRACT_VALID_TO
+				start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
+				end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
+				diff1 = end_date - start_date
+				get_totalweeks,remainder = divmod(diff1.days,7)
+				for index in range(0, get_totalweeks):
+					delivery_week_date="DATEADD(week, {weeks}, '{DeliveryDate}')".format(weeks=index, DeliveryDate=start_date.strftime('%m/%d/%Y'))
+					
+					getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,PART_NUMBER,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,PART_NUMBER, 0 as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= self.contract_quote_record_id,qt_rev_id = self.contract_quote_revision_record_id))
+		except:
+			pass
 
 	def _insert_spare_parts(self):
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
@@ -275,6 +294,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			# 	self.records.append(tuple(data))
 			# 	Trace.Write("data ====>>> "+str(list(data)))
 		self._insert_spare_parts()
+		self.insert_delivery_schedule()
 		return "Import Success"
 
 
