@@ -3266,6 +3266,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')
 		self.applied_preventive_maintainence_quote_type_changed = kwargs.get('applied_preventive_maintainence_quote_type_changed')
+		self.entitlement_value = kwargs.get('entitlement_value')
 		self.pmevents_changes_insert =  kwargs.get('pmevents_changes_insert')
 		self.pm_entlmnt_val = kwargs.get('pm_entlmnt_val')
 		self.node_id = ""
@@ -4888,7 +4889,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		return True
 	
 	def applied_preventive_maintainence(self, **kwargs):
-		Trace.Write("adding treaces to check")
 		###Deleting the SAQSCA,SAQSAP and SAQSKP TABLE records when the user is changing the quote type from Tool Based to other values...
 		if kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes":
 			delete_obj_list = ["SAQSCA","SAQSAP","SAQSKP"]
@@ -5761,7 +5761,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						if pm_event_attribute_id and self.tree_param != 'Z0009':
 							pm_event_attribute_value =str(pm_entlmnt_val)
 							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
-							Trace.Write("555 "+str(self.tree_param)+" 555 "+str(pm_event_attribute_value))
+							#Trace.Write("555 "+str(self.tree_param)+" 555 "+str(pm_event_attribute_value))
 							if (self.tree_param in ("Z0035","Z0091","Z0009","Z0004") and "Included - All PM" in pm_event_attribute_value):
 								additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND"
 								Trace.Write("additional_where_chk_1 "+str(additional_where))
@@ -5823,7 +5823,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					except:
 						ancillary_dict = ""
 					
-					Trace.Write("---ancillary_dict--"+str(ancillary_dict))
+					#Trace.Write("---ancillary_dict--"+str(ancillary_dict))
 					try:
 						#quote_ent_roll = self.contract_quote_record_id+"=="+str(ancillary_dict)
 						#and str(self.tree_param) == ancillary_dict_val
@@ -5849,7 +5849,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				# except:
 				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
 			if self.applied_preventive_maintainence_quote_type_changed == "Yes":
-				quote_type_attribute_value = "Event Based"
+				quote_type_attribute_value = self.entitlement_value
 				batch_group_record_id = ""
 				self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed)
 			if self.pmevents_changes_insert == "Yes":
@@ -6674,6 +6674,10 @@ else:
 		except:
 			applied_preventive_maintainence_quote_type_changed = "No"
 		try:
+			entitlement_value = Param.entitlement_value
+		except:
+			entitlement_value = ""
+		try:
 			pmevents_changes_insert = Param.pmevents_changes_insert
 		except:
 			pmevents_changes_insert = "No"
@@ -6688,7 +6692,7 @@ else:
 node_object = Factory(node_type)(
 	opertion=opertion, action_type=action_type, table_name=table_name, values=values, 
 	all_values=all_values, trigger_from=trigger_from, contract_quote_record_id=contract_quote_record_id, 
-	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,inclusion = inclusion,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed,pmevents_changes_insert= pmevents_changes_insert,pm_entlmnt_val=pm_entlmnt_val
+	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,inclusion = inclusion,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed,pmevents_changes_insert= pmevents_changes_insert,pm_entlmnt_val=pm_entlmnt_val,entitlement_value = entitlement_value
 )
 
 if opertion == "INSERT":

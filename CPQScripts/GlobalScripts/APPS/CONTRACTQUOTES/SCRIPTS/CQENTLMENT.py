@@ -1162,6 +1162,7 @@ class Entitlements:
 											"NodeType"   : "COVERED OBJ MODEL",
 											"ActionType" : "ADD_COVERED_OBJ",
 											"Opertion"    : "ADD",
+											"entitlement_value": entitlement_value,
 											"applied_preventive_maintainence_quote_type_changed": "Yes"
 										},
 									)
