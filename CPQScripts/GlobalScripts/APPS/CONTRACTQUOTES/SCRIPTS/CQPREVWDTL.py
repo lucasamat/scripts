@@ -750,12 +750,7 @@ def savecbc(Qt_rec_id, Quote, MODE):
 
 def save_annualiziedgrid_inline(Quote,values, MODE):
 	Trace.Write("value===values"+str(values))
-	Trace.Write("value===values2"+str(list(values)))
-	for data in values:	
-		for detail in data:
-			Trace.Write(str(detail.Key)+"data_valu"+str(detail.Value))
-	#for x in range(len(values)): 
-	#Trace.Write("list"+str(values[0])) 
+	 
 	#for index,j in enumerate(values['KEY']):
 		#j = j.replace("SAQICO-","")
 	#	Trace.Write("UPDATE SAQICO SET ATGKEC = '"+str(values['ATGKEC'][index])+"' AND ATGKEP= '"+str(values['ATGKEP'][index])+"' WHERE CpqTableEntryId = '"+str(j)+"' ")
