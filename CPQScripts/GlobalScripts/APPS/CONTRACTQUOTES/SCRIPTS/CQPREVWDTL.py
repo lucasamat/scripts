@@ -750,7 +750,9 @@ def savecbc(Qt_rec_id, Quote, MODE):
 
 def save_annualiziedgrid_inline(Quote,values, MODE):
 	Trace.Write("value===values"+str(values))
-
+	for index,j in enumerate(values['KEY']):
+		j = j.replace("SAQICO-","")
+		Trace.Write("UPDATE SAQICO SET ATGKEC = '"+str(values['ATGKEC'][index])+"' AND ATGKEP= '"+str(values['ATGKEP'][index])+"' WHERE CpqTableEntryId = '"+str(j)+"' ")
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
