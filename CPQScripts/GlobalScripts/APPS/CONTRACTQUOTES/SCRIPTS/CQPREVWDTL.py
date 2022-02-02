@@ -753,11 +753,8 @@ def save_annualiziedgrid_inline(Quote,values, MODE):
 	response =""
 	response = ','.join(str(ele) for ele in values)
 	Trace.Write("response"+str(response))
-	
-	#for data in values:
-	#	records =list(data.values)
-		
-		#Trace.Write("data_values"+str(data.values))
+	for data in values:	
+		Trace.Write("data_values"+str(data))
 	
 	#for index,j in enumerate(values['KEY']):
 		#j = j.replace("SAQICO-","")
