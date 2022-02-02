@@ -671,6 +671,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 	##FPM QUOTE SCENARIO
 	getfpm_quote_type = Sql.GetFirst("SELECT QUOTE_TYPE,QUOTE_ID,QTEREV_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}' AND QUOTE_TYPE = 'ZWK1 - SPARES' ".format(contract_quote_rec_id,quote_revision_record_id))
 	if getfpm_quote_type:
+		Log.Info("====> QTPOSTACRM for FPM called from ==> "+str(getfpm_quote_type.QUOTE_ID)+'--'+str(getfpm_quote_type.QTEREV_ID))
 		ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':getfpm_quote_type.QUOTE_ID,'REVISION_ID':getfpm_quote_type.QTEREV_ID, 'Fun_type':'CPQ_TO_ECC'})	
 	# Quote Item Inserts - Starts
 	if quote_item_insert == 'yes' and Text == "COMPLETE STAGE":
