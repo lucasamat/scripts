@@ -92,20 +92,28 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 
 def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 	Trace.Write('98-----deliverydict-'+str(deliverydict))
-	get_delivery_list =[]
+	delivery_quantity_add =0
+	get_delivery_date_list =[]
+	get_delivery_qty_list = []
+	get_spare_rec_list= []
 	
 	saqspd_total_qty = 0
 	saqspt_total_qty =0
 	for val in deliverydict:
 		spare_rc = val.split('#')[0]
+		get_spare_rec_list.append(spare_rc)
 		delivery_date = val.split('#')[1]
 		delivery_quantity = val.split('#')[2]
-		get_delivery_list.append(delivery_date)
-		 
+		get_delivery_qty_list.append(delivery_quantity)
+		Trace.Write('delivery_quantity--'+str(delivery_quantity))
+		get_delivery_date_list.append(delivery_date)
+		delivery_quantity_add += float(delivery_quantity)
 		get_delivery_recs = str(tuple(get_delivery_list)).replace(',)',')')
+	join_all_list = zip(get_delivery_qty_list,get_delivery_date_list,get_spare_rec_list)
+	Trace.Write('join_all_list---'+str(join_all_list))
 		#SubTab = getamtval[0]
 		#getannual_amt = value[3]
-		get_spare_qty = Sql.GetFirst("SELECT CUSTOMER_ANNUAL_QUANTITY from SAQSPT where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and QUOTE_SERVICE_PART_RECORD_ID='{rev_spare_rec_id}'".format(revision_rec_id = quote_revision_record_id,rev_spare_rec_id=spare_rc,qt_rec_id = str(ContractRecordId)))
+		'''get_spare_qty = Sql.GetFirst("SELECT CUSTOMER_ANNUAL_QUANTITY from SAQSPT where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and QUOTE_SERVICE_PART_RECORD_ID='{rev_spare_rec_id}'".format(revision_rec_id = quote_revision_record_id,rev_spare_rec_id=spare_rc,qt_rec_id = str(ContractRecordId)))
 		if get_spare_qty:
 			saqspt_total_qty = get_spare_qty.CUSTOMER_ANNUAL_QUANTITY
 		#Trace.Write('---get_delivery_recs--'+str(get_delivery_recs)+'--spare_rc---'+str(type(get_delivery_recs)))
@@ -118,7 +126,7 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		Trace.Write('---edited--qty-117---'+str(val.split('#')[2]))
 		get_total_qty  =  saqspd_total_qty+float(val.split('#')[2])
 		Trace.Write('qty--'+str(get_total_qty)+'----'+str(type(get_total_qty)))
-		'''if saqspt_total_qty:
+		if saqspt_total_qty:
 			Trace.Write('118----')
 			saqspd_total_qty = float(saqspd_total_qty)
 			saqspt_total_qty = float(saqspt_total_qty)
