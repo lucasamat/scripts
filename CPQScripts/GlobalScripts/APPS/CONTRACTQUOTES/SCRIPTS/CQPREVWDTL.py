@@ -752,7 +752,7 @@ def save_annualiziedgrid_inline(Quote,values, MODE):
 	Trace.Write("value===values"+str(values))
 	Trace.Write("value===values2"+str(list(values)))
 	for data in values:
-		Trace.Write(str(data.Key)+"data_valu"+str(data.Value))
+		Trace.Write("data_valu"+str(list(data)))
 	#for x in range(len(values)): 
 	#Trace.Write("list"+str(values[0])) 
 	#for index,j in enumerate(values['KEY']):
