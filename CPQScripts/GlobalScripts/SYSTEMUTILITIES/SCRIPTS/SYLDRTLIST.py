@@ -4300,9 +4300,9 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)  
-						if invs == "LINE"and RECORD_ID != 'SYOBJR-98873' and RECORD_ID != 'SYOBJR-98872' :
+						if invs == "LINE"and RECORD_ID != 'SYOBJR-98873' :
 							Trace.Write("CHKNG_J_07 "+str(qstring))
-							if RECORD_ID == "SYOBJR-98877":
+							if RECORD_ID == "SYOBJR-98877" or RECORD_ID == "SYOBJR-98872":
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
