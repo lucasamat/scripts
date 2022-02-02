@@ -169,6 +169,8 @@ get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE
 def insert_spare_doc(parts_list):
 	if Quote.GetCustomField('INCLUDE_ITEMS').Content == 'YES':
 		_insert_subtotal_by_offerring_quote_table()
+	elif Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content == 'YES':
+		_insert_item_level_delivery_schedule()
 	if str(parts_list) == 'True':
 		Trace.Write('93------')
 		Log.Info('SAQDOC---documents-')
@@ -414,6 +416,8 @@ if str(parts_list) == 'True':
 	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
 elif str(billing_matrix) == 'True':
 	Quote.GetCustomField('Billing_Matrix').Content = 'YES'
+elif str(parts_list_include) == 'True':
+	Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content = 'YES'
 if action_type == "DOCUMENT":
 	Trace.Write("inside"+str(action_type))
 	ApiResponse = ApiResponseFactory.JsonResponse(language_select())
