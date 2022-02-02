@@ -466,11 +466,11 @@ class SYLDRTLIST:
 				+ table_id
 				+ '" data-pagination="false" data-filter-control="true" data-detail-view="true" data-maintain-selected="true" data-locale = "en-US"><thead>'
 			)
-		elif 'SYOBJR_98872' in table_id or 'SYOBJR_98873' in table_id:
+		elif 'SYOBJR_98873' in table_id:
 			table_header = (
 				'<table id="'
 				+ table_id
-				+ '" data-pagination="false" data-filter-control="true"  data-maintain-selected="true" data-locale = "en-US"><thead>'
+				+ '" data-pagination="false" data-filter-control="true" class = "items_grid"  data-maintain-selected="true" data-locale = "en-US"><thead>'
 			)
 		else:
 			table_header = (
@@ -4275,19 +4275,6 @@ class SYLDRTLIST:
 						
 						if (str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" and str(Product.GetGlobal("TreeParentLevel2"))=="Product Offerings") or (str(RECORD_ID)=="SYOBJR-00005" and str(invs) == "CUSTOMER_ANNUAL_QUANTITY" and str(TreeParentParam)=="Complementary Products") or (SubTab.upper() =='INCLUSIONS' and str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY"  and str(Product.GetGlobal("TreeParentLevel1"))=="Product Offerings") and TreeParam in ('Z0092','Z0006','Z0009'):
 							data_formatter = "partsListEditLink" if getRevision.REVISION_STATUS!='APPROVED' else ''
-							table_header += (
-								'<th  data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
-								+ str(qstring)
-								+ '" data-formatter="'+str(data_formatter)+'" data-sortable="true" '
-								+ rowspan
-								+'>'
-								+ str(qstring)
-								+ "</th>"
-								)
-						elif (str(RECORD_ID) == "SYOBJR-95556" and str(invs)=="PM_FREQUENCY"):
-							data_formatter = "PMFrequencyBulkEditHyperLink" if getRevision.REVISION_STATUS!="APPROVED" else ""
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
