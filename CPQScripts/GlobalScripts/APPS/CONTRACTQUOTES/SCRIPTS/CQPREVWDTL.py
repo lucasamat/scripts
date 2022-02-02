@@ -752,11 +752,15 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
 
-def save_annualiziedgrid_inline(Quote,values, MODE):
-	Trace.Write("value===values"+str(values))
-	Trace.Write("value===values2"+str(list(eval(values))))
-	for data in list(eval(values)):
-		Trace.Write("data_valu"+str(data))
+def save_annualiziedgrid_inline(Quote,line,YOYPCT,TRGPRC,MODE):
+	#Trace.Write("value===values"+str(values))
+	#Trace.Write("value===values2"+str(list(eval(values))))
+	for index,val in enumerate(line):
+		Trace.Write("UPDATE TABLE SET TRGPRC = '"+TRGPRC[index]+"' , TRRC = '"+str(YOYPCT[index])+"' WHERE LINE = '"+line[index]+"' ")
+	
+	
+	#for data in list(eval(values)):
+		#Trace.Write("data_valu"+str(data))
 	#for x in range(len(values)): 
 	#Trace.Write("list"+str(values[0])) 
 	#for index,j in enumerate(values['KEY']):
@@ -1480,10 +1484,23 @@ try:
 except:
 	quote_revision_record_id = ""
 try:
-	values = Param.VALUES
-	Trace.Write("paramvalues"+str(list(values)))
+	line = Param.line
 except:
-	values = ""
+	line = ""
+try:
+	YOYPCT = Param.YOYPCT
+except:
+	YOYPCT = ""
+try:
+	TRGPRC = Param.TRGPRC
+except:
+	TRGPRC = ""
+
+
+try: 
+	params = Param.params
+except:
+	params = ""
 if ACTION == 'QIPOPUPSER':
 	#ApiResponse = ApiResponseFactory.JsonResponse(popupuser())
 	pass
@@ -1528,7 +1545,7 @@ elif ACTION == "CBC_SAVE":
 elif ACTION == "ANNUAL_ITEM_SAVE":
 	MODE = "SAVE"
 	Quote = Quote.GetGlobal("contract_quote_record_id")
-	ApiResponse = ApiResponseFactory.JsonResponse(save_annualiziedgrid_inline(Quote, values, MODE))		
+	ApiResponse = ApiResponseFactory.JsonResponse(save_annualiziedgrid_inline(Quote,line,YOYPCT,TRGPRC,MODE))		
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
