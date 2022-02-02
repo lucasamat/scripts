@@ -432,7 +432,8 @@ class ContractQuoteItem:
 		SAQITE_BKP = "SAQITE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
 
 		
-
+		Log.Info(str(self.contract_quote_id)+"===SAQICO_BKP==>> "+str(SAQICO_BKP))
+		Log.Info(str(self.contract_quote_id)+"===SAQITE_BKP==>> "+str(SAQITE_BKP))
 		start_count = 1
 		end_count = 500
 
@@ -451,18 +452,22 @@ class ContractQuoteItem:
 					)
 			
 			table_insert = SqlHelper.GetFirst(
-				"sp_executesql @T=N'SELECT * INTO "+str(SAQITE_BKP)+" FROM SAQITE (NOLOCK) JOIN "+str(SAQICO_BKP)+" SAQICO_BKP ON SAQITE.QTEITM_RECORD_ID = SAQICO_BKP.QTEITM_RECORD_ID  WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' '")
+				"sp_executesql @T=N'SELECT SAQITE.* INTO "+str(SAQITE_BKP)+" FROM SAQITE (NOLOCK) JOIN "+str(SAQICO_BKP)+" SAQICO_BKP ON SAQITE.QTEITM_RECORD_ID = SAQICO_BKP.QTEITM_RECORD_ID  WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' '")
 			
 			start_count = start_count + 500
 			end_count = end_count + 500
 
 			if str(quote_items_obj) != "None":
 				# Service Complexity
-				S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SCMVDV = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_UD, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_UD, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_"+str(self.service_id)+"_VAL_SCCCDF'',entitlement_xml),charindex (''Service Complexity</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_"+str(self.service_id)+"_VAL_SCCCDF'',entitlement_xml)+len(''Service Complexity</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''Service Complexity'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")
+				S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SCMVDV = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_UD, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_UD, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_"+str(self.service_id)+"_VAL_SCCCDF'',entitlement_xml),charindex (''Service Complexity</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_"+str(self.service_id)+"_VAL_SCCCDF'',entitlement_xml)+len(''Service Complexity</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''Service Complexity'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")
 
 				S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SCMVDC = ISNULL(CONVERT(FLOAT,ENTITLEMENT_VALUE_CODE),0) FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_UD, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_VALUE_CODE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_UD, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_"+str(self.service_id)+"_VAL_SCCCDF'',entitlement_xml),charindex (''Service Complexity</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_"+str(self.service_id)+"_VAL_SCCCDF'',entitlement_xml)+len(''Service Complexity</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''Service Complexity'' AND ISNULL(ENTITLEMENT_VALUE_CODE,'''') <>''''  '")
 			else:
 				exit_flag = 0
+			
+			SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str		(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
+					
+			SAQITE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQITE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQITE_BKP)+" END  ' ")
 		return True
 
 	def _quote_annualized_items_insert_old(self, update=False):			
