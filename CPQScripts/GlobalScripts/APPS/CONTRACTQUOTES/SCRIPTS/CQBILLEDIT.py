@@ -108,7 +108,7 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		Trace.Write('delivery_quantity--'+str(delivery_quantity))
 		get_delivery_date_list.append(delivery_date)
 		delivery_quantity_add += float(delivery_quantity)
-		get_delivery_recs = str(tuple(get_delivery_list)).replace(',)',')')
+		get_delivery_recs = str(tuple(get_delivery_date_list)).replace(',)',')')
 	join_all_list = zip(get_delivery_qty_list,get_delivery_date_list,get_spare_rec_list)
 	Trace.Write('join_all_list---'+str(join_all_list))
 	
