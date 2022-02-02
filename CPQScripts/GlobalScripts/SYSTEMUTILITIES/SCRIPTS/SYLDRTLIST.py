@@ -1865,7 +1865,7 @@ class SYLDRTLIST:
 					elif  str(RECORD_ID) == "SYOBJR-34575":
 						if delivery_date_column:                        
 							pivot_columns = ",".join(['[{}]'.format(delivery_date) for delivery_date in delivery_date_column])					
-							column_before_delivery_pivot_changes = "QTEREVSPT_RECORD_ID,PART_DESCRIPTION,QUANTITY,CONVERT(VARCHAR(10),FORMAT(DELIVERY_SCHED_DATE,'MM-dd-yyyy'),101) AS [DELIVERY_SCHED_DATE]"	
+							column_before_delivery_pivot_changes = "QTEREVSPT_RECORD_ID,PART_DESCRIPTION,PART_NUMBER,QUANTITY,CONVERT(VARCHAR(10),FORMAT(DELIVERY_SCHED_DATE,'MM-dd-yyyy'),101) AS [DELIVERY_SCHED_DATE]"	
 							if Qustr:
 								
 								Qustr += " AND DELIVERY_SCHED_DATE  BETWEEN '{}' AND '{}'".format(delivery_date_column[0], delivery_date_column[-1])
@@ -8966,7 +8966,7 @@ class SYLDRTLIST:
 							Qustr = " where " + str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 							Trace.Write('8648---ATTRIBUTE_VALUE_STR---'+str(ATTRIBUTE_VALUE_STR))
 							Trace.Write('8648---Wh_API_NAME---'+str(Wh_API_NAME)+'--RecAttValue----'+str(RecAttValue))
-							column_before_delivery_pivot_changes = 'QTEREVSPT_RECORD_ID,PART_DESCRIPTION,QUANTITY,DELIVERY_SCHED_DATE,CPQTABLEENTRYMODIFIEDBY,CPQTABLEENTRYDATEMODIFIED,QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED'
+							column_before_delivery_pivot_changes = 'QTEREVSPT_RECORD_ID,PART_DESCRIPTION,PART_NUMBER,QUANTITY,DELIVERY_SCHED_DATE,CPQTABLEENTRYMODIFIEDBY,CPQTABLEENTRYDATEMODIFIED,QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED'
 							if Qustr:
 								Qustr += " AND DELIVERY_SCHED_DATE  BETWEEN '{}' AND '{}'".format(delivery_date_column[0], delivery_date_column[-1])
 							pivot_query_str = """
