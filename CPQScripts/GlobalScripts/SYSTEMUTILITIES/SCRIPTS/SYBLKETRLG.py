@@ -1145,10 +1145,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			
 			elif (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeTopSuperParentParam in ('Comprehensive Services','Complementary Products')) and obj_name == "SAQSAP":
 				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID))
-			elif (str(obj_name) == "SAQGPA" and str(TreeSuperTopParentParam) == "Comprehensive Services"):
+			elif (obj_name == "SAQGPA" and TreeSuperTopParentParam == "Comprehensive Services"):
 				Sql.RunQuery("""UPDATE SAQGPA SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}' AND GOT_CODE = '{got_code}' AND PM_ID = '{pm_id}' and {rec_name} = '{rec_id}' """.format(column=TITLE,value= ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeTopSuperParentParam,greenbook=TreeSuperParentParam,got_code=TreeParentParam,pm_id=TreeParam,qury_str=qury_str,rec_name=objh_head,rec_id=sql_obj.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID))
 			else:
-				Trace.Write("selected_rows---463----"+str(row)+'--'+str(obj_name)+'--'+str(TreeSuperTopParentParam))
+				Trace.Write("selected_rows---463----"+str(row)+'--'+str(obj_name))
 				#A055S000P01-8729 start
 				if obj_name == "SAQTRV":
 					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
