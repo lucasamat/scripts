@@ -732,7 +732,11 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'SUBMITTED FOR BOOKING' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))	
 	Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
-
+	##FPM QUOTE SCENARIO
+	getfpm_quote_type = Sql.GetFirst("SELECT DOCTYP_ID,QUOTE_ID,QTEREV_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}' AND DOCTYP_ID = 'ZWK1' ".format(Quote,quote_revision_record_id))
+	if getfpm_quote_type:
+		Log.Info("====> QTPOSTACRM for FPM called from ==> "+str(getfpm_quote_type.QUOTE_ID)+'--'+str(getfpm_quote_type.QTEREV_ID))
+		ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':getfpm_quote_type.QUOTE_ID,'REVISION_ID':getfpm_quote_type.QTEREV_ID, 'Fun_type':'CPQ_TO_ECC'})
 	##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
 	CQREVSTSCH.Revisionstatusdatecapture(Quote,quote_revision_record_id)
 
