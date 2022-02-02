@@ -105,13 +105,14 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		delivery_date = val.split('#')[1]
 		delivery_quantity = val.split('#')[2]
 		get_delivery_qty_list.append(delivery_quantity)
-		Trace.Write('delivery_quantity--'+str(delivery_quantity))
+		#Trace.Write('delivery_quantity--'+str(delivery_quantity))
 		get_delivery_date_list.append(delivery_date)
 		delivery_quantity_add += float(delivery_quantity)
 		get_delivery_recs = str(tuple(get_delivery_date_list)).replace(',)',')')
 	join_all_list = zip(get_delivery_qty_list,get_delivery_date_list,get_spare_rec_list)
-	Trace.Write('join_all_list---'+str(join_all_list))
+	#Trace.Write('join_all_list---'+str(join_all_list))
 	for qty,deldate,sp_rec in join_all_list:
+		Trace.Write('124----115----')
 		get_spare_qty = Sql.GetFirst("SELECT CUSTOMER_ANNUAL_QUANTITY from SAQSPT where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and QUOTE_SERVICE_PART_RECORD_ID='{rev_spare_rec_id}'".format(revision_rec_id = quote_revision_record_id,rev_spare_rec_id=sp_rec,qt_rec_id = str(ContractRecordId)))
 		if get_spare_qty:
 			saqspt_total_qty = get_spare_qty.CUSTOMER_ANNUAL_QUANTITY
