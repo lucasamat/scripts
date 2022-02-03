@@ -409,7 +409,7 @@ try:
 	parts_list_include = Param.parts_list_include
 except:
 	parts_list_include = ''
-Trace.Write("parts_list---"+str(parts_list)+"--parts_list---inside"+str(action_type))
+Trace.Write("parts_list---"+str(parts_list)+"--billing_matrix---inside--"+str(billing_matrix))
 
 if str(parts_list) == 'True':
 	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
