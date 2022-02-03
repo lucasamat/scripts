@@ -2481,8 +2481,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				credit_details = Sql.GetFirst("SELECT * FROM SACRVC WHERE CpqTableEntryId = '"+str(id)+"' ")
 				if APPLIED_CREDITS!='':
 					Trace.Write("crdit amt-"+str(APPLIED_CREDITS[key]))
-					if '-' not in APPLIED_CREDITS[key] :
-						APPLIED_CREDITS[key] = '-'+str(APPLIED_CREDITS[key])
+					# if '-' not in APPLIED_CREDITS[key] :
+					# 	APPLIED_CREDITS[key] = '-'+str(APPLIED_CREDITS[key])
 					try:
 						if float(credit_details.UNBL_INGL_CURR)==0 or float(credit_details.UNBL_INGL_CURR)=='':
 							unapplied = float(credit_details.WRBTR)-int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.WRBTR)
