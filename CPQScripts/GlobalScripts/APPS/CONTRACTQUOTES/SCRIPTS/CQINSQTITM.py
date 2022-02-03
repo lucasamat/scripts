@@ -509,7 +509,18 @@ class ContractQuoteItem:
 								{
 								"field":["BILTYP","Billing Type","AGS_{}_PQB_BILTYP".format(self.service_id)]
 								},	
-									
+								{
+								"field":["BPTKPI","Bonus & Penalty Tied to KPI","AGS_{}_KPI_BPTKPI".format(self.service_id)]
+								},
+								{
+								"field":["ATGKEY","Additional Target KPI","AGS_{}_KPI_TGTKPI".format(self.service_id)]
+								},	
+								{
+								"field":["ATNKEY","Additional Target KPI(Non-std)","AGS_{}_KPI_TGKPNS".format(self.service_id)]
+								},
+								{
+								"field":["NWPTON","New Parts Only","AGS_{}_TSC_RPPNNW".format(self.service_id)]
+								},
 							]
 		start_count = 1
 		end_count = 500
