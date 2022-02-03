@@ -4,6 +4,8 @@
 #   __primary_author__ : WASIM ABDUL 
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+from asyncio.windows_events import NULL
+from curses.ascii import NUL
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import datetime
@@ -758,10 +760,14 @@ def save_annualiziedgrid_inline(Quote,line,CAT1,CAT2,CAT3,CAT4,CAT5,CAT6,CAT7,CA
 	get_quote_details =Sql.GetFirst("Select * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{Quote}' ".format(Quote = Quote))
 	for index,val in enumerate(line):
 		#Trace.Write("UPDATE SAQICO SET UIMVCI = '"+str(CAT1[index])+"' , UIMVPI = '"+str(CAT2[index])+"',CAVVCI = '"+str(CAT3[index])+"',CAVVPI = '"+str(CAT4[index])+"',ATGKEY = '"+str(CAT5[index])+"',ATGKEC = '"+str(CAT6[index])+"',ATGKEP = '"+str(CAT7[index])+"',NWPTOC = '"+str(CAT8[index])+"',NWPTOP = '"+str(CAT9[index])+"',AMNCCI = '"+str(CAT10[index])+"',AMNPPI = '"+str(CAT11[index])+"',USRPRC = '"+str(CAT12[index])+"',YOYPCT = '"+str(CAT13[index])+"',TGADJP = '"+str(CAT14[index])+"' WHERE LINE = '"+line[index]+"' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID))
-		Cval1 = CAT1[index]
-		Cval2 = CAT2[index]
-		#update_saqico = "UPDATE SAQICO SET UIMVCI = '"+str(CAT1)+"' , UIMVPI = '"+str(CAT2)+"',CAVVCI = '"+CAT3[index]+"',CAVVPI = '"+CAT4[index]+"',ATGKEY = '"+CAT5[index]+"',ATGKEC = '"+CAT6[index]+"',ATGKEP = '"+CAT7[index]+"',NWPTOC = '"+CAT8[index]+"',NWPTOP = '"+CAT9[index]+"',AMNCCI = '"+CAT10[index]+"',AMNPPI = '"+CAT11[index]+"',USRPRC = '"+CAT12[index]+"',YOYPCT = '"+CAT13[index]+"',TGADJP = '"+CAT14[index]+"' WHERE LINE = '"+line[index]+"' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID)
-		update_saqico = "UPDATE SAQICO SET UIMVCI = '"+str(Cval1)+"' , UIMVPI = '"+str(Cval2)+"' WHERE LINE = '"+line[index]+"' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID)
+		if CAT1[index] == "" or CAT2[index] =="":
+			CAT1[index] = NULL
+			CAT2[index] = NULL
+		else:
+			CAT1[index] = CAT1[index]
+			CAT2[index] = CAT2[index]
+		#update_saqico = "UPDATE SAQICO SET UIMVCI = '"+str(CAT1[index])+"' , UIMVPI = '"+str(CAT2[index])+"',CAVVCI = '"+str(CAT3[index])+"',CAVVPI = '"+str(CAT4[index])+"',ATGKEY = '"+str(CAT5[index])+"',ATGKEC = '"+str(CAT6[index])+"',ATGKEP = '"+str(CAT7[index])+"',NWPTOC = '"+str(CAT8[index])+"',NWPTOP = '"+str(CAT9[index])+"',AMNCCI = '"+str(CAT10[index])+"',AMNPPI = '"+str(CAT11[index])+"',USRPRC = '"+str(CAT12[index])+"',YOYPCT = '"+str(CAT13[index])+"',TGADJP = '"+str(CAT14[index])+"' WHERE LINE = '"+line[index]+"' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID)
+		update_saqico = "UPDATE SAQICO SET UIMVCI = '"+str(CAT1[index])+"' , UIMVPI = '"+str(CAT2[index])+"' WHERE LINE = '"+line[index]+"' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID)
 		Sql.RunQuery(update_saqico)
 	return True
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
