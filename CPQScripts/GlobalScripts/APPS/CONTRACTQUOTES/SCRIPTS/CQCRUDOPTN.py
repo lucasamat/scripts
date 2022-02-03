@@ -5133,7 +5133,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 										JOIN SAQGPA (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_RECORD_ID = SAQGPA.EQUIPMENT_RECORD_ID AND 
 										MAEQUP.EQUIPMENT_ID = SAQGPA.ASSEMBLY_ID
 										WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}'
-										)IQ ON SAQGPA.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQGPA.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID  AND SAQGPA.SERVICE_ID = '{TreeParam}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+										)IQ ON SAQGPA.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQGPA.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID  AND SAQGPA.SERVICE_ID = '{TreeParam}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
 
 			self._process_query(
 					"""INSERT SAQSKP (
@@ -5533,7 +5533,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 										MAEQUP.EQUIPMENT_ID = SAQGPA.ASSEMBLY_ID
 										JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQGPA.QTEREV_RECORD_ID
 										WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
-										)IQ ON SAQGPA.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQGPA.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID  AND SAQGPA.SERVICE_ID = '{TreeParam}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id),TreeParam=self.tree_param,BatchGroupRecordId =kwargs.get('batch_group_record_id'))
+										)IQ ON SAQGPA.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQGPA.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID  AND SAQGPA.SERVICE_ID = '{TreeParam}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param,BatchGroupRecordId =kwargs.get('batch_group_record_id')))
 			self._process_query(
 				"""INSERT SAQSKP (
 					ASSEMBLY_ID,
