@@ -85,10 +85,10 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 			Sql.RunQuery(sqlforupdatePTA)
 			Sql.RunQuery(sqlforupdate)
 			savebill =''
-			return 'save',savebill
+			#return 'save',savebill
 		else:
 			savebill = 'NOTSAVE'
-			return 'not saved',savebill
+	return 'not saved',savebill
 
 def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 	#Trace.Write('98-----deliverydict-'+str(deliverydict))
