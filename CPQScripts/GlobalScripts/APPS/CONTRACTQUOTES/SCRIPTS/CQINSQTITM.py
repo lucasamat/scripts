@@ -497,7 +497,7 @@ class ContractQuoteItem:
 								"field":["PMEVNT_ENT","PM Events","AGS_{}_STT_PMEVNT".format(self.service_id)]
 								},		
 								{
-								"field":["PMLAB_ENT","Preventive Maintenance Labor","AGS_{}_NET_PRMALB".format(self.service_id)]
+								"field":["PMLAB_ENT","Preventative Maintenance Labor","AGS_{}_NET_PRMALB".format(self.service_id)]
 								},	
 								{
 								"field":["PRMKPI_ENT","Primary KPI. Perf Guarantee","AGS_{}_KPI_PRPFGT".format(self.service_id)]
@@ -584,6 +584,16 @@ class ContractQuoteItem:
 							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = MAEQUP.SUBSTRATE_SIZE_GROUP
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND HEDBIN = 'Included' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'HBWFPR'
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		# Head Break In Price Impact
+		Sql.RunQuery("""UPDATE SAQICO
+						SET HEDBIP = PRCFVA.FACTOR_TXTVAR		
+							FROM SAQICO (NOLOCK)
+							JOIN MAEQUP (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID
+							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = MAEQUP.SUBSTRATE_SIZE_GROUP
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND HEDBIN = 'Included' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'HBWFPR'
+							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		
+		
 		return True
 
 	def _quote_annualized_items_insert_old(self, update=False):			
