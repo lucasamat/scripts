@@ -752,11 +752,11 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
 
-def save_annualiziedgrid_inline(Quote,line,UIMVPI,UIMVCI,MODE):
+def save_annualiziedgrid_inline(Quote,line,CAT1,CAT2,MODE):
 	#Trace.Write("value===values"+str(values))
 	#Trace.Write("value===values2"+str(list(eval(values))))
 	for index,val in enumerate(line):
-		Trace.Write("UPDATE TABLE SET TRGPRC = '"+UIMVCI[index]+"' , TRRC = '"+str(UIMVPI[index])+"' WHERE LINE = '"+line[index]+"' ")
+		Trace.Write("UPDATE TABLE SET TRGPRC = '"+CAT1[index]+"' , TRRC = '"+str(CAT2[index])+"' WHERE LINE = '"+line[index]+"' ")
 	
 	return True
 	#for data in list(eval(values)):
@@ -1488,13 +1488,13 @@ try:
 except:
 	line = ""
 try:
-	UIMVPI = Param.UIMVPI
+	CAT1 = Param.CAT1
 except:
-	UIMVPI = ""
+	CAT1 = ""
 try:
-	UIMVCI = Param.UIMVCI
+	CAT2 = Param.CAT2
 except:
-	UIMVCI = ""
+	CAT2 = ""
 
 
 try: 
@@ -1545,7 +1545,7 @@ elif ACTION == "CBC_SAVE":
 elif ACTION == "ANNUAL_ITEM_SAVE":
 	MODE = "SAVE"
 	Quote = Quote.GetGlobal("contract_quote_record_id")
-	ApiResponse = ApiResponseFactory.JsonResponse(save_annualiziedgrid_inline(Quote,line,UIMVPI,UIMVCI,MODE))		
+	ApiResponse = ApiResponseFactory.JsonResponse(save_annualiziedgrid_inline(Quote,line,CAT1,CAT12,MODE))		
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
