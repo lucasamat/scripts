@@ -571,6 +571,15 @@ def Related_Sub_Banner(
                     PrimaryValue = get_addon_service_desc.SERVICE_ID
                     SecondLable = "Product Offering Description"
                     SecondValue = get_addon_service_desc.SERVICE_DESCRIPTION 
+            elif subTabName == 'Credits' and str(ObjName) == 'SAQRCV' and TreeParam == "Add-On Products":
+                get_addon_service_desc = Sql.GetFirst("SELECT * FROM SAQSGB (NOLOCK) WHERE QUOTE_SERVICE_GREENBOOK_RECORD_ID  = '{}'".format(CurrentRecordId))
+                if get_addon_service_desc:
+                    PrimaryLable = "Product Offering ID"
+                    PrimaryValue = get_addon_service_desc.SERVICE_ID
+                    SecondLable = "Product Offering Description"
+                    SecondValue = get_addon_service_desc.SERVICE_DESCRIPTION 
+                    ThirdLable = "Greenbook"
+                    ThirdValue = TreeParentParam
             elif str(CurrentRecordId) == 'SYOBJR-98859' and str(ObjName) == "SAQSAO":
                 TreeParentParam = Product.GetGlobal("TreeParentLevel0")
                 getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV(nolock) where SERVICE_ID = '"+str(TreeParentParam)+"'")
