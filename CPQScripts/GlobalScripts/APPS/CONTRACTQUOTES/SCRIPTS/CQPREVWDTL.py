@@ -1545,7 +1545,7 @@ elif ACTION == "CBC_SAVE":
 elif ACTION == "ANNUAL_ITEM_SAVE":
 	MODE = "SAVE"
 	Quote = Quote.GetGlobal("contract_quote_record_id")
-	ApiResponse = ApiResponseFactory.JsonResponse(save_annualiziedgrid_inline(Quote,line,CAT1,CAT12,MODE))		
+	ApiResponse = ApiResponseFactory.JsonResponse(save_annualiziedgrid_inline(Quote,line,CAT1,CAT2,MODE))		
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
