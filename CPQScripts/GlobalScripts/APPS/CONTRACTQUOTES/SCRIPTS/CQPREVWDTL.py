@@ -760,12 +760,6 @@ def save_annualiziedgrid_inline(Quote,line,CAT1,CAT2,CAT3,CAT4,CAT5,CAT6,CAT7,CA
 	get_quote_details =Sql.GetFirst("Select * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{Quote}' ".format(Quote = Quote))
 	for index,val in enumerate(line):
 		#Trace.Write("UPDATE SAQICO SET UIMVCI = '"+str(CAT1[index])+"' , UIMVPI = '"+str(CAT2[index])+"',CAVVCI = '"+str(CAT3[index])+"',CAVVPI = '"+str(CAT4[index])+"',ATGKEY = '"+str(CAT5[index])+"',ATGKEC = '"+str(CAT6[index])+"',ATGKEP = '"+str(CAT7[index])+"',NWPTOC = '"+str(CAT8[index])+"',NWPTOP = '"+str(CAT9[index])+"',AMNCCI = '"+str(CAT10[index])+"',AMNPPI = '"+str(CAT11[index])+"',USRPRC = '"+str(CAT12[index])+"',YOYPCT = '"+str(CAT13[index])+"',TGADJP = '"+str(CAT14[index])+"' WHERE LINE = '"+line[index]+"' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID))
-		if CAT1[index] == "" or CAT2[index] =="":
-			CAT1[index] = NULL
-			CAT2[index] = NULL
-		else:
-			CAT1[index] = CAT1[index]
-			CAT2[index] = CAT2[index]
 		#update_saqico = "UPDATE SAQICO SET UIMVCI = '"+str(CAT1[index])+"' , UIMVPI = '"+str(CAT2[index])+"',CAVVCI = '"+str(CAT3[index])+"',CAVVPI = '"+str(CAT4[index])+"',ATGKEY = '"+str(CAT5[index])+"',ATGKEC = '"+str(CAT6[index])+"',ATGKEP = '"+str(CAT7[index])+"',NWPTOC = '"+str(CAT8[index])+"',NWPTOP = '"+str(CAT9[index])+"',AMNCCI = '"+str(CAT10[index])+"',AMNPPI = '"+str(CAT11[index])+"',USRPRC = '"+str(CAT12[index])+"',YOYPCT = '"+str(CAT13[index])+"',TGADJP = '"+str(CAT14[index])+"' WHERE LINE = '"+line[index]+"' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID)
 		update_saqico = "UPDATE SAQICO SET UIMVCI = '"+str(CAT1[index])+"' , UIMVPI = '"+str(CAT2[index])+"' WHERE LINE = '"+line[index]+"' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID)
 		Sql.RunQuery(update_saqico)
