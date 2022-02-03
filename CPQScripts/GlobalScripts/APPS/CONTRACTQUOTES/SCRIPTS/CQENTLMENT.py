@@ -1197,7 +1197,7 @@ class Entitlements:
 							else:
 								ancillary_object_dict['A6200'] = "DELETE"
 								#ancillary_flag = "DELETE"
-						elif key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035"):
+						elif key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035","Z0090"):
 							if entitlement_value == "Yes":
 								ancillary_object_dict['Z0046'] = "INSERT"
 								#Quote.SetGlobal("ANCILLARY","YES")
