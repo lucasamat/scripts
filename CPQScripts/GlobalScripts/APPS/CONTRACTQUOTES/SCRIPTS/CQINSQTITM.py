@@ -521,6 +521,9 @@ class ContractQuoteItem:
 								{
 								"field":["NWPTON","New Parts Only","AGS_{}_TSC_RPPNNW".format(self.service_id)]
 								},
+								{
+								"field":["HEDBIN","Head break-in","AGS_{}_STT_HDBRIN".format(self.service_id)]
+								},
 							]
 		start_count = 1
 		end_count = 500
