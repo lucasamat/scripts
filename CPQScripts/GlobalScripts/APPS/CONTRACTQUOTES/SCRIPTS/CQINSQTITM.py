@@ -565,6 +565,23 @@ class ContractQuoteItem:
 			SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str		(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
 					
 			SAQITE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQITE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQITE_BKP)+" END  ' ")
+		
+		# Head Break In Cost Impact
+		Sql.RunQuery("""UPDATE SAQICO
+						SET HEDBIC = PRCFVA.FACTOR_TXTVAR		
+							FROM SAQICO (NOLOCK)
+							JOIN MAEQUP (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID
+							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = MAEQUP.SUBSTRATE_SIZE_GROUP
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND HEDBIN = 'Included' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'HBWFCT'
+							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		# Head Break In Price Impact
+		Sql.RunQuery("""UPDATE SAQICO
+						SET HEDBIP = PRCFVA.FACTOR_TXTVAR		
+							FROM SAQICO (NOLOCK)
+							JOIN MAEQUP (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID
+							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = MAEQUP.SUBSTRATE_SIZE_GROUP
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND HEDBIN = 'Included' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'HBWFPR'
+							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		return True
 
 	def _quote_annualized_items_insert_old(self, update=False):			
