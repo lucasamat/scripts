@@ -2340,23 +2340,24 @@ class TreeView:
 									Trace.Write(str(ObjRecId)+"---SUBTAB_NAMEsss*"+str(subTabName)+'--1947---'+str(NodeText)+'---Node Name---'+str(NodeName)+'--Objname--'+str(ObjName))
 										
 									if subTabName:
-										import re
-										service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE")))
-										if service_entitlement_object is not None:
-											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-											quote_type_attribute = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-											quote_type_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-											XML = service_entitlement_object.ENTITLEMENT_XML
-											for values in re.finditer(pattern_tag, XML):
-												sub_string = values.group(1)
-												quotetype_id =re.findall(quote_type_attribute,sub_string)
-												if quotetype_id:
-													quotetype_value =re.findall(quote_type_attribute_value,sub_string)
-													Trace.Write('###Quote Type -- >'+str(quotetype_value))
-													if quotetype_value != ["Tool based"]:
-														ObjRecId = '0975E1E2-9D30-4928-AB0A-4DA54537A67A'
-														RelatedId = 'SYOBJR-95556'
-														RelatedName = 'Assemblies'
+										if subTabName=="PM Events":
+											import re
+											service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE")))
+											if service_entitlement_object is not None:
+												pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+												quote_type_attribute = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+												quote_type_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+												XML = service_entitlement_object.ENTITLEMENT_XML
+												for values in re.finditer(pattern_tag, XML):
+													sub_string = values.group(1)
+													quotetype_id =re.findall(quote_type_attribute,sub_string)
+													if quotetype_id:
+														quotetype_value =re.findall(quote_type_attribute_value,sub_string)
+														Trace.Write('###Quote Type -- >'+str(quotetype_value))
+														if quotetype_value != ["Tool based"]:
+															ObjRecId = '0975E1E2-9D30-4928-AB0A-4DA54537A67A'
+															RelatedId = 'SYOBJR-95556'
+															RelatedName = 'Assemblies'
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 										)
