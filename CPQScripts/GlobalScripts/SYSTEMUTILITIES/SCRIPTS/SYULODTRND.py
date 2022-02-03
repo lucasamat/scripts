@@ -68,7 +68,7 @@ def CommonTreeViewHTMLDetail(
 	Product.SetGlobal('get_quote_item_service',primary_value)
 	Trace.Write(str(ObjectName)+"---ObjectName-----Recordid"+str(primary_value))
 	if str(ObjectName) == "SAQSGB":
-		 Product.SetGlobal('addon_prd_rec_id',primary_value)
+		Product.SetGlobal('addon_prd_rec_id',primary_value)
 	try:
 		CurrentTab = TestProduct.CurrentTab
 	except:
