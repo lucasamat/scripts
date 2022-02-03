@@ -656,4 +656,4 @@ def insert_quote_billing_plan():
 
 if contract_quote_rec_id:
 	ApiResponse = ApiResponseFactory.JsonResponse(_insert_billing_matrix())
-	insert_quote_billing_plan()
+	#insert_quote_billing_plan()
