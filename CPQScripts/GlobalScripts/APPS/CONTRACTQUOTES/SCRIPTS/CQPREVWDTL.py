@@ -752,11 +752,11 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
 
-def save_annualiziedgrid_inline(Quote,line,YOYPCT,TRGPRC,MODE):
+def save_annualiziedgrid_inline(Quote,line,YOYPCT,UIMVCI,MODE):
 	#Trace.Write("value===values"+str(values))
 	#Trace.Write("value===values2"+str(list(eval(values))))
 	for index,val in enumerate(line):
-		Trace.Write("UPDATE TABLE SET TRGPRC = '"+TRGPRC[index]+"' , TRRC = '"+str(YOYPCT[index])+"' WHERE LINE = '"+line[index]+"' ")
+		Trace.Write("UPDATE TABLE SET TRGPRC = '"+UIMVCI[index]+"' , TRRC = '"+str(YOYPCT[index])+"' WHERE LINE = '"+line[index]+"' ")
 	
 	return True
 	#for data in list(eval(values)):
@@ -1492,9 +1492,9 @@ try:
 except:
 	YOYPCT = ""
 try:
-	TRGPRC = Param.TRGPRC
+	UIMVCI = Param.UIMVCI
 except:
-	TRGPRC = ""
+	UIMVCI = ""
 
 
 try: 
