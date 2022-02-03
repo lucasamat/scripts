@@ -758,7 +758,7 @@ def save_annualiziedgrid_inline(Quote,line,YOYPCT,TRGPRC,MODE):
 	for index,val in enumerate(line):
 		Trace.Write("UPDATE TABLE SET TRGPRC = '"+TRGPRC[index]+"' , TRRC = '"+str(YOYPCT[index])+"' WHERE LINE = '"+line[index]+"' ")
 	
-	
+	return True
 	#for data in list(eval(values)):
 		#Trace.Write("data_valu"+str(data))
 	#for x in range(len(values)): 
