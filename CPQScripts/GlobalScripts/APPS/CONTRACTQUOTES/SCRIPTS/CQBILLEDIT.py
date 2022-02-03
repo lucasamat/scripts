@@ -126,7 +126,7 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 			saqspd_total_qty = get_current_details.total
 		get_totalqty = partrec[sp_rec]
 		Trace.Write('get_totalqty---'+str(get_totalqty))
-		get_delivery_total = float(saqspd_total_qty)+float(delivery_quantity_add)
+		get_delivery_total = float(saqspd_total_qty)+float(get_totalqty)
 		Trace.Write('get_delivery_total---'+str(get_delivery_total)+'---saqspt_total_qty--'+str(saqspt_total_qty))
 		if get_delivery_total < saqspt_total_qty:
 			Trace.Write('124-----')
