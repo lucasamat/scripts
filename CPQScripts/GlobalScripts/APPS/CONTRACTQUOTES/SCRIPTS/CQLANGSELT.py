@@ -46,7 +46,117 @@ def _insert_item_level_delivery_schedule():
 	Log.Info('insert_item_level_delivery_schedule==='+str(insert_item_level_delivery_schedule))
 	Sql.RunQuery(insert_item_level_delivery_schedule)
 
-
+#quote table insert for billing matrix
+def insert_quote_billing_plan():
+	services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id))
+	item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID".format(contract_quote_record_id,quote_revision_record_id))
+	if item_billing_plan_obj is not None and services_obj:
+		quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
+		years = quotient + (1 if remainder > 0 else 0)
+		if not years:
+			years = 1
+		for index in range(1, years+1):
+			YearCount = "Year {}".format(index)
+			no_of_year = index
+			#YearCount1 = index
+			if YearCount:
+				end = int(YearCount.split(' ')[-1]) * 12
+				start = end - 12 + 1
+				item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
+															AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
+															FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' 
+															AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID, BILLING_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+															contract_quote_record_id,quote_revision_record_id, start, end))
+				if item_billing_plans_obj:
+					billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]
+					date_columns = " ,".join(['MONTH_{}'.format(index) for index in range(1, len(billing_date_column)+1)])
+					header_select_date_columns = ",".join(["'{}' AS MONTH_{}".format(date_column, index) for index, date_column in enumerate(billing_date_column, 1)])
+					select_date_columns = ",".join(['[{}] AS MONTH_{}'.format(date_column, index) for index, date_column in enumerate(billing_date_column, 1)])
+					sum_select_date_columns = ",".join(['SUM([{}]) AS MONTH_{}'.format(date_column, index) for index, date_column in enumerate(billing_date_column, 1)])
+					Sql.RunQuery("""INSERT QT__Billing_Matrix_Header (
+										QUOTE_ID,QUOTE_RECORD_ID,{DateColumn},YEAR,ownerId
+									)
+									SELECT TOP 1
+										QUOTE_ID,										
+										QUOTE_RECORD_ID,
+										{SelectDateColoumn},
+										{Year} as YEAR,
+										{UserId} as ownerId
+									FROM SAQIBP (NOLOCK)
+									WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
+										QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,DateColumn=date_columns,Year=no_of_year,SelectDateColoumn=header_select_date_columns, UserId=User.Id
+										))
+					pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
+					
+					for service_obj in services_obj:
+						Qustr = "WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(contract_quote_record_id,quote_revision_record_id,
+																						service_obj.SERVICE_ID, billing_date_column[0], billing_date_column[-1])				
+						
+						Sql.RunQuery("""INSERT QT__BM_YEAR_1 (
+										ANNUAL_BILLING_AMOUNT,BILLING_START_DATE,BILLING_END_DATE,
+										BILLING_TYPE,BILLING_YEAR,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,
+										GREENBOOK,GREENBOOK_RECORD_ID,ITEM_LINE_ID,
+										QUOTE_ID,QUOTE_RECORD_ID,QTEITMCOB_RECORD_ID,
+										QTEITM_RECORD_ID,SERIAL_NUMBER,SERVICE_DESCRIPTION,
+										SERVICE_ID,SERVICE_RECORD_ID,YEAR,EQUIPMENT_QUANTITY,
+										{DateColumn},ownerId
+									)
+									SELECT  ANNUAL_BILLING_AMOUNT,BILLING_START_DATE,
+												BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
+												EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
+												ITEM_LINE_ID,QTEITMCOB_RECORD_ID,
+												QTEITM_RECORD_ID,SERIAL_NUMBER,
+												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,
+												YEAR,EQUIPMENT_QUANTITY,{SelectDateColoumn},{UserId} as ownerId
+										FROM (
+											SELECT 
+												ANNUAL_BILLING_AMOUNT,BILLING_AMOUNT,BILLING_DATE,BILLING_START_DATE,
+												BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
+												EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
+												LINE as ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEITMCOB_RECORD_ID,
+												QTEITM_RECORD_ID,SERIAL_NUMBER,
+												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,{BillingYear} as YEAR,EQUIPMENT_QUANTITY
+											FROM SAQIBP 
+											{WhereString}
+										) AS IQ
+										PIVOT
+										(
+											SUM(BILLING_AMOUNT)
+											FOR BILLING_DATE IN ({PivotColumns})
+										)AS PVT ORDER BY GREENBOOK
+									""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
+											DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId=User.Id,)								
+									)
+							
+						# Total based on service - start
+						Sql.RunQuery("""INSERT QT__BM_YEAR_1 (
+										ANNUAL_BILLING_AMOUNT,BILLING_YEAR,
+										QUOTE_ID,QUOTE_RECORD_ID,SERVICE_DESCRIPTION,
+										SERVICE_ID,SERVICE_RECORD_ID,YEAR,EQUIPMENT_QUANTITY,
+										{DateColumn},ownerId
+									)
+									SELECT SUM(CONVERT(BIGINT, ANNUAL_BILLING_AMOUNT)) AS ANNUAL_BILLING_AMOUNT,{BillingYear} as BILLING_YEAR,QUOTE_ID,QUOTE_RECORD_ID,
+												SERVICE_DESCRIPTION,CONCAT(SERVICE_ID, ' TOTAL') as SERVICE_ID,SERVICE_RECORD_ID,
+												YEAR,SUM(EQUIPMENT_QUANTITY) AS EQUIPMENT_QUANTITY,{SumSelectDateColoumn},{UserId} as ownerId
+										FROM (
+											SELECT 
+												ANNUAL_BILLING_AMOUNT,BILLING_AMOUNT,BILLING_DATE,{BillingYear} as BILLING_YEAR,													
+												QUOTE_ID,QUOTE_RECORD_ID,													SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,
+												{BillingYear} as YEAR, EQUIPMENT_QUANTITY
+											FROM SAQIBP 
+											{WhereString}
+										) AS IQ
+										PIVOT
+										(
+											SUM(BILLING_AMOUNT)
+											FOR BILLING_DATE IN ({PivotColumns})
+										)AS PVT GROUP BY QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,
+												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,YEAR, EQUIPMENT_QUANTITY
+									""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
+											DateColumn=date_columns, SumSelectDateColoumn=sum_select_date_columns, UserId=User.Id,)								
+									)
+						# Total based on service - end
+	return True
 #A055S000P01-10549-end
 def _insert_subtotal_by_offerring_quote_table():
 	
@@ -171,6 +281,9 @@ def insert_spare_doc(parts_list):
 		_insert_subtotal_by_offerring_quote_table()
 	elif Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content == 'YES':
 		_insert_item_level_delivery_schedule()
+	elif Quote.GetCustomField('Billing_Matrix').Content == 'YES':
+		Trace.Write('285----')
+		insert_quote_billing_plan():
 	if str(parts_list) == 'True':
 		Trace.Write('93------')
 		Log.Info('SAQDOC---documents-')
@@ -416,6 +529,7 @@ if str(parts_list) == 'True':
 	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
 elif str(billing_matrix) == 'True':
 	Quote.GetCustomField('Billing_Matrix').Content = 'YES'
+	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
 elif str(parts_list_include) == 'True':
 	Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content = 'YES'
 if action_type == "DOCUMENT":
