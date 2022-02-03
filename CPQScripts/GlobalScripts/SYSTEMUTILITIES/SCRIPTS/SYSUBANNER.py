@@ -140,12 +140,12 @@ def Related_Sub_Banner(
                 if ("CANCEL" not in str(btn.HTML_CONTENT) and "SAVE" not in str(btn.HTML_CONTENT)):
                     Trace.Write("dynamic_Button--129---"+str(btn.HTML_CONTENT))
                     if btn.RELATED_LIST_RECORD_ID:
-                        SYOBJH_ID = Sql.GetFirst("SELECT SYOBJH.SAPCPQ_ATTRIBUTE_NAME AS REC_ID,SYOBJR.NAME AS NAME FROM SYOBJR (NOLOCK) INNER JOIN SYOBJH (NOLOCK) ON SYOBJR.OBJ_REC_ID = SYOBJH.RECORD_ID WHERE SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{syobjr_rec_id}'".format(syobjr_rec_id = btn.RELATED_LIST_RECORD_ID))
+                        SYOBJH_ID = Sql.GetFirst("SELECT SYOBJH.SAPCPQ_ATTRIBUTE_NAME AS REC_ID,SYOBJR.SAPCPQ_ATTRIBUTE_NAME,SYOBJR.NAME AS NAME FROM SYOBJR (NOLOCK) INNER JOIN SYOBJH (NOLOCK) ON SYOBJR.OBJ_REC_ID = SYOBJH.RECORD_ID WHERE SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{syobjr_rec_id}'".format(syobjr_rec_id = btn.RELATED_LIST_RECORD_ID))
                     if len(dynamic_Button) > 1:
                         if str(btn.HTML_CONTENT) != "" and str(btn.RELATED_LIST_RECORD_ID) != "":
                             button_id = str(btn.RELATED_LIST_RECORD_ID).replace("-","_")+"_"+str(SYOBJH_ID.REC_ID).replace("-","_")
                             add_button = ""
-                            if btn.RELATED_LIST_RECORD_ID:
+                            if btn.RELATED_LIST_RECORD_ID == SYOBJR.SAPCPQ_ATTRIBUTE_NAME:
                                 Trace.Write("Check SHP0")
                                 div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
                                 # add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
