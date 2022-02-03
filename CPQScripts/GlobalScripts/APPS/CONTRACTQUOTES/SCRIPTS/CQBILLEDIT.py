@@ -128,7 +128,7 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 		Trace.Write('get_totalqty---'+str(get_totalqty))
 		get_delivery_total = float(saqspd_total_qty)+float(get_totalqty)
 		Trace.Write('get_delivery_total---'+str(get_delivery_total)+'---saqspt_total_qty--'+str(saqspt_total_qty))
-		if get_delivery_total < saqspt_total_qty:
+		if get_delivery_total <= saqspt_total_qty:
 			Trace.Write('124-----')
 			Update_delivery_details = "UPDATE SAQSPD SET QUANTITY={qty} where QUOTE_RECORD_ID ='{qt_rec_id}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  QTEREVSPT_RECORD_ID ='{rev_spare_rec_id}' and DELIVERY_SCHED_DATE = '{del_sch_date}'".format(qty= qty,qt_rec_id = str(ContractRecordId),rev_spare_rec_id=sp_rec,del_sch_date = deldate, revision_rec_id = quote_revision_record_id)
 			Update_delivery_details_query = Sql.RunQuery(Update_delivery_details)
