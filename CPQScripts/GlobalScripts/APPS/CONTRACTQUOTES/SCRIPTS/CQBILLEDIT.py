@@ -114,6 +114,7 @@ def DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit):
 	Trace.Write('join_all_list---'+str(join_all_list))
 	for qty,deldate,sp_rec in join_all_list:
 		Trace.Write('124----115----'+str(qty))
+		get_totalqty =0
 		if sp_rec in partrec.keys():
 			partrec[sp_rec] = partrec[sp_rec]+int(qty)
 		else:
