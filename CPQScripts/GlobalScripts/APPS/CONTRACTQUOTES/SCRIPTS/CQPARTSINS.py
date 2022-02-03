@@ -137,7 +137,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 TEMP_TABLE.RETURN_TYPE AS RETURN_TYPE,
                                 CASE WHEN TEMP_TABLE.ODCC_FLAG='X' THEN 'True' ELSE 'False' END AS ODCC_FLAG,
                                 CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER='' THEN '' ELSE TEMP_TABLE.PARENT_PART_NUMBER END AS PAR_PART_NUMBER,
-                                TEMP_TABLE.EXCHANGE_ELIGIBLE AS EXCHANGE_ELIGIBLE,
+                                TEMP_TABLE.Material_Eligibility AS EXCHANGE_ELIGIBLE,
                                 'True' as CUSTOMER_PARTICIPATE,
                                 'True' as CUSTOMER_ACCEPT_PART,
                                 '{sold_to}' as STPACCOUNT_ID,
