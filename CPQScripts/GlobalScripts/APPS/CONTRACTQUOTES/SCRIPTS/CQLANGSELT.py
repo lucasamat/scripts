@@ -528,6 +528,7 @@ if str(parts_list) == 'True':
 	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
 	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
 elif str(billing_matrix) == 'True':
+	Trace.Write('531------')
 	Quote.GetCustomField('Billing_Matrix').Content = 'YES'
 	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
 elif str(parts_list_include) == 'True':
