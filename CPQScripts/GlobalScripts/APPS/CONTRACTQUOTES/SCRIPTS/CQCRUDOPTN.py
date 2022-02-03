@@ -5731,10 +5731,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					for values in re.finditer(pattern_tag, XML):
 						sub_string = values.group(1)
 						quotetype_id =re.findall(quote_type_attribute,sub_string)
-						quotetype_value =re.findall(quote_type_attribute_value,sub_string)
-						#Trace.Write("quotetype_value -----"+str(quotetype_value))
-						if quotetype_value ==  "Tool based":
-							self._insert_quote_service_covered_assembly(batch_group_record_id=batch_group_record_id)				
+						if quotetype_id:
+							quotetype_value =re.findall(quote_type_attribute_value,sub_string)
+							Trace.Write("quotetype_value -----"+str(quotetype_value))
+							if quotetype_value ==  ['Tool based']:
+								self._insert_quote_service_covered_assembly(batch_group_record_id=batch_group_record_id)				
 				self._insert_quote_service_fab_location(batch_group_record_id=batch_group_record_id)
 				#SAQSCA_end_time = time.time()
 				
