@@ -283,7 +283,7 @@ def insert_spare_doc(parts_list):
 		_insert_item_level_delivery_schedule()
 	elif Quote.GetCustomField('Billing_Matrix').Content == 'YES':
 		Trace.Write('285----')
-		insert_quote_billing_plan():
+		insert_quote_billing_plan()
 	if str(parts_list) == 'True':
 		Trace.Write('93------')
 		Log.Info('SAQDOC---documents-')
