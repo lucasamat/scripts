@@ -410,10 +410,12 @@ class ContractQuoteItem:
 		Log.Info(str(self.contract_quote_id)+"===SAQICO_BKP==>> "+str(SAQICO_BKP))
 		Log.Info(str(self.contract_quote_id)+"===SAQITE_BKP==>> "+str(SAQITE_BKP))
 		entitlement_details = [{
-								"field":["INTCPV","Intercept","AGS_{}_VAL_INTCPT".format(self.service_id)],						"coeff":["INTCPC","Intercept Coefficient","AGS_{}_VAL_INTCCO".format(self.service_id)]
+								"field":["INTCPV","Intercept","AGS_{}_VAL_INTCPT".format(self.service_id)],						
+								"coeff":["INTCPC","Intercept Coefficient","AGS_{}_VAL_INTCCO".format(self.service_id)]
 								},
 								{
-								"field":["OSSVDV","Total Cost without Seedstock","AGS_{}_VAL_TBCOST".format(self.service_id)],	"coeff":["LTCOSS","Total Cost w/o Seedstock Coeff","AGS_{}_VAL_TBCOCO".format(self.service_id)]
+								"field":["OSSVDV","Total Cost without Seedstock","AGS_{}_VAL_TBCOST".format(self.service_id)],	
+								"coeff":["LTCOSS","Total Cost w/o Seedstock Coeff","AGS_{}_VAL_TBCOCO".format(self.service_id)]
 								},
 								{
 								"field":["POFVDV","Product Offering","AGS_{}_VAL_POFFER".format(self.service_id)],	
