@@ -753,19 +753,13 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	return True
 
 def save_annualiziedgrid_inline(Quote,line,CAT1,CAT2,MODE):
-	#Trace.Write("value===values"+str(values))
+	Trace.Write("value===values"+str(Quote))
 	#Trace.Write("value===values2"+str(list(eval(values))))
+	#get_quote_details =Sql.GetFirst("Select * FROM SAQTRV(NOLOCK) WHERE ")
 	for index,val in enumerate(line):
 		Trace.Write("UPDATE TABLE SET TRGPRC = '"+CAT1[index]+"' , TRRC = '"+str(CAT2[index])+"' WHERE LINE = '"+line[index]+"' ")
 	
 	return True
-	#for data in list(eval(values)):
-		#Trace.Write("data_valu"+str(data))
-	#for x in range(len(values)): 
-	#Trace.Write("list"+str(values[0])) 
-	#for index,j in enumerate(values['KEY']):
-		#j = j.replace("SAQICO-","")
-	#	Trace.Write("UPDATE SAQICO SET ATGKEC = '"+str(values['ATGKEC'][index])+"' AND ATGKEP= '"+str(values['ATGKEP'][index])+"' WHERE CpqTableEntryId = '"+str(j)+"' ")
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
