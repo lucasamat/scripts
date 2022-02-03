@@ -434,6 +434,73 @@ class ContractQuoteItem:
 		
 		Log.Info(str(self.contract_quote_id)+"===SAQICO_BKP==>> "+str(SAQICO_BKP))
 		Log.Info(str(self.contract_quote_id)+"===SAQITE_BKP==>> "+str(SAQITE_BKP))
+		entitlement_details = [{
+								"field":["INTCPV","Intercept","AGS_{}_VAL_INTCPT".format(self.service_id)],						"coeff":["INTCPC","Intercept Coefficient","AGS_{}_VAL_INTCCO".format(self.service_id)]
+								},
+								{
+								"field":["OSSVDV","Total Cost without Seedstock","AGS_{}_VAL_TBCOST".format(self.service_id)],	"coeff":["LTCOSS","Total Cost w/o Seedstock Coeff","AGS_{}_VAL_TBCOCO".format(self.service_id)]
+								},
+								{
+								"field":["POFVDV","Product Offering","AGS_{}_VAL_POFFER".format(self.service_id)],	
+								"coeff":["POFVDC","Product Offering Coefficient","AGS_{}_VAL_POFFCO".format(self.service_id)]
+								},
+								{
+								"field":["GBKVDV","Greenbook","AGS_{}_VAL_GRNBKV".format(self.service_id)],	
+								"coeff":["GBKVDC","Greenbook Coefficient","AGS_{}_VAL_GRNBCO".format(self.service_id)]
+								},
+								{
+								"field":["UIMVDV","Uptime Improvement","AGS_{}_VAL_UPIMPV".format(self.service_id)],	
+								"coeff":["UIMVDC","Uptime Improvement Coefficient","AGS_{}_VAL_UPIMCO".format(self.service_id)]
+								},
+								{
+								"field":["CAVVDV","Capital Avoidance","AGS_{}_VAL_CAPAVD".format(self.service_id)],	
+								"coeff":["CAVVDC","Capital Avoidance Coefficient","AGS_{}_VAL_CAPACO".format(self.service_id)]
+								},
+								{
+								"field":["WNDVDV","Wafer Node","AGS_{}_VAL_WAFNOD".format(self.service_id)],	
+								"coeff":["WNDVDC","Wafer Node Coefficient","AGS_{}_VAL_WAFNCO".format(self.service_id)]
+								},
+								{
+								"field":["CCRTMV","Contract Coverage & Response Time","AGS_{}_VAL_CCRTME".format(self.service_id)],	
+								"coeff":["CCRTMC","Contract Coverage & Response Time Coefficient","AGS_{}_VAL_CCRTCO".format(self.service_id)]
+								},
+								{
+								"field":["SCMVDV","Service Complexity","AGS_{}_VAL_SCCCDF".format(self.service_id)],
+								"coeff":["SCMVDC", "Service Complexity Coefficient", "AGS_{}_VAL_SCCCCO".format(self.service_id)]
+								},
+								{
+								"field":["CCDFFV","Cleaning Coating Differentiation","AGS_{}_VAL_CCDVAL".format(self.service_id)],
+								"coeff":["CCDFFC", "Cleaning Coating Diff coeff.", "AGS_{}_VAL_CCDVCO".format(self.service_id)]
+								},
+								{
+								"field":["NPIVDV","NPI","AGS_{}_VAL_NPIREC".format(self.service_id)],
+								"coeff":["NPIVDC", "NPI Coefficient", "AGS_{}_VAL_NPICOF".format(self.service_id)]
+								},	
+								{
+								"field":["DTPVDV","Device Type","AGS_{}_VAL_DEVTYP".format(self.service_id)],
+								"coeff":["DTPVDC", "Device Type Coefficient", "AGS_{}_VAL_DEVTCO".format(self.service_id)]
+								},	
+								{
+								"field":["CSTVDV","# CSA Tools per Fab","AGS_{}_VAL_TLSFAB".format(self.service_id)],
+								"coeff":["CSTVDC", "# CSA Tools per Fab Coefficient", "AGS_{}_VAL_TLSFCO".format(self.service_id)]
+								},	
+								{
+								"field":["CSGVDV","Customer Segment","AGS_{}_VAL_CSTSEG".format(self.service_id)],
+								"coeff":["CSGVDC", "Customer Segment Coefficent", "AGS_{}_VAL_CSSGCO".format(self.service_id)]
+								},	
+								{
+								"field":["QRQVDV","Quality Required","AGS_{}_VAL_QLYREQ".format(self.service_id)],
+								"coeff":["QRQVDC", "Quality Required Coefficient", "AGS_{}_VAL_QLYRCO".format(self.service_id)]
+								},	
+								{
+								"field":["SVCVDV","Service Competition","AGS_{}_VAL_SVCCMP".format(self.service_id)],
+								"coeff":["SVCVDC", "Service Competition Coefficient", "AGS_{}_VAL_SVCCCO".format(self.service_id)]
+								},
+								{
+								"field":["PBPVDV","PDC Base Price","AGS_{}_VAL_PDCBSE".format(self.service_id)],
+								"coeff":["PBPVDC", "PDC Base Price Coefficient", "AGS_{}_VAL_PDCBCO".format(self.service_id)]
+								},											
+							]
 		start_count = 1
 		end_count = 500
 
@@ -459,11 +526,11 @@ class ContractQuoteItem:
 
 			if str(quote_items_obj) != "None":
 				#entitlement_details = [{"field":["INTCPV","Intercept","AGS_{}_VAL_INTCPT".format(self.service_id)],									"coeff":["INTCPC","Intercept Coefficient","AGS_{}_VAL_INTCCO".format(self.service_id)]}]
-				entitlement_details = [{"field":["SCMVDV","Service Complexity","AGS_{}__VAL_SCCCDF".format(self.service_id)],
-									"coeff":["SCMVDC", "Service Complexity Coefficient", "AGS_{}_VAL_SCCCCO".format(self.service_id)]}]
-				for entitlement_detail in entitlement_details:				
-					S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")
-
+				# entitlement_details = [{"field":["SCMVDV","Service Complexity","AGS_{}_VAL_SCCCDF".format(self.service_id)],
+				# 					"coeff":["SCMVDC", "Service Complexity Coefficient", "AGS_{}_VAL_SCCCCO".format(self.service_id)]}]
+				for entitlement_detail in entitlement_details:	
+					Log.Info("===>>>>>NNN "+str(entitlement_detail))
+					S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")					
 					S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('coeff')[0])+" = ISNULL(CONVERT(FLOAT,ENTITLEMENT_VALUE_CODE),0) FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_VALUE_CODE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('coeff')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('coeff')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('coeff')[1])+"'' AND ISNULL(ENTITLEMENT_VALUE_CODE,'''') <>''''  '")
 
 				# # Total Cost without Seedstock
