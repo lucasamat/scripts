@@ -227,7 +227,7 @@ class SyncFPMQuoteAndHanaDatabase:
         if self.response:
             response = ','.join(str(ele) for ele in self.response)
             record_count=0
-            #Log.Info("PrepareBackuptable----->2"+str(response))
+            Log.Info("PrepareBackuptable----->2"+str(response))
             response=response.replace("null",'""')
             response=response.replace("None",'""')
             response=response.replace("true",'1')
