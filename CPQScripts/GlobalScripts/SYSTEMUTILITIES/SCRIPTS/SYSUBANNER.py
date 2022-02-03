@@ -1828,10 +1828,12 @@ def Related_Sub_Banner(
                     SecondValue = get_addon_service_desc.SERVICE_DESCRIPTION 
             else:
                 Trace.Write('addon enti11')
+                addon_prd_rec_id = Product.GetGlobal('addon_prd_rec_id')
+                get_addon_service_desc = Sql.GetFirst("SELECT ADNPRD_ID,ADNPRD_DESCRIPTION FROM SAQSAO (NOLOCK) WHERE QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID = '"+str(addon_prd_rec_id)+"'")
                 PrimaryLable = "Product Offering ID"
-                PrimaryValue = str(TreeSuperParentParam)
+                PrimaryValue = str(get_addon_service_desc.ADNPRD_ID)
                 SecondLable = "Product Offering Description"
-                SecondValue = desc
+                SecondValue = str(get_addon_service_desc.ADNPRD_DESCRIPTION)
                 #ThirdLable = "Fab Location ID"
                 #ThirdValue = str(TreeParentParam)
                 ThirdLable = "Greenbook"
