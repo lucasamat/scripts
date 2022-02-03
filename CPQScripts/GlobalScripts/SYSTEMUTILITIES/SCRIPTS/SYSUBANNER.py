@@ -172,7 +172,7 @@ def Related_Sub_Banner(
                         if str(btn.HTML_CONTENT) != "" and str(btn.RELATED_LIST_RECORD_ID) != "":
                             button_id = str(btn.RELATED_LIST_RECORD_ID).replace("-","_")+"_"+str(SYOBJH_ID.REC_ID).replace("-","_")						
                             
-                            if btn.RELATED_LIST_RECORD_ID:
+                            if btn.RELATED_LIST_RECORD_ID == SYOBJR.SAPCPQ_ATTRIBUTE_NAME:
                                 div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
                                 if "div_id" in str(btn.HTML_CONTENT):
                                     add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id), div_id= str(div_id))
