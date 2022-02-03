@@ -4,8 +4,6 @@
 #   __primary_author__ : WASIM ABDUL 
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-from asyncio.windows_events import NULL
-from curses.ascii import NUL
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import datetime
