@@ -497,9 +497,34 @@ class ContractQuoteItem:
 								"coeff":["SVCVDC", "Service Competition Coefficient", "AGS_{}_VAL_SVCCCO".format(self.service_id)]
 								},
 								{
+								"field":["RKFVDV","Risk Factor","AGS_{}_VAL_RSKFVD".format(self.service_id)],
+								"coeff":["RKFVDC", "Risk Factor Coefficient", "AGS_{}_VAL_RSKFCO".format(self.service_id)]
+								},
+								{
 								"field":["PBPVDV","PDC Base Price","AGS_{}_VAL_PDCBSE".format(self.service_id)],
 								"coeff":["PBPVDC", "PDC Base Price Coefficient", "AGS_{}_VAL_PDCBCO".format(self.service_id)]
-								},											
+								},
+								{
+								"field":["CMLAB_ENT","Corrective Maintenance Labor","AGS_{}_NET_CRMALB".format(self.service_id)]
+								},		
+								{
+								"field":["CNSMBL_ENT","Consumable","AGS_{}_TSC_CONSUM".format(self.service_id)]
+								},
+								{
+								"field":["CNTCVG_ENT","Contract Coverage","AGS_{}_CVR_CNTCOV".format(self.service_id)]
+								},	
+								{
+								"field":["NCNSMB_ENT","Non-Consumable","AGS_{}_TSC_NONCNS".format(self.service_id)]
+								},	
+								{
+								"field":["PMEVNT_ENT","PM Events","AGS_{}_STT_PMEVNT".format(self.service_id)]
+								},		
+								{
+								"field":["PMLAB_ENT","Preventive Maintenance Labor","AGS_{}_NET_PRMALB".format(self.service_id)]
+								},	
+								{
+								"field":["PRMKPI_ENT","Primary KPI. Perf Guarantee","AGS_{}_KPI_PRPFGT".format(self.service_id)]
+								},				
 							]
 		start_count = 1
 		end_count = 500
@@ -531,8 +556,8 @@ class ContractQuoteItem:
 				for entitlement_detail in entitlement_details:					
 					try:
 						S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'' AND charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml) > 0) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")		
-									
-						S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('coeff')[0])+" = ISNULL(CONVERT(FLOAT,ENTITLEMENT_VALUE_CODE),0) FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_VALUE_CODE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('coeff')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('coeff')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'' AND charindex (''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml) > 0) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('coeff')[1])+"'' AND ISNULL(ENTITLEMENT_VALUE_CODE,'''') <>''''  '")
+						if entitlement_detail.get('coeff'):			
+							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('coeff')[0])+" = ISNULL(CONVERT(FLOAT,ENTITLEMENT_VALUE_CODE),0) FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_VALUE_CODE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('coeff')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('coeff')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'' AND charindex (''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml) > 0) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('coeff')[1])+"'' AND ISNULL(ENTITLEMENT_VALUE_CODE,'''') <>''''  '")
 					except Exception:
 						Log.Info("===>>>>>NNN "+str("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '"))
 						Log.Info("SAQICO Entitlement Update Issue {}-{}".format(entitlement_detail.get('field')[1],entitlement_detail.get('field')[2]))
