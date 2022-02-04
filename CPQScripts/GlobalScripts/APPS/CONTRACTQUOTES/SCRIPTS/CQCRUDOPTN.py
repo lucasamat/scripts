@@ -5800,6 +5800,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								pm_event_flag=1
 						if quote_type_attribute_id and self.tree_param == 'Z0009':
 							quote_type_attribute_value =re.findall(pattern_name,sub_string)
+							Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value))
 							if  quote_type_attribute_value:
 								if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
 									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
@@ -5921,6 +5922,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								pm_event_flag=1
 						if quote_type_attribute_id and self.tree_param == 'Z0009':
 							quote_type_attribute_value =re.findall(pattern_name,sub_string)
+							Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value))
 							if  quote_type_attribute_value:
 								if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
 									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
