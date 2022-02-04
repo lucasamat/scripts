@@ -1480,6 +1480,11 @@ try:
 except:
 	quote_revision_record_id = ""
 try:
+	values = Param.VALUES
+except:
+	values = ""
+
+try:
 	line = Param.line
 except:
 	line = ""
