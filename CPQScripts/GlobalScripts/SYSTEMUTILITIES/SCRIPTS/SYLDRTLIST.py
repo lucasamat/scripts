@@ -3020,7 +3020,7 @@ class SYLDRTLIST:
 										if str(docnode_action_btn.DATE_ACCEPTED) == "" and str(docnode_action_btn.DATE_REJECTED) == "":
 											Trace.Write("2222222222222")
 											Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="customer_accepted(this)">CUSTOMER ACCEPTED</a></li>'									
-											Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="localStorage.setItem('SelectedDocument',$(this).closest('tr').find('td:nth-child(4) > abbr').attr('id'))" data-toggle="modal" data-target="#reject_statement">CUSTOMER REJECTED</a></li>'
+											Action_str += '<li><a id = "" class="dropdown-item" href="#" onclick="localStorage.setItem(\'SelectedDocument\',$(this).closest(\'tr\').find(\'td:nth-child(4) > abbr\').attr(\'id\'))" data-toggle="modal" data-target="#reject_statement">CUSTOMER REJECTED</a></li>'
 									else:
 										Trace.Write("docnode111=====")									
 										Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'     
