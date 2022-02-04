@@ -708,7 +708,7 @@ class AncillaryProductOperation:
 							for key,value in get_anc_xml_dict.items():
 								if key in get_parent_dict.keys()  :
 									value = get_parent_dict[key]
-								Trace.Write("value--"+str(value))
+								#Trace.Write("value--"+str(value))
 								assign_xml += value
 							where_cond += joinstr
 							Sql.RunQuery("UPDATE {} SET ENTITLEMENT_XML = '{}' WHERE {} ".format(ent_table, assign_xml, where_cond) )
@@ -719,8 +719,8 @@ class AncillaryProductOperation:
 												'ent_level_table': ent_table, 
 												'quote_record_id':self.contract_quote_record_id,
 												'revision_record_id':self.contract_quote_revision_record_id})
-								Trace.Write("value--"+str(cpsmatchID)+'-'+str(Configurationid))
-								#Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+								#Trace.Write("value--"+str(cpsmatchID)+'-'+str(Configurationid))
+								Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(ent_table,Configurationid,cpsmatchID,where_cond))
 		except Exception as e:
 			Trace.Write("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 
