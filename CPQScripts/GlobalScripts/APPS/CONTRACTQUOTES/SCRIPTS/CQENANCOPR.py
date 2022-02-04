@@ -699,7 +699,7 @@ class AncillaryProductOperation:
 					joinstr = ''
 					assign_xml = {}
 					if ent_table == 'SAQSCE':
-						joinstr = " AND EQUIPEMNT_ID = '{}'".format(parent.EQUIPMENT_ID)
+						joinstr = " AND EQUIPMENT_ID = '{}'".format(parent.EQUIPMENT_ID)
 					getall_recid = Sql.GetFirst("SELECT * FROM {} WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' AND GREENBOOK = '{}' {}".format(ent_table,self.contract_quote_record_id, self.contract_quote_revision_record_id, anc_service ,self.service_id, parent.GREENBOOK, joinstr) )
 					if getall_recid:
 						get_parent_dict = self._construct_dict_xml(parent.ENTITLEMENT_XML)
@@ -708,6 +708,7 @@ class AncillaryProductOperation:
 							for key,value in get_anc_xml_dict.items():
 								if key in get_parent_dict.keys()  :
 									value = get_parent_dict[key]
+								Trace.Write("value--"+str(value))
 								assign_xml += value
 							where_cond += joinstr
 							Sql.RunQuery("UPDATE {} SET ENTITLEMENT_XML = '{}' WHERE {} ".format(ent_table, assign_xml, where_cond) )
@@ -889,7 +890,7 @@ class AncillaryProductOperation:
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS,'') = 'COMPLETE' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.PAR_SERVICE_ID = '{par_service_id}' AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'   AND QTEREV_RECORD_ID = '{revision_rec_id}' AND SERVICE_ID = SAQTSE.SERVICE_ID AND PAR_SERVICE_ID = '{par_service_id}')) IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, ServiceId=self.ancillary_obj, revision_rec_id = self.contract_quote_revision_record_id,par_service_id = self.service_id)
 				
 				Sql.RunQuery(qtqsce_anc_query)
-				self._update_entitlement_values('Z0046','SAQSCE')
+				#self._update_entitlement_values('Z0046','SAQSCE')
 				# Sql.RunQuery("""UPDATE SAQSCE
 				# 				SET
 				# 				ENTITLEMENT_GROUP_ID = OQ.RowNo
