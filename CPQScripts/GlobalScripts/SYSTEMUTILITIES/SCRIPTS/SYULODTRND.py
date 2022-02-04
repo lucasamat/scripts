@@ -1449,7 +1449,9 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					if current_obj_value and str(ObjectName) == "SAQICO":
 						Trace.Write("if-----111"+str(current_obj_value))
 						my_format = "{:." + str(Decimal_Values) + "f}"
-						current_obj_value = str(my_format.format(round(float(current_obj_value), int(Decimal_Values))))	
+						current_obj_value = str(current_obj_value).replace('%','')
+						current_obj_value = str(my_format.format(round(float(current_obj_value), int(Decimal_Values))))
+						current_obj_value = str(current_obj_value) + '%'							
 					
 
 						#my_format = "{:." + str(Decimal_Values) + "f}"
