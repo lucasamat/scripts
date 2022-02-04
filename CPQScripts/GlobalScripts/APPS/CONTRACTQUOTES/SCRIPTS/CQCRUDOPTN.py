@@ -5782,7 +5782,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						quote_type_attribute_id =re.findall(quote_type_id,sub_string)
 						additional_where = ""
 						if pm_event_attribute_id and self.tree_param != 'Z0009':
-							pm_event_attribute_value =str(pm_entlmnt_val)
+							pm_event_attribute_value = re.findall(pattern_name,sub_string)
 							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
 							Trace.Write("555 "+str(self.tree_param)+" 555 "+str(pm_event_attribute_value))
 							if (self.tree_param in ("Z0035","Z0091","Z0009","Z0004") and "Included - All PM" in pm_event_attribute_value):
@@ -5805,7 +5805,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
 									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
 								else:
-									pm_event_attribute_value =str(pm_entlmnt_val)
+									pm_event_attribute_value = re.findall(pattern_name,sub_string)
 									if("Tool based" in quote_type_attribute_value and pm_event_attribute_value != "Excluded"):
 										if (self.tree_param in ("Z0009") and "Included - All PM" in pm_event_attribute_value):
 											additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND"
