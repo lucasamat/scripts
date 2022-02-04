@@ -2143,13 +2143,13 @@ class TreeView:
 									elif getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
 										subTabName = ""
 									
-									# elif (subTabName in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','New Parts') :
+									# elif (subTabName in ("Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText ) or subTabName in ('Greenbook Inclusions','Green Parts List','Service Parts List','New Parts') :
 									# 	Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
 									# 	subtab_temp_variable = subTabName 
 									# 	whr_str_greenbook =""
 									# 	ent_table =""
 									# 	subTabName =""
-									# 	if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText :
+									# 	if subtab_temp_variable in ("Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText :
 									# 		service_id = NodeText.split('/>')
 									# 		service_id = service_id[len(service_id) -1]
 									# 		ent_table ="SAQTSE"
@@ -2164,11 +2164,11 @@ class TreeView:
 									# 		pattern_id =""
 									# 		pattern_name =""
 									# 		subtab_temp =""
-									# 		if subtab_temp_variable == 'PM Events' and ent_table =="SAQTSE":
-									# 			# Trace.Write(" PM Events")
+									# 		if subtab_temp_variable == 'Events' and ent_table =="SAQTSE":
+									# 			# Trace.Write(" Events")
 									# 			pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_STT_PMEVNT</ENTITLEMENT_ID>')
 									# 			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Tool based|PMSA Flex|Event based)</ENTITLEMENT_DISPLAY_VALUE>')
-									# 			subtab_temp ="PM Events"
+									# 			subtab_temp ="Events"
 									# 		elif subtab_temp_variable == 'New Parts':
 									# 			Trace.Write(" New Parts inside")
 												
@@ -2207,7 +2207,7 @@ class TreeView:
 									# 				subTabName = subtab_temp
 
 									# A055S000P01-14557 - New Parts, Inclusion , Exclusion Subtabs starts
-									elif subTabName in ("PM Events","Service New Parts","Service Parts List","Service Inclusions",'Greenbook Inclusions','Green Parts List','Green New Parts') :
+									elif subTabName in ("Events","Service New Parts","Service Parts List","Service Inclusions",'Greenbook Inclusions','Green Parts List','Green New Parts') :
 										Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
 										Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE"))+'---'+str(entitlement_level_flag) )
 										ent_table_list = ["SAQTSE"]
@@ -2218,7 +2218,7 @@ class TreeView:
 										ent_value_dict = {}
 										service_id = Product.GetGlobal("SERVICE")
 										if subtab_temp_variable in ('Greenbook Inclusions','Green Parts List','Green New Parts'):
-										# if subtab_temp_variable in ("PM Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText :
+										# if subtab_temp_variable in ("Events","New Parts","Service Parts List","Inclusions") and '/>Z' in NodeText :
 										# 	Trace.Write("Service Level")
 										# 	# ent_table_list.append("SAQTSE")
 										# else:
@@ -2234,10 +2234,10 @@ class TreeView:
 												pattern_id =""
 												pattern_name =""
 												subtab_temp =""
-												if subtab_temp_variable == 'PM Events' and ent_table == 'SAQTSE':
+												if subtab_temp_variable == 'Events' and ent_table == 'SAQTSE':
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_NET_PRMALB</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included - All PM|Included - Monthly and Above|Included - Quarterly and Above|Included - All PM (PDC/MPS)|Included - Qtrly and Above)</ENTITLEMENT_DISPLAY_VALUE>')
-													subtab_temp ="PM Events"
+													subtab_temp ="Events"
 													
 												elif subtab_temp_variable in ('Service Inclusions','Greenbook Inclusions') :
 													# if service_id in ('Z0092') and subtab_temp_variable != 'Greenbook Inclusions':
@@ -2291,7 +2291,7 @@ class TreeView:
 														#subTabName = subtab_temp
 										
 										#if ent_value_dict:
-										if subtab_temp_variable in ("PM Events","Service Inclusions","Service Parts List","Service New Parts") :
+										if subtab_temp_variable in ("Events","Service Inclusions","Service Parts List","Service New Parts") :
 											subTabName = ent_value_dict["SAQTSE"]
 										if entitlement_level_flag and (subtab_temp_variable in ('Green Parts List','Green New Parts') or (subtab_temp_variable == 'Greenbook Inclusions' and service_id in ('Z0009', 'Z0006') ) ):
 											Trace.Write("else-ifff-saqsge-"+str(ent_value_dict)+'--'+str(subtab_temp_variable)+'--'+str(entitlement_level_flag))
@@ -2315,8 +2315,8 @@ class TreeView:
 											if spare_parts_object.cnt > 0:
 												subTabName = str(getRightView.SUBTAB_NAME)
 									##A055S000P01-14790 code starts..
-									elif subTabName == 'Applied PM Events':
-										subTabName = "PM Events"
+									elif subTabName == 'Applied Events':
+										subTabName = "Events"
 									##A055S000P01-14790 code ends...
 									elif subTabName == 'Spare Parts' and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
 										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -2340,7 +2340,7 @@ class TreeView:
 									Trace.Write(str(ObjRecId)+"---SUBTAB_NAMEsss*"+str(subTabName)+'--1947---'+str(NodeText)+'---Node Name---'+str(NodeName)+'--Objname--'+str(ObjName))
 										
 									if subTabName:
-										if subTabName=="PM Events" and Product.GetGlobal("SERVICE")=="Z0009":
+										if subTabName=="Events" and Product.GetGlobal("SERVICE")=="Z0009":
 											service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE")))
 											if service_entitlement_object is not None:
 												pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')

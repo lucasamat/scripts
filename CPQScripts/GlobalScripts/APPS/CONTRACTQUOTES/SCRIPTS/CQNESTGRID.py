@@ -6394,7 +6394,7 @@ def UpdateBreadcrumb():
 		elif qry:
 			eq_id = str(qry.EQUIPMENT_ID)
 		else:
-			eq_id = "PM Events"
+			eq_id = "Events"
 	##A055S000P01-8690 code starts..
 	elif TABLENAME == 'SAQDLT':
 		qry = Sql.GetFirst(

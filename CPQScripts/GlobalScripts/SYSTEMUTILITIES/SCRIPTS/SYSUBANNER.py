@@ -1707,7 +1707,7 @@ def Related_Sub_Banner(
         FifthValue = str(SerialNumber)
         SixthLable = "Assembly ID"
         SixthValue = str(AssemblyId)     
-    elif subTabName == "PM Events" or subTabName == "Assembly Entitlements" :
+    elif subTabName == "Events" or subTabName == "Assembly Entitlements" :
         Trace.Write("PM 1638")
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV(nolock) where SERVICE_ID = '"+str(TreeParam)+"'")
         PrimaryLable = "Product Offering ID"
@@ -1721,7 +1721,7 @@ def Related_Sub_Banner(
         ThirdValue = "ALL"
         PreventiveMaintainenceobj = Sql.GetFirst("select EQUIPMENT_ID from SAQSAP(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' and EQUIPMENT_ID = '{Equipment_Id}' and ASSEMBLY_ID = '{Assembly_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Equipment_Id = EquipmentId,Assembly_id =AssemblyId,quote_revision_record_id=quote_revision_record_id ))
         if PreventiveMaintainenceobj is not None:
-            FifthLable = "PM Events"
+            FifthLable = "Events"
             FifthValue = "All"
         PMEvents = "False"
     elif ObjName == "SAQSCA":
@@ -1805,7 +1805,7 @@ def Related_Sub_Banner(
             FourthValue = str(EquipmentId)
             FifthLable = "Serial Number"
             FifthValue = str(SerialNumber)
-        elif(str(ObjName)=="SAQRGG" and (subTabName == 'Details' or subTabName == 'PM Events')):
+        elif(str(ObjName)=="SAQRGG" and (subTabName == 'Details' or subTabName == 'Events')):
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(TreeSuperParentParam)
             SecondLable = "Product Offering Description"
@@ -2310,7 +2310,7 @@ def Related_Sub_Banner(
         FifthValue = ""
         SixthLable = ''
         SixthValue = ''
-    elif ObjName == "SAQRGG" and subTabName == "PM Events":
+    elif ObjName == "SAQRGG" and subTabName == "Events":
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeSuperParentParam)
         SecondLable = "Greenbook"
@@ -2340,7 +2340,7 @@ def Related_Sub_Banner(
         FifthValue = str(SerialNumber)
         SixthLable = ''
         SixthValue = ''
-    elif ObjName in ("SAQSGB","SAQSCA") and TreeTopSuperParentParam == "Product Offerings" and (subTabName in("Assembly Details","Assembly Entitlements","PM Events")):
+    elif ObjName in ("SAQSGB","SAQSCA") and TreeTopSuperParentParam == "Product Offerings" and (subTabName in("Assembly Details","Assembly Entitlements","Events")):
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeParentParam)
@@ -3108,7 +3108,7 @@ def Related_Sub_Banner(
         elif  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions" and str(subTabName)!= "New Parts Only":     
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig hidebtn">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig hidebtn">CANCEL</button>'  )    
             Trace.Write('### _ Multi_buttons'+str(type(multi_buttons)))
-            if str(subTabName)=="PM Events" and revision_status.REVISION_STATUS != 'APPROVED':
+            if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APPROVED':
                 sec_rel_sub_bnr += str(add_button)
             elif str(subTabName)=="Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APPROVED':
                 if str(multi_buttons) != "":
@@ -3125,10 +3125,10 @@ def Related_Sub_Banner(
                     sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
-            if str(subTabName)=="PM Events" and revision_status.REVISION_STATUS != 'APPROVED':
+            if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APPROVED':
                 sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and (subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
-            if str(subTabName)=="PM Events":
+            if str(subTabName)=="Events":
                 sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_00011_SYOBJ_00974" onclick="PM_FrequencyInlineEdit()" class="btnconfig" >INLINE EDIT</button>')
             elif 'Add-On Products' in str(TreeParam) and ("INCLUDE ADD-ON PRODUCTS" not in sec_rel_sub_bnr) and ("ADD CREDITS" not in sec_rel_sub_bnr):
                 sec_rel_sub_bnr+= str(add_button)
