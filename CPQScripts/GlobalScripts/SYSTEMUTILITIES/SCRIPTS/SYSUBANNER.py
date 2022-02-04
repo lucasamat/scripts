@@ -1057,10 +1057,10 @@ def Related_Sub_Banner(
                 elif ObjName == "SAQICO":
                     Trace.Write("saqico=====")
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    annualized_details = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                    annualized_details = Sql.GetFirst("SELECT QUOTE_ITEM_COVERED_OBJECT_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"' AND LINE = '"+str(CurrentRecordId)+"'")
                     if annualized_details:
-                        CurrentRecordId = annualized_details.LINE                        	
-                if str(ObjName) != "SYPROH" and str(ObjName) != "SAQICO":
+                        CurrentRecordId = annualized_details.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID                        	
+                if str(ObjName) != "SYPROH":
                     Trace.Write("Test668")
                     ValQuery = Sql.GetFirst(
                         "select "
@@ -1074,18 +1074,18 @@ def Related_Sub_Banner(
                         + "'"
                     )
                     Trace.Write("check"+str(ValQuery))
-                elif str(ObjName) == "SAQICO":
-                    ValQuery = Sql.GetFirst(
-                        "select "
-                        + str(column)
-                        + " from "
-                        + str(ObjName)
-                        + " where "
-                        + "LINE"
-                        + " = '"
-                        + str(CurrentRecordId) 
-                        + "'"
-                    ) 
+                # elif str(ObjName) == "SAQICO":
+                #     ValQuery = Sql.GetFirst(
+                #         "select "
+                #         + str(column)
+                #         + " from "
+                #         + str(ObjName)
+                #         + " where "
+                #         + "LINE"
+                #         + " = '"
+                #         + str(CurrentRecordId) 
+                #         + "'"
+                #     ) 
                 else:
                     ValQuery = Sql.GetFirst(
                         "select "
