@@ -5806,7 +5806,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
 								else:
 									pm_event_attribute_value =str(pm_entlmnt_val)
-									if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
+									if("Tool based" in quote_type_attribute_value and pm_event_attribute_value != "Excluded"):
 										if (self.tree_param in ("Z0009") and "Included - All PM" in pm_event_attribute_value):
 											additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND"
 											Trace.Write("additional_where_chk_1 "+str(additional_where))
@@ -5928,7 +5928,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
 								else:
 									pm_event_attribute_value = str(pm_entlmnt_val)
-									if(pm_event_attribute_value == "Tool based" or pm_event_attribute_value != "Excluded"):
+									if("Tool based" in quote_type_attribute_value and pm_event_attribute_value != "Excluded"):
 										if (self.tree_param in ("Z0009") and "Included - All PM" in pm_event_attribute_value):
 											additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND"
 											Trace.Write("additional_where_chk_1 "+str(additional_where))
