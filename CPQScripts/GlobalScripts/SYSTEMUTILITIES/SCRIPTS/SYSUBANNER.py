@@ -1036,10 +1036,15 @@ def Related_Sub_Banner(
                 #     PrimaryLable = "Fab Location ID"
                 #     PrimaryValue = TreeParam
                 elif ObjName == "SAQICO":
+                    #contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+                    # qte_fab_node = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                    # if qte_fab_node:
+                    #     CurrentRecordId = qte_fab_node.MASTER_TABLE_QUOTE_RECORD_ID
+                    Trace.Write("saqico=====")
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    qte_fab_node = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
-                    if qte_fab_node:
-                        CurrentRecordId = qte_fab_node.MASTER_TABLE_QUOTE_RECORD_ID
+                    annualized_details = Sql.GetFirst("SELECT QUOTE_ITEM_COVERED_OBJECT_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"' AND LINE = '"+str(CurrentRecordId)+"'")
+                    if annualized_details:
+                        CurrentRecordId = annualized_details.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID   
                 elif ObjName == "SAQSGB" and TreeSuperParentParam == "Receiving Equipment" and subTabName == "Equipment Details":
                     Trace.Write("SHP---Eq")
                     get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeTopSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
@@ -1053,13 +1058,8 @@ def Related_Sub_Banner(
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                     qte_fab_node = Sql.GetFirst("SELECT QUOTE_SERVICE_FAB_LOCATION_RECORD_ID FROM SAQSFB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if qte_fab_node:
-                        CurrentRecordId = qte_fab_node.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID	
-                elif ObjName == "SAQICO":
-                    Trace.Write("saqico=====")
-                    contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    annualized_details = Sql.GetFirst("SELECT QUOTE_ITEM_COVERED_OBJECT_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"' AND LINE = '"+str(CurrentRecordId)+"'")
-                    if annualized_details:
-                        CurrentRecordId = annualized_details.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID                        	
+                        CurrentRecordId = qte_fab_node.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID                
+                                         	
                 if str(ObjName) != "SYPROH":
                     Trace.Write("Test668")
                     ValQuery = Sql.GetFirst(
@@ -1073,19 +1073,7 @@ def Related_Sub_Banner(
                         + str(CurrentRecordId) 
                         + "'"
                     )
-                    Trace.Write("check"+str(ValQuery))
-                # elif str(ObjName) == "SAQICO":
-                #     ValQuery = Sql.GetFirst(
-                #         "select "
-                #         + str(column)
-                #         + " from "
-                #         + str(ObjName)
-                #         + " where "
-                #         + "LINE"
-                #         + " = '"
-                #         + str(CurrentRecordId) 
-                #         + "'"
-                #     ) 
+                    Trace.Write("check"+str(ValQuery))                
                 else:
                     ValQuery = Sql.GetFirst(
                         "select "
