@@ -697,7 +697,7 @@ class AncillaryProductOperation:
 				get_anc_xml_dict = {}
 				for parent in get_parent_xml:
 					joinstr = ''
-					assign_xml = {}
+					assign_xml = ''
 					if ent_table == 'SAQSCE':
 						joinstr = " AND EQUIPMENT_ID = '{}'".format(parent.EQUIPMENT_ID)
 					getall_recid = Sql.GetFirst("SELECT * FROM {} WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' AND GREENBOOK = '{}' {}".format(ent_table,self.contract_quote_record_id, self.contract_quote_revision_record_id, anc_service ,self.service_id, parent.GREENBOOK, joinstr) )
