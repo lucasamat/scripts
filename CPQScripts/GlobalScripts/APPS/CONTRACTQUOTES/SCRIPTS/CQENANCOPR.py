@@ -692,7 +692,7 @@ class AncillaryProductOperation:
 		where_cond += " AND SERVICE_ID = '{}'".format(anc_service)
 		check_ancillary = Sql.GetFirst("SELECT COUNT(SERVICE_ID) AS CNT FROM SAQTSE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' AND SERVICE_ID ='{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.service_id, anc_service) )
 		if check_ancillary.CNT > 0 and self.tablename == 'SAQSGE':
-			get_parent_xml = Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_table, where_cond) )
+			get_parent_xml = Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_table, self.where_string) )
 			get_anc_xml_dict = {}
 			for parent in get_parent_xml:
 				joinstr = ''
@@ -701,6 +701,7 @@ class AncillaryProductOperation:
 					joinstr = " AND EQUIPEMNT_ID = '{}'".format(parent.EQUIPMENT_ID)
 				getall_recid = Sql.GetFirst("SELECT * FROM {} WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' AND GREENBOOK = '{}' {}".format(ent_table,self.contract_quote_record_id, self.contract_quote_revision_record_id, anc_service ,self.service_id, parent.GREENBOOK, joinstr) )
 				if getall_recid:
+					Trace.Write("inside"+len(getall_recid))
 					get_parent_dict = self._construct_dict_xml(parent.ENTITLEMENT_XML)
 					get_anc_xml_dict = self._construct_dict_xml(getall_recid.ENTITLEMENT_XML)
 					if get_parent_dict and get_anc_xml_dict:
