@@ -172,7 +172,23 @@ class ContractQuoteItem:
 					{JoinString}
 					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSCE.SERVICE_ID = '{ServiceId}' {WhereString}
 				)OQ""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id,JoinString=item_line_covered_object_assembly_join_string, WhereString=item_line_covered_object_assembly_where_string))
-				
+	def _construct_dict_xml(self,updateentXML):
+		entxmldict = {}
+		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+		display_val_dict = {}
+		if updateentXML:
+			for m in re.finditer(pattern_tag, updateentXML):
+				sub_string = m.group(1)
+				x=re.findall(pattern_name,sub_string)
+				if x:
+					entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
+				if entitlement_display_value_tag_match:
+						display_val_dict[x[0]] = entitlement_display_value_tag_match[0].upper()
+				entxmldict[x[0]]=sub_string
+		return display_val_dict			
+	
 	def _quote_items_assembly_entitlement_insert(self, update=True):
 		# Update - Start
 		#item_line_covered_object_assembly_entitlement_join_string = ""	
@@ -601,6 +617,40 @@ class ContractQuoteItem:
 							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQICO.SERVICE_ID
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'SLMRGN' AND SAQICO.SLSDIS_PRICE_MARGIN IS NULL
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))	
+		#Z0046 pricing update
+		if self.service_id == 'Z0046':
+			get_items_entitlement = Sql.GetList("SELECT * FROM SAQITE WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+			for item in get_items_entitlement:
+				xml_dict =  self._construct_dict_xml(item.ENTITLEMENT_XML)
+				total_price = 0
+				for i in range(1,11):
+					x = "AGS_Z0046_PQB_AP{}FU".format(str(i).zfill(2))
+					y = "AGS_Z0046_PQB_AP{}PR".format(str(i).zfill(2))
+					if i ==1:
+						y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
+					if x in xml_dict.keys() and y in xml_dict.keys() :
+						if xml_dict[x] and xml_dict[y]:
+							qty = float(xml_dict[x])
+							price = float(xml_dict[y])
+							#Trace.Write("ifff-- "+str(qty) +'--'+str(price) )
+							total_price += price * qty
+				#Trace.Write("price-- "+str(total_price))
+				Sql.RunQuery("""UPDATE SAQICO 
+					SET TENVGC = '{total_price}',
+
+					TENVDC = '{total_price}'+IQ.EXCHANGE_RATE 
+					FROM SAQICO (NOLOCK) 
+						INNER JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.GREENBOOK,SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID,SAQRIT.EXCHANGE_RATE FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = 'Z0046' AND BILLING_TYPE = 'Variable') IQ ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = IQ.SERVICE_ID AND SAQICO.GRNBOK  = IQ.GREENBOOK AND SAQICO.QTEITM_RECORD_ID = IQ.QUOTE_REVISION_CONTRACT_ITEM_ID
+						WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND GREENBOOK = '{greenbook}'""".format( QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,total_price= total_price,greenbook = item.GREENBOOK,ServiceId= self.service_id))
+				
+			Sql.RunQuery("""UPDATE SAQICO 
+				SET TAMTDC = CASE WHEN BILLING_TYPE = 'Variable' THEN TENVDC ELSE TNTVDC+ISNULL(TAXVDC,0) END,
+				TAMTGC = CASE WHEN BILLING_TYPE = 'Variable' THEN TENVGC ELSE TNTVGC+ISNULL(TAXVGC,0) END,
+				STATUS = 'ACQUIRED'
+				FROM SAQICO (NOLOCK) 
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id))
+				
+    
 		return True
 
 	def _quote_annualized_items_insert_old(self, update=False):			
