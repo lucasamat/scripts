@@ -1442,7 +1442,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 							current_obj_value =str(float(Coeff_values)*float(100))
 						else:
 							current_obj_value = str(Coeff_values)
-					if current_obj_value:
+					if current_obj_value and str(ObjectName) != "SAQICO":
 						Trace.Write("if-----")
 						my_format = "{:." + str(Decimal_Value) + "f}"
 						current_obj_value = str(my_format.format(round(float(current_obj_value), int(Decimal_Value))))
