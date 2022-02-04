@@ -1055,6 +1055,7 @@ def Related_Sub_Banner(
                     if qte_fab_node:
                         CurrentRecordId = qte_fab_node.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID	
                 elif ObjName == "SAQICO":
+                    Trace.Write("saqico=====")
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                     annualized_details = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if annualized_details:
