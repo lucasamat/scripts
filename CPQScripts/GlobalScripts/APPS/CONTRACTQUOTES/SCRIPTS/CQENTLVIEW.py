@@ -1063,6 +1063,11 @@ class EntitlementView():
 													disallow_style = "style = 'display:none'"
 												else:	
 													disallow_style = ""
+												tag_value =  value.STANDARD_ATTRIBUTE_DISPLAY_VAL
+												if '>' in tag_value:
+													tag_value = tag_value.replace('>','&gt;')
+												elif '<' in tag_value:
+													tag_value = tag_value.replace('>','&lt;')
 												try:													
 													if str(val.ENTITLEMENT_DISPLAY_VALUE).strip().upper() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip().upper():
 														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE).replace("'","''")) )
@@ -1075,7 +1080,7 @@ class EntitlementView():
 															'<option  id="'+str(value.SYSTEM_ID)+'" value = "'
 															+ str(val.ENTITLEMENT_DISPLAY_VALUE)
 															+ '" selected>'
-															+ str(val.ENTITLEMENT_DISPLAY_VALUE)
+															+ str(tag_value)
 															+ "</option>"
 														)
 														Trace.Write('selected_option--'+str(selected_option))
@@ -1087,10 +1092,9 @@ class EntitlementView():
 															+ ' id="'+str(value.SYSTEM_ID)+'" value = "'
 															+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 															+ '">'
-															+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+															+ str(tag_value)
 															+ "</option>"
 														)
-														Trace.Write("var11-"+str(VAR1))
 												except:
 													#Trace.Write(str(default)+'----except dropdown ----'+str(attrName)+'--1043--')
 													#VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
@@ -1102,7 +1106,7 @@ class EntitlementView():
 															if approval_status.APPROVAL_REQUIRED == True:
 																imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
 														VAR1 += (
-															'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
+															'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{tag_value}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE, tag_value= tag_value)
 														)
 														#Trace.Write(str(selected_option)+'---selected_option---except dropdown ----'+str(attrName))
 													else:
@@ -1388,6 +1392,11 @@ class EntitlementView():
 												disallow_style = ""
 											if str(selected_option)=='selected':
 												selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
+											tag_value =  value.STANDARD_ATTRIBUTE_DISPLAY_VAL
+											if '>' in tag_value:
+												tag_value = tag_value.replace('>','&gt;')
+											elif '<' in tag_value:
+												tag_value = tag_value.replace('>','&lt;')
 											try:
 												#Trace.Write('attrSysId-try---3491-'+str(attrSysId))
 												if inserted_value_dict[str(attrSysId)] == value.STANDARD_ATTRIBUTE_VALUE :
@@ -1396,7 +1405,7 @@ class EntitlementView():
 													'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
 													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
 													+ '"'+str(select_option)+str(selected)+'>'
-													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+													+ str(tag_value)
 													+ "</option>"
 												)
 											except:
@@ -1404,7 +1413,7 @@ class EntitlementView():
 												VAR1 += (
 													'<option '
 													+ str(disallow_style)
-													+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL,select = select_option)
+													+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{tag_value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL,select = select_option,tag_value = tag_value)
 												)
 										try:
 											sec_str1 += (
