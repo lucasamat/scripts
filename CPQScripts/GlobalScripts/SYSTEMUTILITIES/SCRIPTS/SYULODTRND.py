@@ -879,16 +879,27 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				Trace.Write("line_item--quote_record_id--00--------"+str(RECORD_ID))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 				Trace.Write("line_item---quote_record_id-----"+str(quote_record_id))
+				# script = (
+				# 	"SELECT "
+				# 	+ str(API_NAMES)
+				# 	+ " FROM "
+				# 	+ str(ObjectName)
+				# 	+ " (NOLOCK) WHERE "
+				# 	+ str(autoNumber)
+				# 	+ " = '"
+				# 	+ str(RECORD_ID)
+				# 	+ "'"
+				# )
 				script = (
 					"SELECT "
 					+ str(API_NAMES)
 					+ " FROM "
 					+ str(ObjectName)
-					+ " (NOLOCK) WHERE "
-					+ str(autoNumber)
+					+ " (NOLOCK) WHERE QUOTE_RECORD_ID "
 					+ " = '"
-					+ str(RECORD_ID)
-					+ "'"
+					+ str(quote_record_id)
+					+ "' and LINE = '"+str(RECORD_ID)+"'"
+					+ ""
 				)
 			elif ObjectName == "SAQTRV":
 				RECORD_ID = RECORD_ID.split("|")[0]
