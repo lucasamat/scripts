@@ -1190,8 +1190,8 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			
 		
 		##rollup for pricing
-		if ('Z0091' in get_serviceid or 'Z0016' in get_serviceid) and objectName != 'SAQTSE' :
-			entitlement_price_rollup(objectName, ent_temp)
+		# if ('Z0091' in get_serviceid or 'Z0016' in get_serviceid) and objectName != 'SAQTSE' :
+		# 	entitlement_price_rollup(objectName, ent_temp)
 		##ancillary_service insert
 		#if 'Z0091' in get_serviceid :
 		ancillary_service_call()
