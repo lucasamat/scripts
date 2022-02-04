@@ -139,7 +139,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.ODCC_FLAG='X' THEN 'True' ELSE 'False' END AS ODCC_FLAG,
                                 CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER='' THEN '' ELSE TEMP_TABLE.PARENT_PART_NUMBER END AS PAR_PART_NUMBER,
                                 TEMP_TABLE.Material_Eligibility AS EXCHANGE_ELIGIBLE,
-                                TEMP_TABLE.Customer_Eligibility AS CUSTOMER_ELIGIBLE,
+                                CASE WHEN TEMP_TABLE.Customer_Eligibility='X' THEN 'True' ELSE 'False' END AS CUSTOMER_ELIGIBLE,
                                 'True' as CUSTOMER_PARTICIPATE,
                                 'True' as CUSTOMER_ACCEPT_PART,
                                 '{sold_to}' as STPACCOUNT_ID,
