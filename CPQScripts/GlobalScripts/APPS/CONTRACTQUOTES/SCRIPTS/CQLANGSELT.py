@@ -121,7 +121,7 @@ def insert_quote_billing_plan():
 										) AS IQ
 										PIVOT
 										(
-											SUM(BILLING_AMOUNT)
+											SUM(BILLING_VALUE)
 											FOR BILLING_DATE IN ({PivotColumns})
 										)AS PVT ORDER BY GREENBOOK,SERVICE_ID
 									""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
