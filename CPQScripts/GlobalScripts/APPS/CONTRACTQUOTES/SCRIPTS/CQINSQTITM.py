@@ -584,7 +584,7 @@ class ContractQuoteItem:
 							FROM SAQICO (NOLOCK)
 							JOIN MAEQUP (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID
 							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = MAEQUP.SUBSTRATE_SIZE_GROUP
-							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND HEDBIN = 'Included' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'HBWFCT'
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND SAQICO.HEDBIN = 'Included' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'HBWFCT'
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		# Head Break In Price Impact
 		Sql.RunQuery("""UPDATE SAQICO
@@ -592,10 +592,15 @@ class ContractQuoteItem:
 							FROM SAQICO (NOLOCK)
 							JOIN MAEQUP (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID
 							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = MAEQUP.SUBSTRATE_SIZE_GROUP
-							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND HEDBIN = 'Included' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'HBWFPR'
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND SAQICO.HEDBIN = 'Included' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'HBWFPR'
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-		
-		
+		# Sales Price Min Margin %
+		Sql.RunQuery("""UPDATE SAQICO
+						SET SAPMMP = PRCFVA.FACTOR_TXTVAR		
+							FROM SAQICO (NOLOCK)							
+							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQICO.SERVICE_ID
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'SLMRGN' AND SAQICO.SLSDIS_PRICE_MARGIN IS NULL
+							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))	
 		return True
 
 	def _quote_annualized_items_insert_old(self, update=False):			
