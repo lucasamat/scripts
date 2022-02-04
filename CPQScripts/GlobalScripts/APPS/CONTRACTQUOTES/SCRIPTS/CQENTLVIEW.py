@@ -1090,6 +1090,7 @@ class EntitlementView():
 															+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 															+ "</option>"
 														)
+														Trace.Write("var11-"+str(VAR1))
 												except:
 													#Trace.Write(str(default)+'----except dropdown ----'+str(attrName)+'--1043--')
 													#VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
