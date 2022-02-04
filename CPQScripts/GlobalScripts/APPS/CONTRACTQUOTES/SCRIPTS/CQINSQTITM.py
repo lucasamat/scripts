@@ -626,8 +626,7 @@ class ContractQuoteItem:
 				for i in range(1,11):
 					x = "AGS_Z0046_PQB_AP{}FU".format(str(i).zfill(2))
 					y = "AGS_Z0046_PQB_AP{}PR".format(str(i).zfill(2))
-					if i ==1:
-						y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
+					
 					if x in xml_dict.keys() and y in xml_dict.keys() :
 						if xml_dict[x] and xml_dict[y]:
 							qty = float(xml_dict[x])
