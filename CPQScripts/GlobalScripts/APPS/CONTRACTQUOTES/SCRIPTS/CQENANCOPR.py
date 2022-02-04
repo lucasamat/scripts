@@ -688,38 +688,40 @@ class AncillaryProductOperation:
 		return entxmldict
 
 	def _update_entitlement_values(self,anc_service = '',ent_table = ''):
-		where_cond = self.where_string.replace('SERVICE_ID','PAR_SERVICE_ID')
-		where_cond += " AND SERVICE_ID = '{}'".format(anc_service)
-		check_ancillary = Sql.GetFirst("SELECT COUNT(SERVICE_ID) AS CNT FROM SAQTSE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' AND SERVICE_ID ='{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.service_id, anc_service) )
-		if check_ancillary.CNT > 0 and self.tablename == 'SAQSGE':
-			get_parent_xml = Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_table, self.where_string) )
-			get_anc_xml_dict = {}
-			for parent in get_parent_xml:
-				joinstr = ''
-				assign_xml = {}
-				if ent_table == 'SAQSCE':
-					joinstr = " AND EQUIPEMNT_ID = '{}'".format(parent.EQUIPMENT_ID)
-				getall_recid = Sql.GetFirst("SELECT * FROM {} WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' AND GREENBOOK = '{}' {}".format(ent_table,self.contract_quote_record_id, self.contract_quote_revision_record_id, anc_service ,self.service_id, parent.GREENBOOK, joinstr) )
-				if getall_recid:
-					Trace.Write("inside"+len(getall_recid))
-					get_parent_dict = self._construct_dict_xml(parent.ENTITLEMENT_XML)
-					get_anc_xml_dict = self._construct_dict_xml(getall_recid.ENTITLEMENT_XML)
-					if get_parent_dict and get_anc_xml_dict:
-						for key,value in get_anc_xml_dict.items():
-							if key in get_parent_dict.keys()  :
-								value = get_parent_dict[key]
-							assign_xml += value
-						where_cond += joinstr
-						Sql.RunQuery("UPDATE {} SET ENTITLEMENT_XML = '{}' WHERE {} ".format(ent_table, assign_xml, where_cond) )
-						if ent_table == 'SAQSGE':
-							cpsmatchID,Configurationid = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_UPDATE',
-											'partnumber':anc_service,
-											'where_cond' :where_cond, 
-											'ent_level_table': ent_table, 
-											'quote_record_id':self.contract_quote_record_id,
-											'revision_record_id':self.contract_quote_revision_record_id})
-							Trace.Write("value--"+str(cpsmatchID)+'-'+str(Configurationid))
-							#Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+		try:
+			where_cond = self.where_string.replace('SERVICE_ID','PAR_SERVICE_ID')
+			where_cond += " AND SERVICE_ID = '{}'".format(anc_service)
+			check_ancillary = Sql.GetFirst("SELECT COUNT(SERVICE_ID) AS CNT FROM SAQTSE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' AND SERVICE_ID ='{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.service_id, anc_service) )
+			if check_ancillary.CNT > 0 and self.tablename == 'SAQSGE':
+				get_parent_xml = Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_table, self.where_string) )
+				get_anc_xml_dict = {}
+				for parent in get_parent_xml:
+					joinstr = ''
+					assign_xml = {}
+					if ent_table == 'SAQSCE':
+						joinstr = " AND EQUIPEMNT_ID = '{}'".format(parent.EQUIPMENT_ID)
+					getall_recid = Sql.GetFirst("SELECT * FROM {} WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' AND GREENBOOK = '{}' {}".format(ent_table,self.contract_quote_record_id, self.contract_quote_revision_record_id, anc_service ,self.service_id, parent.GREENBOOK, joinstr) )
+					if getall_recid:
+						get_parent_dict = self._construct_dict_xml(parent.ENTITLEMENT_XML)
+						get_anc_xml_dict = self._construct_dict_xml(getall_recid.ENTITLEMENT_XML)
+						if get_parent_dict and get_anc_xml_dict:
+							for key,value in get_anc_xml_dict.items():
+								if key in get_parent_dict.keys()  :
+									value = get_parent_dict[key]
+								assign_xml += value
+							where_cond += joinstr
+							Sql.RunQuery("UPDATE {} SET ENTITLEMENT_XML = '{}' WHERE {} ".format(ent_table, assign_xml, where_cond) )
+							if ent_table == 'SAQSGE':
+								cpsmatchID,Configurationid = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_UPDATE',
+												'partnumber':anc_service,
+												'where_cond' :where_cond, 
+												'ent_level_table': ent_table, 
+												'quote_record_id':self.contract_quote_record_id,
+												'revision_record_id':self.contract_quote_revision_record_id})
+								Trace.Write("value--"+str(cpsmatchID)+'-'+str(Configurationid))
+								#Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+		except Exception as e:
+			Trace.Write("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 
 
 	def _update_entitlement(self):
