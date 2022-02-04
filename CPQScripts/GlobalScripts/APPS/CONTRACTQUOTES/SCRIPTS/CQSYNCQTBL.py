@@ -1829,7 +1829,7 @@ class SyncQuoteAndCustomTables:
 									# except:
 									# 	pass
 									# #A055S000P01-14047 end
-
+								'''
 								try:
 									update_customer_pn = """UPDATE SAQSPT SET SAQSPT.CUSTOMER_PART_NUMBER = M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = contract_quote_record_id ,sales_id = sales_id,stp_acc_id=str(account_info.get('SOLD TO')),quote_revision_rec_id =quote_revision_record_id)
 									Sql.RunQuery(update_customer_pn)
@@ -1837,6 +1837,7 @@ class SyncQuoteAndCustomTables:
 									Sql.RunQuery(update_uom_recs)
 								except:
 									Trace.Write('error=--1304--')
+								'''
 								##calling the iflow for pricing..
 								#try:
 								#	contract_quote_id = contract_quote_obj.QUOTE_ID      
