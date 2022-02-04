@@ -1067,7 +1067,7 @@ class EntitlementView():
 												if '>' in tag_value:
 													tag_value = tag_value.replace('>','&gt;')
 												elif '<' in tag_value:
-													tag_value = tag_value.replace('>','&lt;')
+													tag_value = tag_value.replace('<','&lt;')
 												try:													
 													if str(val.ENTITLEMENT_DISPLAY_VALUE).strip().upper() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip().upper():
 														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE).replace("'","''")) )
@@ -1396,7 +1396,7 @@ class EntitlementView():
 											if '>' in tag_value:
 												tag_value = tag_value.replace('>','&gt;')
 											elif '<' in tag_value:
-												tag_value = tag_value.replace('>','&lt;')
+												tag_value = tag_value.replace('<','&lt;')
 											try:
 												#Trace.Write('attrSysId-try---3491-'+str(attrSysId))
 												if inserted_value_dict[str(attrSysId)] == value.STANDARD_ATTRIBUTE_VALUE :
