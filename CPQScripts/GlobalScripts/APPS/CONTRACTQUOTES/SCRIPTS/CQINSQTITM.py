@@ -424,7 +424,7 @@ class ContractQuoteItem:
 								"coeff":["INTCPC","Intercept Coefficient","AGS_{}_VAL_INTCCO".format(self.service_id)]
 								},
 								{
-								"field":["OSSVDV","Total Cost without Seedstock","AGS_{}_VAL_TBCOST".format(self.service_id)],	
+								"field":["OSSVDV","Total Cost W/O Seedstock","AGS_{}_VAL_TBCOST".format(self.service_id)],	
 								"coeff":["LTCOSS","Total Cost w/o Seedstock Coeff","AGS_{}_VAL_TBCOCO".format(self.service_id)]
 								},
 								{
