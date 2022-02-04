@@ -1053,7 +1053,12 @@ def Related_Sub_Banner(
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                     qte_fab_node = Sql.GetFirst("SELECT QUOTE_SERVICE_FAB_LOCATION_RECORD_ID FROM SAQSFB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if qte_fab_node:
-                        CurrentRecordId = qte_fab_node.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID		
+                        CurrentRecordId = qte_fab_node.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID	
+                elif ObjName == "SAQICO":
+                    contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+                    annualized_details = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                    if annualized_details:
+                        CurrentRecordId = annualized_details.LINE                        	
                 if str(ObjName) != "SYPROH":
                     Trace.Write("Test668")
                     ValQuery = Sql.GetFirst(
