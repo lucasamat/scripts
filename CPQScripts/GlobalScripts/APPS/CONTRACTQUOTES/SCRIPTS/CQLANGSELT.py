@@ -104,7 +104,7 @@ def insert_quote_billing_plan():
 									SELECT  ANNUAL_BILLING_AMOUNT,BILLING_START_DATE,
 												BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
 												EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
-												ITEM_LINE_ID,QTEITMCOB_RECORD_ID,
+												ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEITMCOB_RECORD_ID,
 												QTEITM_RECORD_ID,SERIAL_NUMBER,
 												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,
 												YEAR,EQUIPMENT_QUANTITY,{SelectDateColoumn},{UserId} as ownerId
@@ -123,13 +123,13 @@ def insert_quote_billing_plan():
 										(
 											SUM(BILLING_AMOUNT)
 											FOR BILLING_DATE IN ({PivotColumns})
-										)AS PVT ORDER BY GREENBOOK
+										)AS PVT ORDER BY GREENBOOK,SERVICE_ID
 									""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
 											DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId=User.Id,)								
 									)
 							
 						# Total based on service - start
-						Sql.RunQuery("""INSERT QT__BM_YEAR_1 (
+						'''Sql.RunQuery("""INSERT QT__BM_YEAR_1 (
 										ANNUAL_BILLING_AMOUNT,BILLING_YEAR,
 										QUOTE_ID,QUOTE_RECORD_ID,SERVICE_DESCRIPTION,
 										SERVICE_ID,SERVICE_RECORD_ID,YEAR,EQUIPMENT_QUANTITY,
@@ -154,7 +154,7 @@ def insert_quote_billing_plan():
 												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,YEAR, EQUIPMENT_QUANTITY
 									""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
 											DateColumn=date_columns, SumSelectDateColoumn=sum_select_date_columns, UserId=User.Id,)								
-									)
+									)'''
 						# Total based on service - end
 	return True
 #A055S000P01-10549-end
