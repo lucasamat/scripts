@@ -7,7 +7,7 @@
 # ==========================================================================================================================================
 
 import datetime
-import Webcom.Configurator.Scripting.Test.TestProduct
+
 import sys
 import re
 import System.Net
