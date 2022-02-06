@@ -773,6 +773,7 @@ class ContractQuoteItem:
 				)
 
 				Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QTEREV_RECORD_ID}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
+				
 	def _quote_item_line_entitlement_insert(self, update=False):
 		# Update - Start
 		#item_line_covered_object_entitlement_join_string = ""	
