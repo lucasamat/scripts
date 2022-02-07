@@ -762,25 +762,25 @@ def fpm_quote_doc():
 							'{qt_rev_rec_id}' as QTEREV_RECORD_ID
 							FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(doc_id='Pending',doc_name='',quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=contract_quote_record_id,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
 			#Log.Info(qtqdoc)
-		Sql.RunQuery(saqdoc_output_insert)
-		
-		gen_doc = Quote.GenerateDocument('AMAT_FPM_QUOTE', GenDocFormat.PDF)
-		fileName = Quote.GetLatestGeneratedDocumentFileName()
-		GDB = Quote.GetLatestGeneratedDocumentInBytes()
-		List = Quote.GetGeneratedDocumentList('AMAT_FPM_QUOTE')
-		for doc in List:
-			doc_id = doc.Id
-			doc_name = doc.FileName
-			if fileName==doc_name:
-				quote_id = gettoolquote.QUOTE_ID
-				#added_by = audit_fields.USERNAME
-				#modified_by = audit_fields.CpqTableEntryModifiedBy
-				#modified_date = audit_fields.CpqTableEntryDateModified
-				guid = str(Guid.NewGuid()).upper()
-				qt_rec_id = contract_quote_record_id
-				date_added = doc.DateCreated
-				update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND STATUS = 'PENDING' AND QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=contract_quote_record_id,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)
-				Sql.RunQuery(update_query)
+	Sql.RunQuery(saqdoc_output_insert)
+	
+	gen_doc = Quote.GenerateDocument('AMAT_FPM_QUOTE', GenDocFormat.PDF)
+	fileName = Quote.GetLatestGeneratedDocumentFileName()
+	GDB = Quote.GetLatestGeneratedDocumentInBytes()
+	List = Quote.GetGeneratedDocumentList('AMAT_FPM_QUOTE')
+	for doc in List:
+		doc_id = doc.Id
+		doc_name = doc.FileName
+		if fileName==doc_name:
+			quote_id = gettoolquote.QUOTE_ID
+			#added_by = audit_fields.USERNAME
+			#modified_by = audit_fields.CpqTableEntryModifiedBy
+			#modified_date = audit_fields.CpqTableEntryDateModified
+			guid = str(Guid.NewGuid()).upper()
+			qt_rec_id = contract_quote_record_id
+			date_added = doc.DateCreated
+			update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND STATUS = 'PENDING' AND QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=contract_quote_record_id,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)
+			Sql.RunQuery(update_query)
 	return True
 try:
 	action_type = Param.LOAD
