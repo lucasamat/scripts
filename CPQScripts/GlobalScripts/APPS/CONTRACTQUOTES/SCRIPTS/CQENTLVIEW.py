@@ -927,7 +927,7 @@ class EntitlementView():
 					get_tab_attr_length =""
 					tab_get_disallow_list =[]
 					if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
-						Trace.Write("tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
+						Trace.Write("tabwise_product_attributes---"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
 						get_tab_attr_length = len(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID))
 						for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
 							get_tooltip = ""
