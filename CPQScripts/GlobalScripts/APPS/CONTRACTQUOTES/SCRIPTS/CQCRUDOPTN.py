@@ -215,8 +215,6 @@ class ContractQuoteCrudOpertion:
 				if result is not None:
 					record_ids = [data.MATERIAL_RECORD_ID for data in result]
 		else:
-			test_val =[value for value in values]
-			Trace.Write("test_val--"+str(test_val))
 			record_ids = [
 				CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
 				if value.strip() != "" and master_object_name in value
@@ -2405,7 +2403,6 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 
 				if master_fab_obj:
 					self.values = [fab_obj.PO_COMP_RECORD_ID for fab_obj in master_fab_obj]
-			Trace.Write("saqsao11"+str(self.values)+'-'+str(table_name)+'-'+str(columns)+'-'+str(condition_column))
 			for row_detail in self._add_record(
 				master_object_name=master_object_name,
 				columns=columns,
@@ -2416,7 +2413,6 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 
 				row_detail.update(row_values)				
 				mylist.append(row_detail)
-				Trace.Write("addon insert val--"+str(row_detail)+'-'+str(table_name))	
 				fab_table_info.AddRow(row_detail)
 			Sql.Upsert(fab_table_info)
 			#to insert in SAQSGB
