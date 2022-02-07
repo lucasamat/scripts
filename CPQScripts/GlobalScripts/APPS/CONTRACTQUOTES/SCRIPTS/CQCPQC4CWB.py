@@ -95,12 +95,12 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
         approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND APPROVALSTATUS = 'APPROVAL REQUIRED'".format(contract_quote_id.QUOTE_ID))
         approver_list = []
-        approver_step_list =[]
+        #approver_step_list =[]
         for app in approver_list_id:
             approver = app.APRCHNSTP_APPROVER_ID
             approver_step = app.APRCHNSTP_ID
             approver_list.append(approver)
-            approver_step_list.append(approver_step)
+            #approver_step_list.append(approver_step)
             role_code_id = "71"
             requestdata = (
                 '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
