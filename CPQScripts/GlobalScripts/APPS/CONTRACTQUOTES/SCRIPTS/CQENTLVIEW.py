@@ -5,7 +5,9 @@
 #   __create_date : 21/09/2021
 #   ï¿½ BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 
+import System.Net
 from datetime import datetime
 from SYDATABASE import SQL
 import re
