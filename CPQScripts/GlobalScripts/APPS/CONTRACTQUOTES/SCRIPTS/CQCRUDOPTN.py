@@ -2403,7 +2403,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 
 				if master_fab_obj:
 					self.values = [fab_obj.PO_COMP_RECORD_ID for fab_obj in master_fab_obj]
-
+			Trace.Write("saqsao11"+str(self.values)+'-'+str(table_name)+'-'+str(columns)+'-'+str(condition_column))
 			for row_detail in self._add_record(
 				master_object_name=master_object_name,
 				columns=columns,
