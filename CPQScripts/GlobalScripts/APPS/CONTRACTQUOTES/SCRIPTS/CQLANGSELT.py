@@ -47,6 +47,13 @@ def _insert_item_level_delivery_schedule():
 	Log.Info('insert_item_level_delivery_schedule==='+str(insert_item_level_delivery_schedule))
 	Sql.RunQuery(insert_item_level_delivery_schedule)
 
+#insert item level parts
+def _insert_item_level_parts():
+	delete_item_parts = Sql.RunQuery("DELETE  * from QT__SAQIFP where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID= '{rev_rec_id}'".format(QuoteRecordId=contract_quote_record_id,rev_rec_id=quote_revision_record_id))
+	insert_item_parts = "INSERT QT__SAQIFP (QUOTE_ITEM_FORECAST_PART_RECORD_ID,CUSTOMER_PART_NUMBER,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,ANNUAL_QUANTITY,BASEUOM_ID,BASEUOM_RECORD_ID,LINE,DELIVERY_MODE,EXTENDED_PRICE,SERVICE_ID,SERVICE_DESCRIPTION,PART_DESCRIPTION,PART_NUMBER,PART_RECORD_ID,SERVICE_RECORD_ID,QUOTE_ID,UNIT_PRICE,DOC_CURRENCY,PRICINGPROCEDURE_ID,TAX,TAX_PERCENTAGE,QTEREV_RECORD_ID,QUOTE_RECORD_ID,QTEREV_ID) select QUOTE_ITEM_FORECAST_PART_RECORD_ID,CUSTOMER_PART_NUMBER,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,ANNUAL_QUANTITY,BASEUOM_ID,BASEUOM_RECORD_ID,LINE,DELIVERY_MODE,EXTENDED_PRICE,SERVICE_ID,SERVICE_DESCRIPTION,PART_DESCRIPTION,PART_NUMBER,PART_RECORD_ID,SERVICE_RECORD_ID,QUOTE_ID,UNIT_PRICE,DOC_CURRENCY,PRICINGPROCEDURE_ID,TAX,TAX_PERCENTAGE,QTEREV_RECORD_ID,QUOTE_RECORD_ID,QTEREV_ID FROM SAQIFP where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID= '{rev_rec_id}'".format(QuoteRecordId=contract_quote_record_id,rev_rec_id=quote_revision_record_id)
+	Sql.RunQuery(insert_item_parts)
+
+
 #quote table insert for billing matrix
 def insert_quote_billing_plan():
 	Trace.Write('inside billing mtraix---')
@@ -716,6 +723,7 @@ def language_select():
 def fpm_quote_doc():
 	Trace.Write('FPM QUOTE CREATION __DOC')
 	_insert_subtotal_by_offerring_quote_table()
+	_insert_item_level_parts()
 	return True
 try:
 	action_type = Param.LOAD
