@@ -144,7 +144,6 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	TreeParam = Product.GetGlobal("TreeParam")
 	if subtab_name =="Legal SoW":
-		Trace.Write("legalsowwwwwwwww")
 		get_revesion_values =Sql.GetFirst("Select * FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '{quote_revision_record_id}'".format(quote_revision_record_id = quote_revision_record_id))
 		record_value_update = {"QUOTE_REVISION_RECORD_ID":quote_revision_record_id,"QTEREV_ID":get_revesion_values.QTEREV_ID,"REVISION_STATUS":get_revesion_values.REVISION_STATUS,"REV_APPROVE_DATE":get_revesion_values.REV_APPROVE_DATE}
 		RECORD.update(record_value_update)
