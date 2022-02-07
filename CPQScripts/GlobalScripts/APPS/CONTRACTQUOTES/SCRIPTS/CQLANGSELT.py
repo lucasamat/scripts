@@ -712,6 +712,9 @@ def language_select():
 			sec_str += '<table class="wth100mrg8"><tbody>'
 	return sec_str
 
+
+def fpm_quote_doc():
+	return True
 try:
 	action_type = Param.LOAD
 except:
@@ -746,8 +749,10 @@ if str(parts_list) == 'True' and str(billing_matrix) == 'True':
 	#Trace.Write('531------')
 	#Quote.GetCustomField('Billing_Matrix').Content = 'YES'
 	#ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
-elif str(parts_list_include) == 'True':
+elif str(parts_list_include) == 'True' and str(parts_list) == 'True':
+	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
 	Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content = 'YES'
+	ApiResponse = ApiResponseFactory.JsonResponse(fpm_quote_doc())
 if action_type == "DOCUMENT":
 	Trace.Write("inside"+str(action_type))
 	ApiResponse = ApiResponseFactory.JsonResponse(language_select())
