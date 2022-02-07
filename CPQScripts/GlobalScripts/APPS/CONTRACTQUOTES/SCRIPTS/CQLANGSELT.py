@@ -159,6 +159,138 @@ def insert_quote_billing_plan():
 											DateColumn=date_columns, SumSelectDateColoumn=sum_select_date_columns, UserId=User.Id,)								
 									)'''
 						# Total based on service - end
+	#set global start
+	SUM_YEAR1 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND YEAR = '1' AND BILLING_INTERVAL IS NULL" +" AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+	SUM_YEAR2 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND YEAR = '2' AND BILLING_INTERVAL IS NULL" +" AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+	SUM_YEAR3 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND YEAR = '3' AND BILLING_INTERVAL IS NULL"+" AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+	SUM_YEAR4 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND YEAR = '4' AND BILLING_INTERVAL IS NULL"+" AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+	SUM_YEAR5 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND YEAR = '5' AND BILLING_INTERVAL IS NULL"+" AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+	if SUM_YEAR1:
+		M1_Y1 = SUM_YEAR1.MONTH_1
+		Quote.SetGlobal('M1_Y1', str(M1_Y1))
+		M2_Y1 = SUM_YEAR1.MONTH_2
+		Quote.SetGlobal('M2_Y1', str(M2_Y1))
+		M3_Y1 = SUM_YEAR1.MONTH_3
+		Quote.SetGlobal('M3_Y1', str(M3_Y1))
+		M4_Y1 = SUM_YEAR1.MONTH_4
+		Quote.SetGlobal('M4_Y1', str(M4_Y1))
+		M5_Y1 = SUM_YEAR1.MONTH_5
+		Quote.SetGlobal('M5_Y1', str(M5_Y1))
+		M6_Y1 = SUM_YEAR1.MONTH_6
+		Quote.SetGlobal('M6_Y1', str(M6_Y1))
+		M7_Y1 = SUM_YEAR1.MONTH_7
+		Quote.SetGlobal('M7_Y1', str(M7_Y1))
+		M8_Y1 = SUM_YEAR1.MONTH_8
+		Quote.SetGlobal('M8_Y1', str(M8_Y1))
+		M9_Y1 = SUM_YEAR1.MONTH_9
+		Quote.SetGlobal('M9_Y1', str(M9_Y1))
+		M10_Y1 = SUM_YEAR1.MONTH_10
+		Quote.SetGlobal('M10_Y1', str(M10_Y1))
+		M11_Y1 = SUM_YEAR1.MONTH_11
+		Quote.SetGlobal('M11_Y1', str(M11_Y1))
+		M12_Y1 = SUM_YEAR1.MONTH_12
+		Quote.SetGlobal('M12_Y1', str(M12_Y1))
+	if SUM_YEAR2:
+		M1_Y2 = SUM_YEAR2.MONTH_1
+		Quote.SetGlobal('M1_Y2', str(M1_Y2))
+		M2_Y2 = SUM_YEAR2.MONTH_2
+		Quote.SetGlobal('M2_Y2', str(M2_Y2))
+		M3_Y2 = SUM_YEAR2.MONTH_3
+		Quote.SetGlobal('M3_Y2', str(M3_Y2))
+		M4_Y2 = SUM_YEAR2.MONTH_4
+		Quote.SetGlobal('M4_Y2', str(M4_Y2))
+		M5_Y2 = SUM_YEAR2.MONTH_5
+		Quote.SetGlobal('M5_Y2', str(M5_Y2))
+		M6_Y2 = SUM_YEAR2.MONTH_6
+		Quote.SetGlobal('M6_Y2', str(M6_Y2))
+		M7_Y2 = SUM_YEAR2.MONTH_7
+		Quote.SetGlobal('M7_Y2', str(M7_Y2))
+		M8_Y2 = SUM_YEAR2.MONTH_8
+		Quote.SetGlobal('M8_Y2', str(M8_Y2))
+		M9_Y2 = SUM_YEAR2.MONTH_9
+		Quote.SetGlobal('M9_Y2', str(M9_Y2))
+		M10_Y2 = SUM_YEAR2.MONTH_10
+		Quote.SetGlobal('M10_Y2', str(M10_Y2))
+		M11_Y2 = SUM_YEAR2.MONTH_11
+		Quote.SetGlobal('M11_Y2', str(M11_Y2))
+		M12_Y2 = SUM_YEAR2.MONTH_12
+		Quote.SetGlobal('M12_Y2', str(M12_Y2))
+	if SUM_YEAR3:
+		M1_Y3 = SUM_YEAR3.MONTH_1
+		Quote.SetGlobal('M1_Y3', str(M1_Y3))
+		M2_Y3 = SUM_YEAR3.MONTH_2
+		Quote.SetGlobal('M2_Y3', str(M2_Y3))
+		M3_Y3 = SUM_YEAR3.MONTH_3
+		Quote.SetGlobal('M3_Y3', str(M3_Y3))
+		M4_Y3 = SUM_YEAR3.MONTH_4
+		Quote.SetGlobal('M4_Y3', str(M4_Y3))
+		M5_Y3 = SUM_YEAR3.MONTH_5
+		Quote.SetGlobal('M5_Y3', str(M5_Y3))
+		M6_Y3 = SUM_YEAR3.MONTH_6
+		Quote.SetGlobal('M6_Y3', str(M6_Y3))
+		M7_Y3 = SUM_YEAR3.MONTH_7
+		Quote.SetGlobal('M7_Y3', str(M7_Y3))
+		M8_Y3 = SUM_YEAR3.MONTH_8
+		Quote.SetGlobal('M8_Y3', str(M8_Y3))
+		M9_Y3 = SUM_YEAR3.MONTH_9
+		Quote.SetGlobal('M9_Y3', str(M9_Y3))
+		M10_Y3 = SUM_YEAR3.MONTH_10
+		Quote.SetGlobal('M10_Y3', str(M10_Y3))
+		M11_Y3 = SUM_YEAR3.MONTH_11
+		Quote.SetGlobal('M11_Y3', str(M10_Y3))
+		M12_Y3 = SUM_YEAR3.MONTH_12
+		Quote.SetGlobal('M12_Y3', str(M12_Y3))
+	if SUM_YEAR4:
+		M1_Y4 = SUM_YEAR4.MONTH_1
+		Quote.SetGlobal('M1_Y4', str(M1_Y4))
+		M2_Y4 = SUM_YEAR4.MONTH_2
+		Quote.SetGlobal('M2_Y4', str(M2_Y4))
+		M3_Y4 = SUM_YEAR4.MONTH_3
+		Quote.SetGlobal('M3_Y4', str(M3_Y4))
+		M4_Y4 = SUM_YEAR4.MONTH_4
+		Quote.SetGlobal('M4_Y4', str(M4_Y4))
+		M5_Y4 = SUM_YEAR4.MONTH_5
+		Quote.SetGlobal('M5_Y4', str(M5_Y4))
+		M6_Y4 = SUM_YEAR4.MONTH_6
+		Quote.SetGlobal('M6_Y4', str(M6_Y4))
+		M7_Y4 = SUM_YEAR4.MONTH_7
+		Quote.SetGlobal('M7_Y4', str(M7_Y4))
+		M8_Y4 = SUM_YEAR4.MONTH_8
+		Quote.SetGlobal('M8_Y4', str(M8_Y4))
+		M9_Y4 = SUM_YEAR4.MONTH_9
+		Quote.SetGlobal('M9_Y4', str(M9_Y4))
+		M10_Y4 = SUM_YEAR4.MONTH_10
+		Quote.SetGlobal('M10_Y4', str(M10_Y4))
+		M11_Y4 = SUM_YEAR4.MONTH_11
+		Quote.SetGlobal('M11_Y4', str(M11_Y4))
+		M12_Y4 = SUM_YEAR4.MONTH_12
+		Quote.SetGlobal('M12_Y4', str(M12_Y4))
+	if SUM_YEAR5:
+		M1_Y5 = SUM_YEAR5.MONTH_1
+		Quote.SetGlobal('M1_Y5', str(M1_Y5))
+		M2_Y5 = SUM_YEAR5.MONTH_2
+		Quote.SetGlobal('M2_Y5', str(M2_Y5))
+		M3_Y5 = SUM_YEAR5.MONTH_3
+		Quote.SetGlobal('M3_Y5', str(M3_Y5))
+		M4_Y5 = SUM_YEAR5.MONTH_4
+		Quote.SetGlobal('M4_Y5', str(M4_Y5))
+		M5_Y5 = SUM_YEAR5.MONTH_5
+		Quote.SetGlobal('M5_Y5', str(M5_Y5))
+		M6_Y5 = SUM_YEAR5.MONTH_6
+		Quote.SetGlobal('M6_Y5', str(M6_Y5))
+		M7_Y5 = SUM_YEAR5.MONTH_7
+		Quote.SetGlobal('M7_Y5', str(M7_Y5))
+		M8_Y5 = SUM_YEAR5.MONTH_8
+		Quote.SetGlobal('M8_Y5', str(M8_Y5))
+		M9_Y5 = SUM_YEAR5.MONTH_9
+		Quote.SetGlobal('M9_Y5', str(M9_Y5))
+		M10_Y5 = SUM_YEAR5.MONTH_10
+		Quote.SetGlobal('M10_Y5', str(M10_Y5))
+		M11_Y5 = SUM_YEAR5.MONTH_11
+		Quote.SetGlobal('M11_Y5', str(M11_Y5))
+		M12_Y5 = SUM_YEAR5.MONTH_12
+		Quote.SetGlobal('M12_Y5', str(M12_Y5))
+
 	return True
 #A055S000P01-10549-end
 def _insert_subtotal_by_offerring_quote_table():
