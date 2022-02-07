@@ -711,7 +711,7 @@ class ContractQuoteItem:
 						SET SAPMMP = PRCFVA.FACTOR_TXTVAR		
 							FROM SAQICO (NOLOCK)							
 							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQICO.SERVICE_ID
-							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'SLMRGN' AND SAQICO.SLSDIS_PRICE_MARGIN IS NULL
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCFVA.FACTOR_ID,'') = 'SLMRGN' AND SAQICO.SAPMMP IS NULL
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))	
 		# Contract Period Factor %
 		Sql.RunQuery("""UPDATE SAQICO
