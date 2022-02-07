@@ -50,6 +50,7 @@ def _insert_item_level_delivery_schedule():
 #quote table insert for billing matrix
 def insert_quote_billing_plan():
 	Trace.Write('inside billing mtraix---')
+	delete_qt_bill_mat = Sql.RunQuery("DELETE FROM QT__Billing_Matrix_Header WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}'")
 	services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id))
 	item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID".format(contract_quote_record_id,quote_revision_record_id))
 	if item_billing_plan_obj is not None and services_obj:
@@ -86,7 +87,7 @@ def insert_quote_billing_plan():
 										{UserId} as ownerId,{CartId} as cartId
 									FROM SAQIBP (NOLOCK)
 									WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
-										QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,DateColumn=date_columns,Year=no_of_year,SelectDateColoumn=header_select_date_columns, UserId=User.Id,CartId = cartobj.CART_ID
+										QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,DateColumn=date_columns,Year=no_of_year,SelectDateColoumn=header_select_date_columns, UserId= cartobj.USERID,CartId = cartobj.CART_ID
 										))
 					pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 					
@@ -127,7 +128,7 @@ def insert_quote_billing_plan():
 											FOR BILLING_DATE IN ({PivotColumns})
 										)AS PVT ORDER BY GREENBOOK,SERVICE_ID
 									""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
-											DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId=User.Id,CartId = cartobj.CART_ID)								
+											DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId= cartobj.USERID,CartId = cartobj.CART_ID)								
 									)
 							
 						# Total based on service - start
