@@ -224,7 +224,7 @@ def Related_Sub_Banner(
         if subTabName == 'Inclusions' and (TreeSuperParentParam == 'Product Offerings' or TopSuperParentParam == 'Product Offerings'):
             multi_buttons_temp = multi_buttons
             multi_buttons = []
-            if (TreeParam == 'Z0092' and TreeSuperParentParam == 'Product Offerings') or (TopSuperParentParam == 'Product Offerings' and TreeParentParam in ('Z0009','Z0006')):
+            if TopSuperParentParam == 'Product Offerings' and TreeParentParam in ('Z0009','Z0006'):
                 multi_buttons = multi_buttons_temp 
 
 
