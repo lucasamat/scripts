@@ -715,6 +715,7 @@ def language_select():
 
 def fpm_quote_doc():
 	Trace.Write('FPM QUOTE CREATION __DOC')
+	_insert_subtotal_by_offerring_quote_table()
 	return True
 try:
 	action_type = Param.LOAD
