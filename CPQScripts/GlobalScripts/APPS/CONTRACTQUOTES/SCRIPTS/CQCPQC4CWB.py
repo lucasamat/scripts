@@ -108,7 +108,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 + "</writeback><contract_quote_id>"
                 +str(contract_quote_id.QUOTE_ID)
                 +"</contract_quote_id><approver_list>"
-                + str(approver)
+                + str(approver_list)
                 +"</approver_list><approver_step_id>"
 				+ str(approver_step_list)
 				+"</approver_step_id><role_code_id>"
