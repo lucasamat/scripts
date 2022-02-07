@@ -139,11 +139,6 @@ class TreeView:
 					ProductDict["id"] = str(getParentObj.SAPCPQ_ATTRIBUTE_NAME)
 					ProductDict["objname"] = str(getParentObj.OBJECT_NAME)
 					ProductDict["nodeId"] = int(nodeId)
-					# Trace.Write("str(getParentObj.NAME)" + str(getParentObj.NAME))
-					# Trace.Write("str(getParentObj.RECORD_ID)" + str(getParentObj.SAPCPQ_ATTRIBUTE_NAME))
-					# Trace.Write("str(getParentObj.OBJ_REC_ID)" + str(getParentObj.OBJ_REC_ID))
-					# Trace.Write("str(getParentObj.OBJECT_NAME)" + str(getParentObj.OBJECT_NAME))
-					# Trace.Write("nodeId" + str(nodeId))
 					getChildObjQuery = Sql.GetFirst(
 						"select * from SYOBJH (nolock) where RECORD_ID = '" + str(getParentObj.OBJ_REC_ID) + "'"
 					)
@@ -187,7 +182,6 @@ class TreeView:
 										ChildDict["objname"] = str(getChildObjQuery.OBJECT_NAME)
 										ChildDict["id"] = str(eval("childdata." + str(childRecName)))
 										ChildDict["nodeId"] = int(nodeId)
-										#Trace.Write("171--nodeId" + str(nodeId))
 								else:
 									# /A043S001P01-10791 Dhurga- start									
 									API_NAMEval = str(childRecName)							
@@ -297,7 +291,6 @@ class TreeView:
 							if childQuery is not None:
 								for childdata in childQuery:
 									nodeId += 1
-									#Trace.Write("287---"+str(nodeId))
 									ChildDict = {}
 									if GetisKeyval is not None:
 										API_NAMEval = str(GetisKeyval.API_NAME)
@@ -1883,9 +1876,7 @@ class TreeView:
 									+ "' ORDER BY ACAPCH.APRCHN_ID,ACAPMA.APRCHN_RECORD_ID"
 								)
 							elif str(ObjName).strip() == 'SAQSFB' and str(NodeName).strip() == 'FABLOCATION_ID' 	and str(ProductName).upper() == "SALES":
-								Trace.Write("NodeName ---SAQSFB---->"+str(NodeName))
 								NodeText = str(eval("childdata." + str(NodeName)))
-								Trace.Write("NodeText ---SAQSFB---->"+str(NodeText))
 								Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
 								childQueryObj = Sql.GetFirst("select  SAQSCO.FABLOCATION_ID,SAQSFB.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSCO (nolock) INNER JOIN SAQSFB ON SAQSCO.QUOTE_RECORD_ID = SAQSFB.QUOTE_RECORD_ID AND SAQSFB.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID WHERE  SAQSFB.QUOTE_RECORD_ID = '{quote}' AND SAQSCO.SERVICE_ID = '{service}' AND SAQSCO.FABLOCATION_ID != '' AND SAQSFB.QTEREV_RECORD_ID = '{quote_revision_record_id}' and SAQSFB.FABLOCATION_ID = '{NodeText}'  ".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"),quote_revision_record_id=Quote.GetGlobal("quote_revision_record_id"),NodeText = NodeText))
 							elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' 	and str(ProductName).upper() == "SALES":#A055S000P01-3618 code starts..
@@ -1894,17 +1885,12 @@ class TreeView:
 								+ str(where_string)) 
 								##for showing relevent subtab for approval in quote starts
 								try:
-									#Trace.Write("try"+str(where_string))
 									if "APRCHN_ID" in str(where_string).strip().split(" ")[0]:
-										#Trace.Write("if"+str(where_string).strip().split(" ")[0])
 										aprchn_id = "AND ACAPCH.APRCHN_ID = {}".format(str(where_string).strip().split(" ")[2])
 									else:
-										#Trace.Write("else"+str(where_string))
 										aprchn_id = ""
 								except:
-									#Trace.Write("except")
 									aprchn_id = ""
-								#Trace.Write("aprchn_id"+str(aprchn_id))
 								##for showing relevent subtab for approval in quote ends
 								###A055S000P01-3618 code ends..
 							elif str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID' and str(ProductName).upper() == "APPROVAL CENTER":
@@ -2039,8 +2025,7 @@ class TreeView:
 									NodeName1 = Nodesplit[0]
 									NodeName2 = Nodesplit[1]
 									NodeText1 = str(eval("childdata." + str(NodeName2))).title()
-									NodeText = NodeName1 + "-" + NodeText1									
-									Trace.Write('childQueryObj1--'+str(where_string)) 
+									NodeText = NodeName1 + "-" + NodeText1
 									childQueryObj = Sql.GetFirst(
 										"select * from "
 										+ str(ObjName)
@@ -2054,8 +2039,7 @@ class TreeView:
 									)
 							
 							if childQueryObj is not None:
-								NodeRecId = str(eval("childQueryObj." + str(childRecName.API_NAME)))   
-								#Trace.Write('child id1--'+str(NodeRecId))                            
+								NodeRecId = str(eval("childQueryObj." + str(childRecName.API_NAME)))                        
 								ChildDict["id"] = str(NodeRecId)
 								if str(NodeName) == "SECTION_NAME" and TabName == "App":
 									Product.SetGlobal("NodeRecIdS",NodeRecId)
@@ -2071,12 +2055,9 @@ class TreeView:
 								NodeRecId = ""                                    
 								if str(ObjectName).strip() == 'ACAPCH' and str(NodeName) == 'APRCHNSTP_NAME' and str(ProductName).upper() == "APPROVAL CENTER":
 									NodeText = "Step "+str(childdata.APRCHNSTP_NUMBER)+ " : " +str(NodeText)
-								##showing config status along with offering	
-								#Trace.Write('NodeText--child-'+str(ObjName))
+								##showing config status along with offering
 								if str(ObjName).strip() == 'SAQTSV' and str(NodeName) == 'SERVICE_ID':
-									#Trace.Write('NodeText--inside-'+str(NodeText))
 									service_id = NodeText
-									#Trace.Write('NodeText--inside-service_id--'+str(service_id))
 									##adding configuration status in offering subtab
 									contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 									where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, NodeText )
@@ -2208,8 +2189,6 @@ class TreeView:
 
 									# A055S000P01-14557 - New Parts, Inclusion , Exclusion Subtabs starts
 									elif subTabName in ("Events","Service New Parts","Service Parts List","Service Inclusions",'Greenbook Inclusions','Green Parts List','Green New Parts') :
-										#Trace.Write("service_id-inclusion-- "+str(NodeText)+'--'+str(subTabName)+'--'+str(TreeTopSuperParentParam)+'---'+str(TreeSuperParentParam))
-										#Trace.Write("service_id ---- "+str(Product.GetGlobal("SERVICE"))+'---'+str(entitlement_level_flag) )
 										ent_table_list = ["SAQTSE"]
 										subtab_temp_variable = subTabName 
 										whr_str_greenbook =""
@@ -2431,8 +2410,6 @@ class TreeView:
 								getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 								if getZ0009 is not None:
 									getZ0009 =  self.PMSATree()
-									#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-									#Trace.Write("return value Z0009====---"+str(getZ0009))
 							except:
 								getZ0009 = ""
 							if getZ0009 is None or getZ0009 == 0:
@@ -3498,7 +3475,6 @@ if not quote_revision_record_id and quote_revision_record_id!="":
 		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 		
 LOAD = Param.LOAD
-Trace.Write(str(LOAD))
 try:
 	ACTION = Param.ACTION
 except:
@@ -3510,8 +3486,7 @@ except:
 try:
 	TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()    
 	TabName = str(TestProduct.CurrentTab)
-	ProductName = str(TestProduct.Name)
-	Trace.Write('ProductName-----'+str(ProductName))    
+	ProductName = str(TestProduct.Name)   
 except Exception:
 	TabName = "Quote"
 	ProductName = "Sales"
