@@ -215,6 +215,8 @@ class ContractQuoteCrudOpertion:
 				if result is not None:
 					record_ids = [data.MATERIAL_RECORD_ID for data in result]
 		else:
+			test_val =[value for value in values]
+			Trace.Write("test_val--"+str(test_val))
 			record_ids = [
 				CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
 				if value.strip() != "" and master_object_name in value
