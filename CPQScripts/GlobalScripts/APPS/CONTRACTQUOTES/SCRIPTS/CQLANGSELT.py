@@ -290,7 +290,75 @@ def insert_quote_billing_plan():
 		Quote.SetGlobal('M11_Y5', str(M11_Y5))
 		M12_Y5 = SUM_YEAR5.MONTH_12
 		Quote.SetGlobal('M12_Y5', str(M12_Y5))
+	GetYear1EndDate = SqlHelper.GetFirst("""SELECT
+   ID,
+   (SELECT MAX(convert(date, LastUpdateDate))
+      FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
+   AS LastUpdateDate
+	FROM QT__Billing_Matrix_Header
+	where QUOTE_RECORD_ID = '"""+str(contract_quote_record_id)+"""' AND YEAR = '1' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
 
+	#DATES_YEAR_1 = SqlHelper.GetFirst("SELECT MONTH_1, MONTH_1, MONTH_2, MONTH_3, MONTH_4, MONTH_5, MONTH_6, MONTH_7, MONTH_8, MONTH_9, MONTH_10, MONTH_10, MONTH_11, MONTH_12 FROM #QT__Billing_Matrix_Header(NOLOCK) WHERE QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '4'")
+
+	GetYear2EndDate = SqlHelper.GetFirst("""SELECT
+	ID,
+	(SELECT MAX(convert(date, LastUpdateDate))
+		FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
+	AS LastUpdateDate
+	FROM QT__Billing_Matrix_Header
+	where QUOTE_RECORD_ID = '"""+str(contract_quote_record_id)+"""' AND YEAR = '2' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
+	GetYear3EndDate = SqlHelper.GetFirst("""SELECT
+	ID,
+	(SELECT MAX(convert(date, LastUpdateDate))
+		FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
+	AS LastUpdateDate
+	FROM QT__Billing_Matrix_Header
+	where QUOTE_RECORD_ID = '"""+str(contract_quote_record_id)+"""' AND YEAR = '3' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
+	GetYear4EndDate = SqlHelper.GetFirst("""SELECT
+	ID,
+	(SELECT MAX(convert(date, LastUpdateDate))
+		FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
+	AS LastUpdateDate
+	FROM QT__Billing_Matrix_Header
+	where QUOTE_RECORD_ID = '"""+str(contract_quote_record_id)+"""' AND YEAR = '4' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
+	GetYear5EndDate = SqlHelper.GetFirst("""SELECT
+	ID,
+	(SELECT MAX(convert(date, LastUpdateDate))
+		FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
+	AS LastUpdateDate
+	FROM QT__Billing_Matrix_Header
+	where QUOTE_RECORD_ID = '"""+str(contract_quote_record_id)+"""' AND YEAR = '5' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
+
+	try:
+		Y1ED = GetYear1EndDate.LastUpdateDate
+		d1 = '{}-{}-{}'.format(Y1ED.Month, Y1ED.Day, Y1ED.Year)
+		Quote.SetGlobal('Year1EndDate', str(d1))		
+	except:
+		pass
+	try:
+		Y2ED = GetYear2EndDate.LastUpdateDate
+		d2 = '{}-{}-{}'.format(Y2ED.Month, Y2ED.Day, Y2ED.Year)
+		Quote.SetGlobal('Year2EndDate', str(d2))		
+	except:
+		pass
+	try:
+		Y3ED = GetYear3EndDate.LastUpdateDate
+		d3 = '{}-{}-{}'.format(Y3ED.Month, Y3ED.Day, Y3ED.Year)
+		Quote.SetGlobal('Year3EndDate', str(d3))		
+	except:
+		pass
+	try:
+		Y4ED = GetYear4EndDate.LastUpdateDate
+		d4 = '{}-{}-{}'.format(Y4ED.Month, Y4ED.Day, Y4ED.Year)
+		Quote.SetGlobal('Year4EndDate', str(d4))		
+	except:
+		pass
+	try:
+		Y5ED = GetYear5EndDate.LastUpdateDate
+		d5 = '{}-{}-{}'.format(Y5ED.Month, Y5ED.Day, Y5ED.Year)
+		Quote.SetGlobal('Year5EndDate', str(d5))		
+	except:
+		pass
 	return True
 #A055S000P01-10549-end
 def _insert_subtotal_by_offerring_quote_table():
