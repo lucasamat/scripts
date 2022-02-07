@@ -2414,6 +2414,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 
 				row_detail.update(row_values)				
 				mylist.append(row_detail)
+				Trace.Write("addon insert val--"+str(row_detail)+'-'+str(table_name))	
 				fab_table_info.AddRow(row_detail)
 			Sql.Upsert(fab_table_info)
 			#to insert in SAQSGB
