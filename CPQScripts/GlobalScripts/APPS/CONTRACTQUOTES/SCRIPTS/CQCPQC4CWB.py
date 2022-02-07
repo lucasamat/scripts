@@ -70,7 +70,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         opportunity_object_id = opportunity_object.C4C_OPPOBJ_ID
         
         ##Fetch the code according to the revision status..code starts...
-        revision_status_code = {"APPROVAL PENDING":"111", "RECALLED":"121", "REJECTED":"131", "APPROVED":"141","CUSTOMER ACCEPTED":"161","SUBMITTED FOR BOOKING":"181","CONTRACT BOOKED":"191","ON HOLD - COSTING":"221","CUSTOMER REJECTED":"171","PREPARING REVISION":"211","OPPORTUNITY CANCELLED":"231","OPPORTUNITY LOST":"241","PRICED":"101"}
+        revision_status_code = {"APPROVAL PENDING":"111", "RECALLED":"121", "REJECTED":"131", "APPROVED":"141","CUSTOMER ACCEPTED":"161","SUBMITTED FOR BOOKING":"181","CONTRACT BOOKED":"191","ON HOLD - COSTING":"221","CUSTOMER REJECTED":"171","PREPARING REVISION":"211","OPPORTUNITY CANCELLED":"231","OPPORTUNITY LOST":"241","PRICED":"101","ACQUIRING":"261"}
         ##Fetch the code according to the revision status..code ends...
         
         
