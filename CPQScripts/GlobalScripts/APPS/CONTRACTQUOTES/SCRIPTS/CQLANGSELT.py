@@ -181,7 +181,10 @@ def _insert_subtotal_by_offerring_quote_table():
     if getoffer_details_obj:
         for val in getoffer_details_obj:
             newRow = Quoteofferings.AddNewRow()
-            newRow['COMMITTED_VALUE'] = val.COMMITTED_VALUE
+			if val.COMMITTED_VALUE:
+            	newRow['COMMITTED_VALUE'] = val.COMMITTED_VALUE
+			else:
+				newRow['COMMITTED_VALUE'] =0
             newRow['CONTRACT_VALID_FROM'] = val.CONTRACT_VALID_FROM
             newRow['CONTRACT_VALID_TO'] = val.CONTRACT_VALID_TO
             newRow['DIVISION_ID'] = val.DIVISION_ID
@@ -195,7 +198,10 @@ def _insert_subtotal_by_offerring_quote_table():
             newRow['GLOBAL_CURRENCY'] = val.GLOBAL_CURRENCY
             newRow['GLOBAL_CURRENCY_RECORD_ID'] = val.GLOBAL_CURRENCY_RECORD_ID
             newRow['LINE'] = val.LINE
-            newRow['NET_PRICE'] = val.NET_PRICE
+			if val.NET_PRICE:
+            	newRow['NET_PRICE'] = val.NET_PRICE
+			else:
+				newRow['NET_PRICE'] = 0
             if val.NET_PRICE_INGL_CURR:
                 newRow['NET_PRICE_INGL_CURR'] = val.NET_PRICE_INGL_CURR
             else:
