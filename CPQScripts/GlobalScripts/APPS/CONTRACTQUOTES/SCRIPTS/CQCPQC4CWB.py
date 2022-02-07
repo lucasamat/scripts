@@ -109,9 +109,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 +str(contract_quote_id.QUOTE_ID)
                 +"</contract_quote_id><approver_list>"
                 + str(approver_list)
-                +"</approver_list><approver_step_id>"
-				+ str(approver_step_list)
-				+"</approver_step_id><role_code_id>"
+                +"</approver_list><role_code_id>"
                 + str(role_code_id)
                 +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
             )
