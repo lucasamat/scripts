@@ -12,7 +12,7 @@ import sys
 import re
 import System.Net
 import SYCNGEGUID as CPQID
-import CQPARTIFLW
+#import CQPARTIFLW
 import CQADDONPRD
 import CQIFLSPARE
 import CQVLDRIFLW
