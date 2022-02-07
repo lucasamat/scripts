@@ -40,7 +40,8 @@ gettoolquote=Sql.GetFirst("select QUOTE_TYPE,QUOTE_ID from SAQTMT where MASTER_T
 #A055S000P01-10549- start
 update_rev_expire_date  = "UPDATE SAQTRV SET REV_EXPIRE_DATE = CONVERT(date,DATEADD(DAY, 90, GETDATE())) where QUOTE_RECORD_ID ='{quote_record_id}'".format(quote_record_id=contract_quote_record_id)
 Sql.RunQuery(update_rev_expire_date)
-
+c4c_quote_id = gettoolquote.QUOTE_ID
+cartobj = Sql.GetFirst("select CART_ID, USERID from CART where ExternalId = '{}'".format(c4c_quote_id))
 def _insert_item_level_delivery_schedule():
 	insert_item_level_delivery_schedule = "INSERT SAQIPD (QUOTE_REV_ITEM_PART_DELIVERY_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,LINE,PART_DESCRIPTION,PART_NUMBER,PART_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUANTITY,QUOTE_ID,QTEITMPRT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID) select QUOTE_REV_ITEM_PART_DELIVERY_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,LINE,PART_DESCRIPTION,PART_NUMBER,PART_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUANTITY,QUOTE_ID,QTEITMPRT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQIPD where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID= '{rev_rec_id}'".format(QuoteRecordId=contract_quote_record_id,rev_rec_id=quote_revision_record_id)
 	Log.Info('insert_item_level_delivery_schedule==='+str(insert_item_level_delivery_schedule))
@@ -82,10 +83,10 @@ def insert_quote_billing_plan():
 										QUOTE_RECORD_ID,QTEREV_RECORD_ID,
 										{SelectDateColoumn},
 										{Year} as YEAR,
-										{UserId} as ownerId
+										{UserId} as ownerId,{CartId} as cartId
 									FROM SAQIBP (NOLOCK)
 									WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
-										QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,DateColumn=date_columns,Year=no_of_year,SelectDateColoumn=header_select_date_columns, UserId=User.Id
+										QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,DateColumn=date_columns,Year=no_of_year,SelectDateColoumn=header_select_date_columns, UserId=User.Id,CartId = cartobj.CART_ID
 										))
 					pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 					
@@ -100,7 +101,7 @@ def insert_quote_billing_plan():
 										QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
 										QTEITM_RECORD_ID,SERIAL_NUMBER,SERVICE_DESCRIPTION,
 										SERVICE_ID,SERVICE_RECORD_ID,YEAR,EQUIPMENT_QUANTITY,
-										{DateColumn},ownerId
+										{DateColumn},ownerId,{CartId} as cartId
 									)
 									SELECT  ANNUAL_BILLING_AMOUNT,BILLING_START_DATE,
 												BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
@@ -108,7 +109,7 @@ def insert_quote_billing_plan():
 												ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
 												QTEITM_RECORD_ID,SERIAL_NUMBER,
 												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,
-												YEAR,EQUIPMENT_QUANTITY,{SelectDateColoumn},{UserId} as ownerId
+												YEAR,EQUIPMENT_QUANTITY,{SelectDateColoumn},{UserId} as ownerId,{CartId} as cartId
 										FROM (
 											SELECT 
 												ANNUAL_BILLING_AMOUNT,BILLING_VALUE,BILLING_DATE,BILLING_START_DATE,
@@ -116,7 +117,7 @@ def insert_quote_billing_plan():
 												EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
 												LINE as ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
 												QTEITM_RECORD_ID,SERIAL_NUMBER,
-												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,{BillingYear} as YEAR,EQUIPMENT_QUANTITY
+												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,{BillingYear} as YEAR,EQUIPMENT_QUANTITY,{CartId} as cartId
 											FROM SAQIBP 
 											{WhereString}
 										) AS IQ
@@ -126,7 +127,7 @@ def insert_quote_billing_plan():
 											FOR BILLING_DATE IN ({PivotColumns})
 										)AS PVT ORDER BY GREENBOOK,SERVICE_ID
 									""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
-											DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId=User.Id,)								
+											DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId=User.Id,CartId = cartobj.CART_ID)								
 									)
 							
 						# Total based on service - start
@@ -161,8 +162,7 @@ def insert_quote_billing_plan():
 #A055S000P01-10549-end
 def _insert_subtotal_by_offerring_quote_table():
 	
-	c4c_quote_id = gettoolquote.QUOTE_ID
-	cartobj = Sql.GetFirst("select CART_ID, USERID from CART where ExternalId = '{}'".format(c4c_quote_id))
+	
 	try:
 		delete_offerings = "DELETE FROM QT__QT_SAQRIS where cartId = {CartId} AND QUOTE_RECORD_ID ='{c4c_quote_id}' and  QTEREV_RECORD_ID= '{rev_rec_id}'".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id)
 		Sql.RunQuery(delete_offerings)
