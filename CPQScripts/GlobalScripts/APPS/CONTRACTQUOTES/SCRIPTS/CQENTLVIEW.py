@@ -1705,7 +1705,7 @@ if SectionList is not None and (
 		##Quote items     
 		elif SectionObjectName == "SAQIEN":
 			mode = "Quote"
-			TreeParentParam = Product.GetGlobal("TreeParentLevel0")			
+			#TreeParentParam = Product.GetGlobal("TreeParentLevel0")			
 			if TreeParentParam == 'Quote Items':
 				EntitlementType = "ITEMSPARE"
 			elif TreeTopSuperParentParam == 'Quote Items' and SubtabName == 'Equipment Entitlements':
