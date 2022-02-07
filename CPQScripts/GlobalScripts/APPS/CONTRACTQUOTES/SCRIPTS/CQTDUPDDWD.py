@@ -7,15 +7,9 @@
 # ==========================================================================================================================================
 
 import re
-import sys
 import datetime
-import Webcom.Configurator.Scripting.Test.TestProduct
-import System.Net
-#import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
-import datetime
-import time
-from datetime import timedelta , date
+
 Sql = SQL()
 
 class ContractQuoteSpareOpertion:
