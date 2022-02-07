@@ -5815,6 +5815,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value)+" - "+str(pm_event_attribute_value))
 							if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
 								self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
+								qte_type_flag=1
 							else:
 								# pm_event_attribute_value = re.findall(pattern_name,sub_string)
 								
