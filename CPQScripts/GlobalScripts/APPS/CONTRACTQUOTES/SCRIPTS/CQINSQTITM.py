@@ -576,7 +576,10 @@ class ContractQuoteItem:
 						""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id)
 				)
 		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
-
+		##Calling the iflow for quote header writeback to cpq to c4c code starts..
+		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		##Calling the iflow for quote header writeback to cpq to c4c code ends...
 
 		# Target (Sales) Price Discount %
 		Sql.RunQuery("""UPDATE SAQICO
@@ -1007,7 +1010,10 @@ class ContractQuoteItem:
 				)
 
 				Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QTEREV_RECORD_ID}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
-
+				##Calling the iflow for quote header writeback to cpq to c4c code starts..
+				CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				##Calling the iflow for quote header writeback to cpq to c4c code ends...
 
 	def _quote_item_line_entitlement_insert(self, update=False):
 		# Update - Start
@@ -2363,7 +2369,10 @@ class ContractQuoteItem:
 			)
 	
 		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QTEREV_RECORD_ID}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
-
+		##Calling the iflow for quote header writeback to cpq to c4c code starts..
+		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		##Calling the iflow for quote header writeback to cpq to c4c code ends...
 
 	def _simple_fpm_quote_annualized_items_insert(self):
 		Trace.Write('FPM_ANNUALIZED_ITEM_INSERT')
@@ -2434,8 +2443,11 @@ class ContractQuoteItem:
 		)
 
 		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
-
-
+		##Calling the iflow for quote header writeback to cpq to c4c code starts..
+		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		##Calling the iflow for quote header writeback to cpq to c4c code ends...
+		
 
 	def _insert_quote_item_forecast_parts(self):
 		Trace.Write("_ent_consumable---"+str(self._ent_consumable)+"par_Service_id---"+str(self.parent_service_id) )
