@@ -1394,6 +1394,7 @@ class ContractQuoteItem:
 					continue
 			if self.service_id == 'Z0046':
 				self.quote_service_entitlement_type = 'OFFERING + FAB + GREENBOOK'
+				self.source_object_name = 'SAQSGE'
 			# if self.service_id == 'Z0101':
 			# 	self.quote_service_entitlement_type = 'OFFERING + GREENBOOK + GR EQUI'
 			Log.Info(str(self.contract_quote_id)+"_set_quote_service_entitlement_type ===> 2"+str(self.quote_service_entitlement_type))
