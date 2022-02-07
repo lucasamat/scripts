@@ -6967,7 +6967,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		data_list.append(data_dict)
 	Trace.Write('data_list--'+str(data_list))
 	Hyperlink = " "
-	if	Product.GetGlobal("TreeParam") == 'Z0009' or Product.GetGlobal("TreeParentLevel0") == 'Z0009':
+	if	Product.GetGlobal("TreeParam") == 'Z0009' or Product.GetGlobal("TreeParentLevel0") == 'Z0009' or Product.GetGlobal("TreeParam") == 'Z0010' or Product.GetGlobal("TreeParentLevel0") == 'Z0010':
 		import re
 		get_entitlement_xml =SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId=Quote.GetGlobal("quote_revision_record_id"), service_id = 'Z0009' ))
 		if get_entitlement_xml:
