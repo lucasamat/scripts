@@ -170,6 +170,7 @@ class ContractQuoteItem:
 					{JoinString}
 					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSCE.SERVICE_ID = '{ServiceId}' {WhereString}
 				)OQ""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id,JoinString=item_line_covered_object_assembly_join_string, WhereString=item_line_covered_object_assembly_where_string))
+
 	def _construct_dict_xml(self,updateentXML):
 		entxmldict = {}
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -824,7 +825,39 @@ class ContractQuoteItem:
 							JOIN (SELECT LINE,CONTRACT_PERIOD_FACTOR,SERVICE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,datediff(dd,dateadd(dd,-1,CONTRACT_VALID_FROM),CONTRACT_VALID_TO) as contractdays FROM SAQRIT,PRCTPF WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND datediff(mm,dateadd(dd,-1,CONTRACT_VALID_FROM),CONTRACT_VALID_TO) BETWEEN PERIOD_FROM AND PERIOD_TO)SQ ON SQ.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SQ.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND SQ.LINE = SAQICO.LINE AND SQ.SERVICE_ID = SAQICO.SERVICE_ID 
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		# Price Bench Marking 
+		# Benchmark Price Deviation % Threshold
+		# Sql.RunQuery("""UPDATE SAQICO
+		# 				SET BCHDAP = PRCFVA.FACTOR_PCTVAR		
+		# 					FROM SAQICO (NOLOCK)
+		# 					JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQICO.SERVICE_ID
+		# 					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCFVA.FACTOR_NAME,'') = 'Sales Discount'
+		# 					""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		Sql.RunQuery("""UPDATE SAQICO
+			SET
+			SAQICO.BCHPGC = PRPRBM.ANNUAL_BOOKING_PRICE
+			SAQICO.BCHDPT = (SAQICO.TNTVGC - ISNULL(PRPRBM.ANNUAL_BOOKING_PRICE,0))/SAQICO.TNTVGC) * 100
+			FROM SAQICO	(NOLOCK)
+			JOIN PRPRBM (NOLOCK) ON PRPRBM.EQUIPMENT_NUMBER = SAQICO.EQUIPMENT_ID AND PRPRBM.SERVICE_PRODUCT_NAME = SAQICO.SERVICE_ID
+			WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'							
+			""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+
+		Sql.RunQuery("""UPDATE SAQICO
+			SET
+			SAQICO.BCHPGC = PRPRBM.ANNUAL_BOOKING_PRICE
+			SAQICO.BCHDPT = (SAQICO.TNTVGC - ISNULL(PRPRBM.ANNUAL_BOOKING_PRICE,0))/SAQICO.TNTVGC) * 100
+			FROM SAQICO	(NOLOCK)
+			JOIN PRPRBM (NOLOCK) ON PRPRBM.TOOLCONFG = SAQICO.TOLCFG AND PRPRBM.SERVICE_PRODUCT_NAME = SAQICO.SERVICE_ID
+			WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.BCHPGC,'')	= ''					
+			""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		
+		Sql.RunQuery("""UPDATE SAQICO
+			SET
+			SAQICO.BMPPDA = CASE WHEN ISNULL(BCHDPT,0) > ISNULL(BCHDAP,0) THEN 1 ELSE 0 END,
+			FROM SAQICO	(NOLOCK)			
+			WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'				
+			""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+
 		#Z0046 pricing update
 		if self.service_id == 'Z0046':
 			get_items_entitlement = Sql.GetList("SELECT * FROM SAQITE WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
