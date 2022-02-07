@@ -76,7 +76,7 @@ def insert_quote_billing_plan():
 					select_date_columns = ",".join(['[{}] AS MONTH_{}'.format(date_column, index) for index, date_column in enumerate(billing_date_column, 1)])
 					sum_select_date_columns = ",".join(['SUM([{}]) AS MONTH_{}'.format(date_column, index) for index, date_column in enumerate(billing_date_column, 1)])
 					Sql.RunQuery("""INSERT QT__Billing_Matrix_Header (
-										QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,{DateColumn},YEAR,ownerId
+										QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,{DateColumn},YEAR,ownerId,cartId
 									)
 									SELECT TOP 1
 										QUOTE_ID,										
@@ -101,7 +101,7 @@ def insert_quote_billing_plan():
 										QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
 										QTEITM_RECORD_ID,SERIAL_NUMBER,SERVICE_DESCRIPTION,
 										SERVICE_ID,SERVICE_RECORD_ID,YEAR,EQUIPMENT_QUANTITY,
-										{DateColumn},ownerId,{CartId} as cartId
+										{DateColumn},ownerId,cartId
 									)
 									SELECT  ANNUAL_BILLING_AMOUNT,BILLING_START_DATE,
 												BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
