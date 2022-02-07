@@ -5767,6 +5767,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				##A055S000P01-12518 code starts...
 				import re
 				service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
+				quote_type_attribute_value = ""
+				pm_event_attribute_value = ""
 				if service_entitlement_obj is not None:
 					pm_event_flag=0
 					qte_type_flag=0
@@ -5782,12 +5784,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						additional_where = ""
 						if quote_type_attribute_id:
 							quote_type_attribute_value =re.findall(pattern_name,sub_string)
-						else:
-							quote_type_attribute_value = ""
 						if pm_event_attribute_id:
 							pm_event_attribute_value = re.findall(pattern_name,sub_string)
-						else:
-							pm_event_attribute_value = ""
 						if pm_event_attribute_id and self.tree_param != 'Z0009':
 							pm_event_attribute_value = re.findall(pattern_name,sub_string)
 							# pm_event_attribute_value == "PMSA Flex" or pm_event_attribute_value == "Event based")
