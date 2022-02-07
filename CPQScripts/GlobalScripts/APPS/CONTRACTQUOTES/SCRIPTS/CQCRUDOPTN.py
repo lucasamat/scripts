@@ -229,7 +229,7 @@ class ContractQuoteCrudOpertion:
 				where_conditon = "%s = '%s'" % (condition_column, record_ids[0],)
 			else:
 				where_conditon = "%s in %s" % (condition_column, tuple(record_ids),)
-		notin_condition = " AND  NOT EXISTS (SELECT ADNPRD_ID FROM SAQSAO WHERE SERVICE_ID = '"+str(self.tree_parent_level_1)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND ADNPRD_RECORD_ID NOT IN "+str(tuple(record_ids)).replace(",)",')')+" ) "  if table_name == "SAQSAO" and self.action_type == "ADD_ON_PRODUCTS" else ""
+		notin_condition = " AND  NOT EXISTS (SELECT ADNPRD_ID FROM SAQSAO WHERE SERVICE_ID = '"+str(self.tree_parent_level_1)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND ADNPRD_RECORD_ID IN "+str(tuple(record_ids)).replace(",)",')')+" ) "  if table_name == "SAQSAO" and self.action_type == "ADD_ON_PRODUCTS" else ""
 		records_obj = self._get_record_obj(columns=columns, table_name=master_object_name, where_condition=where_conditon,notin_condition = notin_condition)
 		if records_obj:
 			auto_number_column_name_obj = self._get_record_obj(
