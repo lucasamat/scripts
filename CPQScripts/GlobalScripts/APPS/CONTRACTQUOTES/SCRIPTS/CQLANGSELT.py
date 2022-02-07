@@ -714,6 +714,7 @@ def language_select():
 
 
 def fpm_quote_doc():
+	Trace.Write('FPM QUOTE CREATION __DOC')
 	return True
 try:
 	action_type = Param.LOAD
