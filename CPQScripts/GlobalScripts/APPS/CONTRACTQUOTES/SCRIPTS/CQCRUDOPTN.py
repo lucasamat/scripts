@@ -5823,9 +5823,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									if (self.tree_param in ("Z0009") and "Included - All PM" in pm_event_attribute_value):
 										additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND"
 										Trace.Write("additional_where_chk_1 "+str(additional_where))
-									self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
-									if pm_event_attribute_value != "":
-										qte_type_flag=1
+										if pm_event_attribute_value != "":
+											self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
+											qte_type_flag=1
 						if self.tree_param == 'Z0009' and qte_type_flag == 1:
 							break
 						else:
