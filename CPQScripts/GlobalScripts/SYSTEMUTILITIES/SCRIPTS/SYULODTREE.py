@@ -319,7 +319,7 @@ class TreeView:
 						returnList.append(ProductDict)
 
 		Product.SetGlobal("CommonTreeList", str(returnList))
-		Trace.Write("returnList-->" + str(returnList))
+		#Trace.Write("returnList-->" + str(returnList))
 		return returnList, objrList
 
 	def RoleTreeView(self):
@@ -423,7 +423,7 @@ class TreeView:
 					ProductDict["nodes"] = list(UsersList)
 				returnList.append(ProductDict)
 		Product.SetGlobal("CommonTreeList", str(returnList))
-		Trace.Write("returnList-----> " + str(returnList))
+		#Trace.Write("returnList-----> " + str(returnList))
 		return returnList, objrList
 	
 	def CommonDynamicLeftTreeView(self):
@@ -517,7 +517,6 @@ class TreeView:
 			except Exception:
 				if TabName == 'Quote':
 					RecAttValue = Quote.GetGlobal("contract_quote_record_id")
-					Trace.Write("RecAttValue"+str(RecAttValue))
 				else:
 					RecAttValue = ""
 			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -542,8 +541,6 @@ class TreeView:
 				Sql.RunQuery("UPDATE SYTRND SET PARENT_NODE_ID = '1',PARENT_NODE_RECORD_ID = '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' WHERE TREE_NODE_RECORD_ID IN ('06B30980-285F-44AF-99C9-7916D75DE74A','6A9C4306-D43F-4F14-A842-AD5EFCFAFA41')")
 				
 				Sql.RunQuery("UPDATE SYTRND SET PARENT_NODE_ID = '1',PARENT_NODE_RECORD_ID = '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' WHERE TREE_NODE_RECORD_ID IN ('06B30980-285F-44AF-99C9-7916D75DE74A','6A9C4306-D43F-4F14-A842-AD5EFCFAFA41')")'''
-			
-			Trace.Write('538---')
 			getParentObjQuery = Sql.GetList(
 				"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NAME = '"
 				+ str(TabName)
@@ -580,7 +577,7 @@ class TreeView:
 					ProductDict["nodeId"] = int(getParentObj.NODE_ID)
 					PageRecId = str(getParentObj.NODE_PAGE_RECORD_ID)
 					pageDetails = Sql.GetFirst("select * from SYPAGE (nolock) where RECORD_ID = '" + str(PageRecId) + "'")
-					Trace.Write('567--NodeText---'+str(NodeText))
+					#Trace.Write('567--NodeText---'+str(NodeText))
 					if pageDetails is not None:
 						ObjName = pageDetails.OBJECT_APINAME
 						ProductDict["objname"] = ObjName
@@ -591,7 +588,6 @@ class TreeView:
 						+ str(RecId)
 						+ "' ORDER BY abs(DISPLAY_ORDER) "
 					)
-					#Trace.Write("ObjName ====> "+str(ProductDict))
 					if ProductDict.get("objname") == 'ACAPTX' and ProductDict.get("text") == 'Approval History':						
 						approval_transaction_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM ACAPTX (NOLOCK) WHERE APPROVAL_TRANSACTION_RECORD_ID = '{}'".format(Product.GetGlobal("team_approval_record_id")))					
 						if approval_transaction_obj is not None:							
@@ -618,7 +614,6 @@ class TreeView:
 
 							if subTabName:
 								if subTabName == "Spare Parts Line Item Details":
-									Trace.Write("Build Spare Parts line item details condition")
 									subTabName = ""
 									spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIFP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 									if spare_parts_object is not None:
@@ -822,7 +817,7 @@ class TreeView:
 						#NewList = []
 						returnList.append(ProductDict)
 		Product.SetGlobal("CommonTreeList", str(returnList))
-		Trace.Write("returnList----------------> " + str(returnList))
+		#Trace.Write("returnList----------------> " + str(returnList))
 		return returnList, ""
 	
 	
@@ -1035,8 +1030,7 @@ class TreeView:
 								+ str(ordersByQuery)
 								+ ""
 							)
-						else:		
-							Trace.Write("ObjName_chk "+str(ObjName))		                    
+						else:		                    
 							ordersByQuery = ""
 							childQuery = Sql.GetList(
 								"select distinct "
@@ -1472,9 +1466,6 @@ class TreeView:
 		except:
 			contract_quote_record_id = ""
 			quote_revision_record_id = ""
-		#Trace.Write('RecAttValue-----1076-----'+str(TreeSuperParentParam))
-		# Trace.Write("Subwhere_string_CHK"+str(where_string))
-		#Trace.Write("NodeName---1073----"+str(NodeName))
 		#pagerecordid = ""
 		# if NodeName == 'FIELD_LABEL':
 		# 	global c_total
@@ -1482,8 +1473,6 @@ class TreeView:
 		# 	if c_total > 5:
 		# 		return ChildList
 		if str(NodeType) == "DYNAMIC":
-			# Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
-			#Trace.Write("1377-where_string"+str(where_string))
 			try:
 				ContAtt = Product.Attributes.GetByName('QSTN_SYSEFL_QT_016909')
 			except:
@@ -1582,13 +1571,10 @@ class TreeView:
 					elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' and str(ProductName).upper() == "SALES":
 						quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						temp = ""
-						Trace.Write("where_string"+str(where_string))
 						#temp = where_string.split("AND")[1]
 						where_string += temp + " AND ACACHR.APPROVAL_ID LIKE '%{quote_id}%' ORDER BY ACACHR.APPROVAL_ROUND DESC,ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID, ACACHR.APPROVAL_ID""".format(quote_id  = quote_id)
-						Trace.Write("where string for Round----->"+str(where_string))
 					#A055S000P01-3618 code ends..
-					if str(ObjName).strip() == "SAQSAO":
-						Trace.Write('where_string==1221='+str(where_string))              
+					if str(ObjName).strip() == "SAQSAO":             
 						where_string = where_string
 						quote_record_id = Quote.GetGlobal("contract_quote_record_id")                        
 						where_string += """ AND QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(contract_quote_record_id  = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id)
@@ -1676,22 +1662,17 @@ class TreeView:
 					elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID': 
 						send_receive_node_text = Product.GetGlobal("setnodetextname")
 						if send_receive_node_text.startswith("Sending"):
-							#Trace.Write('SENDING ACCOUNT========')
 							where_string = " QUOTE_RECORD_ID ='{}' AND RELOCATION_FAB_TYPE = 'SENDING FAB' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 						elif send_receive_node_text.startswith("Receiving"):
-							#Trace.Write('RECEIVING ACCOUNT========')
 							where_string = " QUOTE_RECORD_ID ='{}' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)							 
 						else:
 							where_string = " QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 
 					else:
 						Wh_API_NAME = objd_where_obj.API_NAME
-						Trace.Write('Wh_API_NAME----'+str(ObjName)+'Wh_API_NAME111--'+str(Wh_API_NAME))
 						if RecAttValue and str(NodeName).strip() != 'APRCHN_ID' and str(ObjName).strip() != 'ACAPMA':
 							where_string = " " + str(where_string) + " AND " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
-							#Trace.Write("Whapiname---"+str(Wh_API_NAME))
 						else:
-							Trace.Write('where_string----'+str(where_string))
 							where_string = where_string
 
 					childRecName = Sql.GetFirst(
@@ -1838,15 +1819,6 @@ class TreeView:
 						else:		
 							#Trace.Write("CHKZ__J ")					                    
 							ordersByQuery = ""
-							Trace.Write("select distinct "
-								+ str(NodeName)
-								+ " from "
-								+ str(ObjName)
-								+ " (nolock) where "
-								+ str(where_string)
-								+ " "
-								+ str(ordersByQuery)
-								+ "")
 							childQuery = Sql.GetList(
 								"select distinct "
 								+ str(NodeName)
