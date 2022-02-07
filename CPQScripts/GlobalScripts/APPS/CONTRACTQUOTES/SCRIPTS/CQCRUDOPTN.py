@@ -10,6 +10,7 @@ import datetime
 
 import sys
 import re
+import System.Net
 import SYCNGEGUID as CPQID
 #import CQPARTIFLW
 import CQADDONPRD
