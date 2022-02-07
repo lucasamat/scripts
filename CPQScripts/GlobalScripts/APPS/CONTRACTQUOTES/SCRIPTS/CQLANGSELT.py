@@ -222,7 +222,10 @@ def _insert_subtotal_by_offerring_quote_table():
 				newRow['TAX_PERCENTAGE'] = val.TAX_PERCENTAGE
 			else:
 				newRow['TAX_PERCENTAGE'] = 0
-			newRow['TAX_AMOUNT'] = val.TAX_AMOUNT
+			if val.TAX_AMOUNT:
+				newRow['TAX_AMOUNT'] = val.TAX_AMOUNT
+			else:
+				newRow['TAX_AMOUNT'] = 0
 			if val.UNIT_PRICE:
 				newRow['UNIT_PRICE'] = val.UNIT_PRICE
 			else:
