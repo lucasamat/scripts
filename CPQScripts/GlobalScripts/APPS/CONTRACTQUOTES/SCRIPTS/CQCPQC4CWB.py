@@ -129,6 +129,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
             webclient = System.Net.WebClient()
             webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
             webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
+            Trace.Write("response--------------response"+str(response))
             response = webclient.UploadString(URL, requestdata) 
     
     elif writeback == "delete_approver_list":
