@@ -720,6 +720,40 @@ class ContractQuoteItem:
 							JOIN (SELECT LINE,CONTRACT_PERIOD_FACTOR,SERVICE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,datediff(dd,dateadd(dd,-1,CONTRACT_VALID_FROM),CONTRACT_VALID_TO) as contractdays FROM SAQRIT,PRCTPF WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND datediff(mm,dateadd(dd,-1,CONTRACT_VALID_FROM),CONTRACT_VALID_TO) BETWEEN PERIOD_FROM AND PERIOD_TO)SQ ON SQ.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SQ.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND SQ.LINE = SAQICO.LINE AND SQ.SERVICE_ID = SAQICO.SERVICE_ID '
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		
+		#Z0046 pricing update
+		if self.service_id == 'Z0046':
+			get_items_entitlement = Sql.GetList("SELECT * FROM SAQITE WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+			for item in get_items_entitlement:
+				xml_dict =  self._construct_dict_xml(item.ENTITLEMENT_XML)
+				total_price = 0
+				for i in range(1,11):
+					x = "AGS_Z0046_PQB_AP{}FU".format(str(i).zfill(2))
+					y = "AGS_Z0046_PQB_AP{}PR".format(str(i).zfill(2))
+					if i ==1:
+						y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
+					if x in xml_dict.keys() and y in xml_dict.keys() :
+						if xml_dict[x] and xml_dict[y]:
+							qty = float(xml_dict[x])
+							price = float(xml_dict[y])
+							#Trace.Write("ifff-- "+str(qty) +'--'+str(price) )
+							total_price += price * qty
+				#Trace.Write("price-- "+str(total_price))
+				Sql.RunQuery("""UPDATE SAQICO 
+					SET TENVGC = '{total_price}',
+
+					TENVDC = '{total_price}'+IQ.EXCHANGE_RATE 
+					FROM SAQICO (NOLOCK) 
+						INNER JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.GREENBOOK,SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID,SAQRIT.EXCHANGE_RATE FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = 'Z0046' AND BILLING_TYPE = 'Variable') IQ ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = IQ.SERVICE_ID AND SAQICO.GRNBOK  = IQ.GREENBOOK AND SAQICO.QTEITM_RECORD_ID = IQ.QUOTE_REVISION_CONTRACT_ITEM_ID
+						WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND GREENBOOK = '{greenbook}'""".format( QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,total_price= total_price,greenbook = item.GREENBOOK,ServiceId= self.service_id))
+				
+			Sql.RunQuery("""UPDATE SAQICO 
+				SET TAMTDC = CASE WHEN BILTYP = 'Variable' THEN TENVDC ELSE TNTVDC+ISNULL(TAXVDC,0) END,
+				TAMTGC = CASE WHEN BILTYP = 'Variable' THEN TENVGC ELSE TNTVGC+ISNULL(TAXVGC,0) END,
+				STATUS = 'ACQUIRED'
+				FROM SAQICO (NOLOCK) 
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id))
+
 		return True
 
 	def _quote_annualized_items_insert_old(self, update=False):			
@@ -1358,6 +1392,8 @@ class ContractQuoteItem:
 				
 				else:
 					continue
+			if self.service_id == 'Z0046':
+				self.quote_service_entitlement_type = 'OFFERING + FAB + GREENBOOK'
 			# if self.service_id == 'Z0101':
 			# 	self.quote_service_entitlement_type = 'OFFERING + GREENBOOK + GR EQUI'
 			Log.Info(str(self.contract_quote_id)+"_set_quote_service_entitlement_type ===> 2"+str(self.quote_service_entitlement_type))
