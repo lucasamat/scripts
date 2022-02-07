@@ -3184,8 +3184,9 @@ def Related_Sub_Banner(
                     #     Trace.Write("btn222"+str(btn))
                     #     sec_rel_sub_bnr += (btn)
             elif str(add_button)!='' and str(add_button) not in sec_rel_sub_bnr :
-                Trace.Write("btn===============") ##adding dynamic buttons from SYPGAC if we have only one button
-                sec_rel_sub_bnr+= str(add_button)
+                if subTabName != 'Exclusions' and TreeSuperParentParam == 'Product Offerings':
+                    Trace.Write("btn===============") ##adding dynamic buttons from SYPGAC if we have only one button
+                    sec_rel_sub_bnr+= str(add_button)
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
         sec_rel_sub_bnr += "<div id = 'multibtn_drpdwn'></div>"
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
