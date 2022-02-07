@@ -24,11 +24,11 @@ if 'Param' in globals():
             obj_id = approval_object_data[0]
             quote_id = str(approval_object_data[1]).upper()
             approver_id=str(approval_object_data[2]).upper()
-            approver_step_id = str(approval_object_data[3]).upper()
+            #approver_step_id = str(approval_object_data[3]).upper()
             Log.Info("object_id--"+str(obj_id))
             Log.Info("quote_id--"+str(quote_id))
             Log.Info("approver_id--"+str(approver_id))
-            Log.Info("approver_approver_step_idid--"+str(approver_step_id)) 
+            #Log.Info("approver_approver_step_idid--"+str(approver_step_id)) 
         # get_approver_id = Sql.GetFirst("SELECT *FROM SAEMPL(NOLOCK) WHERE C4C_EMPLOYEE_ID = '{approver_id}'".format(approver_id = approver_id))
         # Log.Info("get_approver_id"+str(get_approver_id.EMPLOYEE_ID))
         # emp_approver_id = 'USR-'+str(get_approver_id.EMPLOYEE_ID)
