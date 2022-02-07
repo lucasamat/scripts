@@ -540,10 +540,10 @@ if str(parts_list) == 'True' and str(billing_matrix) == 'True':
 	Trace.Write('531------')
 	Quote.GetCustomField('Billing_Matrix').Content = 'YES'
 	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
-elif str(billing_matrix) == 'True':
-	Trace.Write('531------')
-	Quote.GetCustomField('Billing_Matrix').Content = 'YES'
-	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
+#elif str(billing_matrix) == 'True':
+	#Trace.Write('531------')
+	#Quote.GetCustomField('Billing_Matrix').Content = 'YES'
+	#ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
 elif str(parts_list_include) == 'True':
 	Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content = 'YES'
 if action_type == "DOCUMENT":
