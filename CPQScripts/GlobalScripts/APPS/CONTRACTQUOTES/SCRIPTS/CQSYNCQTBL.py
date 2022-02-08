@@ -2018,7 +2018,29 @@ class SyncQuoteAndCustomTables:
 							except Exception as e:
 								Log.Info("EXCEPTION: Iteration Over non sequence for none type"+str(e))
 							##A055S000P01-10174 code ends...
-						
+							'''try:
+								QuoteId=quote_id
+								for offering_data in payload_json.get('SAQSCO'):
+									service_offering_id = offering_data['SERVICE_OFFERING_ID']
+									if 'EQUIPMENT_DATES' in offering_data:
+										api1 =[]
+										for offering_equipment_ids in offering_data['EQUIPMENT_DATES']:
+											for key,value in offering_equipment_ids.items():
+												start_date = value['CONTRACT_START_DATE']
+												end_date = value['CONTRACT_END_DATE']
+												api1.append([key,start_date,end_date,Quote.GetGlobal("contract_quote_record_id"),Quote.GetGloba("quote_revision_record_id"),service_offering_id])
+										records = ', '.join(map(str, [str(tuple(equipment_record)) for equipment_record in api1])).replace("None","null").replace("'","''")    
+										datetime_string = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
+										Trace.Write("records"+str(records))
+										columns ="EQUIPMENT_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID"
+										coverd_object_temp_table_name = "SAQSCO_BKP_{}_{}".format(QuoteId, datetime_string)    
+										coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
+										coverd_object_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(columns)+" INTO "+str(coverd_object_temp_table_name)+" FROM (SELECT DISTINCT "+str(columns)+" FROM (VALUES "+str(records)+") AS TEMP("+str(columns)+")) OQ ' ")    
+										saqsco_update ="""UPDATE A SET A.WARRANTY_START_DATE = B.WARRANTY_START_DATE,A.WARRANTY_END_DATE =B.WARRANTY_END_DATE FROM SAQSCO A INNER JOIN {} B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID and A.SERVICE_ID =B.SERVICE_ID where A.QUOTE_RECORD_ID = '{Quote_id}' AND A.QTEREV_RECORD_ID = '{qtrv_id}' and A.SERVICE_ID = '{service_offering_id}'""".format(coverd_object_temp_table_name,Quote_id =Quote.GetGlobal("contract_quote_record_id"),qtrv_id =Quote.GetGloba("quote_revision_record_id"),service_offering_id =service_offering_id)
+										Sql.RunQuery(saqsco_update)
+										coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
+							except Exception as e:
+								Log.Info("EXCEPTION: Iteration Over non sequence for none type in update covered objects"+str(e))'''
 						payload_table_info = Sql.GetTable("SYINPL")
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
