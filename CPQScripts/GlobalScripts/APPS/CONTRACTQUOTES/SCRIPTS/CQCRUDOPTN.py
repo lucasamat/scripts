@@ -682,6 +682,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')
 		self.new_part = kwargs.get('new_part')
+		self.tool_type = kwargs.get('tool_type')
 		self.node_id = ""
 		self.inclusion = kwargs.get('inclusion')
 	
@@ -2931,8 +2932,15 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 		master_object_name = "MAEQUP"
 		if self.values:
 			record_ids = []
-			if self.all_values and auto_equp_insert is None:	      
-				query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND FABLOCATION_ID = '{fab}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  EQUIPMENT_RECORD_ID NOT IN  (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
+			if self.all_values and auto_equp_insert is None:	     
+				if self.tool_type=="TEMP_TOOL": 
+					query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE  ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  EQUIPMENT_RECORD_ID NOT IN  (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
+							fab=self.tree_param,
+							QuoteRecordId=self.contract_quote_record_id,
+							RevisionRecordId=self.quote_revision_record_id
+						)			
+				else:
+					query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND FABLOCATION_ID = '{fab}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  EQUIPMENT_RECORD_ID NOT IN  (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
 							acc=self.account_record_id,
 							fab=self.tree_param,
 							salesorgrecid=self.salesorg_record_id,
@@ -2986,7 +2994,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			record_ids = str(str(record_ids)[1:-1].replace("'",""))
 			parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 			SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAEQUP.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(self.contract_quote_id)+"'' as QUOTE_ID, ''"+str(self.contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAEQUP (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAEQUP.EQUIPMENT_RECORD_ID'")
-			
+			get_fab_details = Sql.GetFirst("SELECT FABLOCATION_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME from MAEQUP WHERE FABLOCATION_ID = '"+str(self.tree_param)+"' ")
+			get_salesorg= Sql.GetFirst("SELECT SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,))
 			self._process_query(
 							"""
 								INSERT SAQFEQ (
@@ -3027,12 +3036,14 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 									CpqTableEntryDateModified,
 									RELOCATION_FAB_TYPE,
 									RELOCATION_EQUIPMENT_TYPE,WAFER_SIZE,
-									TECHNOLOGY
+									TECHNOLOGY,
+									TEMP_TOOL
 									) SELECT
 										CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
 										MAEQUP.EQUIPMENT_ID,
 										MAEQUP.EQUIPMENT_RECORD_ID,
-										MAEQUP.EQUIPMENT_DESCRIPTION,                                
+										MAEQUP.EQUIPMENT_DESCRIPTION,  
+										{fab_id},{fab_name},{fab_recid},                    
 										MAEQUP.FABLOCATION_ID,
 										MAEQUP.FABLOCATION_NAME,
 										MAEQUP.FABLOCATION_RECORD_ID,
@@ -3056,9 +3067,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 										MAEQUP.MNT_PLANT_NAME,
 										MAEQUP.WARRANTY_START_DATE,
 										MAEQUP.WARRANTY_END_DATE,
-										MAEQUP.SALESORG_ID,
-										MAEQUP.SALESORG_NAME,
-										MAEQUP.SALESORG_RECORD_ID,
+										{salesorg_id},{salesorg_name},{salesorg_recid},
 										MAEQUP.CUSTOMER_TOOL_ID,
 										'{UserName}' AS CPQTABLEENTRYADDEDBY,
 										GETDATE() as CPQTABLEENTRYDATEADDED,
@@ -3067,7 +3076,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 										'{relocation_fab_type}' AS RELOCATION_FAB_TYPE,
 										'{relocation_equp_type}' AS RELOCATION_EQUIPMENT_TYPE,
 										MAEQUP.SUBSTRATE_SIZE,
-										MAEQUP.TECHNOLOGY
+										MAEQUP.TECHNOLOGY,
+										'{is_temptool}' AS TEMP_TOOL 
 										FROM MAEQUP (NOLOCK)
 										JOIN SYSPBT (NOLOCK) ON SYSPBT.BATCH_RECORD_ID = MAEQUP.EQUIPMENT_RECORD_ID JOIN MAEQCT(NOLOCK)
 										ON MAEQUP.EQUIPMENTCATEGORY_ID = MAEQCT.EQUIPMENTCATEGORY_ID
@@ -3075,6 +3085,13 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 										SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
 										AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
 								""".format(
+								fab_id=" '"+str(get_fab_details.FABLOCATION_ID)+"' AS FABLOCATION_ID" if self.tool_type=="TEMP TOOL" else " MAEQUP.FABLOCATION_ID ",
+								fab_name=" '"+str(get_fab_details.FABLOCATION_NAME)+"' AS FABLOCATION_NAME" if self.tool_type=="TEMP TOOL" else " MAEQUP.FABLOCATION_NAME ",
+								fab_recid = " '"+str(get_fab_details.FABLOCATION_RECORD_ID)+"' AS FABLOCATION_RECORD_ID" if self.tool_type=="TEMP TOOL" else " MAEQUP.FABLOCATION_RECORD_ID ",
+								salesorg_id = " '"+str(get_salesorg.SALESORG_ID)+"' AS SALESORG_ID" if self.tool_type=="TEMP TOOL" else " MAEQUP.SALESORG_ID ",
+								salesorg_name = " '"+str(get_salesorg.SALESORG_NAME)+"' AS SALESORG_NAME" if self.tool_type=="TEMP TOOL" else " MAEQUP.SALESORG_NAME ",
+								salesorg_recid = " '"+str(get_salesorg.SALESORG_RECORD_ID)+"' AS SALESORG_RECORD_ID" if self.tool_type=="TEMP TOOL" else " MAEQUP.SALESORG_RECORD_ID ",
+								is_temptool = "TRUE" if self.tool_type=="TEMP TOOL" else "",
 								treeparam=self.tree_param,
 								treeparentparam=self.tree_parent_level_0,
 								QuoteId=self.contract_quote_id,
@@ -6730,6 +6747,10 @@ else:
 		except:
 			Trace.Write("inclusion Exception")
 			inclusion = 0
+		try:
+			tool_type = Param.TOOL_TYPE
+		except:
+			tool_type = ""
 		##Added the param to insert the pmsa related child tables when the user is changing the quote type from tool based to event based or flex based...
 		try:
 			applied_preventive_maintainence_quote_type_changed = Param.applied_preventive_maintainence_quote_type_changed
@@ -6754,7 +6775,7 @@ else:
 node_object = Factory(node_type)(
 	opertion=opertion, action_type=action_type, table_name=table_name, values=values, 
 	all_values=all_values, trigger_from=trigger_from, contract_quote_record_id=contract_quote_record_id, 
-	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,inclusion = inclusion,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed,pmevents_changes_insert= pmevents_changes_insert,pm_entlmnt_val=pm_entlmnt_val,entitlement_value = entitlement_value
+	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,tool_type=tool_type,inclusion = inclusion,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed,pmevents_changes_insert= pmevents_changes_insert,pm_entlmnt_val=pm_entlmnt_val,entitlement_value = entitlement_value
 )
 
 if opertion == "INSERT":
