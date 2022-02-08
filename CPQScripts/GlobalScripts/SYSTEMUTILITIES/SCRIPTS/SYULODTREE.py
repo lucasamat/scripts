@@ -2224,11 +2224,11 @@ class TreeView:
 														if get_ent_id and get_ent_name:
 															#get_disp_val = re.findall(display_pattern_name,sub_string)
 															Trace.Write("get_ent_id-"+str(get_ent_id)+"--"+str(get_ent_name))
-															Z0099_pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_Z0099_NET_PRMALB</ENTITLEMENT_ID>')
-															Z0099_pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included - All PM)</ENTITLEMENT_DISPLAY_VALUE>')
-															if Z0099_pattern_id and Z0099_pattern_name:
-																Trace.Write("Hided events subtab for Z0099 - included All Condition")
-																subtab_temp = ""
+															# Z0099_pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_Z0099_NET_PRMALB</ENTITLEMENT_ID>')
+															# Z0099_pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included - All PM)</ENTITLEMENT_DISPLAY_VALUE>')
+															# if Z0099_pattern_id and Z0099_pattern_name:
+															# 	Trace.Write("Hided events subtab for Z0099 - included All Condition")
+															# 	subtab_temp = ""
 															flag_excluse=1
 															break
 													if flag_excluse==1 and subtab_temp:
