@@ -1837,6 +1837,11 @@ try:
 except:
 	VALUE2= None
 try:
+	DEL_PN = Param.DEL_PN
+	Trace.Write("RECORDS TO BE DELETED--"+str(list(DEL_PN)))
+except:
+	DEL_PN = None
+try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
 	quote_revision_record_id = ""
@@ -1894,7 +1899,7 @@ if ELEMENT == "RELATEDEDIT":
 	
 	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL))
 elif ELEMENT == "SAVE":
-	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,ALLVALUES3,SELECTALL))
+	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,ALLVALUES3,DEL_PN,SELECTALL))
 else:
 	ApiResponse = ApiResponseFactory.JsonResponse("")
 
