@@ -1496,7 +1496,16 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					<PRICE_METHOD>{pm}</PRICE_METHOD>
 					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 					<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '',tool_desc = get_toolptip.replace("'","''") if "'" in get_toolptip else get_toolptip)
+					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),
+						ent_val_code = ent_val_code,
+						ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',
+						ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.replace("&",";#38").replace(">","&gt;").replace("<","&lt;"),
+						ent_disp_val = ent_disp_val.replace("&",";#38").replace(">","&gt;").replace("<","&lt;")  if HasDefaultvalue==True else '',
+						ct = '',pi = '',
+						is_default = '1' if str(attrs) in attributedefaultvalue else '0',
+						pm = '',cf = '',
+						tool_desc = get_toolptip.replace("'","''").replace("&",";#38").replace(">","&gt;").replace("<","&lt;") 
+					)
 			insertservice = insertservice.encode('ascii', 'ignore').decode('ascii')
 			
 			tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()

@@ -203,7 +203,15 @@ def _insert_service_level_entitlement(par_service=''):
 				<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 				<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 				</QUOTE_ITEM_ENTITLEMENT>
-				""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ent_desc, tool_desc = get_tooltip.replace("'","''") if "'" in get_tooltip else get_tooltip,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
+				""".format(ent_name = str(attrs),
+				ent_val_code = ent_val_code,
+				ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',
+				ent_desc = ent_desc.replace("&",";#38").replace(">","&gt;").replace("<","&lt;"), 
+				tool_desc = get_tooltip.replace("'","''").replace("&",";#38").replace(">","&gt;").replace("<","&lt;"),
+				ent_disp_val = ent_disp_val.replace("&",";#38").replace(">","&gt;").replace("<","&lt;") if HasDefaultvalue==True else '',
+				ct = '',pi = '',
+				is_default = '1' if str(attrs) in attributedefaultvalue else '0',
+				pm = '',cf = '')
 
 			insertservice = insertservice.encode('ascii', 'ignore').decode('ascii')
 			tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
