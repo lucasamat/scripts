@@ -695,7 +695,7 @@ class TreeView:
 							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 						)
 					try:
-						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 						if getZ0009 is not None:
 							getZ0009 =  self.PMSATree()
 							#Trace.Write("return value Z0009---"+str(self.PMSATree()))
@@ -2379,7 +2379,7 @@ class TreeView:
 									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 								)
 							try:
-								getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+								getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 								if getZ0009 is not None:
 									getZ0009 =  self.PMSATree()
 							except:
@@ -2584,7 +2584,7 @@ class TreeView:
 					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
 					)
 			try:
-				getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+				getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 				if getZ0009 is not None:
 					getZ0009 =  self.PMSATree()
 					#Trace.Write("return value Z0009---"+str(self.PMSATree()))
@@ -2712,7 +2712,7 @@ class TreeView:
 									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 								)		
 					try:
-						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 						if getZ0009 is not None:
 							getZ0009 =  self.PMSATree()
 							#Trace.Write("return value Z0009---"+str(self.PMSATree()))
@@ -2958,7 +2958,7 @@ class TreeView:
 								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 							)	
 				try:
-					getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+					getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 					if getZ0009 is not None:
 						getZ0009 =  self.PMSATree()
 						#Trace.Write("return value Z0009---"+str(self.PMSATree()))
@@ -3127,7 +3127,7 @@ class TreeView:
 										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 									)	
 						try:
-							getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+							getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 							if getZ0009 is not None:
 								getZ0009 =  self.PMSATree()
 								#Trace.Write("return value Z0009---"+str(self.PMSATree()))
@@ -3186,7 +3186,7 @@ class TreeView:
 												+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 											)	
 								try:
-									getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0009' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+									getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 									if getZ0009 is not None:
 										getZ0009 =  self.PMSATree()
 										#Trace.Write("return value Z0009---"+str(self.PMSATree()))
