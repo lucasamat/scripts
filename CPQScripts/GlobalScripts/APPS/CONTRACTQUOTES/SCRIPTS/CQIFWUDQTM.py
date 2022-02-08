@@ -121,11 +121,12 @@ def quote_items_pricing(Qt_id):
 
 	#updating value to quote summary ends
 	try:
-		get_services = Sql.GetList("SELECT SERVICE_ID from SAQTSE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
-		get_services_list = []
-		for val in get_services:
-			if val.SERVICE_ID:
-				get_services_list.append(val.SERVICE_ID)
+		Log.Info('CPS__BILLING CALL---')
+		# get_services = Sql.GetList("SELECT SERVICE_ID from SAQTSE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
+		# get_services_list = []
+		# for val in get_services:
+		# 	if val.SERVICE_ID:
+		# 		get_services_list.append(val.SERVICE_ID)
 		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
 		if LOGIN_CREDENTIALS is not None:
 			Login_Username = str(LOGIN_CREDENTIALS.Username)
