@@ -38,6 +38,7 @@ if 'Param' in globals():
             Log.Info("emp_approver_id--"+str(emp_approver_id)) 
             get_approver_id = Sql.GetFirst("SELECT * FROM ACAPTX(NOLOCK) WHERE APRCHNSTP_APPROVER_ID = '{emp_approver_id}' AND OWNER_ID = '' AND APRTRXOBJ_ID = '{quote_id}' ".format(emp_approver_id = emp_approver_id,quote_id =quote_id))
             Log.Info("get_transaction_id"+str(get_approver_id.APPROVAL_TRANSACTION_RECORD_ID))
+            Log.Info("SELECT * FROM ACAPTX(NOLOCK) WHERE APRCHNSTP_APPROVER_ID = '{emp_approver_id}' AND OWNER_ID = '' AND APRTRXOBJ_ID = '{quote_id}' ".format(emp_approver_id = emp_approver_id,quote_id =quote_id))
             transaction_id = str(get_approver_id.APPROVAL_TRANSACTION_RECORD_ID)
             if get_approver_id:
                 update_obj_id="""UPDATE ACAPTX SET OWNER_ID = '{obj_id}' WHERE APRTRXOBJ_ID = '{quote_id}' AND APRCHNSTP_APPROVER_ID ='{emp_approver_id}' AND APPROVAL_TRANSACTION_RECORD_ID ='{transaction_id}'""".format(obj_id=obj_id,quote_id =quote_id,emp_approver_id = emp_approver_id,transaction_id =transaction_id)
