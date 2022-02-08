@@ -338,6 +338,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 
 def _quote_items_greenbook_summary_insert():	
 	greenbook_summary_last_line_no = 0
+	Sql.RunQuery("DELETE FROM SAQIGS where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
 	quote_item_summary_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQIGS (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
 	if quote_item_summary_obj:
 		greenbook_summary_last_line_no = int(quote_item_summary_obj.LINE) 	
