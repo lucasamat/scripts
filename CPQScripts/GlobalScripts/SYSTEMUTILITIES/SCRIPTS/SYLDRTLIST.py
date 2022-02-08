@@ -288,6 +288,10 @@ class SYLDRTLIST:
 							Columns.extend(['UNIT_PRICE','EXTENDED_PRICE'])
 							Columns = str(Columns)
 						
+						if RECORD_ID == "SYOBJR-00029" and SubTab.upper() =='EXCLUSIONS':							
+							rem_list_sp = ["NEW_PART"]
+							Columns = [ele for ele in  eval(Columns) if ele not in rem_list_sp]							
+						
 						if RECORD_ID == "SYOBJR-00009":
 							Trace.Write("QUOTE_ITEM_COVERED_OBJECT_RECORD_ID=======")                                
 							rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
