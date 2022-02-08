@@ -2156,9 +2156,8 @@ class Entitlements:
 					cd = '0'+str(cd) if len(cd)==1 else cd
 					cm = '0'+str(cm) if len(cm)==1 else cm        
 					validto = cy+cm+cd
-				
-				Trace.Write("2151"+str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.ContractRecordId,self.revision_recordid,auth)
-				
+				Trace.Write('2159----------'+str(User.UserName)+str(account_info.get('SOLD TO'))+str(account_info.get('SHIP TO')))
+
 				CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.ContractRecordId,self.revision_recordid,auth)
 
 
