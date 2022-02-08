@@ -3579,11 +3579,6 @@ def POPUPLISTVALUEADDNEW(
 			new_value_dict = {}
 			ObjectName = "MAEQUP"
 			table_id = "equipments_addnew"
-			try:
-				if table[4]=="addTempTool": # for Temp tool popup
-    				tool_type="TEMP_TOOL"
-			except:
-				tool_type="EQUIPMENT"
 			if tool_type=="TEMP_TOOL":
     			Header_details = {
 					"EQUIPMENT_RECORD_ID": "KEY",
@@ -6283,7 +6278,10 @@ try:
 except:    
 	PerPage = ''
 	PageInform = ''
-
+try:
+	tool_type = Param.TOOL_TYPE
+except:
+	tool_type = "EQUIPMENT"
 try:
 	ACTION = Param.ACTION
 except:
