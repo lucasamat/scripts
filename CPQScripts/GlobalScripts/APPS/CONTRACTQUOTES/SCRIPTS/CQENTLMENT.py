@@ -2115,8 +2115,7 @@ class Entitlements:
 
 				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtse_obj.QUOTE_ID}})
 			elif customer_wants_participate == 'Yes':
-
-
+				Trace.Write('2118----------'+str(saqtse_obj.QUOTE_ID))
 				#iflow for spare parts...
 				requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
 				webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
