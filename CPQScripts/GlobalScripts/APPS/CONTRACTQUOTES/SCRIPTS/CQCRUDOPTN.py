@@ -5828,6 +5828,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 										if pm_event_attribute_value != "":
 											self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
 											qte_type_flag=1
+									if (self.tree_param in ("Z0009") and "Included - < Quarterly" in pm_event_attribute_value):
+										additional_where = " (MAEAPK.PM_LEVEL = 'Chamber / Module PM' OR MAEAPK.PM_LEVEL = 'Scheduled Maintenance') AND (MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly') AND"
+										if pm_event_attribute_value != "":
+											self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
+											qte_type_flag=1
 						if self.tree_param == 'Z0009' and qte_type_flag == 1:
 							break
 						else:
