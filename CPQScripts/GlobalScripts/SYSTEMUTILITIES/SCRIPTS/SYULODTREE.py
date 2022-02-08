@@ -2296,6 +2296,7 @@ class TreeView:
 															ObjRecId = '0975E1E2-9D30-4928-AB0A-4DA54537A67A'
 															RelatedId = 'SYOBJR-95556'
 															RelatedName = 'Assemblies'
+															break
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 										)
