@@ -2115,6 +2115,7 @@ class Entitlements:
 
 				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtse_obj.QUOTE_ID}})
 			elif customer_wants_participate == 'Yes':
+
 				#iflow for spare parts...
 				requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
 				webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
@@ -2145,6 +2146,8 @@ class Entitlements:
 					cd = '0'+str(cd) if len(cd)==1 else cd
 					cm = '0'+str(cm) if len(cm)==1 else cm        
 					validto = cy+cm+cd
+				
+				Trace.Write(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.contract_quote_id,self.quote_revision_record_id,auth)
 				
 				CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.contract_quote_id,self.quote_revision_record_id,auth)
 
