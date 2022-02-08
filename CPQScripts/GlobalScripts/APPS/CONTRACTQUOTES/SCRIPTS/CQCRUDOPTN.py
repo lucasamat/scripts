@@ -2250,6 +2250,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 		self.values = kwargs.get('values')
 		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')		
+		self.tool_type = kwargs.get('tool_type')
 		self.node_id = ""	
 
 	def _create(self):
@@ -3295,6 +3296,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		self.entitlement_value = kwargs.get('entitlement_value')
 		self.pmevents_changes_insert =  kwargs.get('pmevents_changes_insert')
 		self.pm_entlmnt_val = kwargs.get('pm_entlmnt_val')
+		self.tool_type = kwargs.get('tool_type')
 		self.node_id = ""
 
 	def get_results(self, query_string, table_total_rows):
