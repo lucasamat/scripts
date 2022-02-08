@@ -1300,32 +1300,32 @@ class EntitlementView():
 													+ "</input> "
 												)
 											#cost_impact  = val.ENTITLEMENT_COST_IMPACT
-											try:
-												#Trace.Write("@@3087"+str(attrSysId))
-												if val.ENTITLEMENT_COST_IMPACT:
-													#Trace.Write("@@3089"+str(val.ENTITLEMENT_COST_IMPACT)+str(val.PRICE_METHOD)+str(attrSysId))
-													#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
-													sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
-													#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD													
-												# else:
-												# 	#Trace.Write("@@3093")
-												# 	#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
-												# 	sec_str_imt += 													
-											except Exception as e:
+											# try:
+											# 	#Trace.Write("@@3087"+str(attrSysId))
+											# 	if val.ENTITLEMENT_COST_IMPACT:
+											# 		#Trace.Write("@@3089"+str(val.ENTITLEMENT_COST_IMPACT)+str(val.PRICE_METHOD)+str(attrSysId))
+											# 		#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
+											# 		sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
+											# 		#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD													
+											# 	# else:
+											# 	# 	#Trace.Write("@@3093")
+											# 	# 	#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
+											# 	# 	sec_str_imt += 													
+											# except Exception as e:
 												#Trace.Write(str(e)+'error1111'+str(attrSysId))
-												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
+											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
 											#price_impact = val.ENTITLEMENT_PRICE_IMPACT
-											try:
-												if val.ENTITLEMENT_PRICE_IMPACT:
-													#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
-													sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
-													#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT))) + " "+val.PRICE_METHOD
-												# else:
-												# 	Trace.Write("else price")
-												# 	#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
-												# 	sec_str_primp += ""
-											except Exception as e: 
-												sec_str_primp += str(val.ENTITLEMENT_PRICE_IMPACT)
+											# try:
+											# 	if val.ENTITLEMENT_PRICE_IMPACT:
+											# 		#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
+											# 		sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
+											# 		#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT))) + " "+val.PRICE_METHOD
+											# 	# else:
+											# 	# 	Trace.Write("else price")
+											# 	# 	#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
+											# 	# 	sec_str_primp += ""
+											# except Exception as e: 
+											sec_str_primp += str(val.ENTITLEMENT_PRICE_IMPACT)
 												#Trace.Write(str(e)+'error2222')
 												
 											#calc_factor = val.CALCULATION_FACTOR
@@ -1341,14 +1341,14 @@ class EntitlementView():
 									else:
 										required_symbol_class = get_requiredicon = ""
 									new_value_dicta["APPROVAL"] = imgstr
-									try:
-										new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")
-									except:
-										new_value_dicta["ENTITLEMENT"] = "<abbr title='{entitlement_name}'>{entitlement_name}</abbr>".format(entitlement_name=attrName)
-									try:
-										new_value_dicta["DESCRIPTION"] = str('<abbr title="'+str(get_tooltip)+'">'+str(get_tooltip)+'</abbr>')
-									except:
-										new_value_dicta["DESCRIPTION"] = '<abbr title="{get_tooltip}">{get_tooltip}</abbr>'.format(get_tooltip=get_tooltip)
+									# try:
+									# 	new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")
+									# except:
+									new_value_dicta["ENTITLEMENT"] = "<abbr title='{entitlement_name}'>{entitlement_name}</abbr>".format(entitlement_name=attrName)
+									# try:
+									# 	new_value_dicta["DESCRIPTION"] = str('<abbr title="'+str(get_tooltip)+'">'+str(get_tooltip)+'</abbr>')
+									# except:
+									new_value_dicta["DESCRIPTION"] = '<abbr title="{get_tooltip}">{get_tooltip}</abbr>'.format(get_tooltip=get_tooltip)
 									new_value_dicta["REQUIRED"] = get_requiredicon
 									if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
 										new_value_dicta["VALUE"] = sec_str1 									
