@@ -494,18 +494,80 @@ def _insert_subtotal_by_offerring_quote_table():
 #generate documnet start
 
 get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+def insert_bill_doc(parts_list,billing_matrix):
+	_insert_subtotal_by_offerring_quote_table()
+	insert_quote_billing_plan()
+	Trace.Write('500----')
+	saqdoc_output_insert="""INSERT SAQDOC (
+							QUOTE_DOCUMENT_RECORD_ID,
+							DOCUMENT_ID,
+							DOCUMENT_NAME,
+							DOCUMENT_PATH,
+							QUOTE_ID,
+							QUOTE_NAME,
+							QUOTE_RECORD_ID,
+							LANGUAGE_ID,
+							LANGUAGE_NAME,
+							LANGUAGE_RECORD_ID,
+							CPQTABLEENTRYADDEDBY,
+							CPQTABLEENTRYDATEADDED,
+							CpqTableEntryModifiedBy,
+							CpqTableEntryDateModified,
+							STATUS,
+							QTEREV_ID,
+							QTEREV_RECORD_ID
+							)SELECT
+							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_DOCUMENT_RECORD_ID,
+							'{doc_id}' AS DOCUMENT_ID,
+							'{doc_name}' AS DOCUMENT_NAME,
+							'' AS DOCUMENT_PATH,
+							'{quoteid}' AS QUOTE_ID,
+							'{quotename}' AS QUOTE_NAME,
+							'{quoterecid}' AS QUOTE_RECORD_ID,
+							'EN' AS LANGUAGE_ID,
+							'English' AS LANGUAGE_NAME,
+							MALANG.LANGUAGE_RECORD_ID AS LANGUAGE_RECORD_ID,
+							'{UserName}' as CPQTABLEENTRYADDEDBY,
+							'{dateadded}' as CPQTABLEENTRYDATEADDED,
+							'{UserId}' as CpqTableEntryModifiedBy,
+							'{date}' as CpqTableEntryDateModified,
+							'PENDING' as STATUS,
+							'{qt_revid}' as QTEREV_ID,
+							'{qt_rev_rec_id}' as QTEREV_RECORD_ID
+							FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(doc_id='Pending',doc_name='',quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=contract_quote_record_id,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
+			#Log.Info(qtqdoc)
+	Sql.RunQuery(saqdoc_output_insert)
+	
+	gen_doc = Quote.GenerateDocument('AMAT_SUBTOTAL_OFFERING', GenDocFormat.PDF)
+	fileName = Quote.GetLatestGeneratedDocumentFileName()
+	GDB = Quote.GetLatestGeneratedDocumentInBytes()
+	List = Quote.GetGeneratedDocumentList('AMAT_SUBTOTAL_OFFERING')
+	for doc in List:
+		doc_id = doc.Id
+		doc_name = doc.FileName
+		if fileName==doc_name:
+			quote_id = gettoolquote.QUOTE_ID
+			#added_by = audit_fields.USERNAME
+			#modified_by = audit_fields.CpqTableEntryModifiedBy
+			#modified_date = audit_fields.CpqTableEntryDateModified
+			guid = str(Guid.NewGuid()).upper()
+			qt_rec_id = contract_quote_record_id
+			date_added = doc.DateCreated
+			update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND STATUS = 'PENDING' AND QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=contract_quote_record_id,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)
+			Sql.RunQuery(update_query)
+	return True
 def insert_spare_doc(parts_list):
-	if Quote.GetCustomField('INCLUDE_ITEMS').Content == 'YES' and Quote.GetCustomField('Billing_Matrix').Content == 'YES':
-		Trace.Write('285----')
+	if Quote.GetCustomField('INCLUDE_ITEMS').Content == 'YES':
+		#Trace.Write('285----')
 		_insert_subtotal_by_offerring_quote_table()
-		insert_quote_billing_plan()
+		#insert_quote_billing_plan()
 	elif Quote.GetCustomField('INCLUDE_ITEMS').Content == 'YES':
 		_insert_subtotal_by_offerring_quote_table()
 	elif Quote.GetCustomField('Billing_Matrix').Content == 'YES':
 		#Trace.Write('285----')
 		insert_quote_billing_plan()
 	if str(parts_list) == 'True':
-		Trace.Write('93------')
+		#Trace.Write('93------')
 		Log.Info('SAQDOC---documents-')
 		saqdoc_output_insert="""INSERT SAQDOC (
 							QUOTE_DOCUMENT_RECORD_ID,
@@ -813,7 +875,7 @@ if str(parts_list) == 'True' and str(billing_matrix) == 'True':
 	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
 	#Trace.Write('531------')
 	Quote.GetCustomField('Billing_Matrix').Content = 'YES'
-	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
+	ApiResponse = ApiResponseFactory.JsonResponse(insert_bill_doc(parts_list,billing_matrix))
 elif str(billing_matrix) == 'True':
 	#Trace.Write('531------')
 	Quote.GetCustomField('Billing_Matrix').Content = 'YES'
