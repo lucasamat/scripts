@@ -141,7 +141,7 @@ def quote_items_pricing(Qt_id):
 			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
 			
-			result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_record_id,Rev_Id = revision)
+			result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID,Rev_Id = get_rev_rec_id.QTEREV_RECORD_ID)
 			
 			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
 			Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
