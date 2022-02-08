@@ -1164,12 +1164,12 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					parent_based_condition = ""
 					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009") or  self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 						parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"		
-					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
-						ent_table = "SAQTSE"
+					# if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
+					# 	ent_table = "SAQTSE"
 					elif self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 						ent_table = "SAQSGE"
-					if ent_table == "SAQTSE" and self.tree_param == 'Z0092':
-						get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, service_id = self.tree_param,ent_table = ent_table ))
+					if self.tree_parent_level_0 == 'Z0092':
+						get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}'""".format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, service_id = self.tree_parent_level_0, ent_table = ent_table,greenbook =  self.tree_param ))
 						if get_entitlement_xml :
 							pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 							pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
@@ -1190,7 +1190,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 
 					#fab_count = SqlHelper.GetList("SELECT COUNT(FABLOCATION_ID) AS COUNT from SAQSCO WHERE GREENBOOK = '"+str(self.tree_param)"' AND 	SERVICE_ID = '"+str(self.treeparentparam)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' GROUP BY FABLOCATION_ID")
 					fab_count = Sql.GetFirst("SELECT COUNT(DISTINCT FABLOCATION_ID) AS COUNT from SAQSCO WHERE GREENBOOK = '{}' AND 	SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY FABLOCATION_ID".format(self.tree_param,self.tree_parent_level_0,self.contract_quote_record_id, self.quote_revision_record_id ))
-					if 'Z0101' in parent_based_condition and self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
+					if ('Z0101' in parent_based_condition or'Z0100' in parent_based_condition ) and self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 						for i in range(fab_count.COUNT):
 							self._process_query("""
 												INSERT SAQRSP (QUOTE_REV_PO_PRODUCT_LIST_ID,PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID,QUANTITY, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,NEW_PART,INCLUDED)
@@ -1260,79 +1260,79 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 								)
 							)
 					
-					elif 'Z0100' in parent_based_condition :
-						Trace.Write("z0100---11")
-						#for i in range(fab_count.COUNT):
-						self._process_query("""INSERT SAQRSP (QUOTE_REV_PO_PRODUCT_LIST_ID,PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID,PROD_INSP_MEMO,QUANTITY, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,NEW_PART,INCLUDED,UNIT_PRICE,EXTENDED_PRICE,UNIT_PRICE_INGL_CURR,EXTENDED_PRICE_INGL_CURR)
-								SELECT DISTINCT
-									CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PRODUCT_LIST_ID,
-									PART_DESCRIPTION,
-									PART_NUMBER,
-									PART_RECORD_ID,
-									PROD_INSP_MEMO,
-									QUANTITY,
-									QUOTE_ID,
-									QUOTE_RECORD_ID,
-									QTEREV_ID,
-									QTEREV_RECORD_ID,
-									SERVICE_DESCRIPTION,
-									SERVICE_ID,
-									SERVICE_RECORD_ID,
-									PAR_SERVICE_DESCRIPTION,
-									PAR_SERVICE_ID,
-									PAR_SERVICE_RECORD_ID,
-									GREENBOOK,
-									GREENBOOK_RECORD_ID,
-									FABLOCATION_ID,
-									FABLOCATION_NAME,
-									FABLOCATION_RECORD_ID,
-									{UserId} as CPQTABLEENTRYADDEDBY, 
-									GETDATE() as CPQTABLEENTRYDATEADDED,
-									{new_part} as NEW_PART,
-									1 as INCLUDED,
-									CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS UNIT_PRICE,
-									CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS EXTENDED_PRICE,
-									CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS UNIT_PRICE_INGL_CURR,
-									CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS EXTENDED_PRICE_INGL_CURR
-								FROM (
-								SELECT 
-									DISTINCT
-									MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
-									MAMTRL.SAP_PART_NUMBER as PART_NUMBER,
-									MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
-									MAMTRL.PROD_INSP_MEMO as PROD_INSP_MEMO,
-									0 as QUANTITY,
-									SAQTMT.QUOTE_ID as QUOTE_ID,
-									SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
-									SAQTMT.QTEREV_ID as QTEREV_ID,
-									SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
-									SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
-									SAQTSV.SERVICE_ID as SERVICE_ID,
-									SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
-									SAQTSV.PAR_SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,
-									SAQTSV.PAR_SERVICE_ID as PAR_SERVICE_ID,
-									SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,
-									null as GREENBOOK,
-									null as GREENBOOK_RECORD_ID,
-									null as FABLOCATION_ID,
-									null as FABLOCATION_NAME,
-									null as FABLOCATION_RECORD_ID
-								FROM SYSPBT (NOLOCK)
-								JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SYSPBT.SAP_PART_NUMBER
-								JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID
-								JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.PAR_SERVICE_ID = '{service_id}' 
-								JOIN SAQSCO (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQSCO.PAR_SERVICE_ID = SAQTSV.PAR_SERVICE_ID AND SAQSCO.SERVICE_ID = SAQTSV.SERVICE_ID  
-								JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
-								WHERE SYSPBT.BATCH_STATUS = 'IN PROGRESS' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 {ParentBasedCondition}) IQ
-								""".format(fab_location_id = '',
-									service_id = self.tree_param,
-									BatchGroupRecordId=batch_group_record_id,
-									QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-									UserId=self.user_id,
-									ParentBasedCondition=parent_based_condition,
-									new_part= self.new_part if self.new_part else 0
-								)
-						)
+					# elif 'Z0100' in parent_based_condition :
+					# 	Trace.Write("z0100---11")
+					# 	#for i in range(fab_count.COUNT):
+					# 	self._process_query("""INSERT SAQRSP (QUOTE_REV_PO_PRODUCT_LIST_ID,PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID,PROD_INSP_MEMO,QUANTITY, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,NEW_PART,INCLUDED,UNIT_PRICE,EXTENDED_PRICE,UNIT_PRICE_INGL_CURR,EXTENDED_PRICE_INGL_CURR)
+					# 			SELECT DISTINCT
+					# 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PRODUCT_LIST_ID,
+					# 				PART_DESCRIPTION,
+					# 				PART_NUMBER,
+					# 				PART_RECORD_ID,
+					# 				PROD_INSP_MEMO,
+					# 				QUANTITY,
+					# 				QUOTE_ID,
+					# 				QUOTE_RECORD_ID,
+					# 				QTEREV_ID,
+					# 				QTEREV_RECORD_ID,
+					# 				SERVICE_DESCRIPTION,
+					# 				SERVICE_ID,
+					# 				SERVICE_RECORD_ID,
+					# 				PAR_SERVICE_DESCRIPTION,
+					# 				PAR_SERVICE_ID,
+					# 				PAR_SERVICE_RECORD_ID,
+					# 				GREENBOOK,
+					# 				GREENBOOK_RECORD_ID,
+					# 				FABLOCATION_ID,
+					# 				FABLOCATION_NAME,
+					# 				FABLOCATION_RECORD_ID,
+					# 				{UserId} as CPQTABLEENTRYADDEDBY, 
+					# 				GETDATE() as CPQTABLEENTRYDATEADDED,
+					# 				{new_part} as NEW_PART,
+					# 				1 as INCLUDED,
+					# 				CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS UNIT_PRICE,
+					# 				CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS EXTENDED_PRICE,
+					# 				CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS UNIT_PRICE_INGL_CURR,
+					# 				CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS EXTENDED_PRICE_INGL_CURR
+					# 			FROM (
+					# 			SELECT 
+					# 				DISTINCT
+					# 				MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
+					# 				MAMTRL.SAP_PART_NUMBER as PART_NUMBER,
+					# 				MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
+					# 				MAMTRL.PROD_INSP_MEMO as PROD_INSP_MEMO,
+					# 				0 as QUANTITY,
+					# 				SAQTMT.QUOTE_ID as QUOTE_ID,
+					# 				SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
+					# 				SAQTMT.QTEREV_ID as QTEREV_ID,
+					# 				SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
+					# 				SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
+					# 				SAQTSV.SERVICE_ID as SERVICE_ID,
+					# 				SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
+					# 				SAQTSV.PAR_SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,
+					# 				SAQTSV.PAR_SERVICE_ID as PAR_SERVICE_ID,
+					# 				SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,
+					# 				null as GREENBOOK,
+					# 				null as GREENBOOK_RECORD_ID,
+					# 				null as FABLOCATION_ID,
+					# 				null as FABLOCATION_NAME,
+					# 				null as FABLOCATION_RECORD_ID
+					# 			FROM SYSPBT (NOLOCK)
+					# 			JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SYSPBT.SAP_PART_NUMBER
+					# 			JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID
+					# 			JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.PAR_SERVICE_ID = '{service_id}' 
+					# 			JOIN SAQSCO (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQSCO.PAR_SERVICE_ID = SAQTSV.PAR_SERVICE_ID AND SAQSCO.SERVICE_ID = SAQTSV.SERVICE_ID  
+					# 			JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
+					# 			WHERE SYSPBT.BATCH_STATUS = 'IN PROGRESS' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 {ParentBasedCondition}) IQ
+					# 			""".format(fab_location_id = '',
+					# 				service_id = self.tree_param,
+					# 				BatchGroupRecordId=batch_group_record_id,
+					# 				QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
+					# 				UserId=self.user_id,
+					# 				ParentBasedCondition=parent_based_condition,
+					# 				new_part= self.new_part if self.new_part else 0
+					# 			)
+					# 	)
 			
 
 					# get_child_service_id = Sql.GetFirst("""SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN SAQRSP (NOLOCK) ON SAQRSP.SERVICE_ID = SAQTSV.SERVICE_ID AND SAQRSP.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQRSP.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.PAR_SERVICE_ID = '{service_id}'""".format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId = self.quote_revision_record_id,service_id = self.tree_parent_level_0 if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009") else self.tree_param))
@@ -1895,12 +1895,12 @@ class PartsListModel(ContractQuoteCrudOpertion):
 				parent_based_condition = ""
 				if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009") or  self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 					parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"		
-				if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
-					ent_table = "SAQTSE"
+				# if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
+				# 	ent_table = "SAQTSE"
 				elif self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 					ent_table = "SAQSGE"
-				if ent_table == "SAQTSE" and self.tree_param == 'Z0092':
-					get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, service_id = self.tree_param,ent_table = ent_table ))
+				if self.tree_parent_level_0 == 'Z0092':
+					get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}'""".format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, service_id = self.tree_parent_level_0, ent_table = ent_table,greenbook =  self.tree_param ))
 					if get_entitlement_xml :
 						pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 						pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
@@ -1921,7 +1921,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 
 				#fab_count = SqlHelper.GetList("SELECT COUNT(FABLOCATION_ID) AS COUNT from SAQSCO WHERE GREENBOOK = '"+str(self.tree_param)"' AND 	SERVICE_ID = '"+str(self.treeparentparam)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' GROUP BY FABLOCATION_ID")
 				fab_count = Sql.GetFirst("SELECT COUNT(DISTINCT FABLOCATION_ID) AS COUNT from SAQSCO WHERE GREENBOOK = '{}' AND 	SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY FABLOCATION_ID".format(self.tree_param,self.tree_parent_level_0,self.contract_quote_record_id, self.quote_revision_record_id ))
-				if 'Z0101' in parent_based_condition and self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
+				if ('Z0101' in parent_based_condition or'Z0100' in parent_based_condition ) and self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 					for i in range(fab_count.COUNT):
 						self._process_query("""
 												INSERT SAQRSP (QUOTE_REV_PO_PRODUCT_LIST_ID,PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID,PROD_INSP_MEMO,QUANTITY, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,NEW_PART,INCLUDED)
@@ -1994,78 +1994,78 @@ class PartsListModel(ContractQuoteCrudOpertion):
 											)
 										)
 				
-				elif 'Z0100' in parent_based_condition :
-					Trace.Write("z0100---2211")
-					self._process_query("""INSERT SAQRSP (QUOTE_REV_PO_PRODUCT_LIST_ID,PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID,PROD_INSP_MEMO,QUANTITY, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,NEW_PART,INCLUDED,UNIT_PRICE,EXTENDED_PRICE,UNIT_PRICE_INGL_CURR,EXTENDED_PRICE_INGL_CURR)
-							SELECT DISTINCT
-								CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PRODUCT_LIST_ID,
-								PART_DESCRIPTION,
-								PART_NUMBER,
-								PART_RECORD_ID,
-								PROD_INSP_MEMO,
-								QUANTITY,
-								QUOTE_ID,
-								QUOTE_RECORD_ID,
-								QTEREV_ID,
-								QTEREV_RECORD_ID,
-								SERVICE_DESCRIPTION,
-								SERVICE_ID,
-								SERVICE_RECORD_ID,
-								PAR_SERVICE_DESCRIPTION,
-								PAR_SERVICE_ID,
-								PAR_SERVICE_RECORD_ID,
-								GREENBOOK,
-								GREENBOOK_RECORD_ID,
-								FABLOCATION_ID,
-								FABLOCATION_NAME,
-								FABLOCATION_RECORD_ID,
-								{UserId} as CPQTABLEENTRYADDEDBY, 
-								GETDATE() as CPQTABLEENTRYDATEADDED,
-								{new_part} as NEW_PART,
-								1 as INCLUDED,
-								CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS UNIT_PRICE,
-								CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS EXTENDED_PRICE,
-								CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS UNIT_PRICE_INGL_CURR,
-								CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS EXTENDED_PRICE_INGL_CURR
-							FROM (
-							SELECT 
-								DISTINCT
-								MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
-								MAMTRL.SAP_PART_NUMBER as PART_NUMBER,
-								MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
-								MAMTRL.PROD_INSP_MEMO as PROD_INSP_MEMO,
-								0 as QUANTITY,
-								SAQTMT.QUOTE_ID as QUOTE_ID,
-								SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
-								SAQTMT.QTEREV_ID as QTEREV_ID,
-								SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
-								SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
-								SAQTSV.SERVICE_ID as SERVICE_ID,
-								SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
-								SAQTSV.PAR_SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,
-								SAQTSV.PAR_SERVICE_ID as PAR_SERVICE_ID,
-								SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,
-								null as GREENBOOK,
-								null as GREENBOOK_RECORD_ID,
-								null as FABLOCATION_ID,
-								null as FABLOCATION_NAME,
-								null as FABLOCATION_RECORD_ID
-							FROM SYSPBT (NOLOCK)
-							JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SYSPBT.SAP_PART_NUMBER
-							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID
-							JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.PAR_SERVICE_ID = '{service_id}'
-							JOIN SAQSCO (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQSCO.PAR_SERVICE_ID = SAQTSV.PAR_SERVICE_ID AND SAQSCO.SERVICE_ID = SAQTSV.SERVICE_ID 
-							JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
-							WHERE SYSPBT.BATCH_STATUS = 'IN PROGRESS' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 {ParentBasedCondition}) IQ
-							""".format(fab_location_id = '',
-								service_id = self.tree_param,
-								BatchGroupRecordId=batch_group_record_id,
-								QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-								UserId=self.user_id,
-								ParentBasedCondition=parent_based_condition,
-								new_part= self.new_part if self.new_part else 0
-							)
-					)
+				# elif 'Z0100' in parent_based_condition :
+				# 	Trace.Write("z0100---2211")
+				# 	self._process_query("""INSERT SAQRSP (QUOTE_REV_PO_PRODUCT_LIST_ID,PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID,PROD_INSP_MEMO,QUANTITY, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,NEW_PART,INCLUDED,UNIT_PRICE,EXTENDED_PRICE,UNIT_PRICE_INGL_CURR,EXTENDED_PRICE_INGL_CURR)
+				# 			SELECT DISTINCT
+				# 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PRODUCT_LIST_ID,
+				# 				PART_DESCRIPTION,
+				# 				PART_NUMBER,
+				# 				PART_RECORD_ID,
+				# 				PROD_INSP_MEMO,
+				# 				QUANTITY,
+				# 				QUOTE_ID,
+				# 				QUOTE_RECORD_ID,
+				# 				QTEREV_ID,
+				# 				QTEREV_RECORD_ID,
+				# 				SERVICE_DESCRIPTION,
+				# 				SERVICE_ID,
+				# 				SERVICE_RECORD_ID,
+				# 				PAR_SERVICE_DESCRIPTION,
+				# 				PAR_SERVICE_ID,
+				# 				PAR_SERVICE_RECORD_ID,
+				# 				GREENBOOK,
+				# 				GREENBOOK_RECORD_ID,
+				# 				FABLOCATION_ID,
+				# 				FABLOCATION_NAME,
+				# 				FABLOCATION_RECORD_ID,
+				# 				{UserId} as CPQTABLEENTRYADDEDBY, 
+				# 				GETDATE() as CPQTABLEENTRYDATEADDED,
+				# 				{new_part} as NEW_PART,
+				# 				1 as INCLUDED,
+				# 				CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS UNIT_PRICE,
+				# 				CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS EXTENDED_PRICE,
+				# 				CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS UNIT_PRICE_INGL_CURR,
+				# 				CASE WHEN SERVICE_ID = 'Z0101' THEN '0' ELSE null END AS EXTENDED_PRICE_INGL_CURR
+				# 			FROM (
+				# 			SELECT 
+				# 				DISTINCT
+				# 				MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
+				# 				MAMTRL.SAP_PART_NUMBER as PART_NUMBER,
+				# 				MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
+				# 				MAMTRL.PROD_INSP_MEMO as PROD_INSP_MEMO,
+				# 				0 as QUANTITY,
+				# 				SAQTMT.QUOTE_ID as QUOTE_ID,
+				# 				SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
+				# 				SAQTMT.QTEREV_ID as QTEREV_ID,
+				# 				SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
+				# 				SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
+				# 				SAQTSV.SERVICE_ID as SERVICE_ID,
+				# 				SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
+				# 				SAQTSV.PAR_SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,
+				# 				SAQTSV.PAR_SERVICE_ID as PAR_SERVICE_ID,
+				# 				SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,
+				# 				null as GREENBOOK,
+				# 				null as GREENBOOK_RECORD_ID,
+				# 				null as FABLOCATION_ID,
+				# 				null as FABLOCATION_NAME,
+				# 				null as FABLOCATION_RECORD_ID
+				# 			FROM SYSPBT (NOLOCK)
+				# 			JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SYSPBT.SAP_PART_NUMBER
+				# 			JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID
+				# 			JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.PAR_SERVICE_ID = '{service_id}'
+				# 			JOIN SAQSCO (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQSCO.PAR_SERVICE_ID = SAQTSV.PAR_SERVICE_ID AND SAQSCO.SERVICE_ID = SAQTSV.SERVICE_ID 
+				# 			JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
+				# 			WHERE SYSPBT.BATCH_STATUS = 'IN PROGRESS' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 {ParentBasedCondition}) IQ
+				# 			""".format(fab_location_id = '',
+				# 				service_id = self.tree_param,
+				# 				BatchGroupRecordId=batch_group_record_id,
+				# 				QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
+				# 				UserId=self.user_id,
+				# 				ParentBasedCondition=parent_based_condition,
+				# 				new_part= self.new_part if self.new_part else 0
+				# 			)
+				# 	)
 				
 				
 				get_child_service_id = Sql.GetFirst("""SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN SAQRSP (NOLOCK) ON SAQRSP.SERVICE_ID = SAQTSV.SERVICE_ID AND SAQRSP.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQRSP.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.PAR_SERVICE_ID = '{service_id}'""".format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId = self.quote_revision_record_id,service_id = self.tree_parent_level_0 if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009") else self.tree_param))
