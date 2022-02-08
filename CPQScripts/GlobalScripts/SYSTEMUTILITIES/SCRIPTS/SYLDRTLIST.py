@@ -2185,7 +2185,7 @@ class SYLDRTLIST:
 								if subTab == "New Parts":	
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'True'"
 								elif subTab == "Inclusions":
-									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'False' AND INCLUDED = 1"	
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'False' AND INCLUDED = 1"
 								elif subTab == "Exclusions":
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'False' AND INCLUDED = 0"	
 							elif TopTreeSuperParentParam == "Product Offerings":
@@ -2194,6 +2194,8 @@ class SYLDRTLIST:
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'True'"	
 								elif subTab == "Inclusions":
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 0 AND INCLUDED = 1"
+									if service_id == 'Z0092':
+										Qustr += " AND SERVICE_ID != 'Z0101'"
 								elif subTab == "Exclusions":
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'False' AND INCLUDED = 0"														
 						elif RECORD_ID == "SYOBJR-00031":
