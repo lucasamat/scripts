@@ -3579,22 +3579,59 @@ def POPUPLISTVALUEADDNEW(
 			new_value_dict = {}
 			ObjectName = "MAEQUP"
 			table_id = "equipments_addnew"
-			Header_details = {
-				"EQUIPMENT_RECORD_ID": "KEY",
-				"EQUIPMENT_ID":"EQUIPMENT ID",
-				"EQUIPMENT_DESCRIPTION":"EQUIPMENT_DESCRIPTION",
-				"SERIAL_NO": "SERIAL NUMBER",
-				"GREENBOOK": "GREENBOOK",
-				"PLATFORM": "PLATFORM",
-			}
-			ordered_keys = [
-				"EQUIPMENT_RECORD_ID",
-				"EQUIPMENT_ID",
-				"EQUIPMENT_DESCRIPTION",
-				"SERIAL_NO",
-				"GREENBOOK",
-				"PLATFORM",
-			]
+			try:
+				if table[4]=="addTempTool": # for Temp tool popup
+    				tool_type="TEMP_TOOL"
+			except:
+				tool_type="EQUIPMENT"
+			if tool_type=="TEMP_TOOL":
+    			Header_details = {
+					"EQUIPMENT_RECORD_ID": "KEY",
+					"EQUIPMENT_ID":"EQUIPMENT ID",
+					"EQUIPMENT_DESCRIPTION":"EQUIPMENT_DESCRIPTION",
+					"SERIAL_NO": "SERIAL NUMBER",
+					"CUSTOMER_TOOL_ID": "CUSTOMER TOOL ID"
+					"GREENBOOK": "GREENBOOK",
+					"PLATFORM": "PLATFORM",
+					"WAFER_SIZE_GROUP": "WAFER SIZE GROUP",
+					"TOOL_CONFIGURATION":"TOOL CONFIGURATION",
+					"DEVICE_TYPE":"DEVICE TYPE",
+					"DEVICE_NODE":"DEVICE NODE",
+					"KPU":"KPU",
+					"TECHNOLOGY":"TECHNOLOGY"
+				}
+				ordered_keys = [
+					"EQUIPMENT_RECORD_ID",
+					"EQUIPMENT_ID",
+					"EQUIPMENT_DESCRIPTION",
+					"SERIAL_NO",
+					"CUSTOMER_TOOL_ID",
+					"GREENBOOK",
+					"PLATFORM",
+					"WAFER_SIZE_GROUP",
+					"TOOL_CONFIGURATION",
+					"DEVICE_TYPE",
+					"DEVICE_NODE",
+					"KPU",
+					"TECHNOLOGY"
+				]
+			else:	
+				Header_details = {
+					"EQUIPMENT_RECORD_ID": "KEY",
+					"EQUIPMENT_ID":"EQUIPMENT ID",
+					"EQUIPMENT_DESCRIPTION":"EQUIPMENT_DESCRIPTION",
+					"SERIAL_NO": "SERIAL NUMBER",
+					"GREENBOOK": "GREENBOOK",
+					"PLATFORM": "PLATFORM",
+				}
+				ordered_keys = [
+					"EQUIPMENT_RECORD_ID",
+					"EQUIPMENT_ID",
+					"EQUIPMENT_DESCRIPTION",
+					"SERIAL_NO",
+					"GREENBOOK",
+					"PLATFORM",
+				]
 			Trace.Write('3178--------')
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -3722,6 +3759,16 @@ def POPUPLISTVALUEADDNEW(
 						quote_revision_record_id = quote_revision_record_id,
 					)
 				)   
+			elif tool_type=="TEMP_TOOL":
+    			Pagination_M = Sql.GetFirst(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+						ObjectName,
+						where_string,
+						contract_quote_record_id,
+						Product.GetGlobal("TreeParam"),
+						quote_revision_record_id,
+					)
+				)
 			else:
 				Pagination_M = Sql.GetFirst(
 					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
@@ -3752,6 +3799,22 @@ def POPUPLISTVALUEADDNEW(
 						pagination_condition,
 					)
 				)	
+			elif tool_type=="TEMP_TOOL":
+    			where_string += """ ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+					where_string,
+					contract_quote_record_id,
+					Product.GetGlobal("TreeParam"),
+					quote_revision_record_id,
+				)
+				table_data = Sql.GetList(
+					"select {} from {} (NOLOCK) {} {} {}".format(
+						", ".join(ordered_keys),
+						ObjectName,
+						"WHERE " + where_string if where_string else "",
+						order_by,
+						pagination_condition,
+					)
+				)
 			else:
 				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
 					account_record_id,
