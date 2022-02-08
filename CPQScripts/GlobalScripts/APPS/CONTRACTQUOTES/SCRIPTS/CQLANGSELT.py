@@ -495,12 +495,12 @@ def _insert_subtotal_by_offerring_quote_table():
 
 get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 def insert_spare_doc(parts_list):
-	if Quote.GetCustomField('INCLUDE_ITEMS').Content == 'YES':
+	if Quote.GetCustomField('INCLUDE_ITEMS').Content == 'YES' and Quote.GetCustomField('Billing_Matrix').Content == 'YES':
 		Trace.Write('285----')
 		_insert_subtotal_by_offerring_quote_table()
-		#insert_quote_billing_plan()
-	#elif Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content == 'YES':
-		#_insert_item_level_delivery_schedule()
+		insert_quote_billing_plan()
+	elif Quote.GetCustomField('INCLUDE_ITEMS').Content == 'YES':
+		_insert_subtotal_by_offerring_quote_table()
 	elif Quote.GetCustomField('Billing_Matrix').Content == 'YES':
 		#Trace.Write('285----')
 		insert_quote_billing_plan()
