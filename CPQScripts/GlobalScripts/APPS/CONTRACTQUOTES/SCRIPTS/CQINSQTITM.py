@@ -2693,7 +2693,7 @@ class ContractQuoteItem:
 		# 	except:
 		# 		Log.Info("PART PRICING IFLOW ERROR!")
 		
-		if not (self.service_id == 'Z0100' and self._ent_consumable.upper() == 'SOME INCLUSIONS' and self.parent_service_id == 'Z0092'):
+		if not (self.service_id == 'Z0100' and self.parent_service_id == 'Z0092'):
 			Sql.RunQuery("""INSERT SAQRIP (QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, NEW_PART ) 
 				SELECT 
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,
