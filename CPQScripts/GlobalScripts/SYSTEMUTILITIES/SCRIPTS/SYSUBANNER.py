@@ -2069,6 +2069,17 @@ def Related_Sub_Banner(
             ThirdLable = "Total Amount Including Tax/VAT"
             ThirdValue = str("%.2f" % round(float(get_quote_details.NET_PRICE_INGL_CURR),2))+curr if str(get_quote_details.NET_PRICE_INGL_CURR) != '' else '0.00'+" "+curr
         elif get_quote_details:
+            if subTabName == "Items":
+                PrimaryLable = "Total Excluding Tax/VAT"
+                PrimaryValue = '0.00'+" "+curr
+                SecondLable = "Tax/VAT"
+                SecondValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                ThirdLable = "Total Est Net Value"
+                ThirdValue = '0.00'+" "+curr
+                FourthLable = "Total Net Value"
+                FourthValue = '0.00'+" "+curr
+                FifthLable = "Total Margin"
+                FifthValue = '0.00'+" "+curr
             PrimaryLable = "Total Sales Price"
             PrimaryValue = str("%.2f" % round(float(get_quote_details.SALES_PRICE_INGL_CURR),2))+" "+curr if str(get_quote_details.SALES_PRICE_INGL_CURR) != '' else '0.00'+" "+curr
             SecondLable = "Total Discount %"
