@@ -43,6 +43,7 @@ class Entitlements:
 		self.treetopsupertopparentparam = Product.GetGlobal("TreeParentLevel4")
 		self.ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 		self.revision_recordid = Quote.GetGlobal("quote_revision_record_id")
+		self.quote_id=Quote.CompositeNumber
 		#Trace.Write("treesuperparentparam--25--"+str(self.treesuperparentparam)+"treetopsuperparentparam-"+ str(self.treetopsuperparentparam)+"treetopsupertopparentparam-- "+ str(self.treetopsupertopparentparam)+"--" + str(self.treesupertopparentparam))
 		self.attr_code_mapping = {"L3_SLB_S1":"AGS_LAB_OPT1", "L3_SLB_S2":"AGS_LAB_OPT2", "L3_SLA_CWW":"AGS_LAB_OPT3", "L3_SLB_CWW":"AGS_LAB_OPT4", "SER_COO_S1":"AGS_LAB_OPT5", "RAM_SPE_S1":"AGS_LAB_OPT6", "ENG_IN_CHA_S1":"AGS_LAB_OPT7", "APP_ENG_S1":"AGS_LAB_OPT8", "3MON_SLA_CWW":"AGS_LAB_OPT9", "3MON_SLB_CWW":"AGS_LAB_OPT10", "3MON_EIC_RS_S1":"AGS_LAB_OPT11", "6MON_SLA_CWW":"AGS_LAB_OPT12", "6MON_SLB_CWW":"AGS_LAB_OPT13", "6MON_EIC_RS_S1":"AGS_LAB_OPT14"}
 
@@ -2158,7 +2159,7 @@ class Entitlements:
 					validto = cy+cm+cd
 				Trace.Write('2159----------'+str(User.UserName)+str(account_info.get('SOLD TO'))+str(account_info.get('SHIP TO')))
 
-				CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.ContractRecordId,self.revision_recordid,auth)
+				CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.quote_id,self.revision_recordid,auth)
 
 
 		except:
