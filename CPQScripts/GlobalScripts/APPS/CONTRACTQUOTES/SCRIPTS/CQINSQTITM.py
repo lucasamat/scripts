@@ -176,17 +176,13 @@ class ContractQuoteItem:
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
 		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-		display_val_dict = {}
 		if updateentXML:
 			for m in re.finditer(pattern_tag, updateentXML):
 				sub_string = m.group(1)
 				x=re.findall(pattern_name,sub_string)
-				if x:
-					entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
-				if entitlement_display_value_tag_match:
-						display_val_dict[x[0]] = entitlement_display_value_tag_match[0].upper()
-				entxmldict[x[0]]=sub_string
-		return display_val_dict			
+				entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
+				entxmldict[x[0]]=entitlement_display_value_tag_match[0].upper()
+		return entxmldict			
 	
 	def _quote_items_assembly_entitlement_insert(self, update=True):
 		# Update - Start
