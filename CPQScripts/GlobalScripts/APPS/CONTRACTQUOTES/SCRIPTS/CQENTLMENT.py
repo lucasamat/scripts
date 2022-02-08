@@ -2127,24 +2127,20 @@ class Entitlements:
 			elif customer_wants_participate == 'Yes':
 				Trace.Write('2118----------'+str(saqtse_obj.QUOTE_ID))
 				#iflow for spare parts...
-				try:
-					webclient = System.Net.WebClient()
-					requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
-					webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
-					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
-					response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
-					response=response.replace("null",'""')
-					response=eval(response)	
-					auth="Bearer"+' '+str(response['access_token'])
-					get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
-					account_info = {}
-					for keyobj in get_party_role:
-						account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
+				webclient = System.Net.WebClient()
+				requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
+				webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+				webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
+				response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
+				response=response.replace("null",'""')
+				response=eval(response)	
+				auth="Bearer"+' '+str(response['access_token'])
+				get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+				account_info = {}
+				for keyobj in get_party_role:
+					account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
  
-					get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.revision_recordid)+"'")
-				
-				except:
-					Trace.Write('Request data error')
+				get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.revision_recordid)+"'")
 				
 				if get_sales_ifo:
 					salesorg = get_sales_ifo.SALESORG_ID
@@ -2161,9 +2157,9 @@ class Entitlements:
 					cm = '0'+str(cm) if len(cm)==1 else cm        
 					validto = cy+cm+cd
 				
-				Trace.Write("2151"+str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.contract_quote_id,self.quote_revision_record_id,auth)
+				Trace.Write("2151"+str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.ContractRecordId,self.revision_recordid,auth)
 				
-				CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.contract_quote_id,self.quote_revision_record_id,auth)
+				CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.ContractRecordId,self.revision_recordid,auth)
 
 
 		except:
