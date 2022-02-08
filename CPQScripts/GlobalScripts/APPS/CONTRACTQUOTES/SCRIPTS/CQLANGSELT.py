@@ -781,9 +781,7 @@ def fpm_quote_doc():
 			date_added = doc.DateCreated
 			update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND STATUS = 'PENDING' AND QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=contract_quote_record_id,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)
 			Sql.RunQuery(update_query)
-	get_quote_item_total = Sql.GetFirst("SELECT SUM(UNIT_PRICE) as netprice from QT__SAQIFP where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
-	if get_quote_item_total:
-		Quote.GetCustomField('part_unit_price').Content = str(get_quote_item_total.netprice)
+	
 		#Quote.GetCustomField('tot_est').Content = str(get_quotetotal.est_val)
 	return True
 try:
