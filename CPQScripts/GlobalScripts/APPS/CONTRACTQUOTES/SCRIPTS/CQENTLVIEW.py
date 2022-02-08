@@ -1022,16 +1022,16 @@ class EntitlementView():
 								# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
 								for val in GetXMLsecField:
 									try:
-										val.ENTITLEMENT_DISPLAY_VALUE = val.ENTITLEMENT_DISPLAY_VALUE.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'").replace('&lt;10%',"<10%").replace('&lt;=','<=')
+										val.ENTITLEMENT_DISPLAY_VALUE = val.ENTITLEMENT_DISPLAY_VALUE.replace(';#38','&').replace("&lt;","<").replace("&gt;",">")
 									except:
 										pass
 									try:
-										val.ENTITLEMENT_DESCRIPTION = val.ENTITLEMENT_DESCRIPTION.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'").replace('&lt;10%',"<10%").replace('&lt;=','<=')
+										val.ENTITLEMENT_DESCRIPTION = val.ENTITLEMENT_DESCRIPTION.replace(';#38','&').replace(';#38','&').replace("&lt;","<").replace("&gt;",">")
 									except:
 										pass
-									val.ENTITLEMENT_NAME = val.ENTITLEMENT_NAME.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'").replace('&lt;10%',"<10%").replace('&lt;=','<=')
+									val.ENTITLEMENT_NAME = val.ENTITLEMENT_NAME.replace(';#38','&').replace(';#38','&').replace("&lt;","<").replace("&gt;",">")
 									try:
-										val.ENTITLEMENT_VALUE_CODE = val.ENTITLEMENT_VALUE_CODE.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'").replace('&lt;10%',"<10%").replace('&lt;=','<=')
+										val.ENTITLEMENT_VALUE_CODE = val.ENTITLEMENT_VALUE_CODE.replace(';#38','&').replace(';#38','&').replace("&lt;","<").replace("&gt;",">")
 									except:
 										pass
 									#imgstr = ""
