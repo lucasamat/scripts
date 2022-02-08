@@ -2213,7 +2213,6 @@ class TreeView:
 													subtab_temp ="Exclusions"
 												if pattern_id and pattern_name:
 													#display_pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-													Trace.Write("pattern_id_chk "+str(pattern_id)+"pattern_name_chk "+str(pattern_name))
 													updateentXML = get_entitlement_xml.ENTITLEMENT_XML
 													flag_excluse=0
 													#get_disp_val = []
@@ -2223,7 +2222,7 @@ class TreeView:
 														get_ent_name=re.findall(pattern_name,sub_string)
 														if get_ent_id and get_ent_name:
 															#get_disp_val = re.findall(display_pattern_name,sub_string)
-															#Trace.Write("get_ent_id-"+str(subtab_temp_variable)+"--"+str(get_disp_val[0]))
+															Trace.Write("get_ent_id-"+str(subtab_temp_variable)+"--"+str(get_disp_val[0]))
 															flag_excluse=1
 															break
 													if flag_excluse==1 and subtab_temp:
