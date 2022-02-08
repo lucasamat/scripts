@@ -4196,7 +4196,7 @@ class SYLDRTLIST:
 							)           
 					continue
 
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TRGPRC','SLSPRC','BDVPRC','CELPRC','USRPRC','YOYPCT','TGADJP','BCHPGC','BCHDPT','CTPDFP'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TRGPRC','SLSPRC','BDVPRC','CELPRC','TGADJP','YOYPCT','USRPRC','BCHPGC','BCHDPT','CTPDFP'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns4:
