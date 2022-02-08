@@ -1136,7 +1136,7 @@ class TreeView:
 								ChildDict["text"] = NodeText
 							ChildDict["nodeId"] = int(nodeId)
 							objQuery = Sql.GetFirst(
-								"SELECT OBJECT_NAME FROM SYOBJH WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
+								"SELECT OBJECT_NAME FROM SYOBJH(NOLOCK) WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
 							)
 							if objQuery is not None:
 								ChildDict["objname"] = objQuery.OBJECT_NAME
@@ -1289,7 +1289,7 @@ class TreeView:
 					pageDetails = Sql.GetFirst("select * from SYPAGE (nolock) where RECORD_ID = '" + str(ParpageRecId) + "'")
 					if pageDetails is not None:
 						objRecId = pageDetails.OBJECT_RECORD_ID
-						objQuery = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE RECORD_ID = '" + str(objRecId) + "'")
+						objQuery = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH(NOLOCK) WHERE RECORD_ID = '" + str(objRecId) + "'")
 						if objQuery is not None:
 							ChildDict["objname"] = objQuery.OBJECT_NAME
 					SubTabList = []
@@ -2072,7 +2072,7 @@ class TreeView:
 									ChildDict["text"] = NodeText
 							ChildDict["nodeId"] = int(nodeId)
 							objQuery = Sql.GetFirst(
-								"SELECT OBJECT_NAME FROM SYOBJH WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
+								"SELECT OBJECT_NAME FROM SYOBJH(NOLOCK) WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
 							)
 							if objQuery is not None:
 								ChildDict["objname"] = objQuery.OBJECT_NAME
@@ -2640,7 +2640,7 @@ class TreeView:
 					pageDetails = Sql.GetFirst("select * from SYPAGE (nolock) where RECORD_ID = '" + str(ParpageRecId) + "'")
 					if pageDetails is not None:
 						objRecId = pageDetails.OBJECT_RECORD_ID
-						objQuery = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE RECORD_ID = '" + str(objRecId) + "'")
+						objQuery = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH(NOLOCK) WHERE RECORD_ID = '" + str(objRecId) + "'")
 						if objQuery is not None:
 							ChildDict["objname"] = objQuery.OBJECT_NAME
 					SubTabList = []
@@ -3050,7 +3050,7 @@ class TreeView:
 						ChildDict["id"] = str(NodeRecId)
 						oldNodeApiName = NodeApiName
 						objQuery = Sql.GetFirst(
-							"SELECT OBJECT_NAME FROM SYOBJH WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
+							"SELECT OBJECT_NAME FROM SYOBJH(NOLOCK) WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
 						)
 						if objQuery is not None:
 							ChildDict["objname"] = objQuery.OBJECT_NAME
