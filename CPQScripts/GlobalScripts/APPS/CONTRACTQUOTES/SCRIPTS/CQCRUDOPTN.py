@@ -1166,7 +1166,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"		
 					# if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 					# 	ent_table = "SAQTSE"
-					elif self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
+					if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 						ent_table = "SAQSGE"
 					if self.tree_parent_level_0 == 'Z0092':
 						get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}'""".format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, service_id = self.tree_parent_level_0, ent_table = ent_table,greenbook =  self.tree_param ))
@@ -1897,7 +1897,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 					parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"		
 				# if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 				# 	ent_table = "SAQTSE"
-				elif self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
+				if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 					ent_table = "SAQSGE"
 				if self.tree_parent_level_0 == 'Z0092':
 					get_entitlement_xml =Sql.GetFirst("""select ENTITLEMENT_XML from {ent_table} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}'""".format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, service_id = self.tree_parent_level_0, ent_table = ent_table,greenbook =  self.tree_param ))
