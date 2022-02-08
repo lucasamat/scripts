@@ -1026,7 +1026,7 @@ class EntitlementView():
 									except:
 										pass
 									try:
-										val.ENTITLEMENT_DESCRIPTION = val.ENTITLEMENT_DESCRIPTION.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'").replace('&lt;10%',"<10%").replace('&lt;=','<=').
+										val.ENTITLEMENT_DESCRIPTION = val.ENTITLEMENT_DESCRIPTION.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'").replace('&lt;10%',"<10%").replace('&lt;=','<=')
 									except:
 										pass
 									val.ENTITLEMENT_NAME = val.ENTITLEMENT_NAME.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'").replace('&lt;10%',"<10%").replace('&lt;=','<=').replace('&lt;Quarterly','<Quarterly')
