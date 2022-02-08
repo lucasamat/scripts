@@ -2136,16 +2136,15 @@ class Entitlements:
 					response=response.replace("null",'""')
 					response=eval(response)	
 					auth="Bearer"+' '+str(response['access_token'])
-					get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+					get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
 					account_info = {}
 					for keyobj in get_party_role:
 						account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
  
-					get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_record_id)+"'")
+					get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.revision_recordid)+"'")
 				
 				except:
 					Trace.Write('Request data error')
-				
 				
 				if get_sales_ifo:
 					salesorg = get_sales_ifo.SALESORG_ID
