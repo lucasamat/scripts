@@ -228,7 +228,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 	else:		
 		Sql.RunQuery("""INSERT SAQIBP (
 					
-					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID,DOC_CURRENCY, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
+					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID,DOC_CURRENCY, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,ESTVAL_INDT_CURR,
 					QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
 					BILLING_DATE, BILLING_YEAR,
 					EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
@@ -247,7 +247,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					{amount_column} AS DOC_CURRENCY,
 					SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,	
 					SAQRIT.COMVAL_INGL_CURR	 as COMMITTED_VALUE_INGL_CURR,
-					SAQRIT.ESTVAL_INGL_CURR	as 	ESTVAL_INGL_CURR,		
+					SAQRIT.ESTVAL_INGL_CURR	as 	ESTVAL_INGL_CURR,
+					SAQRIT.ESTVAL_INDT_CURR,		
 					SAQSCO.QUOTE_RECORD_ID,
 					SAQSCO.QTEREV_ID,
 					SAQSCO.QTEREV_RECORD_ID,
@@ -276,7 +277,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 		Sql.RunQuery("""INSERT SAQIBP (					
-					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,DOC_CURRENCY,
+					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,DOC_CURRENCY,ESTVAL_INDT_CURR,
 					QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
 					BILLING_DATE, BILLING_YEAR,
 					EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
@@ -296,7 +297,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					
 					COMVAL_INGL_CURR as COMMITTED_VALUE_INGL_CURR,
 					ESTVAL_INGL_CURR as ESTVAL_INGL_CURR,
-					{amount_column} AS DOC_CURRENCY,								
+					{amount_column} AS DOC_CURRENCY,
+					ESTVAL_INDT_CURR,	
 					QUOTE_RECORD_ID,
 					QTEREV_ID,
 					QTEREV_RECORD_ID,
@@ -324,8 +326,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 		
-		Sql.RunQuery("""UPDATE SAQIBP 
-			SET SAQIBP.ESTVAL_INDT_CURR = ISNULL(SAQIBP.ESTVAL_INGL_CURR, 0) * SAQTRV.EXCHANGE_RATE FROM SAQIBP INNER JOIN SAQTRV ON SAQIBP.QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQIBP.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE SAQIBP.QUOTE_RECORD_ID='{contract_quote_rec_id}' AND SAQIBP.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id))
+		'''Sql.RunQuery("""UPDATE SAQIBP 
+			SET SAQIBP.ESTVAL_INDT_CURR = ISNULL(SAQIBP.ESTVAL_INGL_CURR, 0) * SAQTRV.EXCHANGE_RATE FROM SAQIBP INNER JOIN SAQTRV ON SAQIBP.QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQIBP.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE SAQIBP.QUOTE_RECORD_ID='{contract_quote_rec_id}' AND SAQIBP.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id))'''
 
 	if service_id == 'Z0116':
 		update_annual_bill_amt  = Sql.GetFirst("SELECT SUM(NET_VALUE_INGL_CURR) as YEAR1 from SAQRIT (NOLOCK) where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'  and SERVICE_ID = 'Z0116' GROUP BY SERVICE_ID,GREENBOOK".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id))
