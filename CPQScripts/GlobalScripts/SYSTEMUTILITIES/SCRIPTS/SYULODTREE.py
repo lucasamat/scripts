@@ -2223,6 +2223,8 @@ class TreeView:
 														if get_ent_id and get_ent_name:
 															#get_disp_val = re.findall(display_pattern_name,sub_string)
 															Trace.Write("get_ent_id-"+str(get_ent_id)+"--"+str(get_ent_name))
+															if get_ent_id == "AGS_Z0099_NET_PRMALB" and get_ent_name == "Included - All PM":
+																subtab_temp = ""
 															flag_excluse=1
 															break
 													if flag_excluse==1 and subtab_temp:
