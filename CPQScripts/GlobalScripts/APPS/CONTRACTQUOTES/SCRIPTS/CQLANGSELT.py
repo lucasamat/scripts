@@ -57,7 +57,7 @@ def _insert_item_level_parts():
 #quote table insert for billing matrix
 def insert_quote_billing_plan():
 	Trace.Write('inside billing mtraix---')
-	delete_qt_bill_mat = Sql.RunQuery("DELETE FROM QT__Billing_Matrix_Header WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}'")
+	delete_qt_bill_mat = Sql.RunQuery("DELETE FROM QT__Billing_Matrix_Header WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' and  ownerId = {} and cartId ={}".format(contract_quote_record_id,quote_revision_record_id,cartobj.USERID,cartobj.CART_ID))
 	services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id))
 	item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID".format(contract_quote_record_id,quote_revision_record_id))
 	if item_billing_plan_obj is not None and services_obj:
