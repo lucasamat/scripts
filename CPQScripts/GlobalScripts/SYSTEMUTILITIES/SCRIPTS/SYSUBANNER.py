@@ -701,7 +701,7 @@ def Related_Sub_Banner(
                                             ThirdValue = "ALL"
                                         
                                 else:
-                                    if "ADD FROM LIST" in btn:        
+                                    if "ADD FROM LIST" or "ADD TEMP TOOL" in btn:        
                                         sec_rel_sub_bnr += (str(btn))
                                         Trace.Write(str(btn))
                                 # else:
