@@ -2222,7 +2222,7 @@ class TreeView:
 														get_ent_name=re.findall(pattern_name,sub_string)
 														if get_ent_id and get_ent_name:
 															#get_disp_val = re.findall(display_pattern_name,sub_string)
-															Trace.Write("get_ent_id-"+str(subtab_temp_variable)+"--"+str(get_disp_val[0]))
+															Trace.Write("get_ent_id-"+str(get_ent_id)+"--"+str(get_ent_name))
 															flag_excluse=1
 															break
 													if flag_excluse==1 and subtab_temp:
