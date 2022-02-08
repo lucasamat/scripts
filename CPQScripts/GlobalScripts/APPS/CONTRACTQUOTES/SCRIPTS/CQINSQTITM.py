@@ -857,6 +857,7 @@ class ContractQuoteItem:
 			get_items_entitlement = Sql.GetList("SELECT * FROM SAQITE WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 			for item in get_items_entitlement:
 				xml_dict =  self._construct_dict_xml(item.ENTITLEMENT_XML)
+				Trace.Write("xml_dict"+str(xml_dict))
 				total_price = 0
 				for i in range(1,11):
 					x = "AGS_Z0046_PQB_AP{}FU".format(str(i).zfill(2))
