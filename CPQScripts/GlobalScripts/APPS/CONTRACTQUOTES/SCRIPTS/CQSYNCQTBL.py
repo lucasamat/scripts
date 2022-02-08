@@ -2018,6 +2018,7 @@ class SyncQuoteAndCustomTables:
 							except Exception as e:
 								Log.Info("EXCEPTION: Iteration Over non sequence for none type"+str(e))
 							##A055S000P01-10174 code ends...
+							#warranty start and end date update in saqsco
 							'''try:
 								QuoteId=quote_id
 								for offering_data in payload_json.get('SAQSCO'):
