@@ -6288,7 +6288,7 @@ except:
 	ACTION = ''
 Trace.Write("ACTION==="+str(ACTION))
 
-
+Trace.Write("Tool_type"+str(tool_type))
 Trace.Write("PerPage-----"+str(PerPage))
 Trace.Write("PageInform -----"+str(PageInform))
 
