@@ -34,7 +34,7 @@ if 'Param' in globals():
                 if get_approver_emp_id:
                     emp_approver_id = 'USR-'+str(get_approver_emp_id.EMPLOYEE_ID)
             else:        
-                emp_approver_id = 'USR-'+str(approver_id)
+                emp_approver_id = 'USR-'+str(approver_id).strip()
             Log.Info("emp_approver_id--"+str(emp_approver_id)) 
             get_approver_id = Sql.GetFirst("SELECT * FROM ACAPTX(NOLOCK) WHERE APRCHNSTP_APPROVER_ID = '{emp_approver_id}' AND OWNER_ID = '' AND APRTRXOBJ_ID = '{quote_id}' ".format(emp_approver_id = emp_approver_id,quote_id =quote_id))
             Log.Info("get_transaction_id"+str(get_approver_id.APPROVAL_TRANSACTION_RECORD_ID))
