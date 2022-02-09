@@ -3371,7 +3371,7 @@ class SYLDRTLIST:
 							if value123 in checkbox_list:
 								Trace.Write("value123==="+str(value123))
 								#new_dict[value123] = value1234
-								if (value123 == "PRINT_FLAG"):
+								if RECORD_ID == "SYOBJR-00009":
 									if(value1234).upper() == "TRUE":
 										Trace.Write("cmto elseiff===")
 										new_dict[value123] = (
