@@ -720,7 +720,7 @@ class AncillaryProductOperation:
 												'quote_record_id':self.contract_quote_record_id,
 												'revision_record_id':self.contract_quote_revision_record_id})
 								#Trace.Write("value--"+str(cpsmatchID)+'-'+str(Configurationid))
-								Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(ent_table,Configurationid,cpsmatchID,where_cond))
+								Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(ent_table,Configurationid,cpsmatchID,where_cond))
 		except Exception as e:
 			Trace.Write("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 
