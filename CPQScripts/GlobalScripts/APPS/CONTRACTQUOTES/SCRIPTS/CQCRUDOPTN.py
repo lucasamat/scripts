@@ -2935,7 +2935,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			record_ids = []
 			if self.all_values and auto_equp_insert is None:	     
 				if self.tool_type=="TEMP_TOOL": 
-					query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE  ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  EQUIPMENT_RECORD_ID NOT IN  (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
+					query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE  ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' ".format(
 							fab=self.tree_param,
 							QuoteRecordId=self.contract_quote_record_id,
 							RevisionRecordId=self.quote_revision_record_id
