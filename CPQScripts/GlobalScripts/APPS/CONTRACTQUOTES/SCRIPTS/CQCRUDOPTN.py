@@ -3358,13 +3358,14 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							PAR_SERVICE_ID,
 							PAR_SERVICE_RECORD_ID,
 							TECHNOLOGY,
+							TEMP_TOOL,
 							CPQTABLEENTRYADDEDBY,
 							CPQTABLEENTRYDATEADDED,
 							CpqTableEntryModifiedBy,
 							CpqTableEntryDateModified,
 							FABLOCATION_ID,
 							FABLOCATION_NAME,
-							FABLOCATION_RECORD_ID							
+							FABLOCATION_RECORD_ID	
 							) SELECT
 								CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
 								EQUIPMENT_ID,
@@ -3410,7 +3411,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								SAQTSV.PAR_SERVICE_DESCRIPTION,
 								SAQTSV.PAR_SERVICE_ID,
 								SAQTSV.PAR_SERVICE_RECORD_ID,
-								SAQFEQ.TECHNOLOGY
+								SAQFEQ.TECHNOLOGY,
+								SAQFEQ.TEMP_TOOL,
 								'{UserName}' AS CPQTABLEENTRYADDEDBY,
 								GETDATE() as CPQTABLEENTRYDATEADDED,
 								{UserId} as CpqTableEntryModifiedBy,
@@ -3470,6 +3472,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							MNT_PLANT_RECORD_ID,
 							MNT_PLANT_NAME,
 							MNT_PLANT_ID,
+							TEMP_TOOL,
 							CPQTABLEENTRYADDEDBY,
 							CPQTABLEENTRYDATEADDED,
 							CpqTableEntryModifiedBy,
@@ -3504,6 +3507,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								SAQFEQ.MNT_PLANT_RECORD_ID,
 								SAQFEQ.MNT_PLANT_NAME,
 								SAQFEQ.MNT_PLANT_ID,
+								SAQFEQ.TEMP_TOOL,
 								'{UserName}' AS CPQTABLEENTRYADDEDBY,
 								GETDATE() as CPQTABLEENTRYDATEADDED,
 								{UserId} as CpqTableEntryModifiedBy,
@@ -3578,6 +3582,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						PAR_SERVICE_ID,
 						PAR_SERVICE_RECORD_ID,
 						TECHNOLOGY,
+						TEMP_TOOL,
 						CPQTABLEENTRYADDEDBY,
 						CPQTABLEENTRYDATEADDED,
 						CpqTableEntryModifiedBy,
@@ -3632,6 +3637,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							SAQTSV.PAR_SERVICE_ID,
 							SAQTSV.PAR_SERVICE_RECORD_ID,
 							SAQFEQ.TECHNOLOGY,
+							SAQFEQ.TEMP_TOOL,
 							'{UserName}' AS CPQTABLEENTRYADDEDBY,
 							GETDATE() as CPQTABLEENTRYDATEADDED,
 							{UserId} as CpqTableEntryModifiedBy,
@@ -3714,6 +3720,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						TECHNOLOGY,
 						CONTRACT_VALID_FROM,
 						CONTRACT_VALID_TO,
+						TEMP_TOOL,
 						CPQTABLEENTRYADDEDBY,
 						CPQTABLEENTRYDATEADDED,
 						CpqTableEntryModifiedBy,
@@ -3764,6 +3771,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							SAQFEQ.TECHNOLOGY,
 							SAQTMT.CONTRACT_VALID_FROM,
 							SAQTMT.CONTRACT_VALID_TO,
+							SAQFEQ.TEMP_TOOL,
 							'{UserName}' AS CPQTABLEENTRYADDEDBY,
 							GETDATE() as CPQTABLEENTRYDATEADDED,
 							{UserId} as CpqTableEntryModifiedBy,
@@ -5752,8 +5760,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						if self.tree_param == "Sending Equipment" or self.tree_param == "Receiving Equipment":
 							query_string = "SELECT QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND RELOCATION_EQUIPMENT_TYPE = '{tree_param}' AND {Qury_Str} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{TreeParam}'  AND RELOCATION_EQUIPMENT_TYPE = '{tree_param}')".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam = self.tree_param if self.tree_parent_level_0 == 'Comprehensive Services' else self.tree_parent_level_0,Qury_Str=qury_str,tree_param=str(self.tree_param).upper())
 						else:
-
-							query_string = "SELECT QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND {Qury_Str} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{TreeParam}')".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam = self.tree_param,Qury_Str=qury_str)
+							query_string = "SELECT QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND TEMP_TOOL {is_temptool} AND {Qury_Str} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{TreeParam}')".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam = self.tree_param,Qury_Str=qury_str,is_temptool= " ='TRUE' " if self.tree_param == "Z0099" else " IS NULL ")
 					query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
 						Query_String=query_string
 					)
