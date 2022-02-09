@@ -3370,7 +3370,20 @@ class SYLDRTLIST:
 						else:
 							if value123 in checkbox_list:
 								Trace.Write("value123==="+str(value123))
-								new_dict[value123] = value1234
+								#new_dict[value123] = value1234
+								if (value123 == "PRINT_FLAG"):
+									if(value1234).upper() == "TRUE":
+										Trace.Write("cmto elseiff===")
+										new_dict[value123] = (
+														'<input  type= "checkbox" id ="' + value123 + '" class= "custom"  value="' + value1234 + '" style="text-align: center;" checked   disabled><span class="lbl"></span>'
+													)
+									else:
+										Trace.Write("cmto else===")
+										new_dict[value123] = (
+													'<input  type= "checkbox" id ="' + value123 + '" class= "custom"  value="' + value1234 + '" style="text-align: center;"   disabled><span class="lbl"></span>'
+												)
+								else:
+									new_dict[value123] = value1234
 							else:
 								if (value123 == "SET_NAME" or value123 == "SETMAT_NAME") and (
 									RECORD_ID == "SYOBJR-90016" or RECORD_ID == "SYOBJR-30101"
