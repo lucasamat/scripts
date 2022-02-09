@@ -99,7 +99,9 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         for app in approver_list_id:
             approver = app.APRCHNSTP_APPROVER_ID
             approver_step = app.APRCHNSTP_ID
-            approver_list.append(approver)
+            #approver_list.append(approver)
+            getempid = Sql.GetFirst("Select C4C_EMPLOYEE_ID FROM SAEMPL(NOLOCK) WHERE EMPLOYEE_ID ='{approver}'".format(approver = approver))
+            approver_list.append(getempid.C4C_EMPLOYEE_ID)
             #approver_step_list.append(approver_step)
             role_code_id = "71"
         requestdata = (
