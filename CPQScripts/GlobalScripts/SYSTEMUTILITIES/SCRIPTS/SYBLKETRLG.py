@@ -1034,7 +1034,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
 						del_recordslist.append(recid)
 
-					Trace.Write(str(del_recordslist))
+					Trace.Write("deleting_records"+str(del_recordslist))
 
 					if int(ALLVALUES2[index])==0:
 						Trace.Write("IFF part")
