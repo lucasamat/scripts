@@ -35,14 +35,14 @@ def quote_items_pricing(Qt_id):
 				TAXVDC = TNTVDC * TAXVTP,
 				TAXVGC = TNTVGC * TAXVTP
 				FROM SAQICO (NOLOCK) 
-				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID in ('Z0046','Z0100')""".format(QuoteRecordId= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,rev =get_rev_rec_id.QTEREV_RECORD_ID))
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID in ('Z0046','Z0100')""".format(QuoteRecordId= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,QuoteRevisionRecordId =get_rev_rec_id.QTEREV_RECORD_ID))
 
 	Sql.RunQuery("""UPDATE SAQICO 
 				SET TAMTDC = CASE WHEN BILTYP = 'Variable' THEN TENVDC ELSE TNTVDC+ISNULL(TAXVDC,0) END,
 				TAMTGC = CASE WHEN BILTYP = 'Variable' THEN TENVGC ELSE TNTVGC+ISNULL(TAXVGC,0) END,
 				STATUS = 'ACQUIRED'
 				FROM SAQICO (NOLOCK) 
-				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID in ('Z0046','Z0100')""".format(QuoteRecordId= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,rev =get_rev_rec_id.QTEREV_RECORD_ID))
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID in ('Z0046','Z0100')""".format(QuoteRecordId= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,QuoteRevisionRecordId =get_rev_rec_id.QTEREV_RECORD_ID))
 
 	Sql.RunQuery("""UPDATE SAQRIT 
 					SET NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
