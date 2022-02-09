@@ -5709,19 +5709,24 @@ class SYLDRTLIST:
 						Wh_API_NAMEs = str(SortColumn) + " " + str(SortColumnOrder).upper()
 				ATTRIBUTE_VALUE_STR = ""
 				Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
+				Trace.Write("Dict_formation---"+str(Dict_formation))
 							
 
 				if ATTRIBUTE_NAME:
 					Trace.Write("ATTRIBUTE_NAME---"+str(ATTRIBUTE_NAME))
 					if ObjectName == 'SAQICO' and RECORD_ID == 'SYOBJR-00009': #added the code for pricing status image filters
 						xa = list(ATTRIBUTE_NAME)[1]
+						Trace.Write("xa=="+str(xa))
 					else:
 						xa = list(ATTRIBUTE_NAME)[0] 
 								
 					if Dict_formation.get(str(xa)) != "":
+						Trace.Write("xaaa==")
 
 						if str(Dict_formation.get(str(xa))).find(",") == -1:
+							Trace.Write("1xa==")
 							if str(Dict_formation.get(str(xa))).find("-") == -1:
+								Trace.Write("2xa==")
 								try:
 									J_str = (
 										"select "
@@ -5744,6 +5749,7 @@ class SYLDRTLIST:
 										+ "' "
 									)
 							else:
+								Trace.Write("3xa==")
 								xa_str = Dict_formation.get(str(xa)).split("-")[1]
 								
 								J_str = (
@@ -5756,6 +5762,7 @@ class SYLDRTLIST:
 									+ "' "
 								)
 						else:
+							Trace.Write("4xa==")
 							xa_str = []                        
 							for data in Dict_formation.get(str(xa)).split(","):
 								xa_str.append(
@@ -5772,6 +5779,7 @@ class SYLDRTLIST:
 								+ ""
 							)
 						J_obj = Sql.GetList(J_str)
+						Trace.Write("5xa=="+str(J_obj))
 
 						if J_obj is not None and str(J_obj) != "" and len(J_obj) > 0:
 							xa_list = [eval("kn." + str(xa)) for kn in J_obj]
