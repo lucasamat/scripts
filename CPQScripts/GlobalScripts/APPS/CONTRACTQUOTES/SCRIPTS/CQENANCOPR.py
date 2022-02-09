@@ -724,10 +724,9 @@ class AncillaryProductOperation:
 		except Exception as e:
 			Trace.Write("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 
-	def service_rollup(self,anc_service,AttributeID):	
+	def service_rollup(self,anc_service,AttributeID,NewValue):	
 		##service_roll up scenario
 		Trace.Write("1sttt--"+str(AttributeID))
-		NewValue= ''
 		try:
 			get_greenbook_value = Sql.GetList("SELECT * FROM SAQSGE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'  AND SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id,self.service_id) )
 
@@ -781,15 +780,11 @@ class AncillaryProductOperation:
 							if str(val.ENTITLEMENT_ID) == "AGS_{}_PQB_PPCPRM".format(self.service_id) :
 								AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
 								ServiceId = 'Z0046'
-								new_value = self.service_rollup(ServiceId,AttributeID_Pass)
-								if new_value :
-									NewValue = new_value
+								NewValue = self.service_rollup(ServiceId,AttributeID_Pass,NewValue)
 								# value_application = 'YES'
 							elif str(val.ENTITLEMENT_ID) == 'AGS_Z0100_PQB_QTETYP':
 								AttributeID_Pass = str(val.ENTITLEMENT_ID)
-								new_value = self.service_rollup(ServiceId,AttributeID_Pass)
-								if new_value :
-									NewValue = new_value
+								NewValue = self.service_rollup(ServiceId,AttributeID_Pass,NewValue)
 							else:
 								if 'AGS_Z0046' in val.ENTITLEMENT_ID:
 									ServiceId = 'Z0046'
