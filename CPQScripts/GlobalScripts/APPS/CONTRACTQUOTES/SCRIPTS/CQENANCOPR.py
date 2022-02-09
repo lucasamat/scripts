@@ -777,7 +777,7 @@ class AncillaryProductOperation:
 							NewValue = val.ENTITLEMENT_DISPLAY_VALUE
 							# if str(val.ENTITLEMENT_ID) == "AGS_{}_KPI_BPTKPI".format(self.service_id) and NewValue == "Yes":
 							# 	AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
-							if str(val.ENTITLEMENT_ID) == "AGS_{}_PQB_PPCPRM".format(self.service_id) :
+							if str(val.ENTITLEMENT_ID) == "AGS_Z0046_PQB_PPCPRM" :
 								AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
 								ServiceId = 'Z0046'
 								NewValue = self.service_rollup(ServiceId,AttributeID_Pass,NewValue)
