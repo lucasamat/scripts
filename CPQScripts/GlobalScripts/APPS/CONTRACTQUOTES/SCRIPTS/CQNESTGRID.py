@@ -67,6 +67,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		"FABLOCATION_ID",
 		"WARRANTY_START_DATE",
 		"WARRANTY_END_DATE",
+		"TEMP_TOOL"
 	]
 	Objd_Obj = Sql.GetList(
 		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = 'SAQFEQ'"
@@ -118,7 +119,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 				get_fab = ""
 			Trace.Write("Fab47")    
 			Qstr = (
-				"""select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'{where_string} AND FABLOCATION_ID = '{get_fab}'  and GREENBOOK = '{get_pp}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), get_fab = Product.GetGlobal("TreeParentLevel0"), get_pp = Product.GetGlobal("TreeParam"),where_string = " AND "+str(where_string) if str(where_string)!="" else "", Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeSuperParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeSuperParentParam else "" ) )
+				"""select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE,TEMP_TOOL from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'{where_string} AND FABLOCATION_ID = '{get_fab}'  and GREENBOOK = '{get_pp}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), get_fab = Product.GetGlobal("TreeParentLevel0"), get_pp = Product.GetGlobal("TreeParam"),where_string = " AND "+str(where_string) if str(where_string)!="" else "", Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeSuperParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeSuperParentParam else "" ) )
 
 			QueryCount = ""
 
@@ -138,7 +139,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 			else:
 				get_fab = ""
 			Qstr = (
-				"""select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' {where_string} AND FABLOCATION_ID = '{get_fab}'  and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), get_fab = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
+				"""select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE,TEMP_TOOL from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' {where_string} AND FABLOCATION_ID = '{get_fab}'  and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), get_fab = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
 
 			QueryCount = ""
 
@@ -151,7 +152,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE,TEMP_TOOL from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -183,7 +184,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE,TEMP_TOOL from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -230,7 +231,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		else:
 			get_fab = "= ''"
 		Qstr = (
-			"""select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,SERIAL_NUMBER,CUSTOMER_TOOL_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,QUOTE_ID,FABLOCATION_NAME from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'{where_string} AND FABLOCATION_ID {get_fab}  and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = RevisionRecordId, get_fab = get_fab, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
+			"""select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,SERIAL_NUMBER,CUSTOMER_TOOL_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,QUOTE_ID,FABLOCATION_NAME,TEMP_TOOL from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'{where_string} AND FABLOCATION_ID {get_fab}  and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = RevisionRecordId, get_fab = get_fab, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
 
 		QueryCount = ""
 
@@ -289,7 +290,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select  ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select  ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE,TEMP_TOOL from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "' and FABLOCATION_ID = '"
 				+ str(TreeParentParam)
@@ -318,7 +319,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select  ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select  ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE,TEMP_TOOL from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -352,7 +353,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select  ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select  ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE,TEMP_TOOL from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -423,6 +424,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>")
 		data_dict["WARRANTY_START_DATE"] = ('<abbr id ="" title="' + str(par.WARRANTY_START_DATE) + '">' + str(par.WARRANTY_START_DATE) + "</abbr>")
 		data_dict["WARRANTY_END_DATE"] = ('<abbr id ="" title="' + str(par.WARRANTY_END_DATE) + '">' + str(par.WARRANTY_END_DATE) + "</abbr>")
+		data_dict["TEMP_TOOL"] = str(par.TEMP_TOOL)
 		data_list.append(data_dict)
 		# Trace.Write("data_dict||data_dict||data_dict"+str(data_dict))
 	
