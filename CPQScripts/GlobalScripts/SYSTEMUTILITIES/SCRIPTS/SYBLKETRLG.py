@@ -1027,15 +1027,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 							#ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'DELETE_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
 					#A055S000P01-14051 end
 				elif TITLE.split(',') == ["CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_ACCEPT_PART","CUSTOMER_PARTICIPATE","EXCHANGE_ELIGIBLE"]:
-					del_recordslist =[]
-					for val in DEL_PN:
-						ObjectName = val.split('-')[0].strip()
-						cpqid = val.split('-')[1].strip()
-						recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
-						del_recordslist.append(recid)
-
-					Trace.Write("deleting_records"+str(del_recordslist))
-
 					if int(ALLVALUES2[index])==0:
 						Trace.Write("IFF part")
 						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}',{column1} = '{value1}',{column2} = NULL,{column3} = '{value3}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index],column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],column3=TITLE.split(',')[3],value3 = ALLVALUES3[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
@@ -1214,6 +1205,18 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				#Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....
 		if len(DEL_PN)>0:
+			del_recordslist =[]
+			for val in DEL_PN:
+				ObjectName = val.split('-')[0].strip()
+				cpqid = val.split('-')[1].strip()
+				recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
+				del_recordslist.append(recid)	
+
+			Trace.Write("deleting_records"+str(del_recordslist))
+
+			val= "','".join(del_recordslist)
+			Sql.RunQuery("Delete from SAQSPT WHERE QUOTE_SERVICE_PART_RECORD_ID IN ('{val}')".format(val=val))
+
 
 		if obj_name == 'SAQICO':
 			if TITLE != 'NET_PRICE' and TITLE != 'DISCOUNT':
