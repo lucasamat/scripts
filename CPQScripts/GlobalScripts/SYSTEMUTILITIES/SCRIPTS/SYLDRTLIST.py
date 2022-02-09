@@ -3371,6 +3371,7 @@ class SYLDRTLIST:
 							if value123 in checkbox_list:
 								Trace.Write("value123==="+str(value123))
 								#new_dict[value123] = value1234
+								#for appendign checkbox for checkbox type columns in annualized items grid- start
 								if RECORD_ID == "SYOBJR-00009":
 									if(value1234).upper() == "TRUE":
 										Trace.Write("cmto elseiff===")
@@ -3382,6 +3383,7 @@ class SYLDRTLIST:
 										new_dict[value123] = (
 													'<input  type= "checkbox" id ="' + value123 + '" class= "custom"  value="' + value1234 + '" style="text-align: center;"   disabled><span class="lbl"></span>'
 												)
+								#for appendign checkbox for checkbox type columns in annualized items grid- end
 								else:
 									new_dict[value123] = value1234
 							else:
@@ -9502,7 +9504,21 @@ class SYLDRTLIST:
 						new_dict[value123] = value1234
 					else:               
 						if value123 in checkbox_list:
-							new_dict[value123] = value1234
+							#for appendign checkbox for checkbox type columns in annualized items grid- start
+							if RECORD_ID == "SYOBJR-00009":
+								if(value1234).upper() == "TRUE":
+									Trace.Write("cmto elseiff===")
+									new_dict[value123] = (
+													'<input  type= "checkbox" id ="' + value123 + '" class= "custom"  value="' + value1234 + '" style="text-align: center;" checked   disabled><span class="lbl"></span>'
+												)
+								else:
+									Trace.Write("cmto else===")
+									new_dict[value123] = (
+												'<input  type= "checkbox" id ="' + value123 + '" class= "custom"  value="' + value1234 + '" style="text-align: center;"   disabled><span class="lbl"></span>'
+											)
+							#for appendign checkbox for checkbox type columns in annualized items grid- end
+							else:
+								new_dict[value123] = value1234
 						else:
 							value1234 = value1234.replace('"', "&quot;")
 							value1234 = value1234.replace("<p>", " ")
