@@ -5728,15 +5728,26 @@ class SYLDRTLIST:
 							if str(Dict_formation.get(str(xa))).find("-") == -1:
 								Trace.Write("2xa==")
 								try:
-									J_str = (
-										"select "
-										+ str(xa)
-										+ " from "
-										+ str(ObjectName)
-										+ " (nolock) where CpqTableEntryId = '"
-										+ str(Dict_formation.get(str(xa)))
-										+ "' "
-									)
+									if ObjectName == 'SAQICO' and RECORD_ID == 'SYOBJR-00009':
+										J_str = (
+											"select "
+											+ str(xa)
+											+ " from "
+											+ str(ObjectName)
+											+ " (nolock) where LINE = '"
+											+ str(Dict_formation.get(str(xa)))
+											+ "' "
+										)
+									else:
+										J_str = (
+											"select "
+											+ str(xa)
+											+ " from "
+											+ str(ObjectName)
+											+ " (nolock) where CpqTableEntryId = '"
+											+ str(Dict_formation.get(str(xa)))
+											+ "' "
+										)
 
 								except:
 									J_str = (
