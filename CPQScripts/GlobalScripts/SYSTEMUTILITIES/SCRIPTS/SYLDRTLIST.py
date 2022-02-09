@@ -419,7 +419,7 @@ class SYLDRTLIST:
 														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
 															contract_quote_record_id,TreeParam, quote_revision_record_id, start, end))
 					try:
-						get_year_max = Sql.GetFirst("SELECT max(CpqTableEntryId) as cpqid,SUM(BILLING_VALUE) as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"'")
+						get_year_max = Sql.GetFirst("SELECT max(CpqTableEntryId) as cpqid,SUM(BILLING_VALUE) as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' GROUP BY GREENBOOK,SERVICE_ID")
 						get_total_amt = Sql.GetFirst("SELECT  BILLING_VALUE,ANNUAL_BILLING_AMOUNT from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' and CpqTableEntryId = '"+str(get_year_max.cpqid)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'")
 						get_diff = get_total_amt.ANNUAL_BILLING_AMOUNT-get_year_max.billval
 						rem_add_year = get_total_amt.BILLING_VALUE+get_diff
