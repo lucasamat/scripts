@@ -27,7 +27,7 @@ class AncillaryProductOperation:
 		self.action_type = str(action_type)
 		self.service_id = str(service_id)
 		self.ancillary_obj = str(ancillary_obj)
-		self.where_string = where_string.replace("WHERE","")
+		self.where_string = where_string.replace("WHERE","").replace("where","")
 		self.tablename = tablename
 		self.attributeList = attributeList
 		# if self.tablename in ("SAQSGE","SAQSCE","SAQSAE"):
