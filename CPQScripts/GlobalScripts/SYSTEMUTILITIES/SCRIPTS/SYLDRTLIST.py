@@ -5794,9 +5794,13 @@ class SYLDRTLIST:
 
 						if J_obj is not None and str(J_obj) != "" and len(J_obj) > 0:
 							Trace.Write("j_obj---")
-							xa_list = [eval("kn." + str(xa)) for kn in J_obj]
-							Trace.Write("xa_list---"+str(xa_list))
-							Dict_formation[str(xa)] = ",".join(xa_list)
+							try:
+								xa_list = [eval("kn." + str(xa)) for kn in J_obj]
+								Trace.Write("111xa_list---"+str(xa_list))
+								Dict_formation[str(xa)] = ",".join(xa_list)
+							except:
+								xa_list = [""]
+								Dict_formation[str(xa)]
 						else:
 							xa_list = [""]
 							Dict_formation[str(xa)]
