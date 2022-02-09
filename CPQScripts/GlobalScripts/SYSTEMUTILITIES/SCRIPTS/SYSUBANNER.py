@@ -2989,23 +2989,13 @@ def Related_Sub_Banner(
                                 # 	sec_rel_sub_bnr += (btn)
                                 # else:
                                     #btn = '<button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>'
-                                sec_rel_sub_bnr += (btn)
-                    # Appending Price button in Quote Items Node
-
-                    # sec_rel_sub_bnr += (
-                    # 	'<button id="CALCULATE_QItems" onclick="calculate_QItems(this)" class="btnconfig">PRICE</button>'
-                    # )    
+                                sec_rel_sub_bnr += (btn)   
                 if TreeParam == "Quote Items":
                     # Appending REFRESH button in Quote Items Node
                     for btn in multi_buttons:
                         if "REFRESH" in btn:
                             if quote_status.QUOTE_STATUS != 'APPROVED':
-                                sec_rel_sub_bnr += (btn)
-                # Appending REFRESH button in Quote Items Node
-
-                # sec_rel_sub_bnr += (
-                #         '<button id="REFRESH_MATRIX" onclick="refresh_billingmatrix(this)"  class="btnconfig">REFRESH</button>'
-                #     )  
+                                sec_rel_sub_bnr += (btn) 
 
     Trace.Write("subtaname"+str(subTabName))
     if subTabName == 'Involved Parties' and TreeParam == "Quote Information":
