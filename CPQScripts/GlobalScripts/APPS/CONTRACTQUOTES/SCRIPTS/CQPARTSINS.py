@@ -20,7 +20,7 @@ webclient = System.Net.WebClient()
 
 class SyncFPMQuoteAndHanaDatabase:
     def __init__(self):
-        self.response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = ''
+        self.response = self.arp_carp_response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = ''
         self.datetime_value = datetime.datetime.now()
         self.account_info = {}
         try:
@@ -284,6 +284,20 @@ class SyncFPMQuoteAndHanaDatabase:
         Trace.Write('Delete Child called!!!')
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
+    def validation_for_arp_carp(self):
+        requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
+        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
+        response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
+        response=response.replace("null",'""')
+        response=eval(response)
+        auth="Bearer"+' '+str(response['access_token'])
+        requestdata = '{"materials":["0010-02170","0010-02171"],"soldtoParty":"10002301","salesOrg":"2000"}'
+        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
+        self.arp_carp_response = webclient.UploadString('https://carp-arp.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
+
+        
 Log.Info("CQPARTINS script called --> from CPI")
 #Log.Info("Param.CPQ_Column----"+str(type(Param)))
 Log.Info("Param.CPQ_Column----QuoteID---"+str(Param.CPQ_Columns["QuoteID"]))
