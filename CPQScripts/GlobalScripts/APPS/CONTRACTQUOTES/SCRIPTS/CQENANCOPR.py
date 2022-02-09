@@ -683,7 +683,7 @@ class AncillaryProductOperation:
 				if x:
 					entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
 					if entitlement_display_value_tag_match:
-						display_val_dict[x[0]] = entitlement_display_value_tag_match[0].upper()
+						display_val_dict[x[0]] = entitlement_display_value_tag_match[0]
 				entxmldict[x[0]]=sub_string
 		return entxmldict,display_val_dict
 
