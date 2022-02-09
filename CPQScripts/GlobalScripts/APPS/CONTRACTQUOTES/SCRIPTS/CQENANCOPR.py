@@ -57,7 +57,7 @@ class AncillaryProductOperation:
 			self._delete_entitlement_tables()
 			self._insert_service_ent()
 			#if self.service_id in ('Z0091','Z0035'):
-			self._update_entitlement()
+			self._update_service_entitlement()
 			self._entitlement_rolldown()
 		# elif self.action_type == "DELETE_ENT_EQUIPMENT":
 		# 	self._delete_entitlement_tables()
@@ -724,51 +724,34 @@ class AncillaryProductOperation:
 		except Exception as e:
 			Trace.Write("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 
-	def service_rollup(self,anc_service):	
+	def service_rollup(self,anc_service,AttributeID):	
 		##service_roll up scenario
+		NewValue= ''
 		try:
 			get_greenbook_value = Sql.GetList("SELECT * FROM SAQSGE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id,anc_service ,self.service_id) )
 
 			if self.tablename == 'SAQSGE' and len(get_greenbook_value) > 0:
 				flag_list = []
-				NewValue = ''
-				AttributeID = ''
 				for greenbk_rec in get_greenbook_value:
 					get_grn_dict,grn_dict_val = self._construct_dict_xml(greenbk_rec.ENTITLEMENT_XML)
 					Trace.Write("parent_dict_val--"+str(grn_dict_val))
 					if grn_dict_val :
-						if (anc_service =='Z0046' and 'AGS_Z0046_PQB_PPCPRM' in grn_dict_val.keys() ) or (anc_service ==  'Z0100' and 'AGS_Z0100_PQB_QTETYP' in grn_dict_val.keys())  :
+						if (anc_service =='Z0046' and AttributeID in grn_dict_val.keys() ) or (anc_service ==  'Z0100' and AttributeID in grn_dict_val.keys())  :
 							flag_list.append(grn_dict_val[AttributeID]) 
 				Trace.Write("parent_dict_valiffff--"+str(flag_list))
-				
+				#AGS_Z0100_PQB_QTETYP
 				if flag_list :
-					if anc_service == 'Z0046':
-						AttributeID = 'AGS_Z0046_PQB_PPCPRM'
-						if 'Yes' in  flag_list  :
-							NewValue = 'Yes'
-						else:
-							NewValue = 'No'
-					elif anc_service == 'Z0100':
-						AttributeID = 'AGS_Z0100_PQB_QTETYP'
-						if 'Variable' in  flag_list  :
-							NewValue = 'Variable'
-						else:
-							NewValue = 'Fixed'
-					try:
-						Trace.Write('anc-'+str(anc_service)+'-'+str(AttributeID)+'-'+str(NewValue))						
-						add_where =''
-						whereReq = "QUOTE_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id, self.service_id, anc_service, self.contract_quote_revision_record_id)
-						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(NewValue)+"||"+str(anc_service) + "||" + 'SAQTSE'
-						result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
-					except:
-						Log.Info('656--661---eroror--')
-						Trace.Write('error--296')
+					if anc_service == 'Z0046' and 'Yes' in flag_list:
+						NewValue = 'Yes'
+					elif anc_service == 'Z0100' and 'Variable' in  flag_list:
+						NewValue = 'Variable'
 
 		except:
 			pass
+		return NewValue
 
 
-	def _update_entitlement(self):
+	def _update_service_entitlement(self):
 		#Log.Info('attr--685--ttributeList----'+str(self.attributeList))
 		# attr_id = value_application = ''
 		try:
@@ -794,9 +777,18 @@ class AncillaryProductOperation:
 							NewValue = val.ENTITLEMENT_DISPLAY_VALUE
 							# if str(val.ENTITLEMENT_ID) == "AGS_{}_KPI_BPTKPI".format(self.service_id) and NewValue == "Yes":
 							# 	AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
-							if str(val.ENTITLEMENT_ID) == "AGS_{}_PQB_PPCPRM".format(self.service_id) and NewValue == "Yes":
+							if str(val.ENTITLEMENT_ID) == "AGS_{}_PQB_PPCPRM".format(self.service_id) :
 								AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
+								ServiceId = 'Z0046'
+								new_value = self.service_rollup(ServiceId,AttributeID_Pass)
+								if new_value :
+									NewValue = new_value
 								# value_application = 'YES'
+							elif str(val.ENTITLEMENT_ID) == 'AGS_Z0100_PQB_QTETYP':
+								AttributeID_Pass = str(val.ENTITLEMENT_ID)
+								new_value = self.service_rollup(ServiceId,AttributeID_Pass)
+								if new_value :
+									NewValue = new_value
 							else:
 								if 'AGS_Z0046' in val.ENTITLEMENT_ID:
 									ServiceId = 'Z0046'
@@ -807,6 +799,7 @@ class AncillaryProductOperation:
 								elif 'AGS_Z0100' in val.ENTITLEMENT_ID:
 									ServiceId = 'Z0100'
 									AttributeID_Pass = val.ENTITLEMENT_ID
+									
 								elif 'AGS_Z0048' in val.ENTITLEMENT_ID:
 									ServiceId = 'Z0048'
 									AttributeID_Pass = val.ENTITLEMENT_ID
@@ -827,8 +820,7 @@ class AncillaryProductOperation:
 			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		except:
 			Log.Info('728-----')
-		for offering in ["Z0046","Z0100"]:
-			self.service_rollup(offering)
+
 		self._delete_entitlement_tables_anc()
 
 	def _delete_entitlement_tables_anc(self):
