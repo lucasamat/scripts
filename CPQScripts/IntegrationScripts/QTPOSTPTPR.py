@@ -345,8 +345,10 @@ try:
 								else:
 									pricing_field = "NET_PRICE_INGL_CURR"
 								#Log.Info("pricing_field--"+str(QUOTE)+'-'+str(pricing_field))
-								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = {total_unit}, {pricing_field} ={total_net}  FROM SAQRIT
-									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field= pricing_field))
+								if GetSum:
+									if GetSum.TOTAL_UNIT and GetSum.TOTAL_EXT:
+										Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = {total_unit}, {pricing_field} ={total_net}  FROM SAQRIT
+											WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field= pricing_field))
 								Sql.RunQuery("""UPDATE SAQRIT 
 												SET NET_VALUE_INGL_CURR = NET_PRICE_INGL_CURR + ISNULL(TAX_AMOUNT, 0) 
 												FROM SAQRIT (NOLOCK)
