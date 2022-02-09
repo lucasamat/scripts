@@ -5712,6 +5712,7 @@ class SYLDRTLIST:
 							
 
 				if ATTRIBUTE_NAME:
+					Trace.Write("ATTRIBUTE_NAME---"+str(ATTRIBUTE_NAME))
 					if ObjectName == 'SAQICO' and RECORD_ID == 'SYOBJR-00009': #added the code for pricing status image filters
 						xa = list(ATTRIBUTE_NAME)[1]
 					else:
