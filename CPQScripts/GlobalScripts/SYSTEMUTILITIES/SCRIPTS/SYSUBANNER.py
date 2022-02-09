@@ -2848,8 +2848,8 @@ def Related_Sub_Banner(
                                         billing_variable_visible = Sql.GetFirst("""SELECT BILLING_TYPE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND BILLING_TYPE in ('VARIABLE','Variable')""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
                                         if billing_variable_visible:
                                             sec_rel_sub_bnr += (btn)
-                                            if TreeParam != "Fab Locations" and ("INLINE EDIT" not in btn and TreeParam != "Customer Information"):
-                                                sec_rel_sub_bnr += str(btn)
+                                if TreeParam != "Fab Locations" and ("INLINE EDIT" not in btn and TreeParam != "Customer Information"):
+                                    sec_rel_sub_bnr += str(btn)
                             
                                 
 
