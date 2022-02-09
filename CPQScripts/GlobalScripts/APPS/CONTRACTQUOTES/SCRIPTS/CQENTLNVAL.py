@@ -158,24 +158,25 @@ def ChildEntRequest(partnumber,tableName,where):
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-								#Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
+								Trace.Write("auto update---"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( row.ENTITLEMENT_ID))
 								for code in row.ENTITLEMENT_VALUE_CODE.split(','):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
 								requestdata +=']},'	
+								Trace.Write("auto update---"+str(requestdata))
 							else:
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 							requestdata += ']}'
 							requestdata = requestdata.replace('},]','}]')
-							#Log.Info("requestdata--child-- " + str(requestdata))
+							Trace.Write("requestdata--child-- " + str(requestdata))
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-							#cpsmatchID = cpsmatchID + 1
-							cpsmatchID = webclient.ResponseHeaders["Etag"]	
-							cpsmatchID = re.sub('"',"",cpsmatchID)		
-							
+							#cpsmatchID = cpsmatchID + 1			
+							cpsmatchID = webclient.ResponseHeaders["Etag"]
+							cpsmatchID = re.sub('"',"",cpsmatchID)
 						except Exception:
-							Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))
+							Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
 							cpsmatchID = cpsmatchID
+
 
 	except Exception:
 		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
