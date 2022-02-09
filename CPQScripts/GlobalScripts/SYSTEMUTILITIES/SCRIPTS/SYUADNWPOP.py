@@ -3755,7 +3755,7 @@ def POPUPLISTVALUEADDNEW(
 				)   
 			elif tool_type=="TEMP_TOOL":
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} 1=1  ".format(
 						ObjectName,
 						where_string,
 						contract_quote_record_id,
@@ -3794,7 +3794,7 @@ def POPUPLISTVALUEADDNEW(
 					)
 				)	
 			elif tool_type=="TEMP_TOOL":
-				where_string += """ ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+				where_string += """ ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} 1=1 """.format(
 					where_string,
 					contract_quote_record_id,
 					Product.GetGlobal("TreeParam"),
