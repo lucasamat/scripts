@@ -3162,7 +3162,7 @@ def Related_Sub_Banner(
             # Trace.Write("Single_button--->"+str(add_button))
             if len(multi_buttons)>0: ##adding dynamic buttons from SYPGAC if we have more than one button
                 for btn in multi_buttons:
-                    #Trace.Write("btn---"+str(btn))
+                    Trace.Write("btn---"+str(btn))
                     if ('SPLIT' in btn or 'EDIT' in btn) and subTabName =='Items':
                         if 'SPLIT' in btn:   
                             get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
@@ -3184,6 +3184,7 @@ def Related_Sub_Banner(
                             billing_variable_visible = Sql.GetFirst("""SELECT BILLING_TYPE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND BILLING_TYPE in ('VARIABLE','Variable')""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
                             if billing_variable_visible:
                                 sec_rel_sub_bnr += (btn)
+                    Trace.Write("sec_rel_sub_bnr==sec_rel_sub_bnr"+str(sec_rel_sub_bnr))
                     if quote_status.QUOTE_STATUS != 'APPROVED' and 'SPLIT' not in btn and 'EDIT' not in btn:
                         Trace.Write("555"+str(btn))
                         sec_rel_sub_bnr += (btn)
