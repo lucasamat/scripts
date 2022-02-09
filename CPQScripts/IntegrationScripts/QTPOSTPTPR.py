@@ -301,24 +301,30 @@ try:
 								GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE)/"+str(GetEquipment_count.CNT)+" AS TOTAL_UNIT, SUM(EXTENDED_PRICE)/"+str(GetEquipment_count.CNT)+"  AS TOTAL_EXT FROM SAQRSP WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0100'".format( QUOTE,revision_rec_id))
 								#Log.Info("QTPOSTPTPR TOTAL111 ==> "+str(GetSum.TOTAL_UNIT))
 								if get_billing_type_val.upper() == 'VARIABLE':
-									pricing_field = "ESTIMATED_VALUE"
+									pricing_field_items = "ESTIMATED_VALUE"
+									pricing_field_annualized = "TENVDC"
 								else:
-									pricing_field = "NET_PRICE"
+									pricing_field_items = "NET_VALUE"
+									pricing_field_annualized = "TNTVDC"
 								#Log.Info("pricing_field-doc-"+str(QUOTE)+'-'+str(pricing_field))
 								if GetSum:
 									if GetSum.TOTAL_UNIT and GetSum.TOTAL_EXT:
-										Log.Info( str(GetSum.TOTAL_UNIT)+'-'+str(GetSum.TOTAL_EXT))
-										Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE = {total_unit}, {pricing_field} ={total_net},YEAR_1 = {total_net}  FROM SAQRIT
-										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field = pricing_field))
-								Sql.RunQuery("""UPDATE SAQRIT 
-												SET NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0),
-												YEAR_1_INGL_CURR = YEAR_1 + ISNULL(EXCHANGE_RATE, 0),
-												YEAR_2_INGL_CURR = YEAR_2 + ISNULL(EXCHANGE_RATE, 0),
-												YEAR_3_INGL_CURR = YEAR_3 + ISNULL(EXCHANGE_RATE, 0),
-												YEAR_4_INGL_CURR = YEAR_4 + ISNULL(EXCHANGE_RATE, 0),
-												YEAR_5_INGL_CURR = YEAR_5 + ISNULL(EXCHANGE_RATE, 0)
-												FROM SAQRIT (NOLOCK)
-													WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id ))
+										#Log.Info( str(GetSum.TOTAL_UNIT)+'-'+str(GetSum.TOTAL_EXT))
+										Sql.RunQuery("""UPDATE SAQRIT SET UNIT_PRICE = {total_unit}  FROM SAQRIT
+										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_unit=GetSum.TOTAL_UNIT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field = pricing_field_items))
+										
+										##saqico insert 
+										Sql.RunQuery("""UPDATE SAQICO SET {pricing_field} ={total_net}  FROM SAQICO (NOLOCK)
+										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field = pricing_field_annualized))
+								# Sql.RunQuery("""UPDATE SAQRIT 
+								# 				SET 
+								# 				YEAR_1_INGL_CURR = YEAR_1 + ISNULL(EXCHANGE_RATE, 0),
+								# 				YEAR_2_INGL_CURR = YEAR_2 + ISNULL(EXCHANGE_RATE, 0),
+								# 				YEAR_3_INGL_CURR = YEAR_3 + ISNULL(EXCHANGE_RATE, 0),
+								# 				YEAR_4_INGL_CURR = YEAR_4 + ISNULL(EXCHANGE_RATE, 0),
+								# 				YEAR_5_INGL_CURR = YEAR_5 + ISNULL(EXCHANGE_RATE, 0)
+								# 				FROM SAQRIT (NOLOCK)
+								# 					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100' """.format(QuoteRecordId=contract_quote_record_id ,rev =revision_rec_id ))
 								#Log.Info("exch_rate----"+str(exch_rate)+'--'+str(QUOTE))
 								# Sql.RunQuery("""UPDATE SAQRIT 
 								# 		SET NET_PRICE_INGL_CURR = NET_PRICE*"""+str(exch_rate)+""" , 
