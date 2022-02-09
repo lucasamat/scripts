@@ -3369,6 +3369,7 @@ class SYLDRTLIST:
 							)   
 						else:
 							if value123 in checkbox_list:
+								Trace.Write("value123==="+str(value123))
 								new_dict[value123] = value1234
 							else:
 								if (value123 == "SET_NAME" or value123 == "SETMAT_NAME") and (
