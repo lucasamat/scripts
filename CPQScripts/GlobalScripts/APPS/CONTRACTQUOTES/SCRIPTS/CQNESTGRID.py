@@ -347,7 +347,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 				+"'"
 			)
 		elif TreeTopSuperParentParam != "Fab Locations" or TreeParentParam != 'Sending Equipment' or TreeParentParam != 'Receiving Equipment':
-			Trace.Write("else--------")
+			Trace.Write("else-------**")
 			if str(where_string):
 				where_string = " AND "+str(where_string)
 			Qstr = (
