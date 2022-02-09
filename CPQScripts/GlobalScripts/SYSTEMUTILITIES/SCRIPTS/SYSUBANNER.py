@@ -2823,40 +2823,6 @@ def Related_Sub_Banner(
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
                                         Trace.Write('add_button->unmapped--'+str(add_button))
                                         sec_rel_sub_bnr += str(btn)
-                        else:##Added the else part for the multi buttons scenario.....
-                            for btn in multi_buttons:
-                                #if "INLINE EDIT" not in btn and TreeParam != "Fab Locations":
-                                Trace.Write("ADD_FAB=scenario==="+str(sec_rel_sub_bnr))
-                                if ('SPLIT' in btn or 'EDIT' in btn) and subTabName =='Items':
-                                    if 'SPLIT' in btn:   
-                                        get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
-                                        if get_entitlement_xml:
-                                            for get_service in get_entitlement_xml:
-                                                entitlement_service = get_service.ENTITLEMENT_XML
-                                                quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-                                                split_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
-                                                split_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
-                                                for m in re.finditer(quote_item_tag, entitlement_service):
-                                                    sub_string = m.group(1)
-                                                    split_1 =re.findall(split_pattern,sub_string)
-                                                    split_2 = re.findall(split_value,sub_string)
-                                                    if split_1 and split_2:
-                                                        Trace.Write("a"+str(get_service.SERVICE_ID))
-                                                        sec_rel_sub_bnr += (btn)
-                                                        break
-                                    if 'EDIT' in btn:
-                                        billing_variable_visible = Sql.GetFirst("""SELECT BILLING_TYPE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND BILLING_TYPE in ('VARIABLE','Variable')""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
-                                        if billing_variable_visible:
-                                            sec_rel_sub_bnr += (btn)
-                                if TreeParam != "Fab Locations" and ("INLINE EDIT" not in btn and TreeParam != "Customer Information"):
-                                    sec_rel_sub_bnr += str(btn)
-                            
-                                
-
-
-
-
-
             '''if str(currecId.CAN_DELETE).upper() == "TRUE":
                 del_btn_id = (
                     "DELETE_ADDNEW__"
