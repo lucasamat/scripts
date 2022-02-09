@@ -5151,6 +5151,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					QuoteId = self.contract_quote_id,
 					QuoteRecordId=self.contract_quote_record_id,
 					RevisionId=self.quote_revision_id,
+					saqgpa_backup_table = str(saqgpa_backup_table),
 					RevisionRecordId=self.quote_revision_record_id
 					)
 				)
@@ -5565,6 +5566,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					QuoteRecordId=self.contract_quote_record_id,
 					RevisionId=self.quote_revision_id,
 					RevisionRecordId=self.quote_revision_record_id,
+					saqgpa_backup_table = str(saqgpa_backup_table),
 					BatchGroupRecordId=kwargs.get('batch_group_record_id')
 					)
 				)
