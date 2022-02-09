@@ -1039,9 +1039,21 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					if int(ALLVALUES2[index])==0:
 						Trace.Write("IFF part")
 						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}',{column1} = '{value1}',{column2} = NULL,{column3} = '{value3}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index],column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],column3=TITLE.split(',')[3],value3 = ALLVALUES3[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE,SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						if get_schedulemode and str(TreeParam) =="Z0108":
+							delivery_method = get_schedulemode.DELIVERY_MODE
+							sch_mode = get_schedulemode.SCHEDULE_MODE
+							if delivery_method == "OFFSITE" and sch_mode == "SCHEDULED" and str(TreeParam) == 'Z0108':
+								ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108','QTY':ALLVALUES[index]})
 					else:
 						Trace.Write("else parttt")
 						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}',{column1} = '{value1}',{column2} = '{value2}',{column3} = '{value3}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index],column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],column3=TITLE.split(',')[3],value3 = ALLVALUES3[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE,SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						if get_schedulemode and str(TreeParam) =="Z0108":
+							delivery_method = get_schedulemode.DELIVERY_MODE
+							sch_mode = get_schedulemode.SCHEDULE_MODE
+							if delivery_method == "OFFSITE" and sch_mode == "SCHEDULED" and str(TreeParam) == 'Z0108':
+								ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108','QTY':ALLVALUES[index]})
 				elif TITLE=="DELIVERY_MODE":
 					Trace.Write('1016-----'+str(VALUE))
 					Sql.RunQuery("""UPDATE SAQSPT SET DELIVERY_MODE = '{value}' {schedule_mode} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=VALUE,schedule_mode= ",SCHEDULE_MODE = 'ON REQUEST'" if str(VALUE)=="OFFSITE" and str(TreeParam)=="Z0110" else "",QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
