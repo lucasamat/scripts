@@ -3164,6 +3164,7 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
 						+ str(orderby)
 					)
 					Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' and FABLOCATION_ID = '" + str(TreeParam) + "' ")
+					Trace.Write("###3167")
 				else:
 					Trace.Write('filter---------')                  
 					parent_obj = Sql.GetList(
