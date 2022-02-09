@@ -220,8 +220,7 @@ def Related_Sub_Banner(
         #     sec_rel_sub_bnr += add_button
         #     Trace.Write(str(add_button)+'176---200----212--------'+str(sec_rel_sub_bnr))
         Trace.Write(str(sec_rel_sub_bnr)+"--ObjName---178--ADD+BUT_J----"+str(add_button))
-        if ('SPLIT' in add_button or 'EDIT' in add_button) and subTabName =='Items':
-            add_button = ""
+        
         Trace.Write("Multi buttons--> "+str(multi_buttons))
         # if subTabName == 'Inclusions' and (TreeSuperParentParam == 'Product Offerings' or TopSuperParentParam == 'Product Offerings'):
         #     multi_buttons_temp = multi_buttons
@@ -2827,7 +2826,7 @@ def Related_Sub_Banner(
                         else:##Added the else part for the multi buttons scenario.....
                             for btn in multi_buttons:
                                 #if "INLINE EDIT" not in btn and TreeParam != "Fab Locations":
-                                    #Trace.Write("ADD_FAB====")
+                                Trace.Write("ADD_FAB=scenario===")
                                 if TreeParam != "Fab Locations" and ("INLINE EDIT" not in btn and TreeParam != "Customer Information"):
                                     sec_rel_sub_bnr += str(btn)
                             
