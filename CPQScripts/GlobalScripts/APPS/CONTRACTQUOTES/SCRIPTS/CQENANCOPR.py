@@ -726,9 +726,10 @@ class AncillaryProductOperation:
 
 	def service_rollup(self,anc_service,AttributeID):	
 		##service_roll up scenario
+		Trace.Write("1sttt--"+str(AttributeID))
 		NewValue= ''
 		try:
-			get_greenbook_value = Sql.GetList("SELECT * FROM SAQSGE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id,anc_service ,self.service_id) )
+			get_greenbook_value = Sql.GetList("SELECT * FROM SAQSGE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'  AND SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id,self.service_id) )
 
 			if self.tablename == 'SAQSGE' and len(get_greenbook_value) > 0:
 				flag_list = []
@@ -736,7 +737,7 @@ class AncillaryProductOperation:
 					get_grn_dict,grn_dict_val = self._construct_dict_xml(greenbk_rec.ENTITLEMENT_XML)
 					Trace.Write("parent_dict_val--"+str(grn_dict_val))
 					if grn_dict_val :
-						if (anc_service =='Z0046' and AttributeID in grn_dict_val.keys() ) or (anc_service ==  'Z0100' and AttributeID in grn_dict_val.keys())  :
+						if AttributeID in grn_dict_val.keys()  :
 							flag_list.append(grn_dict_val[AttributeID]) 
 				Trace.Write("parent_dict_valiffff--"+str(flag_list))
 				#AGS_Z0100_PQB_QTETYP
@@ -746,8 +747,8 @@ class AncillaryProductOperation:
 					elif anc_service == 'Z0100' and 'Variable' in  flag_list:
 						NewValue = 'Variable'
 
-		except:
-			pass
+		except Exception as e:
+			Trace.Write("error roll up--"+str(e))
 		return NewValue
 
 
