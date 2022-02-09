@@ -2033,11 +2033,11 @@ class SyncQuoteAndCustomTables:
 										records = ', '.join(map(str, [str(tuple(equipment_record)) for equipment_record in api1])).replace("None","null").replace("'","''")    
 										datetime_string = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
 										Trace.Write("records"+str(records))
-										columns ="EQUIPMENT_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID"
+										columns ="EQUIPMENT_ID,CONTRACT_START_DATE,CONTRACT_END_DATE,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID"
 										coverd_object_temp_table_name = "SAQSCO_BKP_{}_{}".format(QuoteId, datetime_string)    
 										coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
 										coverd_object_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(columns)+" INTO "+str(coverd_object_temp_table_name)+" FROM (SELECT DISTINCT "+str(columns)+" FROM (VALUES "+str(records)+") AS TEMP("+str(columns)+")) OQ ' ")    
-										saqsco_update ="""UPDATE A SET A.WARRANTY_START_DATE = B.WARRANTY_START_DATE,A.WARRANTY_END_DATE =B.WARRANTY_END_DATE,A.CONTRACT_VALID_FROM = B.WARRANTY_START_DATE,A.CONTRACT_VALID_TO =B.WARRANTY_END_DATE FROM SAQSCO A INNER JOIN {} B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID and A.SERVICE_ID =B.SERVICE_ID where A.QUOTE_RECORD_ID = '{Quote_id}' AND A.QTEREV_RECORD_ID = '{qtrv_id}' and A.SERVICE_ID = '{service_offering_id}'""".format(coverd_object_temp_table_name,Quote_id =Quote.GetGlobal("contract_quote_record_id"),qtrv_id =Quote.GetGloba("quote_revision_record_id"),service_offering_id =service_offering_id)
+										saqsco_update ="""UPDATE A SET A.CONTRACT_VALID_FROM = B.CONTRACT_START_DATE,A.CONTRACT_VALID_TO =B.CONTRACT_END_DATE FROM SAQSCO A INNER JOIN {} B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID and A.SERVICE_ID =B.SERVICE_ID where A.QUOTE_RECORD_ID = '{Quote_id}' AND A.QTEREV_RECORD_ID = '{qtrv_id}' and A.SERVICE_ID = '{service_offering_id}'""".format(coverd_object_temp_table_name,Quote_id =Quote.GetGlobal("contract_quote_record_id"),qtrv_id =Quote.GetGloba("quote_revision_record_id"),service_offering_id =service_offering_id)
 										Sql.RunQuery(saqsco_update)
 										coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
 							except Exception as e:
