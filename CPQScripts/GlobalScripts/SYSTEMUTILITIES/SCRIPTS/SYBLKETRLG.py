@@ -882,7 +882,7 @@ def remove_html_tags(text):
 	return re.sub(clean, "", text)
 
 
-def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,ALLVALUES3,DEL_PN,SELECTALL):
+def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,ALLVALUES3,DEL_PN,ADD_PN,SELECTALL):
 	Sql = SQL()
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -1213,6 +1213,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					partnumber = sql_obj.PART_NUMBER))
 				#Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....
+		if len(DEL_PN)>0:
+
 		if obj_name == 'SAQICO':
 			if TITLE != 'NET_PRICE' and TITLE != 'DISCOUNT':
 				prtxcl_obj = Sql.GetFirst("Select TAX_CLASSIFICATION_RECORD_ID,TAX_CLASSIFICATION_DESCRIPTION,TAX_CLASSIFICATION_ID FROM PRTXCL WHERE  TAX_CLASSIFICATION_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}'".format(SRVTAXCLA_DESCRIPTION = str(VALUE)))
@@ -1457,6 +1459,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 
 				#if float(getPRCFVA.FACTOR_PCTVAR) < discount:
 				#Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+		
 		if obj_name == "SAQRIT":
 			Trace.Write("@802")
 			Sql = SQL()
@@ -1862,6 +1865,11 @@ try:
 	Trace.Write("RECORDS TO BE DELETED--"+str(list(DEL_PN)))
 except:
 	DEL_PN = None
+try:
+	ADD_PN = Param.ADD_PN
+	Trace.Write("RECORDS TO BE DELETED--"+str(list(ADD_PN)))
+except:
+	ADD_PN = None
 try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
