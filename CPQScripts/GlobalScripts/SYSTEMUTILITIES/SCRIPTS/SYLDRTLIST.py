@@ -5795,6 +5795,7 @@ class SYLDRTLIST:
 						if J_obj is not None and str(J_obj) != "" and len(J_obj) > 0:
 							Trace.Write("j_obj---")
 							xa_list = [eval("kn." + str(xa)) for kn in J_obj]
+							Trace.Write("xa_list---"+str(xa_list))
 							Dict_formation[str(xa)] = ",".join(xa_list)
 						else:
 							xa_list = [""]
