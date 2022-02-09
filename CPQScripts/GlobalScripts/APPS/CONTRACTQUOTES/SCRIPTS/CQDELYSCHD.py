@@ -95,3 +95,5 @@ elif Action == "DELETE":
 	delete_deliverydetails = delete_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id)
 elif Action == "INSERT_QTY":
 	insert_qty_deliverydetails = insert_qty_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id,QTY)
+elif Action == "INSERT_BULK_QTY":
+	insert_qty_deliverydetails = insert_qty_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id,QTY)
