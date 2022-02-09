@@ -23,6 +23,7 @@ class SyncFPMQuoteAndHanaDatabase:
         self.response = self.arp_carp_response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = ''
         self.datetime_value = datetime.datetime.now()
         self.account_info = {}
+        self.part_numbers = []
         try:
             self.quote_id = str(Param.CPQ_Columns["QuoteID"])
         except Exception:
@@ -261,7 +262,8 @@ class SyncFPMQuoteAndHanaDatabase:
                 for ele in re.finditer(pattern2,rec):
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
-                    #if str(ele.group(1)) == 'PART_DESCRIPTION':
+                    if str(ele.group(1)) == 'self.part_numbers':
+                        self.part_numbers.append(str(ele.group(2)))
                     #    partdesc = ele.group(2) or ''
                     #    partdesc = re.sub(r"'|\\","",partdesc)
                     #    temp_value +=','+partdesc if partdesc !='' else None
@@ -279,6 +281,7 @@ class SyncFPMQuoteAndHanaDatabase:
                 temp_value =''
                 col_flag=1
             Log.Info("Total Records from HANA::"+str(record_count))
+            Log.Info("Total Parts List:: " +str(self.part_numbers))
     
     def delete_child_records_6kw(self):
         Trace.Write('Delete Child called!!!')
