@@ -1027,13 +1027,14 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 							#ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'DELETE_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
 					#A055S000P01-14051 end
 				elif TITLE.split(',') == ["CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_ACCEPT_PART","CUSTOMER_PARTICIPATE","EXCHANGE_ELIGIBLE"]:
+					del_recordslist =[]
 					for val in DEL_PN:
 						ObjectName = val.split('-')[0].strip()
 						cpqid = val.split('-')[1].strip()
 						recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
-						recordslist.append(recid)
+						del_recordslist.append(recid)
 
-					Trace.Write(str(recordslist))
+					Trace.Write(str(del_recordslist))
 
 					if int(ALLVALUES2[index])==0:
 						Trace.Write("IFF part")
