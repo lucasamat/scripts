@@ -457,14 +457,16 @@ class ContractQuoteItem:
 						CASE WHEN ISNULL(PRSPRV.SSCM_COST, 0) = 1 THEN 'VALUE PRICING-SSCM' ELSE 'OFFLINE PRICING' END as PRCSRC,
 						'No' as SPQTEV,
 						SAQRIT.TAX_PERCENTAGE as TAXVTP,
-						SAQGPA.PM_ID,
+						null as PM_ID,
 						SAQGPA.PM_LEVEL,
-						SAQGPA.PM_RECORD_ID,
+						null as PM_RECORD_ID,
 						null as ASSEMBLY_ID,
 						null as ASSEMBLY_RECORD_ID,
 						SAQGPA.GOT_CODE,
 						SAQGPA.DEVICE_NODE as EQNODE,
-						SAQGPA.PROCESS_TYPE as PROCES						
+						SAQGPA.PROCESS_TYPE as PROCES,
+						SAQGPA. KIT_NAME,
+						SAQGPA. KIT_NUMBER						
 					FROM 
 						SAQRIT (NOLOCK)		
 						JOIN (
@@ -710,7 +712,7 @@ class ContractQuoteItem:
 								"field":["NCNSMB_ENT","Non-Consumable","AGS_{}_TSC_NONCNS".format(self.service_id)]
 								},	
 								{
-								"field":["PMEVNT_ENT","PM Events","AGS_{}_STT_PMEVNT".format(self.service_id)]
+								"field":["PMEVNT_ENT","Quote Type","AGS_{}_PQB_QTETYP".format(self.service_id)]
 								},		
 								{
 								"field":["PMLAB_ENT","Preventative Maintenance Labor","AGS_{}_NET_PRMALB".format(self.service_id)]
