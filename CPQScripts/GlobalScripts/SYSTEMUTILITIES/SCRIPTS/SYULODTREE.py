@@ -2241,7 +2241,7 @@ class TreeView:
 														#subTabName = subtab_temp
 										
 										#if ent_value_dict:
-										if subtab_temp_variable in ("Events","Service Inclusions","Service Parts List","Service New Parts") :
+										if subtab_temp_variable in ("Events","Service Parts List","Service New Parts") :
 											subTabName = ent_value_dict["SAQTSE"]
 										if entitlement_level_flag and (subtab_temp_variable in ('Green Parts List','Green New Parts','Greenbook Inclusions')  ):
 											if entitlement_level_flag == 'SAQTSE':
