@@ -147,7 +147,7 @@ class ContractQuoteSummaryUpdate:
 		Quote.Save()
 		Sql.RunQuery("""UPDATE SAQTRV
 						SET 									
-						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,					
+						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.TOTAL_AMOUNT_INGL_CURR,					
 						SAQTRV.DISCOUNT_PERCENT = '{discount}'
 						
 						FROM SAQTRV (NOLOCK)

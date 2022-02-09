@@ -956,7 +956,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					delete_saqris = Sql.RunQuery("DELETE FROM SAQRIS WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
 					delete_saqrit = Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
 					delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
-					update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET NET_PRICE_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id")))
+					update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id")))
 				return ""
 		for index,rec in enumerate(selected_rows):
 			row = {}
@@ -1134,7 +1134,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					delete_saqris = Sql.RunQuery("DELETE FROM SAQRIS WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
 					delete_saqrit = Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
 					delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
-					update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET NET_PRICE_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id")))
+					update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id")))
 				
 			elif (TreeParam == 'Customer Information' and obj_name == "SAQICT"):
 				Sql = SQL()
@@ -1312,7 +1312,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Quote.Save()
 				Sql.RunQuery("""UPDATE SAQTRV
 						SET 									
-						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,						
+						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.TOTAL_AMOUNT_INGL_CURR,						
 						SAQTRV.DISCOUNT_PERCENT = '{discount}'
 						
 						FROM SAQTRV (NOLOCK)
@@ -1436,7 +1436,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 
 				Sql.RunQuery("""UPDATE SAQTRV
 						SET 									
-						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,						
+						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.TOTAL_AMOUNT_INGL_CURR,						
 						
 						SAQTRV.DISCOUNT_PERCENT = '{discount}'
 						
@@ -1498,7 +1498,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			Sql.RunQuery("""UPDATE SAQTRV
 						SET 
 						SAQTRV.TAX_AMOUNT_INGL_CURR = IQ.TAX_AMOUNT_INGL_CURR,						
-						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.TOTAL_AMOUNT_INGL_CURR,
 						SAQTRV.NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR
 												
 						FROM SAQTRV (NOLOCK)
