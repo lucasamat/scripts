@@ -5708,25 +5708,19 @@ class SYLDRTLIST:
 					else:                        
 						Wh_API_NAMEs = str(SortColumn) + " " + str(SortColumnOrder).upper()
 				ATTRIBUTE_VALUE_STR = ""
-				Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
-				Trace.Write("Dict_formation---"+str(Dict_formation))
+				Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))		
 							
 
-				if ATTRIBUTE_NAME:
-					Trace.Write("ATTRIBUTE_NAME---"+str(ATTRIBUTE_NAME))
+				if ATTRIBUTE_NAME:					
 					if ObjectName == 'SAQICO' and RECORD_ID == 'SYOBJR-00009': #added the code for pricing status image filters
-						xa = list(ATTRIBUTE_NAME)[1]
-						Trace.Write("xa=="+str(xa))
+						xa = list(ATTRIBUTE_NAME)[1]						
 					else:
 						xa = list(ATTRIBUTE_NAME)[0] 
 								
-					if Dict_formation.get(str(xa)) != "":
-						Trace.Write("xaaa==")
+					if Dict_formation.get(str(xa)) != "":					
 
-						if str(Dict_formation.get(str(xa))).find(",") == -1:
-							Trace.Write("1xa==")
-							if str(Dict_formation.get(str(xa))).find("-") == -1:
-								Trace.Write("2xa==")
+						if str(Dict_formation.get(str(xa))).find(",") == -1:							
+							if str(Dict_formation.get(str(xa))).find("-") == -1:								
 								try:
 									if ObjectName == 'SAQICO' and RECORD_ID == 'SYOBJR-00009':
 										J_str = (
@@ -5759,8 +5753,7 @@ class SYLDRTLIST:
 										+ str(Dict_formation.get(str(xa)))
 										+ "' "
 									)
-							else:
-								Trace.Write("3xa==")
+							else:								
 								xa_str = Dict_formation.get(str(xa)).split("-")[1]
 								
 								J_str = (
@@ -5772,8 +5765,7 @@ class SYLDRTLIST:
 									+ str(int(xa_str))
 									+ "' "
 								)
-						else:
-							Trace.Write("4xa==")
+						else:							
 							xa_str = []                        
 							for data in Dict_formation.get(str(xa)).split(","):
 								xa_str.append(
@@ -5789,14 +5781,11 @@ class SYLDRTLIST:
 								+ str(xa_str)
 								+ ""
 							)
-						J_obj = Sql.GetList(J_str)
-						Trace.Write("5xa=="+str(J_obj))
+						J_obj = Sql.GetList(J_str)						
 
-						if J_obj is not None and str(J_obj) != "" and len(J_obj) > 0:
-							Trace.Write("j_obj---")
+						if J_obj is not None and str(J_obj) != "" and len(J_obj) > 0:							
 							try:
-								xa_list = [eval("kn." + str(xa)) for kn in J_obj]
-								Trace.Write("111xa_list---"+str(xa_list))
+								xa_list = [eval("kn." + str(xa)) for kn in J_obj]								
 								Dict_formation[str(xa)] = ",".join(xa_list)
 							except:
 								xa_list = [""]
