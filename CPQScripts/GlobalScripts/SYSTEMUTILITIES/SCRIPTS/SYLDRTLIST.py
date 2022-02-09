@@ -575,7 +575,7 @@ class SYLDRTLIST:
 				checkbox_list = [
 					inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
 				]
-				
+				Trace.Write("checkbox_list==="+str(checkbox_list))
 				right_align_list = [
 					inn.API_NAME
 					for inn in Objd_Obj
