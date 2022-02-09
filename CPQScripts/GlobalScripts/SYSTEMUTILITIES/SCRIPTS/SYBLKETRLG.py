@@ -1204,18 +1204,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					partnumber = sql_obj.PART_NUMBER))
 				#Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....
-		if len(DEL_PN)>0:
-			del_recordslist =[]
-			for val in DEL_PN:
-				ObjectName = val.split('-')[0].strip()
-				cpqid = val.split('-')[1].strip()
-				recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
-				del_recordslist.append(recid)	
-
-			Trace.Write("deleting_records"+str(del_recordslist))
-
-			val= "','".join(del_recordslist)
-			Sql.RunQuery("Delete from SAQSPT WHERE QUOTE_SERVICE_PART_RECORD_ID IN ('{val}')".format(val=val))
+		#if len(DEL_PN)>0:
 
 
 		if obj_name == 'SAQICO':
