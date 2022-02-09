@@ -22,7 +22,7 @@ g_total = 0
 get_ohold_pricing_status =get_delivery_nodes =  ''
 #suppress delivery node for other quote
 try:
-	get_delivery_nodes = Sql.GetFirst("SELECT SERVICE_ID from SAQTSV where QUOTE_ID ='{}' and SERVICE_ID='Z0108'" .format(Quote.CompositeNumber))
+	get_delivery_nodes = Sql.GetFirst("SELECT SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_ID ='{}' and SERVICE_ID='Z0108'" .format(Quote.CompositeNumber))
 	if get_delivery_nodes:
 		get_delivery_nodes = get_delivery_nodes.SERVICE_ID
 except:
@@ -659,7 +659,7 @@ class TreeView:
 								self.getPageRelatedDetails(subTabName, pageType, objRecId, ObjectRecId, querystr)
 							)
 							RelatedObj = Sql.GetFirst(
-								"SELECT RECORD_ID, SAPCPQ_ATTRIBUTE_NAME, NAME FROM SYOBJR WHERE PARENT_LOOKUP_REC_ID = '"
+								"SELECT RECORD_ID, SAPCPQ_ATTRIBUTE_NAME, NAME FROM SYOBJR(NOLOCK) WHERE PARENT_LOOKUP_REC_ID = '"
 								+ str(ObjectRecId)
 								+ "' AND OBJ_REC_ID = '"
 								+ str(objRecId)
@@ -671,7 +671,7 @@ class TreeView:
 					ProductDict["SubTabs"] = SubTabList
 					# if TabName == "Quote":
 					try:
-						getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+						getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 					except:
 						getAccounts = ""
 					
@@ -883,7 +883,7 @@ class TreeView:
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
 						where_string = '1=1 AND'
 						gettabtext = Product.GetGlobal('settabname')						
-						getpagename  = Sql.GetFirst("select TAB_RECORD_ID from SYPRTB where TAB_ID = '"+str(gettabtext)+"'")
+						getpagename  = Sql.GetFirst("select TAB_RECORD_ID from SYPRTB(NOLOCK) where TAB_ID = '"+str(gettabtext)+"'")
 						if getpagename:
 							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and TAB_RECORD_ID = '"+str(getpagename.TAB_RECORD_ID)+"'"
 						else:
@@ -894,7 +894,7 @@ class TreeView:
 						gettabtext = Product.GetGlobal('settabname')
 						getsectid = Product.GetGlobal("NodeSecRecIdS")					
 						
-						getsectname  = Sql.GetFirst("select SECTION_RECORD_ID from SYPRSN where PROFILE_SECTION_RECORD_ID = '"+str(getsectid)+"' and PROFILE_RECORD_ID = '"+str(RecAttValue)+"'")
+						getsectname  = Sql.GetFirst("select SECTION_RECORD_ID from SYPRSN(NOLOCK) where PROFILE_SECTION_RECORD_ID = '"+str(getsectid)+"' and PROFILE_RECORD_ID = '"+str(RecAttValue)+"'")
 						if getsectname:
 							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and SECTION_RECORD_ID = '"+str(getsectname.SECTION_RECORD_ID)+"' ORDER BY SECTION_FIELD_ID ASC"
 						else:
@@ -1323,7 +1323,7 @@ class TreeView:
 								self.getPageRelatedDetails(subTabName, pageType, objRecId, ObjectRecId, querystr)
 							)
 							RelatedObj = Sql.GetFirst(
-								"SELECT RECORD_ID, SAPCPQ_ATTRIBUTE_NAME, NAME FROM SYOBJR WHERE PARENT_LOOKUP_REC_ID = '"
+								"SELECT RECORD_ID, SAPCPQ_ATTRIBUTE_NAME, NAME FROM SYOBJR(NOLOCK) WHERE PARENT_LOOKUP_REC_ID = '"
 								+ str(ObjectRecId)
 								+ "' AND OBJ_REC_ID = '"
 								+ str(objRecId)
@@ -1393,7 +1393,7 @@ class TreeView:
 																		
 								elif NodeText in ("Tree Node"):
 									RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
-									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"'") 
+									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE(NOLOCK) where PAGE_RECORD_ID = '"+str(RecAttValue) +"'") 
 									for tree in getpagename:                 
 										
 										Tree_Node = str(tree.TREE_RECORD_ID)
@@ -1604,7 +1604,7 @@ class TreeView:
 						getsectid = Product.GetGlobal("NodeSecRecIdS")
 						#Trace.Write("getsectid-----638---"+str(getsectid))
 						
-						getsectname  = Sql.GetFirst("select SECTION_RECORD_ID from SYPRSN where PROFILE_SECTION_RECORD_ID = '"+str(getsectid)+"' and PROFILE_RECORD_ID = '"+str(RecAttValue)+"'")
+						getsectname  = Sql.GetFirst("select SECTION_RECORD_ID from SYPRSN(NOLOCK) where PROFILE_SECTION_RECORD_ID = '"+str(getsectid)+"' and PROFILE_RECORD_ID = '"+str(RecAttValue)+"'")
 						if getsectname:
 							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and SECTION_RECORD_ID = '"+str(getsectname.SECTION_RECORD_ID)+"'"
 						else:
@@ -2036,7 +2036,7 @@ class TreeView:
 									image_url =""
 									
 									try:
-										get_status = Sql.GetFirst("SELECT CONFIGURATION_STATUS FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, NodeText ) )
+										get_status = Sql.GetFirst("SELECT CONFIGURATION_STATUS FROM SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, NodeText ) )
 										if get_status:
 											if get_status.CONFIGURATION_STATUS == 'COMPLETE':
 												image_url = 'config_status_icon.png'
@@ -2063,7 +2063,7 @@ class TreeView:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
 								elif str(ObjName).strip() == 'SAQRIB' and str(NodeName) == 'PRDOFR_ID':
 									#Trace.Write("Billing___conc"+str(where_string))
-									get_service_name_bill = Sql.GetFirst("SELECT * FROM SAQTSV WHERE {} AND SERVICE_ID = '{}'".format(where_string,NodeText) )
+									get_service_name_bill = Sql.GetFirst("SELECT * FROM SAQTSV(NOLOCK) WHERE {} AND SERVICE_ID = '{}'".format(where_string,NodeText) )
 									if get_service_name_bill:
 										NodeText_temp = NodeText +' - '+ get_service_name_bill.SERVICE_DESCRIPTION
 								if NodeText_temp:
