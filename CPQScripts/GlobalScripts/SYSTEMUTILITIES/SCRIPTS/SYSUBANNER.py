@@ -708,7 +708,7 @@ def Related_Sub_Banner(
                                 # else:
                                 #     sec_rel_sub_bnr += ''
                         else:
-                            Trace.Write("lenmultibtn---")
+                            Trace.Write("lenmultibtn---+str"+str(sec_rel_sub_bnr))
                             sec_rel_sub_bnr += str(add_button)
 
 
@@ -2823,23 +2823,6 @@ def Related_Sub_Banner(
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
                                         Trace.Write('add_button->unmapped--'+str(add_button))
                                         sec_rel_sub_bnr += str(btn)
-            '''if str(currecId.CAN_DELETE).upper() == "TRUE":
-                del_btn_id = (
-                    "DELETE_ADDNEW__"
-                    + str(str(currecId.SAPCPQ_ATTRIBUTE_NAME).replace("-", "_"))
-                    + "_"
-                    + str(SYOBJH_RECORD_ID)
-                )
-                Trace.Write("390--" + str(del_btn_id))
-
-                Trace.Write("Else")
-                NORECORDS = Product.GetGlobal("RELATEDLIST_NORECORDS")
-                if str(NORECORDS) == "":
-                    sec_rel_sub_bnr += (
-                        '<button id="'
-                        + str(del_btn_id)
-                        + '" class="btnconfig" onclick="relateListBulkDelete(this)" data-target="#related_delete_POPUP" data-toggle="modal" disabled>DELETE</button>'
-                    )'''
         elif TreeParam == "Billing":
             Trace.Write("BM 1740")
             for btn in multi_buttons:
