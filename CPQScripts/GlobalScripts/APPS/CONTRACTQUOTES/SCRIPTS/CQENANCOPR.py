@@ -685,7 +685,7 @@ class AncillaryProductOperation:
 					if entitlement_display_value_tag_match:
 						display_val_dict[x[0]] = entitlement_display_value_tag_match[0].upper()
 				entxmldict[x[0]]=sub_string
-		return entxmldict
+		return entxmldict,display_val_dict
 
 	def _update_entitlement_values(self,anc_service = '',ent_table = ''):
 		try:
@@ -702,8 +702,8 @@ class AncillaryProductOperation:
 						joinstr = " AND EQUIPMENT_ID = '{}'".format(parent.EQUIPMENT_ID)
 					getall_recid = Sql.GetFirst("SELECT * FROM {} WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' AND GREENBOOK = '{}' {}".format(ent_table,self.contract_quote_record_id, self.contract_quote_revision_record_id, anc_service ,self.service_id, parent.GREENBOOK, joinstr) )
 					if getall_recid:
-						get_parent_dict = self._construct_dict_xml(parent.ENTITLEMENT_XML)
-						get_anc_xml_dict = self._construct_dict_xml(getall_recid.ENTITLEMENT_XML)
+						get_parent_dict,parent_dict_val = self._construct_dict_xml(parent.ENTITLEMENT_XML)
+						get_anc_xml_dict,anc_dict_val = self._construct_dict_xml(getall_recid.ENTITLEMENT_XML)
 						if get_parent_dict and get_anc_xml_dict:
 							for key,value in get_anc_xml_dict.items():
 								if key in get_parent_dict.keys()  :
@@ -723,6 +723,49 @@ class AncillaryProductOperation:
 								Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(ent_table,Configurationid,cpsmatchID,where_cond))
 		except Exception as e:
 			Trace.Write("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
+
+	def service_rollup(self,anc_service):	
+		##service_roll up scenario
+		try:
+			get_greenbook_value = Sql.GetList("SELECT * FROM SAQSGE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id,anc_service ,self.service_id) )
+
+			if self.tablename == 'SAQSGE' and len(get_greenbook_value) > 0:
+				flag_list = []
+				NewValue = ''
+				AttributeID = ''
+				for greenbk_rec in get_greenbook_value:
+					get_grn_dict,grn_dict_val = self._construct_dict_xml(greenbk_rec.ENTITLEMENT_XML)
+					Trace.Write("parent_dict_val--"+str(grn_dict_val))
+					if grn_dict_val :
+						if (anc_service =='Z0046' and 'AGS_Z0046_PQB_PPCPRM' in grn_dict_val.keys() ) or (anc_service ==  'Z0100' and 'AGS_Z0100_PQB_QTETYP' in grn_dict_val.keys())  :
+							flag_list.append(grn_dict_val[AttributeID]) 
+				Trace.Write("parent_dict_valiffff--"+str(flag_list))
+				
+				if flag_list :
+					if anc_service == 'Z0046':
+						AttributeID = 'AGS_Z0046_PQB_PPCPRM'
+						if 'Yes' in  flag_list  :
+							NewValue = 'Yes'
+						else:
+							NewValue = 'No'
+					elif anc_service == 'Z0100':
+						AttributeID = 'AGS_Z0100_PQB_QTETYP'
+						if 'Variable' in  flag_list  :
+							NewValue = 'Variable'
+						else:
+							NewValue = 'Fixed'
+					try:
+						Trace.Write('anc-'+str(anc_service)+'-'+str(AttributeID)+'-'+str(NewValue))						
+						add_where =''
+						whereReq = "QUOTE_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id, self.service_id, anc_service, self.contract_quote_revision_record_id)
+						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(NewValue)+"||"+str(anc_service) + "||" + 'SAQTSE'
+						result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+					except:
+						Log.Info('656--661---eroror--')
+						Trace.Write('error--296')
+
+		except:
+			pass
 
 
 	def _update_entitlement(self):
@@ -784,8 +827,8 @@ class AncillaryProductOperation:
 			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		except:
 			Log.Info('728-----')
-
-		
+		for offering in ["Z0046","Z0100"]:
+			self.service_rollup(offering)
 		self._delete_entitlement_tables_anc()
 
 	def _delete_entitlement_tables_anc(self):
