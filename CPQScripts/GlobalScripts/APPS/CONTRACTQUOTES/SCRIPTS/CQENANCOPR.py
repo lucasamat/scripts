@@ -872,7 +872,8 @@ class AncillaryProductOperation:
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}'  AND SAQTSE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSE.PAR_SERVICE_ID = '{ServiceId}'  AND ISNULL(SAQSGE.CONFIGURATION_STATUS,'') = 'COMPLETE' AND SAQSCO.GREENBOOK not in (SELECT GREENBOOK FROM SAQSGE M WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{RevisionRecordId}' AND M.SERVICE_ID = SAQTSE.SERVICE_ID AND PAR_SERVICE_ID = '{ServiceId}') ) IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id) 
 				
 				Sql.RunQuery(qtqsge_query_anc)
-				self._update_entitlement_values('Z0046','SAQSGE')
+				for offering in ["Z0046","Z0100","Z0101"]:
+					self._update_entitlement_values(offering,'SAQSGE')
 				# get_ancillary_equp = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSCE WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' {}".format(self.contract_quote_record_id, self.contract_quote_revision_record_id, self.service_id, addtional_where))
 				# if get_ancillary_equp:
 				# 	#if get_ancillary_equp.cnt == 0: 
