@@ -3159,7 +3159,7 @@ def Related_Sub_Banner(
             # Trace.Write("TreeParam-->"+str(TreeParam))
             # Trace.Write("subTabName-->"+str(subTabName))
             # Trace.Write("Multi_buttons--->"+str(multi_buttons))
-            # Trace.Write("Single_button--->"+str(add_button))
+            Trace.Write("Single_button--->"+str(sec_rel_sub_bnr))
             if len(multi_buttons)>0: ##adding dynamic buttons from SYPGAC if we have more than one button
                 for btn in multi_buttons:
                     Trace.Write("btn---"+str(btn))
