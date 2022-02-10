@@ -9,7 +9,8 @@
 import re
 import datetime
 from SYDATABASE import SQL
-
+import time
+from datetime import timedelta , date
 Sql = SQL()
 
 class ContractQuoteSpareOpertion:
