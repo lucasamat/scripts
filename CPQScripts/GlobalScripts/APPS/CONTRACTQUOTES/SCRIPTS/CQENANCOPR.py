@@ -724,6 +724,7 @@ class AncillaryProductOperation:
 		except Exception as e:
 			Trace.Write("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 
+	###hard fix for service roll up
 	def service_rollup(self,anc_service,AttributeID,NewValue):	
 		##service_roll up scenario
 		Trace.Write("1sttt--"+str(AttributeID))
