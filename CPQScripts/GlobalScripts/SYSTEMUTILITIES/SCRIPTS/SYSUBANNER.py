@@ -3110,7 +3110,7 @@ def Related_Sub_Banner(
             if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APPROVED':
                 sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and (subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
-            if str(subTabName)=="Events":
+            if str(subTabName)=="Events" and str(TreeSuperParentParam)!="Z0009":
                 sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_00011_SYOBJ_00974" onclick="PM_FrequencyInlineEdit()" class="btnconfig" >INLINE EDIT</button>')
             elif 'Add-On Products' in str(TreeParam) and ("INCLUDE ADD-ON PRODUCTS" not in sec_rel_sub_bnr) and ("ADD CREDITS" not in sec_rel_sub_bnr):
                 sec_rel_sub_bnr+= str(add_button)
