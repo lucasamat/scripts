@@ -1216,7 +1216,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					partnumber = sql_obj.PART_NUMBER))
 				#Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....	
-		if len(DEL_PN)>0:
+		if DEL_PN and len(DEL_PN)>0:
 			#Part_Numbers=str(DEL_PN).replace("[","(").replace("]",")")		
 			part_numbers=''
 			part_numbers=str(ADD_PN)
@@ -1225,7 +1225,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 
 			ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":Quote.CompositeNumber,"Delete_Partlist":DEL_PN}})
 
-		if len(ADD_PN)>100:
+		if ADD_PN and len(ADD_PN)>100:
 			#iflow for spare parts...
 			requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
 			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
