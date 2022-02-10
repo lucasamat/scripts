@@ -2499,7 +2499,7 @@ def POPUPLISTVALUEADDNEW(
 					additional_where = " AND SALESORG_ID='{}' ".format(get_sales_org.SALESORG_ID)
 			if TreeParam == "Product Offerings":
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(distinct {}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND  MAADPR.VISIBLE_INCONFIG = '1' AND MAADPR.PRDOFR_DOCTYP ='{}'  AND PRODUCT_TYPE != 'Add-On Products' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID) {} ".format(
+					"SELECT COUNT(distinct {}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND  MAADPR.VISIBLE_INCONFIG = 'TRUE' AND MAADPR.PRDOFR_DOCTYP ='{}'  AND PRODUCT_TYPE != 'Add-On Products' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID) {} ".format(
 						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",get_docutype.DOCTYP_ID,contract_quote_record_id,quote_revision_record_id,additional_where
 					)
 				)
@@ -2538,7 +2538,7 @@ def POPUPLISTVALUEADDNEW(
 				]
 			if TreeParam == "Product Offerings":
 
-				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND  MAADPR.VISIBLE_INCONFIG = '1' AND MAADPR.PRDOFR_DOCTYP ='{}' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID  )""".format(get_docutype.DOCTYP_ID,contract_quote_record_id,quote_revision_record_id)
+				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND  MAADPR.VISIBLE_INCONFIG = 'TRUE' AND MAADPR.PRDOFR_DOCTYP ='{}' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID  )""".format(get_docutype.DOCTYP_ID,contract_quote_record_id,quote_revision_record_id)
 			else:
 				where_string += """ PRODUCT_TYPE ='{}' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(
 					Product.GetGlobal("TreeParam"), contract_quote_record_id,quote_revision_record_id
