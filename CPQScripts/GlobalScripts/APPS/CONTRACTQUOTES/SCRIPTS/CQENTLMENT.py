@@ -1516,8 +1516,10 @@ class Entitlements:
 
 						# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
 						Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key)+str(ent_val_code))
-						if ent_disp_val == 'select':
+						if ent_disp_val in ('select','0'):
 							ent_disp_val =''
+						if ent_val_code in ('0'):
+							ent_val_code =''
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 							<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
