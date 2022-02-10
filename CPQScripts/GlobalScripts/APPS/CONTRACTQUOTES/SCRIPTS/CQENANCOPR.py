@@ -743,8 +743,8 @@ class AncillaryProductOperation:
 				if flag_list :
 					if anc_service == 'Z0046' and 'Yes' in flag_list:
 						NewValue = 'Yes'
-					elif anc_service == 'Z0100' and 'Variable' in  flag_list:
-						NewValue = 'Variable'
+					elif anc_service == 'Z0100' and 'Usage based' in  flag_list:
+						NewValue = 'Usage based'
 
 		except Exception as e:
 			Trace.Write("error roll up--"+str(e))
