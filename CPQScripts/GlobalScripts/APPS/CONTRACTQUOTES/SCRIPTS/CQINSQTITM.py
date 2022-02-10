@@ -798,8 +798,7 @@ class ContractQuoteItem:
 							Log.Info("===>>>>>NNN "+str("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '"))
 						Log.Info("SAQICO Entitlement Update Issue {}-{}".format(entitlement_detail.get('field')[1],entitlement_detail.get('field')[2]))
 						if entitlement_detail.get('coeff'):
-							Log.Info("SAQICO Entitlement Update Issue {}-{}".format(entitlement_detail.get('coeff')[1],entitlement_detail.get('coeff')[2]))
-				
+							Log.Info("SAQICO Entitlement Update Issue {}-{}".format(entitlement_detail.get('coeff')[1],entitlement_detail.get('coeff')[2]))				
 			else:
 				exit_flag = 0
 			
@@ -869,6 +868,13 @@ class ContractQuoteItem:
 			FROM SAQICO	(NOLOCK)			
 			WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'				
 			""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		
+		# In Warranty
+		Sql.RunQuery("""UPDATE SAQICO
+						SET INWRTY = 1		
+							FROM SAQICO (NOLOCK)							
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}W'
+							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 
 		#Z0046 pricing update
 		if self.service_id == 'Z0046':
