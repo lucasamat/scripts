@@ -1083,7 +1083,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 								if annual_qty.CUSTOMER_ANNUAL_QUANTITY < 10:
 									Trace.Write("Less Than 10")
 									Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE = 'UNSCHEDULED', DELIVERY_MODE = 'OFFSITE'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' AND CUSTOMER_ANNUAL_QUANTITY < 10".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
-									getunschedule_detail = Sql.GetList("SELECT QUOTE_SERVICE_PART_RECORD_ID from SAQSPT where SCHEDULE_MODE = 'UNSCHEDULED' QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
+									getunschedule_detail = Sql.GetList("SELECT QUOTE_SERVICE_PART_RECORD_ID from SAQSPT where SCHEDULE_MODE = 'UNSCHEDULED' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
 									if getunschedule_detail:
 										for val in getunschedule_detail:
 											Sql.RunQuery("DELETE FROM SAQSPD where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID= '{rev_rec_id}' AND SERVICE_ID = 'Z0108' and QTEREVSPT_RECORD_ID= '{val_part}'".format(QuoteRecordId = Qt_rec_id,val_part=val,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
