@@ -2983,7 +2983,7 @@ class ContractQuoteItem:
 				self._simple_items_object_insert()
 				self._simple_quote_annualized_items_insert()
 			else:	
-				if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT"):
+				if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT",'OFFERING + KIT'):
 					self._simple_quote_items_summary_insert()
 				else:
 					self._quote_items_summary_insert()
