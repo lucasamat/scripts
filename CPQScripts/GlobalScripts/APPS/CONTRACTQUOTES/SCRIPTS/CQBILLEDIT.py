@@ -27,7 +27,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 		SubTab = getamtval[0]
 		getannual_amt = value[3]
 		Trace.Write('gettotalamount-----'+str(type(getannual_amt)))
-		Trace.Write('getedited_amt-----'+str(type(getedited_amt)))
+		Trace.Write('edited value-----'+str(BT= value[2].replace(",","")))
 		getannual_amt = getannual_amt.replace(',','')
 		Trace.Write('getannual_amt---32----'+str(getannual_amt))
 		if float(getannual_amt) > float(getedited_amt):
