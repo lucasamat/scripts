@@ -295,6 +295,10 @@ class SyncFPMQuoteAndHanaDatabase:
         Trace.Write('Delete Child called pARTlIST!!!'+str(val))
 
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER IN "+str(val)+" AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
+        
+        if self.service_id == 'Z0108':
+            Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE='SCHEDULED' WHERE PART_NUMBER IN "+str(val)+" AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
+            
 
     def validation_for_arp_carp(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=954e4350-7854-465b-8c0f-d428d3ea9cdf&password=Ieo.mslSbRzZE0NmuR3ubwcbXsfqTc&scope=nodesafeaccessscope"
