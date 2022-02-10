@@ -289,9 +289,11 @@ class SyncFPMQuoteAndHanaDatabase:
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
     def delete_child_records_6kw_partlist(self,Part_Numbers):
-        Trace.Write('Delete Child called pARTlIST!!!'+str(Part_Numbers))
+        part_list=tuple(Part_Numbers)
+        val=re.sub(r'\,\)',')',str(part_list))
+        Trace.Write('Delete Child called pARTlIST!!!'+str(val))
 
-        Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER IN "+(Part_Numbers)+" AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
+        Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER IN "+str(val)+" AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
     def validation_for_arp_carp(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
