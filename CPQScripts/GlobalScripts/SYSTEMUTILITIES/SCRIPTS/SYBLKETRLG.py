@@ -1203,9 +1203,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),
 					partnumber = sql_obj.PART_NUMBER))
 				#Table.TableActions.Update(obj_name, objh_head, row)
-				##Updating the fabname and fablocation id in bulk edit scenario starts....
-		#if len(DEL_PN)>0:
-
+				##Updating the fabname and fablocation id in bulk edit scenario starts....	
 
 		if obj_name == 'SAQICO':
 			if TITLE != 'NET_PRICE' and TITLE != 'DISCOUNT':
@@ -1859,7 +1857,7 @@ except:
 	DEL_PN = None
 try:
 	ADD_PN = Param.ADD_PN
-	Trace.Write("RECORDS TO BE DELETED--"+str(list(ADD_PN)))
+	Trace.Write("RECORDS TO BE ADDED--"+str(list(ADD_PN)))
 except:
 	ADD_PN = None
 try:
