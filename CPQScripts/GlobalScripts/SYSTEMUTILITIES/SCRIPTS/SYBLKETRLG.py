@@ -1252,7 +1252,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				cd = '0'+str(cd) if len(cd)==1 else cd
 				cm = '0'+str(cm) if len(cm)==1 else cm        
 				validto = cy+cm+cd
-	
+			part_numbers=''
 			part_numbers=str(ADD_PN)
 			part_numbers=part_numbers.replace("'",'"')
 			Trace.Write('### Part Number for CQIFLSPARE-->'+str(part_numbers))
