@@ -12,6 +12,7 @@ import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 import re
+ScriptExecutor = ScriptExecutor 
 
 Sql = SQL()
 ContractRecordId = sqlforupdatePT = ""
@@ -1205,6 +1206,47 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					partnumber = sql_obj.PART_NUMBER))
 				#Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....	
+		if len(DEL_PN)>0:
+			Part_Numbers=str(DEL_PN.replace("[","(").replace("]",")"))
+			ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":Quote.CompositeNumber,"Delete_Partlist":Part_Numbers}})
+
+		if len(ADD_PN)>100:
+			#iflow for spare parts...
+			requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
+			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
+			response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
+			response=response.replace("null",'""')
+			response=eval(response)	
+			auth="Bearer"+' '+str(response['access_token'])
+
+			get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+			account_info = {}
+			for keyobj in get_party_role:
+				account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
+
+			get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_record_id)+"'")
+			
+			if get_sales_ifo:
+				salesorg = get_sales_ifo.SALESORG_ID
+				pricelist =get_sales_ifo.PRICELIST_ID
+				pricegroup =get_sales_ifo.PRICEGROUP_ID
+				cv=str(get_sales_ifo.CONTRACT_VALID_FROM)
+				(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+				cd = '0'+str(cd) if len(cd)==1 else cd
+				cm = '0'+str(cm) if len(cm)==1 else cm        
+				validfrom = cy+cm+cd
+				cv=str(get_sales_ifo.CONTRACT_VALID_TO)
+				(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+				cd = '0'+str(cd) if len(cd)==1 else cd
+				cm = '0'+str(cm) if len(cm)==1 else cm        
+				validto = cy+cm+cd
+			
+			part_numbers=''
+			part_numbers= str([spare_part for spare_part in self.values[0].splitlines()])
+			part_numbers=part_numbers.replace("'",'"')
+			Trace.Write('### Part Number for CQIFLSPARE-->'+str(part_numbers))
+			CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes',part_numbers,validfrom,validto,self.contract_quote_id,self.quote_revision_record_id,auth)
 
 		if obj_name == 'SAQICO':
 			if TITLE != 'NET_PRICE' and TITLE != 'DISCOUNT':
