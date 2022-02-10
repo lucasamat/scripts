@@ -281,6 +281,7 @@ class SyncFPMQuoteAndHanaDatabase:
                     self.records += ', '+temp_value
                 temp_value =''
                 col_flag=1
+            self.part_numbers=partList
             Log.Info("Total Records from HANA::"+str(record_count))
             Log.Info("Total Parts List:: " +str(partList))
     
@@ -296,14 +297,14 @@ class SyncFPMQuoteAndHanaDatabase:
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER IN "+str(val)+" AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
     def validation_for_arp_carp(self):
-        requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
+        requestdata = "client_id=application&grant_type=client_credentials&username=954e4350-7854-465b-8c0f-d428d3ea9cdf&password=Ieo.mslSbRzZE0NmuR3ubwcbXsfqTc&scope=nodesafeaccessscope"
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic ZWY2NjMxMmQtYmYyMC00MTZkLWE5MDItNGM2NDZhNTU0YzEwOkllby42Yzhoa1lLOVZ0RmU4SGJnVHFHZXY0"
+        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic OTU0ZTQzNTAtNzg1NC00NjViLThjMGYtZDQyOGQzZWE5Y2RmOm1zbFNiUnpaRTBObXVSM3Vid2NiWHNmcVRj"
         response = webclient.UploadString('https://oauth2.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com/oauth2/token',str(requestdata))
         response=response.replace("null",'""')
         response=eval(response)
         auth="Bearer"+' '+str(response['access_token'])
-        requestdata = '{"materials":["0010-02170","0010-02171"],"soldtoParty":"10002301","salesOrg":"2000"}'
+        requestdata = '{"materials":{},"soldtoParty":"{}","salesOrg":"{}"}'.format(str(tuple(self.part_numbers)),self.account_info['SOLD TO'],self.sales_org_id)
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.arp_carp_response = webclient.UploadString('https://carp-arp.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
