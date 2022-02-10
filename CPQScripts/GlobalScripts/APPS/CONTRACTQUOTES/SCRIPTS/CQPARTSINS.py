@@ -289,7 +289,8 @@ class SyncFPMQuoteAndHanaDatabase:
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
     def delete_child_records_6kw_partlist(self,Part_Numbers):
-        Trace.Write('Delete Child called pARTlIST!!!')
+        Trace.Write('Delete Child called pARTlIST!!!'+str(Part_Numbers))
+
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER IN "+str(Part_Numbers)+" AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
     def validation_for_arp_carp(self):
