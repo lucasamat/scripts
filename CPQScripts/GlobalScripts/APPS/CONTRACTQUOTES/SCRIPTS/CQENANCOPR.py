@@ -782,7 +782,7 @@ class AncillaryProductOperation:
 								ServiceId = 'Z0046'
 								NewValue = self.service_rollup(ServiceId,AttributeID_Pass,NewValue)
 								# value_application = 'YES'
-							elif str(val.ENTITLEMENT_ID) == 'AGS_Z0100_PQB_QTETYP':
+							elif str(val.ENTITLEMENT_ID) in ('AGS_Z0100_PQB_QTETYP','AGS_Z0100_PQB_QTITST','AGS_Z0100_PQB_BILTYP'):
 								ServiceId = 'Z0100'
 								AttributeID_Pass = str(val.ENTITLEMENT_ID)
 								NewValue = self.service_rollup(ServiceId,AttributeID_Pass,NewValue)
