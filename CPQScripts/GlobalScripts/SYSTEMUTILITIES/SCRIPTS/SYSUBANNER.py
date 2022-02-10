@@ -2826,7 +2826,11 @@ def Related_Sub_Banner(
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
                                         Trace.Write('add_button->unmapped--'+str(add_button))
                                         sec_rel_sub_bnr += str(btn)
-                       
+                        elif TreeParam == "Delivery Schedule":
+                            Trace.Write("2836--multi_buttons---2830-----"+str(multi_buttons))
+                            for btn in multi_buttons:
+                                sec_rel_sub_bnr += (btn)
+                            Trace.Write(sec_rel_sub_bnr)
         elif TreeParam == "Billing":
             Trace.Write("BM 1740")
             for btn in multi_buttons:
