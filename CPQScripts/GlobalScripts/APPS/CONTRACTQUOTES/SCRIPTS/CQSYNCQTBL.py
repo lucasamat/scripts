@@ -1444,6 +1444,7 @@ class SyncQuoteAndCustomTables:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')].append(equipment_json_data.get('EQUIPMENT_IDS'))
 								else:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')]
+								Log.Info("equipment_data"+str(equipment_data))
 						
 						##A055S000P01-8690 starts..
 						if payload_json.get('SAEMPL'):
@@ -1882,7 +1883,7 @@ class SyncQuoteAndCustomTables:
 								# 	Log.Info("EXCEPT UPDATE SAQSPT---------")
 								#Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
 							if equipment_data:
-								#Log.Info(""""EQUIPMENTS INSERT""")
+								Log.Info(""""EQUIPMENTS INSERT""")
 								for fab_location_id, value in equipment_data.items():			
 									SAQFEQ_start = time.time()
 									Log.Info("""
