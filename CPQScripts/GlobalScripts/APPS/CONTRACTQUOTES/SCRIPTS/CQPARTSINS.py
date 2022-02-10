@@ -254,6 +254,7 @@ class SyncFPMQuoteAndHanaDatabase:
             self.columns = 'QUOTE_RECORD_ID,QTEREV_RECORD_ID'
             value  = '''(\"{}\",\"{}\"'''.format(self.quote_record_id,self.quote_revision_id)
             col_flag = 0
+            partList=[]
             for record in re.finditer(pattern, response):
                 #rec = re.sub(r'\{|\}','',record.group(1))
                 record_count +=1
@@ -263,7 +264,7 @@ class SyncFPMQuoteAndHanaDatabase:
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
                     if str(ele.group(1)) == 'PARENT_PART_NUMBER':
-                        self.part_numbers.append(str(ele.group(2)))
+                        partList.append(str(ele.group(2)))
                     #    partdesc = ele.group(2) or ''
                     #    partdesc = re.sub(r"'|\\","",partdesc)
                     #    temp_value +=','+partdesc if partdesc !='' else None
@@ -281,7 +282,7 @@ class SyncFPMQuoteAndHanaDatabase:
                 temp_value =''
                 col_flag=1
             Log.Info("Total Records from HANA::"+str(record_count))
-            Log.Info("Total Parts List:: " +str(self.part_numbers))
+            Log.Info("Total Parts List:: " +str(partList))
     
     def delete_child_records_6kw(self):
         Trace.Write('Delete Child called!!!')
