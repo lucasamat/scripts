@@ -728,9 +728,6 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
 		# Quote Item Inserts - Ends
-
-	
-		
 	return status
 try:
 	quote_item_insert = Param.quote_item_insert
