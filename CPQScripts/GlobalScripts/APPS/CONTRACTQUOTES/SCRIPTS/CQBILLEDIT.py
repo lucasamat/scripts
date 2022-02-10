@@ -27,7 +27,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 		SubTab = getamtval[0]
 		getannual_amt = value[3]
 		Trace.Write('gettotalamount-----'+str(type(getannual_amt)))
-		Trace.Write('edited value-----'+str(BT= value[2].replace(",","")))
+		#Trace.Write('edited value-----'+str(BT= value[2].replace(",","")))
 		getannual_amt = getannual_amt.replace(',','')
 		Trace.Write('getannual_amt---32----'+str(getannual_amt))
 		gettotalamt_beforeupdate = Sql.GetFirst("SELECT ANNUAL_BILLING_AMOUNT FROM SAQIBP WHERE  QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and EQUIPMENT_ID = '{EID}'".format(cq=str(ContractRecordId),EID=value[0], revision_rec_id = quote_revision_record_id ))
