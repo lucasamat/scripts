@@ -574,28 +574,9 @@ class ViolationConditions:
                                 if checkVal:
                                     fflag = 1
                                 else:
-                                    entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
-                                    if entitlement_obj:
-                                        import re
-
-                                        quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-
-                                        attr = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
-
-                                        value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
-
-                                        entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-
-                                        for m in re.finditer(quote_item_tag, entitlement_xml):
-                                            sub_string = m.group(1)
-                                            attribute_id =re.findall(attr,sub_string)
-                                            attribute =re.findall(value,sub_string)
-
-                                            if len(attribute) != 0 and len(attribute_id) != 0:
-                                                fflag = 1
-                                                Trace.Write("FLAG SET TO 1")
-                                                break
-                    #A055S000P01-15007 END
+                                    BDEnt(RecordId)             
+                                    
+                                    #A055S000P01-15007 END
                     #A055S000P01-3687 START
                     elif "ACAPMA" in result.WHERE_CONDITION_01:
                         getData = Sql.GetFirst("SELECT CpqTableEntryId FROM ACAPMA (NOLOCK) WHERE {} '{}'".format(result.WHERE_CONDITION_01,RecordId))
@@ -938,11 +919,68 @@ class ViolationConditions:
         if entitlement_obj:
             import re
             for x,y in BDHead.items():
-                getEnt = Sql.GetFirst("SELECT ENTITLEMENT_ID FROM PRENVL (NOLOCK) WHERE ENTITLEMENT_DESCRIPTION = '{}' AND SERVICE_ID = 'Z0091'".format(x))
+                getEnt = Sql.GetFirst("SELECT ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE FROM PRENVL (NOLOCK) WHERE ENTITLEMENT_DESCRIPTION = '{}' AND SERVICE_ID = 'Z0091'".format(x))
                 quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
                 attrstr = '<ENTITLEMENT_ID>{}</ENTITLEMENT_ID>'.format(str(getEnt.ENTITLEMENT_ID))
                 attr = re.compile(attrstr)
-                valuestr = '<ENTITLEMENT_DISPLAY_VALUE>{}</ENTITLEMENT_DISPLAY_VALUE>'.format(str(getEnt.ENTITLEMENT_ID)) 
+                
+                valuestr = '<ENTITLEMENT_DISPLAY_VALUE>{}</ENTITLEMENT_DISPLAY_VALUE>'.format(str(getEnt.ENTITLEMENT_DISPLAY_VALUE)) 
+                value = re.compile(valuestr)
+                
+
+                entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+
+                for m in re.finditer(quote_item_tag, entitlement_xml):
+                    sub_string = m.group(1)
+                    attribute_id =re.findall(attr,sub_string)
+                    attribute =re.findall(value,sub_string)
+
+                    if len(attribute) != 0 and len(attribute_id) != 0:
+                        fflag = 1
+                        Trace.Write("FLAG SET TO 1")
+                        break
+    def BDEnt(self,RecordId):
+        BDHead = {"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"}
+        
+        entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
+        if entitlement_obj:
+            import re
+            for x,y in BDHead.items():
+                getEnt = Sql.GetFirst("SELECT ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE FROM PRENVL (NOLOCK) WHERE ENTITLEMENT_DESCRIPTION = '{}' AND SERVICE_ID = 'Z0091'".format(x))
+                quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                attrstr = '<ENTITLEMENT_ID>{}</ENTITLEMENT_ID>'.format(str(getEnt.ENTITLEMENT_ID))
+                attr = re.compile(attrstr)
+                
+                valuestr = '<ENTITLEMENT_DISPLAY_VALUE>{}</ENTITLEMENT_DISPLAY_VALUE>'.format(str(getEnt.ENTITLEMENT_DISPLAY_VALUE)) 
+                value = re.compile(valuestr)
+                
+
+                entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+
+                for m in re.finditer(quote_item_tag, entitlement_xml):
+                    sub_string = m.group(1)
+                    attribute_id =re.findall(attr,sub_string)
+                    attribute =re.findall(value,sub_string)
+
+                    if len(attribute) != 0 and len(attribute_id) != 0:
+                        fflag = 1
+                        Trace.Write("FLAG SET TO 1")
+                        break
+    
+    def NSDREnt(self,RecordId):
+               
+        BDHead = {"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"}
+        
+        entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
+        if entitlement_obj:
+            import re
+            for x,y in BDHead.items():
+                getEnt = Sql.GetFirst("SELECT ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE FROM PRENVL (NOLOCK) WHERE ENTITLEMENT_DESCRIPTION = '{}' AND SERVICE_ID = 'Z0091'".format(x))
+                quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                attrstr = '<ENTITLEMENT_ID>{}</ENTITLEMENT_ID>'.format(str(getEnt.ENTITLEMENT_ID))
+                attr = re.compile(attrstr)
+                
+                valuestr = '<ENTITLEMENT_DISPLAY_VALUE>{}</ENTITLEMENT_DISPLAY_VALUE>'.format(str(getEnt.ENTITLEMENT_DISPLAY_VALUE)) 
                 value = re.compile(valuestr)
                 
 
