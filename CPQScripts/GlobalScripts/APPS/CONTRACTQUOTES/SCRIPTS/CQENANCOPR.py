@@ -788,8 +788,8 @@ class AncillaryProductOperation:
 							else:
 								if 'AGS_Z0046' in val.ENTITLEMENT_ID:
 									ServiceId = 'Z0046'
-									if NewValue == '0':
-										NewValue =''
+									# if NewValue == '0':
+									# 	NewValue =''
 									AttributeID_Pass = val.ENTITLEMENT_ID
 								elif 'AGS_Z0101' in val.ENTITLEMENT_ID:
 									ServiceId = 'Z0101'
