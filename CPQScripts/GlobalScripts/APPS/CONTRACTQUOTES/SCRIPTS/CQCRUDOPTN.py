@@ -5139,7 +5139,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						saqgpa_backup_table.QTEREV_RECORD_ID,
 						saqgpa_backup_table.QTESRV_RECORD_ID,
 						saqgpa_backup_table.QTESRVGBK_RECORD_ID,
-						saqgpa_backup_table.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEREVPME_RECORD_ID
+						saqgpa_backup_table.QTEREVPME_RECORD_ID
 						FROM {saqgpa_backup_table} (NOLOCK)  saqgpa_backup_table
 					JOIN MAEQUP(NOLOCK) ON MAEQUP.PAR_EQUIPMENT_RECORD_ID = saqgpa_backup_table.EQUIPMENT_RECORD_ID 
 					WHERE saqgpa_backup_table.QUOTE_RECORD_ID = '{QuoteRecordId}' AND saqgpa_backup_table.
@@ -5553,7 +5553,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						saqgpa_backup_table.QTEREV_RECORD_ID,
 						saqgpa_backup_table.QTESRV_RECORD_ID,
 						saqgpa_backup_table.QTESRVGBK_RECORD_ID,
-						saqgpa_backup_table.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEREVPME_RECORD_ID
+						saqgpa_backup_table.QTEREVPME_RECORD_ID
 						FROM {saqgpa_backup_table} (NOLOCK)  saqgpa_backup_table
 					JOIN SYSPBT(NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = saqgpa_backup_table.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = saqgpa_backup_table.QTEREV_RECORD_ID
 					JOIN MAEQUP(NOLOCK) ON MAEQUP.PAR_EQUIPMENT_RECORD_ID = saqgpa_backup_table.EQUIPMENT_RECORD_ID
