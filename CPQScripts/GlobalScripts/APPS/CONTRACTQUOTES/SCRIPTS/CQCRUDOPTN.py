@@ -3290,6 +3290,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')
 		self.applied_preventive_maintainence_quote_type_changed = kwargs.get('applied_preventive_maintainence_quote_type_changed')
+		self.tools_from_ui = kwargs.get('tools_from_ui')
 		self.entitlement_value = kwargs.get('entitlement_value')
 		self.pmevents_changes_insert =  kwargs.get('pmevents_changes_insert')
 		self.pm_entlmnt_val = kwargs.get('pm_entlmnt_val')
@@ -4932,7 +4933,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	
 	def applied_preventive_maintainence(self, **kwargs):
 		###Deleting the SAQSCA,SAQSAP and SAQSKP TABLE records when the user is changing the quote type from Tool Based to other values...
-		if kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes":
+		Trace.Write("")
+		if kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes" and kwargs.get('tools_from_ui') != "Yes":
 			delete_obj_list = ["SAQSCA","SAQSAP","SAQSKP"]
 			for object in delete_obj_list:
 				Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(object,self.contract_quote_record_id, self.tree_param,self.quote_revision_record_id ))
@@ -5922,7 +5924,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							# quote_type_attribute_value =re.findall(pattern_name,sub_string)
 							#Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value)+" - "+str(pm_event_attribute_value))
 							if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
-								applied_preventive_maintainence_quote_type_changed = "Yes"
+								if self.tree_param == 'Z0010':
+									applied_preventive_maintainence_quote_type_changed = "Yes"
 								self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
 								qte_type_flag=1
 							else:
@@ -6057,7 +6060,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							# quote_type_attribute_value =re.findall(pattern_name,sub_string)
 							# Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value))
 							if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
-								applied_preventive_maintainence_quote_type_changed = "Yes"
+								#applied_preventive_maintainence_quote_type_changed = "Yes"
 								self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
 								qte_type_flag=1
 							else:
@@ -6835,6 +6838,10 @@ else:
 			Trace.Write("inclusion Exception")
 			inclusion = 0
 		try:
+			tools_from_ui = Param.tools_from_ui
+		except:
+			tools_from_ui = "No"
+		try:
 			tool_type = Param.TOOL_TYPE
 		except:
 			tool_type = ""
@@ -6862,7 +6869,7 @@ else:
 node_object = Factory(node_type)(
 	opertion=opertion, action_type=action_type, table_name=table_name, values=values, 
 	all_values=all_values, trigger_from=trigger_from, contract_quote_record_id=contract_quote_record_id, 
-	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,tool_type=tool_type,inclusion = inclusion,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed,pmevents_changes_insert= pmevents_changes_insert,pm_entlmnt_val=pm_entlmnt_val,entitlement_value = entitlement_value
+	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,tool_type=tool_type,inclusion = inclusion,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed,pmevents_changes_insert= pmevents_changes_insert,pm_entlmnt_val=pm_entlmnt_val,entitlement_value = entitlement_value,tools_from_ui = tools_from_ui
 )
 
 if opertion == "INSERT":
