@@ -1827,7 +1827,7 @@ def Related_Sub_Banner(
             else:
                 Trace.Write('addon enti11')
                 addon_prd_rec_id = Product.GetGlobal('addon_prd_rec_id')
-                if TreeTopSuperParentParam == "Comprehensive Services" and TreeParentParam =="DSM" and TreeParam != "Add-On Products":
+                if TreeTopSuperParentParam == "Comprehensive Services" and TreeParam != "Add-On Products" and (subTabName == "Details"):
                     get_addon_service_desc = Sql.GetFirst("SELECT SERVICE_ID,SERVICE_DESCRIPTION FROM SAQRGG (NOLOCK) WHERE QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID = '{}'".format(CurrentRecordId))
                 else:
                     get_addon_service_desc = Sql.GetFirst("SELECT * FROM SAQSGB (NOLOCK) WHERE QUOTE_SERVICE_GREENBOOK_RECORD_ID  = '"+str(addon_prd_rec_id)+"'")
