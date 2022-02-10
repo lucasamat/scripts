@@ -743,8 +743,12 @@ class AncillaryProductOperation:
 				if flag_list :
 					if anc_service == 'Z0046' and 'Yes' in flag_list:
 						NewValue = 'Yes'
-					elif anc_service == 'Z0100' and 'Usage based' in  flag_list:
+					elif anc_service == 'Z0100' and AttributeID == 'AGS_Z0100_PQB_QTETYP' and 'Usage based' in  flag_list:
 						NewValue = 'Usage based'
+					elif anc_service == 'Z0100' and AttributeID == 'AGS_Z0100_PQB_QTITST' and 'Offering+GNBk+Child Grp of Equ' in  flag_list:
+						NewValue = 'Offering+GNBk+Child Grp of Equ'
+					elif anc_service == 'Z0100' and AttributeID == 'AGS_Z0100_PQB_BILTYP' and 'Variable' in  flag_list:
+						NewValue = 'Variable'
 
 		except Exception as e:
 			Trace.Write("error roll up--"+str(e))
