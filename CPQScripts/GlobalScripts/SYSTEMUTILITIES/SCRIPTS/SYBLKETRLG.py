@@ -15,6 +15,7 @@ import re
 ScriptExecutor = ScriptExecutor 
 
 Sql = SQL()
+webclient = System.Net.WebClient()
 ContractRecordId = sqlforupdatePT = ""
 try:
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
@@ -24,6 +25,10 @@ try:
 	Qt_rec_id = Quote.GetGlobal("contract_quote_record_id")
 except:
 	Qt_rec_id = ""
+try:	
+	rev_rec_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+	rev_rec_id = ""
 
 userId = str(User.Id)
 userName = str(User.UserName)
@@ -1212,7 +1217,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				#Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....	
 		if len(DEL_PN)>0:
-			#Part_Numbers=str(DEL_PN).replace("[","(").replace("]",")")							
+			#Part_Numbers=str(DEL_PN).replace("[","(").replace("]",")")		
+			part_numbers=''
+			part_numbers=str(ADD_PN)
+			part_numbers=part_numbers.replace("'",'"')
+			Trace.Write("Parts"+str(part_numbers))
+
 			ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":Quote.CompositeNumber,"Delete_Partlist":DEL_PN}})
 
 		if len(ADD_PN)>100:
@@ -1225,12 +1235,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			response=eval(response)	
 			auth="Bearer"+' '+str(response['access_token'])
 
-			get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+			get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(rev_rec_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
 			account_info = {}
 			for keyobj in get_party_role:
 				account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
 
-			get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_record_id)+"'")
+			get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(rev_rec_id)+"'")
 			
 			if get_sales_ifo:
 				salesorg = get_sales_ifo.SALESORG_ID
@@ -1251,7 +1261,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			part_numbers= str([spare_part for spare_part in self.values[0].splitlines()])
 			part_numbers=part_numbers.replace("'",'"')
 			Trace.Write('### Part Number for CQIFLSPARE-->'+str(part_numbers))
-			CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes',part_numbers,validfrom,validto,self.contract_quote_id,self.quote_revision_record_id,auth)
+			CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes',part_numbers,validfrom,validto,Qt_rec_id,rev_rec_id,auth)
 
 		if obj_name == 'SAQICO':
 			if TITLE != 'NET_PRICE' and TITLE != 'DISCOUNT':
