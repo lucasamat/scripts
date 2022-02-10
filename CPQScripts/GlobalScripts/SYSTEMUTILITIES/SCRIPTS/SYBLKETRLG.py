@@ -1212,7 +1212,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				#Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....	
 		if len(DEL_PN)>0:
-			Part_Numbers=str(DEL_PN.replace("[","(").replace("]",")"))
+			Part_Numbers=str(DEL_PN).replace("[","(").replace("]",")")							
 			ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":Quote.CompositeNumber,"Delete_Partlist":Part_Numbers}})
 
 		if len(ADD_PN)>100:
