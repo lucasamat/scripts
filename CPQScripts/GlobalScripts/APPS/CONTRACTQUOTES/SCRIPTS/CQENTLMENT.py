@@ -1216,6 +1216,8 @@ class Entitlements:
 							else:
 								ancillary_object_dict['Z0048'] = "DELETE"
 						#(key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId in ("Z0035")) or
+						elif "AGS_Z0091" in key:
+							Quote.SetGlobal("EntApprovals","Yes")
 						elif "GEN_IDLALW" in key:
 							Trace.Write("1125 entvalue"+str(entitlement_value))
 							if entitlement_value == "Yes":
@@ -1571,7 +1573,8 @@ class Entitlements:
 				#Trace.Write("TEST COMMIT")
 				#15007 START
 
-				if Quote.GetGlobal("SplitQuote") == "Yes":
+				if Quote.GetGlobal("SplitQuote") == "Yes" or Quote.GetGlobal("EntApprovals") == "Yes":
+					Quote.SetGlobal("EntApprovals","No")
 					Quote.SetGlobal("SplitQuote","No")
 					GetSelf = Sql.GetFirst("SELECT CpqTableEntryId,APRTRXOBJ_ID FROM ACAPMA (NOLOCK) WHERE APRCHN_ID = 'SELFAPPR' AND APRTRXOBJ_RECORD_ID = '{}'".format(self.revision_recordid))
 					if GetSelf is not None:
