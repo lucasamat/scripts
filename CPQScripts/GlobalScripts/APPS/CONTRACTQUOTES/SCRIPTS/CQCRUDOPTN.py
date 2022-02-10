@@ -3440,6 +3440,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								RelocationEqType=relocation if self.tree_parent_level_1 == 'Complementary Products' else ''
 							)
 				)
+				#Z0099 UPDATE TEMP_TOOL FLAG
+				QueryStatement ="""UPDATE SAQSCO SET TEMP_TOOL ='1' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0099'  """.format(self.contract_quote_record_id,self.quote_revision_record_id)
+				Sql.RunQuery(QueryStatement)
 			if self.tree_param == "Sending Equipment":
 				self._process_query(
 					"""
@@ -3668,7 +3671,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							account_record_id=self.account_record_id,
 							RelocationEqType='Receiving Equipment' 
 						)
-				)		
+				)
+				#Z0099 UPDATE TEMP_TOOL FLAG
+				QueryStatement ="""UPDATE SAQSCO SET TEMP_TOOL ='1' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0099'  """.format(self.contract_quote_record_id,self.quote_revision_record_id)
+				Sql.RunQuery(QueryStatement)
+						
 		else:
 			#Trace.Write('3436---'+str(self.tree_param))
 			Trace.Write("self.trigger_from ---->"+str(self.trigger_from))
@@ -3800,7 +3807,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						)
 			)
 			#if Quote.GetGlobal("ANCILLARY") == "YES":
-			
+			#Z0099 UPDATE TEMP_TOOL FLAG
+			QueryStatement ="""UPDATE SAQSCO SET TEMP_TOOL ='1' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0099'  """.format(self.contract_quote_record_id,self.quote_revision_record_id)
+			Sql.RunQuery(QueryStatement)
 			
 
 			#4393 start
