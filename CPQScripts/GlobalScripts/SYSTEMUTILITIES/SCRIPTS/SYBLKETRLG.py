@@ -13,6 +13,7 @@ import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 import re
 ScriptExecutor = ScriptExecutor 
+import CQIFLSPARE
 
 Sql = SQL()
 webclient = System.Net.WebClient()
