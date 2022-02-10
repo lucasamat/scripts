@@ -288,6 +288,10 @@ class SyncFPMQuoteAndHanaDatabase:
         Trace.Write('Delete Child called!!!')
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
+    def delete_child_records_6kw_partlist(self,Part_Numbers):
+        Trace.Write('Delete Child called pARTlIST!!!')
+        Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER IN "+str(Part_Numbers)+" AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
+
     def validation_for_arp_carp(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=ef66312d-bf20-416d-a902-4c646a554c10&password=Ieo.6c8hkYK9VtFe8HbgTqGev4&scope=fpmxcsafeaccess"
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
@@ -311,10 +315,21 @@ try:
 except Exception:
     Parameter["Action"] = 'Default'
 
+try:
+    Parameter["Delete_Partlist"] = Param.CPQ_Columns["Delete_Partlist"]
+except Exception:
+    Parameter["Delete_Partlist"] = ""
+
+
 if Parameter["Action"] == 'Delete':
     fpm_obj = SyncFPMQuoteAndHanaDatabase()
     fpm_obj.fetch_quotebasic_info()
-    fpm_obj.delete_child_records_6kw()    
+    if Parameter["Delete_Partlist"]:
+        fpm_obj.delete_child_records_6kw_partlist(Parameter["Delete_Partlist"])
+    else:
+         fpm_obj.delete_child_records_6kw()
+  
+
 if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     fpm_obj = SyncFPMQuoteAndHanaDatabase()
     fpm_obj.fetch_quotebasic_info()
