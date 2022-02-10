@@ -148,7 +148,7 @@ def ChildEntRequest(partnumber,tableName,where):
 					webclient = System.Net.WebClient()
 					
 					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-						
+					Trace.Write("enval--end_id --"+str(row.ENTITLEMENT_ID)+'-'+str(row.ENTITLEMENT_VALUE_CODE))
 					#webclient.Headers.Add("If-Match", "111")
 					webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
 					get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(row.ENTITLEMENT_ID)+"' and SERVICE_ID = '"+str(partnumber)+"'")	
