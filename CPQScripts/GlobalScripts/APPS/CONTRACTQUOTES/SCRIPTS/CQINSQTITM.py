@@ -2148,7 +2148,7 @@ class ContractQuoteItem:
 							null as LINE,
 							IQ.KIT_ID as OBJECT_ID,
 							'KIT' as OBJECT_TYPE,
-							IQ.PM_ID,
+							null as PM_ID,
 							null as PM_RECORD_ID, 
 							IQ.GOTCODE_RECORD_ID,
 							IQ.GOT_CODE,
