@@ -869,7 +869,7 @@ try:
 	parts_list_include = Param.parts_list_include
 except:
 	parts_list_include = ''
-Trace.Write("parts_list---"+str(parts_list)+"--billing_matrix---inside--"+str(billing_matrix))
+Trace.Write("parts_list---"+str(parts_list)+"--billing_matrix---inside--"+str(billing_matrix)+'----'+str(parts_list_include))
 
 if str(parts_list) == 'True' and str(billing_matrix) == 'True':
 	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
@@ -882,6 +882,7 @@ elif str(billing_matrix) == 'True':
 	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
 	ApiResponse = ApiResponseFactory.JsonResponse(insert_spare_doc(parts_list))
 elif str(parts_list_include) == 'True' and str(parts_list) == 'True':
+	Trace.Write('881---FPPM QUote--')
 	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
 	Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content = 'YES'
 	ApiResponse = ApiResponseFactory.JsonResponse(fpm_quote_doc())
