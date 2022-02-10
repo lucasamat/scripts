@@ -1218,11 +1218,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				##Updating the fabname and fablocation id in bulk edit scenario starts....	
 		if DEL_PN and len(DEL_PN)>0:
 			#Part_Numbers=str(DEL_PN).replace("[","(").replace("]",")")		
-			part_numbers=''
-			part_numbers=str(ADD_PN)
-			part_numbers=part_numbers.replace("'",'"')
-			Trace.Write("Parts"+str(part_numbers))
-
 			ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":Quote.CompositeNumber,"Delete_Partlist":DEL_PN}})
 
 		if ADD_PN and len(ADD_PN)>100:
@@ -1256,10 +1251,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				cd = '0'+str(cd) if len(cd)==1 else cd
 				cm = '0'+str(cm) if len(cm)==1 else cm        
 				validto = cy+cm+cd
-			
-			part_numbers=''
-			part_numbers= str([spare_part for spare_part in self.values[0].splitlines()])
+	
+			part_numbers=str(ADD_PN)
 			part_numbers=part_numbers.replace("'",'"')
+			Trace.Write("Parts"+str(part_numbers))
 			Trace.Write('### Part Number for CQIFLSPARE-->'+str(part_numbers))
 			CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes',part_numbers,validfrom,validto,Qt_rec_id,rev_rec_id,auth)
 
