@@ -158,17 +158,17 @@ def ChildEntRequest(partnumber,tableName,where):
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-								Trace.Write("auto update---"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( row.ENTITLEMENT_ID))
+								Trace.Write("auto update--val-"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( row.ENTITLEMENT_ID))
 								for code in row.ENTITLEMENT_VALUE_CODE.split(','):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
 								requestdata +=']},'	
-								Trace.Write("auto update---"+str(requestdata))
+								Trace.Write("auto update-val--"+str(requestdata))
 							else:
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 							requestdata += ']}'
 							requestdata = requestdata.replace('},]','}]')
-							Trace.Write("requestdata--child-- " + str(requestdata))
+							Trace.Write("requestdata--child-val- " + str(requestdata))
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 							#cpsmatchID = cpsmatchID + 1			
 							cpsmatchID = webclient.ResponseHeaders["Etag"]
