@@ -6,7 +6,7 @@ get_bill_matrix = Quote.GetCustomField('Billing_Matrix').Content
 if get_delivery_parts == "YES":
     GDLIST = Quote.GetGeneratedDocumentList('AMAT_FPM_QUOTE')
 elif get_bill_matrix == "YES":
-    GDLIST = Quote.GetGeneratedDocumentList('AMAT Total Quote ')
+    GDLIST = Quote.GetGeneratedDocumentList('AMAT Total Quote')
 else:
     GDLIST = Quote.GetGeneratedDocumentList('AMAT_SUBTOTAL_OFFERING')
 
