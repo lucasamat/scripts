@@ -307,7 +307,7 @@ class SyncFPMQuoteAndHanaDatabase:
         auth="Bearer"+' '+str(response['access_token'])
         partnos = str(self.part_numbers)
         partnos = re.sub(r"'",'',partnos)
-        requestdata = '{"materials":{},"soldtoParty":"{}","salesOrg":"{}"}'.format(str(partnos),self.account_info['SOLD TO'],self.sales_org_id)
+        requestdata = '''{"materials":{},"soldtoParty":"{}","salesOrg":"{}"}'''.format(str(partnos),self.account_info['SOLD TO'],self.sales_org_id)
         Log.Info("RData-->"+str(requestdata))
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
