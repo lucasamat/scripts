@@ -905,14 +905,15 @@ class ContractQuoteItem:
 						if xml_dict[x] and xml_dict[y]:
 							qty = float(xml_dict[x])
 							price = float(xml_dict[y])
-							#Trace.Write("ifff-- "+str(qty) +'--'+str(price) )
+							Trace.Write("ifff-- "+str(qty) +'--'+str(price) )
 							total_price += price * qty
-				#Trace.Write("price-- "+str(total_price))
+				Trace.Write("price-- "+str(total_price))
 				Sql.RunQuery("""UPDATE SAQICO 
 					SET TENVGC = '{total_price}',
-					TENVDC = '{doc_curr}'
+					TENVDC = '{total_price}'*IQ.EXCHANGE_RATE
 					FROM SAQICO (NOLOCK) 
-						WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND SAQICO.GRNBOK = '{greenbook}'""".format( QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, total_price= total_price,greenbook = item.GREENBOOK, ServiceId= self.service_id, doc_curr = total_price * self.exchange_rate))
+						INNER JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.GREENBOOK,SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID,SAQRIT.EXCHANGE_RATE FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = 'Z0046' AND BILLING_TYPE = 'Variable') IQ ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = IQ.SERVICE_ID AND SAQICO.GRNBOK  = IQ.GREENBOOK AND SAQICO.QTEITM_RECORD_ID = IQ.QUOTE_REVISION_CONTRACT_ITEM_ID
+					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND SAQICO.GRNBOK = '{greenbook}'""".format( QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,total_price= total_price,greenbook = item.GREENBOOK,ServiceId= self.service_id))
 
 		pricing_46_end = time.time()
 		Trace.Write("Z0046 Pricing Insert Time-----"+str(pricing_46_end-pricing_46_start))
