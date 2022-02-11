@@ -736,7 +736,7 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	getfpm_quote_type = Sql.GetFirst("SELECT DOCTYP_ID,QUOTE_ID,QTEREV_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}' AND DOCTYP_ID = 'ZWK1' ".format(Quote,quote_revision_record_id))
 	if getfpm_quote_type:
 		##Validation For Quote items
-		get_quote_items = Sql.GetFirst("SELECT * FROM SAQRIT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}' AND DOCTYP_ID = 'ZWK1' ".format(Quote,quote_revision_record_id))
+		get_quote_items = Sql.GetFirst("SELECT * FROM SAQRIT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}'".format(Quote,quote_revision_record_id))
 		if get_quote_items:
 			#Log.Info("====> QTPOSTACRM for FPM called from ==> "+str(getfpm_quote_type.QUOTE_ID)+'--'+str(getfpm_quote_type.QTEREV_ID))
 			ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':getfpm_quote_type.QUOTE_ID,'REVISION_ID':getfpm_quote_type.QTEREV_ID, 'Fun_type':'CPQ_TO_ECC'})
