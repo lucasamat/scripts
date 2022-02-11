@@ -164,6 +164,19 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.contract_quote_id, datetime_string)		
 		#Trace.Write("Temp Table ===> "+str(spare_parts_temp_table_name))
 		try:
+			product_offering_entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}'".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,service_id = TreeParam))
+			entitlement_xml = product_offering_entitlement_obj.ENTITLEMENT_XML
+			quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			consigned_parts_match_id = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(TreeParam)+'[^>]*?_TSC_ONSTCP</ENTITLEMENT_ID>')
+			consigned_parts_match_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			for m in re.finditer(quote_item_tag, entitlement_xml):
+				sub_string = m.group(1)
+				consigned_parts_id =re.findall(consigned_parts_match_id,sub_string)
+				consigned_parts_value =re.findall(consigned_parts_match_value,sub_string)
+				if consigned_parts_id and consigned_parts_value:
+					consigned_parts_value = consigned_parts_value[0]
+					break
+			Trace.Write("consigned_parts_value_CHK "+str(consigned_parts_value))
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
 			
 			spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
@@ -178,7 +191,6 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								BASEUOM_RECORD_ID,
 								CUSTOMER_PART_NUMBER,
 								CUSTOMER_PART_NUMBER_RECORD_ID,
-								DELIVERY_MODE,
 								EXTENDED_UNIT_PRICE,
 								PART_DESCRIPTION,
 								PART_NUMBER,
@@ -195,6 +207,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								SALESUOM_CONVERSION_FACTOR,
 								SALESUOM_ID,
 								SALESUOM_RECORD_ID, 
+								DELIVERY_MODE,
 								SCHEDULE_MODE,
 								SERVICE_DESCRIPTION,
 								SERVICE_ID,
@@ -217,7 +230,6 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
 								MAMTRL.SAP_PART_NUMBER as CUSTOMER_PART_NUMBER,
 								MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
-								CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN NULL ELSE 'OFFSITE' END AS DELIVERY_MODE,
 								0.00 as EXTENDED_UNIT_PRICE,
 								MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
 								MAMTRL.SAP_PART_NUMBER as PART_NUMBER,
@@ -234,7 +246,8 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								0.00 as SALESUOM_CONVERSION_FACTOR,
 								MAMTRL.UNIT_OF_MEASURE as SALESUOM_ID,
 								MAMTRL.UOM_RECORD_ID as SALESUOM_RECORD_ID, 
-								CASE WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY <=10 THEN 'UNSCHEDULED' ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
+								CASE WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY < {consigned_parts_value} THEN 'OFFSITE' WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY > {consigned_parts_value} THEN 'ONSITE' ELSE 'OFFSITE' END AS DELIVERY_MODE,
+								CASE WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY < {consigned_parts_value} THEN 'ON REQUEST' WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY > {consigned_parts_value} THEN 'LOW QUANTITY ONSITE' WHEN SAQTSV.SERVICE_ID='Z0108' AND  TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY <=10 THEN 'UNSCHEDULED' ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
 								SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
 								SAQTSV.SERVICE_ID as SERVICE_ID,
 								SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
