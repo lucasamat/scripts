@@ -1242,10 +1242,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			response=eval(response)	
 			auth="Bearer"+' '+str(response['access_token'])
 
-			get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(rev_rec_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+			get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(rev_rec_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
 			account_info = {}
 			for keyobj in get_party_role:
-				account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
+				account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
 
 			get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(rev_rec_id)+"'")
 			

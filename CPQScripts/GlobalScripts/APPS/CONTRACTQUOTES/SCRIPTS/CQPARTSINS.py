@@ -204,9 +204,9 @@ class SyncFPMQuoteAndHanaDatabase:
             self.quote_revision_id = saqtrv_obj.QUOTE_REVISION_RECORD_ID
             self.quote_record_id = saqtrv_obj.QUOTE_RECORD_ID
             
-        get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+        get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
         for keyobj in get_party_role:
-            self.account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
+            self.account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
         
         saqtsv_obj = Sql.GetFirst("SELECT SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQTSV where QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"'")
         if saqtsv_obj:
