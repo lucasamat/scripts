@@ -3436,8 +3436,8 @@ class TreeView:
 			attribute_value =re.findall(pattern_new_parts_only_yes,sub_string)
 			attribute_Z0010 =re.findall(pattern_new_parts_Z0010,sub_string)
 			#Trace.Write("attrvalue----->"+str(attribute_value))
-			if len(attribute_value) != 0 or len(attribute) != 0 or len(attribute_Z0010) != 0:
-				#Trace.Write("YES")
+			if len(attribute_id) != 0 and (len(attribute_value) != 0 or len(attribute) != 0 or len(attribute_Z0010) != 0):
+				Trace.Write("YES 3440")
 				flag = 1
 				break
 		if flag == 1:
