@@ -33,7 +33,7 @@ class AncillaryProductOperation:
 		# if self.tablename in ("SAQSGE","SAQSCE","SAQSAE"):
 		# 	pattern = re.compile(r''+str('FABLOCATION_ID')+'\s*\=\s*\'([^>]*?)\'')
 		# 	self.fab = re.search(pattern, self.where_string).group(1)
-		if self.tablename in ("SAQSGE","SAQSCE","SAQSAE"):
+		if self.tablename in ("SAQSGE","SAQSCE","SAQSAE"): 
 			pattern = re.compile(r''+str('GREENBOOK')+'\s*\=\s*\'([^>]*?)\'')
 			self.greenbook = re.search(pattern, self.where_string).group(1)
 		if self.tablename in ("SAQSCE","SAQSAE"):
