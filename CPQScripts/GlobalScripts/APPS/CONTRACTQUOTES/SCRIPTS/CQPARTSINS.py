@@ -305,10 +305,14 @@ class SyncFPMQuoteAndHanaDatabase:
         response=response.replace("null",'""')
         response=eval(response)
         auth="Bearer"+' '+str(response['access_token'])
-        requestdata = '{"materials":{},"soldtoParty":"{}","salesOrg":"{}"}'.format(str(tuple(self.part_numbers)),self.account_info['SOLD TO'],self.sales_org_id)
+        partnos = str(self.part_numbers)
+        partnos = re.sub(r"'",'',partnos)
+        requestdata = '{"materials":{},"soldtoParty":"{}","salesOrg":"{}"}'.format(str(partnos),self.account_info['SOLD TO'],self.sales_org_id)
+        Log.Info("RData-->"+str(requestdata))
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.arp_carp_response = webclient.UploadString('https://carp-arp.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
+        Log.Info("Resarpcarp-->"+str(self.arp_carp_response))
 
         
 Log.Info("CQPARTINS script called --> from CPI")
@@ -341,6 +345,7 @@ if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     fpm_obj.prepare_backup_table()
     fpm_obj._insert_spare_parts()
     fpm_obj.update_records_saqspt()
+    fpm_obj.validation_for_arp_carp()
     fpm_obj.insert_delivery_schedule()
     try:
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(Param.CPQ_Columns["QuoteID"]),str(Param.CPQ_Columns["RevisionRecordID"]))
