@@ -3425,6 +3425,7 @@ class TreeView:
 		pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
 		pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Flex Event Based</ENTITLEMENT_DISPLAY_VALUE>')
 		pattern_new_parts_only = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event Based</ENTITLEMENT_DISPLAY_VALUE>')
+		pattern_new_parts_Z0010 = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event based</ENTITLEMENT_DISPLAY_VALUE>')
 		#Trace.Write("PMSA----->"+str(pattern_new_parts_only_yes))
 		entitlement_xml = entitlement_obj.ENTITLEMENT_XML
 		for m in re.finditer(quote_item_tag, entitlement_xml):
@@ -3433,8 +3434,9 @@ class TreeView:
 			attribute_id =re.findall(pattern_consumable,sub_string)
 			attribute =re.findall(pattern_new_parts_only,sub_string)
 			attribute_value =re.findall(pattern_new_parts_only_yes,sub_string)
+			attribute_Z0010 =re.findall(pattern_new_parts_Z0010,sub_string)
 			#Trace.Write("attrvalue----->"+str(attribute_value))
-			if len(attribute_value) != 0 or len(attribute) != 0:
+			if len(attribute_value) != 0 or len(attribute) != 0 or len(attribute_Z0010) != 0:
 				#Trace.Write("YES")
 				flag = 1
 				break
