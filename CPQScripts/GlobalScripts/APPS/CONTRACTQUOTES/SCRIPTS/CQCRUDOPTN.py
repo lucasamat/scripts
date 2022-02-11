@@ -5284,23 +5284,15 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						RevisionId=self.quote_revision_id,
 						RevisionRecordId=self.quote_revision_record_id
 						))
-			Sql.RunQuery("""UPDATE SAQSKP
-						SET PART_NUMBER = IQ.SAP_PART_NUMBER,
-							PART_DESCRIPTION = IQ.SAP_DESCRIPTION,
-							PART_RECORD_ID = IQ.MATERIAL_RECORD_ID		
+			Sql.RunQuery("""UPDATE SAQSKP SET PART_NUMBER = MAMTRL.SAP_PART_NUMBER,
+							PART_DESCRIPTION = MAMTRL.SAP_DESCRIPTION,
+							PART_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID		
 							FROM SAQSKP (NOLOCK)
-							INNER JOIN (SELECT MAKTPT.KIT_ID,MAMTRL.SAP_PART_NUMBER,MAMTRL.SAP_DESCRIPTION,MAMTRL.MATERIAL_RECORD_ID FROM SAQSKP(NOLOCK) JOIN  MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQSKP.KIT_ID
-							JOIN MAMTRL(NOLOCK) ON MAMTRL.SAP_PART_NUMBER = MAKTPT.PART_NUMBER
-								WHERE SAQSKP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSKP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSKP.SERVICE_ID = '{TreeParam}'
-								)IQ ON SAQSKP.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQSKP.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQSKP.SERVICE_ID = '{TreeParam}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param ))
-								
-								
-			Sql.RunQuery("""UPDATE SAQSKP
-									SET QUANTITY = IQ.QUANTITY		
-										FROM SAQSKP (NOLOCK)
-										INNER JOIN (SELECT MAKTPT.KIT_ID,MAKTPT.QUANTITY FROM SAQSKP(NOLOCK) JOIN  MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQSKP.KIT_ID
-											WHERE SAQSKP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSKP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSKP.SERVICE_ID = '{TreeParam}'
-											)IQ ON SAQSKP.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQSKP.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQSKP.SERVICE_ID = '{TreeParam}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param ))
+							JOIN MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQSKP.KIT_ID
+                			JOIN MAMTRL(NOLOCK) ON MAMTRL.SAP_PART_NUMBER = MAKTPT.PART_NUMBER
+							WHERE SAQSKP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSKP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSKP.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQSKP.PART_NUMBER,'') = '' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
+							
+			Sql.RunQuery("""UPDATE SAQSKP SET QUANTITY = MAKTPT.QUANTITY FROM SAQSKP (NOLOCK) JOIN MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQSKP.KIT_ID AND MAKTPT.PART_RECORD_ID = SAQSKP.PART_RECORD_ID WHERE SAQSKP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSKP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSKP.SERVICE_ID = '{TreeParam}' AND SAQSKP.QUANTITY IS NULL """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
    
    
    
@@ -5711,26 +5703,15 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					BatchGroupRecordId=kwargs.get('batch_group_record_id')
 					))
    
-			Sql.RunQuery("""UPDATE SAQSKP
-						SET PART_NUMBER = IQ.SAP_PART_NUMBER,
-							PART_DESCRIPTION = IQ.SAP_DESCRIPTION,
-							PART_RECORD_ID = IQ.MATERIAL_RECORD_ID		
+			Sql.RunQuery("""UPDATE SAQSKP SET PART_NUMBER = MAMTRL.SAP_PART_NUMBER,
+							PART_DESCRIPTION = MAMTRL.SAP_DESCRIPTION,
+							PART_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID		
 							FROM SAQSKP (NOLOCK)
-							INNER JOIN (SELECT MAKTPT.KIT_ID,MAMTRL.SAP_PART_NUMBER,MAMTRL.SAP_DESCRIPTION,MAMTRL.MATERIAL_RECORD_ID,SYSPBT.QUOTE_RECORD_ID,SYSPBT.QTEREV_RECORD_ID FROM SAQSKP(NOLOCK) 
-                            JOIN  MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQSKP.KIT_ID
-							JOIN MAMTRL(NOLOCK) ON MAMTRL.SAP_PART_NUMBER = MAKTPT.PART_NUMBER
-                            JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQSKP.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQSKP.QTEREV_RECORD_ID 
-								WHERE SAQSKP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSKP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSKP.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
-								)IQ ON SAQSKP.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQSKP.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQSKP.SERVICE_ID = '{TreeParam}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param,BatchGroupRecordId =kwargs.get('batch_group_record_id')  ))
+							JOIN MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQSKP.KIT_ID
+                			JOIN MAMTRL(NOLOCK) ON MAMTRL.SAP_PART_NUMBER = MAKTPT.PART_NUMBER
+							WHERE SAQSKP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSKP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSKP.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQSKP.PART_NUMBER,'') = '' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
 							
-			Sql.RunQuery("""UPDATE SAQSKP
-									SET QUANTITY = IQ.QUANTITY		
-										FROM SAQSKP (NOLOCK)
-										INNER JOIN (SELECT MAKTPT.KIT_ID,MAKTPT.QUANTITY,SYSPBT.QTEREV_RECORD_ID,SYSPBT.QUOTE_RECORD_ID FROM SAQSKP(NOLOCK) 
-										JOIN  MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQSKP.KIT_ID
-										JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQSKP.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQSKP.QTEREV_RECORD_ID 
-											WHERE SAQSKP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSKP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSKP.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
-											)IQ ON SAQSKP.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQSKP.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQSKP.SERVICE_ID = '{TreeParam}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param,BatchGroupRecordId =kwargs.get('batch_group_record_id')  ))
+			Sql.RunQuery("""UPDATE SAQSKP SET QUANTITY = MAKTPT.QUANTITY FROM SAQSKP (NOLOCK) JOIN MAKTPT(NOLOCK) ON MAKTPT.KIT_ID = SAQSKP.KIT_ID AND MAKTPT.PART_RECORD_ID = SAQSKP.PART_RECORD_ID WHERE SAQSKP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSKP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSKP.SERVICE_ID = '{TreeParam}' AND SAQSKP.QUANTITY IS NULL """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
 			
 			self._process_query("""INSERT SAQGPE (
 					CPS_CONFIGURATION_ID,
