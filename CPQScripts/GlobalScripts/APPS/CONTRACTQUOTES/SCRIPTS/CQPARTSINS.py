@@ -263,7 +263,7 @@ class SyncFPMQuoteAndHanaDatabase:
                 for ele in re.finditer(pattern2,rec):
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
-                    if str(ele.group(1)) == 'PARENT_PART_NUMBER':
+                    if ele.group(1) == 'PARENT_PART_NUMBER':
                         partList.append(str(ele.group(2)))
                         Log.Info("regexvals-->"+str(ele.group(2)))
                     #    partdesc = ele.group(2) or ''
