@@ -255,17 +255,17 @@ def voucher_amt_update(Qt_id):
 		Log.Info("error in voucher")
 
 def quoteitemupdate(Qt_id):
-    delete_saqris = Sql.RunQuery("DELETE FROM SAQRIS WHERE QUOTE_ID = '{}'".format(Qt_id))
-    delete_saqrit = Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_ID = '{}'".format(Qt_id))
-    delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_ID = '{}'".format(Qt_id))
-    update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_ID = '{}'".format(Qt_id))
-    
+	delete_saqris = Sql.RunQuery("DELETE FROM SAQRIS WHERE QUOTE_ID = '{}'".format(Qt_id))
+	delete_saqrit = Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_ID = '{}'".format(Qt_id))
+	delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_ID = '{}'".format(Qt_id))
+	update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_ID = '{}'".format(Qt_id))
+	
 try: 
 	Qt_id = Param.QT_REC_ID
 except:
 	Qt_id = ""
 try:
-   	Action = Param.Operation
+	Action = Param.Operation
 except:
 	Action= ""
 
@@ -275,8 +275,9 @@ try:
 	# elif  Action == 'VOUCHER_UPDATE':
 	# 	voucher_amt_update(Qt_id)
 	else:    
-		voucher_amt_update(Qt_id)
 		calling_function = quote_items_pricing(Qt_id)
+		voucher_amt_update(Qt_id)
+		
 	
 except Exception as e:
 	Log.Info('pricing error-'+str(e))
