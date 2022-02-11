@@ -5261,9 +5261,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						SAQGPA.SERVICE_DESCRIPTION,
 						SAQGPA.SERVICE_ID,
 						SAQGPA.SERVICE_RECORD_ID,
-						SAQGPA.PAR_SERVICE_DESCRIPTION,
-						SAQGPA.PAR_SERVICE_ID,
-						SAQGPA.PAR_SERVICE_RECORD_ID,
+						'' as PAR_SERVICE_DESCRIPTION,
+						'' as PAR_SERVICE_ID,
+						'' as PAR_SERVICE_RECORD_ID,
 						SAQGPA.QTEREVPME_RECORD_ID
 						FROM
 						SAQGPA(NOLOCK)
@@ -5278,7 +5278,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					RevisionId=self.quote_revision_id,
 					RevisionRecordId=self.quote_revision_record_id
 					))
-			
+
 			self._process_query("""INSERT SAQGPE (
 					CPS_CONFIGURATION_ID,
 					CPS_MATCH_ID,
@@ -5662,9 +5662,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						SAQGPA.SERVICE_DESCRIPTION,
 						SAQGPA.SERVICE_ID,
 						SAQGPA.SERVICE_RECORD_ID,
-						SAQGPA.PAR_SERVICE_DESCRIPTION,
-						SAQGPA.PAR_SERVICE_ID,
-						SAQGPA.PAR_SERVICE_RECORD_ID,
+						'' as PAR_SERVICE_DESCRIPTION,
+						'' as PAR_SERVICE_ID,
+						'' as PAR_SERVICE_RECORD_ID,
 						SAQGPA.QTEREVPME_RECORD_ID
 						FROM SYSPBT(NOLOCK)
 						JOIN SAQGPA(NOLOCK) ON SAQGPA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQGPA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID AND SAQGPA.QTEREV_RECORD_ID = SYSPBT.QTEREV_RECORD_ID
