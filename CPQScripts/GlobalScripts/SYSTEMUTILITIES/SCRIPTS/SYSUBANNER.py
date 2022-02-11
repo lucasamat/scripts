@@ -2641,7 +2641,7 @@ def Related_Sub_Banner(
                         # )
                     # if TreeParam == "Customer Information":
                     # ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-                    # send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
+                    # send_and_receive = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION FROM SAQTIP (NOLOCK) WHERE CPQ_PARTNER_FUNCTION IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
                     # if len(send_and_receive) > 0 and TreeParam != 'Fab Locations':
                     #     sec_rel_sub_bnr += str(add_button)
                     # else:
@@ -2759,9 +2759,9 @@ def Related_Sub_Banner(
                     # elif TreeParam == "Customer Information":
                     #     send_receive =[]
                     #     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-                    #     send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
+                    #     send_and_receive = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION FROM SAQTIP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
                     #     for acnt in send_and_receive:
-                    #         send_receive.append(acnt.PARTY_ROLE)
+                    #         send_receive.append(acnt.CPQ_PARTNER_FUNCTION)
                     #     Trace.Write("send_receive_J"+str(send_receive))
                     #     if ("SENDING ACCOUNT" in send_receive and "RECEIVING ACCOUNT" in send_receive):
                     #         sec_rel_sub_bnr += ""

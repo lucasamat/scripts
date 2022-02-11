@@ -1083,7 +1083,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": custom_fields_detail.get("STPAccountID"),
 							"PARTY_NAME": custom_fields_detail.get("STPAccountName"),
-							"PARTY_ROLE": "SOLD TO",
+							"CPQ_PARTNER_FUNCTION": "SOLD TO",
 							"PHONE": custom_fields_detail.get("SoldToPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1101,7 +1101,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": bill_to_customer.CustomerCode,
 							"PARTY_NAME": bill_to_customer.FirstName,
-							"PARTY_ROLE": "BILL TO",
+							"CPQ_PARTNER_FUNCTION": "BILL TO",
 							"PHONE": bill_to_customer.BusinessPhone,
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1120,7 +1120,7 @@ class SyncQuoteAndCustomTables:
 					#         "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 					#         "PARTY_ID": bill_to_customer.CustomerCode,
 					#         "PARTY_NAME": bill_to_customer.FirstName,
-					#         "PARTY_ROLE": "SENDING ACCOUNT",
+					#         "CPQ_PARTNER_FUNCTION": "SENDING ACCOUNT",
 					#         "PHONE": bill_to_customer.BusinessPhone,
 					#     }
 					#     quote_involved_party_table_info.AddRow(sending_account_quote_data)
@@ -1137,7 +1137,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": ship_to_customer.CustomerCode,
 							"PARTY_NAME": ship_to_customer.FirstName,
-							"PARTY_ROLE": "SHIP TO",
+							"CPQ_PARTNER_FUNCTION": "SHIP TO",
 							"PHONE": ship_to_customer.BusinessPhone,
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id,
@@ -1157,7 +1157,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": custom_fields_detail.get("PayerID"),
 							"PARTY_NAME": custom_fields_detail.get("PayerName"),
-							"PARTY_ROLE": "PAYER",
+							"CPQ_PARTNER_FUNCTION": "PAYER",
 							"PHONE": custom_fields_detail.get("PayerPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1174,7 +1174,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": custom_fields_detail.get("SellerID"),
 							"PARTY_NAME": custom_fields_detail.get("SellerName"),
-							"PARTY_ROLE": "SELLER",
+							"CPQ_PARTNER_FUNCTION": "SELLER",
 							"PHONE": custom_fields_detail.get("SellerPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1191,7 +1191,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": custom_fields_detail.get("SalesUnitID"),
 							"PARTY_NAME": custom_fields_detail.get("SalesUnitName"),
-							"PARTY_ROLE": "SALES UNIT",
+							"CPQ_PARTNER_FUNCTION": "SALES UNIT",
 							"PHONE": custom_fields_detail.get("SalesUnitPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1208,7 +1208,7 @@ class SyncQuoteAndCustomTables:
 					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 					# 		"PARTY_ID": custom_fields_detail.get("SalesEmployeeID"),
 					# 		"PARTY_NAME": custom_fields_detail.get("SalesEmployeeName"),
-					# 		"PARTY_ROLE": "SALES EMPLOYEE",
+					# 		"CPQ_PARTNER_FUNCTION": "SALES EMPLOYEE",
 					# 		"PHONE": custom_fields_detail.get("SalesEmployeePhone"),
 					# 		"QTEREV_RECORD_ID":quote_revision_id,
 					# 		"QTEREV_ID":quote_rev_id
@@ -1225,7 +1225,7 @@ class SyncQuoteAndCustomTables:
 					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 					# 		"PARTY_ID": custom_fields_detail.get("EmployeeResponsibleID"),
 					# 		"PARTY_NAME": custom_fields_detail.get("EmployeeResponsibleName"),
-					# 		"PARTY_ROLE": "EMPLOYEE RESPONSIBLE",
+					# 		"CPQ_PARTNER_FUNCTION": "EMPLOYEE RESPONSIBLE",
 					# 		"PHONE": custom_fields_detail.get("EmployeeResponsiblePhone"),
 					# 		"QTEREV_RECORD_ID":quote_revision_id,
 					# 		"QTEREV_ID":quote_rev_id
@@ -1242,7 +1242,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": custom_fields_detail.get("SourceAccountID"),
 							"PARTY_NAME": custom_fields_detail.get("SourceAccountName"),
-							"PARTY_ROLE": "SOURCE ACCOUNT",
+							"CPQ_PARTNER_FUNCTION": "SOURCE ACCOUNT",
 							"PHONE": custom_fields_detail.get("SourceAccountPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1259,7 +1259,7 @@ class SyncQuoteAndCustomTables:
 					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 					# 		"PARTY_ID": custom_fields_detail.get("ContractManagerID"),
 					# 		"PARTY_NAME": custom_fields_detail.get("ContractManagerName"),
-					# 		"PARTY_ROLE": "CONTRACT MANAGER",
+					# 		"CPQ_PARTNER_FUNCTION": "CONTRACT MANAGER",
 					# 		"PHONE": custom_fields_detail.get("ContractManagerPhone"),
 					# 		"QTEREV_RECORD_ID":quote_revision_id,
 					# 		"QTEREV_ID":quote_rev_id
@@ -1664,7 +1664,7 @@ class SyncQuoteAndCustomTables:
 							#     "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							#     "PARTY_ID": bill_to_customer.CustomerCode,
 							#     "PARTY_NAME": bill_to_customer.FirstName,
-							#     "PARTY_ROLE": "SENDING ACCOUNT",
+							#     "CPQ_PARTNER_FUNCTION": "SENDING ACCOUNT",
 							#     "PHONE": bill_to_customer.BusinessPhone,
 							# }
 							# quote_involved_party_sending_account.AddRow(sending_account_quote_data)

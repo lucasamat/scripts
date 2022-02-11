@@ -31,11 +31,11 @@ def Quote_Preview(quote_id,quote_type):
         Trace.Write("No PO")
         PO1 = ""
     
-    cont_1 = Sql.GetFirst(" SELECT PARTY_NAME, EMAIL FROM SAQTIP WHERE PARTY_ROLE = 'CONTRACT MANAGER' AND QUOTE_ID ='"+str(quote_id)+"' ")
+    cont_1 = Sql.GetFirst(" SELECT PARTY_NAME, EMAIL FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'CONTRACT MANAGER' AND QUOTE_ID ='"+str(quote_id)+"' ")
     
-    cont = Sql.GetFirst(" SELECT PARTY_NAME, PHONE FROM SAQTIP WHERE PARTY_ROLE = 'SALES EMPLOYEE' AND QUOTE_ID ='"+str(quote_id)+"' ")
+    cont = Sql.GetFirst(" SELECT PARTY_NAME, PHONE FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'SALES EMPLOYEE' AND QUOTE_ID ='"+str(quote_id)+"' ")
             
-    que_pre = Sql.GetFirst(" SELECT PARTY_NAME, ADDRESS FROM SAQTIP WHERE PARTY_ROLE = 'SHIP TO' AND QUOTE_ID ='"+str(quote_id)+"'  ") 
+    que_pre = Sql.GetFirst(" SELECT PARTY_NAME, ADDRESS FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'SHIP TO' AND QUOTE_ID ='"+str(quote_id)+"'  ") 
     
     split2 =  que_pre.ADDRESS.split(", ")
     len(split2)
@@ -148,7 +148,7 @@ def Quote_Preview(quote_id,quote_type):
             add5 = ""                                                        
     except:
         pass                 
-    que_pre1 = Sql.GetFirst(" SELECT PARTY_NAME, ADDRESS FROM SAQTIP WHERE PARTY_ROLE = 'BILL TO' AND QUOTE_ID ='"+str(quote_id)+"'  ")
+    que_pre1 = Sql.GetFirst(" SELECT PARTY_NAME, ADDRESS FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'BILL TO' AND QUOTE_ID ='"+str(quote_id)+"'  ")
     split1 =  que_pre1.ADDRESS.split(", ")
     len(split1)
     if que_pre1.ADDRESS!= "":        
@@ -1184,11 +1184,11 @@ def Contract_Preview(contract_id,contract_type):
     recid = Product.Attr('QSTN_SYSEFL_QT_016909').GetValue()
     contractid = Sql.GetFirst("SELECT CONTRACT_ID, PAYMENTTERM_NAME,PO_NUMBER, CONVERT(varchar,CONTRACT_VALID_FROM,101) as CONTRACT_VALID_FROM,CONVERT(varchar,CONTRACT_VALID_TO,101) as CONTRACT_VALID_TO, CUSTOMER_NOTES FROM CTCNRT(NOLOCK) WHERE CONTRACT_RECORD_ID =  '"+str(recid)+"'")
     
-    cont_1 = Sql.GetFirst(" SELECT PARTY_NAME, EMAIL FROM CTCTIP WHERE PARTY_ROLE = 'CONTRACT MANAGER' AND CONTRACT_ID ='"+str(contract_id)+"' ")
+    cont_1 = Sql.GetFirst(" SELECT PARTY_NAME, EMAIL FROM CTCTIP WHERE CPQ_PARTNER_FUNCTION = 'CONTRACT MANAGER' AND CONTRACT_ID ='"+str(contract_id)+"' ")
     
-    cont = Sql.GetFirst(" SELECT PARTY_NAME, PHONE FROM CTCTIP WHERE PARTY_ROLE = 'SALES EMPLOYEE' AND CONTRACT_ID ='"+str(contract_id)+"' ")
+    cont = Sql.GetFirst(" SELECT PARTY_NAME, PHONE FROM CTCTIP WHERE CPQ_PARTNER_FUNCTION = 'SALES EMPLOYEE' AND CONTRACT_ID ='"+str(contract_id)+"' ")
         
-    que_pre = Sql.GetFirst(" SELECT PARTY_NAME, ADDRESS FROM CTCTIP WHERE PARTY_ROLE = 'SHIP TO' AND CONTRACT_ID ='"+str(contract_id)+"'  ")    
+    que_pre = Sql.GetFirst(" SELECT PARTY_NAME, ADDRESS FROM CTCTIP WHERE CPQ_PARTNER_FUNCTION = 'SHIP TO' AND CONTRACT_ID ='"+str(contract_id)+"'  ")    
     
     split2 =  que_pre.ADDRESS.split(", ")
     len(split2)
@@ -1301,7 +1301,7 @@ def Contract_Preview(contract_id,contract_type):
             add5 = ""                                                        
     except:
         pass
-    que_pre1 = Sql.GetFirst(" SELECT PARTY_NAME, ADDRESS FROM CTCTIP WHERE PARTY_ROLE = 'BILL TO' AND CONTRACT_ID ='"+str(contract_id)+"'  ")        
+    que_pre1 = Sql.GetFirst(" SELECT PARTY_NAME, ADDRESS FROM CTCTIP WHERE CPQ_PARTNER_FUNCTION = 'BILL TO' AND CONTRACT_ID ='"+str(contract_id)+"'  ")        
     
     
     if que_pre1.ADDRESS!= "":        
