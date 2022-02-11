@@ -73,11 +73,12 @@ class ContractQuoteCrudOpertion:
 			#Trace.Write("quote---"+str(self.contract_quote_record_id))
 		GetToolReloc = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 		#Trace.Write("count--"+str(list(GetToolReloc)))
-		GetToolReloc = list(GetToolReloc)
-		if len(GetToolReloc) == 2:
-			self.sale_type = "TOOL RELOCATION"
-		else:
-			self.sale_type = None
+		self.sale_type = None
+		if GetToolReloc:
+			GetToolReloc = list(GetToolReloc)
+			if len(GetToolReloc) == 2:
+				self.sale_type = "TOOL RELOCATION"
+				
 		#Trace.Write("SALE TYPE = "+str(self.sale_type))
 		contract_quote_record_obj = self._get_record_obj(
 			columns=[
