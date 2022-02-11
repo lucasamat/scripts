@@ -1686,7 +1686,7 @@ if SectionList is not None and (
 	or "2D2E0F0C-6013-4073-8F8B-B0D12DE6CECF" in SectionList
 	or "0EF8591C-4B5A-4EC2-863F-F8229B5FA025" in SectionList
 	or "484F3029-7844-4DE7-BBB4-535A7BAE476E" in SectionList
-):
+) and ObjectName != 'SAQGPM':
 	sectionId = tuple(SectionList)
 	sectObj = Sql.GetFirst("SELECT PRIMARY_OBJECT_NAME FROM SYSECT (NOLOCK) WHERE RECORD_ID IN " + str(sectionId) + "")
 	if sectObj is not None:
