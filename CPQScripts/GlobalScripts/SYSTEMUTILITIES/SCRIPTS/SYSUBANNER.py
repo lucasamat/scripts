@@ -864,14 +864,14 @@ def Related_Sub_Banner(
             elif (TreeParam.startswith('Sending') or TreeParam.startswith('Receiving')):
                 Trace.Write("TreeParam--"+str(TreeParam))
                 if subTabName == "Details" and TreeParam.startswith('Sending Account'):
-                    account_name = Sql.GetFirst("SELECT PARTY_NAME,PARTY_ID  FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%SENDING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                    account_name = Sql.GetFirst("SELECT PARTY_NAME,PARTY_ID  FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND CPQ_PARTNER_FUNCTION LIKE '%SENDING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     PrimaryLable = "Sending Account ID"
                     #PrimaryValue = str(TreeParam).split("-")[1].strip()
                     PrimaryValue = account_name.PARTY_ID
                     SecondLable = "Sending Account Name"
                     SecondValue = account_name.PARTY_NAME
                 elif subTabName == "Details" and TreeParam.startswith('Receiving Account'):
-                    account_name = Sql.GetFirst("SELECT PARTY_NAME,PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%RECEIVING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                    account_name = Sql.GetFirst("SELECT PARTY_NAME,PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND CPQ_PARTNER_FUNCTION LIKE '%RECEIVING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     PrimaryLable = "Receiving Account ID"
                     PrimaryValue = account_name.PARTY_ID
                     SecondLable = "Receiving Account Name"
@@ -2625,7 +2625,7 @@ def Related_Sub_Banner(
                         Trace.Write("CHK_1")
                         #Product.Attributes.GetByName("BTN_SYACTI_QT_00011_ADDFAB").Allowed = True
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-                        send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(ContractRecordId),quote_revision_record_id))
+                        send_and_receive = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION FROM SAQTIP (NOLOCK) WHERE CPQ_PARTNER_FUNCTION IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(ContractRecordId),quote_revision_record_id))
                         sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                         if len(send_and_receive) == 0 and TreeParam == "Fab Locations":
                             # if sale_type.SALE_TYPE == "NEW":
@@ -2648,7 +2648,7 @@ def Related_Sub_Banner(
                     #     sec_rel_sub_bnr += ""
                     elif TreeParam == "Fab Locations":
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-                        send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(ContractRecordId),quote_revision_record_id))
+                        send_and_receive = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION FROM SAQTIP (NOLOCK) WHERE CPQ_PARTNER_FUNCTION IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(ContractRecordId),quote_revision_record_id))
                         sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                         if len(send_and_receive) == 0 and TreeParam == "Fab Locations":
                             for btn in multi_buttons:
@@ -2724,7 +2724,7 @@ def Related_Sub_Banner(
 
                     
                     if TreeParam == "Fab Locations":
-                        GetToolReloc = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                        GetToolReloc = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' OR CPQ_PARTNER_FUNCTION = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                         if len(GetToolReloc) == 0:
                             for btn in multi_buttons:
                                 if "ADD FAB" in str(btn):
@@ -2965,7 +2965,7 @@ def Related_Sub_Banner(
                     for btn in multi_buttons:
                         Trace.Write("btn---12"+str(btn))
                         # if "PRICE" in btn:
-                        fts_scenario_check = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
+                        fts_scenario_check = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE CPQ_PARTNER_FUNCTION IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
                         Trace.Write('2409----'+str(TreeParam))
                         Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
                         #A055S000P01-7512 Start Enable/Disable the PRICE button in Quote items based on Required fields validation

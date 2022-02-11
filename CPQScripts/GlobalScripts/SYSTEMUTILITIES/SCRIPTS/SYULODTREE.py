@@ -519,7 +519,7 @@ class TreeView:
 					RecAttValue = Quote.GetGlobal("contract_quote_record_id")
 				else:
 					RecAttValue = ""
-			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 			'''if getAccounts is not None:
 				
 				# INSERT NEW RECORD
@@ -671,7 +671,7 @@ class TreeView:
 					ProductDict["SubTabs"] = SubTabList
 					# if TabName == "Quote":
 					try:
-						getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+						getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 					except:
 						getAccounts = ""
 					
@@ -1462,7 +1462,7 @@ class TreeView:
 		ChildList = []
 		NewList = []
 		try:
-			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
 			getAccounts = ""
 		#Trace.Write("=================>> ParRecId "+str(ParRecId))
@@ -1662,7 +1662,7 @@ class TreeView:
 					# 	 	where_string += " AND TREE_RECORD_ID = '"+str(tree.TREE_RECORD_ID)+"'"  
 							
 					elif str(ObjName).strip() == 'SAQTIP' and str(NodeName).strip() == 'PARTY_ID': 
-						where_string += " AND QUOTE_RECORD_ID ='{}' AND (PARTY_ROLE LIKE '%SENDING%' OR PARTY_ROLE LIKE '%RECEIVING%')  AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
+						where_string += " AND QUOTE_RECORD_ID ='{}' AND (CPQ_PARTNER_FUNCTION LIKE '%SENDING%' OR CPQ_PARTNER_FUNCTION LIKE '%RECEIVING%')  AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 					# elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID': 
 					# 	where_string = " QUOTE_RECORD_ID ='{}' ".format(Quote.GetGlobal("contract_quote_record_id"))
 					elif str(ObjName).strip() == "SAQRGG" and str(NodeName).strip() == 'GOT_CODE':
@@ -2379,7 +2379,7 @@ class TreeView:
 										self.getPageRelatedDetails(subTabName, pageType, objRecId, ObjectRecId, querystr)
 									)
 							ChildDict["SubTabs"] = SubTabList
-							#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+							#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 							if getAccounts is None:
 								findSubChildAvailable = Sql.GetList(
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
@@ -2584,7 +2584,7 @@ class TreeView:
 								#Trace.Write("ChildList"+str(ChildList))
 								
 		else:
-			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 			if getAccounts is None:
 				findChildOneObj = Sql.GetList(
 				"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
@@ -2712,7 +2712,7 @@ class TreeView:
 							if RelatedObj is not None:
 								ChildDict["id"] = RelatedObj.SAPCPQ_ATTRIBUTE_NAME
 					ChildDict["SubTabs"] = SubTabList
-					#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+					#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 					if getAccounts is None:
 						findSubChildAvailable = Sql.GetList(
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
@@ -2920,7 +2920,7 @@ class TreeView:
 		ordersBy,
 	):
 		try:
-			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
 			getAccounts = ""
 		ChildList = []
@@ -2958,7 +2958,7 @@ class TreeView:
 					else:				
 						if str(ObjName).strip() == 'SAQFGB':
 							childQuery = Sql.GetList("select  GREENBOOK from " + str(ObjName) + " (nolock) where " + str(where_string) + " GROUP BY GREENBOOK")
-				#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+				#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 				if getAccounts is None:
 					findSubChildAvailable = Sql.GetList(
 								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
@@ -3127,7 +3127,7 @@ class TreeView:
 								)
 
 						ChildDict["SubTabs"] = SubTabList
-						#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+						#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 						if getAccounts is None:
 							findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
@@ -3186,7 +3186,7 @@ class TreeView:
 						if findSubChildAvailable is not None:
 							for findSubChildOne in findSubChildAvailable:
 								ParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
-								#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+								#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 								if getAccounts is None:
 									findSubChildAvailable1 = Sql.GetList(
 												"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"

@@ -6081,15 +6081,15 @@ def POPUPLISTVALUEADDNEW(
 							Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")
 							Tier_List1 = sorted(Tier_List)
 							Trace.Write('4063--Tier_List1-----'+str(TabName))
-							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PARTY_ROLE != 'RECEIVING ACCOUNT'".format(contract_quote_record_id,quote_revision_record_id))
+							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND CPQ_PARTNER_FUNCTION != 'RECEIVING ACCOUNT'".format(contract_quote_record_id,quote_revision_record_id))
 							if str(TabName) == "Quote":
-								send_n_receive_acnt = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+								send_n_receive_acnt = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 								list_of_role = []
 								if send_n_receive_acnt:
 									for acnt in send_n_receive_acnt:
-										list_of_role.append(acnt.PARTY_ROLE)
-										if acnt.PARTY_ROLE == "SENDING ACCOUNT" or acnt.PARTY_ROLE == "RECEIVING ACCOUNT":
-											Tier_List1.remove(acnt.PARTY_ROLE)
+										list_of_role.append(acnt.CPQ_PARTNER_FUNCTION)
+										if acnt.CPQ_PARTNER_FUNCTION == "SENDING ACCOUNT" or acnt.CPQ_PARTNER_FUNCTION == "RECEIVING ACCOUNT":
+											Tier_List1.remove(acnt.CPQ_PARTNER_FUNCTION)
 									# if "SENDING ACCOUNT" not in list_of_role and "RECEIVING ACCOUNT" not in list_of_role:
 									# 	Tier_List1.remove("RECEIVING ACCOUNT")
 							Trace.Write("CHKNG_J "+str(Tier_List1))

@@ -3071,7 +3071,7 @@ class SYLDRTLIST:
 								if ik.PARTY_ROLE == "SHIP TO":
 									quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 									quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-									get_role_name = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' and PARTY_ROLE = 'SHIP TO' ")
+									get_role_name = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION = 'SHIP TO' ")
 									if get_role_name.COUNT >1:										
 										Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
 									else:										
