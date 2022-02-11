@@ -176,10 +176,19 @@ class EntitlementView():
 			ObjectName = "SAQSCE"
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
 		elif EntitlementType == "EVENT":
-			ProductPartnumber = self.treetopsuperparentparam
-			TableObj = Sql.GetFirst("select * from SAQGPE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(self.treesuperparentparam)+"' AND GOT_CODE = '"+str(self.treeparentparam)+"' AND PM_ID = '"+str(self.treeparam)+"' AND SERVICE_ID = '"+str(self.treetopsuperparentparam)+"' ")
+			if self.treetopsuperparentparam == 'Product Offerings':
+				ProductPartnumber = self.treesuperparentparam
+				got_code = self.treeparam
+				greenbok = self.treeparentparam
+			else:
+				got_code = self.treeparentparam
+				ProductPartnumber = self.treetopsuperparentparam 
+				greenbok = self.treesuperparentparam
+			#ProductPartnumber = self.treetopsuperparentparam
+			TableObj = Sql.GetFirst("select * from SAQGPE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(greenbok)+"' AND GOT_CODE = '"+str(got_code)+"' AND SERVICE_ID = '"+str(ProductPartnumber)+"' ")
 			ObjectName = "SAQGPE"
-			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(self.treesuperparentparam)+"' AND GOT_CODE = '"+str(self.treeparentparam)+"' AND PM_ID = '"+str(self.treeparam)+"' AND SERVICE_ID = '"+str(self.treetopsuperparentparam)+"'"	
+			
+			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(greenbok)+"' AND GOT_CODE = '"+str(got_code)+"'  AND SERVICE_ID = '"+str(ProductPartnumber)+"'"	
 		elif EntitlementType == "ITEMGREENBOOK":
 			ObjectName = "SAQSGE"
 			#service = self.treesuperparentparam
@@ -838,7 +847,7 @@ class EntitlementView():
 			if str(self.treeparentparam).upper() == "ADD-ON PRODUCTS":
 				self.treesuperparentparam = ""
 			Trace.Write('self.treeparam----'+str(self.treetopsuperparentparam)+'--'+str(ProductPartnumber))
-			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber or self.treeparam in ("Quote Items",'Add-On Products' ) or  self.treetopsuperparentparam.upper() == ProductPartnumber:	
+			if ProductPartnumber:	
 				#Trace.Write("@2756------->"+str(self.treeparentparam))
 				
 				for product_tab_obj in product_tabs_obj:
