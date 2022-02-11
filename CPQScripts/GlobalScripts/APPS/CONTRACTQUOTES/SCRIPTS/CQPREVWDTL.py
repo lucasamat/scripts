@@ -727,24 +727,24 @@ def countcbc(Qt_rec_id, Quote, MODE):
 	popupquery_value = popupquery.cnt
 	return popupquery_value
 
-def savecbc(Qt_rec_id, Quote, MODE):
+def savecbc(Qt_rec_id, Quote_rec_id, MODE):
 	#CBD POPUP FUNCTIONALITY ADDED UPDATE QUERY
-	Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'SUBMITTED FOR BOOKING' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))	
-	Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
-	get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+	Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'SUBMITTED FOR BOOKING' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))	
+	Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
+	get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
 	##FPM QUOTE SCENARIO
 	getfpm_quote_type = Sql.GetFirst("SELECT DOCTYP_ID,QUOTE_ID,QTEREV_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}' AND DOCTYP_ID = 'ZWK1' ".format(Quote,quote_revision_record_id))
 	if getfpm_quote_type:
 		##Validation For Quote items
-		get_quote_items = Sql.GetFirst("SELECT * FROM SAQRIT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}'".format(Quote,quote_revision_record_id))
+		get_quote_items = Sql.GetFirst("SELECT * FROM SAQRIT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}'".format(Quote_rec_id,quote_revision_record_id))
 		if get_quote_items:
-			#Log.Info("====> QTPOSTACRM for FPM called from ==> "+str(getfpm_quote_type.QUOTE_ID)+'--'+str(getfpm_quote_type.QTEREV_ID))
+			Log.Info("====> QTPOSTACRM for FPM called from ==> "+str(getfpm_quote_type.QUOTE_ID)+'--'+str(getfpm_quote_type.QTEREV_ID))
 			ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':getfpm_quote_type.QUOTE_ID,'REVISION_ID':getfpm_quote_type.QTEREV_ID, 'Fun_type':'CPQ_TO_ECC'})
 	##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
-	CQREVSTSCH.Revisionstatusdatecapture(Quote,quote_revision_record_id)
+	CQREVSTSCH.Revisionstatusdatecapture(Quote_rec_id,quote_revision_record_id)
 
 	#Added query and condition to restrict calling contract creation webservice based on document type = ZWK1(Scripting logic to prevent ZWK1 quote from being pushed to CRM) - start
-	revision_document_type_object = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+	revision_document_type_object = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
 	if revision_document_type_object:
 		if revision_document_type_object.DOCTYP_ID != "ZWK1" and revision_document_type_object.DOCTYP_ID != "":
 			crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(get_quote_details.QUOTE_ID),'REVISION_ID':str(get_quote_details.QTEREV_ID),'Fun_type':'cpq_to_crm'})
@@ -1594,8 +1594,8 @@ elif ACTION == "CBC_COUNT":
 	ApiResponse = ApiResponseFactory.JsonResponse(countcbc(Qt_rec_id, Quote, MODE))	
 elif ACTION == "CBC_SAVE":
 	MODE = "SAVE"
-	Quote = Quote.GetGlobal("contract_quote_record_id")
-	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id, Quote, MODE))
+	Quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id, Quote_rec_id, MODE))
 elif ACTION == "ANNUAL_ITEM_SAVE":
 	MODE = "SAVE"
 	Quote = Quote.GetGlobal("contract_quote_record_id")
