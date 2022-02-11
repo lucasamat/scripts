@@ -15,6 +15,7 @@ from datetime import timedelta , date
 import sys
 import System.Net
 import CQPARTIFLW
+
 Param = Param 
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
@@ -566,7 +567,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 	
 	if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
 		Trace.Write('SAQSPT delete=======')
-		#Sql.RunQuery("DELETE FROM SAQSPT WHERE CUSTOMER_ANNUAL_QUANTITY<10 AND UNIT_PRICE >50 AND SCHEDULE_MODE='ON REQUEST' AND DELIVERY_MODE='OFFSITE' AND SERVICE_ID='Z0110' AND  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+		Sql.RunQuery("DELETE FROM SAQSPT WHERE CUSTOMER_ANNUAL_QUANTITY<10 AND UNIT_PRICE >50 AND SCHEDULE_MODE='ON REQUEST' AND DELIVERY_MODE='OFFSITE' AND SERVICE_ID='Z0110' AND  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		#Trace.Write('sales11=======')
 		item_covered_obj =""
 		getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID,REVISION_STATUS from SAQTRV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
