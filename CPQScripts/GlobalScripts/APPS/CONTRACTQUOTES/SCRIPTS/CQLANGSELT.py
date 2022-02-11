@@ -538,10 +538,10 @@ def insert_bill_doc(parts_list,billing_matrix):
 			#Log.Info(qtqdoc)
 	Sql.RunQuery(saqdoc_output_insert)
 	
-	gen_doc = Quote.GenerateDocument('AMAT_SUBTOTAL_OFFERING', GenDocFormat.PDF)
+	gen_doc = Quote.GenerateDocument('AMAT Total Quote', GenDocFormat.PDF)
 	fileName = Quote.GetLatestGeneratedDocumentFileName()
 	GDB = Quote.GetLatestGeneratedDocumentInBytes()
-	List = Quote.GetGeneratedDocumentList('AMAT_SUBTOTAL_OFFERING')
+	List = Quote.GetGeneratedDocumentList('AMAT Total Quote')
 	for doc in List:
 		doc_id = doc.Id
 		doc_name = doc.FileName
