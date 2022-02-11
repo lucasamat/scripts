@@ -733,7 +733,7 @@ def savecbc(Qt_rec_id, Quote_rec_id, MODE):
 	Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
 	get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
 	##FPM QUOTE SCENARIO
-	getfpm_quote_type = Sql.GetFirst("SELECT DOCTYP_ID,QUOTE_ID,QTEREV_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}' AND DOCTYP_ID = 'ZWK1' ".format(Quote,quote_revision_record_id))
+	getfpm_quote_type = Sql.GetFirst("SELECT DOCTYP_ID,QUOTE_ID,QTEREV_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}' AND DOCTYP_ID = 'ZWK1' ".format(Quote_rec_id,quote_revision_record_id))
 	if getfpm_quote_type:
 		##Validation For Quote items
 		get_quote_items = Sql.GetFirst("SELECT * FROM SAQRIT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}'".format(Quote_rec_id,quote_revision_record_id))
@@ -1595,7 +1595,7 @@ elif ACTION == "CBC_COUNT":
 elif ACTION == "CBC_SAVE":
 	MODE = "SAVE"
 	Quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
-	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id, Quote_rec_id, MODE))
+	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id,Quote_rec_id, MODE))
 elif ACTION == "ANNUAL_ITEM_SAVE":
 	MODE = "SAVE"
 	Quote = Quote.GetGlobal("contract_quote_record_id")
