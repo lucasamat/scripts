@@ -658,8 +658,7 @@ class ContractQuoteItem:
 							FROM SAQICO (NOLOCK)
 							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQICO.SERVICE_ID
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCFVA.FACTOR_NAME,'') = 'Ceiling Margin'
-							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-		
+							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))		
 		entitlement_insert_start =  time.time()		
 		# Entitlement Columns Insert
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
