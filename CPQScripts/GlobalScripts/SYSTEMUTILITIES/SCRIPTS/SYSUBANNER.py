@@ -99,6 +99,7 @@ def Related_Sub_Banner(
     #else:     
     #Trace.Write('status-----')
     dynamic_Button = None
+    add_button = ""
     # Getting page details
     multi_buttons = []
     dropdown_multi_btn_str = '''<div id="ctr_drop" class="btn-group dropdown dropdown_multi_btn_str"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'''
@@ -135,7 +136,6 @@ def Related_Sub_Banner(
         
         if len(dynamic_Button) > 0:
             Trace.Write('len----125---dynamic_Button--'+str(dynamic_Button))
-            add_button = ""
             for btn in dynamic_Button:
                 #Trace.Write('btn-----')
                 if ("CANCEL" not in str(btn.HTML_CONTENT) and "SAVE" not in str(btn.HTML_CONTENT)):
