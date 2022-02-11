@@ -57,6 +57,7 @@ def entitlement_request(partnumber,request_url,request_type):
 	return eval(response1)
 
 def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond):
+	Trace.Write("ent_level_table--"+str(ent_level_table))
 	level_name = get_clicked_greenbook = get_greenbook_value_itemlevel = ''
 	if ent_level_table == "SAQTSE":
 		level_name = 'OFFERING LEVEL'
@@ -102,9 +103,11 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
 		level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
 	elif ent_level_table == "SAQGPE":
+		Trace.Write('107-gpe---get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 		get_clicked_greenbook = Product.GetGlobal("TreeParentLevel1")
 		level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
 	else:
+		Trace.Write('107-else---get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
 		level_name = 'OFFERING FAB GREENBOOK TOOL ASSEMBLY LEVEL'
 	get_attr_leve_based_list =[]
@@ -114,7 +117,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	for val in inserted_value_list:
 		#Trace.Write(str(level_name)+'--level_name--value---'+str(val))
 		if level_name in ["OFFERING FAB LEVEL","OFFERING LEVEL"]:
-			get_visible_fields= SqlHelper.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"'")
+			get_visible_fields= Sql.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"'")
 		else:
 			get_visible_fields= Sql.GetFirst("select PRENLI.ENTITLEMENTLEVEL_ID from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"'")
 		if get_visible_fields:
