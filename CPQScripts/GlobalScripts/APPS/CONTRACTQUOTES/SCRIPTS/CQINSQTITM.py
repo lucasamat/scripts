@@ -140,7 +140,7 @@ class ContractQuoteItem:
 		return True
 
 	def _quote_items_assembly_insert(self, update=True):
-		
+		Log.Info("===>>>> _quote_items_assembly_insert")
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
 
 		SAQSCE_BKP = "SAQSCE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
