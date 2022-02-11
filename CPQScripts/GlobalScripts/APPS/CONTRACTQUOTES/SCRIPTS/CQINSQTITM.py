@@ -46,6 +46,7 @@ class ContractQuoteItem:
 	
 	def set_contract_quote_related_details(self):
 		contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, SALE_TYPE, C4C_QUOTE_ID, QTEREV_ID, QUOTE_CURRENCY, QUOTE_CURRENCY_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
+		get_contract_revision_obj = Sql.GetFirst("SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QUOTE_REVISION_RECORD_ID = '{QuoteRevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id))
 		if contract_quote_obj:
 			self.contract_quote_id = contract_quote_obj.QUOTE_ID      
 			self.quote_type = contract_quote_obj.QUOTE_TYPE
@@ -60,6 +61,10 @@ class ContractQuoteItem:
 			self.sale_type = ''
 			self.c4c_quote_id = ''
 			self.contract_quote_revision_id = ''
+		if get_contract_revision_obj:
+			self.exchange_rate = get_contract_revision_obj.EXCHANGE_RATE
+		else:
+			self.exchange_rate = ''
 		return True
 	
 	def _set_service_type(self):
@@ -924,14 +929,53 @@ class ContractQuoteItem:
 				#Trace.Write("price-- "+str(total_price))
 				Sql.RunQuery("""UPDATE SAQICO 
 					SET TENVGC = '{total_price}',
-
-					TENVDC = '{total_price}'*IQ.EXCHANGE_RATE 
+					TENVDC = '{doc_curr}'
 					FROM SAQICO (NOLOCK) 
-						INNER JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.GREENBOOK,SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID,SAQRIT.EXCHANGE_RATE FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = 'Z0046' AND BILLING_TYPE = 'Variable') IQ ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = IQ.SERVICE_ID AND SAQICO.GRNBOK  = IQ.GREENBOOK AND SAQICO.QTEITM_RECORD_ID = IQ.QUOTE_REVISION_CONTRACT_ITEM_ID
-						WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND SAQICO.GRNBOK = '{greenbook}'""".format( QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,total_price= total_price,greenbook = item.GREENBOOK,ServiceId= self.service_id))
+						WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND SAQICO.GRNBOK = '{greenbook}'""".format( QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, total_price= total_price,greenbook = item.GREENBOOK, ServiceId= self.service_id, doc_curr = total_price * self.exchange_rate))
 
 		pricing_46_end = time.time()
 		Trace.Write("Z0046 Pricing Insert Time-----"+str(pricing_46_end-pricing_46_start))
+		if self.service_id == 'Z0116':
+			if self.get_billing_type_val.upper() == 'VARIABLE':
+				pricing_field_doc = 'TENVDC'
+				pricing_field_gl = 'TENVGC'
+			else:
+				pricing_field_doc= 'TNTVDC'
+				pricing_field_gl = 'TNTVGC'
+			Sql.RunQuery("""UPDATE SAQICO 
+				SET {pricing_field_gl} = CONCAT('-',SAQRCV.CREDIT_APPLIED_INGL_CURR), 
+				{pricing_field_doc} = CONCAT('-',SAQRCV.CREDIT_APPLIED_INGL_CURR) * SAQRIT.EXCHANGE_RATE 
+				FROM SAQICO (NOLOCK) 
+					INNER JOIN SAQRIT ON  SAQICO.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = SAQRIT.SERVICE_ID AND SAQICO.GRNBOK = SAQRIT.GREENBOOK AND SAQICO.QTEITM_RECORD_ID = SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID
+					INNER JOIN (SELECT QUOTE_RECORD_ID, QTEREV_RECORD_ID,SERVICE_ID,GREENBOOK,GL_ACCOUNT_NO,
+							SUM(ISNULL(CREDIT_APPLIED_INGL_CURR, 0)) as CREDIT_APPLIED_INGL_CURR 
+					FROM SAQRCV WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' ) SAQRCV ON SAQICO.QUOTE_RECORD_ID = SAQRCV.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQRCV.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = SAQRCV.SERVICE_ID AND SAQICO.GRNBOK  = SAQRCV.GREENBOOK AND SAQRCV.GL_ACCOUNT_NO = SAQRIT.GL_ACCOUNT_NO 
+					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' """.format( QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id, pricing_field_doc= pricing_field_doc,pricing_field_gl = pricing_field_gl ))
+		
+		elif self.service_id == 'Z0117':
+			get_greenbook_record = Sql.GetList("SELECT DISTINCT GREENBOOK,ENTITLEMENT_XML,SERVICE_ID,PAR_SERVICE_ID FROM SAQSGE WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' ".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id))
+			tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_Z0117_PQB_VCRAMT</ENTITLEMENT_ID>')
+			entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			if self.get_billing_type_val.upper() == 'VARIABLE':
+				pricing_field_doc = 'TENVDC'
+				pricing_field_gl = 'TENVGC'
+			else:
+				pricing_field_doc= 'TNTVDC'
+				pricing_field_gl = 'TNTVGC'
+			if get_greenbook_record:
+				for record in get_greenbook_record:
+					get_voucher_value = ''
+					for quote_item_tag in re.finditer(tag_pattern, record.ENTITLEMENT_XML):
+						quote_item_tag_content = quote_item_tag.group(1)
+						entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)	
+						if entitlement_id_tag_match:
+							entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
+							if entitlement_display_value_tag_match:
+								get_voucher_value = entitlement_display_value_tag_match[0].upper()
+								break
+					Trace.Write("get_voucher_value-"+str(record.GREENBOOK)+"-"+str(get_voucher_value))
+					Sql.RunQuery("UPDATE SAQICO {pricing_field_gl} = '{voucher_amt}', {pricing_field_doc} = '{doc_curr}'  FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND GRNBOK = '{grnbok}' ".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id ,voucher_amt = get_voucher_value, grnbok = record.GREENBOOK, pricing_field_doc = pricing_field_doc, pricing_field_gl =pricing_field_gl, doc_curr = float(get_voucher_value) * self.exchange_rate  ))
 		return True
 
 	def _quote_annualized_items_insert_old(self, update=False):			
@@ -2445,12 +2489,12 @@ class ContractQuoteItem:
 							MAMSCT.TAXCLASSIFICATION_RECORD_ID,
 							SAQRIS.TAX_PERCENTAGE,
 							'0' AS NET_VALUE_INGL_CURR, 
-							CONCAT('-',IQ.CREDIT_APPLIED_INGL_CURR) AS NET_PRICE_INGL_CURR,
-							CONCAT('-',IQ.CREDIT_APPLIED_INGL_CURR) AS NET_PRICE,
-							--IQ.CREDIT_APPLIED_INGL_CURR AS NET_PRICE_INGL_CURR,
-							--IQ.CREDIT_APPLIED_INGL_CURR AS NET_PRICE,
-							CONCAT('-',IQ.CREDIT_APPLIED_INGL_CURR) AS YEAR_1_INGL_CURR,
-							CONCAT('-',IQ.CREDIT_APPLIED_INGL_CURR) AS YEAR_1,
+							'0' AS NET_PRICE_INGL_CURR,
+							'0' AS NET_PRICE,
+							--CONCAT('-',IQ.CREDIT_APPLIED_INGL_CURR) AS NET_PRICE_INGL_CURR,
+							--CONCAT('-',IQ.CREDIT_APPLIED_INGL_CURR) AS NET_PRICE,
+							'0' AS YEAR_1_INGL_CURR,
+							'0' AS YEAR_1,
 							--IQ.CREDIT_APPLIED_INGL_CURR AS YEAR_1_INGL_CURR,
 							--IQ.CREDIT_APPLIED_INGL_CURR AS YEAR_1,
 							'0' AS COMVAL_INGL_CURR ,
@@ -2463,10 +2507,10 @@ class ContractQuoteItem:
 							SAQRIS.QUOTE_REV_ITEM_SUMMARY_RECORD_ID as QTEITMSUM_RECORD_ID
 						FROM (
 							SELECT 
-								QUOTE_RECORD_ID, QTEREV_RECORD_ID, SERVICE_ID, GREENBOOK, GREENBOOK_RECORD_ID,CREDITVOUCHER_RECORD_ID,CREDIT_APPLIED_INGL_CURR,GL_ACCOUNT_NO,QUOTE_REV_CREDIT_VOUCHER_RECORD_ID,SALESORDER_NO 
+								QUOTE_RECORD_ID, QTEREV_RECORD_ID, SERVICE_ID, GREENBOOK, GREENBOOK_RECORD_ID,CREDITVOUCHER_RECORD_ID,GL_ACCOUNT_NO,QUOTE_REV_CREDIT_VOUCHER_RECORD_ID,SALESORDER_NO 
 							FROM SAQRCV (NOLOCK)
 							WHERE SAQRCV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRCV.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRCV.SERVICE_ID = '{ServiceId}' 
-							GROUP BY QUOTE_RECORD_ID, QTEREV_RECORD_ID, SERVICE_ID, GREENBOOK, GREENBOOK_RECORD_ID,CREDITVOUCHER_RECORD_ID,CREDIT_APPLIED_INGL_CURR,GL_ACCOUNT_NO,QUOTE_REV_CREDIT_VOUCHER_RECORD_ID,SALESORDER_NO
+							GROUP BY QUOTE_RECORD_ID, QTEREV_RECORD_ID, SERVICE_ID, GREENBOOK, GREENBOOK_RECORD_ID,CREDITVOUCHER_RECORD_ID,GL_ACCOUNT_NO,QUOTE_REV_CREDIT_VOUCHER_RECORD_ID,SALESORDER_NO
 						) IQ
 						JOIN {ObjectName} (NOLOCK) ON {ObjectName}.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND {ObjectName}.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND {ObjectName}.SERVICE_ID = IQ.SERVICE_ID AND {ObjectName}.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
 						JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID     
@@ -2481,11 +2525,11 @@ class ContractQuoteItem:
 				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val))
 				
 				
-				Sql.RunQuery("""UPDATE SAQRIT 
-								SET NET_VALUE_INGL_CURR = NET_PRICE_INGL_CURR + ISNULL(TAX_AMOUNT, 0),
-								NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0)  
-								FROM SAQRIT (NOLOCK)
-									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' """.format(QuoteRecordId=self.contract_quote_record_id ,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+				# Sql.RunQuery("""UPDATE SAQRIT 
+				# 				SET NET_VALUE_INGL_CURR = NET_PRICE_INGL_CURR + ISNULL(TAX_AMOUNT, 0),
+				# 				NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0)  
+				# 				FROM SAQRIT (NOLOCK)
+				# 					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' """.format(QuoteRecordId=self.contract_quote_record_id ,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 				# ###calling script for saqris,saqtrv insert
 				# CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id})	
 
