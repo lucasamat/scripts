@@ -8,8 +8,9 @@
 
 import re
 import datetime
-from SYDATABASE import SQL
 import CQPARTIFLW
+import time
+from SYDATABASE import SQL
 
 Sql = SQL()
 
@@ -239,6 +240,8 @@ class ContractQuoteItem:
 		)OQ""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id,JoinString=item_line_covered_object_assembly_entitlement_join_string, WhereString=item_line_covered_object_assembly_entitlement_where_string))
 	
 	def _quote_annualized_items_insert(self, update=False):
+		basic_insert_start = time.time()
+		Trace.Write("Basic time-----"+str(SAQTSV_end-SAQTSV_start))
 		if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT'):
 			Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY, CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, SPQTEV, TAXVTP, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 					SELECT DISTINCT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
@@ -609,6 +612,8 @@ class ContractQuoteItem:
 						WHERE ISNULL(SAQICO.FABLOCATION_RECORD_ID,'') = '' AND ISNULL(SAQICO.GREENBOOK_RECORD_ID,'') = ''
 						""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id)
 				)
+		basic_insert_end = time.time()
+		Trace.Write("Basic Insert Time-----"+str(basic_insert_end-basic_insert_start))
 		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
 		
 		# Target (Sales) Price Discount %
@@ -651,6 +656,7 @@ class ContractQuoteItem:
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCFVA.FACTOR_NAME,'') = 'Ceiling Margin'
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		
+		entitlement_insert_start =  time.time()		
 		# Entitlement Columns Insert
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
 		SAQICO_BKP = "SAQICO_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
@@ -826,6 +832,8 @@ class ContractQuoteItem:
 					
 			SAQITE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQITE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQITE_BKP)+" END  ' ")
 		
+		entitlement_insert_end = time.time()
+		Trace.Write("Entitlement Insert Time-----"+str(entitlement_insert_end-entitlement_insert_start))
 		# Head Break In Cost Impact
 		Sql.RunQuery("""UPDATE SAQICO
 						SET HEDBIC = PRCFVA.FACTOR_TXTVAR		
@@ -895,7 +903,7 @@ class ContractQuoteItem:
 							FROM SAQICO (NOLOCK)							
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}W'
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-
+		pricing_46_start = time.time()
 		#Z0046 pricing update
 		if self.service_id == 'Z0046':
 			get_items_entitlement = Sql.GetList("SELECT * FROM SAQITE WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
@@ -923,6 +931,8 @@ class ContractQuoteItem:
 						INNER JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.GREENBOOK,SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID,SAQRIT.EXCHANGE_RATE FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = 'Z0046' AND BILLING_TYPE = 'Variable') IQ ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = IQ.SERVICE_ID AND SAQICO.GRNBOK  = IQ.GREENBOOK AND SAQICO.QTEITM_RECORD_ID = IQ.QUOTE_REVISION_CONTRACT_ITEM_ID
 						WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND SAQICO.GRNBOK = '{greenbook}'""".format( QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,total_price= total_price,greenbook = item.GREENBOOK,ServiceId= self.service_id))
 
+		pricing_46_end = time.time()
+		Trace.Write("Z0046 Pricing Insert Time-----"+str(pricing_46_end-pricing_46_start))
 		return True
 
 	def _quote_annualized_items_insert_old(self, update=False):			
