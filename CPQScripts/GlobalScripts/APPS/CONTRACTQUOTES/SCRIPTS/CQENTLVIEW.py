@@ -176,19 +176,22 @@ class EntitlementView():
 			ObjectName = "SAQSCE"
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
 		elif EntitlementType == "EVENT":
-			if self.treetopsuperparentparam == 'Product Offerings':
-				ProductPartnumber = self.treesuperparentparam
-				got_code = self.treeparam
-				greenbok = self.treeparentparam
-			else:
-				got_code = self.treeparentparam
-				ProductPartnumber = self.treetopsuperparentparam 
-				greenbok = self.treesuperparentparam
+			# if self.treetopsuperparentparam == 'Product Offerings':
+			# 	ProductPartnumber = self.treesuperparentparam
+			# 	got_code = self.treeparam
+			# 	greenbok = self.treeparentparam
+			# else:
+			# 	got_code = self.treeparentparam
+			# 	ProductPartnumber = self.treetopsuperparentparam 
+			# 	greenbok = self.treesuperparentparam
 			#ProductPartnumber = self.treetopsuperparentparam
-			TableObj = Sql.GetFirst("select * from SAQGPE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(greenbok)+"' AND GOT_CODE = '"+str(got_code)+"' AND SERVICE_ID = '"+str(ProductPartnumber)+"' ")
+			TableObj = Sql.GetFirst("select * from SAQGPE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' ")
 			ObjectName = "SAQGPE"
-			
-			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(greenbok)+"' AND GOT_CODE = '"+str(got_code)+"'  AND SERVICE_ID = '"+str(ProductPartnumber)+"'"	
+			ProductPartnumber = TableObj.SERVICE_ID
+			greenbok = TableObj.GREENBOOK
+			got_code = TableObj.GOT_CODE
+			pm_id = TableObj.PM_ID
+			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTEGGTPME_RECORD_ID = '" + str(RECORD_ID) + "' AND GREENBOOK = '"+str(greenbok)+"' AND GOT_CODE = '"+str(got_code)+"' AND PM_ID = '" + str(pm_id) + "'  AND SERVICE_ID = '"+str(ProductPartnumber)+"'"	
 		elif EntitlementType == "ITEMGREENBOOK":
 			ObjectName = "SAQSGE"
 			#service = self.treesuperparentparam
