@@ -144,7 +144,7 @@ class ContractQuoteItem:
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
 
 		SAQSCE_BKP = "SAQSCE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
-		SAQSCA_BKP = "SAQICO_BKP_{}_{}".format(self.contract_quote_id, datetime_string)		
+		SAQSCA_BKP = "SAQSCA_BKP_{}_{}".format(self.contract_quote_id, datetime_string)		
 		
 		SAQSCE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCE_BKP)+" END  ' ")
 
