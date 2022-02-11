@@ -2315,7 +2315,7 @@ class TreeView:
 														if quotetype_value != ["Tool based"]:
 															ObjRecId = '0975E1E2-9D30-4928-AB0A-4DA54537A67A'
 															RelatedId = 'SYOBJR-95556'
-															RelatedName = 'Assemblies'
+															RelatedName = 'Events'
 															break
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
