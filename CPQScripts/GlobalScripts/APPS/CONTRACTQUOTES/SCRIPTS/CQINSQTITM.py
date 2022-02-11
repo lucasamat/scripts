@@ -143,7 +143,7 @@ class ContractQuoteItem:
 		
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
 
-		SAQSCE_BKP = "SAQITE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
+		SAQSCE_BKP = "SAQSCE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
 		SAQSCA_BKP = "SAQICO_BKP_{}_{}".format(self.contract_quote_id, datetime_string)		
 		
 		SAQSCE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCE_BKP)+" END  ' ")
@@ -151,7 +151,7 @@ class ContractQuoteItem:
 		SAQSCA_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCA_BKP)+" END  ' ")
 		try:
 			SAQSCE_BKP_INS = SqlHelper.GetFirst(
-				"sp_executesql @T=N'SELECT SAQITE.* INTO "+str(SAQSCE_BKP)+" FROM SAQSCE (NOLOCK) WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' '")
+				"sp_executesql @T=N'SELECT SAQSCE.* INTO "+str(SAQSCE_BKP)+" FROM SAQSCE (NOLOCK) WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' '")
 			
 			SAQSCA_BKP_INS = SqlHelper.GetFirst(
 				"sp_executesql @T=N'SELECT SAQSCA.* INTO "+str(SAQSCA_BKP)+" FROM SAQSCA (NOLOCK) JOIN "+str(SAQSCE_BKP)+" SAQSCE_BKP ON SAQSCA.QUOTE_RECORD_ID = SAQSCE_BKP.QUOTE_RECORD_ID AND SAQSCA.QTEREV_RECORD_ID = SAQSCE_BKP.QTEREV_RECORD_ID WHERE SAQSCA.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND SAQSCA.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' '")
