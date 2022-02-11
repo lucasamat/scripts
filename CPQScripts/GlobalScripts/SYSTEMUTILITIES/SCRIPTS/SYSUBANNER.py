@@ -135,6 +135,7 @@ def Related_Sub_Banner(
         
         if len(dynamic_Button) > 0:
             Trace.Write('len----125---dynamic_Button--'+str(dynamic_Button))
+            add_button = ""
             for btn in dynamic_Button:
                 #Trace.Write('btn-----')
                 if ("CANCEL" not in str(btn.HTML_CONTENT) and "SAVE" not in str(btn.HTML_CONTENT)):
@@ -144,7 +145,6 @@ def Related_Sub_Banner(
                     if len(dynamic_Button) > 1:
                         if str(btn.HTML_CONTENT) != "" and str(btn.RELATED_LIST_RECORD_ID) != "":
                             button_id = str(btn.RELATED_LIST_RECORD_ID).replace("-","_")+"_"+str(SYOBJH_ID.REC_ID).replace("-","_")
-                            add_button = ""
                             if btn.RELATED_LIST_RECORD_ID == SYOBJH_ID.SAPCPQ_ATTRIBUTE_NAME:
                                 Trace.Write("Check SHP0")
                                 div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
