@@ -264,7 +264,7 @@ class SyncFPMQuoteAndHanaDatabase:
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
                     if str(ele.group(1)) == 'PARENT_PART_NUMBER':
-                        partList.append(str(ele.group(2)))
+                        partList.append(ele.group(2))
                     #    partdesc = ele.group(2) or ''
                     #    partdesc = re.sub(r"'|\\","",partdesc)
                     #    temp_value +=','+partdesc if partdesc !='' else None
