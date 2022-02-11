@@ -151,7 +151,7 @@ class SyncFPMQuoteAndHanaDatabase:
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
                             JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.SERVICE_ID = '{ServiceId}'
                             JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
-                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') <> '05') IQ
+                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') <> '05' AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')) IQ
                             """.format(
                                         TempTable=spare_parts_temp_table_name,
                                         ServiceId=self.service_id,									
@@ -299,7 +299,6 @@ class SyncFPMQuoteAndHanaDatabase:
         if self.service_id == 'Z0108':
             Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE='SCHEDULED' WHERE PART_NUMBER IN "+str(val)+" AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
             
-
     def validation_for_arp_carp(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=954e4350-7854-465b-8c0f-d428d3ea9cdf&password=Ieo.mslSbRzZE0NmuR3ubwcbXsfqTc&scope=nodesafeaccessscope"
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
@@ -335,7 +334,7 @@ if Parameter["Action"] == 'Delete':
     if Parameter["Delete_Partlist"]:
         fpm_obj.delete_child_records_6kw_partlist(Parameter["Delete_Partlist"])
     else:
-         fpm_obj.delete_child_records_6kw()
+        fpm_obj.delete_child_records_6kw()
   
 
 if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
