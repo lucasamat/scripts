@@ -5892,7 +5892,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 										if pm_event_attribute_value != "":
 											self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
 											qte_type_flag=1
-						if self.tree_param == 'Z0009' and qte_type_flag == 1:
+						if (self.tree_param == 'Z0009' or self.tree_param == 'Z0010') and qte_type_flag == 1:
 							break
 						else:
 							if pm_event_flag == 1:
