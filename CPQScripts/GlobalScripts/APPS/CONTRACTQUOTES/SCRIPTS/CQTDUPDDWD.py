@@ -271,7 +271,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 										ServiceId=self.tree_param,									
 										QuoteRecordId=self.contract_quote_record_id,
 										RevisionRecordId=self.contract_quote_revision_record_id,
-										UserId=self.user_id
+										UserId=self.user_id,consigned_parts_value=consigned_parts_value
 									)
 			)
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
