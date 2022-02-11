@@ -2776,6 +2776,23 @@ class SYLDRTLIST:
 						)
 						
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
+					elif str(TreeSuperParentParam) == "Comprehensive Services":
+						Qury_str = (
+							"select DISTINCT top "
+							+ str(PerPage)
+							+ " * from ( select ROW_NUMBER() OVER(order by CpqTableEntryId"
+							+ ") AS ROW, * from "
+							+ str(ObjectName)
+							+ " (nolock) "
+							+ str(Qustr)
+							+ " AND SERVICE_ID = '"+str(TreeParentParam)+"' AND PM_FREQUENCY_EDITABLE = 'True'  ) m where m.ROW BETWEEN "
+							+ str(Page_start)
+							+ " and "
+							+ str(Page_End)
+							+ ""
+						)
+						
+						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
 					else:
 						Qury_str = (
 							"select DISTINCT top "
@@ -9011,6 +9028,8 @@ class SYLDRTLIST:
 						elif str(RECORD_ID) == "SYOBJR-95556":
 							if str(TreeSuperParentParam) == "Product Offerings":
 								Qustr = " where "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(TopTreeSuperParentParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
+							elif str(TreeSuperParentParam) == "Comprehensive Services":
+								Qustr = " where "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(TreeParentParam)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
 							else:
 								Qustr = " where "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(TopTreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeSuperParentParam)+"' AND GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
 						elif str(RECORD_ID) == "SYOBJR-00031":
