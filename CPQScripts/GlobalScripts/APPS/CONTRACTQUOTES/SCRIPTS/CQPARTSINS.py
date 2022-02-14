@@ -236,6 +236,8 @@ class SyncFPMQuoteAndHanaDatabase:
             res = re.sub(r"\],\[",", ",res)
             res= re.sub(r'\[',"{",res)
             res= re.sub(r'\]',"}",res)
+            res = re.sub(r':',' : ',res)
+            res= re.sub(r'\}\{',', ',res)
             Log.Info("sec response----->2"+str(res))
         if self.response:
             response = ','.join(str(ele) for ele in self.response)
