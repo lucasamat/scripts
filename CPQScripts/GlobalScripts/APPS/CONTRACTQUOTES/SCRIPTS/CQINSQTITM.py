@@ -1185,8 +1185,8 @@ class ContractQuoteItem:
 							UNION
 							SELECT SAQGPA.SERVICE_ID,SAQGPA.GREENBOOK,SAQGPA.FABLOCATION_ID,SAQGPA.GOT_CODE,SAQGPA.PM_LEVEL,SAQGPA.QUOTE_RECORD_ID,SAQGPA.QTEREV_RECORD_ID, null as PM_RECORD_ID, SAQGPA.GOTCODE_RECORD_ID,SAQGPA.EQUIPMENT_ID,SAQGPA.EQUIPMENT_RECORD_ID,SAQGPA.EQUIPMENT_DESCRIPTION,SAQGPA.GREENBOOK_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,ISNULL(PROCESS_TYPE,'') AS PROCESS_TYPE , ISNULL(DEVICE_NODE,'') AS DEVICE_NODE,CONFIGURATION_STATUS
 							FROM SAQGPA (NOLOCK)
+							JOIN SAQSGE SAQGPE (NOLOCK) ON SAQGPE.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID AND SAQGPE.QTEREV_RECORD_ID = SAQGPA.QTEREV_RECORD_ID AND SAQGPE.GREENBOOK = SAQGPA.GREENBOOK  AND SAQGPA.SERVICE_ID = SAQGPE.SERVICE_ID
 								WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQGPA.SERVICE_ID = '{ServiceId}' AND PM_LEVEL = 'Scheduled Maintenance'
-								JOIN SAQSGE SAQGPE (NOLOCK) ON SAQGPE.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID AND SAQGPE.QTEREV_RECORD_ID = SAQGPA.QTEREV_RECORD_ID AND SAQGPE.GREENBOOK = SAQGPA.GREENBOOK  AND SAQGPA.SERVICE_ID = SAQGPE.SERVICE_ID
 								GROUP BY SAQGPA.SERVICE_ID,SAQGPA.GREENBOOK,SAQGPA.FABLOCATION_ID,SAQGPA.GOT_CODE,SAQGPA.PM_LEVEL,SAQGPA.QUOTE_RECORD_ID,SAQGPA.QTEREV_RECORD_ID,SAQGPA.GOTCODE_RECORD_ID,SAQGPA.EQUIPMENT_ID,SAQGPA.EQUIPMENT_RECORD_ID,SAQGPA.EQUIPMENT_DESCRIPTION,SAQGPA.GREENBOOK_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID, ISNULL(PROCESS_TYPE,'')  , ISNULL(DEVICE_NODE,''),CONFIGURATION_STATUS
 						) IQ
 						
@@ -2338,14 +2338,7 @@ class ContractQuoteItem:
 					) OQ
 					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID  AND SAQRIT.GREENBOOK_RECORD_ID = OQ.GREENBOOK_RECORD_ID
 					WHERE ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ''
-				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val))
-				# Sql.RunQuery("""UPDATE SAQRIT 
-				# 				SET NET_VALUE_INGL_CURR = NET_PRICE_INGL_CURR + ISNULL(TAX_AMOUNT, 0),
-				# 				NET_VALUE = NET_PRICE + ISNULL(TAX_AMOUNT, 0)  
-				# 				FROM SAQRIT (NOLOCK)
-				# 					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' """.format(QuoteRecordId=self.contract_quote_record_id ,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-				# ###calling script for saqris,saqtrv insert
-				# CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id})	
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val))				
 
 			##ordering line field in saqrit
 			self._ordering_item_line_no()
