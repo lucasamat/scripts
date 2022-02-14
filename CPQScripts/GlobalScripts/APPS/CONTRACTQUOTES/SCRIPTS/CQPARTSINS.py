@@ -228,17 +228,20 @@ class SyncFPMQuoteAndHanaDatabase:
     def prepare_backup_table(self):
         res = ' '.join(str(ele) for ele in self.response)
         cnt = res.count("Material_Eligibility")
+        Log.Info("PrepareBackuptable----->2"+str(res))
         if cnt == 1:
-            self.response = re.sub(r'\[',"['",self.response)
-            self.response= re.sub(r'\]',"']",self.response)
-            self.response = re.sub(r", ","':'",self.response)
-            self.response = re.sub(r"\],\[",", ",self.response)
-            self.response = re.sub(r'\[',"{",self.response)
-            self.response= re.sub(r'\]',"}",self.response)
+            res = re.sub(r'\[',"['",res)
+            res= re.sub(r'\]',"']",res)
+            res= re.sub(r", ","':'",res)
+            res = re.sub(r"\],\[",", ",res)
+            res= re.sub(r'\[',"{",res)
+            res= re.sub(r'\]',"}",res)
 
         if self.response:
             response = ','.join(str(ele) for ele in self.response)
             record_count=0
+            if cnt ==1:
+                response=res
             Log.Info("PrepareBackuptable----->2"+str(response))
             response=response.replace("null",'""')
             response=response.replace("None",'""')
