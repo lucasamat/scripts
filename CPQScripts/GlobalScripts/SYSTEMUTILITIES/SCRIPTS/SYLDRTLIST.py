@@ -9127,7 +9127,7 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					
 				try:
-					if str(Query_Obj)!="SYOBJR-00005":
+					if str(RECORD_ID)!="SYOBJR-00005":
 						Query_Obj = Sql.GetList(Qury_str)
 					Query_CountObj = Sql.GetFirst(QuryCount_str)                
 				except:                                    
