@@ -2734,7 +2734,7 @@ class SYLDRTLIST:
 						ordered_values.append(child)
 
 					parents_list = str(tuple(parent_parts))
-					parents_list = re.sub(r'\,\)','\)',parents_list)
+					parents_list = re.sub(r'\,\)',')',parents_list)
 					no_child_count = Sql.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(parents_list)+" ")
 
 					no_child_count = no_child_count.CNT #count of parts without having any child
