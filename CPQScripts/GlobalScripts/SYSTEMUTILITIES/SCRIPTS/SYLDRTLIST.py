@@ -3639,7 +3639,7 @@ class SYLDRTLIST:
 			# Billing Matrix - Pivot - End
 			Colcount = len(CountCol) + 2
 			
-
+			remove_localstorage = " localStorage.removeItem('"+str(table_id)+"_SortColumn'); localStorage.removeItem('"+str(table_id)+"_SortColumnOrder'); " if str(RECORD_ID)=="SYOBJR-00005" else ""
 			filter_class = "#Act_" + str(table_id)
 			filter_control_function += (
 				'$("'
@@ -3650,7 +3650,7 @@ class SYLDRTLIST:
 				+ str(table_id)
 				+ "_SortColumn'); if (SortColumn === null){ SortColumn = \"\"; } SortColumnOrder = localStorage.getItem('"
 				+ str(table_id)
-				+ '_SortColumnOrder\'); if (SortColumnOrder === null){ SortColumnOrder = ""; } PerPage = $("#'
+				+ '_SortColumnOrder\'); '+str(remove_localstorage)+'  if (SortColumnOrder === null){ SortColumnOrder = ""; } PerPage = $("#'
 				+ str(table_id)
 				+ '_PageCountValue").val(); PageInform = "1___" + PerPage + "___" + PerPage; cpq.server.executeScript("SYLDRTLIST", {"REC_ID":table_id, "ATTRIBUTE_NAME": '
 				+ str(list(eval(Columns)))
