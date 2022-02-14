@@ -2786,16 +2786,7 @@ class approvalCenter:
 			"Approve": "APPROVE_TEMPLATE_RECORD_ID",
 			"Reject": "REJECT_TEMPLATE_RECORD_ID",
 		}
-		###iflow calling for APPROVERS
-		contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-		if contract_quote_id:
-			approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
-			if approver_insert:
-				Trace.Write("Approver_insert")
-				CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-			else:
-				Trace.Write("delete_approver")
-				CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		
 		if notifiType != "Approve" and notifiType != "Reject":
 			wherecondition = "ACAPTX.APPROVAL_RECORD_ID = '{QuoteNumber}'".format(QuoteNumber=approval_record_id) 
 		else:
@@ -2816,6 +2807,16 @@ class approvalCenter:
 					QuoteNumber=approval_record_id
 				)
 			)
+			###iflow calling for APPROVERS
+			contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+			if contract_quote_id:
+				approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
+				if approver_insert:
+					Trace.Write("Approver_insert")
+					CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				else:
+					Trace.Write("delete_approver")
+					CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 		if notifiType == "ParallelRequest":
 			GetNotificationData = Sql.GetList(
 				""" SELECT USERS.EMAIL,USERS.NAME,ACEMTP.SUBJECT,ACEMTP.MESSAGE_BODY,ACEMTP.MESSAGE_BODY_2,
@@ -2830,6 +2831,16 @@ class approvalCenter:
 					QuoteNumber=approval_record_id
 				)
 			)
+			###iflow calling for APPROVERS
+			contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+			if contract_quote_id:
+				approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
+				if approver_insert:
+					Trace.Write("Approver_insert")
+					CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				else:
+					Trace.Write("delete_approver")
+					CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 		elif notifiType == "Recall":
 			Getchintype = Sql.GetFirst(
 				"""SELECT APPROVAL_METHOD FROM ACAPCH (NOLOCK) INNER JOIN ACAPMA (NOLOCK)
@@ -2887,6 +2898,16 @@ class approvalCenter:
 					templaterecordId=str(actiondict.get(notifiType)),
 				)
 			)
+			###iflow calling for APPROVERS
+			contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+			if contract_quote_id:
+				approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
+				if approver_insert:
+					Trace.Write("Approver_insert")
+					CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				else:
+					Trace.Write("delete_approver")
+					CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 		elif notifiType == "Notification":
 			GETTEMPRECID =  Sql.GetFirst("Select EMAIL_TEMPLATE_RECORD_ID from ACEMTP (NOLOCK) WHERE EMAILTEMPLATE_ID ='Notification'")
 			#templaterecordId = "FC95AE41-4045-4799-9CD4-17DEB1B3B904"
