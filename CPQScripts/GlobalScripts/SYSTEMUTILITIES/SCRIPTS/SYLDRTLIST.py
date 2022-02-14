@@ -2748,7 +2748,7 @@ class SYLDRTLIST:
 						ordered_values.extend(parts) #appending parts without having any child parts
 					
 					Query_Obj = []
-					for row in range(Page_start-1,Page_end):
+					for row in range(Page_start-1,Page_End):
 						Query_Obj.append(ordered_values[i])
 	
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
