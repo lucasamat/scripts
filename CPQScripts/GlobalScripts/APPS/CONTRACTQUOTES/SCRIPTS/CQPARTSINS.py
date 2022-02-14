@@ -282,7 +282,10 @@ class SyncFPMQuoteAndHanaDatabase:
                 col_flag=1
             Log.Info("Total Records from HANA::"+str(record_count))
             Log.Info("Total Parts List:: " +str(self.part_numbers))
-    
+            if record_count >0:
+                self._insert_spare_parts()
+                self.update_records_saqspt()  
+                self.insert_delivery_schedule()
     def delete_child_records_6kw(self):
         Trace.Write('Delete Child called!!!')
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
@@ -314,6 +317,9 @@ class SyncFPMQuoteAndHanaDatabase:
         self.arp_carp_response = webclient.UploadString('https://carp-arp.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
         Log.Info("Resarpcarp-->"+str(self.arp_carp_response))
 
+    def CQPARTIFLW_iflow(self):
+        CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(Param.CPQ_Columns["QuoteID"]),str(Param.CPQ_Columns["RevisionRecordID"]))
+
         
 Log.Info("CQPARTINS script called --> from CPI")
 #Log.Info("Param.CPQ_Column----"+str(type(Param)))
@@ -342,12 +348,11 @@ if Parameter["Action"] == 'Delete':
 if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     fpm_obj = SyncFPMQuoteAndHanaDatabase()
     fpm_obj.fetch_quotebasic_info()
-    fpm_obj.prepare_backup_table()
-    fpm_obj._insert_spare_parts()
-    fpm_obj.update_records_saqspt()
-    fpm_obj.validation_for_arp_carp()
-    fpm_obj.insert_delivery_schedule()
+    fpm_obj.prepare_backup_table()  
+    #fpm_obj.validation_for_arp_carp()
+    
+    
     try:
-        CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(Param.CPQ_Columns["QuoteID"]),str(Param.CPQ_Columns["RevisionRecordID"]))
+        fpm_obj.CQPARTIFLW_iflow()        
     except Exception:
         Log.Info("PART PRICING IFLOW ERROR!")
