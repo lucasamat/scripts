@@ -877,8 +877,6 @@ class ContractQuoteItem:
 				for i in range(1,11):
 					x = "AGS_Z0046_PQB_AP{}FU".format(str(i).zfill(2))
 					y = "AGS_Z0046_PQB_AP{}PR".format(str(i).zfill(2))
-					# if i ==1:
-					# 	y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
 					if x in xml_dict.keys() and y in xml_dict.keys() :
 						if xml_dict[x] and xml_dict[y]:
 							qty = float(xml_dict[x])
@@ -1548,11 +1546,6 @@ class ContractQuoteItem:
 						break				
 				else:
 					continue
-			# if self.service_id == 'Z0046':
-			# 	self.quote_service_entitlement_type = 'OFFERING + FAB + GREENBOOK'
-			# 	self.source_object_name = 'SAQSGE'
-			# if self.service_id == 'Z0101':
-			# 	self.quote_service_entitlement_type = 'OFFERING + GREENBOOK + GR EQUI'
 			Log.Info(str(self.contract_quote_id)+"_set_quote_service_entitlement_type ===> 2"+str(self.quote_service_entitlement_type))
 
 	def _quote_items_summary_insert(self, update=False):
@@ -2840,12 +2833,6 @@ class ContractQuoteItem:
 					WHERE SAQRIT.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '') ='INCOMPLETE' AND SAQRIT.SERVICE_ID='{ServiceId}' """.format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinCondition=join_condition_string)	
 		Sql.RunQuery(quote_item_delete_statement)
 
-	def _delete_z0046_quote_items(self):
-		if self.service_id == 'Z0046':
-			deleting_tables_list = ['SAQRIT','SAQRIO','SAQITE','SAQICO']
-			for obj in deleting_tables_list:
-				Sql.RunQuery("DELETE {obj} FROM {obj} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, obj = obj))
-
 	def _service_based_quote_items_entitlement_insert(self, update=False):		
 		#if update: # need to verify one more time
 		Sql.RunQuery("DELETE SAQITE FROM SAQITE WHERE SAQITE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQITE.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
@@ -2971,7 +2958,6 @@ class ContractQuoteItem:
 
 	def _do_opertion(self):		
 		self._set_quote_service_entitlement_type()
-		self._get_consumable_val()
 		Log.Info("===> _do_opertion 0000")
 		if self.action_type == "INSERT_LINE_ITEMS":		
 			Log.Info("===> _do_opertion 1111")	
@@ -3011,8 +2997,6 @@ class ContractQuoteItem:
 				self._quote_items_assembly_insert()
 				self._quote_items_assembly_entitlement_insert()
 		else:
-			##deleting Z0046 SAQRIT records
-			self._delete_z0046_quote_items()
 			quote_revision_item_obj = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 			if not quote_revision_item_obj:				
 				if self.is_spare_service == True and self.service_id in ('Z0101','Z0100'):		
