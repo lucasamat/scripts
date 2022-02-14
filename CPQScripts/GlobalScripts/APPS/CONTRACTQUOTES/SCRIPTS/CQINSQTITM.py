@@ -829,12 +829,11 @@ class ContractQuoteItem:
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		# Price Bench Marking 
 		# Benchmark Price Deviation % Threshold
-		# Sql.RunQuery("""UPDATE SAQICO
-		# 				SET BCHDAP = PRCFVA.FACTOR_PCTVAR		
-		# 					FROM SAQICO (NOLOCK)
-		# 					JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQICO.SERVICE_ID
-		# 					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCFVA.FACTOR_NAME,'') = 'Sales Discount'
-		# 					""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		Sql.RunQuery("""UPDATE SAQICO
+						SET SAQICO.BCHDAP = PRCAFC.FACTOR_VALUE		
+							FROM SAQICO (NOLOCK), PRCAFC (NOLOCK) 
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCAFC.FACTOR_NAME,'') = 'Benchmark Price Deviation Percentage Threshold'
+							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		Sql.RunQuery("""UPDATE SAQICO
 			SET
 			SAQICO.BCHPGC = PRPRBM.ANNUALIZED_BOOKING_PRICE,
