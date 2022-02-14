@@ -2726,25 +2726,25 @@ class SYLDRTLIST:
 					Trace.Write('@2720-->')
 					ordered_values = []
 					parent_parts = []
-					child_parts=SqlHelper.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL ")
+					child_parts=Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL ")
 					for child in child_parts:
 						parent_parts.append(child.PAR_PART_NUMBER)
-						parent_part = SqlHelper.GetFirst("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PART_NUMBER = '"+str(child.PAR_PART_NUMBER)+"' ")
+						parent_part = Sql.GetFirst("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PART_NUMBER = '"+str(child.PAR_PART_NUMBER)+"' ")
 						ordered_values.append(parent_part)
 						ordered_values.append(child)
 
-					no_child_count = SqlHelper.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(tuple(parent_parts))+" ")
+					no_child_count = Sql.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(tuple(parent_parts))+" ")
 
 					no_child_count = no_child_count.CNT #count of parts without having any child
 
 					if no_child_count > 1000:
 						fetch_count = 0
 						while fetch_count < no_child_count: #fetching only 1000 records since we are not able to get more than 1000 records at a time
-							parts = SqlHelper.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(tuple(parent_parts))+" ORDER BY CpqTableEntryId ASC OFFSET "+str(fetch_count)+" ROWS FETCH NEXT 1000 ROWS ONLY ")
+							parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(tuple(parent_parts))+" ORDER BY CpqTableEntryId ASC OFFSET "+str(fetch_count)+" ROWS FETCH NEXT 1000 ROWS ONLY ")
 							fetch_count +=1000
 							ordered_values.extend(parts) #appending parts without having any child parts
 					else:
-						parts = SqlHelper.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(tuple(parent_parts))+" ORDER BY CpqTableEntryId ASC ")
+						parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(tuple(parent_parts))+" ORDER BY CpqTableEntryId ASC ")
 						ordered_values.extend(parts) #appending parts without having any child parts
 					
 					Query_Obj = []
