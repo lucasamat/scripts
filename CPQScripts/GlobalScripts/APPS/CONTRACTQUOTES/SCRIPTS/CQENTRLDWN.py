@@ -237,6 +237,7 @@ def ChildEntRequest(config_id,tableName,where):
 		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
 	ent_child_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_child_temp)+"'' ) BEGIN DROP TABLE "+str(ent_child_temp)+" END  ' ")
 	return cpsmatchID
+
 def get_response(cpsConfigID):
 	Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 	Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':get_serviceid,'request_url':Request_URL,'request_type':"Existing"})
@@ -607,8 +608,6 @@ def ancillary_service_call():
 		ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":"INSERT_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : get_serviceid , "tablename":objectName,"attributeList":attributeList})
 	except:
 		Log.Info("ancillary entitlement error")
-	# elif get_par_equp_ent.cnt != 0:
-	# 	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":"DELETE_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : get_serviceid , "tablename":objectName})
 
 def dividend_critical_price_sumup(ent_temp):
 	get_val = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = 'AGS_Z0091_PQB_PPCPRM'".format(ent_temp))
@@ -647,19 +646,6 @@ def dividend_critical_price_sumup(ent_temp):
 			d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
 			days = (d2 - d1).days
 			total = (total_price/365)*int(days)
-			#UPDATE TOTAL PRICE IN SAQTRV
-			#Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = {} WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,revision))
-			#objects = ["SAQSFE","SAQSGE","SAQSCE"]
-			# getCount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(revision))
-			# eqcount = getCount.cnt
-			# getfab = Sql.GetList("SELECT FABLOCATION_ID, GREENBOOK FROM SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(revision))
-			# fab = []
-			# gbk = []
-			# for x in getfab:
-			# 	getfabcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(revision,x.FABLOCATION_ID))
-			# 	fab.append(str(x.FABLOCATION_ID)+"_"+str(getfabcount.cnt))
-			# 	getgbkcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND GREEBOOK = '{}'".format(revision,x.FABLOCATION_ID,x.GREENBOOK))
-			# 	gbk.append(str(x.GREENBOOK)+"_"+str(getgbkcount.cnt))
 
 def _equp_predefined_value_driver_update(previous_xml):	
 	##value driver
@@ -702,10 +688,196 @@ def _equp_predefined_value_driver_update(previous_xml):
 					input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(attr)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', prev_xml_dict[attr], input_xml )
 			Sql.RunQuery("UPDATE SAQSCE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}'".format(input_xml,quote,revision,get_serviceid,val.EQUIPMENT_ID,val.GREENBOOK))
 
+def _construct_dict_xml(updateentXML):
+	entxmldict = {}
+	pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+	pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+	entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+	display_val_dict = {}
+	if updateentXML:
+		for m in re.finditer(pattern_tag, updateentXML):
+			sub_string = m.group(1)
+			x=re.findall(pattern_name,sub_string)
+			if x:
+				entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
+				if entitlement_display_value_tag_match:
+					display_val_dict[x[0]] = entitlement_display_value_tag_match[0]
+			entxmldict[x[0]]=sub_string
+	return entxmldict,display_val_dict
 
-
-
-
+def entitlemt_attr_update(entitlement_table, where):
+	get_equipment = Sql.GetList("SELECT * FROM {} {}".format(entitlement_table, where))
+	entitlement_details = [{
+								"field":["INTCPV","Intercept","AGS_{}_VAL_INTCPT".format(get_serviceid)]						
+								},
+								{
+								"field":["INTCPC","Intercept Coefficient","AGS_{}_VAL_INTCCO".format(get_serviceid)]
+								},
+								{
+								"field":["OSSVDV","Total Cost W/O Seedstock","AGS_{}_VAL_TBCOST".format(get_serviceid)]	
+								},
+								{
+								"field":["LTCOSS","Total Cost w/o Seedstock Coeff","AGS_{}_VAL_TBCOCO".format(get_serviceid)]
+								},
+								{
+								"field":["POFVDV","Product Offering","AGS_{}_VAL_POFFER".format(get_serviceid)]	
+								},
+								{
+								"field":["POFVDC","Product Offering Coefficient","AGS_{}_VAL_POFFCO".format(get_serviceid)]
+								},
+								{
+								"field":["GBKVDV","Greenbook","AGS_{}_VAL_GRNBKV".format(get_serviceid)]	
+								},
+								{
+								"field":["GBKVDC","Greenbook Coefficient","AGS_{}_VAL_GRNBCO".format(get_serviceid)]
+								},
+								{
+								"field":["UIMVDV","Uptime Improvement","AGS_{}_VAL_UPIMPV".format(get_serviceid)]	
+								},
+								{
+								"field":["UIMVDC","Uptime Improvement Coefficient","AGS_{}_VAL_UPIMCO".format(get_serviceid)]
+								},
+								{
+								"field":["CAVVDV","Capital Avoidance","AGS_{}_VAL_CAPAVD".format(get_serviceid)]	
+								},
+								{
+								"field":["CAVVDC","Capital Avoidance Coefficient","AGS_{}_VAL_CAPACO".format(get_serviceid)]
+								},
+								{
+								"field":["WNDVDV","Wafer Node","AGS_{}_VAL_WAFNOD".format(get_serviceid)]	
+								},
+								{
+								"field":["WNDVDC","Wafer Node Coefficient","AGS_{}_VAL_WAFNCO".format(get_serviceid)]
+								},
+								{
+								"field":["CCRTMV","Contract Coverage & Response Time","AGS_{}_VAL_CCRTME".format(get_serviceid)]	
+								},
+								{
+								"field":["CCRTMC","Contract Coverage & Response Time Coefficient","AGS_{}_VAL_CCRTCO".format(get_serviceid)]
+								},
+								{
+								"field":["SCMVDV","Service Complexity","AGS_{}_VAL_SCCCDF".format(get_serviceid)]
+								},
+								{
+								"field":["SCMVDC", "Service Complexity Coefficient", "AGS_{}_VAL_SCCCCO".format(get_serviceid)]
+								},
+								{
+								"field":["CCDFFV","Cleaning Coating Differentiation","AGS_{}_VAL_CCDVAL".format(get_serviceid)]
+								},
+								{
+								"field":["CCDFFC", "Cleaning Coating Diff coeff.", "AGS_{}_VAL_CCDVCO".format(get_serviceid)]
+								},
+								{
+								"field":["NPIVDV","NPI","AGS_{}_VAL_NPIREC".format(get_serviceid)]
+								},	
+								{
+								"field":["NPIVDC", "NPI Coefficient", "AGS_{}_VAL_NPICOF".format(get_serviceid)]
+								},	
+								{
+								"field":["DTPVDV","Device Type","AGS_{}_VAL_DEVTYP".format(get_serviceid)]
+								},
+								{
+								"field":["DTPVDC", "Device Type Coefficient", "AGS_{}_VAL_DEVTCO".format(get_serviceid)]
+								},	
+								{
+								"field":["CSTVDV","# CSA Tools per Fab","AGS_{}_VAL_TLSFAB".format(get_serviceid)]
+								},	
+								{
+								"field":["CSTVDC", "# CSA Tools per Fab Coefficient", "AGS_{}_VAL_TLSFCO".format(get_serviceid)]
+								},	
+								{
+								"field":["CSGVDV","Customer Segment","AGS_{}_VAL_CSTSEG".format(get_serviceid)]
+								},
+								{
+								"field":["CSGVDC", "Customer Segment Coefficent", "AGS_{}_VAL_CSSGCO".format(get_serviceid)]
+								},	
+								{
+								"field":["QRQVDV","Quality Required","AGS_{}_VAL_QLYREQ".format(get_serviceid)]
+								},
+								{
+								"field":["QRQVDC", "Quality Required Coefficient", "AGS_{}_VAL_QLYRCO".format(get_serviceid)]
+								},	
+								{
+								"field":["SVCVDV","Service Competition","AGS_{}_VAL_SVCCMP".format(get_serviceid)]
+								},
+								{
+								"field":["SVCVDC", "Service Competition Coefficient", "AGS_{}_VAL_SVCCCO".format(get_serviceid)]
+								},
+								{
+								"field":["RKFVDV","Risk Factor","AGS_{}_VAL_RSKFVD".format(get_serviceid)]
+								},
+								{
+								"field":["RKFVDC", "Risk Factor Coefficient", "AGS_{}_VAL_RSKFCO".format(get_serviceid)]
+								},
+								{
+								"field":["PBPVDV","PDC Base Price","AGS_{}_VAL_PDCBSE".format(get_serviceid)]
+								},
+								{
+								"field":["PBPVDC", "PDC Base Price Coefficient", "AGS_{}_VAL_PDCBCO".format(get_serviceid)]
+								},
+								{
+								"field":["CMLAB_ENT","Corrective Maintenance Labor","AGS_{}_NET_CRMALB".format(get_serviceid)]
+								},		
+								{
+								"field":["CNSMBL_ENT","Consumable","AGS_{}_TSC_CONSUM".format(get_serviceid)]
+								},
+								{
+								"field":["CNTCVG_ENT","Contract Coverage","AGS_{}_CVR_CNTCOV".format(get_serviceid)]
+								},	
+								{
+								"field":["NCNSMB_ENT","Non-Consumable","AGS_{}_TSC_NONCNS".format(get_serviceid)]
+								},	
+								{
+								"field":["PMEVNT_ENT","Quote Type","AGS_{}_PQB_QTETYP".format(get_serviceid)]
+								},		
+								{
+								"field":["PMLAB_ENT","Preventative Maintenance Labor","AGS_{}_NET_PRMALB".format(get_serviceid)]
+								},	
+								{
+								"field":["PRMKPI_ENT","Primary KPI. Perf Guarantee","AGS_{}_KPI_PRPFGT".format(get_serviceid)]
+								},
+								{
+								"field":["OFRING","Product Offering","AGS_{}_VAL_POFFER".format(get_serviceid)]
+								},	
+								{
+								"field":["QTETYP","Quote Type","AGS_{}_PQB_QTETYP".format(get_serviceid)]
+								},	
+								{
+								"field":["BILTYP","Billing Type","AGS_{}_PQB_BILTYP".format(get_serviceid)]
+								},	
+								{
+								"field":["BPTKPI","Bonus & Penalty Tied to KPI","AGS_{}_KPI_BPTKPI".format(get_serviceid)]
+								},
+								{
+								"field":["ATGKEY","Additional Target KPI","AGS_{}_KPI_TGTKPI".format(get_serviceid)]
+								},	
+								{
+								"field":["ATNKEY","Additional Target KPI(Non-std)","AGS_{}_KPI_TGKPNS".format(get_serviceid)]
+								},
+								{
+								"field":["NWPTON","New Parts Only","AGS_{}_TSC_RPPNNW".format(get_serviceid)]
+								},
+								{
+								"field":["HEDBIN","Head break-in","AGS_{}_STT_HDBRIN".format(get_serviceid)]
+								},
+						]
+			
+	if get_equipment:
+		for ent_rec in get_equipment:
+			update_values = ""
+			get_xml_dict,dict_val = _construct_dict_xml(ent_rec.ENTITLEMENT_XML)
+			Trace.Write("dict_val--"+str(dict_val))
+			for entitlement_detail in entitlement_details:
+				entitlement_table_col = entitlement_detail['field'][0]
+				entitlement_id = entitlement_detail['field'][2]
+				if entitlement_id in dict_val.keys():
+					update_values += ", {} = {} ".format(entitlement_table_col, entitlement_id ) 
+			if update_values:
+				update_query = "UPDATE {entitlement_table} SET {cols} {where}".format(entitlement_table = entitlement_table, cols = update_values, where =where )
+				update_query = update_query.replace('SET ,','SET ')
+				Log.Info('update_query---'+str(update_query))
+				Sql.RunQuery(update_query)
+							
 ## Entitlement rolldown fn
 def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	is_changed = False
@@ -1085,6 +1257,8 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 					Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><FABLOCATION_ID>''+FABLOCATION_ID+''</FABLOCATION_ID><GREENBOOK>''+GREENBOOK+''</GREENBOOK><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(replace(replace(replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; '' ),'' > '','' &gt; '' ),''_>'',''_&gt;''),''_<'',''_&lt;''),''&'','';#38''),''<10%'',''&lt;10%''),''<='',''&lt;='')  as entitlement_xml from SAQSCE(nolock) "+str(where_condition)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_PRICE_IMPACT,IS_DEFAULT,ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CALCULATION_FACTOR INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',FABLOCATION_ID VARCHAR(100) ''FABLOCATION_ID'',GREENBOOK VARCHAR(100) ''GREENBOOK'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',PRICE_METHOD VARCHAR(100) ''PRICE_METHOD'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'') ; exec sys.sp_xml_removedocument @H; '")
 
+				##saqsce ent columns update
+				entitlemt_attr_update(obj,where)
 
 					#Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val = FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''<QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><FABLOCATION_ID>''+FABLOCATION_ID+''</FABLOCATION_ID><GREENBOOK>''+GREENBOOK+''</GREENBOOK><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; '' ),'' > '','' &gt; '' ),''_>'',''_&gt;''),''_<'',''_&lt;''),''&'','';#38'')   as entitlement_xml from SAQSCE (nolock)  "+str(where_condition)+"  )A )a SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_PRICE_IMPACT,IS_DEFAULT,ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CALCULATION_FACTOR INTO  "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',FABLOCATION_ID VARCHAR(100) ''FABLOCATION_ID'',GREENBOOK VARCHAR(100) ''GREENBOOK'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',PRICE_METHOD VARCHAR(100) ''PRICE_METHOD'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'') ; exec sys.sp_xml_removedocument @H; '")
 
@@ -1116,6 +1290,10 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userid,datetimenow,getinnercon.CONFIGURATION_STATUS,objectName,obj,join,where)
 					Log.Info('update_query--863----'+str(update_query))
 					Sql.RunQuery(update_query)
+					
+					##saqgpe ent columns update
+					if obj == 'SAQGPE':
+						entitlemt_attr_update(obj,where)
 
 					
 
