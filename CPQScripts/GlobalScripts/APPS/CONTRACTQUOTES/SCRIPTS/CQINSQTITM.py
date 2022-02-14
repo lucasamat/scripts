@@ -3068,8 +3068,7 @@ class ContractQuoteItem:
 			##deleting Z0046 SAQRIT records
 			self._delete_z0046_quote_items()
 			quote_revision_item_obj = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-			if not quote_revision_item_obj:
-				Log.Info("===> _do_opertion 2222")
+			if not quote_revision_item_obj:				
 				if self.is_spare_service == True and self.service_id in ('Z0101','Z0100'):		
 					# Spare Parts Insert/Update
 					self._quote_items_summary_insert()
@@ -3079,15 +3078,13 @@ class ContractQuoteItem:
 					self._insert_quote_item_forecast_parts()
 
 				##simple product quote item insert
-				elif self.is_simple_service == True:
-					Log.Info("===> _do_opertion 3333")
+				elif self.is_simple_service == True:					
 					self._simple_quote_items_summary_insert()
 					self._simple_quote_items_insert()
 					self._simple_items_object_insert()
 					self._simple_quote_annualized_items_insert()
 				elif self.is_fpm_spare_service == True:				
-					# Spare Parts Insert/Update (Z0108)...
-					Log.Info("===>2 _do_opertion z0108 z0110 for testing")
+					# Spare Parts Insert/Update (Z0108)...					
 					saqspt_have_qty = Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT (NOLOCK) WHERE QUOTE_ID = '{}' AND CUSTOMER_ANNUAL_QUANTITY IS NOT NULL".format(self.contract_quote_id))
 					if saqspt_have_qty.CNT>0:              
 						self._quote_items_summary_insert()
@@ -3096,8 +3093,7 @@ class ContractQuoteItem:
 						self.self._insert_item_level_delivery_schedule()
 						self._simple_fpm_quote_annualized_items_insert()
 						self._quote_items_fpm_entitlement_insert()
-				else:
-					Log.Info("===> _do_opertion 4444")
+				else:					
 					self._quote_items_summary_insert()
 					self._quote_items_insert()		
 					self._quote_items_object_insert()	
@@ -3107,16 +3103,14 @@ class ContractQuoteItem:
 					self._quote_items_assembly_insert()
 					self._quote_items_assembly_entitlement_insert()
 			else:
-				self._delete_item_related_table_records()
-				
+				self._delete_item_related_table_records()				
 				if self.is_spare_service == True and self.service_id in ('Z0101','Z0100'):	
 					# Spare Parts Insert/Update
 					self._quote_items_summary_insert()
 					self._quote_items_insert()
 					self._quote_items_object_insert()
 					self._quote_annualized_items_insert()
-					self._insert_quote_item_forecast_parts()
-						
+					self._insert_quote_item_forecast_parts()						
 				elif self.is_simple_service == True:
 					self._simple_delete_item_related_table_records()
 					self._simple_quote_items_summary_insert()
