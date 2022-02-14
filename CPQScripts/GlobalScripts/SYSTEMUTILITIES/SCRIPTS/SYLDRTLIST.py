@@ -9802,7 +9802,7 @@ class SYLDRTLIST:
 			ordered_values.extend(parts) #appending parts without having any child parts
 		Query_Obj = []
 		if len(ordered_values) < int(Page_End):
-    		Page_End = len(ordered_values)
+			Page_End = len(ordered_values)
 		Trace.Write('Start:'+str(int(Page_start)-1)+',End:'+str(Page_End))
 		for row in range(int(Page_start)-1,int(Page_End)):
 			Query_Obj.append(ordered_values[row])
