@@ -7,13 +7,10 @@
 # ==========================================================================================================================================
 
 import re
-import sys
 import datetime
-import Webcom.Configurator.Scripting.Test.TestProduct
-import System.Net
-#import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
-
+import time
+from datetime import timedelta , date
 Sql = SQL()
 
 class ContractQuoteSpareOpertion:
@@ -142,11 +139,44 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		self.columns = ""
 		self.records = ""
 
+	def insert_delivery_schedule(self):
+		#try:
+		if str(self.tree_param) == "Z0108":
+			delete_sch_details = Sql.RunQuery("DELETE FROM SAQSPD where QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}'".format(contract_rec_id= self.contract_quote_record_id,qt_rev_id = self.contract_quote_revision_record_id))
+			quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
+			contract_start_date = quotedetails.CONTRACT_VALID_FROM
+			contract_end_date = quotedetails.CONTRACT_VALID_TO
+			start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
+			end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
+			diff1 = end_date - start_date
+			count =0
+			get_totalweeks,remainder = divmod(diff1.days,7)
+			for index in range(0, get_totalweeks):
+				delivery_week_date="DATEADD(week, {weeks}, '{DeliveryDate}')".format(weeks=index, DeliveryDate=start_date.strftime('%m/%d/%Y'))
+				Delivery = 'Delivery {}'.format(count)
+				getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,QUANTITY,PART_NUMBER,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID,CUSTOMER_PART_NUMBER_RECORD_ID,CUSTOMER_PART_NUMBER,CUSTOMER_ANNUAL_QUANTITY,DELIVERY_MODE,SCHEDULED_MODE,MATERIALSTATUS_ID,MATERIALSTATUS_RECORD_ID,SALESUOM_ID,SALESUOM_RECORD_ID,MATPRIGRP_ID,UOM_ID,DELIVERY_SCHEDULE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,UOM_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,'{Delivery}' as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID, {value} as QUANTITY,PART_NUMBER,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID,CUSTOMER_PART_NUMBER_RECORD_ID,CUSTOMER_PART_NUMBER,CUSTOMER_ANNUAL_QUANTITY,DELIVERY_MODE,SCHEDULE_MODE as SCHEDULED_MODE,MATERIALSTATUS_ID,MATERIALSTATUS_RECORD_ID,SALESUOM_ID,SALESUOM_RECORD_ID,MATPRIGRP_ID,BASEUOM_ID as UOM_ID,'{deli_sch}' as DELIVERY_SCHEDULE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,BASEUOM_RECORD_ID as UOM_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= self.contract_quote_record_id,qt_rev_id = self.contract_quote_revision_record_id,value=0,Delivery=Delivery,deli_sch='WEEKLY') )
+				#getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,PART_NUMBER,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID,CUSTOMER_ANNUAL_QUANTITY,DELIVERY_MODE,SCHEDULED_MODE,MATERIALSTATUS_ID,MATERIALSTATUS_RECORD_ID,SALESUOM_ID,SALESUOM_RECORD_ID,MATPRIGRP_ID,UOM_ID,DELIVERY_SCHEDULE)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,PART_NUMBER, 0 as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID,CUSTOMER_ANNUAL_QUANTITY,DELIVERY_MODE,SCHEDULE_MODE as SCHEDULED_MODE,MATERIALSTATUS_ID,MATERIALSTATUS_RECORD_ID,SALESUOM_ID,SALESUOM_RECORD_ID,MATPRIGRP_ID,BASEUOM_ID as UOM_ID,'{deli_sch}' as DELIVERY_SCHEDULE FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= self.contract_quote_record_id,qt_rev_id = self.contract_quote_revision_record_id,deli_sch= 'WEEKLY'))
+		#except:
+			#pass
+
 	def _insert_spare_parts(self):
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
 		spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.contract_quote_id, datetime_string)		
-		#Trace.Write("Temp Table ===> "+str(spare_parts_temp_table_name))
+		Trace.Write("Temp Table ===> "+str(spare_parts_temp_table_name))
 		try:
+			product_offering_entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}'".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,service_id = self.tree_param))
+			entitlement_xml = product_offering_entitlement_obj.ENTITLEMENT_XML
+			quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			consigned_parts_match_id = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.tree_param)+'[^>]*?_TSC_ONSTCP</ENTITLEMENT_ID>')
+			consigned_parts_match_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			for m in re.finditer(quote_item_tag, entitlement_xml):
+				sub_string = m.group(1)
+				consigned_parts_id =re.findall(consigned_parts_match_id,sub_string)
+				consigned_parts_value =re.findall(consigned_parts_match_value,sub_string)
+				if consigned_parts_id and consigned_parts_value:
+					consigned_parts_value = consigned_parts_value[0]
+					break
+			Trace.Write("consigned_parts_value_CHK "+str(consigned_parts_value))
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
 			
 			spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
@@ -154,14 +184,13 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' ' ")
 
 			Sql.RunQuery("""
-							INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
+							INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID,DELIVERY_MODE, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,RETURN_TYPE, ODCC_FLAG, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,STPACCOUNT_ID, SHPACCOUNT_ID,CORE_CREDIT_PRICE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 							SELECT DISTINCT
 								CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID,
 								BASEUOM_ID,
 								BASEUOM_RECORD_ID,
 								CUSTOMER_PART_NUMBER,
 								CUSTOMER_PART_NUMBER_RECORD_ID,
-								DELIVERY_MODE,
 								EXTENDED_UNIT_PRICE,
 								PART_DESCRIPTION,
 								PART_NUMBER,
@@ -178,6 +207,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								SALESUOM_CONVERSION_FACTOR,
 								SALESUOM_ID,
 								SALESUOM_RECORD_ID, 
+								DELIVERY_MODE,
 								SCHEDULE_MODE,
 								SERVICE_DESCRIPTION,
 								SERVICE_ID,
@@ -191,6 +221,16 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								PAR_SERVICE_DESCRIPTION,
 								PAR_SERVICE_ID,
 								PAR_SERVICE_RECORD_ID,
+                                RETURN_TYPE,
+                                ODCC_FLAG,
+                                PAR_PART_NUMBER,
+                                EXCHANGE_ELIGIBLE,
+                                CUSTOMER_ELIGIBLE,
+                                CUSTOMER_PARTICIPATE,
+                                CUSTOMER_ACCEPT_PART,
+                                STPACCOUNT_ID,
+                                SHPACCOUNT_ID,
+								CORE_CREDIT_PRICE,
 								{UserId} as CPQTABLEENTRYADDEDBY, 
 								GETDATE() as CPQTABLEENTRYDATEADDED
 							FROM (
@@ -200,7 +240,6 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
 								MAMTRL.SAP_PART_NUMBER as CUSTOMER_PART_NUMBER,
 								MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
-								'ONSITE' as DELIVERY_MODE,
 								0.00 as EXTENDED_UNIT_PRICE,
 								MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
 								MAMTRL.SAP_PART_NUMBER as PART_NUMBER,
@@ -217,7 +256,8 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								0.00 as SALESUOM_CONVERSION_FACTOR,
 								MAMTRL.UNIT_OF_MEASURE as SALESUOM_ID,
 								MAMTRL.UOM_RECORD_ID as SALESUOM_RECORD_ID, 
-								'SCHEDULED' as SCHEDULE_MODE,
+								CASE WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY < 10 THEN 'OFFSITE' WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY > 10 THEN 'ONSITE' ELSE 'OFFSITE' END AS DELIVERY_MODE,
+								CASE WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY < 10 THEN 'ON REQUEST' WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY > 10 THEN 'LOW QUANTITY ONSITE' WHEN SAQTSV.SERVICE_ID='Z0108' AND  TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY <=10 THEN 'UNSCHEDULED' ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
 								SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
 								SAQTSV.SERVICE_ID as SERVICE_ID,
 								SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
@@ -229,7 +269,17 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								SAQTMT.CONTRACT_VALID_TO as VALID_TO_DATE,
 								SAQTSV.PAR_SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,
 								SAQTSV.PAR_SERVICE_ID as PAR_SERVICE_ID,
-								SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID
+								SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,
+                                TEMP_TABLE.RETURN_TYPE AS RETURN_TYPE,
+                                TEMP_TABLE.ODCC_FLAG AS ODCC_FLAG,
+                                TEMP_TABLE.PAR_PART_NUMBER AS PAR_PART_NUMBER,
+                                TEMP_TABLE.EXCHANGE_ELIGIBLE AS EXCHANGE_ELIGIBLE,
+                                TEMP_TABLE.CUSTOMER_ELIGIBLE AS CUSTOMER_ELIGIBLE,
+                                TEMP_TABLE.CUSTOMER_PARTICIPATE as CUSTOMER_PARTICIPATE,
+                                TEMP_TABLE.CUSTOMER_ACCEPT_PART as CUSTOMER_ACCEPT_PART,
+                                TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
+                                TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
+								TEMP_TABLE.CORE_CREDIT_PRICE AS CORE_CREDIT_PRICE
 							FROM {TempTable} TEMP_TABLE(NOLOCK)
 							JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PART_NUMBER
 							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
@@ -244,9 +294,10 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 										UserId=self.user_id
 									)
 			)
-			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
-		except Exception:
-			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")		
+			# spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+		except Exception as e:
+			Trace.Write("Exception Occured "+str(e))
+			# spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")		
 	
 
 	def _do_opertion(self):
@@ -275,6 +326,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			# 	self.records.append(tuple(data))
 			# 	Trace.Write("data ====>>> "+str(list(data)))
 		self._insert_spare_parts()
+		self.insert_delivery_schedule()
 		return "Import Success"
 
 

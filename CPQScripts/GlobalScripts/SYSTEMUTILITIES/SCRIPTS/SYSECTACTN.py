@@ -935,7 +935,7 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 					if Quote is not None:
 						PurchaseOrderNumber = PurchaseOrderDate = CustomerNotes = PaymentTermName = SalesEmployeePhone = ""
 						QuoteRecId = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()	
-						SalesPersonValue = Sql.GetFirst("Select PHONE from SAQTIP where QUOTE_RECORD_ID = '"+str(QuoteRecId)+"' and PARTY_ROLE = 'SALES EMPLOYEE' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "'")
+						SalesPersonValue = Sql.GetFirst("Select PHONE from SAQTIP where QUOTE_RECORD_ID = '"+str(QuoteRecId)+"' and CPQ_PARTNER_FUNCTION = 'SALES EMPLOYEE' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "'")
 						if Product.Attributes.GetByName("QSTN_SYSEFL_QT_01126"):
 							PurchaseOrderNumber = Product.Attr('QSTN_SYSEFL_QT_01126').GetValue()
 						if Product.Attributes.GetByName("QSTN_SYSEFL_QT_01128"):	

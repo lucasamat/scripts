@@ -82,7 +82,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	
 	Sql.RunQuery("""UPDATE SAQTRV
 						SET 									
-						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR					
+						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.TOTAL_AMOUNT_INGL_CURR					
 						FROM SAQTRV (NOLOCK)
 						INNER JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,
 									SUM(ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR					

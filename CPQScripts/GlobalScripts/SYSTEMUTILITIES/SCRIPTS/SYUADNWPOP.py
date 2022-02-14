@@ -2014,14 +2014,14 @@ def POPUPLISTVALUEADDNEW(
 				Header_details = {
 					"CREDITVOUCHER_RECORD_ID": "KEY",
 					"ZAFTYPE":"ZAF TYPE",
-					"UNAPPLIED_BALANCE": "CREDIT AMOUNT",
+					"UNBL_INGL_CURR": "CREDIT AMOUNT",
 					"CREDIT_APPLIED": "APPLIED CREDIT",
 				}
 				ordered_keys = [
 					#"ADD_ON_PRODUCT_RECORD_ID",
 					"CREDITVOUCHER_RECORD_ID",
 					"ZAFTYPE",
-					"UNAPPLIED_BALANCE",
+					"UNBL_INGL_CURR",
 					"CREDIT_APPLIED"
 				]
 				Objd_Obj = Sql.GetList(
@@ -2158,9 +2158,9 @@ def POPUPLISTVALUEADDNEW(
 				)
 				
 				table_data = Sql.GetList(
-				   "select {} from SACRVC (NOLOCK) WHERE ZUONR = '{}' ".format(
-				       ", ".join(ordered_keys), str(account_id),str(TreeParentParam),str(ADDON_PRD_ID), contract_quote_record_id,quote_revision_record_id
-				   )
+				"select {} from SACRVC (NOLOCK) WHERE ZUONR = '{}' ".format(
+					", ".join(ordered_keys), str(account_id),str(TreeParentParam),str(ADDON_PRD_ID), contract_quote_record_id,quote_revision_record_id
+				)
 				)
 				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZUONR = '"+str(account_id)+"'")
 
@@ -2489,6 +2489,7 @@ def POPUPLISTVALUEADDNEW(
 			Trace.Write("TreeParam"+str(TreeParam))
 			inner_join = ""
 			additional_where = ""
+			get_docutype =Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id) )
 			if where_string and 'SAP_PART_NUMBER' in where_string:
 				where_string = where_string.replace("SAP_PART_NUMBER", "MAMTRL.SAP_PART_NUMBER")
 			if TreeParam in ("Comprehensive Services","Product Offerings","Complementary Products"):
@@ -2498,8 +2499,8 @@ def POPUPLISTVALUEADDNEW(
 					additional_where = " AND SALESORG_ID='{}' ".format(get_sales_org.SALESORG_ID)
 			if TreeParam == "Product Offerings":
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(distinct {}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND  MAADPR.VISIBLE_INCONFIG = 'TRUE' AND PRODUCT_TYPE != 'Add-On Products' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID) {} ".format(
-						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",contract_quote_record_id,quote_revision_record_id,additional_where
+					"SELECT COUNT(distinct {}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND  MAADPR.VISIBLE_INCONFIG = 'TRUE' AND MAADPR.PRDOFR_DOCTYP ='{}'  AND PRODUCT_TYPE != 'Add-On Products' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID) {} ".format(
+						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",get_docutype.DOCTYP_ID,contract_quote_record_id,quote_revision_record_id,additional_where
 					)
 				)
 			else:
@@ -2537,9 +2538,7 @@ def POPUPLISTVALUEADDNEW(
 				]
 			if TreeParam == "Product Offerings":
 
-				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND  MAADPR.VISIBLE_INCONFIG = 'TRUE' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID  )""".format(
-					contract_quote_record_id,quote_revision_record_id
-				)
+				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND  MAADPR.VISIBLE_INCONFIG = 'TRUE' AND MAADPR.PRDOFR_DOCTYP ='{}' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID  )""".format(get_docutype.DOCTYP_ID,contract_quote_record_id,quote_revision_record_id)
 			else:
 				where_string += """ PRODUCT_TYPE ='{}' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(
 					Product.GetGlobal("TreeParam"), contract_quote_record_id,quote_revision_record_id
@@ -2935,11 +2934,10 @@ def POPUPLISTVALUEADDNEW(
 							quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam
 						)
 						) """
-					
 				else:
 					Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID = '{qurev_rec_id}')".format(where_string=str(where_string)+" AND " if where_string else "",
-						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id , restrict_tools = " EQUIPMENTCATEGORY_ID = 'Y' AND " if TreeParam == "Z0004" else "")
+					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} {is_temptool} AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID = '{qurev_rec_id}')".format(where_string=str(where_string)+" AND " if where_string else "",
+						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id , restrict_tools = " EQUIPMENTCATEGORY_ID = 'Y' AND " if TreeParam == "Z0004" else "",is_temptool=" TEMP_TOOL ='TRUE' " if str(TreeParam)=="Z0099" else " ( TEMP_TOOL IS NULL OR TEMP_TOOL = 'FALSE') ")
 					)
 
 			if str(PerPage) == "" and str(PageInform) == "":
@@ -2974,8 +2972,8 @@ def POPUPLISTVALUEADDNEW(
 			)
 			else:
 				Trace.Write('2572--POPUPPPPPPPPPPP----')
-				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID  = '{qurev_rec_id}')".format(
-					quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id, restrict_tools = " EQUIPMENTCATEGORY_ID = 'Y' AND " if TreeParam == "Z0004" else ""
+				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} {is_temptool} AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID  = '{qurev_rec_id}')".format(
+					quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id, restrict_tools = " EQUIPMENTCATEGORY_ID = 'Y' AND " if TreeParam == "Z0004" else "",is_temptool=" TEMP_TOOL = 'TRUE' " if str(TreeParam)=="Z0099" else " ( TEMP_TOOL IS NULL OR TEMP_TOOL = 'FALSE') "
 				)
 			if TreeParentParam == "Add-On Products" and TreeParam !="":
 				#A055S000P01-3251--start pagination issue on addfromlist popup in addonproducts
@@ -3579,22 +3577,54 @@ def POPUPLISTVALUEADDNEW(
 			new_value_dict = {}
 			ObjectName = "MAEQUP"
 			table_id = "equipments_addnew"
-			Header_details = {
-				"EQUIPMENT_RECORD_ID": "KEY",
-				"EQUIPMENT_ID":"EQUIPMENT ID",
-				"EQUIPMENT_DESCRIPTION":"EQUIPMENT_DESCRIPTION",
-				"SERIAL_NO": "SERIAL NUMBER",
-				"GREENBOOK": "GREENBOOK",
-				"PLATFORM": "PLATFORM",
-			}
-			ordered_keys = [
-				"EQUIPMENT_RECORD_ID",
-				"EQUIPMENT_ID",
-				"EQUIPMENT_DESCRIPTION",
-				"SERIAL_NO",
-				"GREENBOOK",
-				"PLATFORM",
-			]
+			if tool_type=="TEMP_TOOL":
+				Header_details = {
+					"EQUIPMENT_RECORD_ID": "KEY",
+					"EQUIPMENT_ID":"EQUIPMENT ID",
+					"EQUIPMENT_DESCRIPTION":"EQUIPMENT_DESCRIPTION",
+					"SERIAL_NO": "SERIAL NUMBER",
+					"CUSTOMER_TOOL_ID": "CUSTOMER TOOL ID",
+					"GREENBOOK": "GREENBOOK",
+					"PLATFORM": "PLATFORM",
+					"WAFER_SIZE_GROUP": "WAFER SIZE GROUP",
+					"TOOL_CONFIGURATION":"TOOL CONFIGURATION",
+					"DEVICE_TYPE":"DEVICE TYPE",
+					"DEVICE_NODE":"DEVICE NODE",
+					"KPU":"KPU",
+					"TECHNOLOGY":"TECHNOLOGY"
+				}
+				ordered_keys = [
+					"EQUIPMENT_RECORD_ID",
+					"EQUIPMENT_ID",
+					"EQUIPMENT_DESCRIPTION",
+					"SERIAL_NO",
+					"CUSTOMER_TOOL_ID",
+					"GREENBOOK",
+					"PLATFORM",
+					"WAFER_SIZE_GROUP",
+					"TOOL_CONFIGURATION",
+					"DEVICE_TYPE",
+					"DEVICE_NODE",
+					"KPU",
+					"TECHNOLOGY"
+				]
+			else:	
+				Header_details = {
+					"EQUIPMENT_RECORD_ID": "KEY",
+					"EQUIPMENT_ID":"EQUIPMENT ID",
+					"EQUIPMENT_DESCRIPTION":"EQUIPMENT_DESCRIPTION",
+					"SERIAL_NO": "SERIAL NUMBER",
+					"GREENBOOK": "GREENBOOK",
+					"PLATFORM": "PLATFORM",
+				}
+				ordered_keys = [
+					"EQUIPMENT_RECORD_ID",
+					"EQUIPMENT_ID",
+					"EQUIPMENT_DESCRIPTION",
+					"SERIAL_NO",
+					"GREENBOOK",
+					"PLATFORM",
+				]
 			Trace.Write('3178--------')
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -3678,7 +3708,7 @@ def POPUPLISTVALUEADDNEW(
 					+ str(RECORDID)
 					+ "\", 'RECORDFEILD':  \""
 					+ str(RECORDFEILD)
-					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; try { if(date_field.length > 0) { $(\""
+					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList,'TOOL_TYPE':localStorage.getItem('TOOL_TYPE')}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; try { if(date_field.length > 0) { $(\""
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); $("#noRecDisp").remove() } else{ var date_field = [];$("'
 					+ str(table_ids)
@@ -3722,6 +3752,16 @@ def POPUPLISTVALUEADDNEW(
 						quote_revision_record_id = quote_revision_record_id,
 					)
 				)   
+			elif tool_type=="TEMP_TOOL":
+				Pagination_M = Sql.GetFirst(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} 1=1  ".format(
+						ObjectName,
+						where_string,
+						contract_quote_record_id,
+						Product.GetGlobal("TreeParam"),
+						quote_revision_record_id,
+					)
+				)
 			else:
 				Pagination_M = Sql.GetFirst(
 					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
@@ -3752,11 +3792,26 @@ def POPUPLISTVALUEADDNEW(
 						pagination_condition,
 					)
 				)	
+			elif tool_type=="TEMP_TOOL":
+				where_string += """ ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} 1=1 """.format(
+					where_string,
+					contract_quote_record_id,
+					Product.GetGlobal("TreeParam"),
+					quote_revision_record_id,
+				)
+				table_data = Sql.GetList(
+					"select {} from {} (NOLOCK) {} {} {}".format(
+						", ".join(ordered_keys),
+						ObjectName,
+						"WHERE " + where_string if where_string else "",
+						order_by,
+						pagination_condition,
+					)
+				)
 			else:
-				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND SALESORG_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
 					account_record_id,
 					Product.GetGlobal("TreeParam"),
-					sales_org,
 					where_string,
 					contract_quote_record_id,
 					Product.GetGlobal("TreeParam"),
@@ -4141,7 +4196,7 @@ def POPUPLISTVALUEADDNEW(
 				# if TreeSuperParentParam == "Product Offerings" and TreeParam =='Z0092':
 				# 	pattern_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
 				# else:
- 	
+	
 				pattern_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
 				pattern_exclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
 				pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
@@ -6026,15 +6081,15 @@ def POPUPLISTVALUEADDNEW(
 							Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")
 							Tier_List1 = sorted(Tier_List)
 							Trace.Write('4063--Tier_List1-----'+str(TabName))
-							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PARTY_ROLE != 'RECEIVING ACCOUNT'".format(contract_quote_record_id,quote_revision_record_id))
+							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND CPQ_PARTNER_FUNCTION != 'RECEIVING ACCOUNT'".format(contract_quote_record_id,quote_revision_record_id))
 							if str(TabName) == "Quote":
-								send_n_receive_acnt = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+								send_n_receive_acnt = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 								list_of_role = []
 								if send_n_receive_acnt:
 									for acnt in send_n_receive_acnt:
-										list_of_role.append(acnt.PARTY_ROLE)
-										if acnt.PARTY_ROLE == "SENDING ACCOUNT" or acnt.PARTY_ROLE == "RECEIVING ACCOUNT":
-											Tier_List1.remove(acnt.PARTY_ROLE)
+										list_of_role.append(acnt.CPQ_PARTNER_FUNCTION)
+										if acnt.CPQ_PARTNER_FUNCTION == "SENDING ACCOUNT" or acnt.CPQ_PARTNER_FUNCTION == "RECEIVING ACCOUNT":
+											Tier_List1.remove(acnt.CPQ_PARTNER_FUNCTION)
 									# if "SENDING ACCOUNT" not in list_of_role and "RECEIVING ACCOUNT" not in list_of_role:
 									# 	Tier_List1.remove("RECEIVING ACCOUNT")
 							Trace.Write("CHKNG_J "+str(Tier_List1))
@@ -6221,14 +6276,17 @@ try:
 except:    
 	PerPage = ''
 	PageInform = ''
-
+try:
+	tool_type = Param.TOOL_TYPE
+except:
+	tool_type = "EQUIPMENT"
 try:
 	ACTION = Param.ACTION
 except:
 	ACTION = ''
 Trace.Write("ACTION==="+str(ACTION))
 
-
+Trace.Write("Tool_type"+str(tool_type))
 Trace.Write("PerPage-----"+str(PerPage))
 Trace.Write("PageInform -----"+str(PageInform))
 

@@ -61,6 +61,51 @@ try:
 			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_SSCM_QUOTE_ASYNC'")
 			response_MAMSOP = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 			#ApiResponse = ApiResponseFactory.JsonResponse({"Response":[{'Status':'200','Message':"Data Completely Uploaded"}]})
+
+	def cpq_to_clm(Qt_id,Rev_id):
+		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+		if LOGIN_CREDENTIALS is not None:
+			Login_Username = str(LOGIN_CREDENTIALS.Username)
+			Login_Password = str(LOGIN_CREDENTIALS.Password)
+			authorization = Login_Username+":"+Login_Password
+			binaryAuthorization = UTF8.GetBytes(authorization)
+			authorization = Convert.ToBase64String(binaryAuthorization)
+			authorization = "Basic " + authorization
+
+
+			webclient = System.Net.WebClient()
+			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+			
+			
+			result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
+  				<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
+			
+			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_CLM_ASYNC'")
+			response_MAMSOP = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
+
+	def cpq_to_ecc(Qt_id,Rev_id):
+		Log.Info("====> QTPOSTACRM for---cpq_to_ecc")
+		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+		if LOGIN_CREDENTIALS is not None:
+			Login_Username = str(LOGIN_CREDENTIALS.Username)
+			Login_Password = str(LOGIN_CREDENTIALS.Password)
+			authorization = Login_Username+":"+Login_Password
+			binaryAuthorization = UTF8.GetBytes(authorization)
+			authorization = Convert.ToBase64String(binaryAuthorization)
+			authorization = "Basic " + authorization
+
+
+			webclient = System.Net.WebClient()
+			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+			
+			
+			result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
+  				<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
+			
+			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_ECC_ASYNC'")
+			response_MAMSOP = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 			
 	
 	Quote_Id = Param.QUOTE_ID
@@ -71,6 +116,12 @@ try:
 			Funtion_call = cpq_to_crm(Quote_Id,Revision_Id)
 		elif str(Fun_type).upper() == 'CPQ_TO_SSCM':
 			Funtion_call = cpq_to_sscm(Quote_Id,Revision_Id)
+
+		elif str(Fun_type).upper() == 'CPQ_TO_CLM':
+			Funtion_call = cpq_to_clm(Quote_Id,Revision_Id)
+
+		elif str(Fun_type).upper() == 'CPQ_TO_ECC':
+			Funtion_call = cpq_to_ecc(Quote_Id,Revision_Id)
 	
 			
 except:

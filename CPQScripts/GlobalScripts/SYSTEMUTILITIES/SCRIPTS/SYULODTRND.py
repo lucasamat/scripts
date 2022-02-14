@@ -67,7 +67,8 @@ def CommonTreeViewHTMLDetail(
 
 	Product.SetGlobal('get_quote_item_service',primary_value)
 	Trace.Write(str(ObjectName)+"---ObjectName-----Recordid"+str(primary_value))
-	
+	if str(ObjectName) == "SAQSGB" or str(ObjectName) == "SAQRGG":
+		Product.SetGlobal('addon_prd_rec_id',primary_value)
 	try:
 		CurrentTab = TestProduct.CurrentTab
 	except:
@@ -878,16 +879,27 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				Trace.Write("line_item--quote_record_id--00--------"+str(RECORD_ID))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 				Trace.Write("line_item---quote_record_id-----"+str(quote_record_id))
+				# script = (
+				# 	"SELECT "
+				# 	+ str(API_NAMES)
+				# 	+ " FROM "
+				# 	+ str(ObjectName)
+				# 	+ " (NOLOCK) WHERE "
+				# 	+ str(autoNumber)
+				# 	+ " = '"
+				# 	+ str(RECORD_ID)
+				# 	+ "'"
+				# )
 				script = (
 					"SELECT "
 					+ str(API_NAMES)
 					+ " FROM "
 					+ str(ObjectName)
-					+ " (NOLOCK) WHERE "
-					+ str(autoNumber)
+					+ " (NOLOCK) WHERE QUOTE_RECORD_ID "
 					+ " = '"
-					+ str(RECORD_ID)
-					+ "'"
+					+ str(quote_record_id)
+					+ "' and LINE = '"+str(RECORD_ID)+"'"
+					+ ""
 				)
 			elif ObjectName == "SAQTRV":
 				RECORD_ID = RECORD_ID.split("|")[0]
@@ -1430,12 +1442,19 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 							current_obj_value =str(float(Coeff_values)*float(100))
 						else:
 							current_obj_value = str(Coeff_values)
-					if current_obj_value:
+					if current_obj_value and str(ObjectName) != "SAQICO":
+						Trace.Write("if-----")
 						my_format = "{:." + str(Decimal_Value) + "f}"
 						current_obj_value = str(my_format.format(round(float(current_obj_value), int(Decimal_Value))))
 					if current_obj_value and str(ObjectName) == "SAQICO":
-						my_format = "{:." + str(Decimal_Values) + "f}"
-						current_obj_value = str(my_format.format(round(float(current_obj_value), int(Decimal_Values))))	
+						Trace.Write("if-----111"+str(current_obj_value))
+						try:
+							my_format = "{:." + str(Decimal_Values) + "f}"
+							current_obj_value = str(current_obj_value).replace('%','')
+							current_obj_value = str(my_format.format(round(float(current_obj_value), int(Decimal_Values))))
+							current_obj_value = str(current_obj_value) + '%'
+						except:
+							current_obj_value = str(current_obj_value)													
 					
 
 						#my_format = "{:." + str(Decimal_Values) + "f}"

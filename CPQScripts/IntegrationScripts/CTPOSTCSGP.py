@@ -102,8 +102,10 @@ try :
                                 primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " CTCTIP_INBOUND (SESSION_ID,CONTRACT_ID,PARTY_ROLE,PARTY_ID,cpqtableentrydatemodified) select ''"+ str(primaryQuerysession.Guid)+ "'',''"+str(Dt['CONTRACT_ID'])+ "'',''"+partyrole+ "'',''"+str(PARTY_ID)+ "'',''"+ str(Modi_date)+ "'' ' ")
                                 
             primaryItems = SqlHelper.GetFirst(  ""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SYINPL set STATUS = ''PROCESSED'' from SYINPL  (NOLOCK) WHERE INTEGRATION_KEY  = ''"+str(json_data.INTEGRATION_KEY)+ "'' AND ISNULL(STATUS ,'''')= '''' ' "    )
-            if Check_flag == 1:                 
-                ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Contract has been successfully stored in the staging table in CPQ."}]})
+            if Check_flag == 1:     
+                resp = ScriptExecutor.ExecuteGlobal("CTPOSTCTBK")  
+                ApiResponse = ApiResponseFactory.JsonResponse(resp)          
+                #ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Contract has been successfully stored in the staging table in CPQ."}]})
                 
 except:
     Log.Info("CTPOSTCSGP ERROR---->:" + str(sys.exc_info()[1]))

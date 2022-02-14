@@ -521,7 +521,7 @@ class approvalCenter:
 			#iflow for approver insert
 			contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 			if contract_quote_id:
-				approver_insert = Sql.GetFirst("Select OWNER_ID FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' ".format(contract_quote_id.QUOTE_ID))
+				approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
 				if approver_insert:
 					Trace.Write("Approver_insert")
 					CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
@@ -1236,7 +1236,7 @@ class approvalCenter:
 				#iflow for approver insert
 				contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 				if contract_quote_id:
-					approver_insert = Sql.GetFirst("Select OWNER_ID FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' ".format(contract_quote_id.QUOTE_ID))
+					approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
 					if approver_insert:
 						Trace.Write("Approver_insert")
 						CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
@@ -1394,7 +1394,7 @@ class approvalCenter:
 			#iflow for approver insert
 			contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 			if contract_quote_id:
-				approver_insert = Sql.GetFirst("Select OWNER_ID FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' ".format(contract_quote_id.QUOTE_ID))
+				approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
 				if approver_insert:
 					Trace.Write("Approver_insert")
 					CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
@@ -1540,15 +1540,7 @@ class approvalCenter:
 						except Exception as e:
 							Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
 						#iflow for approver insert
-						contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-						if contract_quote_id:
-							approver_insert = Sql.GetFirst("Select OWNER_ID FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' ".format(contract_quote_id.QUOTE_ID))
-							if approver_insert:
-								Trace.Write("Approver_insert")
-								CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-							else:
-								Trace.Write("delete_approver")
-								CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						
 				#self.QuoteNumber = RecalledRecId
 			#except Exception, e:
 			#    self.exceptMessage = (
@@ -2145,6 +2137,9 @@ class approvalCenter:
 															if Product.GetGlobal("TreeParentLevel1") != 'Approvals':
 																
 																req_status = '''<a class ='' id="approve_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="approve_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(ApprovedIcon)+ '''" alt=""></a><a class ='' id="reject_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="reject_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(RejectIcon)+ '''" alt=""></a>'''
+																if data.APRCHN_ID == 'SELFAPPR':
+																	req_status = '''<a class ='' id="approve_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="approve_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(ApprovedIcon)+ '''" alt=""></a>'''
+
 																
 															else:
 																req_status = '''<img title='Approval Required' src="'''+str(clock_exe)+'''">'''
@@ -2152,6 +2147,7 @@ class approvalCenter:
 															req_status = '''<img title='Approval Required' src="'''+str(clock_exe)+'''">'''
 														if ('REJECTED' in steps_status):
 															req_status = ""
+													 
 													elif str(data.APPROVALSTATUS) == "APPROVED":
 														req_status = '''<img title = 'Approved' src="'''+str(LargeTickgreen)+'''">'''
 													elif str(data.APPROVALSTATUS) == "REJECTED":
@@ -2197,6 +2193,8 @@ class approvalCenter:
 																if Product.GetGlobal("TreeParentLevel1") != 'Approvals':
 																	
 																	req_status = '''<a class ='' id="approve_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="approve_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(ApprovedIcon)+ '''" alt=""></a><a class ='' id="reject_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="reject_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(RejectIcon)+ '''" alt=""></a>'''
+																	if data.APRCHN_ID == 'SELFAPPR':
+																		req_status = '''<a class ='' id="approve_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="approve_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(ApprovedIcon)+ '''" alt=""></a>'''
 																	
 																else:
 																	req_status = '''<img title='Approval Required' src="'''+str(clock_exe)+'''">'''
@@ -3027,17 +3025,17 @@ class approvalCenter:
 					GETFPM = Sql.GetFirst("SELECT SUM(QUANTITY) AS QUANTITY FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if GETFPM:
 						values=str(GETFPM.QUANTITY)
-				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
-					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+				elif str(eachsplit[1]) == "TOTAL_AMOUNT_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT TOTAL_AMOUNT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getnetprice.NET_PRICE_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
-				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
-					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-					if getnetprice.NET_PRICE_INGL_CURR:
+				elif str(eachsplit[1]) == "TOTAL_AMOUNT_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT TOTAL_AMOUNT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getnetprice.TOTAL_AMOUNT_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
-						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
+						value = formatting_string.format(float(getnetprice.TOTAL_AMOUNT_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				elif str(eachsplit[1]) == "CREDIT_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT CREDIT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")

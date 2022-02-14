@@ -924,7 +924,7 @@ def customer_accepted(doc_rec_id):
 			Sql.RunQuery(update_revision_status)	
 	return True
 
-def customer_rejected(doc_rec_id):
+def customer_rejected(doc_rec_id,REJECT_COMMENT):
 	Trace.Write("cm to this rejectedfunction=====")
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 
@@ -935,7 +935,7 @@ def customer_rejected(doc_rec_id):
 	if output_doc_query:
 		if str(output_doc_query.DATE_REJECTED) != "":
 			Trace.Write("DATE_REJ"+str(output_doc_query.DATE_REJECTED))
-			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CUSTOMER REJECTED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CUSTOMER REJECTED',MEMO = '{memo}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),memo=REJECT_COMMENT)
 			Sql.RunQuery(update_revision_status)	
 	return True
 
@@ -971,6 +971,10 @@ try:
 	doc_desc_val = Param.doc_desc_val
 except:
 	doc_desc_val = ""
+try: 
+	REJECT_COMMENT = Param.REJECT_COMMENT
+except:
+	REJECT_COMMENT = ""
 # if 'ENGLISH DOC' in language:
 # 	ApiResponse = ApiResponseFactory.JsonResponse(englishdoc())
 # elif 'CHINESE DOC' in language:
@@ -986,7 +990,7 @@ if ACTION == 'SUBMIT_TO_CUSTOMER':
 elif ACTION == 'CUSTOMER_ACCEPTED':
 	ApiResponse = ApiResponseFactory.JsonResponse(customer_accepted(doc_rec_id))
 elif ACTION == 'CUSTOMER_REJECTED':
-	ApiResponse = ApiResponseFactory.JsonResponse(customer_rejected(doc_rec_id))
+	ApiResponse = ApiResponseFactory.JsonResponse(customer_rejected(doc_rec_id,REJECT_COMMENT))
 elif ACTION == 'SAVE_DESC':
 	ApiResponse = ApiResponseFactory.JsonResponse(save_document_description(doc_desc_val,doc_rec_id))
 

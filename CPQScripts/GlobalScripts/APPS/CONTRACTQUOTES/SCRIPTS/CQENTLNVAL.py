@@ -57,6 +57,7 @@ def entitlement_request(partnumber,request_url,request_type):
 	return eval(response1)
 
 def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond):
+	Trace.Write("ent_level_table--"+str(ent_level_table))
 	level_name = get_clicked_greenbook = get_greenbook_value_itemlevel = ''
 	if ent_level_table == "SAQTSE":
 		level_name = 'OFFERING LEVEL'
@@ -102,9 +103,11 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
 		level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
 	elif ent_level_table == "SAQGPE":
+		Trace.Write('107-gpe---get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 		get_clicked_greenbook = Product.GetGlobal("TreeParentLevel1")
 		level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
 	else:
+		Trace.Write('107-else---get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
 		level_name = 'OFFERING FAB GREENBOOK TOOL ASSEMBLY LEVEL'
 	get_attr_leve_based_list =[]
@@ -114,13 +117,76 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	for val in inserted_value_list:
 		#Trace.Write(str(level_name)+'--level_name--value---'+str(val))
 		if level_name in ["OFFERING FAB LEVEL","OFFERING LEVEL"]:
-			get_visible_fields= SqlHelper.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"'")
+			get_visible_fields= Sql.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"'")
 		else:
 			get_visible_fields= Sql.GetFirst("select PRENLI.ENTITLEMENTLEVEL_ID from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"'")
 		if get_visible_fields:
 			get_attr_leve_based_list.append(str(val))
 	#Trace.Write('get_attr_leve_based_list--type return'+str(type(get_attr_leve_based_list)))
 	return get_attr_leve_based_list
+
+def ChildEntRequest(partnumber,tableName,where):	
+	get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,revision_record_id))
+	#attribute_id,value_code,attr_type,display_name,config_id,cpsmatchID,isdefault	
+	ent_child_temp = "ANC_ENT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
+	cpsmatchID = 1
+	Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
+	Fullresponse = entitlement_request(partnumber,Request_URL,'NEW')
+	config_id = Fullresponse["id"]	
+	try:
+		if tableName :
+			ent_child_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_child_temp)+"'' ) BEGIN DROP TABLE "+str(ent_child_temp)+" END  ' ")
+			where_cond = where.replace("'","''")
+			Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val = FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><GREENBOOK>''+GREENBOOK+''</GREENBOOK><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(replace(replace(replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; '' ),'' > '','' &gt; '' ),''_>'',''_&gt;''),''_<'',''_&lt;''),''&'','';#38''),''<10%'',''&lt;10%''),''<='',''&lt;='')   as entitlement_xml from "+str(tableName)+"(nolock)  WHERE "+str(where_cond)+"  )A )a SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_child_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',GREENBOOK VARCHAR(100) ''GREENBOOK'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
+
+			Parentgetdata=Sql.GetList("SELECT * FROM {} ".format(ent_child_temp))
+			#Log.Info("where------ "+str(where))
+			if Parentgetdata:					
+				response = Request_access_token()					
+				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
+				#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+				cpsmatchID = 1
+				
+				for row in Parentgetdata:
+					webclient = System.Net.WebClient()
+					
+					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+					Trace.Write("enval--end_id --"+str(row.ENTITLEMENT_ID)+'-'+str(row.ENTITLEMENT_VALUE_CODE))
+					#webclient.Headers.Add("If-Match", "111")
+					webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
+					get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(row.ENTITLEMENT_ID)+"' and SERVICE_ID = '"+str(partnumber)+"'")	
+					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select'  and str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"] and row.ENTITLEMENT_VALUE_CODE != '0':
+						try:
+							requestdata = '{"characteristics":['
+							
+							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
+							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+								Trace.Write("auto update--val-"+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str( row.ENTITLEMENT_ID))
+								for code in row.ENTITLEMENT_VALUE_CODE.split(','):
+									requestdata += '{"value":"' + str(code) + '","selected":true}'
+									requestdata +=','
+								requestdata +=']},'	
+								Trace.Write("auto update-val--"+str(requestdata))
+							else:
+								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
+							requestdata += ']}'
+							requestdata = requestdata.replace('},]','}]')
+							Trace.Write("requestdata--child-val- " + str(requestdata))
+							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+							#cpsmatchID = cpsmatchID + 1			
+							cpsmatchID = webclient.ResponseHeaders["Etag"]
+							cpsmatchID = re.sub('"',"",cpsmatchID)
+						except Exception:
+							Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
+							cpsmatchID = cpsmatchID
+
+
+	except Exception:
+		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
+	ent_child_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_child_temp)+"'' ) BEGIN DROP TABLE "+str(ent_child_temp)+" END  ' ")
+	return cpsmatchID,config_id
+
+
 
 action= Param.action
 #to get the product status
@@ -130,6 +196,14 @@ try:
 except:
 	where_cond = ""
 	#Trace.Write('where_cond----except--'+str(where_cond))
+try:
+	quote_record_id = Param.quote_record_id
+except:
+	quote_record_id = ''
+try:
+	revision_record_id = Param.revision_record_id
+except:
+	revision_record_id = ''
 try:
 	ent_level_table= Param.ent_level_table
 	#Trace.Write('ent_level_table---try---'+str(ent_level_table))
@@ -159,9 +233,12 @@ except:
 # 	Result = get_entitlement_status(partnumber,where_cond,ent_level_table)
 if action == 'GET_RESPONSE':
 	Result = entitlement_request(partnumber,request_url,request_type)
-if action == 'get_from_prenli':
+elif action == 'get_from_prenli':
 	Result = entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond)
-	
+elif action == 'ENTITLEMENT_UPDATE':
+	Result = ChildEntRequest(partnumber,ent_level_table,where_cond)
+
+
 
 
 

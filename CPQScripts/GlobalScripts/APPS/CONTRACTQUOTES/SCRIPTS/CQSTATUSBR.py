@@ -15,6 +15,7 @@ from datetime import timedelta , date
 import sys
 import System.Net
 import CQPARTIFLW
+
 Param = Param 
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
@@ -565,6 +566,10 @@ def billingmatrix_create():
 def Dynamic_Status_Bar(quote_item_insert,Text):
 	
 	if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
+		Trace.Write('SAQSPT delete=======')
+		Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE='ON REQUEST', DELIVERY_MODE='OFFSITE' WHERE CUSTOMER_ANNUAL_QUANTITY<10 AND UNIT_PRICE >50 AND SERVICE_ID='Z0110' AND  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+  
+		Sql.RunQuery("DELETE FROM SAQSPT WHERE CUSTOMER_ANNUAL_QUANTITY<10 AND UNIT_PRICE <50 AND SCHEDULE_MODE='ON REQUEST' AND DELIVERY_MODE='OFFSITE' AND SERVICE_ID='Z0110' AND  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		#Trace.Write('sales11=======')
 		item_covered_obj =""
 		getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID,REVISION_STATUS from SAQTRV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -668,9 +673,10 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 	#Trace.Write("buttonvisibility=="+str(buttonvisibility))
 	#if str(item_covered_obj):       
 		#_insert_billing_matrix()
-	
+		
 	# Quote Item Inserts - Starts
 	if quote_item_insert == 'yes' and Text == "COMPLETE STAGE":
+		
 		#service_id_query =  Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_record_id))
 		service_id_query = Sql.GetList("SELECT SAQTSV.*,MAMTRL.MATERIALCONFIG_TYPE FROM SAQTSV INNER JOIN MAMTRL ON SAP_PART_NUMBER = SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'  ".format(contract_quote_rec_id,quote_revision_record_id))
 		if service_id_query:
@@ -678,7 +684,15 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				get_ent_config_status = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(contract_quote_rec_id,quote_revision_record_id,service_id.SERVICE_ID))
 				if get_ent_config_status.COUNT > 0 or service_id.MATERIALCONFIG_TYPE =='SIMPLE MATERIAL' or service_id.SERVICE_ID == 'Z0117':
 					data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":contract_quote_rec_id, "ContractQuoteRevisionRecordId":quote_revision_record_id, "ServiceId":service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
-
+					
+					Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_record_id))
+					try:
+						##Calling the iflow for quote header writeback to cpq to c4c code starts..
+						CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						##Calling the iflow for quote header writeback to cpq to c4c code ends...
+					except:
+						pass
 				# get_child_service_id = Sql.GetFirst("""SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN SAQRSP (NOLOCK) ON SAQRSP.SERVICE_ID = SAQTSV.SERVICE_ID AND SAQRSP.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQRSP.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.PAR_SERVICE_ID = '{service_id}'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id,service_id = service_id.SERVICE_ID if service_id.SERVICE_ID in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") else ''))
 				# if get_child_service_id:
 				# 	if get_child_service_id.SERVICE_ID == 'Z0101':
@@ -719,9 +733,6 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
 		# Quote Item Inserts - Ends
-
-	
-		
 	return status
 try:
 	quote_item_insert = Param.quote_item_insert

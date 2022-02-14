@@ -200,14 +200,14 @@ def do_process(TABLEID, LABLE, VALUE):
 
                         quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
                         if str(row['PRIMARY']) == "True":
-                            Sql.RunQuery("UPDATE SAQTIP SET [PRIMARY] = 'false' WHERE PARTY_ROLE = 'SHIP TO' AND QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{qte_rev_id}'".format(qte_rec_id=quote_val.MASTER_TABLE_QUOTE_RECORD_ID,qte_rev_id=quote_val.QTEREV_RECORD_ID))
+                            Sql.RunQuery("UPDATE SAQTIP SET [PRIMARY] = 'false' WHERE CPQ_PARTNER_FUNCTION = 'SHIP TO' AND QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{qte_rev_id}'".format(qte_rec_id=quote_val.MASTER_TABLE_QUOTE_RECORD_ID,qte_rev_id=quote_val.QTEREV_RECORD_ID))
                         row["QUOTE_RECORD_ID"]=quote_val.MASTER_TABLE_QUOTE_RECORD_ID
                         row["QUOTE_NAME"]=quote_val.QUOTE_NAME
                         row["QTEREV_RECORD_ID"]=quote_val.QTEREV_RECORD_ID
                         row["QTEREV_ID"]=quote_val.QTEREV_ID
-                        if row["PARTY_ROLE"] != "..Select":
+                        if row["CPQ_PARTNER_FUNCTION"] != "..Select":
                             Table.TableActions.Create(TABLEID, row)
-                        if row["PARTY_ROLE"] == "RECEIVING ACCOUNT":
+                        if row["CPQ_PARTNER_FUNCTION"] == "RECEIVING ACCOUNT":
                             contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                             sales_org_details = Sql.GetFirst("SELECT SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
                             account_details = Sql.GetFirst("SELECT ACCOUNT_RECORD_ID,CITY,COUNTRY,COUNTRY_RECORD_ID FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(row["PARTY_ID"])+"'")
@@ -238,7 +238,7 @@ def do_process(TABLEID, LABLE, VALUE):
 
                             }
                             Table.TableActions.Create("SAQSRA", receiving_account_row)
-                        elif row["PARTY_ROLE"] == "SENDING ACCOUNT":
+                        elif row["CPQ_PARTNER_FUNCTION"] == "SENDING ACCOUNT":
                             contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                             sales_org_details = Sql.GetFirst("SELECT SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
                             account_details = Sql.GetFirst("SELECT ACCOUNT_RECORD_ID,CITY,COUNTRY,COUNTRY_RECORD_ID FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(row["PARTY_ID"])+"'")

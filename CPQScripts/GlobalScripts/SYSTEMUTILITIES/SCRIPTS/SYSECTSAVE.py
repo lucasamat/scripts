@@ -16,6 +16,7 @@ from SYDATABASE import SQL
 import CQCPQC4CWB
 import CQREVSTSCH
 import re
+import time
 
 Sql = SQL()
 #from PAUPDDRYFG import DirtyFlag
@@ -143,13 +144,13 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	TreeParam = Product.GetGlobal("TreeParam")
 	if subtab_name =="Legal SoW":
-		Trace.Write("legalsowwwwwwwww")
 		get_revesion_values =Sql.GetFirst("Select * FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '{quote_revision_record_id}'".format(quote_revision_record_id = quote_revision_record_id))
 		record_value_update = {"QUOTE_REVISION_RECORD_ID":quote_revision_record_id,"QTEREV_ID":get_revesion_values.QTEREV_ID,"REVISION_STATUS":get_revesion_values.REVISION_STATUS,"REV_APPROVE_DATE":get_revesion_values.REV_APPROVE_DATE}
 		RECORD.update(record_value_update)
 
 		##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		time.sleep(5)
 		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	 
 	if Product.GetGlobal("TreeParentLevel2") == "Quote Items":
@@ -726,7 +727,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 					# 		Sql.RunQuery("""UPDATE SAQTRV
 					# 						SET 									
-					# 						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+					# 						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.TOTAL_AMOUNT_INGL_CURR,
 					# 						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.NET_VALUE,
 											
 					# 						SAQTRV.DISCOUNT_PERCENT = '{discount}'
@@ -750,7 +751,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							newdict["SLSDIS_PRICE_INGL_CURR"] = re.sub('USD','',newdict["SLSDIS_PRICE_INGL_CURR"])
 							newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
 							newdict["CEILING_PRICE_INGL_CURR"] = re.sub('USD','',newdict["CEILING_PRICE_INGL_CURR"])
-							newdict["NET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["NET_PRICE_INGL_CURR"])
+							# newdict["NET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["NET_PRICE_INGL_CURR"])
 							newdict["TAX_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["TAX_AMOUNT_INGL_CURR"])
 							newdict["TARGET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["TARGET_PRICE_INGL_CURR"])
 							newdict["NET_VALUE_INGL_CURR"] = re.sub('USD','',newdict["NET_VALUE_INGL_CURR"])
@@ -790,6 +791,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
 						##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 						CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
+						time.sleep(5)
 						CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
 						if get_status.upper() == "APPROVED":
 							##Updating the Revision Approved Date while changing the status to Approved...
@@ -1438,8 +1440,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Sql.RunQuery(billing_query)
 					#generate_year_based_billing_matrix(newdict)
 				if TableName == 'SAQTIP':
-					Trace.Write('SAQTIP_CHK_J '+str(RECORD['PARTY_ROLE']))
-					Sql.RunQuery("UPDATE SAQTIP SET [PRIMARY] = 'false' WHERE PARTY_ROLE = 'SHIP TO' AND QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{qte_rev_id}'".format(qte_rec_id=Product.GetGlobal("contract_quote_record_id"),qte_rev_id=quote_revision_record_id))
+					Trace.Write('SAQTIP_CHK_J '+str(RECORD['CPQ_PARTNER_FUNCTION']))
+					Sql.RunQuery("UPDATE SAQTIP SET [PRIMARY] = 'false' WHERE CPQ_PARTNER_FUNCTION = 'SHIP TO' AND QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{qte_rev_id}'".format(qte_rec_id=Product.GetGlobal("contract_quote_record_id"),qte_rev_id=quote_revision_record_id))
 
 					saqtip_ship_to_update_query = "UPDATE SAQTIP SET PARTY_ID = {party_id}, [PRIMARY] = '{primary}' WHERE QUOTE_INVOLVED_PARTY_RECORD_ID = '{ship_to_id}'".format(party_id=RECORD['PARTY_ID'],primary=RECORD['PRIMARY'],ship_to_id=RECORD['QUOTE_INVOLVED_PARTY_RECORD_ID'])
  
@@ -1447,7 +1449,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 					Sql.RunQuery(saqtip_ship_to_update_query)
 
 					account_details = Sql.GetFirst("SELECT * FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(RECORD['PARTY_ID'])+"'")
-					send_n_receive_acunt = "UPDATE SAQSRA SET ACCOUNT_ID = '{}', ACCOUNT_NAME = '{}', ACCOUNT_RECORD_ID = '{}', ADDRESS_1 = '{}', CITY = '{}', COUNTRY = '{}', COUNTRY_RECORD_ID = '{}', PHONE = '{}', STATE = '{}', STATE_RECORD_ID = '{}', POSTAL_CODE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND RELOCATION_TYPE = '{}'".format(str(account_details.ACCOUNT_ID), str(account_details.ACCOUNT_NAME), str(account_details.ACCOUNT_RECORD_ID), str(account_details.ADDRESS_1), str(account_details.CITY), str(account_details.COUNTRY), str(account_details.COUNTRY_RECORD_ID), str(account_details.PHONE), str(account_details.STATE), str(account_details.STATE_RECORD_ID), str(account_details.POSTAL_CODE), Product.GetGlobal("contract_quote_record_id"), quote_revision_record_id, str(RECORD['PARTY_ROLE']))
+					send_n_receive_acunt = "UPDATE SAQSRA SET ACCOUNT_ID = '{}', ACCOUNT_NAME = '{}', ACCOUNT_RECORD_ID = '{}', ADDRESS_1 = '{}', CITY = '{}', COUNTRY = '{}', COUNTRY_RECORD_ID = '{}', PHONE = '{}', STATE = '{}', STATE_RECORD_ID = '{}', POSTAL_CODE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND RELOCATION_TYPE = '{}'".format(str(account_details.ACCOUNT_ID), str(account_details.ACCOUNT_NAME), str(account_details.ACCOUNT_RECORD_ID), str(account_details.ADDRESS_1), str(account_details.CITY), str(account_details.COUNTRY), str(account_details.COUNTRY_RECORD_ID), str(account_details.PHONE), str(account_details.STATE), str(account_details.STATE_RECORD_ID), str(account_details.POSTAL_CODE), Product.GetGlobal("contract_quote_record_id"), quote_revision_record_id, str(RECORD['CPQ_PARTNER_FUNCTION']))
 					Sql.RunQuery(send_n_receive_acunt)
 				# A055S000P01-3324 start 
 				if TableName == 'SAQTMT':

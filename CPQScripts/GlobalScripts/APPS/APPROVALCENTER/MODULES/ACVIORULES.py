@@ -327,7 +327,7 @@ class ViolationConditions:
             ,{round} AS APPROVAL_ROUND, '{QuoteId}' AS APRTRXOBJ_ID,ACAPCH.APRCHN_ID AS APRCHN_ID
             ,CONVERT(VARCHAR(4000), NEWID()) AS APPROVAL_TRANSACTION_RECORD_ID
             ,ACAPCH.APPROVAL_CHAIN_RECORD_ID AS APRCHN_RECORD_ID
-            ,SAQDLT.MEMBER_ID AS APRCHNSTP_APPROVER_ID
+            ,'USR-'+SAQDLT.MEMBER_ID AS APRCHNSTP_APPROVER_ID
             ,ACACST.APRCHNSTP_NUMBER AS APRCHNSTP_ID
             ,ACACST.APRCHNSTP_NAME AS APRCHNSTP_NAME
             ,ACACST.APPROVAL_CHAIN_STEP_RECORD_ID AS APRCHNSTP_RECORD_ID
@@ -336,7 +336,7 @@ class ViolationConditions:
             +'-'+SAQDLT.MEMBER_ID) AS APRCHNSTPTRX_ID
             ,ACAPMA.APPROVAL_ID AS APPROVAL_ID
             ,SAQDLT.MEMBER_NAME AS APPROVAL_RECIPIENT
-            ,SAQDLT.MEMBER_RECORD_ID AS APPROVAL_RECIPIENT_RECORD_ID
+            ,'{Get_UserID}' AS APPROVAL_RECIPIENT_RECORD_ID
             ,ACAPMA.APPROVAL_RECORD_ID AS APPROVAL_RECORD_ID
             ,ACACSS.APPROVALSTATUS AS APPROVALSTATUS
             ,ACACST.APPROVE_TEMPLATE_ID AS APPROVE_TEMPLATE_ID
@@ -536,7 +536,7 @@ class ViolationConditions:
             CHSqlObjs = Sql.GetList(
                 "SELECT APPROVAL_CHAIN_RECORD_ID,APRCHN_ID FROM ACAPCH (NOLOCK) WHERE APROBJ_RECORD_ID = '"
                 + str(Objh_Id)
-                + "' "
+                + "'"
             )
             for index, val in enumerate(CHSqlObjs):
                 CSSqlObjs = Sql.GetList(
@@ -559,7 +559,7 @@ class ViolationConditions:
                     # )
                     #A055S000P01-15007 START
                     fflag = 0
-                    if "PRENVL" in result.WHERE_CONDITION_01:
+                    if "PRENVL" in result.WHERE_CONDITION_01 and (result.APRCHNSTP_NUMBER == 1 or result.APRCHNSTP_NUMBER == 2):
                         fflag = 2
                         if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
                             splitval = str(result.WHERE_CONDITION_01).split("OR")[0]
@@ -568,54 +568,15 @@ class ViolationConditions:
                                 if checkVal:
                                     fflag = 1
                                 else:
-                                    entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
-                                    if entitlement_obj:
-                                        import re
-
-                                        quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-
-                                        attr = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
-
-                                        value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
-
-                                        entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-
-                                        for m in re.finditer(quote_item_tag, entitlement_xml):
-                                            sub_string = m.group(1)
-                                            attribute_id =re.findall(attr,sub_string)
-                                            attribute =re.findall(value,sub_string)
-
-                                            if len(attribute) != 0 and len(attribute_id) != 0:
-                                                fflag = 1
-                                                Trace.Write("FLAG SET TO 1")
-                                                break
+                                    BDHeadEnt(RecordId)
                             elif "SAQTDA" in splitval:
                                 checkVal = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTDA (NOLOCK) WHERE (SAQTDA.TOOLIDLING_ID = 'Idling Exception' AND SAQTDA.TOOLIDLING_DISPLAY_VALUE = 'Yes' )  OR ( SAQTDA.TOOLIDLING_ID = 'Max % of Tools to be idled' AND SAQTDA.TOOLIDLING_DISPLAY_VALUE > '0.3' )  OR ( SAQTDA.TOOLIDLING_ID = 'Warm / Hot Idle Fee' AND SAQTDA.TOOLIDLING_DISPLAY_VALUE < '0.3')  AND QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
                                 if checkVal:
                                     fflag = 1
                                 else:
-                                    entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
-                                    if entitlement_obj:
-                                        import re
-
-                                        quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-
-                                        attr = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
-
-                                        value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
-
-                                        entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-
-                                        for m in re.finditer(quote_item_tag, entitlement_xml):
-                                            sub_string = m.group(1)
-                                            attribute_id =re.findall(attr,sub_string)
-                                            attribute =re.findall(value,sub_string)
-
-                                            if len(attribute) != 0 and len(attribute_id) != 0:
-                                                fflag = 1
-                                                Trace.Write("FLAG SET TO 1")
-                                                break
-                    #A055S000P01-15007 END
+                                    BDEnt(RecordId)             
+                                    
+                                    #A055S000P01-15007 END
                     #A055S000P01-3687 START
                     elif "ACAPMA" in result.WHERE_CONDITION_01:
                         getData = Sql.GetFirst("SELECT CpqTableEntryId FROM ACAPMA (NOLOCK) WHERE {} '{}'".format(result.WHERE_CONDITION_01,RecordId))
@@ -657,8 +618,8 @@ class ViolationConditions:
                         Log.Info("if flag")
                         Trace.Write("if flag")
                     elif fflag == 2:
-                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                        Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
+                        #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
+                        #Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                         SqlQuery = None
                         Log.Info("elif flag")
                         Trace.Write("elif flag")
@@ -807,7 +768,7 @@ class ViolationConditions:
 
                                     
                                     
-                                    getCustomQuery = Sql.GetFirst("SELECT CpqTableEntryId,CUSTOM_QUERY FROM ACACSA (NOLOCK) WHERE APPROVER_SELECTION_METHOD = ' CUSTOM QUERY' AND APRCHN_RECORD_ID = '{}' AND APRCHNSTP_RECORD_ID = '{}'".format(str(val.APPROVAL_CHAIN_RECORD_ID),result.APPROVAL_CHAIN_STEP_RECORD_ID))
+                                    getCustomQuery = Sql.GetFirst("SELECT CpqTableEntryId,CUSTOM_QUERY,APRCHN_ID FROM ACACSA (NOLOCK) WHERE APPROVER_SELECTION_METHOD = ' CUSTOM QUERY' AND APRCHN_RECORD_ID = '{}' AND APRCHNSTP_RECORD_ID = '{}'".format(str(val.APPROVAL_CHAIN_RECORD_ID),result.APPROVAL_CHAIN_STEP_RECORD_ID))
                                     if getCustomQuery is not None:
                                         CustomQuery = str(getCustomQuery.CUSTOM_QUERY).upper()
                                         CustomQuery = str(CustomQuery.split("WHERE")[1]).lstrip()
@@ -818,6 +779,11 @@ class ViolationConditions:
                                         Rulebodywithcondition = Transcationrulebody + where_conditon
                                         Trace.Write("777777 ACAPTX--------->"+str(Rulebodywithcondition))
                                         b = Sql.RunQuery(Rulebodywithcondition)
+
+                                        if getCustomQuery.APRCHN_ID == 'SELFAPPR':
+                                            Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'REQUESTED' WHERE APPROVAL_RECORD_ID = '{}'".format(GetLatestApproval.APPROVAL_RECORD_ID))
+
+                                            Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'APPROVAL PENDING' WHERE QUOTE_REVISION_RECORD_ID ='{}'".format(RecordId))
                                     else:
                                         where_conditon += """GROUP BY APPRO.USER_RECORD_ID,ACAPCH.APRCHN_ID,
                                     ACAPCH.APPROVAL_CHAIN_RECORD_ID ,APPRO.APRCHNSTP_APPROVER_ID ,
@@ -945,6 +911,90 @@ class ViolationConditions:
             b = Sql.RunQuery(updateAutoApproval)
         return True
 
+    def BDHeadEnt(self,RecordId):
+        
+        BDHead = {"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"}
+        
+        entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
+        if entitlement_obj:
+            import re
+            for x,y in BDHead.items():
+                getEnt = Sql.GetFirst("SELECT ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE FROM PRENVL (NOLOCK) WHERE ENTITLEMENT_DESCRIPTION = '{}' AND SERVICE_ID = 'Z0091'".format(x))
+                quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                attrstr = '<ENTITLEMENT_ID>{}</ENTITLEMENT_ID>'.format(str(getEnt.ENTITLEMENT_ID))
+                attr = re.compile(attrstr)
+                
+                valuestr = '<ENTITLEMENT_DISPLAY_VALUE>{}</ENTITLEMENT_DISPLAY_VALUE>'.format(str(getEnt.ENTITLEMENT_DISPLAY_VALUE)) 
+                value = re.compile(valuestr)
+                
+
+                entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+
+                for m in re.finditer(quote_item_tag, entitlement_xml):
+                    sub_string = m.group(1)
+                    attribute_id =re.findall(attr,sub_string)
+                    attribute =re.findall(value,sub_string)
+
+                    if len(attribute) != 0 and len(attribute_id) != 0:
+                        fflag = 1
+                        Trace.Write("FLAG SET TO 1")
+                        break
+    def BDEnt(self,RecordId):
+        BDHead = {"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"}
+        
+        entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
+        if entitlement_obj:
+            import re
+            for x,y in BDHead.items():
+                getEnt = Sql.GetFirst("SELECT ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE FROM PRENVL (NOLOCK) WHERE ENTITLEMENT_DESCRIPTION = '{}' AND SERVICE_ID = 'Z0091'".format(x))
+                quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                attrstr = '<ENTITLEMENT_ID>{}</ENTITLEMENT_ID>'.format(str(getEnt.ENTITLEMENT_ID))
+                attr = re.compile(attrstr)
+                
+                valuestr = '<ENTITLEMENT_DISPLAY_VALUE>{}</ENTITLEMENT_DISPLAY_VALUE>'.format(str(getEnt.ENTITLEMENT_DISPLAY_VALUE)) 
+                value = re.compile(valuestr)
+                
+
+                entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+
+                for m in re.finditer(quote_item_tag, entitlement_xml):
+                    sub_string = m.group(1)
+                    attribute_id =re.findall(attr,sub_string)
+                    attribute =re.findall(value,sub_string)
+
+                    if len(attribute) != 0 and len(attribute_id) != 0:
+                        fflag = 1
+                        Trace.Write("FLAG SET TO 1")
+                        break
+    
+    def NSDREnt(self,RecordId):
+               
+        BDHead = {"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"}
+        
+        entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QTEREV_RECORD_ID = '{}'".format(RecordId))
+        if entitlement_obj:
+            import re
+            for x,y in BDHead.items():
+                getEnt = Sql.GetFirst("SELECT ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE FROM PRENVL (NOLOCK) WHERE ENTITLEMENT_DESCRIPTION = '{}' AND SERVICE_ID = 'Z0091'".format(x))
+                quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                attrstr = '<ENTITLEMENT_ID>{}</ENTITLEMENT_ID>'.format(str(getEnt.ENTITLEMENT_ID))
+                attr = re.compile(attrstr)
+                
+                valuestr = '<ENTITLEMENT_DISPLAY_VALUE>{}</ENTITLEMENT_DISPLAY_VALUE>'.format(str(getEnt.ENTITLEMENT_DISPLAY_VALUE)) 
+                value = re.compile(valuestr)
+                
+
+                entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+
+                for m in re.finditer(quote_item_tag, entitlement_xml):
+                    sub_string = m.group(1)
+                    attribute_id =re.findall(attr,sub_string)
+                    attribute =re.findall(value,sub_string)
+
+                    if len(attribute) != 0 and len(attribute_id) != 0:
+                        fflag = 1
+                        Trace.Write("FLAG SET TO 1")
+                        break
     # def insertviolationtableafterRecall(self, chainrecordId, RecordId, ObjectName, Objh_Id):
     #     """Insert violation record after recall."""
     #     CSSqlObjs = Sql.GetList(

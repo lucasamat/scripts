@@ -30,6 +30,7 @@ ScriptExecutor = ScriptExecutor
 class SyncQuoteAndCustomTables:
 	def __init__(self, Quote):
 		#Log.Info("==========================>111111111111")
+		self.quote_start_time = time.time()
 		self.quote = Quote
 		#Log.Info("++++++++ QUote " + str(Quote.GetCustomField("STPAccountID").Content))
 		# self.user_id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
@@ -300,7 +301,16 @@ class SyncQuoteAndCustomTables:
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue else '' ,ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '',tool_desc =get_tooltip_desc.replace("'","''") if "'" in get_tooltip_desc else get_tooltip_desc )
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),
+							ent_val_code = ent_val_code,
+							ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',
+							ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.replace("&",";#38").replace(">","&gt;").replace("<","&lt;"),
+							ent_disp_val = ent_disp_val.replace("&",";#38").replace(">","&gt;").replace("<","&lt;") if  HasDefaultvalue else '' ,
+							ct = '',pi = '',
+							is_default = '1' if str(attrs) in attributedefaultvalue else '0',
+							pm = '',cf = '',
+							tool_desc =get_tooltip_desc.replace("'","''").replace("&",";#38").replace(">","&gt;").replace("<","&lt;")
+						)
 				#Trace.Write('238--insertservice----'+str(insertservice))   
 				insertservice = insertservice.encode('ascii', 'ignore').decode('ascii')
 				tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
@@ -624,7 +634,7 @@ class SyncQuoteAndCustomTables:
 							"PAYMENTTERM_NAME":pay_name,
 							"PAYMENTTERM_RECORD_ID":payrec,
 							"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
-							"CANCELLATION_PERIOD":"179",
+							"CANCELLATION_PERIOD":"179", 
 							"CANCELLATION_PERIOD_NOTPER":"0",
 							"COMPANY_ID":salesorg_obj.COMPANY_ID,
 							"COMPANY_NAME":salesorg_obj.COMPANY_NAME,
@@ -755,7 +765,10 @@ class SyncQuoteAndCustomTables:
 							tax_details = Sql.GetFirst("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
 							
 							if tax_details:
-								salesorg_data.update({"ACCTAXCAT_ID": tax_details.TAXCATEGORY_ID,"ACCTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION, "ACCTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "ACCTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION})
+								salesorg_data.update({"ACCTAXCAT_ID": tax_details.TAXCATEGORY_ID,"ACCTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION,
+								"ACCTAXCAT_RECORD_ID": tax_details.TAXCATEGORY_RECORD_ID,
+								"ACCTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "ACCTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION,
+								"ACCTAXCLA_RECORD_ID": tax_details.TAXCLASSIFICATION_RECORD_ID})
 						##Commented the condition to update the pricing procedure for both spare and tool based quote
 						#if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
 						# Get Pricing Procedure
@@ -1070,7 +1083,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": custom_fields_detail.get("STPAccountID"),
 							"PARTY_NAME": custom_fields_detail.get("STPAccountName"),
-							"PARTY_ROLE": "SOLD TO",
+							"CPQ_PARTNER_FUNCTION": "SOLD TO",
 							"PHONE": custom_fields_detail.get("SoldToPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1088,7 +1101,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": bill_to_customer.CustomerCode,
 							"PARTY_NAME": bill_to_customer.FirstName,
-							"PARTY_ROLE": "BILL TO",
+							"CPQ_PARTNER_FUNCTION": "BILL TO",
 							"PHONE": bill_to_customer.BusinessPhone,
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1107,7 +1120,7 @@ class SyncQuoteAndCustomTables:
 					#         "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 					#         "PARTY_ID": bill_to_customer.CustomerCode,
 					#         "PARTY_NAME": bill_to_customer.FirstName,
-					#         "PARTY_ROLE": "SENDING ACCOUNT",
+					#         "CPQ_PARTNER_FUNCTION": "SENDING ACCOUNT",
 					#         "PHONE": bill_to_customer.BusinessPhone,
 					#     }
 					#     quote_involved_party_table_info.AddRow(sending_account_quote_data)
@@ -1124,7 +1137,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": ship_to_customer.CustomerCode,
 							"PARTY_NAME": ship_to_customer.FirstName,
-							"PARTY_ROLE": "SHIP TO",
+							"CPQ_PARTNER_FUNCTION": "SHIP TO",
 							"PHONE": ship_to_customer.BusinessPhone,
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id,
@@ -1144,7 +1157,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": custom_fields_detail.get("PayerID"),
 							"PARTY_NAME": custom_fields_detail.get("PayerName"),
-							"PARTY_ROLE": "PAYER",
+							"CPQ_PARTNER_FUNCTION": "PAYER",
 							"PHONE": custom_fields_detail.get("PayerPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1161,7 +1174,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": custom_fields_detail.get("SellerID"),
 							"PARTY_NAME": custom_fields_detail.get("SellerName"),
-							"PARTY_ROLE": "SELLER",
+							"CPQ_PARTNER_FUNCTION": "SELLER",
 							"PHONE": custom_fields_detail.get("SellerPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1178,7 +1191,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": custom_fields_detail.get("SalesUnitID"),
 							"PARTY_NAME": custom_fields_detail.get("SalesUnitName"),
-							"PARTY_ROLE": "SALES UNIT",
+							"CPQ_PARTNER_FUNCTION": "SALES UNIT",
 							"PHONE": custom_fields_detail.get("SalesUnitPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1195,7 +1208,7 @@ class SyncQuoteAndCustomTables:
 					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 					# 		"PARTY_ID": custom_fields_detail.get("SalesEmployeeID"),
 					# 		"PARTY_NAME": custom_fields_detail.get("SalesEmployeeName"),
-					# 		"PARTY_ROLE": "SALES EMPLOYEE",
+					# 		"CPQ_PARTNER_FUNCTION": "SALES EMPLOYEE",
 					# 		"PHONE": custom_fields_detail.get("SalesEmployeePhone"),
 					# 		"QTEREV_RECORD_ID":quote_revision_id,
 					# 		"QTEREV_ID":quote_rev_id
@@ -1212,7 +1225,7 @@ class SyncQuoteAndCustomTables:
 					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 					# 		"PARTY_ID": custom_fields_detail.get("EmployeeResponsibleID"),
 					# 		"PARTY_NAME": custom_fields_detail.get("EmployeeResponsibleName"),
-					# 		"PARTY_ROLE": "EMPLOYEE RESPONSIBLE",
+					# 		"CPQ_PARTNER_FUNCTION": "EMPLOYEE RESPONSIBLE",
 					# 		"PHONE": custom_fields_detail.get("EmployeeResponsiblePhone"),
 					# 		"QTEREV_RECORD_ID":quote_revision_id,
 					# 		"QTEREV_ID":quote_rev_id
@@ -1229,7 +1242,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"PARTY_ID": custom_fields_detail.get("SourceAccountID"),
 							"PARTY_NAME": custom_fields_detail.get("SourceAccountName"),
-							"PARTY_ROLE": "SOURCE ACCOUNT",
+							"CPQ_PARTNER_FUNCTION": "SOURCE ACCOUNT",
 							"PHONE": custom_fields_detail.get("SourceAccountPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -1246,7 +1259,7 @@ class SyncQuoteAndCustomTables:
 					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 					# 		"PARTY_ID": custom_fields_detail.get("ContractManagerID"),
 					# 		"PARTY_NAME": custom_fields_detail.get("ContractManagerName"),
-					# 		"PARTY_ROLE": "CONTRACT MANAGER",
+					# 		"CPQ_PARTNER_FUNCTION": "CONTRACT MANAGER",
 					# 		"PHONE": custom_fields_detail.get("ContractManagerPhone"),
 					# 		"QTEREV_RECORD_ID":quote_revision_id,
 					# 		"QTEREV_ID":quote_rev_id
@@ -1389,7 +1402,7 @@ class SyncQuoteAndCustomTables:
 						response_SAQTMT = webclient.UploadString(str(LOGIN_CRE.URL), str(requestdata))
 						
 					payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(contract_quote_data.get('C4C_QUOTE_ID')))
-					#Log.Info("J_PrimaryContactName_CHK_J"+str(custom_fields_detail.get("PrimaryContactName")))
+					Log.Info("J_PrimaryContactName_CHK_J"+str(custom_fields_detail.get("PrimaryContactName")))
 					
 					if payload_json_obj:
 						contract_quote_obj = None
@@ -1431,6 +1444,7 @@ class SyncQuoteAndCustomTables:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')].append(equipment_json_data.get('EQUIPMENT_IDS'))
 								else:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')]
+								Log.Info("equipment_data"+str(equipment_data))
 						
 						##A055S000P01-8690 starts..
 						if payload_json.get('SAEMPL'):
@@ -1514,11 +1528,14 @@ class SyncQuoteAndCustomTables:
 							if employee_object is not None:
 								Sql.RunQuery("""UPDATE SAQTMT SET OWNER_ID ='{owner_id}',OWNER_NAME = '{owner_name}',OWNER_RECORD_ID = '{owner_record_id}' WHERE QUOTE_ID = '{Quote_Id}'""".format(Quote_Id = contract_quote_data.get('C4C_QUOTE_ID'),owner_id = employee_object.EMPLOYEE_ID,owner_name = employee_object.FIRST_NAME+" "+employee_object.LAST_NAME,owner_record_id = employee_object.EMPLOYEE_RECORD_ID))
 						##A055S000P01-8690 endss..
-						if custom_fields_detail.get("PrimaryContactName"):							
+						if custom_fields_detail.get("PrimaryContactName"):	
+							#Log.Info("coming inside Primary contact")						
 							employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = N'{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 							if payload_json.get('SAQICT'):
+								Log.Info("SAQICT is available")	
 								if employee_obj is None:
+									Log.Info("Employee none")	
 									for employee in payload_json.get('SAQICT'):
 										country_obj = Sql.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
 										salesorg_obj = Sql.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
@@ -1545,13 +1562,15 @@ class SyncQuoteAndCustomTables:
 										employee_dict["ADDUSR_RECORD_ID"] = User.Id
 										tableInfo = Sql.GetTable("SAEMPL")
 										tablerow = employee_dict
-										tableInfo.AddRow(tablerow)										
+										tableInfo.AddRow(tablerow)
+										Log.Info("Employee insert")											
 										Sql.Upsert(tableInfo)
 
 							employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = N'{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
-							if contact_master_table is None:								
+							if contact_master_table is None:	
+								Log.Info("Contact Master")								
 								for employee in payload_json.get('SAQICT'):									
 									contact_master_table_update = {
 										"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1579,7 +1598,8 @@ class SyncQuoteAndCustomTables:
 									Log.Info("contact_master_table_update---"+str(contact_master_table_update))
 									tableInfo = Sql.GetTable("SACONT")
 									tablerow = contact_master_table_update
-									tableInfo.AddRow(tablerow)									
+									tableInfo.AddRow(tablerow)	
+									Log.Info("Contact Master Update")									
 									Sql.Upsert(tableInfo)
 							else:
 								for employee in payload_json.get('SAQICT'):
@@ -1616,6 +1636,7 @@ class SyncQuoteAndCustomTables:
 									"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
 								}
 								quote_involved_party_contact_table_info.AddRow(contact_info_update)
+								Log.Info("SAQICT Insert")	
 								Sql.Upsert(quote_involved_party_contact_table_info)
 						
 						if contract_quote_obj and payload_json.get('SalesType') and payload_json.get('OpportunityType'):
@@ -1643,7 +1664,7 @@ class SyncQuoteAndCustomTables:
 							#     "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							#     "PARTY_ID": bill_to_customer.CustomerCode,
 							#     "PARTY_NAME": bill_to_customer.FirstName,
-							#     "PARTY_ROLE": "SENDING ACCOUNT",
+							#     "CPQ_PARTNER_FUNCTION": "SENDING ACCOUNT",
 							#     "PHONE": bill_to_customer.BusinessPhone,
 							# }
 							# quote_involved_party_sending_account.AddRow(sending_account_quote_data)
@@ -1717,10 +1738,10 @@ class SyncQuoteAndCustomTables:
 																ContractValidTo=contract_quote_obj.CONTRACT_VALID_TO))							
 								contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-								get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+								get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
 								account_info = {}
 								for keyobj in get_party_role:
-									account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
+									account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
 								#get info from revision table start
 								sales_id = sales_rec =qt_rev_id = qt_id=''
 								get_rev_sales_ifo = Sql.GetFirst("select QUOTE_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_record_id)+"'")
@@ -1777,38 +1798,48 @@ class SyncQuoteAndCustomTables:
 										response=eval(response)	
 										auth="Bearer"+' '+str(response['access_token'])
 
-										get_party_role = Sql.GetList("SELECT PARTY_ID,PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and PARTY_ROLE in ('SOLD TO','SHIP TO')")
+										get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
 										account_info = {}
 										for keyobj in get_party_role:
-											account_info[keyobj.PARTY_ROLE] = keyobj.PARTY_ID
+											account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
 
 										contract_quote_id = contract_quote_obj.QUOTE_ID 
 										get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+										
 										if get_sales_ifo:
 											salesorg = get_sales_ifo.SALESORG_ID
-											validfrom =get_sales_ifo.CONTRACT_VALID_FROM
-											validto =get_sales_ifo.CONTRACT_VALID_TO
 											pricelist =get_sales_ifo.PRICELIST_ID
 											pricegroup =get_sales_ifo.PRICEGROUP_ID
-										CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),soldto =str(account_info.get('SOLD TO')),shipto =str(account_info.get('SHIP TO')),salesorg = salesorg,pricelist = pricelist,pricegroup =pricegroup,customerparticipate='Yes',participate6kw='Yes',partnumbers= 'Yes',validfrom = validfrom,validto = validto,contract_quote_id = contract_quote_id,quote_revision_record_id = quote_revision_record_id,accesstoken =auth)					
-									#A055S000P01-14047 start
-									try:
-										if val == "Z0108":
-											quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
-											contract_start_date = quotedetails.CONTRACT_VALID_FROM
-											contract_end_date = quotedetails.CONTRACT_VALID_TO
-											start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
-											end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
-											diff1 = end_date - start_date
-											get_totalweeks,remainder = divmod(diff1.days,7)
-											for index in range(0, get_totalweeks):
-												delivery_week_date="DATEADD(week, {weeks}, '{DeliveryDate}')".format(weeks=index, DeliveryDate=start_date.strftime('%m/%d/%Y'))
+											cv=str(get_sales_ifo.CONTRACT_VALID_FROM)
+											(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+											cd = '0'+str(cd) if len(cd)==1 else cd
+											cm = '0'+str(cm) if len(cm)==1 else cm        
+											validfrom = cy+cm+cd
+											cv=str(get_sales_ifo.CONTRACT_VALID_TO)
+											(cm,cd,cy)=re.sub(r'\s+([^>]*?)$','',cv).split('/')
+											cd = '0'+str(cd) if len(cd)==1 else cd
+											cm = '0'+str(cm) if len(cm)==1 else cm        
+											validto = cy+cm+cd
+										
+										CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,contract_quote_id,quote_revision_record_id,auth)					
+									# #A055S000P01-14047 start
+									# try:
+									# 	if val == "Z0108":
+									# 		quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+									# 		contract_start_date = quotedetails.CONTRACT_VALID_FROM
+									# 		contract_end_date = quotedetails.CONTRACT_VALID_TO
+									# 		start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
+									# 		end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
+									# 		diff1 = end_date - start_date
+									# 		get_totalweeks,remainder = divmod(diff1.days,7)
+									# 		for index in range(0, get_totalweeks):
+									# 			delivery_week_date="DATEADD(week, {weeks}, '{DeliveryDate}')".format(weeks=index, DeliveryDate=start_date.strftime('%m/%d/%Y'))
 											
-												getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,PART_DESCRIPTION,PART_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= contract_quote_record_id,qt_rev_id = quote_revision_record_id) )
-									except:
-										pass
-									#A055S000P01-14047 end
-
+									# 			getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,PART_DESCRIPTION,PART_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= contract_quote_record_id,qt_rev_id = quote_revision_record_id) )
+									# except:
+									# 	pass
+									# #A055S000P01-14047 end
+								'''
 								try:
 									update_customer_pn = """UPDATE SAQSPT SET SAQSPT.CUSTOMER_PART_NUMBER = M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = contract_quote_record_id ,sales_id = sales_id,stp_acc_id=str(account_info.get('SOLD TO')),quote_revision_rec_id =quote_revision_record_id)
 									Sql.RunQuery(update_customer_pn)
@@ -1816,13 +1847,14 @@ class SyncQuoteAndCustomTables:
 									Sql.RunQuery(update_uom_recs)
 								except:
 									Trace.Write('error=--1304--')
+								'''
 								##calling the iflow for pricing..
-								try:
-									contract_quote_id = contract_quote_obj.QUOTE_ID      
+								#try:
+								#	contract_quote_id = contract_quote_obj.QUOTE_ID      
 									#Log.Info("PART PRICING IFLOW STARTED WHEN USER CLICK COMPLETE STAGE!")
-									CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(contract_quote_id),str(quote_revision_record_id))
-								except:
-									Log.Info("PART PRICING IFLOW ERROR!")
+								#	CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(contract_quote_id),str(quote_revision_record_id))
+								#except:
+								#	Log.Info("PART PRICING IFLOW ERROR!")
 								#SAQTSV_end = time.time()
 								#Log.Info("SAQTSV time-----"+str(SAQTSV_end-SAQTSV_start))
 								#service_ADDon = Sql.RunQuery(""" INSERT SAQSAO (QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,ADNPRD_DESCRIPTION,ADNPRD_ID,ADNPRDOFR_RECORD_ID,ADNPRD_RECORD_ID,ADN_TYPE,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTESRV_RECORD_ID,SALESORG_ID,SALESORG_NAME,ACTIVE,SALESORG_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified) SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,MAADPR.ADNPRDOFR_NAME,MAADPR.ADNPRDOFR_ID,MAADPR.ADNPRDOFR_RECORD_ID,MAADPR.ADD_ON_PRODUCT_RECORD_ID,MAADPR.ADN_TYPE,SAQTSV.QUOTE_ID,SAQTSV.QUOTE_NAME,SAQTSV.QUOTE_RECORD_ID,SAQTSV.QUOTE_SERVICE_RECORD_ID,SAQTSV.SALESORG_ID,SAQTSV.SALESORG_NAME,'FALSE' as ACTIVE,SAQTSV.SALESORG_RECORD_ID,SAQTSV.SERVICE_DESCRIPTION,SAQTSV.SERVICE_ID,SAQTSV.SERVICE_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM MAADPR (NOLOCK) INNER JOIN  SAQTSV ON MAADPR.PRDOFR_ID = SAQTSV.SERVICE_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID ='{ServiceIds}' """.format(UserId=User.Id,UserName=User.UserName,QuoteRecordId=quote_record_id,ServiceIds=service_ids))
@@ -1851,10 +1883,17 @@ class SyncQuoteAndCustomTables:
 								# 	Log.Info("EXCEPT UPDATE SAQSPT---------")
 								#Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
 							if equipment_data:
-								#Log.Info(""""EQUIPMENTS INSERT""")
-								
-								for fab_location_id, value in equipment_data.items():									
+								Log.Info(""""EQUIPMENTS INSERT""")
+								for fab_location_id, value in equipment_data.items():			
 									SAQFEQ_start = time.time()
+									Log.Info("""
+																	INSERT SAQFEQ
+																	(QTEREV_RECORD_ID,QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+																SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+																	SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,'' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID FROM MAEQUP (NOLOCK)
+																	JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME WHERE ISNULL(SERIAL_NO, '') <> '' AND FABLOCATION_ID = '{FabLocationId}'
+																	) A
+																""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 									equipment_insert = Sql.RunQuery("""
 																	INSERT SAQFEQ
 																	(QTEREV_RECORD_ID,QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
@@ -1866,7 +1905,6 @@ class SyncQuoteAndCustomTables:
 									SAQFEQ_end = time.time()									
 								fab_equip_assem_start_time = time.time()
 								#Log.Info("fab_equip_assem_start_time start ==> "+str(fab_equip_assem_start_time))
-
 								SAQFGB_start = time.time()
 								greenbook_detail_insert = Sql.RunQuery(""" INSERT SAQFGB ( 
 								QTEREV_RECORD_ID,QTEREV_ID,FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_FAB_LOC_GB_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified
@@ -1896,14 +1934,74 @@ class SyncQuoteAndCustomTables:
 							##A055S000P01-10174 code starts...
 							try:
 								for service_level_equipment_json_data in payload_json.get('SAQSCO'):
-									##Fetching the records from SAQFEQ to insert the equipments in to SAQSCO table for service level...
+									##MORE THAN 1000 tools insert function
+									items  = str(service_level_equipment_json_data.get('EQUIPMENT_IDS'))
+									elements = items.split(',')
+									count = 1;
+									elementframe=''
+									for ele in elements:
+										if elementframe == '':
+											elementframe = ele
+										else:
+											elementframe += ', ' + ele
+										if count == 1000:
+											quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = elementframe,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+											quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+											quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
+											#Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
+											service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
+											service_type = quote_service_obj.SERVICE_TYPE
+											quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+											Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
+											ScriptExecutor.ExecuteGlobal(
+																	"CQCRUDOPTN",
+																{
+																	"NodeType"   : "COVERED OBJ MODEL",
+																	"ActionType" : "ADD_COVERED_OBJ",
+																	"Opertion"    : "ADD",
+																	"AllValues"  : False,
+																	"TriggerFrom"   : "python_script",
+																	"Values"	  : quote_fab_equipments_record_id,
+																	"ServiceId"  : service_id,
+																	"ServiceType" : service_type,
+																},
+															)
+											count=0
+											elementframe=''
+										count += 1
+									if count != 0:
+										quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = elementframe,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+										
+										quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+										quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
+										#Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
+										service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
+										service_type = quote_service_obj.SERVICE_TYPE
+										quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+										Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
+										ScriptExecutor.ExecuteGlobal(
+																"CQCRUDOPTN",
+															{
+																"NodeType"   : "COVERED OBJ MODEL",
+																"ActionType" : "ADD_COVERED_OBJ",
+																"Opertion"    : "ADD",
+																"AllValues"  : False,
+																"TriggerFrom"   : "python_script",
+																"Values"	  : quote_fab_equipments_record_id,
+																"ServiceId"  : service_id,
+																"ServiceType" : service_type,
+															},
+														)
+
+
+									'''##Fetching the records from SAQFEQ to insert the equipments in to SAQSCO table for service level...
 									quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = service_level_equipment_json_data.get('EQUIPMENT_IDS'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 									##Get the service type based on the service....
 									quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 									##Get the SAQFEQ table autonumber record id values to insert into SAQSCO...
 
 									quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
-									
+									Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
 									##Get the service id to send the param value for CQCRUDOPTN script..
 									service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
 									##Get the SERVICE_TYPE to send the param value for CQCRUDOPTN script..
@@ -1925,11 +2023,34 @@ class SyncQuoteAndCustomTables:
 															"ServiceId"  : service_id,
 															"ServiceType" : service_type,
 														},
-													)
-							except:
-								Log.Info("EXCEPTION: Iteration Over non sequence for none type")
+													)'''
+							except Exception as e:
+								Log.Info("EXCEPTION: Iteration Over non sequence for none type"+str(e))
 							##A055S000P01-10174 code ends...
-						
+							#warranty start and end date update in saqsco
+							'''try:
+								QuoteId=quote_id
+								for offering_data in payload_json.get('SAQSCO'):
+									service_offering_id = offering_data['SERVICE_OFFERING_ID']
+									if 'EQUIPMENT_DATES' in offering_data:
+										api1 =[]
+										for offering_equipment_ids in offering_data['EQUIPMENT_DATES']:
+											for key,value in offering_equipment_ids.items():
+												start_date = value['CONTRACT_START_DATE']
+												end_date = value['CONTRACT_END_DATE']
+												api1.append([key,start_date,end_date,Quote.GetGlobal("contract_quote_record_id"),Quote.GetGloba("quote_revision_record_id"),service_offering_id])
+										records = ', '.join(map(str, [str(tuple(equipment_record)) for equipment_record in api1])).replace("None","null").replace("'","''")    
+										datetime_string = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
+										Trace.Write("records"+str(records))
+										columns ="EQUIPMENT_ID,CONTRACT_START_DATE,CONTRACT_END_DATE,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID"
+										coverd_object_temp_table_name = "SAQSCO_BKP_{}_{}".format(QuoteId, datetime_string)    
+										coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
+										coverd_object_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(columns)+" INTO "+str(coverd_object_temp_table_name)+" FROM (SELECT DISTINCT "+str(columns)+" FROM (VALUES "+str(records)+") AS TEMP("+str(columns)+")) OQ ' ")    
+										saqsco_update ="""UPDATE A SET A.CONTRACT_VALID_FROM = B.CONTRACT_START_DATE,A.CONTRACT_VALID_TO =B.CONTRACT_END_DATE FROM SAQSCO A INNER JOIN {} B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID and A.SERVICE_ID =B.SERVICE_ID where A.QUOTE_RECORD_ID = '{Quote_id}' AND A.QTEREV_RECORD_ID = '{qtrv_id}' and A.SERVICE_ID = '{service_offering_id}'""".format(coverd_object_temp_table_name,Quote_id =Quote.GetGlobal("contract_quote_record_id"),qtrv_id =Quote.GetGloba("quote_revision_record_id"),service_offering_id =service_offering_id)
+										Sql.RunQuery(saqsco_update)
+										coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
+							except Exception as e:
+								Log.Info("EXCEPTION: Iteration Over non sequence for none type in update covered objects"+str(e))'''
 						payload_table_info = Sql.GetTable("SYINPL")
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
@@ -1954,9 +2075,12 @@ class SyncQuoteAndCustomTables:
 			Log.Info("SYPOSTINSG ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))        
 
 		sync_end_time = time.time()
+		quote_end_time = time.time()
 		# Log.Info("SALETYPE_J "+str(SalesType.get(payload_json.get("SalesType"))))
 
 		Log.Info("Sync end==> "+str(sync_end_time - sync_start_time))   
+		Log.Info("Quote CreationTime==> "+str(quote_end_time - self.quote_start_time)) 
+
 	##A055S000P01-8690 starts..
 	def salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail):
 		Sql.RunQuery("""INSERT SAQDLT (
@@ -1987,11 +2111,23 @@ class SyncQuoteAndCustomTables:
 								WHEN '213' THEN 'PARTNER CONTACT'
 								WHEN 'Z1' THEN 'BD'
 								WHEN 'Z2' THEN 'BD MANAGER'
-								WHEN 'Z3' THEN 'SALES ADMIN'
+								WHEN 'Z3' THEN 'SALES CONTRACT SUPPORT'
 								WHEN 'Z4' THEN 'SALES MANAGER'
 								WHEN 'Z5' THEN 'SALES REP'
 								WHEN 'ZCM' THEN 'CONTRACT MANAGER'
 								WHEN 'ZFM' THEN 'FINANCE MANAGER'
+								WHEN 'Z10' THEN 'LEGAL PERSON'
+								WHEN 'Z11' THEN 'PRICING PERSON'
+								WHEN 'Z12' THEN 'MARKETING AND BD HEAD'
+								WHEN 'Z13' THEN 'SSC HEAD'
+								WHEN 'Z14' THEN 'AGS HEAD'
+								WHEN 'Z15' THEN 'CM MANAGER'
+								WHEN 'Z16' THEN 'AGS REV REC FINANCE MANAGER'
+								WHEN 'Z6' THEN 'BD HEAD'
+								WHEN 'Z7' THEN 'MARKETING HEAD'
+								WHEN 'Z8' THEN 'REGIONAL FINANCE CONTROLLER'
+								WHEN 'Z9' THEN 'AGS FINANCE CONTROLLER'
+								WHEN 'ZF' THEN 'FAB'
 								ELSE 'FOB'
 								END ) AS C4C_PARTNERFUNCTION_ID,
 								(SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -2000,11 +2136,23 @@ class SyncQuoteAndCustomTables:
 								WHEN '213' THEN 'PARTNER CONTACT'
 								WHEN 'Z1' THEN 'BD'
 								WHEN 'Z2' THEN 'BD MANAGER'
-								WHEN 'Z3' THEN 'SALES ADMIN'
+								WHEN 'Z3' THEN 'SALES CONTRACT SUPPORT'
 								WHEN 'Z4' THEN 'SALES MANAGER'
 								WHEN 'Z5' THEN 'SALES REP'
 								WHEN 'ZCM' THEN 'CONTRACT MANAGER'
 								WHEN 'ZFM' THEN 'FINANCE MANAGER'
+								WHEN 'Z10' THEN 'LEGAL PERSON'
+								WHEN 'Z11' THEN 'PRICING PERSON'
+								WHEN 'Z12' THEN 'MARKETING AND BD HEAD'
+								WHEN 'Z13' THEN 'SSC HEAD'
+								WHEN 'Z14' THEN 'AGS HEAD'
+								WHEN 'Z15' THEN 'CM MANAGER'
+								WHEN 'Z16' THEN 'AGS REV REC FINANCE MANAGER'
+								WHEN 'Z6' THEN 'BD HEAD'
+								WHEN 'Z7' THEN 'MARKETING HEAD'
+								WHEN 'Z8' THEN 'REGIONAL FINANCE CONTROLLER'
+								WHEN 'Z9' THEN 'AGS FINANCE CONTROLLER'
+								WHEN 'ZF' THEN 'FAB'
 								ELSE 'FOB'
 								END ) AS CRM_PARTNERFUNCTION_ID,
 								(SELECT TOP 1 PARTNERFUNCTION_DESCRIPTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -2013,11 +2161,23 @@ class SyncQuoteAndCustomTables:
 								WHEN '213' THEN 'PARTNER CONTACT'
 								WHEN 'Z1' THEN 'BD'
 								WHEN 'Z2' THEN 'BD MANAGER'
-								WHEN 'Z3' THEN 'SALES ADMIN'
+								WHEN 'Z3' THEN 'SALES CONTRACT SUPPORT'
 								WHEN 'Z4' THEN 'SALES MANAGER'
 								WHEN 'Z5' THEN 'SALES REP'
 								WHEN 'ZCM' THEN 'CONTRACT MANAGER'
 								WHEN 'ZFM' THEN 'FINANCE MANAGER'
+								WHEN 'Z10' THEN 'LEGAL PERSON'
+								WHEN 'Z11' THEN 'PRICING PERSON'
+								WHEN 'Z12' THEN 'MARKETING AND BD HEAD'
+								WHEN 'Z13' THEN 'SSC HEAD'
+								WHEN 'Z14' THEN 'AGS HEAD'
+								WHEN 'Z15' THEN 'CM MANAGER'
+								WHEN 'Z16' THEN 'AGS REV REC FINANCE MANAGER'
+								WHEN 'Z6' THEN 'BD HEAD'
+								WHEN 'Z7' THEN 'MARKETING HEAD'
+								WHEN 'Z8' THEN 'REGIONAL FINANCE CONTROLLER'
+								WHEN 'Z9' THEN 'AGS FINANCE CONTROLLER'
+								WHEN 'ZF' THEN 'FAB'
 								ELSE 'FOB'
 								END ) AS PARTNERFUNCTION_DESC,
 								(SELECT TOP 1 PARTNERFUNCTION_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -2026,11 +2186,23 @@ class SyncQuoteAndCustomTables:
 								WHEN '213' THEN 'PARTNER CONTACT'
 								WHEN 'Z1' THEN 'BD'
 								WHEN 'Z2' THEN 'BD MANAGER'
-								WHEN 'Z3' THEN 'SALES ADMIN'
+								WHEN 'Z3' THEN 'SALES CONTRACT SUPPORT'
 								WHEN 'Z4' THEN 'SALES MANAGER'
 								WHEN 'Z5' THEN 'SALES REP'
 								WHEN 'ZCM' THEN 'CONTRACT MANAGER'
 								WHEN 'ZFM' THEN 'FINANCE MANAGER'
+								WHEN 'Z10' THEN 'LEGAL PERSON'
+								WHEN 'Z11' THEN 'PRICING PERSON'
+								WHEN 'Z12' THEN 'MARKETING AND BD HEAD'
+								WHEN 'Z13' THEN 'SSC HEAD'
+								WHEN 'Z14' THEN 'AGS HEAD'
+								WHEN 'Z15' THEN 'CM MANAGER'
+								WHEN 'Z16' THEN 'AGS REV REC FINANCE MANAGER'
+								WHEN 'Z6' THEN 'BD HEAD'
+								WHEN 'Z7' THEN 'MARKETING HEAD'
+								WHEN 'Z8' THEN 'REGIONAL FINANCE CONTROLLER'
+								WHEN 'Z9' THEN 'AGS FINANCE CONTROLLER'
+								WHEN 'ZF' THEN 'FAB'
 								ELSE 'FOB'
 								END ) AS PARTNERFUNCTION_ID,
 								(SELECT TOP 1 PARTNERFUNCTION_RECORD_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -2039,11 +2211,23 @@ class SyncQuoteAndCustomTables:
 								WHEN '213' THEN 'PARTNER CONTACT'
 								WHEN 'Z1' THEN 'BD'
 								WHEN 'Z2' THEN 'BD MANAGER'
-								WHEN 'Z3' THEN 'SALES ADMIN'
+								WHEN 'Z3' THEN 'SALES CONTRACT SUPPORT'
 								WHEN 'Z4' THEN 'SALES MANAGER'
 								WHEN 'Z5' THEN 'SALES REP'
 								WHEN 'ZCM' THEN 'CONTRACT MANAGER'
 								WHEN 'ZFM' THEN 'FINANCE MANAGER'
+								WHEN 'Z10' THEN 'LEGAL PERSON'
+								WHEN 'Z11' THEN 'PRICING PERSON'
+								WHEN 'Z12' THEN 'MARKETING AND BD HEAD'
+								WHEN 'Z13' THEN 'SSC HEAD'
+								WHEN 'Z14' THEN 'AGS HEAD'
+								WHEN 'Z15' THEN 'CM MANAGER'
+								WHEN 'Z16' THEN 'AGS REV REC FINANCE MANAGER'
+								WHEN 'Z6' THEN 'BD HEAD'
+								WHEN 'Z7' THEN 'MARKETING HEAD'
+								WHEN 'Z8' THEN 'REGIONAL FINANCE CONTROLLER'
+								WHEN 'Z9' THEN 'AGS FINANCE CONTROLLER'
+								WHEN 'ZF' THEN 'FAB'
 								ELSE 'FOB'
 								END ) AS PARTNERFUNCTION_RECORD_ID,
 								SAEMPL.EMAIL,
