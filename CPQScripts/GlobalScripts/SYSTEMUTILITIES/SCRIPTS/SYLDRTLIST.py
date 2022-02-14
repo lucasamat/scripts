@@ -9800,7 +9800,9 @@ class SYLDRTLIST:
 		else:
 			parts = Sql.GetList("SELECT TOP 1000 "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(parents_list)+" ORDER BY CpqTableEntryId ASC ")
 			ordered_values.extend(parts) #appending parts without having any child parts
-		
+		Trace.Write('Length of Parts-->'+str(len(ordered_values)))
+		Trace.Write('Page_Start--->'+str(Page_start))
+		Trace.Write('Page_End--->'+str(Page_End))
 		Query_Obj = []
 		for row in range(Page_start-1,Page_End):
 			Query_Obj.append(ordered_values[row])
