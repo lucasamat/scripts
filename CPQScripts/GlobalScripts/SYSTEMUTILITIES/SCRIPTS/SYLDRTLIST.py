@@ -3102,7 +3102,8 @@ class SYLDRTLIST:
 								)
 							##A055S000P01-10136
 							elif str(ObjectName)=="SAQTIP":
-								if ik.CPQ_PARTNER_FUNCTION == "SHIP TO":
+								Trace.Write("Check_cpq"+str(ik.CPQ_PARTNER_FUNCTION))
+								if str(ik.CPQ_PARTNER_FUNCTION).upper() == "SHIP TO":
 									quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 									quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 									get_role_name = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION = 'SHIP TO' ")
