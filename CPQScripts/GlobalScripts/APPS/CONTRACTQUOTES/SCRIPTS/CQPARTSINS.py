@@ -286,6 +286,11 @@ class SyncFPMQuoteAndHanaDatabase:
                 self._insert_spare_parts()
                 self.update_records_saqspt()  
                 self.insert_delivery_schedule()
+                try:
+                    self.CQPARTIFLW_iflow()        
+                except Exception:
+                    Log.Info("PART PRICING IFLOW ERROR!")
+
     def delete_child_records_6kw(self):
         Trace.Write('Delete Child called!!!')
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
@@ -318,7 +323,7 @@ class SyncFPMQuoteAndHanaDatabase:
         Log.Info("Resarpcarp-->"+str(self.arp_carp_response))
 
     def CQPARTIFLW_iflow(self):
-        CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(Param.CPQ_Columns["QuoteID"]),str(Param.CPQ_Columns["RevisionRecordID"]))
+        CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
 
         
 Log.Info("CQPARTINS script called --> from CPI")
@@ -352,7 +357,4 @@ if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     #fpm_obj.validation_for_arp_carp()
     
     
-    try:
-        fpm_obj.CQPARTIFLW_iflow()        
-    except Exception:
-        Log.Info("PART PRICING IFLOW ERROR!")
+    
