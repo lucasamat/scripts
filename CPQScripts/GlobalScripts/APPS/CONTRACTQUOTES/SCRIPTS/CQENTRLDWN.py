@@ -864,7 +864,12 @@ def entitlemt_attr_update(entitlement_table, where):
 			
 	if get_equipment:
 		for ent_rec in get_equipment:
+			addtional_whr = ''
 			update_values = ""
+			if entitlement_table == 'SAQSCE':
+				addtional_whr = " AND GREENBOOK = '{}' AND EQUIPMENT_ID = '{}'".format(ent_rec.GREENBOOK,ent_rec.EQUIPMENT_ID )
+			elif entitlement_table == 'SAQGPE':
+				addtional_whr = " AND GREENBOOK = '{}' AND GOT_CODE = '{}' AND PM_ID = '{}'".format(ent_rec.GREENBOOK,ent_rec.GOT_CODE,  ent_rec.PM_ID)
 			get_xml_dict,dict_val = _construct_dict_xml(ent_rec.ENTITLEMENT_XML)
 			Trace.Write("dict_val--"+str(dict_val))
 			for entitlement_detail in entitlement_details:
@@ -874,7 +879,7 @@ def entitlemt_attr_update(entitlement_table, where):
 					entitlement_disp_val = dict_val[entitlement_id]
 					update_values += ", {} = '{}' ".format(entitlement_table_col, entitlement_disp_val ) 
 			if update_values:
-				update_query = "UPDATE {entitlement_table} SET {cols}  {where}".format(entitlement_table = entitlement_table, cols = update_values, where =where.replace('SRC.','') )
+				update_query = "UPDATE {entitlement_table} SET {cols}  {where} {addtional_whr}".format(entitlement_table = entitlement_table, cols = update_values, where =where.replace('SRC.',''),addtional_whr= addtional_whr )
 				update_query = update_query.replace('SET ,','SET ')
 				Log.Info('update_query---'+str(update_query))
 				Sql.RunQuery(update_query)
