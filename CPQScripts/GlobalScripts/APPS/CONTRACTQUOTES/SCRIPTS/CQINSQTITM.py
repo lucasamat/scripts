@@ -34,7 +34,6 @@ class ContractQuoteItem:
 		self.get_billing_type_val = ""
 		self.parent_service_id = ""
 		self.source_object_name = ''
-		self._ent_consumable = ''
 		self.where_condition_string = kwargs.get('where_condition_string') 
 		self.set_contract_quote_related_details()
 		self._set_service_type()
@@ -73,26 +72,6 @@ class ContractQuoteItem:
 			self.is_spare_service = True
 		else:
 			self.is_spare_service = False
-		return True
-
-	def _get_consumable_val(self):
-		self._ent_consumable =''
-		if self.parent_service_id == 'Z0092' :
-			get_consumable = Sql.GetFirst("select ENTITLEMENT_XML,SERVICE_ID from SAQTSE where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{get_service}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,get_service = self.parent_service_id))
-			if get_consumable:
-				updateentXML = get_consumable.ENTITLEMENT_XML
-				pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-				pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_Z0092_TSC_CONSUM</ENTITLEMENT_ID>')
-				
-				pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-				for m in re.finditer(pattern_tag, updateentXML):
-					sub_string = m.group(1)
-					get_ent_id = re.findall(pattern_id,sub_string)
-					get_ent_val= re.findall(pattern_name,sub_string)
-					if get_ent_id:
-						self._ent_consumable = str(get_ent_val[0])
-						break
-			
 		return True
 
 	def _set_fpm_service_type(self):
@@ -2733,48 +2712,7 @@ class ContractQuoteItem:
 		# CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 		# CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 		##Calling the iflow for quote header writeback to cpq to c4c code ends...
-	def _insert_quote_item_forecast_parts(self):
-		Trace.Write("_ent_consumable---"+str(self._ent_consumable)+"par_Service_id---"+str(self.parent_service_id) )
-			
-		# if self.service_id == 'Z0101' and self._ent_consumable.upper() == 'SOME INCLUSIONS' : 
-		# 	Sql.RunQuery("""INSERT SAQRIP (QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, NEW_PART ) 
-		# 	SELECT 
-		# 		CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,
-		# 		'{UserName}' AS CPQTABLEENTRYADDEDBY,
-		# 		GETDATE() as CPQTABLEENTRYDATEADDED,
-		# 		{UserId} as CpqTableEntryModifiedBy,
-		# 		GETDATE() as CpqTableEntryDateModified,
-		# 		IQ.PART_DESCRIPTION,
-		# 		IQ.PART_NUMBER,
-		# 		IQ.PART_RECORD_ID,
-		# 		SAQRIT.SERVICE_DESCRIPTION,
-		# 		SAQRIT.SERVICE_ID,
-		# 		SAQRIT.SERVICE_RECORD_ID,
-		# 		SAQRIT.QUANTITY,
-		# 		IQ.QUOTE_ID,
-		# 		SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,
-		# 		SAQRIT.QUOTE_RECORD_ID,
-		# 		SAQRIT.QTEREV_ID,
-		# 		SAQRIT.QTEREV_RECORD_ID,
-		# 		SAQRIT.LINE,
-		# 		IQ.NEW_PART 
-		# 	FROM (SELECT SAQSCO.FABLOCATION_ID, SAQSCO.SERVICE_ID, SAQSCO.QUOTE_ID, SAQSCO.GREENBOOK, PART_NUMBER, PART_DESCRIPTION, 	PART_RECORD_ID,SAQRSP.QUANTITY,SAQRSP.NEW_PART,SAQRSP.QUOTE_RECORD_ID,SAQRSP.QTEREV_RECORD_ID 
-		# 		FROM SAQSCO INNER JOIN SAQRSP ON SAQSCO.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID AND SAQSCO.SERVICE_ID = SAQRSP.SERVICE_ID 
-		# 	WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRSP.SERVICE_ID = '{ServiceId}' AND SAQRSP.QUANTITY > 0 
-		# 	GROUP BY SAQSCO.FABLOCATION_ID, SAQSCO.SERVICE_ID, SAQSCO.QUOTE_ID, SAQSCO.GREENBOOK, PART_NUMBER, PART_DESCRIPTION, PART_RECORD_ID,SAQRSP.QUANTITY,SAQRSP.NEW_PART,SAQRSP.QUOTE_RECORD_ID,SAQRSP.QTEREV_RECORD_ID ) IQ 
-		# 	INNER JOIN SAQRIT ON IQ.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND IQ.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND IQ.SERVICE_ID = SAQRIT.SERVICE_ID AND SAQRIT.GREENBOOK = IQ.GREENBOOK AND SAQRIT.FABLOCATION_ID = IQ.FABLOCATION_ID 
-		# 	LEFT JOIN SAQRIP (NOLOCK) ON SAQRIP.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQRIP.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQRIP.SERVICE_RECORD_ID = SAQRIT.SERVICE_RECORD_ID AND SAQRIP.PART_RECORD_ID = IQ.PART_RECORD_ID 
-		# 	WHERE IQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND IQ.QTEREV_RECORD_ID = '{RevisionRecordId}' AND IQ.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQRIP.PART_RECORD_ID,'') = '' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-			
-			
-		# 	##calling the iflow for pricing..
-		# 	try:
-		# 		# if action_type == 'UPDATE_LINE_ITEMS':
-		# 		Log.Info("PART PRICING IFLOW STARTED!")
-		# 		CQPARTIFLW.iflow_pricing_call(str(self.user_name),str(self.contract_quote_id),str(self.contract_quote_revision_record_id))
-		# 	except:
-		# 		Log.Info("PART PRICING IFLOW ERROR!")
-		
+	def _insert_quote_item_forecast_parts(self):		
 		if not (self.service_id == 'Z0100' and self.parent_service_id == 'Z0092'):
 			Sql.RunQuery("""INSERT SAQRIP (QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, NEW_PART ) 
 				SELECT 
