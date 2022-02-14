@@ -2726,8 +2726,7 @@ class SYLDRTLIST:
 					Trace.Write('@2720-->')
 					ordered_values = []
 					parent_parts = []
-					order_by = " ORDER BY CpqTableEntryId ASC "
-					child_parts=SqlHelper.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL "+str(order_by))
+					child_parts=SqlHelper.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL ")
 					for child in child_parts:
 						parent_parts.append(child.PAR_PART_NUMBER)
 						parent_part = SqlHelper.GetFirst("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PART_NUMBER = '"+str(child.PAR_PART_NUMBER)+"' ")
