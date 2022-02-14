@@ -2746,7 +2746,7 @@ class SYLDRTLIST:
 							fetch_count +=1000
 							ordered_values.extend(parts) #appending parts without having any child parts
 					else:
-						parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(parents_list)+" ORDER BY CpqTableEntryId ASC ")
+						parts = Sql.GetList("SELECT TOP 1000 "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(parents_list)+" ORDER BY CpqTableEntryId ASC ")
 						ordered_values.extend(parts) #appending parts without having any child parts
 					
 					Query_Obj = []
