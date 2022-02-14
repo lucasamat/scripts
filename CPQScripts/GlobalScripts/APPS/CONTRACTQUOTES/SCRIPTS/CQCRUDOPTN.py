@@ -5564,8 +5564,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						saqgpa_backup_table.QTESRV_RECORD_ID,
 						saqgpa_backup_table.QTESRVGBK_RECORD_ID,
 						saqgpa_backup_table.QTEREVPME_RECORD_ID
-						FROM {saqgpa_backup_table} (NOLOCK)  saqgpa_backup_table
-					JOIN SYSPBT(NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = saqgpa_backup_table.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = saqgpa_backup_table.QTEREV_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = saqgpa_backup_table.EQUIPMENT_RECORD_ID
+						FROM SYSPBT(NOLOCK)
+					JOIN {saqgpa_backup_table} (NOLOCK)  saqgpa_backup_table ON SYSPBT.QUOTE_RECORD_ID = saqgpa_backup_table.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = saqgpa_backup_table.QTEREV_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = saqgpa_backup_table.EQUIPMENT_RECORD_ID
 					JOIN MAEQUP(NOLOCK) ON MAEQUP.PAR_EQUIPMENT_RECORD_ID = saqgpa_backup_table.EQUIPMENT_RECORD_ID
 					WHERE saqgpa_backup_table.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND saqgpa_backup_table.
 					QTEREV_RECORD_ID = '{RevisionRecordId}' AND saqgpa_backup_table.SERVICE_ID = '{TreeParam}' ) PM_EVENT_ASSEMBLY  
