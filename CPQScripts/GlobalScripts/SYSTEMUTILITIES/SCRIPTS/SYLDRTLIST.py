@@ -2749,7 +2749,7 @@ class SYLDRTLIST:
 					
 					Query_Obj = []
 					for row in range(Page_start-1,Page_End):
-						Query_Obj.append(ordered_values[i])
+						Query_Obj.append(ordered_values[row])
 	
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 				elif RECORD_ID == "SYOBJR-00030":
