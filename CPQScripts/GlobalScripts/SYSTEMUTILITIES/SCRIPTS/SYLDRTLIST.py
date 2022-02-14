@@ -2724,22 +2724,34 @@ class SYLDRTLIST:
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' "
 				elif RECORD_ID == "SYOBJR-00005":
 					Trace.Write('@2720-->')
-					Qury_str = (
-							"select DISTINCT top "
-							+ str(PerPage)
-							+ " "
-							+ str(select_obj_str)
-							+ ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(partition by SAQSPT.PAR_PART_NUMBER order by SAQSPT.PAR_PART_NUMBER) AS ROW, * from "
-							+ str(ObjectName)
-							+ " (nolock) "
-							+ str(Qustr)
-							+ " ORDER BY ROW,SAQSPT.CUSTOMER_PART_NUMBER) m where m.ROW BETWEEN "
-							+ str(Page_start)
-							+ " and "
-							+ str(Page_End)
-							+ ""
-						)
-						
+					ordered_values = []
+					parent_parts = []
+					order_by = " ORDER BY CpqTableEntryId ASC "
+					child_parts=SqlHelper.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL "+str(order_by))
+					for child in child_parts:
+						parent_parts.append(child.PAR_PART_NUMBER)
+						parent_part = SqlHelper.GetFirst("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PART_NUMBER = '"+str(child.PAR_PART_NUMBER)+"' ")
+						ordered_values.append(parent_part)
+						ordered_values.append(child)
+
+					no_child_count = SqlHelper.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(tuple(parent_parts))+" ")
+
+					no_child_count = no_child_count.CNT #count of parts without having any child
+
+					if no_child_count > 1000:
+						fetch_count = 0
+						while fetch_count < no_child_count: #fetching only 1000 records since we are not able to get more than 1000 records at a time
+							parts = SqlHelper.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(tuple(parent_parts))+" ORDER BY CpqTableEntryId ASC OFFSET "+str(fetch_count)+" ROWS FETCH NEXT 1000 ROWS ONLY ")
+							fetch_count +=1000
+							ordered_values.extend(parts) #appending parts without having any child parts
+					else:
+						parts = SqlHelper.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(tuple(parent_parts))+" ORDER BY CpqTableEntryId ASC ")
+						ordered_values.extend(parts) #appending parts without having any child parts
+					
+					Query_Obj = []
+					for row in range(Page_start-1,Page_end):
+						Query_Obj.append(ordered_values[i])
+	
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 				elif RECORD_ID == "SYOBJR-00030":
 					Qury_str = (
@@ -2829,8 +2841,8 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TopTreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeSuperParentParam)+"' AND GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' "
 				
 				try:
-					Query_Obj = Sql.GetList(str(Qury_str))
-					
+					if str(RECORD_ID)!="SYOBJR-00005": # restricted Query_obj for SYOBJR-00005 since the values are modified in Scripting
+						Query_Obj = Sql.GetList(str(Qury_str))
 					
 					QueryCount_Obj = Sql.GetFirst(str(QuryCount_str))
 					
