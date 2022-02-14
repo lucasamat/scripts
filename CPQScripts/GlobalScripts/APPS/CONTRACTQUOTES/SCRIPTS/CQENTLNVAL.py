@@ -186,7 +186,205 @@ def ChildEntRequest(partnumber,tableName,where):
 	ent_child_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_child_temp)+"'' ) BEGIN DROP TABLE "+str(ent_child_temp)+" END  ' ")
 	return cpsmatchID,config_id
 
+def _construct_dict_xml(updateentXML):
+	entxmldict = {}
+	pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+	pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+	entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+	display_val_dict = {}
+	if updateentXML:
+		for m in re.finditer(pattern_tag, updateentXML):
+			sub_string = m.group(1)
+			x=re.findall(pattern_name,sub_string)
+			if x:
+				entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
+				if entitlement_display_value_tag_match:
+					display_val_dict[x[0]] = entitlement_display_value_tag_match[0]
+			entxmldict[x[0]]=sub_string
+	return entxmldict,display_val_dict
 
+def entitlemt_attr_update(partnumber,entitlement_table, where):
+	get_equipment = Sql.GetList("SELECT * FROM {} {}".format(entitlement_table, where))
+	entitlement_details = [{
+								"field":["INTCPV","Intercept","AGS_{}_VAL_INTCPT".format(partnumber)]						
+								},
+								{
+								"field":["INTCPC","Intercept Coefficient","AGS_{}_VAL_INTCCO".format(partnumber)]
+								},
+								{
+								"field":["OSSVDV","Total Cost W/O Seedstock","AGS_{}_VAL_TBCOST".format(partnumber)]	
+								},
+								{
+								"field":["LTCOSS","Total Cost w/o Seedstock Coeff","AGS_{}_VAL_TBCOCO".format(partnumber)]
+								},
+								{
+								"field":["POFVDV","Product Offering","AGS_{}_VAL_POFFER".format(partnumber)]	
+								},
+								{
+								"field":["POFVDC","Product Offering Coefficient","AGS_{}_VAL_POFFCO".format(partnumber)]
+								},
+								{
+								"field":["GBKVDV","Greenbook","AGS_{}_VAL_GRNBKV".format(partnumber)]	
+								},
+								{
+								"field":["GBKVDC","Greenbook Coefficient","AGS_{}_VAL_GRNBCO".format(partnumber)]
+								},
+								{
+								"field":["UIMVDV","Uptime Improvement","AGS_{}_VAL_UPIMPV".format(partnumber)]	
+								},
+								{
+								"field":["UIMVDC","Uptime Improvement Coefficient","AGS_{}_VAL_UPIMCO".format(partnumber)]
+								},
+								{
+								"field":["CAVVDV","Capital Avoidance","AGS_{}_VAL_CAPAVD".format(partnumber)]	
+								},
+								{
+								"field":["CAVVDC","Capital Avoidance Coefficient","AGS_{}_VAL_CAPACO".format(partnumber)]
+								},
+								{
+								"field":["WNDVDV","Wafer Node","AGS_{}_VAL_WAFNOD".format(partnumber)]	
+								},
+								{
+								"field":["WNDVDC","Wafer Node Coefficient","AGS_{}_VAL_WAFNCO".format(partnumber)]
+								},
+								{
+								"field":["CCRTMV","Contract Coverage & Response Time","AGS_{}_VAL_CCRTME".format(partnumber)]	
+								},
+								{
+								"field":["CCRTMC","Contract Coverage & Response Time Coefficient","AGS_{}_VAL_CCRTCO".format(partnumber)]
+								},
+								{
+								"field":["SCMVDV","Service Complexity","AGS_{}_VAL_SCCCDF".format(partnumber)]
+								},
+								{
+								"field":["SCMVDC", "Service Complexity Coefficient", "AGS_{}_VAL_SCCCCO".format(partnumber)]
+								},
+								{
+								"field":["CCDFFV","Cleaning Coating Differentiation","AGS_{}_VAL_CCDVAL".format(partnumber)]
+								},
+								{
+								"field":["CCDFFC", "Cleaning Coating Diff coeff.", "AGS_{}_VAL_CCDVCO".format(partnumber)]
+								},
+								{
+								"field":["NPIVDV","NPI","AGS_{}_VAL_NPIREC".format(partnumber)]
+								},	
+								{
+								"field":["NPIVDC", "NPI Coefficient", "AGS_{}_VAL_NPICOF".format(partnumber)]
+								},	
+								{
+								"field":["DTPVDV","Device Type","AGS_{}_VAL_DEVTYP".format(partnumber)]
+								},
+								{
+								"field":["DTPVDC", "Device Type Coefficient", "AGS_{}_VAL_DEVTCO".format(partnumber)]
+								},	
+								{
+								"field":["CSTVDV","# CSA Tools per Fab","AGS_{}_VAL_TLSFAB".format(partnumber)]
+								},	
+								{
+								"field":["CSTVDC", "# CSA Tools per Fab Coefficient", "AGS_{}_VAL_TLSFCO".format(partnumber)]
+								},	
+								{
+								"field":["CSGVDV","Customer Segment","AGS_{}_VAL_CSTSEG".format(partnumber)]
+								},
+								{
+								"field":["CSGVDC", "Customer Segment Coefficent", "AGS_{}_VAL_CSSGCO".format(partnumber)]
+								},	
+								{
+								"field":["QRQVDV","Quality Required","AGS_{}_VAL_QLYREQ".format(partnumber)]
+								},
+								{
+								"field":["QRQVDC", "Quality Required Coefficient", "AGS_{}_VAL_QLYRCO".format(partnumber)]
+								},	
+								{
+								"field":["SVCVDV","Service Competition","AGS_{}_VAL_SVCCMP".format(partnumber)]
+								},
+								{
+								"field":["SVCVDC", "Service Competition Coefficient", "AGS_{}_VAL_SVCCCO".format(partnumber)]
+								},
+								{
+								"field":["RKFVDV","Risk Factor","AGS_{}_VAL_RSKFVD".format(partnumber)]
+								},
+								{
+								"field":["RKFVDC", "Risk Factor Coefficient", "AGS_{}_VAL_RSKFCO".format(partnumber)]
+								},
+								{
+								"field":["PBPVDV","PDC Base Price","AGS_{}_VAL_PDCBSE".format(partnumber)]
+								},
+								{
+								"field":["PBPVDC", "PDC Base Price Coefficient", "AGS_{}_VAL_PDCBCO".format(partnumber)]
+								},
+								{
+								"field":["CMLAB_ENT","Corrective Maintenance Labor","AGS_{}_NET_CRMALB".format(partnumber)]
+								},		
+								{
+								"field":["CNSMBL_ENT","Consumable","AGS_{}_TSC_CONSUM".format(partnumber)]
+								},
+								{
+								"field":["CNTCVG_ENT","Contract Coverage","AGS_{}_CVR_CNTCOV".format(partnumber)]
+								},	
+								{
+								"field":["NCNSMB_ENT","Non-Consumable","AGS_{}_TSC_NONCNS".format(partnumber)]
+								},	
+								{
+								"field":["PMEVNT_ENT","Quote Type","AGS_{}_PQB_QTETYP".format(partnumber)]
+								},		
+								{
+								"field":["PMLAB_ENT","Preventative Maintenance Labor","AGS_{}_NET_PRMALB".format(partnumber)]
+								},	
+								{
+								"field":["PRMKPI_ENT","Primary KPI. Perf Guarantee","AGS_{}_KPI_PRPFGT".format(partnumber)]
+								},
+								{
+								"field":["OFRING","Product Offering","AGS_{}_VAL_POFFER".format(partnumber)]
+								},	
+								{
+								"field":["QTETYP","Quote Type","AGS_{}_PQB_QTETYP".format(partnumber)]
+								},	
+								{
+								"field":["BILTYP","Billing Type","AGS_{}_PQB_BILTYP".format(partnumber)]
+								},	
+								{
+								"field":["BPTKPI","Bonus & Penalty Tied to KPI","AGS_{}_KPI_BPTKPI".format(partnumber)]
+								},
+								{
+								"field":["ATGKEY","Additional Target KPI","AGS_{}_KPI_TGTKPI".format(partnumber)]
+								},	
+								{
+								"field":["ATNKEY","Additional Target KPI(Non-std)","AGS_{}_KPI_TGKPNS".format(partnumber)]
+								},
+								{
+								"field":["NWPTON","New Parts Only","AGS_{}_TSC_RPPNNW".format(partnumber)]
+								},
+								{
+								"field":["HEDBIN","Head break-in","AGS_{}_STT_HDBRIN".format(partnumber)]
+								},
+						]
+			
+	if get_equipment:
+		for ent_rec in get_equipment:
+			addtional_whr = ''
+			update_values = ""
+			if entitlement_table == 'SAQSCE':
+				addtional_whr = " AND GREENBOOK = '{}' AND EQUIPMENT_ID = '{}'".format(ent_rec.GREENBOOK,ent_rec.EQUIPMENT_ID )
+			elif entitlement_table == 'SAQGPE':
+				addtional_whr = " AND GREENBOOK = '{}' AND GOT_CODE = '{}' AND PM_ID = '{}'".format(ent_rec.GREENBOOK,ent_rec.GOT_CODE,  ent_rec.PM_ID)
+			get_xml_dict,dict_val = _construct_dict_xml(ent_rec.ENTITLEMENT_XML)
+			Trace.Write("dict_val--"+str(dict_val))
+			for entitlement_detail in entitlement_details:
+				entitlement_table_col = entitlement_detail['field'][0]
+				entitlement_id = entitlement_detail['field'][2]
+				if entitlement_id in dict_val.keys():
+					entitlement_disp_val = dict_val[entitlement_id]
+					if entitlement_disp_val:
+						update_values += ", {} = '{}' ".format(entitlement_table_col, entitlement_disp_val  ) 
+					else:
+						update_values += ", {} = NULL ".format(entitlement_table_col, entitlement_disp_val  )
+			if update_values:
+				update_query = "UPDATE {entitlement_table} SET {cols}  {where} {addtional_whr}".format(entitlement_table = entitlement_table, cols = update_values, where =where,addtional_whr= addtional_whr )
+				update_query = update_query.replace('SET ,','SET ')
+				Log.Info('update_query---'+str(update_query))
+				Sql.RunQuery(update_query)							
+	return True
 
 action= Param.action
 #to get the product status
@@ -237,6 +435,8 @@ elif action == 'get_from_prenli':
 	Result = entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond)
 elif action == 'ENTITLEMENT_UPDATE':
 	Result = ChildEntRequest(partnumber,ent_level_table,where_cond)
+elif action == 'ENTITLEMENT_COLUMN_UPDATE':
+	Result = entitlemt_attr_update(partnumber,ent_level_table,where_cond)
 
 
 
