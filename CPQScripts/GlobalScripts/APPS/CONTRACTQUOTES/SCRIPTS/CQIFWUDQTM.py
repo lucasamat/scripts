@@ -25,25 +25,52 @@ def quote_items_pricing(Qt_id):
 	Log.Info('quote_id---'+str(Qt_id))
 	
 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
-	get_exch_rate = Sql.GetFirst("SELECT * FROM SAQTRV where QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(Qt_id,get_rev_rec_id.QTEREV_RECORD_ID))
+	contract_quote_record_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
+	contract_quote_revision_record_id = get_rev_rec_id.QTEREV_RECORD_ID
+	get_exch_rate = Sql.GetFirst("SELECT * FROM SAQTRV where QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(Qt_id,contract_quote_revision_record_id))
 	
 	get_exch_rate = get_exch_rate.EXCHANGE_RATE
-
 	##updating saqrit
 	Sql.RunQuery("""UPDATE SAQICO 
 				SET 
 				TAXVDC = TNTVDC * TAXVTP,
 				TAXVGC = TNTVGC * TAXVTP
 				FROM SAQICO (NOLOCK) 
-				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID in ('Z0046','Z0100','Z0116','Z0117')""".format(QuoteRecordId= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,QuoteRevisionRecordId =get_rev_rec_id.QTEREV_RECORD_ID))
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID in ('Z0046','Z0100','Z0116','Z0117')""".format(QuoteRecordId= contract_quote_record_id ,QuoteRevisionRecordId =contract_quote_revision_record_id))
 
 	Sql.RunQuery("""UPDATE SAQICO 
 				SET TAMTDC = CASE WHEN BILTYP = 'Variable' THEN TENVDC ELSE TNTVDC+ISNULL(TAXVDC,0) END,
 				TAMTGC = CASE WHEN BILTYP = 'Variable' THEN TENVGC ELSE TNTVGC+ISNULL(TAXVGC,0) END,
 				STATUS = 'ACQUIRED'
 				FROM SAQICO (NOLOCK) 
-				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID in ('Z0046','Z0100','Z0116','Z0117')""".format(QuoteRecordId= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,QuoteRevisionRecordId =get_rev_rec_id.QTEREV_RECORD_ID))
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID in ('Z0046','Z0100','Z0116','Z0117')""".format(QuoteRecordId= contract_quote_record_id ,QuoteRevisionRecordId =contract_quote_revision_record_id))
 
+	# Price Bench Marking - Start
+	Sql.RunQuery("""UPDATE SAQICO
+			SET
+			SAQICO.BCHPGC = PRPRBM.ANNUALIZED_BOOKING_PRICE,
+			SAQICO.BCHDPT = ((SAQICO.TNTVGC - ISNULL(PRPRBM.ANNUALIZED_BOOKING_PRICE,0))/SAQICO.TNTVGC) * 100
+			FROM SAQICO	(NOLOCK)
+			JOIN PRPRBM (NOLOCK) ON PRPRBM.EQUIPMENT_NUMBER = SAQICO.EQUIPMENT_ID AND PRPRBM.SERVICE_PRODUCT_NAME = SAQICO.SERVICE_ID
+			WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'					
+			""".format(QuoteRecordId=contract_quote_record_id,QuoteRevisionRecordId=contract_quote_revision_record_id))
+
+	Sql.RunQuery("""UPDATE SAQICO
+		SET
+		SAQICO.BCHPGC = PRPRBM.ANNUALIZED_BOOKING_PRICE,
+		SAQICO.BCHDPT = ((SAQICO.TNTVGC - ISNULL(PRPRBM.ANNUALIZED_BOOKING_PRICE,0))/SAQICO.TNTVGC) * 100
+		FROM SAQICO	(NOLOCK)
+		JOIN PRPRBM (NOLOCK) ON PRPRBM.TOOLCONFG = SAQICO.TOLCFG AND PRPRBM.SERVICE_PRODUCT_NAME = SAQICO.SERVICE_ID
+		WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND ISNULL(SAQICO.BCHPGC,'')	= ''					
+		""".format(QuoteRecordId=contract_quote_record_id,QuoteRevisionRecordId=contract_quote_revision_record_id))
+	
+	Sql.RunQuery("""UPDATE SAQICO
+		SET
+		SAQICO.BMPPDA = CASE WHEN ISNULL(BCHDPT,0) > ISNULL(BCHDAP,0) THEN 1 ELSE 0 END
+		FROM SAQICO	(NOLOCK)			
+		WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'			
+		""".format(QuoteRecordId=contract_quote_record_id,QuoteRevisionRecordId=contract_quote_revision_record_id))
+	# Price Bench Marking - End
 	Sql.RunQuery("""UPDATE SAQRIT 
 					SET NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
 					NET_VALUE = IQ.NET_VALUE,
@@ -66,7 +93,7 @@ def quote_items_pricing(Qt_id):
 								SUM(ISNULL(SAQICO.TAMTDC, 0)) as TOTAL_AMOUNT
 								FROM SAQICO WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{rev}'  GROUP BY SAQICO.QUOTE_RECORD_ID, SAQICO.QTEREV_RECORD_ID,SAQICO.SERVICE_ID,SAQICO.GRNBOK,SAQICO.EQUIPMENT_ID
 								) IQ ON SAQRIT.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_ID = IQ.SERVICE_ID AND IQ.GRNBOK = SAQRIT.GREENBOOK AND ISNULL(IQ.EQUIPMENT_ID,'') = ISNULL(SAQRIT.OBJECT_ID,'')
-							WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID='{rev}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117')  """.format( QuoteRecordId= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,rev =get_rev_rec_id.QTEREV_RECORD_ID))
+							WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID='{rev}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117')  """.format( QuoteRecordId= contract_quote_record_id ,rev =contract_quote_revision_record_id))
 
 	##year field update
 	Sql.RunQuery("""UPDATE SAQRIT 
@@ -74,35 +101,35 @@ def quote_items_pricing(Qt_id):
 	YEAR_1_INGL_CURR =  CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVGC ELSE SAQICO.TNTVGC END 
 	FROM SAQRIT (NOLOCK) 
 		INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GRNBOK AND CNTYER = 'YEAR 1' 
-	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117') AND CNTYER = 'YEAR 1' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID  ))
+	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117') AND CNTYER = 'YEAR 1' """.format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id  ))
 
 	Sql.RunQuery("""UPDATE SAQRIT 
 	SET YEAR_2 = CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVDC ELSE SAQICO.TNTVDC END,
 	YEAR_2_INGL_CURR =  CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVGC ELSE SAQICO.TNTVGC END 
 	FROM SAQRIT (NOLOCK) 
 		INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GRNBOK AND CNTYER = 'YEAR 2' 
-	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117') AND CNTYER = 'YEAR 2' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID  ))
+	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117') AND CNTYER = 'YEAR 2' """.format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id  ))
 
 	Sql.RunQuery("""UPDATE SAQRIT 
 	SET YEAR_3 = CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVDC ELSE SAQICO.TNTVDC END,
 	YEAR_3_INGL_CURR =  CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVGC ELSE SAQICO.TNTVGC END 
 	FROM SAQRIT (NOLOCK) 
 		INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GRNBOK AND CNTYER = 'YEAR 3' 
-	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117') AND CNTYER = 'YEAR 3' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID  ))
+	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117') AND CNTYER = 'YEAR 3' """.format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id  ))
 
 	Sql.RunQuery("""UPDATE SAQRIT 
 	SET YEAR_4 = CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVDC ELSE SAQICO.TNTVDC END,
 	YEAR_4_INGL_CURR =  CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVGC ELSE SAQICO.TNTVGC END 
 	FROM SAQRIT (NOLOCK) 
 		INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GRNBOK AND CNTYER = 'YEAR 4' 
-	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117') AND CNTYER = 'YEAR 4' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID  ))
+	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117') AND CNTYER = 'YEAR 4' """.format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id  ))
 
 	Sql.RunQuery("""UPDATE SAQRIT 
 	SET YEAR_5 = CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVDC ELSE SAQICO.TNTVDC END,
 	YEAR_5_INGL_CURR =  CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVGC ELSE SAQICO.TNTVGC END 
 	FROM SAQRIT (NOLOCK) 
 		INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GRNBOK AND CNTYER = 'YEAR 5' 
-	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117') AND CNTYER = 'YEAR 5' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID  ))
+	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN ('Z0046','Z0100','Z0116','Z0117') AND CNTYER = 'YEAR 5' """.format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id  ))
 	
 	##updating saqris
 	Sql.RunQuery("""UPDATE SAQRIS 
@@ -136,16 +163,16 @@ def quote_items_pricing(Qt_id):
 
 								FROM SAQRIT 
 								WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{rev}'  GROUP BY SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,SAQRIT.SERVICE_ID) IQ ON SAQRIS.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQRIS.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQRIS.SERVICE_ID = IQ.SERVICE_ID
-						WHERE SAQRIS.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIS.QTEREV_RECORD_ID='{rev}' """.format( QuoteRecordId= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,rev =get_rev_rec_id.QTEREV_RECORD_ID))
+						WHERE SAQRIS.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIS.QTEREV_RECORD_ID='{rev}' """.format( QuoteRecordId= contract_quote_record_id ,rev =contract_quote_revision_record_id))
 						
 	##updating quote summary values in saqtrv
 	total_credit = 0
-	get_credit_val = Sql.GetFirst("""SELECT * FROM SAQRIS WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID='Z0116' """.format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
+	get_credit_val = Sql.GetFirst("""SELECT * FROM SAQRIS WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID='Z0116' """.format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id ))
 	if get_credit_val:
 		if get_credit_val.NET_PRICE_INGL_CURR:
 			total_credit = get_credit_val.NET_PRICE_INGL_CURR
 	##A055S000P01-13894
-	update_revision_status = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQIFP WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND PRICING_STATUS = 'ERROR'""".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID))
+	update_revision_status = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQIFP WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND PRICING_STATUS = 'ERROR'""".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id))
 	rev_status =""
 	if update_revision_status:
 		rev_status ="ON HOLD - COSTING"
@@ -168,12 +195,12 @@ def quote_items_pricing(Qt_id):
 									SUM(ISNULL(SAQRIS.TAX_AMOUNT, 0)) as TAX_AMOUNT,
 									SUM(ISNULL(SAQRIS.TOTAL_AMOUNT_INGL_CURR, 0)) as TOTAL_AMOUNT_INGL_CURR
 									FROM SAQRIS (NOLOCK) WHERE SAQRIS.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIS.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID !='Z0117' GROUP BY SAQRIS.QTEREV_RECORD_ID, SAQRIS.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
-						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ) )
+						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id ) )
 
 	#updating value to quote summary ends
 	try:
 		Log.Info('CPS__BILLING CALL---')
-		# get_services = Sql.GetList("SELECT SERVICE_ID from SAQTSE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID ,quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID ))
+		# get_services = Sql.GetList("SELECT SERVICE_ID from SAQTSE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id ))
 		# get_services_list = []
 		# for val in get_services:
 		# 	if val.SERVICE_ID:
@@ -192,7 +219,7 @@ def quote_items_pricing(Qt_id):
 			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
 			
-			result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID,Rev_Id = get_rev_rec_id.QTEREV_RECORD_ID)
+			result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_record_id,Rev_Id = contract_quote_revision_record_id)
 			
 			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
 			Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))

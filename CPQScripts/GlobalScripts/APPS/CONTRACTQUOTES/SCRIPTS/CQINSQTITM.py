@@ -834,30 +834,30 @@ class ContractQuoteItem:
 							FROM SAQICO (NOLOCK), PRCAFC (NOLOCK) 
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCAFC.FACTOR_NAME,'') = 'Benchmark Price Deviation Percentage Threshold'
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-		Sql.RunQuery("""UPDATE SAQICO
-			SET
-			SAQICO.BCHPGC = PRPRBM.ANNUALIZED_BOOKING_PRICE,
-			SAQICO.BCHDPT = ((SAQICO.TNTVGC - ISNULL(PRPRBM.ANNUALIZED_BOOKING_PRICE,0))/SAQICO.TNTVGC) * 100
-			FROM SAQICO	(NOLOCK)
-			JOIN PRPRBM (NOLOCK) ON PRPRBM.EQUIPMENT_NUMBER = SAQICO.EQUIPMENT_ID AND PRPRBM.SERVICE_PRODUCT_NAME = SAQICO.SERVICE_ID
-			WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'							
-			""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		# Sql.RunQuery("""UPDATE SAQICO
+		# 	SET
+		# 	SAQICO.BCHPGC = PRPRBM.ANNUALIZED_BOOKING_PRICE,
+		# 	SAQICO.BCHDPT = ((SAQICO.TNTVGC - ISNULL(PRPRBM.ANNUALIZED_BOOKING_PRICE,0))/SAQICO.TNTVGC) * 100
+		# 	FROM SAQICO	(NOLOCK)
+		# 	JOIN PRPRBM (NOLOCK) ON PRPRBM.EQUIPMENT_NUMBER = SAQICO.EQUIPMENT_ID AND PRPRBM.SERVICE_PRODUCT_NAME = SAQICO.SERVICE_ID
+		# 	WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'							
+		# 	""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 
-		Sql.RunQuery("""UPDATE SAQICO
-			SET
-			SAQICO.BCHPGC = PRPRBM.ANNUALIZED_BOOKING_PRICE,
-			SAQICO.BCHDPT = ((SAQICO.TNTVGC - ISNULL(PRPRBM.ANNUALIZED_BOOKING_PRICE,0))/SAQICO.TNTVGC) * 100
-			FROM SAQICO	(NOLOCK)
-			JOIN PRPRBM (NOLOCK) ON PRPRBM.TOOLCONFG = SAQICO.TOLCFG AND PRPRBM.SERVICE_PRODUCT_NAME = SAQICO.SERVICE_ID
-			WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.BCHPGC,'')	= ''					
-			""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		# Sql.RunQuery("""UPDATE SAQICO
+		# 	SET
+		# 	SAQICO.BCHPGC = PRPRBM.ANNUALIZED_BOOKING_PRICE,
+		# 	SAQICO.BCHDPT = ((SAQICO.TNTVGC - ISNULL(PRPRBM.ANNUALIZED_BOOKING_PRICE,0))/SAQICO.TNTVGC) * 100
+		# 	FROM SAQICO	(NOLOCK)
+		# 	JOIN PRPRBM (NOLOCK) ON PRPRBM.TOOLCONFG = SAQICO.TOLCFG AND PRPRBM.SERVICE_PRODUCT_NAME = SAQICO.SERVICE_ID
+		# 	WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.BCHPGC,'')	= ''					
+		# 	""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		
-		Sql.RunQuery("""UPDATE SAQICO
-			SET
-			SAQICO.BMPPDA = CASE WHEN ISNULL(BCHDPT,0) > ISNULL(BCHDAP,0) THEN 1 ELSE 0 END
-			FROM SAQICO	(NOLOCK)			
-			WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'				
-			""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		# Sql.RunQuery("""UPDATE SAQICO
+		# 	SET
+		# 	SAQICO.BMPPDA = CASE WHEN ISNULL(BCHDPT,0) > ISNULL(BCHDAP,0) THEN 1 ELSE 0 END
+		# 	FROM SAQICO	(NOLOCK)			
+		# 	WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'				
+		# 	""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		
 		# In Warranty
 		Sql.RunQuery("""UPDATE SAQICO
