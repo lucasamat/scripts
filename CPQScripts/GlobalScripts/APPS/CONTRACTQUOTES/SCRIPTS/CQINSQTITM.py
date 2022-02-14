@@ -2291,7 +2291,7 @@ class ContractQuoteItem:
 						OQ.* 
 					FROM (
 						SELECT 
-							DISTINCT
+							
 							SAQTRV.CONTRACT_VALID_FROM,
 							SAQTRV.CONTRACT_VALID_TO,
 							SAQTRV.DOC_CURRENCY,
