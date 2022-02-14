@@ -2723,7 +2723,7 @@ class SYLDRTLIST:
 					
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' "
 				elif RECORD_ID == "SYOBJR-00005":
-					Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr, Page_start, Page_End,Wh_API_NAMEs)
+					Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs)
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 				elif RECORD_ID == "SYOBJR-00030":
 					Qury_str = (
@@ -9104,7 +9104,7 @@ class SYLDRTLIST:
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif RECORD_ID == "SYOBJR-00005":
 						Trace.Write("@9106")
-						Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr, Page_start, Page_End,Wh_API_NAMEs)
+						Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs)
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)	
 					else:
 						Qury_str = (
@@ -9775,37 +9775,41 @@ class SYLDRTLIST:
 			dbl_clk_function = SAQICO_dbl_clk_function
 		return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 
-	def SPARE_PARTS_ORDERING(self,select_obj_str, Qustr, Page_start, Page_End,Wh_API_NAMEs):
-		ordered_values = []
-		parent_parts = []
-		child_parts=Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL ")
-		for child in child_parts:
-			parent_parts.append(child.PAR_PART_NUMBER)
-			parent_part = Sql.GetFirst("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PART_NUMBER = '"+str(child.PAR_PART_NUMBER)+"' ")
-			ordered_values.append(parent_part)
-			ordered_values.append(child)
+	def SPARE_PARTS_ORDERING(self,select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs):
+		if "CpqTableEntryId" in str(Wh_API_NAMEs):
+			ordered_values = []
+			parent_parts = []
+			child_parts=Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL ")
+			for child in child_parts:
+				parent_parts.append(child.PAR_PART_NUMBER)
+				parent_part = Sql.GetFirst("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PART_NUMBER = '"+str(child.PAR_PART_NUMBER)+"' ")
+				ordered_values.append(parent_part)
+				ordered_values.append(child)
 
-		parents_list = str(tuple(parent_parts))
-		parents_list = re.sub(r'\,\)',')',parents_list)
-		no_child_count = Sql.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(parents_list)+" ")
+			parents_list = str(tuple(parent_parts))
+			parents_list = re.sub(r'\,\)',')',parents_list)
+			no_child_count = Sql.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(parents_list)+" ")
 
-		no_child_count = no_child_count.CNT #count of parts without having any child
+			no_child_count = no_child_count.CNT #count of parts without having any child
 
-		if no_child_count > 1000:
-			fetch_count = 0
-			while fetch_count < no_child_count: #fetching only 1000 records since we are not able to get more than 1000 records at a time
-				parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(parents_list)+" ORDER BY CpqTableEntryId ASC OFFSET "+str(fetch_count)+" ROWS FETCH NEXT 1000 ROWS ONLY ")
-				fetch_count +=1000
+			if no_child_count > 1000:
+				fetch_count = 0
+				while fetch_count < no_child_count: #fetching only 1000 records since we are not able to get more than 1000 records at a time
+					parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(parents_list)+" ORDER BY CpqTableEntryId ASC OFFSET "+str(fetch_count)+" ROWS FETCH NEXT 1000 ROWS ONLY ")
+					fetch_count +=1000
+					ordered_values.extend(parts) #appending parts without having any child parts
+			else:
+				parts = Sql.GetList("SELECT TOP 1000 "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(parents_list)+" ORDER BY CpqTableEntryId ASC ")
 				ordered_values.extend(parts) #appending parts without having any child parts
+			Query_Obj = []
+			if len(ordered_values) < int(Page_End):
+				Page_End = len(ordered_values)
+			Trace.Write('Start:'+str(int(Page_start)-1)+',End:'+str(Page_End))
+			for row in range(int(Page_start)-1,int(Page_End)):
+				Query_Obj.append(ordered_values[row])
 		else:
-			parts = Sql.GetList("SELECT TOP 1000 "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(parents_list)+" ORDER BY CpqTableEntryId ASC ")
-			ordered_values.extend(parts) #appending parts without having any child parts
-		Query_Obj = []
-		if len(ordered_values) < int(Page_End):
-			Page_End = len(ordered_values)
-		Trace.Write('Start:'+str(int(Page_start)-1)+',End:'+str(Page_End))
-		for row in range(int(Page_start)-1,int(Page_End)):
-			Query_Obj.append(ordered_values[row])
+			Query_Obj = Sql.GetList("select top "+ str(PerPage)+ " "+ str(select_obj_str)+ ",CpqTableEntryId from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs)+ ") AS ROW, * from SAQSPT (nolock) "+ str(Qustr)+ " ) m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)+ " ")	
+			
 		return Query_Obj
 
 ObjSYLDRTLIST = SYLDRTLIST()
