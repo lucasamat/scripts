@@ -1540,15 +1540,7 @@ class approvalCenter:
 						except Exception as e:
 							Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
 						#iflow for approver insert
-						contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-						if contract_quote_id:
-							approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = ''".format(contract_quote_id.QUOTE_ID))
-							if approver_insert:
-								Trace.Write("Approver_insert")
-								CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-							else:
-								Trace.Write("delete_approver")
-								CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						
 				#self.QuoteNumber = RecalledRecId
 			#except Exception, e:
 			#    self.exceptMessage = (
