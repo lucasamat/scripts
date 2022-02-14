@@ -2733,18 +2733,20 @@ class SYLDRTLIST:
 						ordered_values.append(parent_part)
 						ordered_values.append(child)
 
-					no_child_count = Sql.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(tuple(parent_parts))+" ")
+					parents_list = str(tuple(parent_parts))
+					parents_list = re.sub(r'\,\)','\)',parents_list)
+					no_child_count = Sql.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(parents_list)+" ")
 
 					no_child_count = no_child_count.CNT #count of parts without having any child
 
 					if no_child_count > 1000:
 						fetch_count = 0
 						while fetch_count < no_child_count: #fetching only 1000 records since we are not able to get more than 1000 records at a time
-							parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(tuple(parent_parts))+" ORDER BY CpqTableEntryId ASC OFFSET "+str(fetch_count)+" ROWS FETCH NEXT 1000 ROWS ONLY ")
+							parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(parents_list)+" ORDER BY CpqTableEntryId ASC OFFSET "+str(fetch_count)+" ROWS FETCH NEXT 1000 ROWS ONLY ")
 							fetch_count +=1000
 							ordered_values.extend(parts) #appending parts without having any child parts
 					else:
-						parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(tuple(parent_parts))+" ORDER BY CpqTableEntryId ASC ")
+						parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(parents_list)+" ORDER BY CpqTableEntryId ASC ")
 						ordered_values.extend(parts) #appending parts without having any child parts
 					
 					Query_Obj = []
