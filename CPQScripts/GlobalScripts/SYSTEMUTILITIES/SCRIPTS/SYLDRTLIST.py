@@ -9777,7 +9777,7 @@ class SYLDRTLIST:
 
 	def SPARE_PARTS_ORDERING(self,select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs):
 		Trace.Write("WH_API_NAMEs--->"+str(Wh_API_NAMEs))
-		if "CpqTableEntryId" in str(Wh_API_NAMEs):
+		if "CpqTableEntryId" in str(Wh_API_NAMEs) or "QUOTE_RECORD_ID" in str(Wh_API_NAMEs):
 			ordered_values = []
 			parent_parts = []
 			child_parts=Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL ")
