@@ -9103,6 +9103,7 @@ class SYLDRTLIST:
 										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif RECORD_ID == "SYOBJR-00005":
+						Trace.Write("@9106")
     					Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr, Page_start, Page_End)
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)	
 					else:
@@ -9126,7 +9127,8 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					
 				try:
-					Query_Obj = Sql.GetList(Qury_str)
+					if str(Query_Obj)!="SYOBJR-00005":
+						Query_Obj = Sql.GetList(Qury_str)
 					Query_CountObj = Sql.GetFirst(QuryCount_str)                
 				except:                                    
 					Query_Obj = Sql.GetList(
