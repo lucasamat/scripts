@@ -706,7 +706,7 @@ def _construct_dict_xml(updateentXML):
 	return entxmldict,display_val_dict
 
 def entitlemt_attr_update(entitlement_table, where):
-	get_equipment = Sql.GetList("SELECT * FROM {} {}".format(entitlement_table, where))
+	get_equipment = Sql.GetList("SELECT * FROM {} {}".format(entitlement_table, where.replace('SRC.','')))
 	entitlement_details = [{
 								"field":["INTCPV","Intercept","AGS_{}_VAL_INTCPT".format(get_serviceid)]						
 								},
@@ -871,9 +871,10 @@ def entitlemt_attr_update(entitlement_table, where):
 				entitlement_table_col = entitlement_detail['field'][0]
 				entitlement_id = entitlement_detail['field'][2]
 				if entitlement_id in dict_val.keys():
-					update_values += ", {} = {} ".format(entitlement_table_col, entitlement_id ) 
+					entitlement_disp_val = dict_val[entitlement_id]
+					update_values += ", {} = '{}' ".format(entitlement_table_col, entitlement_disp_val ) 
 			if update_values:
-				update_query = "UPDATE {entitlement_table} SET {cols} {where}".format(entitlement_table = entitlement_table, cols = update_values, where =where )
+				update_query = "UPDATE {entitlement_table} SET {cols}  {where}".format(entitlement_table = entitlement_table, cols = update_values, where =where.replace('SRC.','') )
 				update_query = update_query.replace('SET ,','SET ')
 				Log.Info('update_query---'+str(update_query))
 				Sql.RunQuery(update_query)
