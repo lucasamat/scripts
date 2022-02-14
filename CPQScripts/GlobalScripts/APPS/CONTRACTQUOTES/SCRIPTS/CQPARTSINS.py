@@ -226,7 +226,7 @@ class SyncFPMQuoteAndHanaDatabase:
         self.cvt = cy+cm+cd
         
     def prepare_backup_table(self):
-        res=str(self.response)
+        res = ' '.join(str(ele) for ele in self.response)
         cnt = res.count("Material_Eligibility")
         if cnt == 1:
             self.response = re.sub(r'\[',"['",self.response)
