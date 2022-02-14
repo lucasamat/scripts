@@ -9104,7 +9104,7 @@ class SYLDRTLIST:
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif RECORD_ID == "SYOBJR-00005":
 						Trace.Write("@9106")
-    					Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr, Page_start, Page_End)
+						Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr, Page_start, Page_End)
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)	
 					else:
 						Qury_str = (
@@ -9776,7 +9776,7 @@ class SYLDRTLIST:
 		return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 
 	def SPARE_PARTS_ORDERING(self,select_obj_str, Qustr, Page_start, Page_End):
-    	ordered_values = []
+		ordered_values = []
 		parent_parts = []
 		child_parts=Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL ")
 		for child in child_parts:
