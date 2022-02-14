@@ -9803,7 +9803,8 @@ class SYLDRTLIST:
 		Query_Obj = []
 		if len(ordered_values) < int(Page_End):
     		Page_End = len(ordered_values)
-		for row in range(Page_start-1,Page_End):
+		Trace.Write('Start:'+str(int(Page_start)-1)+',End:'+str(Page_End))
+		for row in range(int(Page_start)-1,int(Page_End)):
 			Query_Obj.append(ordered_values[row])
 		return Query_Obj
 
