@@ -9780,7 +9780,7 @@ class SYLDRTLIST:
 		if "CpqTableEntryId" in str(Wh_API_NAMEs) or "QUOTE_RECORD_ID" in str(Wh_API_NAMEs):
 			ordered_values = []
 			parent_parts = []
-			child_parts=Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL ")
+			child_parts=Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL AND PAR_PART_NUMBER!='' ")
 			for child in child_parts:
 				parent_parts.append(child.PAR_PART_NUMBER)
 				parent_part = Sql.GetFirst("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PART_NUMBER = '"+str(child.PAR_PART_NUMBER)+"' ")
