@@ -341,8 +341,8 @@ class SyncFPMQuoteAndHanaDatabase:
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
     
     def warning_message_arp_carp(self):
-
         Warning_Message = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE RECORD_ID ='4D34C7DD-765E-4D85-86F7-152C77808E9C' and MESSAGE_LEVEL = 'WARNING'")
+        msg_app_txt=''
         Warning_Message = check_active_query= ''
         if Warning_Message and not check_active_query and str(current_prod).upper() == 'SALES':
             Trace.Write("MESSAGE_TEXT"+str(Warning_Message.MESSAGE_TEXT))
