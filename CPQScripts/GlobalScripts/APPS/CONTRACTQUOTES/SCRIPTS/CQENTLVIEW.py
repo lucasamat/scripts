@@ -1527,9 +1527,10 @@ class EntitlementView():
 					##section hide ends...
 					#getprevdicts +=   ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr td select').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] = $(this).children(':selected').val();});$('"+str(table_ids)+" tbody tr td input').each(function () {if($(this).attr('id') != 'T0_T1_LABOR_calc'){dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();}});console.log('dict_new-2796--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))}catch{console.log('')}")
 					#getprevdicts +=   ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] = $(this).find('td:nth-child(3) select').children(':selected').val() ;});$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();});console.log('dict_new-2796--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))}catch{console.log('')}")
+					#or (len(section_list) == len(get_readonly_section_list) and len(section_list) != 0)
 					get_readonly_section_list = [attr for attr in attributeReadonlylst if attr in section_list ]
 					Trace.Write("section_list-"+str(len(section_list))+"get_readonly_section_list-"+str(len(get_readonly_section_list)))
-					if (self.treeparentparam == "Quote Items" or self.treeparam == "Quote Items" or self.treesuperparentparam == "Quote Items" or self.treetopsuperparentparam == "Quote Items") or (len(section_list) == len(get_readonly_section_list) and len(section_list) != 0):
+					if (self.treeparentparam == "Quote Items" or self.treeparam == "Quote Items" or self.treesuperparentparam == "Quote Items" or self.treetopsuperparentparam == "Quote Items") :
 						Trace.Write("inside non dbl clk")
 						dbl_clk_function = ""
 					else:
