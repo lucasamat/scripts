@@ -207,7 +207,7 @@ class ContractQuoteItem:
 	def _quote_annualized_items_insert(self, update=False):
 		basic_insert_start = time.time()
 		if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT'):
-			Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY, CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, SPQTEV, TAXVTP, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
+			Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY, CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, SPQTEV, TAXVTP, INTCPV, INTCPC, OSSVDV, LTCOSS, POFVDV, POFVDC, GBKVDV, GBKVDC, UIMVDV, UIMVDC, CAVVDV, CAVVDC, WNDVDV, WNDVDC, CCRTMV, CCRTMC, SCMVDV, SCMVDC, CCDFFV, CCDFFC, NPIVDV, NPIVDC, DTPVDV, DTPVDC, CSTVDV, CSTVDC, CSGVDV, CSGVDC, QRQVDV, QRQVDC, SVCVDV, SVCVDC, RKFVDV, RKFVDC, PBPVDV, PBPVDC, CMLAB_ENT, CNSMBL_ENT, CNTCVG_ENT, NCNSMB_ENT, PMEVNT_ENT, PMLAB_ENT, PRMKPI_ENT, OFRING, QTETYP, BILTYP, BPTKPI, ATGKEY, ATNKEY, NWPTON, HEDBIN, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 					SELECT DISTINCT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 					SELECT DISTINCT IQ.*, CONTRACT_TEMP.YEAR_WISE as CNTYER, CONTRACT_TEMP.VALID_FROM as STADTE, CONTRACT_TEMP.VALID_FROM as CONTRACT_VALID_FROM, CONTRACT_TEMP.VALID_TO as ENDDTE, CONTRACT_TEMP.VALID_TO as CONTRACT_VALID_TO, Abs(DATEDIFF(day,CONTRACT_TEMP.VALID_TO, CONTRACT_TEMP.VALID_FROM)) as CNTDAY FROM (
 					SELECT DISTINCT					
@@ -263,7 +263,58 @@ class ContractQuoteItem:
 						CASE WHEN ISNULL(PRSPRV.SSCM_COST, 0) = 1 THEN 'SSCM' ELSE 'CPQ' END as CSTSRC,
 						CASE WHEN ISNULL(PRSPRV.SSCM_COST, 0) = 1 THEN 'VALUE PRICING-SSCM' ELSE 'OFFLINE PRICING' END as PRCSRC,
 						'No' as SPQTEV,
-						SAQRIT.TAX_PERCENTAGE as TAXVTP						
+						SAQRIT.TAX_PERCENTAGE as TAXVTP,
+						SAQSCE.INTCPV,
+						SAQSCE.INTCPC,
+						SAQSCE.OSSVDV,
+						SAQSCE.LTCOSS,
+						SAQSCE.POFVDV,
+						SAQSCE.POFVDC,
+						SAQSCE.GBKVDV,
+						SAQSCE.GBKVDC,
+						SAQSCE.UIMVDV,
+						SAQSCE.UIMVDC,
+						SAQSCE.CAVVDV,
+						SAQSCE.CAVVDC,
+						SAQSCE.WNDVDV,
+						SAQSCE.WNDVDC,
+						SAQSCE.CCRTMV,
+						SAQSCE.CCRTMC,
+						SAQSCE.SCMVDV,
+						SAQSCE.SCMVDC,
+						SAQSCE.CCDFFV,
+						SAQSCE.CCDFFC,
+						SAQSCE.NPIVDV,
+						SAQSCE.NPIVDC,
+						SAQSCE.DTPVDV,
+						SAQSCE.DTPVDC,
+						SAQSCE.CSTVDV,
+						SAQSCE.CSTVDC,
+						SAQSCE.CSGVDV,
+						SAQSCE.CSGVDC,
+						SAQSCE.QRQVDV,
+						SAQSCE.QRQVDC,
+						SAQSCE.SVCVDV,
+						SAQSCE.SVCVDC,
+						SAQSCE.RKFVDV,
+						SAQSCE.RKFVDC,
+						SAQSCE.PBPVDV,
+						SAQSCE.PBPVDC,
+						SAQSCE.CMLAB_ENT,
+						SAQSCE.CNSMBL_ENT,
+						SAQSCE.CNTCVG_ENT,
+						SAQSCE.NCNSMB_ENT,
+						SAQSCE.PMEVNT_ENT,
+						SAQSCE.PMLAB_ENT,
+						SAQSCE.PRMKPI_ENT,
+						SAQSCE.OFRING,
+						SAQSCE.QTETYP,
+						SAQSCE.BILTYP,
+						SAQSCE.BPTKPI,
+						SAQSCE.ATGKEY,
+						SAQSCE.ATNKEY,
+						SAQSCE.NWPTON,
+						SAQSCE.HEDBIN					
 					FROM 
 						SAQSCO (NOLOCK)					 
 						JOIN SAQSCE (NOLOCK) ON SAQSCE.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQSCE.SERVICE_ID = SAQSCO.SERVICE_ID AND SAQSCE.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
@@ -291,8 +342,8 @@ class ContractQuoteItem:
 					WHERE ISNULL(SAQICO.EQUIPMENT_RECORD_ID,'') = ''
 					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id)
 			)			
-		elif self.quote_service_entitlement_type == "OFFERING + PM EVENT":				
-			Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY, CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, SPQTEV, TAXVTP, PM_ID, PM_LEVEL, PM_RECORD_ID, ASSEMBLY_ID, ASSEMBLY_RECORD_ID, GOT_CODE, EQNODE, PROCES, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
+		elif self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT"):				
+			Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY, CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, SPQTEV, TAXVTP, PM_ID, PM_LEVEL, PM_RECORD_ID, ASSEMBLY_ID, ASSEMBLY_RECORD_ID, GOT_CODE, EQNODE, PROCES, INTCPV, INTCPC, OSSVDV, LTCOSS, POFVDV, POFVDC, GBKVDV, GBKVDC, UIMVDV, UIMVDC, CAVVDV, CAVVDC, WNDVDV, WNDVDC, CCRTMV, CCRTMC, SCMVDV, SCMVDC, CCDFFV, CCDFFC, NPIVDV, NPIVDC, DTPVDV, DTPVDC, CSTVDV, CSTVDC, CSGVDV, CSGVDC, QRQVDV, QRQVDC, SVCVDV, SVCVDC, RKFVDV, RKFVDC, PBPVDV, PBPVDC, CMLAB_ENT, CNSMBL_ENT, CNTCVG_ENT, NCNSMB_ENT, PMEVNT_ENT, PMLAB_ENT, PRMKPI_ENT, OFRING, QTETYP, BILTYP, BPTKPI, ATGKEY, ATNKEY, NWPTON, HEDBIN, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 					SELECT DISTINCT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 					SELECT DISTINCT IQ.*, CONTRACT_TEMP.YEAR_WISE as CNTYER, CONTRACT_TEMP.VALID_FROM as STADTE, CONTRACT_TEMP.VALID_FROM as CONTRACT_VALID_FROM, CONTRACT_TEMP.VALID_TO as ENDDTE, CONTRACT_TEMP.VALID_TO as CONTRACT_VALID_TO, Abs(DATEDIFF(day,CONTRACT_TEMP.VALID_TO, CONTRACT_TEMP.VALID_FROM)) as CNTDAY FROM (
 					SELECT DISTINCT					
@@ -356,7 +407,58 @@ class ContractQuoteItem:
 						null as ASSEMBLY_RECORD_ID,
 						SAQGPA.GOT_CODE,
 						SAQGPA.DEVICE_NODE as EQNODE,
-						SAQGPA.PROCESS_TYPE as PROCES						
+						SAQGPA.PROCESS_TYPE as PROCES,
+						SAQGPE.INTCPV,
+						SAQGPE.INTCPC,
+						SAQGPE.OSSVDV,
+						SAQGPE.LTCOSS,
+						SAQGPE.POFVDV,
+						SAQGPE.POFVDC,
+						SAQGPE.GBKVDV,
+						SAQGPE.GBKVDC,
+						SAQGPE.UIMVDV,
+						SAQGPE.UIMVDC,
+						SAQGPE.CAVVDV,
+						SAQGPE.CAVVDC,
+						SAQGPE.WNDVDV,
+						SAQGPE.WNDVDC,
+						SAQGPE.CCRTMV,
+						SAQGPE.CCRTMC,
+						SAQGPE.SCMVDV,
+						SAQGPE.SCMVDC,
+						SAQGPE.CCDFFV,
+						SAQGPE.CCDFFC,
+						SAQGPE.NPIVDV,
+						SAQGPE.NPIVDC,
+						SAQGPE.DTPVDV,
+						SAQGPE.DTPVDC,
+						SAQGPE.CSTVDV,
+						SAQGPE.CSTVDC,
+						SAQGPE.CSGVDV,
+						SAQGPE.CSGVDC,
+						SAQGPE.QRQVDV,
+						SAQGPE.QRQVDC,
+						SAQGPE.SVCVDV,
+						SAQGPE.SVCVDC,
+						SAQGPE.RKFVDV,
+						SAQGPE.RKFVDC,
+						SAQGPE.PBPVDV,
+						SAQGPE.PBPVDC,
+						SAQGPE.CMLAB_ENT,
+						SAQGPE.CNSMBL_ENT,
+						SAQGPE.CNTCVG_ENT,
+						SAQGPE.NCNSMB_ENT,
+						SAQGPE.PMEVNT_ENT,
+						SAQGPE.PMLAB_ENT,
+						SAQGPE.PRMKPI_ENT,
+						SAQGPE.OFRING,
+						SAQGPE.QTETYP,
+						SAQGPE.BILTYP,
+						SAQGPE.BPTKPI,
+						SAQGPE.ATGKEY,
+						SAQGPE.ATNKEY,
+						SAQGPE.NWPTON,
+						SAQGPE.HEDBIN					
 					FROM 
 						SAQRIT (NOLOCK)		
 						JOIN (
@@ -509,7 +611,7 @@ class ContractQuoteItem:
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id)
 			)
 		elif self.quote_service_entitlement_type in ("OFFERING + KIT","Offering + Fab + Greenbook + Kit + Got Code + Process + Node"):
-			Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY, CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, SPQTEV, TAXVTP, PM_ID, PM_LEVEL, PM_RECORD_ID, ASSEMBLY_ID, ASSEMBLY_RECORD_ID, GOT_CODE, EQNODE, PROCES, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
+			Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY, CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, SPQTEV, TAXVTP, PM_ID, PM_LEVEL, PM_RECORD_ID, ASSEMBLY_ID, ASSEMBLY_RECORD_ID, GOT_CODE, EQNODE, PROCES, INTCPV, INTCPC, OSSVDV, LTCOSS, POFVDV, POFVDC, GBKVDV, GBKVDC, UIMVDV, UIMVDC, CAVVDV, CAVVDC, WNDVDV, WNDVDC, CCRTMV, CCRTMC, SCMVDV, SCMVDC, CCDFFV, CCDFFC, NPIVDV, NPIVDC, DTPVDV, DTPVDC, CSTVDV, CSTVDC, CSGVDV, CSGVDC, QRQVDV, QRQVDC, SVCVDV, SVCVDC, RKFVDV, RKFVDC, PBPVDV, PBPVDC, CMLAB_ENT, CNSMBL_ENT, CNTCVG_ENT, NCNSMB_ENT, PMEVNT_ENT, PMLAB_ENT, PRMKPI_ENT, OFRING, QTETYP, BILTYP, BPTKPI, ATGKEY, ATNKEY, NWPTON, HEDBIN, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 					SELECT DISTINCT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 					SELECT DISTINCT IQ.*, CONTRACT_TEMP.YEAR_WISE as CNTYER, CONTRACT_TEMP.VALID_FROM as STADTE, CONTRACT_TEMP.VALID_FROM as CONTRACT_VALID_FROM, CONTRACT_TEMP.VALID_TO as ENDDTE, CONTRACT_TEMP.VALID_TO as CONTRACT_VALID_TO, Abs(DATEDIFF(day,CONTRACT_TEMP.VALID_TO, CONTRACT_TEMP.VALID_FROM)) as CNTDAY FROM (
 					SELECT DISTINCT					
@@ -576,7 +678,58 @@ class ContractQuoteItem:
 						SAQGPA.PROCESS_TYPE as PROCES,
 						SAQGPA.KIT_NAME as KIT_NAME,
 						SAQGPA.KIT_NUMBER as KIT_NUMBER,
-						SAQGPA.KIT_NUMBER_RECORD_ID as TKM_RECORD_ID						
+						SAQGPA.KIT_NUMBER_RECORD_ID as TKM_RECORD_ID,
+						SAQGPE.INTCPV,
+						SAQGPE.INTCPC,
+						SAQGPE.OSSVDV,
+						SAQGPE.LTCOSS,
+						SAQGPE.POFVDV,
+						SAQGPE.POFVDC,
+						SAQGPE.GBKVDV,
+						SAQGPE.GBKVDC,
+						SAQGPE.UIMVDV,
+						SAQGPE.UIMVDC,
+						SAQGPE.CAVVDV,
+						SAQGPE.CAVVDC,
+						SAQGPE.WNDVDV,
+						SAQGPE.WNDVDC,
+						SAQGPE.CCRTMV,
+						SAQGPE.CCRTMC,
+						SAQGPE.SCMVDV,
+						SAQGPE.SCMVDC,
+						SAQGPE.CCDFFV,
+						SAQGPE.CCDFFC,
+						SAQGPE.NPIVDV,
+						SAQGPE.NPIVDC,
+						SAQGPE.DTPVDV,
+						SAQGPE.DTPVDC,
+						SAQGPE.CSTVDV,
+						SAQGPE.CSTVDC,
+						SAQGPE.CSGVDV,
+						SAQGPE.CSGVDC,
+						SAQGPE.QRQVDV,
+						SAQGPE.QRQVDC,
+						SAQGPE.SVCVDV,
+						SAQGPE.SVCVDC,
+						SAQGPE.RKFVDV,
+						SAQGPE.RKFVDC,
+						SAQGPE.PBPVDV,
+						SAQGPE.PBPVDC,
+						SAQGPE.CMLAB_ENT,
+						SAQGPE.CNSMBL_ENT,
+						SAQGPE.CNTCVG_ENT,
+						SAQGPE.NCNSMB_ENT,
+						SAQGPE.PMEVNT_ENT,
+						SAQGPE.PMLAB_ENT,
+						SAQGPE.PRMKPI_ENT,
+						SAQGPE.OFRING,
+						SAQGPE.QTETYP,
+						SAQGPE.BILTYP,
+						SAQGPE.BPTKPI,
+						SAQGPE.ATGKEY,
+						SAQGPE.ATNKEY,
+						SAQGPE.NWPTON,
+						SAQGPE.HEDBIN						
 					FROM 
 						SAQRIT (NOLOCK)		
 						JOIN (
@@ -609,7 +762,7 @@ class ContractQuoteItem:
 			if self.service_id in ('Z0110','Z0108'):
 				self._simple_quote_annualized_items_insert()
 			else:
-				Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID,QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY,CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID,  FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, SPQTEV, TAXVTP, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
+				Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID,QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY,CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID,  FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, SPQTEV, TAXVTP, INTCPV, INTCPC, OSSVDV, LTCOSS, POFVDV, POFVDC, GBKVDV, GBKVDC, UIMVDV, UIMVDC, CAVVDV, CAVVDC, WNDVDV, WNDVDC, CCRTMV, CCRTMC, SCMVDV, SCMVDC, CCDFFV, CCDFFC, NPIVDV, NPIVDC, DTPVDV, DTPVDC, CSTVDV, CSTVDC, CSGVDV, CSGVDC, QRQVDV, QRQVDC, SVCVDV, SVCVDC, RKFVDV, RKFVDC, PBPVDV, PBPVDC, CMLAB_ENT, CNSMBL_ENT, CNTCVG_ENT, NCNSMB_ENT, PMEVNT_ENT, PMLAB_ENT, PRMKPI_ENT, OFRING, QTETYP, BILTYP, BPTKPI, ATGKEY, ATNKEY, NWPTON, HEDBIN, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 						SELECT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 						SELECT IQ.*, CONTRACT_TEMP.YEAR_WISE, CONTRACT_TEMP.VALID_FROM as STADTE, CONTRACT_TEMP.VALID_FROM as CONTRACT_VALID_FROM, CONTRACT_TEMP.VALID_TO as ENDDTE, CONTRACT_TEMP.VALID_TO as CONTRACT_VALID_TO, Abs(DATEDIFF(day,CONTRACT_TEMP.VALID_TO, CONTRACT_TEMP.VALID_FROM)) as CNTDAY FROM (
 							SELECT DISTINCT					
@@ -664,7 +817,58 @@ class ContractQuoteItem:
 								SAQTMT.POES as ISPOES,
 								CASE WHEN ISNULL(PRSPRV.SSCM_COST, 0) = 1 THEN 'SSCM' ELSE 'CPQ' END as CSTSRC,
 								CASE WHEN ISNULL(PRSPRV.SSCM_COST, 0) = 1 THEN 'VALUE PRICING-SSCM' ELSE 'OFFLINE PRICING' END as PRCSRC,'No' as SPQTEV,
-								SAQRIT.TAX_PERCENTAGE as TAXVTP		
+								SAQRIT.TAX_PERCENTAGE as TAXVTP,
+								SAQSGE.INTCPV,
+								SAQSGE.INTCPC,
+								SAQSGE.OSSVDV,
+								SAQSGE.LTCOSS,
+								SAQSGE.POFVDV,
+								SAQSGE.POFVDC,
+								SAQSGE.GBKVDV,
+								SAQSGE.GBKVDC,
+								SAQSGE.UIMVDV,
+								SAQSGE.UIMVDC,
+								SAQSGE.CAVVDV,
+								SAQSGE.CAVVDC,
+								SAQSGE.WNDVDV,
+								SAQSGE.WNDVDC,
+								SAQSGE.CCRTMV,
+								SAQSGE.CCRTMC,
+								SAQSGE.SCMVDV,
+								SAQSGE.SCMVDC,
+								SAQSGE.CCDFFV,
+								SAQSGE.CCDFFC,
+								SAQSGE.NPIVDV,
+								SAQSGE.NPIVDC,
+								SAQSGE.DTPVDV,
+								SAQSGE.DTPVDC,
+								SAQSGE.CSTVDV,
+								SAQSGE.CSTVDC,
+								SAQSGE.CSGVDV,
+								SAQSGE.CSGVDC,
+								SAQSGE.QRQVDV,
+								SAQSGE.QRQVDC,
+								SAQSGE.SVCVDV,
+								SAQSGE.SVCVDC,
+								SAQSGE.RKFVDV,
+								SAQSGE.RKFVDC,
+								SAQSGE.PBPVDV,
+								SAQSGE.PBPVDC,
+								SAQSGE.CMLAB_ENT,
+								SAQSGE.CNSMBL_ENT,
+								SAQSGE.CNTCVG_ENT,
+								SAQSGE.NCNSMB_ENT,
+								SAQSGE.PMEVNT_ENT,
+								SAQSGE.PMLAB_ENT,
+								SAQSGE.PRMKPI_ENT,
+								SAQSGE.OFRING,
+								SAQSGE.QTETYP,
+								SAQSGE.BILTYP,
+								SAQSGE.BPTKPI,
+								SAQSGE.ATGKEY,
+								SAQSGE.ATNKEY,
+								SAQSGE.NWPTON,
+								SAQSGE.HEDBIN
 							FROM 
 								SAQRIT 
 								JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID         
@@ -730,184 +934,184 @@ class ContractQuoteItem:
 							JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQICO.SERVICE_ID
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(PRCFVA.FACTOR_NAME,'') = 'Ceiling Margin'
 							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))		
-		entitlement_insert_start =  time.time()		
+		# entitlement_insert_start =  time.time()		
 		# Entitlement Columns Insert
-		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
-		SAQICO_BKP = "SAQICO_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
-		SAQITE_BKP = "SAQITE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
+		# datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
+		# SAQICO_BKP = "SAQICO_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
+		# SAQITE_BKP = "SAQITE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
 		
-		Log.Info(str(self.contract_quote_id)+"===SAQICO_BKP==>> "+str(SAQICO_BKP))
-		Log.Info(str(self.contract_quote_id)+"===SAQITE_BKP==>> "+str(SAQITE_BKP))
-		entitlement_details = [{
-								"field":["INTCPV","Intercept","AGS_{}_VAL_INTCPT".format(self.service_id)],						
-								"coeff":["INTCPC","Intercept Coefficient","AGS_{}_VAL_INTCCO".format(self.service_id)]
-								},
-								{
-								"field":["OSSVDV","Total Cost W/O Seedstock","AGS_{}_VAL_TBCOST".format(self.service_id)],	
-								"coeff":["LTCOSS","Total Cost w/o Seedstock Coeff","AGS_{}_VAL_TBCOCO".format(self.service_id)]
-								},
-								{
-								"field":["POFVDV","Product Offering","AGS_{}_VAL_POFFER".format(self.service_id)],	
-								"coeff":["POFVDC","Product Offering Coefficient","AGS_{}_VAL_POFFCO".format(self.service_id)]
-								},
-								{
-								"field":["GBKVDV","Greenbook","AGS_{}_VAL_GRNBKV".format(self.service_id)],	
-								"coeff":["GBKVDC","Greenbook Coefficient","AGS_{}_VAL_GRNBCO".format(self.service_id)]
-								},
-								{
-								"field":["UIMVDV","Uptime Improvement","AGS_{}_VAL_UPIMPV".format(self.service_id)],	
-								"coeff":["UIMVDC","Uptime Improvement Coefficient","AGS_{}_VAL_UPIMCO".format(self.service_id)]
-								},
-								{
-								"field":["CAVVDV","Capital Avoidance","AGS_{}_VAL_CAPAVD".format(self.service_id)],	
-								"coeff":["CAVVDC","Capital Avoidance Coefficient","AGS_{}_VAL_CAPACO".format(self.service_id)]
-								},
-								{
-								"field":["WNDVDV","Wafer Node","AGS_{}_VAL_WAFNOD".format(self.service_id)],	
-								"coeff":["WNDVDC","Wafer Node Coefficient","AGS_{}_VAL_WAFNCO".format(self.service_id)]
-								},
-								{
-								"field":["CCRTMV","Contract Coverage & Response Time","AGS_{}_VAL_CCRTME".format(self.service_id)],	
-								"coeff":["CCRTMC","Contract Coverage & Response Time Coefficient","AGS_{}_VAL_CCRTCO".format(self.service_id)]
-								},
-								{
-								"field":["SCMVDV","Service Complexity","AGS_{}_VAL_SCCCDF".format(self.service_id)],
-								"coeff":["SCMVDC", "Service Complexity Coefficient", "AGS_{}_VAL_SCCCCO".format(self.service_id)]
-								},
-								{
-								"field":["CCDFFV","Cleaning Coating Differentiation","AGS_{}_VAL_CCDVAL".format(self.service_id)],
-								"coeff":["CCDFFC", "Cleaning Coating Diff coeff.", "AGS_{}_VAL_CCDVCO".format(self.service_id)]
-								},
-								{
-								"field":["NPIVDV","NPI","AGS_{}_VAL_NPIREC".format(self.service_id)],
-								"coeff":["NPIVDC", "NPI Coefficient", "AGS_{}_VAL_NPICOF".format(self.service_id)]
-								},	
-								{
-								"field":["DTPVDV","Device Type","AGS_{}_VAL_DEVTYP".format(self.service_id)],
-								"coeff":["DTPVDC", "Device Type Coefficient", "AGS_{}_VAL_DEVTCO".format(self.service_id)]
-								},	
-								{
-								"field":["CSTVDV","# CSA Tools per Fab","AGS_{}_VAL_TLSFAB".format(self.service_id)],
-								"coeff":["CSTVDC", "# CSA Tools per Fab Coefficient", "AGS_{}_VAL_TLSFCO".format(self.service_id)]
-								},	
-								{
-								"field":["CSGVDV","Customer Segment","AGS_{}_VAL_CSTSEG".format(self.service_id)],
-								"coeff":["CSGVDC", "Customer Segment Coefficent", "AGS_{}_VAL_CSSGCO".format(self.service_id)]
-								},	
-								{
-								"field":["QRQVDV","Quality Required","AGS_{}_VAL_QLYREQ".format(self.service_id)],
-								"coeff":["QRQVDC", "Quality Required Coefficient", "AGS_{}_VAL_QLYRCO".format(self.service_id)]
-								},	
-								{
-								"field":["SVCVDV","Service Competition","AGS_{}_VAL_SVCCMP".format(self.service_id)],
-								"coeff":["SVCVDC", "Service Competition Coefficient", "AGS_{}_VAL_SVCCCO".format(self.service_id)]
-								},
-								{
-								"field":["RKFVDV","Risk Factor","AGS_{}_VAL_RSKFVD".format(self.service_id)],
-								"coeff":["RKFVDC", "Risk Factor Coefficient", "AGS_{}_VAL_RSKFCO".format(self.service_id)]
-								},
-								{
-								"field":["PBPVDV","PDC Base Price","AGS_{}_VAL_PDCBSE".format(self.service_id)],
-								"coeff":["PBPVDC", "PDC Base Price Coefficient", "AGS_{}_VAL_PDCBCO".format(self.service_id)]
-								},
-								{
-								"field":["CMLAB_ENT","Corrective Maintenance Labor","AGS_{}_NET_CRMALB".format(self.service_id)]
-								},		
-								{
-								"field":["CNSMBL_ENT","Consumable","AGS_{}_TSC_CONSUM".format(self.service_id)]
-								},
-								{
-								"field":["CNTCVG_ENT","Contract Coverage","AGS_{}_CVR_CNTCOV".format(self.service_id)]
-								},	
-								{
-								"field":["NCNSMB_ENT","Non-Consumable","AGS_{}_TSC_NONCNS".format(self.service_id)]
-								},	
-								{
-								"field":["PMEVNT_ENT","Quote Type","AGS_{}_PQB_QTETYP".format(self.service_id)]
-								},		
-								{
-								"field":["PMLAB_ENT","Preventative Maintenance Labor","AGS_{}_NET_PRMALB".format(self.service_id)]
-								},	
-								{
-								"field":["PRMKPI_ENT","Primary KPI. Perf Guarantee","AGS_{}_KPI_PRPFGT".format(self.service_id)]
-								},
-								{
-								"field":["OFRING","Product Offering","AGS_{}_VAL_POFFER".format(self.service_id)]
-								},	
-								{
-								"field":["QTETYP","Quote Type","AGS_{}_PQB_QTETYP".format(self.service_id)]
-								},	
-								{
-								"field":["BILTYP","Billing Type","AGS_{}_PQB_BILTYP".format(self.service_id)]
-								},	
-								{
-								"field":["BPTKPI","Bonus & Penalty Tied to KPI","AGS_{}_KPI_BPTKPI".format(self.service_id)]
-								},
-								{
-								"field":["ATGKEY","Additional Target KPI","AGS_{}_KPI_TGTKPI".format(self.service_id)]
-								},	
-								{
-								"field":["ATNKEY","Additional Target KPI(Non-std)","AGS_{}_KPI_TGKPNS".format(self.service_id)]
-								},
-								{
-								"field":["NWPTON","New Parts Only","AGS_{}_TSC_RPPNNW".format(self.service_id)]
-								},
-								{
-								"field":["HEDBIN","Head break-in","AGS_{}_STT_HDBRIN".format(self.service_id)]
-								},
-							]
-		start_count = 1
-		end_count = 500
+		# Log.Info(str(self.contract_quote_id)+"===SAQICO_BKP==>> "+str(SAQICO_BKP))
+		# Log.Info(str(self.contract_quote_id)+"===SAQITE_BKP==>> "+str(SAQITE_BKP))
+		# entitlement_details = [{
+		# 						"field":["INTCPV","Intercept","AGS_{}_VAL_INTCPT".format(self.service_id)],						
+		# 						"coeff":["INTCPC","Intercept Coefficient","AGS_{}_VAL_INTCCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["OSSVDV","Total Cost W/O Seedstock","AGS_{}_VAL_TBCOST".format(self.service_id)],	
+		# 						"coeff":["LTCOSS","Total Cost w/o Seedstock Coeff","AGS_{}_VAL_TBCOCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["POFVDV","Product Offering","AGS_{}_VAL_POFFER".format(self.service_id)],	
+		# 						"coeff":["POFVDC","Product Offering Coefficient","AGS_{}_VAL_POFFCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["GBKVDV","Greenbook","AGS_{}_VAL_GRNBKV".format(self.service_id)],	
+		# 						"coeff":["GBKVDC","Greenbook Coefficient","AGS_{}_VAL_GRNBCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["UIMVDV","Uptime Improvement","AGS_{}_VAL_UPIMPV".format(self.service_id)],	
+		# 						"coeff":["UIMVDC","Uptime Improvement Coefficient","AGS_{}_VAL_UPIMCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["CAVVDV","Capital Avoidance","AGS_{}_VAL_CAPAVD".format(self.service_id)],	
+		# 						"coeff":["CAVVDC","Capital Avoidance Coefficient","AGS_{}_VAL_CAPACO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["WNDVDV","Wafer Node","AGS_{}_VAL_WAFNOD".format(self.service_id)],	
+		# 						"coeff":["WNDVDC","Wafer Node Coefficient","AGS_{}_VAL_WAFNCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["CCRTMV","Contract Coverage & Response Time","AGS_{}_VAL_CCRTME".format(self.service_id)],	
+		# 						"coeff":["CCRTMC","Contract Coverage & Response Time Coefficient","AGS_{}_VAL_CCRTCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["SCMVDV","Service Complexity","AGS_{}_VAL_SCCCDF".format(self.service_id)],
+		# 						"coeff":["SCMVDC", "Service Complexity Coefficient", "AGS_{}_VAL_SCCCCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["CCDFFV","Cleaning Coating Differentiation","AGS_{}_VAL_CCDVAL".format(self.service_id)],
+		# 						"coeff":["CCDFFC", "Cleaning Coating Diff coeff.", "AGS_{}_VAL_CCDVCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["NPIVDV","NPI","AGS_{}_VAL_NPIREC".format(self.service_id)],
+		# 						"coeff":["NPIVDC", "NPI Coefficient", "AGS_{}_VAL_NPICOF".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["DTPVDV","Device Type","AGS_{}_VAL_DEVTYP".format(self.service_id)],
+		# 						"coeff":["DTPVDC", "Device Type Coefficient", "AGS_{}_VAL_DEVTCO".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["CSTVDV","# CSA Tools per Fab","AGS_{}_VAL_TLSFAB".format(self.service_id)],
+		# 						"coeff":["CSTVDC", "# CSA Tools per Fab Coefficient", "AGS_{}_VAL_TLSFCO".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["CSGVDV","Customer Segment","AGS_{}_VAL_CSTSEG".format(self.service_id)],
+		# 						"coeff":["CSGVDC", "Customer Segment Coefficent", "AGS_{}_VAL_CSSGCO".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["QRQVDV","Quality Required","AGS_{}_VAL_QLYREQ".format(self.service_id)],
+		# 						"coeff":["QRQVDC", "Quality Required Coefficient", "AGS_{}_VAL_QLYRCO".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["SVCVDV","Service Competition","AGS_{}_VAL_SVCCMP".format(self.service_id)],
+		# 						"coeff":["SVCVDC", "Service Competition Coefficient", "AGS_{}_VAL_SVCCCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["RKFVDV","Risk Factor","AGS_{}_VAL_RSKFVD".format(self.service_id)],
+		# 						"coeff":["RKFVDC", "Risk Factor Coefficient", "AGS_{}_VAL_RSKFCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["PBPVDV","PDC Base Price","AGS_{}_VAL_PDCBSE".format(self.service_id)],
+		# 						"coeff":["PBPVDC", "PDC Base Price Coefficient", "AGS_{}_VAL_PDCBCO".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["CMLAB_ENT","Corrective Maintenance Labor","AGS_{}_NET_CRMALB".format(self.service_id)]
+		# 						},		
+		# 						{
+		# 						"field":["CNSMBL_ENT","Consumable","AGS_{}_TSC_CONSUM".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["CNTCVG_ENT","Contract Coverage","AGS_{}_CVR_CNTCOV".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["NCNSMB_ENT","Non-Consumable","AGS_{}_TSC_NONCNS".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["PMEVNT_ENT","Quote Type","AGS_{}_PQB_QTETYP".format(self.service_id)]
+		# 						},		
+		# 						{
+		# 						"field":["PMLAB_ENT","Preventative Maintenance Labor","AGS_{}_NET_PRMALB".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["PRMKPI_ENT","Primary KPI. Perf Guarantee","AGS_{}_KPI_PRPFGT".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["OFRING","Product Offering","AGS_{}_VAL_POFFER".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["QTETYP","Quote Type","AGS_{}_PQB_QTETYP".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["BILTYP","Billing Type","AGS_{}_PQB_BILTYP".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["BPTKPI","Bonus & Penalty Tied to KPI","AGS_{}_KPI_BPTKPI".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["ATGKEY","Additional Target KPI","AGS_{}_KPI_TGTKPI".format(self.service_id)]
+		# 						},	
+		# 						{
+		# 						"field":["ATNKEY","Additional Target KPI(Non-std)","AGS_{}_KPI_TGKPNS".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["NWPTON","New Parts Only","AGS_{}_TSC_RPPNNW".format(self.service_id)]
+		# 						},
+		# 						{
+		# 						"field":["HEDBIN","Head break-in","AGS_{}_STT_HDBRIN".format(self.service_id)]
+		# 						},
+		# 					]
+		# start_count = 1
+		# end_count = 500
 
-		exit_flag = 1
-		while exit_flag == 1:
-			quote_items_obj = SqlHelper.GetFirst(
-						"SELECT DISTINCT QTEITM_RECORD_ID FROM (SELECT DISTINCT QTEITM_RECORD_ID, ROW_NUMBER()OVER(ORDER BY QTEITM_RECORD_ID) AS SNO FROM (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.contract_quote_revision_record_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"' )A) A WHERE SNO>= "+str(start_count)+" AND SNO<="+str(end_count)+""
-					)
+		# exit_flag = 1
+		# while exit_flag == 1:
+		# 	quote_items_obj = SqlHelper.GetFirst(
+		# 				"SELECT DISTINCT QTEITM_RECORD_ID FROM (SELECT DISTINCT QTEITM_RECORD_ID, ROW_NUMBER()OVER(ORDER BY QTEITM_RECORD_ID) AS SNO FROM (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.contract_quote_revision_record_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"' )A) A WHERE SNO>= "+str(start_count)+" AND SNO<="+str(end_count)+""
+		# 			)
 			
-			SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str		(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
+		# 	SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str		(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
 					
-			SAQITE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQITE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQITE_BKP)+" END  ' ")
+		# 	SAQITE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQITE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQITE_BKP)+" END  ' ")
 			
-			table_insert = SqlHelper.GetFirst(
-				"sp_executesql @T=N'SELECT * INTO "+str(SAQICO_BKP)+" FROM (SELECT DISTINCT QTEITM_RECORD_ID FROM (SELECT DISTINCT QTEITM_RECORD_ID, ROW_NUMBER()OVER(ORDER BY QTEITM_RECORD_ID) AS SNO FROM (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'' )A) A WHERE SNO>= "+str(start_count)+" AND SNO<="+str(end_count)+") OQ'"
-					)
+		# 	table_insert = SqlHelper.GetFirst(
+		# 		"sp_executesql @T=N'SELECT * INTO "+str(SAQICO_BKP)+" FROM (SELECT DISTINCT QTEITM_RECORD_ID FROM (SELECT DISTINCT QTEITM_RECORD_ID, ROW_NUMBER()OVER(ORDER BY QTEITM_RECORD_ID) AS SNO FROM (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'' )A) A WHERE SNO>= "+str(start_count)+" AND SNO<="+str(end_count)+") OQ'"
+		# 			)
 			
-			table_insert = SqlHelper.GetFirst(
-				"sp_executesql @T=N'SELECT SAQITE.* INTO "+str(SAQITE_BKP)+" FROM SAQITE (NOLOCK) JOIN "+str(SAQICO_BKP)+" SAQICO_BKP ON SAQITE.QTEITM_RECORD_ID = SAQICO_BKP.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' '")
+		# 	table_insert = SqlHelper.GetFirst(
+		# 		"sp_executesql @T=N'SELECT SAQITE.* INTO "+str(SAQITE_BKP)+" FROM SAQITE (NOLOCK) JOIN "+str(SAQICO_BKP)+" SAQICO_BKP ON SAQITE.QTEITM_RECORD_ID = SAQICO_BKP.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' '")
 			
-			start_count = start_count + 500
-			end_count = end_count + 500
+		# 	start_count = start_count + 500
+		# 	end_count = end_count + 500
 
-			if str(quote_items_obj) != "None":				
-				for entitlement_detail in entitlement_details:					
-					try:
-						# Billing Type and Contract Coverage - we have multiple entitlement with same name.
-						if entitlement_detail.get('field')[1] == 'Billing Type': # hard fix
-							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),1000)))+''"+str(entitlement_detail.get('field')[1][1:])+"</ENTITLEMENT_NAME></QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE A.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND A.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND A.SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")		
-						elif entitlement_detail.get('field')[1] == 'Contract Coverage': # hard fix							
-							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''>"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''>"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE A.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND A.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND A.SERVICE_ID = ''"+str(self.service_id)+"'' AND charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml) > 0) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")	
-						else:
-							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE A.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND A.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND A.SERVICE_ID = ''"+str(self.service_id)+"'' AND charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml) > 0) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")		
-						if entitlement_detail.get('coeff'):			
-							S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('coeff')[0])+" = ISNULL(CONVERT(FLOAT,ENTITLEMENT_VALUE_CODE),0) FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_VALUE_CODE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('coeff')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('coeff')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'' AND charindex (''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml) > 0) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('coeff')[1])+"'' AND ISNULL(ENTITLEMENT_VALUE_CODE,'''') <>''''  '")
-					except Exception:
-						if entitlement_detail.get('field')[1] == 'Billing Type': # hard fix
-							Log.Info("===>>>>>NNN "+str("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),1000)))+''"+str(entitlement_detail.get('field')[1][1:])+"</ENTITLEMENT_NAME></QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE A.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND A.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND A.SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '"))	
-						else:
-							Log.Info("===>>>>>NNN "+str("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '"))
-						Log.Info("SAQICO Entitlement Update Issue {}-{}".format(entitlement_detail.get('field')[1],entitlement_detail.get('field')[2]))
-						if entitlement_detail.get('coeff'):
-							Log.Info("SAQICO Entitlement Update Issue {}-{}".format(entitlement_detail.get('coeff')[1],entitlement_detail.get('coeff')[2]))				
-			else:
-				exit_flag = 0
+		# 	if str(quote_items_obj) != "None":				
+		# 		for entitlement_detail in entitlement_details:					
+		# 			try:
+		# 				# Billing Type and Contract Coverage - we have multiple entitlement with same name.
+		# 				if entitlement_detail.get('field')[1] == 'Billing Type': # hard fix
+		# 					S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),1000)))+''"+str(entitlement_detail.get('field')[1][1:])+"</ENTITLEMENT_NAME></QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE A.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND A.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND A.SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")		
+		# 				elif entitlement_detail.get('field')[1] == 'Contract Coverage': # hard fix							
+		# 					S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''>"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''>"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE A.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND A.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND A.SERVICE_ID = ''"+str(self.service_id)+"'' AND charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml) > 0) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")	
+		# 				else:
+		# 					S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE A.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND A.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND A.SERVICE_ID = ''"+str(self.service_id)+"'' AND charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml) > 0) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")		
+		# 				if entitlement_detail.get('coeff'):			
+		# 					S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('coeff')[0])+" = ISNULL(CONVERT(FLOAT,ENTITLEMENT_VALUE_CODE),0) FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_VALUE_CODE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('coeff')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('coeff')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'' AND charindex (''"+str(entitlement_detail.get('coeff')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml) > 0) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('coeff')[1])+"'' AND ISNULL(ENTITLEMENT_VALUE_CODE,'''') <>''''  '")
+		# 			except Exception:
+		# 				if entitlement_detail.get('field')[1] == 'Billing Type': # hard fix
+		# 					Log.Info("===>>>>>NNN "+str("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),1000)))+''"+str(entitlement_detail.get('field')[1][1:])+"</ENTITLEMENT_NAME></QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE A.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND A.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND A.SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '"))	
+		# 				else:
+		# 					Log.Info("===>>>>>NNN "+str("sp_executesql @T=N'UPDATE A SET "+str(entitlement_detail.get('field')[0])+" = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQICO A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml),charindex (''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>"+str(entitlement_detail.get('field')[2])+"'',entitlement_xml)+len(''"+str(entitlement_detail.get('field')[1])+"</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQITE_BKP)+" (nolock)a JOIN "+str(SAQICO_BKP)+" C ON A.QTEITM_RECORD_ID = C.QTEITM_RECORD_ID WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''"+str(entitlement_detail.get('field')[1])+"'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '"))
+		# 				Log.Info("SAQICO Entitlement Update Issue {}-{}".format(entitlement_detail.get('field')[1],entitlement_detail.get('field')[2]))
+		# 				if entitlement_detail.get('coeff'):
+		# 					Log.Info("SAQICO Entitlement Update Issue {}-{}".format(entitlement_detail.get('coeff')[1],entitlement_detail.get('coeff')[2]))				
+		# 	else:
+		# 		exit_flag = 0
 			
-			SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str		(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
+		# 	SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str		(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
 					
-			SAQITE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQITE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQITE_BKP)+" END  ' ")
+		# 	SAQITE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQITE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQITE_BKP)+" END  ' ")
 		
-		entitlement_insert_end = time.time()
-		Trace.Write("Entitlement Insert Time-----"+str(entitlement_insert_end-entitlement_insert_start))
+		# entitlement_insert_end = time.time()
+		# Trace.Write("Entitlement Insert Time-----"+str(entitlement_insert_end-entitlement_insert_start))
 		# Head Break In Cost Impact
 		Sql.RunQuery("""UPDATE SAQICO
 						SET HEDBIC = PRCFVA.FACTOR_TXTVAR		
