@@ -1933,7 +1933,8 @@ class TreeView:
 										ChildDict["objname"] = "ACAPTX"
 										
 										# ChildList.append(ChildDict)
-							elif NodeName.find(",") == -1 and NodeName.find("-") == -1:                               
+							elif NodeName.find(",") == -1 and NodeName.find("-") == -1:
+								Trace.Write("Node name--------1"+str(NodeName))
 								if str(NodeName) == "OBJECT_NAME" and TabName == 'Profile': 
 									NodeText = str(eval("childdata." + str(NodeName)))									
 								elif str(NodeName) == 'PARTY_ID':
@@ -1977,7 +1978,8 @@ class TreeView:
 								)				
 								if(str(NodeName)=="TREE_NAME"):
 									Product.SetGlobal('TreeName',str(NodeText))
-							elif NodeName.find(",") > 0:                                
+							elif NodeName.find(",") > 0:
+								Trace.Write("Node name--------2"+str(NodeName))
 								Nodesplit = NodeName.split(",")
 								if len(Nodesplit) > 1:
 									NodeName1 = Nodesplit[0]
@@ -2008,6 +2010,7 @@ class TreeView:
 										+ "'"
 									)
 							elif NodeName.find("-") > 0:
+								Trace.Write("Node name--------3"+str(NodeName))
 								Nodesplit = NodeName.split("-")                                
 								if len(Nodesplit) > 1:
 									NodeName1 = Nodesplit[0]
