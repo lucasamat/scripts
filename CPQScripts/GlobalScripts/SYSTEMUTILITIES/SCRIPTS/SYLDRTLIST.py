@@ -9789,18 +9789,19 @@ class SYLDRTLIST:
 
 			parents_list = str(tuple(parent_parts))
 			parents_list = re.sub(r'\,\)',')',parents_list)
-			no_child_count = Sql.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(parents_list)+" ")
+			notin_condition = " AND PART_NUMBER NOT IN "+str(parents_list) if len(parent_parts)>1 else ""
+			no_child_count = Sql.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL "+str(notin_condition))
 
 			no_child_count = no_child_count.CNT #count of parts without having any child
 
 			if no_child_count > 1000:
 				fetch_count = 0
 				while fetch_count < no_child_count: #fetching only 1000 records since we are not able to get more than 1000 records at a time
-					parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN "+str(parents_list)+" ORDER BY CpqTableEntryId ASC OFFSET "+str(fetch_count)+" ROWS FETCH NEXT 1000 ROWS ONLY ")
+					parts = Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL "+str(notin_condition)+" ORDER BY CpqTableEntryId ASC OFFSET "+str(fetch_count)+" ROWS FETCH NEXT 1000 ROWS ONLY ")
 					fetch_count +=1000
 					ordered_values.extend(parts) #appending parts without having any child parts
 			else:
-				parts = Sql.GetList("SELECT TOP 1000 "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL AND PART_NUMBER NOT IN """+str(parents_list)+" ORDER BY CpqTableEntryId ASC ")
+				parts = Sql.GetList("SELECT TOP 1000 "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL "+str(notin_condition)+" ORDER BY CpqTableEntryId ASC ")
 				ordered_values.extend(parts) #appending parts without having any child parts
 			Query_Obj = []
 			if len(ordered_values) < int(Page_End):
