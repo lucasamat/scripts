@@ -68,7 +68,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 			# 	else:
 			# 		getmonthavle = "MONTH_12"
 			#sqlforupdate = "UPDATE QT__BM_YEAR_1 SET {gmon} = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_YEAR = {BL}".format(BL =int(SubTab) ,gmon = getmonthavle,BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
-			Sql.RunQuery(sqlforupdatePT)
+			#Sql.RunQuery(sqlforupdatePT)
 			#Sql.RunQuery(sqlforupdate)
 			
 			#to update total amount
