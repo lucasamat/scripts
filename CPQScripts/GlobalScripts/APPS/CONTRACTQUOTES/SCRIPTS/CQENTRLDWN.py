@@ -1177,7 +1177,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		ancillary_service_call()
 		#split_service_insert()
 		#ent columns update
-		for rec_table in ['SAQSCE','SAQGPE']:
+		for rec_table in ['SAQSCE','SAQGPE','SAQSGE']:
 			ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_COLUMN_UPDATE',
 																				'partnumber':get_serviceid,
 																				'where_cond' :where.replace('SRC.',''), 

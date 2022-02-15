@@ -955,7 +955,7 @@ class AncillaryProductOperation:
 					if get_ancillary:
 						for offering in get_ancillary:
 							where_condition = self.where_string.replace('SERVICE_ID','PAR_SERVICE_ID')+ " AND SERVICE_ID = '{}'".format(get_ancillary.SERVICE_ID)
-							for rec_table in ['SAQSCE','SAQGPE']:
+							for rec_table in ['SAQSGE','SAQSCE','SAQGPE']:
 								ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_COLUMN_UPDATE',
 																			'partnumber':get_ancillary.SERVICE_ID,
 																			'where_cond' :where_condition, 

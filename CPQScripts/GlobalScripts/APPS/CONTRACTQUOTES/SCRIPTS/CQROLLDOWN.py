@@ -212,7 +212,7 @@ def CoveredObjEntitlement():
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW")
 	try:
 		##saqgpe ent columns update
-		for rec_table in ['SAQSCE','SAQGPE']:
+		for rec_table in ['SAQSGE','SAQSCE','SAQGPE']:
 			ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_COLUMN_UPDATE',
 														'partnumber':TreeParam,
 														'where_cond' :where_condition, 
