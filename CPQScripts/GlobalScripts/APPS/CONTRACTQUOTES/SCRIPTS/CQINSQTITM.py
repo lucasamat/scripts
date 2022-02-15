@@ -1622,6 +1622,13 @@ class ContractQuoteItem:
 			""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, ItemSummaryLastLineNo=summary_last_line_no, WhereConditionString=item_summary_where_string, JoinString=item_summary_join_string))
 			#self.getting_cps_tax(self.service_id)
 			ScriptExecutor.ExecuteGlobal('CQCPSTAXRE',{'service_id':self.service_id, 'Fun_type':'CPQ_TO_ECC'})
+
+			try:
+				entitlement_id = "AGS_{}_PQB_BILTYP".format(self.service_id)
+				S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET BILLING_TYPE = ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') FROM SAQRIS A(NOLOCK) JOIN (SELECT distinct QUOTE_ID, QTEREV_ID, SERVICE_ID, QTEITM_RECORD_ID, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT A.QUOTE_ID, A.QTEREV_ID, A.SERVICE_ID, A.QTEITM_RECORD_ID, CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_id)+"'',entitlement_xml),charindex (''Billing Type</ENTITLEMENT_NAME>'',substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>"+str(entitlement_id)+"'',entitlement_xml),1000)))+''illing Type</ENTITLEMENT_NAME></QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQTSE (nolock)a WHERE A.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND A.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND A.SERVICE_ID = ''"+str(self.service_id)+"'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.QTEITM_RECORD_ID = B.QTEITM_RECORD_ID  WHERE B.ENTITLEMENT_NAME=''Billing Type'' AND ISNULL(ENTITLEMENT_DISPLAY_VALUE,'''') <>''''  '")
+			except:
+				pass
+			
 		return True		
 	
 	def _pmsa_quote_items_entitlement_insert(self,update=False):
