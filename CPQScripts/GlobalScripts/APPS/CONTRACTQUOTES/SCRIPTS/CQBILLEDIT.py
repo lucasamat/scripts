@@ -91,7 +91,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 			Trace.Write('gettotalannualamt---'+str(gettotalannualamt))
 			sqlforupdatePTA = "UPDATE SAQIBP SET ANNUAL_BILLING_AMOUNT = {BTN} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE in {BD}".format(BTN= gettotalannualamt,CT = str(ContractRecordId),EID=value[0],BD = tuple(billing_date_column), revision_rec_id = quote_revision_record_id)
 			#sqlforupdate = "UPDATE QT__BM_YEAR_1 SET ANNUAL_BILLING_AMOUNT = {BTN} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_YEAR = {BL}".format(BL=int(SubTab),BTN= gettotalannualamt,CT = str(ContractRecordId),EID=value[0], revision_rec_id = quote_revision_record_id)
-			Sql.RunQuery(sqlforupdatePTA)
+			#Sql.RunQuery(sqlforupdatePTA)
 			#Sql.RunQuery(sqlforupdate)
 			savebill =''
 			#return 'save',savebill
