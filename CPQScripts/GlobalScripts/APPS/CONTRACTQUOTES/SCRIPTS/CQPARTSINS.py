@@ -339,6 +339,26 @@ class SyncFPMQuoteAndHanaDatabase:
 
     def CQPARTIFLW_iflow(self):
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
+    
+    def warning_message_arp_carp(self):
+
+        Warning_Message = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE RECORD_ID ='4D34C7DD-765E-4D85-86F7-152C77808E9C' and MESSAGE_LEVEL = 'WARNING'")
+        Warning_Message = check_active_query= ''
+        if Warning_Message and not check_active_query and str(current_prod).upper() == 'SALES':
+            Trace.Write("MESSAGE_TEXT"+str(Warning_Message.MESSAGE_TEXT))
+            msg_app_txt = (
+					'<div  class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infor_icon_green.svg" alt="Warning">'
+					+ str(Warning_Message.MESSAGE_LEVEL)
+					+ " : "
+					+ str(Warning_Message.MESSAGE_CODE)
+					+ " : "
+					+ str(Warning_Message.MESSAGE_TEXT)
+					+ "</label></div></div>")
+        elif Warning_Message and check_active_query:
+            msg_app_txt =""
+        return msg_app_txt
+	
+   
 
         
 Log.Info("CQPARTINS script called --> from CPI")
@@ -354,6 +374,10 @@ try:
     Parameter["Delete_Partlist"] = Param.CPQ_Columns["Delete_Partlist"]
 except Exception:
     Parameter["Delete_Partlist"] = ""
+try:
+	current_prod = Product.Name
+except:
+	current_prod = "SALES"
 
 
 if Parameter["Action"] == 'Delete':
@@ -368,7 +392,8 @@ if Parameter["Action"] == 'Delete':
 if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     fpm_obj = SyncFPMQuoteAndHanaDatabase()
     fpm_obj.fetch_quotebasic_info()
-    fpm_obj.prepare_backup_table()  
+    fpm_obj.prepare_backup_table() 
+    fpm_obj.warning_message_arp_carp()
     #fpm_obj.validation_for_arp_carp()
     
     
