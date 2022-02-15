@@ -999,7 +999,7 @@ class EntitlementView():
 								add_style = "color:#1B78D2"
 							else:
 								add_style = ""
-							Trace.Write('--attributeEditlst-930----'+str(attributeEditlst))
+							#Trace.Write('--attributeEditlst-930----'+str(attributeEditlst))
 							if 'AGS_{}_CVR_FABLCY'.format(ProductPartnumber) in attrSysId :
 								attributeEditlst.remove(attrSysId)
 							if attrSysId in attributeEditlst :
