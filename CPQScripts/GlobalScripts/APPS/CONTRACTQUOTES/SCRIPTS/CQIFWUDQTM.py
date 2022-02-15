@@ -22,7 +22,7 @@ from System.Text.Encoding import UTF8
 #Log.Info('quote_revision_record_id- '+str(quote_revision_record_id))
 def quote_items_pricing(Qt_id):
 	#quote_number = Qt_id[2:12]
-	Log.Info('quote_id---'+str(Qt_id))
+	Log.Info('quote_id---'+str(Qt_id)) 
 	
 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
 	contract_quote_record_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
