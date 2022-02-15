@@ -20,14 +20,16 @@ def remove_list(t):
 get_billig_date_list = []
 def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 	Trace.Write(str(totalyear)+'---BULK EDIT SAVE BILLING MATRIX--inside function---GET_DICT----'+str(GET_DICT))
+	count = 0
 	for val in GET_DICT:
+		count += 1
 		value = val.split('-')
 		getmonthavl = value[1].replace("/",'-').strip()		
 		getamtval = re.findall(r"\d",str(totalyear))
 		SubTab = getamtval[0]
 		getannual_amt = value[3]
 		get_billig_date_list.append(value[1])
-		Trace.Write('gettotalamount-----'+str(type(getannual_amt)))
+		Trace.Write('-count---'+str(count))
 		#Trace.Write('edited value-----'+str(BT= value[2].replace(",","")))
 		getannual_amt = getannual_amt.replace(',','')
 		Trace.Write('getannual_amt---32----'+str(getannual_amt))
