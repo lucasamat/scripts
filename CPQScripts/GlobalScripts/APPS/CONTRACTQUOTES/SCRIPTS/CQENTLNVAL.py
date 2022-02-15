@@ -376,7 +376,7 @@ def entitlemt_attr_update(partnumber,entitlement_table, where):
 			if update_values:
 				update_query = "UPDATE {entitlement_table} SET {cols}  {where} {addtional_whr}".format(entitlement_table = entitlement_table, cols = update_values, where =where,addtional_whr= addtional_whr )
 				update_query = update_query.replace('SET ,','SET ')
-				Log.Info('update_query---'+str(update_query))
+				#Log.Info('update_query---'+str(update_query))
 				Sql.RunQuery(update_query)							
 	return True
 
