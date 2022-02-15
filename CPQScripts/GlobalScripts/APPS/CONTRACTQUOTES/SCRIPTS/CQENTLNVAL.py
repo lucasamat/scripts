@@ -212,10 +212,7 @@ def entitlemt_attr_update(partnumber,entitlement_table, where):
 								"field":["INTCPC","Intercept Coefficient","AGS_{}_VAL_INTCCO".format(partnumber)]
 								},
 								{
-								"field":["OSSVDV","Total Cost W/O Seedstock","AGS_{}_VAL_TBCOST".format(partnumber)]	
-								},
-								{
-								"field":["LTCOSS","Total Cost w/o Seedstock Coeff","AGS_{}_VAL_TBCOCO".format(partnumber)]
+								"field":["OSSVDV","Total Cost W/O Seedstock","AGS_{}_VAL_TBCOCO".format(partnumber)]	
 								},
 								{
 								"field":["POFVDV","Product Offering","AGS_{}_VAL_POFFER".format(partnumber)]	
@@ -308,10 +305,7 @@ def entitlemt_attr_update(partnumber,entitlement_table, where):
 								"field":["RKFVDC", "Risk Factor Coefficient", "AGS_{}_VAL_RSKFCO".format(partnumber)]
 								},
 								{
-								"field":["PBPVDV","PDC Base Price","AGS_{}_VAL_PDCBSE".format(partnumber)]
-								},
-								{
-								"field":["PBPVDC", "PDC Base Price Coefficient", "AGS_{}_VAL_PDCBCO".format(partnumber)]
+								"field":["PBPVDV","PDC Base Price","AGS_{}_VAL_PDCBCO".format(partnumber)]
 								},
 								{
 								"field":["CMLAB_ENT","Corrective Maintenance Labor","AGS_{}_NET_CRMALB".format(partnumber)]
