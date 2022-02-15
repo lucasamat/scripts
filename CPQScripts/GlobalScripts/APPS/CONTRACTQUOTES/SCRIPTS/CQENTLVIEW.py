@@ -1546,6 +1546,7 @@ class EntitlementView():
 					)'''
 				
 		##Adding Audit information section in Entitlement starts...
+		Trace.Write('dbl_clk_function--1549----'+str(dbl_clk_function))
 		if ent_temp:
 			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		if EntitlementType in ("EQUIPMENT","FABLOCATION","BUSINESSUNIT","ASSEMBLY","TOOLS","ITEM_ENTITLEMENT","EVENT"):
