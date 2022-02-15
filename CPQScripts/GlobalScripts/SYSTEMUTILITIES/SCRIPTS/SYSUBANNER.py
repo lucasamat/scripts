@@ -2063,14 +2063,11 @@ def Related_Sub_Banner(
         get_quote_details = Sql.GetFirst("select CREDIT_INGL_CURR,NET_VALUE_INGL_CURR,DISCOUNT_AMOUNT_INGL_CURR,SALES_PRICE_INGL_CURR,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TAX_AMOUNT_INGL_CURR,TOTAL_AMOUNT_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         currency = Sql.GetFirst("SELECT GLOBAL_CURRENCY FROM SAQTRV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
         curr = currency.GLOBAL_CURRENCY
-        get_service_id=Sql.GetFirst("SELECT SERVICE_ID FROM SAQRIT WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        Total=(get_quote_details.TOTAL_AMOUNT_INGL_CURR)
+        get_service_id=Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         if get_service_id:
             if get_service_id.SERVICE_ID in('Z0110','Z0108'):
                 Total=(get_quote_details.NET_VALUE_INGL_CURR)
-            else:
-                Total=(get_quote_details.TOTAL_AMOUNT_INGL_CURR)
-        else:
-            Total = 0.00
         if subTabName == "Summary":
             Trace.Write("summar_SHP")
             PrimaryLable = "Total Excluding Tax/VAT"
