@@ -97,27 +97,30 @@ def equipment_predefined():
 						updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
 					Trace.Write("contract cov-"+str(coverage_time)+'---'+str(response_time)+'--'+str(ent_value))
 			elif 'CSA TOOLS PER FAB' in val.ENTITLEMENT_DESCRIPTION.upper():
-				Trace.Write("csa")
-				ent_value = ""
-				account_id_query = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"'")
-				account_bluebook_query = Sql.GetFirst("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
-				tools_count_query = Sql.GetFirst("SELECT COUNT(GREENBOOK) AS COUNT FROM SAQSCO (NOLOCK) {} AND FABLOCATION_RECORD_ID = '{}' GROUP BY FABLOCATION_NAME".format(where_condition, rec.FABLOCATION_RECORD_ID))
-				if account_bluebook_query.BLUEBOOK != "DISPLAY":
-					if tools_count_query.COUNT > 50:
-						ent_value = '# CSA tools in Fab_>50'
-					elif tools_count_query.COUNT in range(10,51):
-						ent_value = '# CSA tools in Fab_10-50'
-					elif tools_count_query.COUNT < 10:
-						ent_value = '# CSA tools in Fab_<10'
-				elif account_bluebook_query.BLUEBOOK == "DISPLAY":
-					if tools_count_query.COUNT > 7:
-						ent_value = '# CSA tools in Fab_<7'
-					elif tools_count_query.COUNT in range(3,8):
-						ent_value = '# CSA tools in Fab_3-7'
-					elif tools_count_query.COUNT < 3:
-						ent_value = '# CSA tools in Fab_<3'
-				if ent_value:
-					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
+				try:
+					Trace.Write("csa")
+					ent_value = ""
+					account_id_query = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"'")
+					account_bluebook_query = Sql.GetFirst("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
+					tools_count_query = Sql.GetFirst("SELECT COUNT(GREENBOOK) AS COUNT FROM SAQSCO (NOLOCK) {} AND FABLOCATION_RECORD_ID = '{}' GROUP BY FABLOCATION_NAME".format(where_condition, rec.FABLOCATION_RECORD_ID))
+					if account_bluebook_query.BLUEBOOK != "DISPLAY":
+						if tools_count_query.COUNT > 50:
+							ent_value = '# CSA tools in Fab_>50'
+						elif tools_count_query.COUNT in range(10,51):
+							ent_value = '# CSA tools in Fab_10-50'
+						elif tools_count_query.COUNT < 10:
+							ent_value = '# CSA tools in Fab_<10'
+					elif account_bluebook_query.BLUEBOOK == "DISPLAY":
+						if tools_count_query.COUNT > 7:
+							ent_value = '# CSA tools in Fab_<7'
+						elif tools_count_query.COUNT in range(3,8):
+							ent_value = '# CSA tools in Fab_3-7'
+						elif tools_count_query.COUNT < 3:
+							ent_value = '# CSA tools in Fab_<3'
+					if ent_value:
+						updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
+				except:
+					pass
 		##total seed coefficent update
 		try:
 			Trace.Write("try"+str(TreeParam))
