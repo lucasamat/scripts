@@ -5961,7 +5961,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				# 	CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"PREDEFINED DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
 				# except:
 				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
-			if self.applied_preventive_maintainence_quote_type_changed == "Yes":
+			if self.applied_preventive_maintainence_quote_type_changed == "Yes" and self.tree_param in ("Z0009"):
 				quote_type_attribute_value = self.entitlement_value
 				batch_group_record_id = ""
 				self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed)
