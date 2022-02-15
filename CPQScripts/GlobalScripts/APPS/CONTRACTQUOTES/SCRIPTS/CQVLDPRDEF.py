@@ -330,4 +330,4 @@ try:
 			elif obj == "SAQSCE":
 				equipment_predefined()
 except Exception as e:
-	Log.Info('error--'+str(e))
+	Log.Info('error--'+str(e)+str(sys.exc_info()[1])) 
