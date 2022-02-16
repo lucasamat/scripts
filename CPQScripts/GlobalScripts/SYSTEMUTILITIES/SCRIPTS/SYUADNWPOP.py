@@ -3744,18 +3744,20 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID in {get_fab} AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID in {get_fab}  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID in {get_fab} AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID in {get_fab}  AND SALESORG_ID = '{sales_org}'  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
 						ObjectName = ObjectName,
 						account_id = account_id,
 						get_fab = get_fab,
+						sales_org = sales_org,
 						contract_quote_record_id = contract_quote_record_id,
 						quote_revision_record_id = quote_revision_record_id,
 					)
 				)   
 			elif tool_type=="TEMP_TOOL":
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} 1=1  ".format(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND SALESORG_ID = '{}' AND {} 1=1  ".format(
 						ObjectName,
+						sales_org,
 						where_string,
 						contract_quote_record_id,
 						Product.GetGlobal("TreeParam"),
@@ -3764,13 +3766,14 @@ def POPUPLISTVALUEADDNEW(
 				)
 			else:
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND SALESORG_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
 						ObjectName,
 						account_record_id,
 						Product.GetGlobal("TreeParam"),
 						where_string,
 						contract_quote_record_id,
 						Product.GetGlobal("TreeParam"),
+						sales_org,
 						quote_revision_record_id,
 					)
 				)   	
