@@ -5900,9 +5900,12 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								Trace.Write("additional_where_chk "+str(additional_where))
 							elif (self.tree_param in ("Z0099") and ("Included - Monthly and Above" in pm_event_attribute_value)):
 								additional_where = " (MAEAPK.MNTEVT_LEVEL = 'Chamber / Module PM' OR MAEAPK.MNTEVT_LEVEL = 'Scheduled Maintenance') AND (MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly' OR MAEAPK.PM_ID = 'Semi-Annual' OR MAEAPK.PM_ID = 'Annual') AND"
-							if(pm_event_attribute_value != "Excluded" and (self.tree_param in ("Z0099") and "Included - All PM" not in pm_event_attribute_value)):
-								self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
-								pm_event_flag=1
+							if(pm_event_attribute_value != "Excluded"):
+								if self.tree_param == "Z0099" and "Included - All PM" not in pm_event_attribute_value:
+									Trace.Write("Insert Restricted")
+								else:
+									self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
+									pm_event_flag=1
 						if self.tree_param == 'Z0009' or self.tree_param == 'Z0010':
 							# quote_type_attribute_value =re.findall(pattern_name,sub_string)
 							#Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value)+" - "+str(pm_event_attribute_value))
