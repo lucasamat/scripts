@@ -5192,7 +5192,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					FROM SAQGPA (NOLOCK) JOIN MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_RECORD_ID = SAQGPA.EQUIPMENT_RECORD_ID AND 
 					MAEQUP.EQUIPMENT_ID = SAQGPA.ASSEMBLY_ID WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}'  """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
    
-			drop_saqgpa_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpa_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpa_backup_table)+" END  ' ")
+			#drop_saqgpa_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpa_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpa_backup_table)+" END  ' ")
 	
 			Sql.RunQuery("""UPDATE SAQGPM
 						SET
@@ -5598,7 +5598,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SYSPBT.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID
 					WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param,BatchGroupRecordId =kwargs.get('batch_group_record_id')))
    
-			drop_saqgpa_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpa_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpa_backup_table)+" END  ' ")
+			#drop_saqgpa_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpa_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpa_backup_table)+" END  ' ")
    			
 			Sql.RunQuery("""UPDATE SAQGPM
 						SET
