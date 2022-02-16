@@ -2492,7 +2492,7 @@ class ContractQuoteItem:
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
 							null as LINE,
 							--CASE WHEN IQ.PM_ID = 'Scheduled Maintenance' THEN '' ELSE IQ.PM_ID END as OBJECT_ID,
-							IQ.OBJECT_ID,
+							IQ.PM_ID,
 							'EVENT' as OBJECT_TYPE,
 							CASE WHEN IQ.PM_ID = 'Scheduled Maintenance' THEN '' ELSE IQ.PM_ID END as PM_ID,
 							IQ.PM_RECORD_ID as PM_RECORD_ID, 
