@@ -816,8 +816,11 @@ class TreeView:
 								ProductDict["nodes"] = list2
 						#NewList = []
 						returnList.append(ProductDict)
+		
+		
 		Product.SetGlobal("CommonTreeList", str(returnList))
 		#Trace.Write("returnList----------------> " + str(returnList))
+		cbc_subtab = ""
 		try:
 			Trace.Write("Clean Booking Checklist")
 			user_id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
@@ -833,7 +836,7 @@ class TreeView:
 				Trace.Write("subtab_empty")
 				cbc_subtab = "No"
 		except:
-			Trace.Write("CBC_subtab_Exception")
+			Trace.Write("CBC_Subtab_Exception")
 		return returnList, "",cbc_subtab
 	
 	
