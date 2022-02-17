@@ -100,7 +100,7 @@ class SYLDRTLIST:
 		TreeParam = Product.GetGlobal("TreeParam")
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-		
+		get_billing_types = get_ttl_amt = ''  
 		if str(PerPage) == "" and str(PageInform) == "":
 			Page_start = 1
 			Page_End = PerPage = 10
@@ -1900,7 +1900,7 @@ class SYLDRTLIST:
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start						
 						if billing_date_column:
-							get_billing_types = get_ttl_amt = ''                       
+							                     
 							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 							Trace.Write('pivot_columns-Qustr---'+str(Qustr))
 							get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,RecAttValue))
@@ -1909,8 +1909,9 @@ class SYLDRTLIST:
 								get_billing_types = get_billing_type.BILLING_TYPE
 								if get_billing_types =='FIXED':
 									get_ttl_amt = 'BILLING_VALUE'
+									column_before_pivot_changes = column_before_pivot_change
 								else:
-									get_ttl_amt = 'BILLING_VALUE'
+									get_ttl_amt = 'ESTVAL_INGL_CURR'
 							if Qustr:
 								if str(TreeParentParam)== "Billing":
 									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
@@ -1931,7 +1932,7 @@ class SYLDRTLIST:
 												SUM({get_ttl_amt})
 												FOR BILLING_DATE IN ({PivotColumns})
 											)AS PVT
-										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
+										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_changes, ObjectName=ObjectName,
 													WhereString=Qustr, PivotColumns=pivot_columns,get_ttl_amt=get_ttl_amt)                        
 							Qury_str = """
 										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY EQUIPMENT_ID
@@ -3611,7 +3612,7 @@ class SYLDRTLIST:
 			values_list = ""
 			dict_form = {}			
 			cv_list = []
-			ignorecol = ['BILLING_DATE', 'BILLING_AMOUNT', 'BILLING_VALUE','DELIVERY_SCHED_DATE']
+			ignorecol = ['BILLING_DATE', 'BILLING_AMOUNT', 'BILLING_VALUE','ESTVAL_INGL_CURR','DELIVERY_SCHED_DATE']
 			Trace.Write("Columns_chk_J"+str(Columns))
 			Trace.Write("billing_date_column--"+str(billing_date_column))
 			Trace.Write("delivery_date_column--"+str(delivery_date_column))
@@ -4363,7 +4364,7 @@ class SYLDRTLIST:
 
 					if str(invs) in right_align_list:
 						visible = ""
-						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
+						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_VALUE':                            
 							visible = 'data-visible="false"'  
 						if RECORD_ID == 'SYOBJR-34575' and str(invs) == 'QTEREVSPT_RECORD_ID':
 							visible = 'data-visible="false"'
@@ -4776,7 +4777,7 @@ class SYLDRTLIST:
 		gettotalamt = ""
 		if ObjectName == "SAQIBP":
 			ContractRecordId = Product.GetGlobal("contract_quote_record_id")
-			gettotaldateamt = Sql.GetList("SELECT BILLING_VALUE=SUM(BILLING_VALUE),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
+			gettotaldateamt = Sql.GetList("SELECT BILLING_VALUE=SUM(BILLING_VALUE),ESTVAL_INGL_CURR = SUM(ESTVAL_INGL_CURR),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
 			if gettotaldateamt:
 				my_format = "{:,." + str(decimal_place) + "f}"
 				for val in gettotaldateamt:
