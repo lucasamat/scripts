@@ -5,6 +5,7 @@
 #   __create_date :09-01-2022
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+from urllib import response
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import clr
@@ -336,7 +337,13 @@ class SyncFPMQuoteAndHanaDatabase:
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.arp_carp_response = webclient.UploadString('https://carp-arp.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
         Log.Info("Resarpcarp-->"+str(self.arp_carp_response))
-
+        if self.arp_carp_response:
+            self.update_arp_carp()
+            
+    def update_arp_carp(self):
+        response = self.arp_carp_response
+        self.warning_message_arp_carp()
+        
     def CQPARTIFLW_iflow(self):
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
     
@@ -358,9 +365,7 @@ class SyncFPMQuoteAndHanaDatabase:
             msg_app_txt =""
         return msg_app_txt
 	
-   
-
-        
+       
 Log.Info("CQPARTINS script called --> from CPI")
 #Log.Info("Param.CPQ_Column----"+str(type(Param)))
 Log.Info("Param.CPQ_Column----QuoteID---"+str(Param.CPQ_Columns["QuoteID"]))
@@ -393,7 +398,6 @@ if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     fpm_obj = SyncFPMQuoteAndHanaDatabase()
     fpm_obj.fetch_quotebasic_info()
     fpm_obj.prepare_backup_table() 
-    fpm_obj.warning_message_arp_carp()
     #fpm_obj.validation_for_arp_carp()
     
     
