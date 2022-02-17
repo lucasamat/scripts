@@ -4443,7 +4443,7 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)   
-						if invs == "SERVICE_DESCRIPTION" and RECORD_ID == 'SYOBJR-98876' :
+						if RECORD_ID == 'SYOBJR-98876' :
 							Trace.Write("CHKNG_J_00 "+str(qstring))
 							table_header += (
 								'<th  data-field="'
