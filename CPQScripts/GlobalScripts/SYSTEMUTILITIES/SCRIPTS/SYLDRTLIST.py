@@ -1997,8 +1997,9 @@ class SYLDRTLIST:
 							+ " and "
 							+ str(Page_End)
 							+ ""
-						)                        
-						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
+						)
+						QuryCount_str = "select count(S.*) as cnt from " + str(ObjectName) + " S (nolock) INNER JOIN MAADPR M ON M.COMP_PRDOFR_ID=S.SERVICE_ID " + str(Qustr)                        
+						#QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					elif str(RECORD_ID) == "SYOBJR-98862":
 						Qustr = " WHERE APP_ID = '"+str(TreeParentParam)+"' AND PROFILE_RECORD_ID ='"+str(RecAttValue)+"'"
 						Qury_str = (
@@ -2494,7 +2495,7 @@ class SYLDRTLIST:
 						+ ""
 					)
 					
-					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
+					QuryCount_str = "select count(S.*) as cnt from " + str(ObjectName) + " S (nolock) INNER JOIN MAADPR M ON M.COMP_PRDOFR_ID=S.SERVICE_ID " + str(Qustr)
 				elif str(RECORD_ID) == "SYOBJR-98862":
 					Qustr = " WHERE APP_ID = '"+str(TreeParentParam)+"' AND PROFILE_RECORD_ID ='"+str(RecAttValue)+"'"
 					Qury_str = (
