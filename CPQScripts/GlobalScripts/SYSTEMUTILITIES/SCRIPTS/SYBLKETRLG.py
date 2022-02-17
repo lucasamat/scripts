@@ -922,6 +922,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			selected_rows = selectPN if selectPN else selected_rows
 			qury_str = ""
 			Trace.Write(str(CLICKEDID)+'--Values-->'+str(A_Values))
+			Trace.Write("selected_rows_CHK "+str(selected_rows))
 			if A_Keys!="" and A_Values!="":
 				for key,val in zip(A_Keys,A_Values):
 					if(val!=""):
