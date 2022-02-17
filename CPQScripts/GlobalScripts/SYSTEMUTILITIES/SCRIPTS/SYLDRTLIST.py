@@ -1900,17 +1900,22 @@ class SYLDRTLIST:
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start						
 						if billing_date_column:
-							get_billing_types = ''                       
+							get_billing_types = get_ttl_amt = ''                       
 							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 							Trace.Write('pivot_columns-Qustr---'+str(Qustr))
 							get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,RecAttValue))
 							if get_billing_type:
 								get_billing_types = get_billing_type.BILLING_TYPE
+								if get_billing_types =='FIXED':
+									get_ttl_amt = 'BILLING_VALUE'
+								else:
+									get_ttl_amt = 'ESTVAL_INGL_CURR'
 							if Qustr:
 								if str(TreeParentParam)== "Billing":
 									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
 								else:
 									Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
+							Trace.Write('get_ttl_amt--'+str(get_ttl_amt))
 							pivot_query_str = """
 										SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
 										AS ROW, *
@@ -1922,11 +1927,11 @@ class SYLDRTLIST:
 											) AS IQ
 											PIVOT
 											(
-												SUM(BILLING_VALUE)
+												SUM({get_ttl_amt})
 												FOR BILLING_DATE IN ({PivotColumns})
 											)AS PVT
 										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
-													WhereString=Qustr, PivotColumns=pivot_columns)                        
+													WhereString=Qustr, PivotColumns=pivot_columns,get_ttl_amt=get_ttl_amt)                        
 							Qury_str = """
 										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY EQUIPMENT_ID
 										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
