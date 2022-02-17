@@ -4369,7 +4369,7 @@ class SYLDRTLIST:
 										
 				else:								
 					dblclick_ele.append(invs)
-
+					Trace.Write("invs-chk "+str(invs))
 					if str(invs) in right_align_list:
 						visible = ""
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_VALUE':                            
@@ -4443,7 +4443,7 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)   
-						if RECORD_ID == 'SYOBJR-98876' :
+						if invs == "SERVICE_DESCRIPTION" and RECORD_ID == 'SYOBJR-98876' :
 							Trace.Write("CHKNG_J_00 "+str(qstring))
 							table_header += (
 								'<th  data-field="'
