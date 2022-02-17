@@ -1980,7 +1980,7 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					##involved parties source fab ends
 					elif str(RECORD_ID) == "SYOBJR-98859":                        
-						Qustr += " AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' "
+						Qustr += " AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND M.VISIBLE_INCONFIG = 'True'"
 						Qury_str = (
 							"select DISTINCT top "
 							+ str(PerPage)
@@ -1988,9 +1988,9 @@ class SYLDRTLIST:
 							+ str(select_obj_str)
 							+ ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "
 							+ str(Wh_API_NAMEs)
-							+ ") AS ROW, * from "
+							+ ") AS ROW, S.* from "
 							+ str(ObjectName)
-							+ " (nolock) "
+							+ " S (nolock) INNER JOIN MAADPR M ON M.COMP_PRDOFR_ID=S.SERVICE_ID"
 							+ str(Qustr)
 							+ " ) m where m.ROW BETWEEN "
 							+ str(Page_start)
@@ -2475,6 +2475,7 @@ class SYLDRTLIST:
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 				##involved parties source fab ends
 				elif str(RECORD_ID) == "SYOBJR-98859":
+					Qustr += " AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND M.VISIBLE_INCONFIG = 'True'"
 					Qury_str = (
 						"select DISTINCT top "
 						+ str(PerPage)
@@ -2482,9 +2483,9 @@ class SYLDRTLIST:
 						+ str(select_obj_str)
 						+ ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "
 						+ str(Wh_API_NAMEs)
-						+ ") AS ROW, * from "
+						+ ") AS ROW, S.* from "
 						+ str(ObjectName)
-						+ " (nolock) "
+						+ " S (nolock) INNER JOIN MAADPR M ON M.COMP_PRDOFR_ID=S.SERVICE_ID"
 						+ str(Qustr)
 						+ " ) m where m.ROW BETWEEN "
 						+ str(Page_start)
