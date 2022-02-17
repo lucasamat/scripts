@@ -905,7 +905,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 	VALUE1 = []
 	VALUE2 =[]
 	selected_rows = RECORDID.split(",")
-	
+	Trace.Write("SELECT_ALL_CHK "+str(SELECTALL))
 	clicked = CLICKEDID.split("_")
 	obj_id = clicked[2] + "-" + clicked[3] + "-" + clicked[4] + "-" + clicked[5] + "-" + clicked[6]
 	
