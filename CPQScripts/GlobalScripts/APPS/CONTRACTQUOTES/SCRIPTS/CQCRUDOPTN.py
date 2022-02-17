@@ -5203,9 +5203,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					FROM SAQGPA (NOLOCK) JOIN MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_RECORD_ID = SAQGPA.EQUIPMENT_RECORD_ID AND 
 					MAEQUP.EQUIPMENT_ID = SAQGPA.ASSEMBLY_ID WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}'  """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
 
-			#drop_saqgpm_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpm_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpm_backup_table)+" END  ' ")
+			drop_saqgpm_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpm_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpm_backup_table)+" END  ' ")
 
-			#drop_saqsco_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsco_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsco_backup_table)+" END  ' ")
+			drop_saqsco_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsco_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsco_backup_table)+" END  ' ")
 	
 			Sql.RunQuery("""UPDATE SAQGPM
 						SET
@@ -5621,9 +5621,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SYSPBT.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID
 					WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param,BatchGroupRecordId =kwargs.get('batch_group_record_id')))
 
-			#drop_saqgpm_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpm_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpm_backup_table)+" END  ' ")
+			drop_saqgpm_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpm_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpm_backup_table)+" END  ' ")
 
-			#drop_saqsco_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsco_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsco_backup_table)+" END  ' ")
+			drop_saqsco_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsco_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsco_backup_table)+" END  ' ")
 			
 			Sql.RunQuery("""UPDATE SAQGPM
 						SET
@@ -5978,12 +5978,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					except:
 						Trace.Write("EXCEPT----COV OBJ ENTITLEMENT IFLOW")
 				Entitlement_end_time = time.time()
-				#Log.Info("Entitlement end==> "+str(Entitlement_end_time - Entitlement_start_time))
-				# if	self.contract_quote_id != '3050010698':
-				# 	self._process_query(
-				# 		"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-				# 			BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
-				# 		))
+				#Log.Info("Entitlement end==> "+str(Entitlement_end_time - Entitlement_start_time)
+				self._process_query(
+					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
+					))
 				covered_end_time = time.time()
 				#Log.Info("ADD_COVERED_OBJ end==> "+str(covered_end_time - covered_start_time) +" QUOTE ID----"+str(self.contract_quote_id))
 				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='CMP' """.format(str(self.contract_quote_record_id),self.quote_revision_record_id))
