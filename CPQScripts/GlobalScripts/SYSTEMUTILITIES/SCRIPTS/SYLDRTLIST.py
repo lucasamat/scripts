@@ -4118,6 +4118,19 @@ class SYLDRTLIST:
 				# 	continue
 				
 				#normal+Collapsaible+normal
+				elif invs == "SERVICE_DESCRIPTION" and RECORD_ID == 'SYOBJR-98876' :
+					Trace.Write("CHKNG_J_00 "+str(qstring))
+					table_header += (
+						'<th  data-field="'
+						+ str(invs)
+						+ '" data-filter-control="input" data-title-tooltip="'
+						+ str(qstring)
+						+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
+						+ rowspan
+						+'>'
+						+ str(qstring)
+						+ "</th>"
+					)  
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('QUANTITY','GREENBOOK','FABLOCATION_ID','CNTYER','STADTE','ENDDTE','TENVGC','TNTVGC','TNTMGC','BILTYP','PRINT_FLAG'):
 					align = ''
 					rowspan_level1 = ""
@@ -4443,19 +4456,7 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)   
-						if invs == "SERVICE_DESCRIPTION" and RECORD_ID == 'SYOBJR-98876' :
-							Trace.Write("CHKNG_J_00 "+str(qstring))
-							table_header += (
-								'<th  data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-title-tooltip="'
-								+ str(qstring)
-								+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
-								+ rowspan
-								+'>'
-								+ str(qstring)
-								+ "</th>"
-							)  
+
 						# if invs == "EQUIPMENT_LINE_ID":
 						# 	Trace.Write("@3817"+str(qstring))
 						# 	table_header += (
