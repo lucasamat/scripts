@@ -37,10 +37,12 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 		gettotalamt =0
 		gettotalamt_update =0
 		if str(gettotalamt_beforeupdate.BILLING_TYPE).upper() == "FIXED":
+			Trace.Write('40--ANNUAL_BILLING_AMOUNT---'+str(gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT))
 			gettotalamt = gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT
 			if gettotalamt_beforeupdate:
 				gettotalamt_update = float(gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT)+float(value[2].replace(",",""))
 		else:
+			Trace.Write('45--EST_VAL_GLOBAL----'+str(gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT))
 			gettotalamt = gettotalamt_beforeupdate.ESTVAL_INGL_CURR
 			if gettotalamt_beforeupdate:
 				gettotalamt_update = float(gettotalamt_beforeupdate.ESTVAL_INGL_CURR)+float(value[2].replace(",",""))
