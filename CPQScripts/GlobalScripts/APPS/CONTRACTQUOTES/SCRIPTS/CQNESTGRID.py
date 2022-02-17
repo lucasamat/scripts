@@ -6810,6 +6810,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			)
 	QueryCount = ""
 	if TreeSuperParentParam == "Product Offerings" or (TreeTopSuperParentParam== "Comprehensive Services" and TreeParentParam=="Add-On Products"):
+		Trace.Write('6813---')
 		QueryCountObj = Sql.GetFirst(
 			"select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
@@ -6822,6 +6823,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ "'"
 		)
 	elif TreeSuperParentParam == "Add-On Products" :
+		Trace.Write('6813--6826-')
 		QueryCountObj = Sql.GetFirst(
 			"select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
@@ -6834,6 +6836,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ "'"
 		)
 	elif (str(TreeParam).startswith("Sending") or str(TreeParam).startswith("Receiving")):
+		Trace.Write('6839-------6839')
 		QueryCountObj = Sql.GetFirst(
 			"select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
@@ -6849,6 +6852,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		)
 	else:
 		if TreeTopSuperParentParam == "Product Offerings" :
+			Trace.Write('6839--6855-----6855---')
 			QueryCountObj = Sql.GetFirst(
 				"select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
@@ -6864,6 +6868,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			)
 		elif TreeTopSuperParentParam == "Add-On Products" or TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products":
 			if TreeParentParam == "Receiving Equipment":
+				Trace.Write('6871--------')
 				QueryCountObj = Sql.GetFirst(
 					"select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 					+ str(ContractRecordId)
@@ -6878,6 +6883,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 					+"' "
 				)
 			else:
+				Trace.Write('6871----6886-------')
 				QueryCountObj = Sql.GetFirst(
 					"select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 					+ str(ContractRecordId)
