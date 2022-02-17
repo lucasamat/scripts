@@ -6899,6 +6899,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 					+ str(TreeParam) +"' "
 				)
 		elif TreeTopSuperParentParam == "Complementary Products":
+			Trace.Write('6902--------')
 			QueryCountObj = Sql.GetFirst(
 				"select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
@@ -6913,6 +6914,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 				+ "'"
 			)
 		elif TreeSuperParentParam == "Receiving Equipment":
+			Trace.Write('6917--------')
 			QueryCountObj = Sql.GetFirst(
 				"select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
