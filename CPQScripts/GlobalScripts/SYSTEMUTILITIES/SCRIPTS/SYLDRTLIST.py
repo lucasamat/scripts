@@ -1901,7 +1901,8 @@ class SYLDRTLIST:
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start						
 						if billing_date_column:                        
 							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
-							Trace.Write('pivot_columns--'+str(get_last_date_billmatxirx))						
+							Trace.Write('pivot_columns-Qustr---'+str(Qustr))
+							get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}'".format(TreeParam))
 							if Qustr:
 								if str(TreeParentParam)== "Billing":
 									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
