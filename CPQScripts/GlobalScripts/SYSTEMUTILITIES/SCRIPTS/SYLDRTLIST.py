@@ -4443,7 +4443,18 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)   
-		
+						if invs == "SERVICE_DESCRIPTION"and RECORD_ID != 'SYOBJR-98876' :
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+							)  
 						# if invs == "EQUIPMENT_LINE_ID":
 						# 	Trace.Write("@3817"+str(qstring))
 						# 	table_header += (
