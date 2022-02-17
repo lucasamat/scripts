@@ -4125,7 +4125,7 @@ class SYLDRTLIST:
 						+ str(invs)
 						+ '" data-filter-control="input" data-title-tooltip="'
 						+ str(qstring)
-						+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
+						+ '" data-formatter="offeringdescriptionhyperlink" data-sortable="true" '
 						+ rowspan
 						+'>'
 						+ str(qstring)
