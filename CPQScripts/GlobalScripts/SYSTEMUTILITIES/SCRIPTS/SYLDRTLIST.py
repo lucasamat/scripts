@@ -1778,7 +1778,7 @@ class SYLDRTLIST:
 										+ str(select_obj_str)
 										+ ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "
 										+ str(Wh_API_NAMEs)
-										+ ") AS ROW, S.QUOTE_SERVICE_RECORD_ID,S.SERVICE_ID,S.SERVICE_DESCRIPTION,S.PAR_SERVICE_ID,S.SERVICE_TYPE,S.QUOTE_RECORD_ID,S.SALESORG_RECORD_ID,S.UOM_RECORD_ID,S.PAR_SERVICE_RECORD_ID,S.QTEREV_RECORD_ID,S.SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],S.CpqTableEntryId  from SAQTSV S JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' )M ON S.SERVICE_ID = M.PRDOFR_ID "
+										+ ") AS ROW, S.QUOTE_SERVICE_RECORD_ID,S.SERVICE_ID,S.SERVICE_DESCRIPTION,S.PAR_SERVICE_ID,S.SERVICE_TYPE,S.QUOTE_RECORD_ID,S.SALESORG_RECORD_ID,S.UOM_RECORD_ID,S.PAR_SERVICE_RECORD_ID,S.QTEREV_RECORD_ID,S.SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],S.CpqTableEntryId  from SAQTSV S JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE'OR VISIBLE_INCONFIG = '1')M ON S.SERVICE_ID = M.PRDOFR_ID "
 										+ str(Qustr)
 										+ ") m where m.ROW BETWEEN "
 										+ str(Page_start)
@@ -1786,7 +1786,7 @@ class SYLDRTLIST:
 										+ str(Page_End)
 										+ ""
 									)
-							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " S (nolock)  JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' )M ON S.SERVICE_ID = M.PRDOFR_ID " + str(Qustr) 
+							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " S (nolock)  JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' OR VISIBLE_INCONFIG = '1')M ON S.SERVICE_ID = M.PRDOFR_ID " + str(Qustr) 
 						else: 							
 							#Qustr = "where QUOTE_ID = '"+str(contract_quote_record_id)+"'"                          
 							Qury_str = (
@@ -4955,7 +4955,7 @@ class SYLDRTLIST:
 										+ col_name
 										+ " FROM "
 										+ str(ObjectName)
-										+ " (nolock) JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' )M ON SERVICE_ID = M.PRDOFR_ID  where "
+										+ " (nolock) JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' OR VISIBLE_INCONFIG = '1')M ON SERVICE_ID = M.PRDOFR_ID  where "
 										+ str(Wh_API_NAME)
 										+ " = '"
 										+ str(RecAttValue) 
@@ -7163,7 +7163,7 @@ class SYLDRTLIST:
 									+ str(select_obj_str)
 									+ ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "
 									+ str(Wh_API_NAMEs)
-									+ ") AS ROW, S.QUOTE_SERVICE_RECORD_ID,S.SERVICE_ID,S.SERVICE_DESCRIPTION,S.PAR_SERVICE_ID,S.SERVICE_TYPE,S.QUOTE_RECORD_ID,S.SALESORG_RECORD_ID,S.UOM_RECORD_ID,S.PAR_SERVICE_RECORD_ID,S.QTEREV_RECORD_ID,S.SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],S.CpqTableEntryId  from SAQTSV S JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' )M ON S.SERVICE_ID = M.PRDOFR_ID "
+									+ ") AS ROW, S.QUOTE_SERVICE_RECORD_ID,S.SERVICE_ID,S.SERVICE_DESCRIPTION,S.PAR_SERVICE_ID,S.SERVICE_TYPE,S.QUOTE_RECORD_ID,S.SALESORG_RECORD_ID,S.UOM_RECORD_ID,S.PAR_SERVICE_RECORD_ID,S.QTEREV_RECORD_ID,S.SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],S.CpqTableEntryId  from SAQTSV S JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' OR VISIBLE_INCONFIG = '1')M ON S.SERVICE_ID = M.PRDOFR_ID "
 									+ str(Qustr)
 									+ ") m where m.ROW BETWEEN "
 									+ str(Page_start)
@@ -7171,7 +7171,7 @@ class SYLDRTLIST:
 									+ str(Page_End)
 									+ ""
 								)                      
-						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " S (nolock) JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' ) M ON S.SERVICE_ID = M.PRDOFR_ID " + str(Qustr) 
+						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " S (nolock) JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' OR VISIBLE_INCONFIG = '1') M ON S.SERVICE_ID = M.PRDOFR_ID " + str(Qustr) 
 					elif str(RECORD_ID) == "SYOBJR-98853" and str(TreeParam) == "Tracked Objects":
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00063").GetValue()
 						Qury_str = (
@@ -8639,7 +8639,7 @@ class SYLDRTLIST:
 										+ str(select_obj_str)
 										+ ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "
 										+ str(Wh_API_NAMEs)
-										+ ") AS ROW, S.QUOTE_SERVICE_RECORD_ID,S.SERVICE_ID,S.SERVICE_DESCRIPTION,S.PAR_SERVICE_ID,S.SERVICE_TYPE,S.QUOTE_RECORD_ID,S.SALESORG_RECORD_ID,S.UOM_RECORD_ID,S.PAR_SERVICE_RECORD_ID,S.QTEREV_RECORD_ID,S.SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],S.CpqTableEntryId  from SAQTSV S JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' )M ON S.SERVICE_ID = M.PRDOFR_ID "
+										+ ") AS ROW, S.QUOTE_SERVICE_RECORD_ID,S.SERVICE_ID,S.SERVICE_DESCRIPTION,S.PAR_SERVICE_ID,S.SERVICE_TYPE,S.QUOTE_RECORD_ID,S.SALESORG_RECORD_ID,S.UOM_RECORD_ID,S.PAR_SERVICE_RECORD_ID,S.QTEREV_RECORD_ID,S.SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],S.CpqTableEntryId  from SAQTSV S JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' OR VISIBLE_INCONFIG = '1')M ON S.SERVICE_ID = M.PRDOFR_ID "
 										+ str(Qustr)
 										+ ") m where m.ROW BETWEEN "
 										+ str(Page_start)
@@ -8648,7 +8648,7 @@ class SYLDRTLIST:
 										+ ""
 									)                           
 							
-							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " S (nolock) JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' ) M ON S.SERVICE_ID = M.PRDOFR_ID " + str(Qustr)
+							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " S (nolock) JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' OR VISIBLE_INCONFIG = '1') M ON S.SERVICE_ID = M.PRDOFR_ID " + str(Qustr)
 						elif str(RECORD_ID) == "SYOBJR-98853" and str(TreeParam) == "Tracked Objects":
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00063").GetValue()
 							Qury_str = (
