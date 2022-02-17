@@ -9713,8 +9713,14 @@ class SYLDRTLIST:
 						footer_tot += '<th colspan="1" class="text-left">{}</th>'.format(curr_symbol)
 						footer_tot += '<th colspan="1" class="text-right">{}</th>'.format(gettotalamt)
 						for val in gettotaldateamt:
-							getamt = str(my_format.format(round(float(val.BILLING_VALUE), int(decimal_place))))
-							footer_tot += '<th class="text-right">{}</th>'.format(getamt)					
+							if str(get_billing_types).upper() == "VARIABLE":
+								getamt = str(my_format.format(round(float(val.ESTVAL_INGL_CURR), int(decimal_place))))
+								footer_tot += '<th class="text-right">{}</th>'.format(getamt)
+							else:
+								getamt = str(my_format.format(round(float(val.BILLING_VALUE), int(decimal_place))))
+								footer_tot += '<th class="text-right">{}</th>'.format(getamt)
+							#getamt = str(my_format.format(round(float(val.BILLING_VALUE), int(decimal_place))))
+							#footer_tot += '<th class="text-right">{}</th>'.format(getamt)					
 					
 				for key, col_name in enumerate(list(eval(Columns))):                    
 					if ObjectName == 'SAQIBP' and TreeParam != 'Quote Items' and (col_name in billing_date_column or col_name == 'QUOTE_CURRENCY'):                        
