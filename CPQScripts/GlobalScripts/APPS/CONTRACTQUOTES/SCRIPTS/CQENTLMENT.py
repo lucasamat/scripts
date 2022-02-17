@@ -1287,15 +1287,17 @@ class Entitlements:
 									Sql.RunQuery(update_uom_recs)
 									Quote.SetGlobal("ConsignedQty",str(entitlement_value))
 								except:
-									Log.Info("EXCEPT IF UPDATE SAQSPT---------")
+									#Log.Info("EXCEPT IF UPDATE SAQSPT---------")
+									pass
 							else:
 								try:
 									update_uom_recs = """UPDATE SAQSPT SET SAQSPT.DELIVERY_MODE ='OFFSITE', SAQSPT.SCHEDULE_MODE = 'ON REQUEST'  WHERE SAQSPT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQSPT.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.ContractRecordId ,quote_revision_rec_id =self.revision_recordid)
-									Log.Info("---"+str(update_uom_recs))
+									#Log.Info("---"+str(update_uom_recs))
 									Sql.RunQuery(update_uom_recs)
 									Quote.SetGlobal("ConsignedQty",str(entitlement_value))
 								except:
-									Log.Info("EXCEPT ELSE UPDATE SAQSPT-----")
+									#Log.Info("EXCEPT ELSE UPDATE SAQSPT-----")
+									pass
 						elif key == "AGS_Z0091_PQB_PPCPRM" and entitlement_value == "Yes":							
 							total_price = 0.00
 							for i in range(1,11):
@@ -2132,7 +2134,7 @@ class Entitlements:
 					customer_wants_participate = get_ent_val[0]
 					break
 			if customer_wants_participate == 'No':
-				Log.Info("CWP=====>"+str(customer_wants_participate))
+				#Log.Info("CWP=====>"+str(customer_wants_participate))
 				Trace.Write('2066----------'+str(saqtse_obj.QUOTE_ID))
 
 				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtse_obj.QUOTE_ID}})
@@ -2174,7 +2176,8 @@ class Entitlements:
 
 
 		except:
-			Log.Info("Customer Wants to Participate--> 'NO' Failed to delete!!!")
+			#Log.Info("Customer Wants to Participate--> 'NO' Failed to delete!!!")
+			pass
 		# Trace.Write('get_conflict_message--2043----'+str(get_conflict_message))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
