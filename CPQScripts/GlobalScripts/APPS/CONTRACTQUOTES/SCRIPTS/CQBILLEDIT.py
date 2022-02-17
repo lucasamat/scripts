@@ -36,7 +36,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 		gettotalamt_beforeupdate = Sql.GetFirst("SELECT SUM(BILLING_VALUE) as ANNUAL_BILLING_AMOUNT,SUM(ESTVAL_INGL_CURR) as ESTVAL_INGL_CURR,SERVICE_ID,BILLING_TYPE FROM SAQIBP WHERE  QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and EQUIPMENT_ID = '{EID}' and BILLING_DATE NOT IN {BD} GROUP BY SERVICE_ID,BILLING_TYPE".format(cq=str(ContractRecordId),EID=value[0], revision_rec_id = quote_revision_record_id ,BD=str(tuple(get_billig_date_list)).replace(',)',')') ))
 		gettotalamt =0
 		gettotalamt_update =0
-		if str(gettotalamt_beforeupdate.BILLING_TYPE).upper == "FIXED":
+		if str(gettotalamt_beforeupdate.BILLING_TYPE).upper() == "FIXED":
 			gettotalamt = gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT
 			if gettotalamt_beforeupdate:
 				gettotalamt_update = float(gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT)+float(value[2].replace(",",""))
