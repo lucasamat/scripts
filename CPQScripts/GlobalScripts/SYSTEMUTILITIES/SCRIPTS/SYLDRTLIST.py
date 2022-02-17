@@ -1904,7 +1904,7 @@ class SYLDRTLIST:
 							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 							Trace.Write('pivot_columns-Qustr---'+str(Qustr))
 							get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,RecAttValue))
-							column_before_pivot_change = 'SERVICE_ID,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,BILLING_VALUE,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CONVERT(VARCHAR(10),FORMAT(BILLING_DATE,'MM-dd-yyyy'),101) AS [BILLING_DATE],ESTVAL_INGL_CURR'
+							column_before_pivot_changes = 'SERVICE_ID,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,BILLING_VALUE,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CONVERT(VARCHAR(10),FORMAT(BILLING_DATE,'MM-dd-yyyy'),101) AS [BILLING_DATE],ESTVAL_INGL_CURR'
 							if get_billing_type:
 								get_billing_types = get_billing_type.BILLING_TYPE
 								if get_billing_types =='FIXED':
@@ -1916,7 +1916,7 @@ class SYLDRTLIST:
 									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
 								else:
 									Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
-							Trace.Write(str(get_billing_types)+'---get_billing_types---get_ttl_amt--'+str(column_before_pivot_change))
+							Trace.Write(str(get_billing_types)+'---get_billing_types---get_ttl_amt--'+str(column_before_pivot_changes))
 							pivot_query_str = """
 										SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
 										AS ROW, *
