@@ -1931,7 +1931,7 @@ class SYLDRTLIST:
 												SUM({get_ttl_amt})
 												FOR BILLING_DATE IN ({PivotColumns})
 											)AS PVT
-										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
+										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_changes, ObjectName=ObjectName,
 													WhereString=Qustr, PivotColumns=pivot_columns,get_ttl_amt=get_ttl_amt)                        
 							Qury_str = """
 										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY EQUIPMENT_ID
