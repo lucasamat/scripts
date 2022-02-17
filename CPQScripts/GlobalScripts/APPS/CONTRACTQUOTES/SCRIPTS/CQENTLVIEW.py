@@ -1000,8 +1000,11 @@ class EntitlementView():
 							else:
 								add_style = ""
 							#Trace.Write('--attributeEditlst-930----'+str(attributeEditlst))
-							if 'AGS_{}_CVR_FABLCY'.format(ProductPartnumber) in attrSysId and attributeEditlst:
-								attributeEditlst.remove(attrSysId)
+							try:
+								if 'AGS_{}_CVR_FABLCY'.format(ProductPartnumber) in attrSysId and attrSysId in attributeEditlst :
+									attributeEditlst.remove(attrSysId)
+							except:
+								pass
 							if attrSysId in attributeEditlst :
 								disable_edit = 'disable_edit'
 								edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'								
