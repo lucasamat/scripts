@@ -345,7 +345,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					{amount_column} AS DOC_CURRENCY,
 					SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,	
 					SAQRIT.COMVAL_INGL_CURR	 as COMMITTED_VALUE_INGL_CURR,
-					SAQRIT.ESTVAL_INGL_CURR	as 	ESTVAL_INGL_CURR,
+					ISNULL({amount_column}, 0) / {get_val}	as 	ESTVAL_INGL_CURR,
 					SAQRIT.ESTIMATED_VALUE,		
 					SAQSCO.QUOTE_RECORD_ID,
 					SAQSCO.QTEREV_ID,
@@ -394,7 +394,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,
 					
 					COMVAL_INGL_CURR as COMMITTED_VALUE_INGL_CURR,
-					ESTVAL_INGL_CURR as ESTVAL_INGL_CURR,
+					ISNULL({amount_column}, 0) / {get_val}	as 	ESTVAL_INGL_CURR,
 					{amount_column} AS DOC_CURRENCY,
 					ESTIMATED_VALUE,	
 					QUOTE_RECORD_ID,
