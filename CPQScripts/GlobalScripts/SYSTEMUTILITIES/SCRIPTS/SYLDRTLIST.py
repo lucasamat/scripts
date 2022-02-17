@@ -1899,10 +1899,13 @@ class SYLDRTLIST:
 										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start						
-						if billing_date_column:                        
+						if billing_date_column:
+							get_billing_types = ''                       
 							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 							Trace.Write('pivot_columns-Qustr---'+str(Qustr))
-							get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}'".format(TreeParam))
+							get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,RecAttValue))
+							if get_billing_type:
+								get_billing_types = get_billing_type.BILLING_TYPE
 							if Qustr:
 								if str(TreeParentParam)== "Billing":
 									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
