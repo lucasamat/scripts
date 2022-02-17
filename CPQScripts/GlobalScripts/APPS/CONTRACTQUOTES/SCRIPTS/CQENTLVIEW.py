@@ -1000,7 +1000,7 @@ class EntitlementView():
 							else:
 								add_style = ""
 							#Trace.Write('--attributeEditlst-930----'+str(attributeEditlst))
-							if 'AGS_{}_CVR_FABLCY'.format(ProductPartnumber) in attrSysId :
+							if 'AGS_{}_CVR_FABLCY'.format(ProductPartnumber) in attrSysId and attributeEditlst:
 								attributeEditlst.remove(attrSysId)
 							if attrSysId in attributeEditlst :
 								disable_edit = 'disable_edit'
