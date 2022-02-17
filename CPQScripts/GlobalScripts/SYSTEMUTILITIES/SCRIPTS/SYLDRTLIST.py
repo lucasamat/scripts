@@ -5485,8 +5485,15 @@ class SYLDRTLIST:
 				contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			except:
 				contract_quote_record_id = ''    
-			
+			get_billing_types = get_ttl_amt =""
 			if Wh_OBJECT_NAME == 'SAQIBP':
+				get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,contract_quote_record_id))
+				if get_billing_type:
+					get_billing_types = get_billing_type.BILLING_TYPE
+					if get_billing_types =='FIXED':
+						get_ttl_amt = 'BILLING_VALUE'
+					else:
+						get_ttl_amt = 'ESTVAL_INGL_CURR'
 				try:
 					if SubTab:
 						end = int(SubTab.split(' ')[-1]) * 12
@@ -6989,11 +6996,11 @@ class SYLDRTLIST:
 										) AS IQ
 										PIVOT
 										(
-											SUM(BILLING_VALUE)
+											SUM({get_ttl_amt})
 											FOR BILLING_DATE IN ({PivotColumns})
 										)AS PVT
 									""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
-												WhereString=Qustr, PivotColumns=pivot_columns)
+												WhereString=Qustr, PivotColumns=pivot_columns,get_ttl_amt=get_ttl_amt)
 						Qury_str = """
 									SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY EQUIPMENT_ID
 									""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
