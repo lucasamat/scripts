@@ -4369,7 +4369,7 @@ class SYLDRTLIST:
 										
 				else:								
 					dblclick_ele.append(invs)
-					Trace.Write("invs-chk "+str(invs))
+					
 					if str(invs) in right_align_list:
 						visible = ""
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_VALUE':                            
@@ -4470,6 +4470,7 @@ class SYLDRTLIST:
 						# 			+ "</th>"
 						# 		)                      
 					elif str(invs) in center_align_list:
+						Trace.Write("invs-chk_01 "+str(invs))
 						if RECORD_ID == 'SYOBJR-00010' and str(invs) == 'SERVICE_ID' and TreeParam != "Quote Preview":
 							table_header += (
 								'<th class="wth60" data-field="'
@@ -4499,7 +4500,8 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)
-					else:                       
+					else:   
+						Trace.Write("invs-chk_02 "+str(invs))                    
 						if str(qstring) == "Key": 							
 							if ObjectName == "CTCICO":
 								table_header += (
