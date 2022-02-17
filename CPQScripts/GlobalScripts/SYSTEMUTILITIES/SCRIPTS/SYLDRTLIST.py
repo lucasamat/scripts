@@ -388,7 +388,7 @@ class SYLDRTLIST:
 				get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,contract_quote_record_id))
 				if get_billing_type:
 					get_billing_types = get_billing_type.BILLING_TYPE
-					if get_billing_types =='FIXED':
+					if str(get_billing_types).upper() =='FIXED':
 						get_ttl_amt = 'BILLING_VALUE'
 					else:
 						get_ttl_amt = 'ESTVAL_INGL_CURR'			
@@ -1915,7 +1915,7 @@ class SYLDRTLIST:
 							column_before_pivot_changes = "SERVICE_ID,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,BILLING_VALUE,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CONVERT(VARCHAR(10),FORMAT(BILLING_DATE,'MM-dd-yyyy'),101) AS [BILLING_DATE],ESTVAL_INGL_CURR"
 							if get_billing_type:
 								get_billing_types = get_billing_type.BILLING_TYPE
-								if get_billing_types =='FIXED':
+								if str(get_billing_types).upper() =='FIXED':
 									get_ttl_amt = 'BILLING_VALUE'
 									column_before_pivot_changes = column_before_pivot_change
 								else:
@@ -5490,7 +5490,7 @@ class SYLDRTLIST:
 				get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,contract_quote_record_id))
 				if get_billing_type:
 					get_billing_types = get_billing_type.BILLING_TYPE
-					if get_billing_types =='FIXED':
+					if str(get_billing_types).upper() =='FIXED':
 						get_ttl_amt = 'BILLING_VALUE'
 					else:
 						get_ttl_amt = 'ESTVAL_INGL_CURR'
