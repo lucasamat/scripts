@@ -385,7 +385,7 @@ class SYLDRTLIST:
 			#A055S000P01-14047 end
 			#delivery pivot end
 			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':
-				get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,RecAttValue))
+				get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,contract_quote_record_id))
 				if get_billing_type:
 					get_billing_types = get_billing_type.BILLING_TYPE
 					if get_billing_types =='FIXED':
