@@ -2500,8 +2500,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						unapplied = float(credit_details.WRBTR)-int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.WRBTR)
 					else:
 						unapplied = float(credit_details.UNBL_INGL_CURR)-int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.UNBL_INGL_CURR)
-                    if str(credit_details.CRTAPP_INGL_CURR) == "":
-                        credit_details.CRTAPP_INGL_CURR = 0
+					if str(credit_details.CRTAPP_INGL_CURR) == "":
+						credit_details.CRTAPP_INGL_CURR = 0
 					Sql.RunQuery("UPDATE SACRVC SET CRTAPP_INGL_CURR = '{}', UNBL_INGL_CURR = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CRTAPP_INGL_CURR)- int(APPLIED_CREDITS[key]), unapplied, id))
 					# except Exception as e:
 					# 	Trace.Write('EXCEPTION: '+str(e))
@@ -5181,7 +5181,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					JOIN MAEAPK(NOLOCK) ON MAEAPK.EQUIPMENT_RECORD_ID = saqsco_backup_table.EQUIPMENT_RECORD_ID AND MAEAPK.ASSEMBLY_ID = MAEQUP.EQUIPMENT_ID AND MAEAPK.PM_RECORD_ID = saqgpm_backup_table.PM_RECORD_ID
 					JOIN MAEQTY (NOLOCK) ON MAEQTY.EQUIPMENT_TYPE_ID = MAEQUP.EQUIPMENTTYPE_ID
 					WHERE saqgpm_backup_table.QUOTE_RECORD_ID = '{QuoteRecordId}' AND 
-     				saqgpm_backup_table.QTEREV_RECORD_ID = '{RevisionRecordId}' AND saqgpm_backup_table.QUOTE_RECORD_ID = '{QuoteRecordId}' AND saqgpm_backup_table.SERVICE_ID = '{TreeParam}' AND MAEQTY.COSTING_RELEVANT = 'True') PM_EVENT_ASSEMBLY  LEFT JOIN SAQGPA (NOLOCK) AS ASSEMBLY ON PM_EVENT_ASSEMBLY.QUOTE_RECORD_ID = ASSEMBLY.QUOTE_RECORD_ID AND ASSEMBLY.QTEREV_RECORD_ID = PM_EVENT_ASSEMBLY.QTEREV_RECORD_ID AND ASSEMBLY.SERVICE_RECORD_ID = PM_EVENT_ASSEMBLY.SERVICE_RECORD_ID AND ASSEMBLY.GREENBOOK_RECORD_ID = PM_EVENT_ASSEMBLY.GREENBOOK_RECORD_ID AND ASSEMBLY.GOTCODE_RECORD_ID = PM_EVENT_ASSEMBLY.GOTCODE_RECORD_ID AND  ASSEMBLY.ASSEMBLY_RECORD_ID = PM_EVENT_ASSEMBLY.ASSEMBLY_RECORD_ID AND ASSEMBLY.EQUIPMENT_RECORD_ID = PM_EVENT_ASSEMBLY.EQUIPMENT_RECORD_ID AND  ASSEMBLY.PM_RECORD_ID = PM_EVENT_ASSEMBLY.PM_RECORD_ID WHERE ISNULL(ASSEMBLY.ASSEMBLY_RECORD_ID,'') = '' """.format(
+					saqgpm_backup_table.QTEREV_RECORD_ID = '{RevisionRecordId}' AND saqgpm_backup_table.QUOTE_RECORD_ID = '{QuoteRecordId}' AND saqgpm_backup_table.SERVICE_ID = '{TreeParam}' AND MAEQTY.COSTING_RELEVANT = 'True') PM_EVENT_ASSEMBLY  LEFT JOIN SAQGPA (NOLOCK) AS ASSEMBLY ON PM_EVENT_ASSEMBLY.QUOTE_RECORD_ID = ASSEMBLY.QUOTE_RECORD_ID AND ASSEMBLY.QTEREV_RECORD_ID = PM_EVENT_ASSEMBLY.QTEREV_RECORD_ID AND ASSEMBLY.SERVICE_RECORD_ID = PM_EVENT_ASSEMBLY.SERVICE_RECORD_ID AND ASSEMBLY.GREENBOOK_RECORD_ID = PM_EVENT_ASSEMBLY.GREENBOOK_RECORD_ID AND ASSEMBLY.GOTCODE_RECORD_ID = PM_EVENT_ASSEMBLY.GOTCODE_RECORD_ID AND  ASSEMBLY.ASSEMBLY_RECORD_ID = PM_EVENT_ASSEMBLY.ASSEMBLY_RECORD_ID AND ASSEMBLY.EQUIPMENT_RECORD_ID = PM_EVENT_ASSEMBLY.EQUIPMENT_RECORD_ID AND  ASSEMBLY.PM_RECORD_ID = PM_EVENT_ASSEMBLY.PM_RECORD_ID WHERE ISNULL(ASSEMBLY.ASSEMBLY_RECORD_ID,'') = '' """.format(
 					UserId=self.user_id,
 					UserName=self.user_name,
 					TreeParam=self.tree_param,
@@ -5197,13 +5197,13 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							FABLOCATION_NAME = MAEQUP.FABLOCATION_NAME,
 							FABLOCATION_RECORD_ID = MAEQUP.FABLOCATION_RECORD_ID		
 							FROM SAQGPA(NOLOCK) JOIN MAEQUP(NOLOCK) ON MAEQUP.PAR_EQUIPMENT_RECORD_ID = SAQGPA.EQUIPMENT_RECORD_ID WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQGPA.FABLOCATION_RECORD_ID,'') = '' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param ))
-   
+
 			Sql.RunQuery("""UPDATE SAQGPA
 				SET PROCESS_TYPE = MAEQUP.PROCESS_TYPE,
 					DEVICE_NODE = MAEQUP.DEVICE_NODE		
 					FROM SAQGPA (NOLOCK) JOIN MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_RECORD_ID = SAQGPA.EQUIPMENT_RECORD_ID AND 
 					MAEQUP.EQUIPMENT_ID = SAQGPA.ASSEMBLY_ID WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}'  """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
-   
+
 			#drop_saqgpm_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpm_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpm_backup_table)+" END  ' ")
 
 			#drop_saqsco_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsco_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsco_backup_table)+" END  ' ")
@@ -5348,9 +5348,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 
 
 			saqsge_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSGE.GREENBOOK,SAQSGE.GREENBOOK_RECORD_ID,SAQSGE.SERVICE_RECORD_ID,SAQSGE.QUOTE_RECORD_ID,SAQSGE.QTEREV_RECORD_ID,SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,SAQSGE.ENTITLEMENT_XML,SAQSGE.CONFIGURATION_STATUS INTO "+str(saqsge_backup_table)+" FROM SAQSGE (NOLOCK) WHERE SAQSGE.QUOTE_RECORD_ID = ''{}'' AND SAQSGE.QTEREV_RECORD_ID = ''{}'' AND SAQSGE.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
-   
+
 			Sql.RunQuery("""UPDATE SAQGPE SET ENTITLEMENT_XML = saqsge_backup_table.ENTITLEMENT_XML,CONFIGURATION_STATUS = saqsge_backup_table.CONFIGURATION_STATUS FROM  {saqsge_backup_table} (NOLOCK)  saqsge_backup_table JOIN SAQGPE ON saqsge_backup_table.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND saqsge_backup_table.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND saqsge_backup_table.SERVICE_RECORD_ID = SAQGPE.SERVICE_RECORD_ID AND saqsge_backup_table.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPE.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQGPE.ENTITLEMENT_XML,'') = '' """.format(saqsge_backup_table = str(saqsge_backup_table),QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
-   
+
 			drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
 		else:
 			self._process_query("""INSERT SAQRGG (
@@ -5621,19 +5621,19 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					JOIN SYSPBT (NOLOCK) ON SYSPBT.QTEREV_RECORD_ID = SAQGPA.QTEREV_RECORD_ID AND 
 					SYSPBT.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID
 					WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param,BatchGroupRecordId =kwargs.get('batch_group_record_id')))
-   
+
 			#drop_saqgpm_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpm_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpm_backup_table)+" END  ' ")
 
 			#drop_saqsco_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsco_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsco_backup_table)+" END  ' ")
-   			
+			
 			Sql.RunQuery("""UPDATE SAQGPM
 						SET
 						PROCESS_TYPE = assembly.PROCESS_TYPE,
 						DEVICE_NODE = assembly.DEVICE_NODE
 						FROM SAQGPM (NOLOCK)
 						INNER JOIN (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_RECORD_ID,GOTCODE_RECORD_ID,PM_RECORD_ID,DEVICE_NODE,PROCESS_TYPE FROM SAQGPA where SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{TreeParam}' GROUP BY QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_RECORD_ID,GOTCODE_RECORD_ID,PM_RECORD_ID,DEVICE_NODE,PROCESS_TYPE) assembly ON SAQGPM.QUOTE_RECORD_ID = assembly.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = assembly.QTEREV_RECORD_ID 
-      					JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQGPM.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQGPM.QTEREV_RECORD_ID
-           				WHERE SAQGPM.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param,BatchGroupRecordId =kwargs.get('batch_group_record_id'), pm_level_value = ('Scheduled Maintenance','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value') != "Tool based") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance')))
+						JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQGPM.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQGPM.QTEREV_RECORD_ID
+						WHERE SAQGPM.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.SERVICE_ID = '{TreeParam}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param,BatchGroupRecordId =kwargs.get('batch_group_record_id'), pm_level_value = ('Scheduled Maintenance','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value') != "Tool based") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance')))
 
 			self._process_query(
 				"""INSERT SAQSKP (
@@ -5764,16 +5764,16 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					BatchGroupRecordId=kwargs.get('batch_group_record_id'))
 					)
 			
-   			#creating backup table for saqgpe table insert...
+			#creating backup table for saqgpe table insert...
 			saqsge_backup_table = "saqsge_backup_table_{}".format(self.contract_quote_id) 
 
 			drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
 
 
 			saqsge_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSGE.GREENBOOK,SAQSGE.GREENBOOK_RECORD_ID,SAQSGE.SERVICE_RECORD_ID,SAQSGE.QUOTE_RECORD_ID,SAQSGE.QTEREV_RECORD_ID,SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,SAQSGE.ENTITLEMENT_XML,SAQSGE.CONFIGURATION_STATUS INTO "+str(saqsge_backup_table)+" FROM SAQSGE (NOLOCK) WHERE SAQSGE.QUOTE_RECORD_ID = ''{}'' AND SAQSGE.QTEREV_RECORD_ID = ''{}'' AND SAQSGE.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
-   
+
 			Sql.RunQuery("""UPDATE SAQGPE SET ENTITLEMENT_XML = saqsge_backup_table.ENTITLEMENT_XML,CONFIGURATION_STATUS = saqsge_backup_table.CONFIGURATION_STATUS FROM  {saqsge_backup_table} (NOLOCK)  saqsge_backup_table JOIN SAQGPE ON saqsge_backup_table.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND saqsge_backup_table.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND saqsge_backup_table.SERVICE_RECORD_ID = SAQGPE.SERVICE_RECORD_ID AND saqsge_backup_table.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPE.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQGPE.ENTITLEMENT_XML,'') = '' """.format(saqsge_backup_table = str(saqsge_backup_table),QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
-   
+
 			drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
 				
 			# Sql.RunQuery("""UPDATE SAQGPE
@@ -5993,7 +5993,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				# 	CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"PREDEFINED DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
 				# except:
 				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
-    
+	
 			##To write the below condition to call the function when the user is changing the quote type or preventive maintainence labor attribute in the service level entitlement when the tools are added before...
 			if self.tools_from_ui != "Yes":
 				if self.applied_preventive_maintainence_quote_type_changed == "Yes" and self.tree_param in ("Z0009"):
