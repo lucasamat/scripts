@@ -4940,7 +4940,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	
 	def applied_preventive_maintainence(self, **kwargs):
 		###Deleting the SAQSCA,SAQSAP and SAQSKP TABLE records when the user is changing the quote type from Tool Based to other values...
-		Trace.Write("")
 		if kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes" and kwargs.get('tools_from_ui') != "Yes":
 			delete_obj_list = ["SAQSCA","SAQSAP","SAQSKP"]
 			for object in delete_obj_list:
