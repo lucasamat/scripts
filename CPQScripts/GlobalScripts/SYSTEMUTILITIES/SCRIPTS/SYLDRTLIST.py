@@ -384,7 +384,14 @@ class SYLDRTLIST:
 						Columns = Columns.replace(']', ','+delivery_date_joined+']')
 			#A055S000P01-14047 end
 			#delivery pivot end
-			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':				
+			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':
+				get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,RecAttValue))
+				if get_billing_type:
+					get_billing_types = get_billing_type.BILLING_TYPE
+					if get_billing_types =='FIXED':
+						get_ttl_amt = 'BILLING_VALUE'
+					else:
+						get_ttl_amt = 'ESTVAL_INGL_CURR'			
 				try:
 					if SubTab:
 						# item_billing_plan_obj = Sql.GetFirst("""SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID""".format(contract_quote_record_id,quote_revision_record_id))
@@ -407,6 +414,7 @@ class SYLDRTLIST:
 					end = ""
 					start = ""					
 				if str(TreeParam) == "Billing":
+
 					item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
 									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
 														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'
@@ -419,11 +427,11 @@ class SYLDRTLIST:
 														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
 															contract_quote_record_id,TreeParam, quote_revision_record_id, start, end))
 					try:
-						get_year_max = Sql.GetFirst("SELECT max(CpqTableEntryId) as cpqid,SUM(BILLING_VALUE) as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' GROUP BY GREENBOOK,SERVICE_ID")
-						get_total_amt = Sql.GetFirst("SELECT  BILLING_VALUE,ANNUAL_BILLING_AMOUNT from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' and CpqTableEntryId = '"+str(get_year_max.cpqid)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'")
+						get_year_max = Sql.GetFirst("SELECT max(CpqTableEntryId) as cpqid,SUM('"+get_ttl_amt+"') as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' GROUP BY GREENBOOK,SERVICE_ID")
+						get_total_amt = Sql.GetFirst("SELECT  '"+get_ttl_amt+"' as billval,ANNUAL_BILLING_AMOUNT from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' and CpqTableEntryId = '"+str(get_year_max.cpqid)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'")
 						get_diff = get_total_amt.ANNUAL_BILLING_AMOUNT-get_year_max.billval
-						rem_add_year = get_total_amt.BILLING_VALUE+get_diff
-						update_billing_val = "UPDATE SAQIBP SET BILLING_VALUE={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=get_year_max.cpqid,quote_revision_rec_id=quote_revision_record_id)
+						rem_add_year = get_total_amt.billval+get_diff
+						update_billing_val = "UPDATE SAQIBP SET '"+get_ttl_amt+"'={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=get_year_max.cpqid,quote_revision_rec_id=quote_revision_record_id)
 						Sql.RunQuery(update_billing_val)
 					except:
 						pass
