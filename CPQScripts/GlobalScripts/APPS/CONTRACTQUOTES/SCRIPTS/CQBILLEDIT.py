@@ -37,7 +37,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 		gettotalamt =0
 		gettotalamt_update =0
 		if str(gettotalamt_beforeupdate.BILLING_TYPE).upper() == "FIXED":
-			Trace.Write('40--ANNUAL_BILLING_AMOUNT---'+str(gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT))
+			Trace.Write('40--ANNUAL_BILLING_AMOUNT---'+str(gettotalamt_beforeupdate.BILLING_TYPE))
 			gettotalamt = gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT
 			if gettotalamt_beforeupdate:
 				gettotalamt_update = float(gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT)+float(value[2].replace(",",""))
@@ -46,7 +46,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 			gettotalamt = gettotalamt_beforeupdate.ESTVAL_INGL_CURR
 			if gettotalamt_beforeupdate:
 				gettotalamt_update = float(gettotalamt_beforeupdate.ESTVAL_INGL_CURR)+float(value[2].replace(",",""))
-		Trace.Write('gettotalamt_update---'+str(float(gettotalamt_update)))
+		Trace.Write('gettotalamt_update-BILLING_TYPE-----'+str(gettotalamt_beforeupdate.BILLING_TYPE))
 		if float(gettotalamt_update) < float(getannual_amt):
 			if str(gettotalamt_beforeupdate.BILLING_TYPE).upper == "FIXED":
 				edit_billmatrix = "UPDATE SAQIBP SET BILLING_VALUE = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
