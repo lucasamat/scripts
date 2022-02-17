@@ -6862,7 +6862,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 				+ str(TreeSuperParentParam)
 				+ "' and SERVICE_ID = '"
 				+ str(TreeParentParam)
-				+ "'and FABLOCATION_ID = '"
+				+ "'and GREENBOOK = '"
 				+ str(TreeParam)
 				+ "'"
 			)
