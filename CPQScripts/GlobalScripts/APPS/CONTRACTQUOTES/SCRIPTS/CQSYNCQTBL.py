@@ -2028,7 +2028,7 @@ class SyncQuoteAndCustomTables:
 								Log.Info("EXCEPTION: Iteration Over non sequence for none type"+str(e))
 							##A055S000P01-10174 code ends...
 							#warranty start and end date update in saqsco
-							try:
+							'''try:
 								QuoteId=quote_id
 								for offering_data in payload_json.get('SAQSCO'):
 									service_offering_id = offering_data['SERVICE_OFFERING_ID']
@@ -2050,7 +2050,7 @@ class SyncQuoteAndCustomTables:
 										Sql.RunQuery(saqsco_update)
 										coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
 							except Exception as e:
-								Log.Info("EXCEPTION: Iteration Over non sequence for none type in update covered objects"+str(e))
+								Log.Info("EXCEPTION: Iteration Over non sequence for none type in update covered objects"+str(e))'''
 						payload_table_info = Sql.GetTable("SYINPL")
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
