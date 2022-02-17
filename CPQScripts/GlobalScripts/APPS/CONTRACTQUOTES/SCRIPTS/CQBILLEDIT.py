@@ -48,7 +48,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 				gettotalamt_update = float(gettotalamt_beforeupdate.ESTVAL_INGL_CURR)+float(value[2].replace(",",""))
 		Trace.Write('gettotalamt_update-BILLING_TYPE-----'+str(gettotalamt_beforeupdate.BILLING_TYPE))
 		if float(gettotalamt_update) < float(getannual_amt):
-			if str(gettotalamt_beforeupdate.BILLING_TYPE).upper == "FIXED":
+			if str(gettotalamt_beforeupdate.BILLING_TYPE).upper() == "FIXED":
 				edit_billmatrix = "UPDATE SAQIBP SET BILLING_VALUE = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
 				Sql.RunQuery(edit_billmatrix)
 			else:
