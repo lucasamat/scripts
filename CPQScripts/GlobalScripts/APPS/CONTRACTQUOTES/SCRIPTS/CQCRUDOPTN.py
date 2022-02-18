@@ -1367,11 +1367,14 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 		contract_start_date = str(quotedetails.CONTRACT_VALID_FROM).split(' ')[0]
 		contract_end_date = str(quotedetails.CONTRACT_VALID_TO).split(' ')[0]
+		Trace.Write('@1370'+str(contract_start_date))
 		start_date = datetime.datetime.strptime(contract_start_date, '%m/%d/%Y')
 		end_date = datetime.datetime.strptime(contract_end_date, '%m/%d/%Y')
 		diff1 = end_date - start_date
+		Trace.Write('@1374'+str(diff1))
 		get_totalweeks,remainder = divmod(diff1.days,7)
 		countweeks =0
+		Trace.Write('@1375'+str(get_totalweeks))
 		for index in range(0, get_totalweeks):
 			countweeks += 1
 			#Trace.Write('countweeks--'+str(countweeks))
