@@ -2622,7 +2622,7 @@ class Entitlements:
 			#Trace.Write("objName-ent"+str(objName))
 			# Trace.Write("attributemy"+str(AttributeList))
 			# Trace.Write("attributemywhere"+str(responsive_where))
-			Trace.Write("tableName---"+str(tableName))
+			Trace.Write("tableName before roll down call---"+str(tableName))
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")			
 			try:			
 				CQENTIFLOW.iflow_entitlement(tableName,where,ancillary_dict)
