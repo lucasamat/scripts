@@ -2904,7 +2904,7 @@ class approvalCenter:
 				approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
 				if approver_insert:
 					Trace.Write("Approver_insert")
-					CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+					#CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				else:
 					Trace.Write("delete_approver")
 					CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
