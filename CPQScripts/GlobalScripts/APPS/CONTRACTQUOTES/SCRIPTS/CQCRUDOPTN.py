@@ -1607,7 +1607,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 					if OfferingRow_detail.get("SERVICE_ID") == "Z0108":
 						Trace.Write('###Periods insert for Z0108')
-						periods_insert()
+						self.periods_insert()
 					get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
 					account_info = {}
 					for keyobj in get_party_role:
