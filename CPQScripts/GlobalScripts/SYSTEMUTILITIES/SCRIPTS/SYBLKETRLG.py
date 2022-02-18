@@ -977,10 +977,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			row = {TITLE_NAME: str(VALUE)}
 			
 			if obj_name =="SAQRDS" and TITLE == "DELIVERY_DATE":
-    			get_cpqid = Sql.GetFirst("SELECT CpqTableEntryId from SAQRDS WHERE DELIVERY_PERIOD = '"+str(rec)+"' ")
+				get_cpqid = Sql.GetFirst("SELECT CpqTableEntryId from SAQRDS WHERE DELIVERY_PERIOD = '"+str(rec)+"' ")
 				cpqid = get_cpqid.CpqTableEntryId
-    		else:
-    			cpqid = rec.split("-")[1].lstrip("0")
+			else:
+				cpqid = rec.split("-")[1].lstrip("0")
 			##to update changed value in related tables in tool relcoation matrix
 			selected_rows_cpqid.append(cpqid)
 			Get_recidval = SqlHelper.GetFirst(
@@ -1162,7 +1162,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
 					update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id")))
 			elif (TreeParentParam == 'Complementary Products' and obj_name == "SAQRDS"):
-    			Sql.RunQuery("""UPDATE SAQRDS SET {title} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(title=TITLE,value = ALLVALUES[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id=sql_obj.QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID))	
+				Sql.RunQuery("""UPDATE SAQRDS SET {title} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(title=TITLE,value = ALLVALUES[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id=sql_obj.QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID))	
 			elif (TreeParam == 'Customer Information' and obj_name == "SAQICT"):
 				Sql = SQL()
 				if TITLE.split(',') == ["RETURN_NOTIFY_EMAIL","SHIP_NOTIFY_EMAIL"]:
