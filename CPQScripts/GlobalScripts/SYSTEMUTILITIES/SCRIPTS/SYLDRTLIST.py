@@ -1908,7 +1908,7 @@ class SYLDRTLIST:
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start						
 						if billing_date_column:
-							                     
+												
 							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 							Trace.Write('pivot_columns-Qustr---'+str(Qustr))
 							get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,RecAttValue))
@@ -3786,7 +3786,7 @@ class SYLDRTLIST:
 							)         
 						else:  							
 							if str(TreeParam) != 'Quote Preview' and  str(TreeParam) != 'Billing Matrix' and RECORD_ID != "SYOBJR-00010":
-    								Trace.Write("CHKNG_J_04 "+str(qstring))
+								Trace.Write("CHKNG_J_04 "+str(qstring))
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
