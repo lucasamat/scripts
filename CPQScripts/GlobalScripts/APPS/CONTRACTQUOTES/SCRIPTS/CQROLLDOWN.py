@@ -242,6 +242,8 @@ def CoveredObjEntitlement():
                     RevisionRecordId=rev_rec_id)
                     )
 	#creating backup table for saqgpe table insert...
+	getQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
+	saqsge_backup_table = "saqsge_backup_table_{}".format(getQuoteId.QUOTE_ID) 
 	saqsge_backup_table = "saqsge_backup_table_{}".format(Qt_rec_id) 
 
 	drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
