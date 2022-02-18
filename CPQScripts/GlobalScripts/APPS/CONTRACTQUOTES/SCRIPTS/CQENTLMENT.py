@@ -1155,7 +1155,6 @@ class Entitlements:
 						if str(serviceId) in ("Z0009") and key in ( "AGS_{}_PQB_QTETYP".format(serviceId)) and str(tableName) in ('SAQTSE'):
 							if entitlement_value in ("Event Based","Flex Event Based"):
 								try:
-									Log.Info("cqcrudoptn script call")
 									ScriptExecutor.ExecuteGlobal(
 											"CQCRUDOPTN",
 										{
@@ -2620,7 +2619,6 @@ class Entitlements:
 			# Trace.Write("attributemy"+str(AttributeList))
 			# Trace.Write("attributemywhere"+str(responsive_where))
 			Trace.Write("tableName before roll down call---"+str(tableName))
-			Log.Info("before rolldown call")
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")			
 			try:			
 				CQENTIFLOW.iflow_entitlement(tableName,where,ancillary_dict)
