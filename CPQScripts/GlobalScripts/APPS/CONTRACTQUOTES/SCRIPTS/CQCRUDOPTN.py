@@ -1365,8 +1365,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 
 	def periods_insert(self,contract_quote_record_id,quote_revision_record_id):
 		quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
-		contract_start_date = quotedetails.CONTRACT_VALID_FROM
-		contract_end_date = quotedetails.CONTRACT_VALID_TO
+		contract_start_date = str(quotedetails.CONTRACT_VALID_FROM).split(' ')[0]
+		contract_end_date = str(quotedetails.CONTRACT_VALID_TO).split(' ')[0]
 		start_date = datetime.datetime.strptime(contract_start_date, '%m/%d/%Y')
 		end_date = datetime.datetime.strptime(contract_end_date, '%m/%d/%Y')
 		diff1 = end_date - start_date
