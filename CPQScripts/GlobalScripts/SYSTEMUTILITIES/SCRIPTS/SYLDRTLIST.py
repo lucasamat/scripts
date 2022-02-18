@@ -3393,8 +3393,10 @@ class SYLDRTLIST:
 										value1234 = str(value1234).encode('utf-8').decode('utf-8')
 									except:
 										value1234 = value1234
+									Trace.Write("CHKZ_J_3"+str(value1234))
 									new_dict[str(value123)] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")
 								else:
+									Trace.Write("CHKZ_J_4"+str(value1234))
 									new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + value1234 + '">' + value1234 + "</abbr>")  
 								#new_dict[value123] = value1234                           
 						## addon product hyperlink starts
@@ -3407,7 +3409,7 @@ class SYLDRTLIST:
 							value1234 = value1234.replace('"', "&quot;")
 							value1234 = value1234.replace("<p>", " ")
 							value1234 = value1234.replace("</p>", " ")
-							
+							Trace.Write("CHKZ_J_5"+str(value1234))
 							new_dict[value123] = (
 								'<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
 							)   
@@ -3527,10 +3529,12 @@ class SYLDRTLIST:
 													value1234 = str_val
 													#Trace.Write(str(value123)+'3107-----'+str(value1234))
 													if value1234 is not None and value1234 != '':
+														Trace.Write("CHKZ_J_6"+str(value1234))
 														new_dict[value123] = (
 															'<abbr id ="' + key_value + '" title="' + str(value1234).upper() +'">' + str(value1234).upper() +  ' %' +  "</abbr>"
 														)														
 													else:
+														Trace.Write("CHKZ_J_7"+str(value1234))
 														new_dict[value123] = (
 														'<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
 													)	
@@ -3541,7 +3545,7 @@ class SYLDRTLIST:
 													if str(ObjectName) == "SAQDOC":
 														img_list.append('STATUS')
 													if value123 in img_list:
-														
+														Trace.Write("CHKZ_J_8"+str(value1234))
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
 													elif value123 in ["REV_EXPIRE_DATE","REV_CREATE_DATE"]:								
 														value1234 = str(value1234).upper().split(" ")[0].strip()
@@ -3549,19 +3553,24 @@ class SYLDRTLIST:
 														value1234 = new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 													# for redirecting the left tree node while viewing record from listgrid - start    
 													elif ObjectName in value1234: 
+														Trace.Write("CHKZ_J_9"+str(value1234))
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>") 							
 													# for redirecting the left tree node while viewing record from listgrid - end       
 													elif ObjectName == "SAQSAO" or ObjectName == "SAQSGB":
+														Trace.Write("CHKZ_J_10"+str(value1234))
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + value1234 + "</abbr>") 
 													else:														
 														try:
 															if RECORD_ID == 'SYOBJR-00009' and value123 == 'DISCOUNT':
+																Trace.Write("CHKZ_J_11"+str(value1234))
 																new_dict[value123] = ('<abbr id ="discount_' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 															elif RECORD_ID == 'SYOBJR-98872' and value123 == 'LINE':
+																Trace.Write("CHKZ_J_3"+str(value1234))
 																new_dict[value123] = ('<abbr id ="' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 															elif RECORD_ID == 'SYOBJR-98873' and value123 == 'SERVICE_ID':
 																new_dict[value123] = ('<abbr id ="' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 															else:
+																Trace.Write("CHKZ_J_27"+str(value1234))
 																new_dict[value123] = ('<abbr  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 														except:
 															Trace.Write("CHKZ_J_1"+str(value1234))
