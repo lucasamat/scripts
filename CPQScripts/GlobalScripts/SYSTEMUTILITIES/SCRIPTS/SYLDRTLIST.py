@@ -3545,6 +3545,7 @@ class SYLDRTLIST:
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
 													elif value123 in ["REV_EXPIRE_DATE","REV_CREATE_DATE"]:								
 														value1234 = str(value1234).upper().split(" ")[0].strip()
+														Trace.Write("CHKZ_J_2"+str(value1234))
 														value1234 = new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 													# for redirecting the left tree node while viewing record from listgrid - start    
 													elif ObjectName in value1234: 
