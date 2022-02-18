@@ -190,10 +190,22 @@ class SyncFPMQuoteAndHanaDatabase:
                 
                 getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,PART_NUMBER,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID,CUSTOMER_ANNUAL_QUANTITY,DELIVERY_MODE,SCHEDULED_MODE,MATERIALSTATUS_ID,MATERIALSTATUS_RECORD_ID,SALESUOM_ID,SALESUOM_RECORD_ID,MATPRIGRP_ID,UOM_ID,DELIVERY_SCHEDULE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,PART_NUMBER, 0 as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID,CUSTOMER_ANNUAL_QUANTITY,DELIVERY_MODE,SCHEDULE_MODE as SCHEDULED_MODE,MATERIALSTATUS_ID,MATERIALSTATUS_RECORD_ID,SALESUOM_ID,SALESUOM_RECORD_ID,MATPRIGRP_ID,BASEUOM_ID as UOM_ID,'{deli_sch}' as DELIVERY_SCHEDULE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= self.quote_record_id,qt_rev_id = self.quote_revision_id,deli_sch ='WEEKLY'))
 
-                self.periods_insert(delivery_week_date,index+1) #periods insert
 
-    def periods_insert(self,billing_date = '',delivery_period=''):
-        periods_insert = Sql.RunQuery("""INSERT SAQRDS (QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,DELIVERY_DATE,DELIVERY_PERIOD) select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,'{quote_id}' as QUOTE_ID,'{contract_rec_id}' as QUOTE_RECORD_ID,'{qt_rev_id}' as QTEREV_ID,'{qt_rev_recid}' as QTEREV_RECORD_ID,'{delivery_date}' as DELIVERY_DATE,'{delivery_period}' as DELIVERY_PERIOD """.format(quote_id=self.quote_id,contract_rec_id= self.quote_record_id,qt_rev_id = self.qt_rev_id,qt_rev_recid = self.quote_revision_id,delivery_date =billing_date,delivery_period=delivery_period))
+    def periods_insert(self):
+        if str(self.service_id) == "Z0108":
+            contract_start_date = str(self.contract_valid_from).split(' ')[0]
+            contract_end_date = str(self.contract_valid_to).split(' ')[0]
+            start_date = datetime.datetime.strptime(contract_start_date, '%m/%d/%Y')
+            end_date = datetime.datetime.strptime(contract_end_date, '%m/%d/%Y')
+            diff1 = end_date - start_date
+            get_totalweeks,remainder = divmod(diff1.days,7)
+            countweeks =0
+            for index in range(0, get_totalweeks):
+                countweeks += 1
+                #Trace.Write('countweeks--'+str(countweeks))
+                billing_date = start_date + datetime.timedelta(days=(7*countweeks))
+                Query = "INSERT SAQRDS (QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,DELIVERY_DATE,DELIVERY_PERIOD) select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,'{quote_id}' as QUOTE_ID,'{contract_rec_id}' as QUOTE_RECORD_ID,'{qt_rev_id}' as QTEREV_ID,'{qt_rev_recid}' as QTEREV_RECORD_ID,'{delivery_date}' as DELIVERY_DATE,'{delivery_period}' as DELIVERY_PERIOD ".format(quote_id=self.quote_id,contract_rec_id= self.quote_record_id,qt_rev_id = self.qt_rev_id,qt_rev_recid = self.quote_revision_id,delivery_date =billing_date,delivery_period=index+1)
+                periods_insert = Sql.RunQuery(Query)
 
     def fetch_quotebasic_info(self):
         saqtmt_obj = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE  QUOTE_ID = '{}'".format(self.quote_id))
@@ -401,7 +413,8 @@ if Parameter["Action"] == 'Delete':
 if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     fpm_obj = SyncFPMQuoteAndHanaDatabase()
     fpm_obj.fetch_quotebasic_info()
-    fpm_obj.prepare_backup_table() 
+    fpm_obj.prepare_backup_table()
+    fpm_obj.periods_insert() 
     #fpm_obj.validation_for_arp_carp()
     
     
