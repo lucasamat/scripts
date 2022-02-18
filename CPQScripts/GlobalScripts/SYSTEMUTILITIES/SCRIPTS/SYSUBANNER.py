@@ -3112,7 +3112,7 @@ def Related_Sub_Banner(
             Trace.Write('### _ Multi_buttons'+str(type(multi_buttons)))
             if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APPROVED':
                 sec_rel_sub_bnr += str(add_button)
-            elif str(subTabName) in ("Spare Parts","Periods") and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APPROVED':
+            elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APPROVED':
                 if str(multi_buttons) != "":
                     Trace.Write('### _ 3094----Multi_buttons'+str(type(multi_buttons)))
                     for btn in multi_buttons:
@@ -3125,6 +3125,8 @@ def Related_Sub_Banner(
                     Trace.Write('3095--sec_rel_sub_bnr--'+str(sec_rel_sub_bnr))
                 else:
                     sec_rel_sub_bnr += str(add_button)
+            elif str(subTabName)=="Periods":
+                sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
             if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APPROVED':
