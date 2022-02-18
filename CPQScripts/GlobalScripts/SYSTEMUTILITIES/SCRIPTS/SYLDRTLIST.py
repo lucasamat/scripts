@@ -1920,8 +1920,10 @@ class SYLDRTLIST:
 								if str(get_billing_types).upper() =='FIXED':
 									get_ttl_amt = 'BILLING_VALUE'
 									column_before_pivot_changes = column_before_pivot_change
-								else:
+								elif str(get_billing_types).upper() =='VARIABLE':
 									get_ttl_amt = 'ESTVAL_INGL_CURR'
+								else:
+									get_ttl_amt = 'BILLING_VALUE'
 							if Qustr:
 								if str(TreeParentParam)== "Billing":
 									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
@@ -5509,8 +5511,10 @@ class SYLDRTLIST:
 					get_billing_types = get_billing_type.BILLING_TYPE
 					if str(get_billing_types).upper() =='FIXED':
 						get_ttl_amt = 'BILLING_VALUE'
-					else:
+					elif str(get_billing_types).upper() =='VARIABLE':
 						get_ttl_amt = 'ESTVAL_INGL_CURR'
+					else:
+						get_ttl_amt = 'BILLING_VALUE'
 				try:
 					if SubTab:
 						end = int(SubTab.split(' ')[-1]) * 12
