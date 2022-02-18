@@ -4120,7 +4120,7 @@ class SYLDRTLIST:
 				# 	continue
 				
 				#normal+Collapsaible+normal
-				elif invs == "SERVICE_DESCRIPTION" and RECORD_ID == 'SYOBJR-98876' :
+				elif invs == "OFFERING_DESCRIPTION" and RECORD_ID == 'SYOBJR-98876' :
 					Trace.Write("CHKNG_J_00 "+str(qstring))
 					table_header += (
 						'<th  data-field="'
