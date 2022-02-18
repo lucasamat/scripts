@@ -3892,7 +3892,7 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)
-							elif RECORD_ID in ("SYOBJR-00010","SYOBJR-98881"):
+							elif RECORD_ID in ("SYOBJR-00010"):
 								Trace.Write("CHKNG_EMPTY HYPERLINK")
 								table_header += (
 									'<th  data-field="'
