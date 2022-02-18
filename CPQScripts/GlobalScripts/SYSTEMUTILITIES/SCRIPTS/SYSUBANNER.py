@@ -3112,7 +3112,7 @@ def Related_Sub_Banner(
             Trace.Write('### _ Multi_buttons'+str(type(multi_buttons)))
             if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APPROVED':
                 sec_rel_sub_bnr += str(add_button)
-            elif str(subTabName)=="Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APPROVED':
+            elif str(subTabName) in ("Spare Parts","Periods") and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APPROVED':
                 if str(multi_buttons) != "":
                     Trace.Write('### _ 3094----Multi_buttons'+str(type(multi_buttons)))
                     for btn in multi_buttons:
