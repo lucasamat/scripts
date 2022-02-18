@@ -3571,7 +3571,7 @@ class SYLDRTLIST:
 																new_dict[value123] = ('<abbr id ="' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 															else:
 																Trace.Write("CHKZ_J_27"+str(value1234))
-																new_dict[value123] = ('<abbr  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
+																new_dict[value123] = ('<abbr id ="' + str(key_value) + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 														except:
 															Trace.Write("CHKZ_J_1"+str(value1234))
 															new_dict[value123] = ('<abbr title="{value}">{value}</abbr>'.format(value= value1234))
