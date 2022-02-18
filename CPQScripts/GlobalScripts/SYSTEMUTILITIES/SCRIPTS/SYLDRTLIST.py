@@ -5556,7 +5556,7 @@ class SYLDRTLIST:
 						Columns = Columns.replace(']', ','+billing_date_column_joined+']')                     
 				except:
 					pass
-			if Wh_OBJECT_NAME == 'SAQSPD':
+			elif Wh_OBJECT_NAME == 'SAQSPD':
 				Trace.Write('5267--contract_quote_record_id--'+str(contract_quote_record_id))
 				item_delivery_plans_obj = Sql.GetList("""SELECT FORMAT(DELIVERY_SCHED_DATE, 'MM-dd-yyyy') as DELIVERY_SCHED_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY DELIVERY_SCHED_DATE)
 									AS ROW, * FROM (SELECT DISTINCT DELIVERY_SCHED_DATE
@@ -5574,10 +5574,12 @@ class SYLDRTLIST:
 						delivery_date_joined =",".join(["'{}'".format(delivery_data)])
 						
 						Columns = Columns.replace(']', ','+delivery_date_joined+']')
-			if Wh_OBJECT_NAME == 'SAQSPT' and str(TreeParam)=="Z0110":
+			elif Wh_OBJECT_NAME == 'SAQSPT' and str(TreeParam)=="Z0110":
+				Trace.Write('###In 5578')
 				for column in Columns:
 					if column.split('_')[0]=="DELIVERY" and column.split('_')[1].isdigit():
 						Columns.remove(column)
+			Trace.Write('###5582'+str(Wh_OBJECT_NAME)+':'+str(RECORD_ID))
 			CurrentObj = Sql.GetFirst(
 				"select API_NAME, OBJECT_NAME from  SYOBJD (nolock) where PARENT_OBJECT_RECORD_ID = '"
 				+ str(PARENT_LOOKUP_REC_ID)
