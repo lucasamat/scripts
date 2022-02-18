@@ -2287,7 +2287,7 @@ class TreeView:
 									elif subTabName == 'Applied Events':
 										subTabName = "Events"
 									##A055S000P01-14790 code ends...
-									elif (subTabName == 'Spare Parts' or subTabName == 'Periods') and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
+									elif (subTabName == 'Spare Parts' or (subTabName == 'Periods' and Product.GetGlobal("SERVICE") == "Z0108" )) and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
 										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" else ""
 									elif subTabName =='Equipment' and Product.GetGlobal("ParentNodeLevel")=="Complementary Products":
