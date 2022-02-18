@@ -298,9 +298,8 @@ class SYLDRTLIST:
 							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 						if RECORD_ID == 'SYOBJR-00005' and str(TreeParam)=="Z0110":
 							for column in eval(Columns):
-								Trace.Write('col-->'+str(column))
-								if column.split('_')[0]=="DELIVERY" and column.split('_')[1].isdigit():
-									Columns.remove(column)
+								if not (column.split('_')[0]=="DELIVERY" and column.split('_')[1].isdigit()):
+									Columns.append(column)
 			#Hide columns in Related list based on Quote type End
 			Obj_Name = obj_obj.OBJ_REC_ID            
 			COLUMN_REC_ID = obj_obj.COLUMN_REC_ID            
