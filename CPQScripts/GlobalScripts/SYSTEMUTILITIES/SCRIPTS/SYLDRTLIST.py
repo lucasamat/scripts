@@ -390,8 +390,10 @@ class SYLDRTLIST:
 					get_billing_types = get_billing_type.BILLING_TYPE
 					if str(get_billing_types).upper() =='FIXED':
 						get_ttl_amt = 'BILLING_VALUE'
+					elif str(get_billing_types).upper() =='VARIABLE':
+						get_ttl_amt = 'ESTVAL_INGL_CURR'
 					else:
-						get_ttl_amt = 'ESTVAL_INGL_CURR'			
+						get_ttl_amt = 'BILLING_VALUE'			
 				try:
 					if SubTab:
 						# item_billing_plan_obj = Sql.GetFirst("""SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID""".format(contract_quote_record_id,quote_revision_record_id))
