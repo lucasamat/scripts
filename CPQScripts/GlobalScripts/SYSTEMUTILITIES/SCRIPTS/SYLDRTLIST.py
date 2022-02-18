@@ -3572,6 +3572,8 @@ class SYLDRTLIST:
 															elif RECORD_ID == 'SYOBJR-98876' and value123 == 'OFFERING_DESCRIPTION':
 																new_dict[value123] = ('<abbr id ="' + str(key_value) + '" class = "OFFERING_DESCRIPTION" title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 															elif data_type_val == "DATE":
+																
+																value1234 = str(value1234).split(" ")[0]
 																Trace.Write("CHKZ_J_DATE"+str(value1234))
 															else:
 																Trace.Write("CHKZ_J_27"+str(value1234))
