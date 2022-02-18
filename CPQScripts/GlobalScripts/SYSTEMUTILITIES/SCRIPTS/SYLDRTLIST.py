@@ -3396,6 +3396,8 @@ class SYLDRTLIST:
 									Trace.Write("CHKZ_J_3"+str(value1234))
 									new_dict[str(value123)] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")
 								else:
+									if data_type_val == "DATE":
+										value1234 = str(value1234).split(" ")[0]
 									Trace.Write("CHKZ_J_4"+str(value1234))
 									new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + value1234 + '">' + value1234 + "</abbr>")  
 								#new_dict[value123] = value1234                           
