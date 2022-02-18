@@ -5574,7 +5574,10 @@ class SYLDRTLIST:
 						delivery_date_joined =",".join(["'{}'".format(delivery_data)])
 						
 						Columns = Columns.replace(']', ','+delivery_date_joined+']')
-			
+			if Wh_OBJECT_NAME == 'SAQSPT' and str(TreeParam)=="Z0110":
+				for column in Columns:
+					if column.split('_')[0]=="DELIVERY" and column.split('_')[1].isdigit():
+						Columns.remove(column)
 			CurrentObj = Sql.GetFirst(
 				"select API_NAME, OBJECT_NAME from  SYOBJD (nolock) where PARENT_OBJECT_RECORD_ID = '"
 				+ str(PARENT_LOOKUP_REC_ID)
