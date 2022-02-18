@@ -546,7 +546,7 @@ def billingmatrix_create():
 				#Log.Info(str(get_billing_type)+'--475--'+str(get_ent_bill_cycle))
 				billing_month_end = 0
 				entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
-				if str(get_ent_bill_cycle).upper() == "MONTHLY":
+				if str(get_ent_bill_cycle).upper() == "MONTHLY" or elif str(get_ent_bill_cycle).upper() == "ONE ITEM PER QUOTE":
 					if billing_day in (29,30,31):
 						if start_date.month == 2:
 							isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
@@ -595,25 +595,25 @@ def billingmatrix_create():
 													Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
 													),amount_column="YEAR_"+str((index/4) + 1),
 													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value=get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
-				elif str(get_ent_bill_cycle).upper() == "ONE ITEM PER QUOTE":
-					end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')			
-					diff1 = end_date - start_date
-					Trace.Write('diff1--'+str(diff1))
-					avgyear = 365.00    # even leap years have 12 months
-					years, remainder = divmod(diff1.days, avgyear)
-					years = int(years)
+				# elif str(get_ent_bill_cycle).upper() == "ONE ITEM PER QUOTE":
+				# 	end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')			
+				# 	diff1 = end_date - start_date
+				# 	Trace.Write('diff1--'+str(diff1))
+				# 	avgyear = 365.00    # even leap years have 12 months
+				# 	years, remainder = divmod(diff1.days, avgyear)
+				# 	years = int(years)
 					
-					Trace.Write('years--'+str(years))
-					for index in range(1, years+1):
-						billing_month_end += 1
-						Trace.Write('billing_month_end--'+str(index))
-						insert_items_billing_plan(total_months='',
-													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
-														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
-														),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
-														Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
-														), amount_column="YEAR_"+str(index + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
+				# 	Trace.Write('years--'+str(years))
+				# 	for index in range(1, years+1):
+				# 		billing_month_end += 1
+				# 		Trace.Write('billing_month_end--'+str(index))
+				# 		insert_items_billing_plan(total_months='',
+				# 									billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+				# 										Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
+				# 										),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+				# 										Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
+				# 										), amount_column="YEAR_"+str(index + 1),
+				# 										entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 				else:
 					Trace.Write('get_ent_val---'+str(get_ent_bill_cycle))
 					if billing_day in (29,30,31):
