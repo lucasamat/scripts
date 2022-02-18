@@ -3575,6 +3575,7 @@ class SYLDRTLIST:
 																
 																value1234 = str(value1234).split(" ")[0]
 																Trace.Write("CHKZ_J_DATE"+str(value1234))
+																new_dict[value123] = ('<abbr  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 															else:
 																Trace.Write("CHKZ_J_27"+str(value1234))
 																new_dict[value123] = ('<abbr  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
