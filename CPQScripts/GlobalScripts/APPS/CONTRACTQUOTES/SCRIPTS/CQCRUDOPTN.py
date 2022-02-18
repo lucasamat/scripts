@@ -1363,10 +1363,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,PART_DESCRIPTION,PART_NUMBER,PART_RECORD_ID,QUANTITY,CUSTOMER_ANNUAL_QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,DELIVERY_MODE,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_NUMBER,PART_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY as QUANTITY,CUSTOMER_ANNUAL_QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,DELIVERY_MODE,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =billing_date,contract_rec_id= self.contract_quote_record_id,qt_rev_id = self.quote_revision_record_id) )
 	#A055S000P01-14047 end
 
-	def periods_insert(self):
-		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-		quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+	def periods_insert(self,contract_quote_record_id,quote_revision_record_id):
+		quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 		contract_start_date = quotedetails.CONTRACT_VALID_FROM
 		contract_end_date = quotedetails.CONTRACT_VALID_TO
 		start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
@@ -1607,7 +1605,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 					if OfferingRow_detail.get("SERVICE_ID") == "Z0108":
 						Trace.Write('###Periods insert for Z0108')
-						self.periods_insert()
+						self.periods_insert(contract_quote_record_id,quote_revision_record_id)
 					get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
 					account_info = {}
 					for keyobj in get_party_role:
