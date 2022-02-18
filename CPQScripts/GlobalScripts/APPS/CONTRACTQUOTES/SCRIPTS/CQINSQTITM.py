@@ -1269,7 +1269,7 @@ class ContractQuoteItem:
 								get_voucher_value = entitlement_display_value_tag_match[0].upper()
 								break
 					Trace.Write("get_voucher_value-"+str(record.GREENBOOK)+"-"+str(get_voucher_value))
-					Sql.RunQuery("UPDATE SAQICO {pricing_field_gl} = '{voucher_amt}', {pricing_field_doc} = '{doc_curr}'  FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND GRNBOK = '{grnbok}' ".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id ,voucher_amt = get_voucher_value, grnbok = record.GREENBOOK, pricing_field_doc = pricing_field_doc, pricing_field_gl =pricing_field_gl, doc_curr = float(get_voucher_value) * self.exchange_rate  ))
+					Sql.RunQuery("UPDATE SAQICO SET {pricing_field_gl} = '{voucher_amt}', {pricing_field_doc} = '{doc_curr}'  FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND GRNBOK = '{grnbok}' ".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id ,voucher_amt = get_voucher_value, grnbok = record.GREENBOOK, pricing_field_doc = pricing_field_doc, pricing_field_gl =pricing_field_gl, doc_curr = float(get_voucher_value) * self.exchange_rate  ))
 		return True
 
 	def _quote_annualized_items_insert_old(self, update=False):			
