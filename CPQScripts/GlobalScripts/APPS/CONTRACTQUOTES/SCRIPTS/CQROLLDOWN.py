@@ -242,14 +242,14 @@ def CoveredObjEntitlement():
                     RevisionRecordId=rev_rec_id)
                     )
 	#creating backup table for saqgpe table insert...
-	saqsge_backup_table = "saqsge_backup_table_{}".format(self.contract_quote_id) 
+	saqsge_backup_table = "saqsge_backup_table_{}".format(Qt_rec_id) 
 
 	drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
 
 
-	saqsge_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSGE.GREENBOOK,SAQSGE.GREENBOOK_RECORD_ID,SAQSGE.SERVICE_RECORD_ID,SAQSGE.QUOTE_RECORD_ID,SAQSGE.QTEREV_RECORD_ID,SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,SAQSGE.ENTITLEMENT_XML,SAQSGE.CONFIGURATION_STATUS INTO "+str(saqsge_backup_table)+" FROM SAQSGE (NOLOCK) WHERE SAQSGE.QUOTE_RECORD_ID = ''{}'' AND SAQSGE.QTEREV_RECORD_ID = ''{}'' AND SAQSGE.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
+	saqsge_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSGE.GREENBOOK,SAQSGE.GREENBOOK_RECORD_ID,SAQSGE.SERVICE_RECORD_ID,SAQSGE.QUOTE_RECORD_ID,SAQSGE.QTEREV_RECORD_ID,SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,SAQSGE.ENTITLEMENT_XML,SAQSGE.CONFIGURATION_STATUS INTO "+str(saqsge_backup_table)+" FROM SAQSGE (NOLOCK) WHERE SAQSGE.QUOTE_RECORD_ID = ''{}'' AND SAQSGE.QTEREV_RECORD_ID = ''{}'' AND SAQSGE.SERVICE_ID = ''{}'' '".format(Qt_rec_id,rev_rec_id,TreeParam))
 
-	Sql.RunQuery("""UPDATE SAQGPE SET ENTITLEMENT_XML = saqsge_backup_table.ENTITLEMENT_XML,CONFIGURATION_STATUS = saqsge_backup_table.CONFIGURATION_STATUS FROM  {saqsge_backup_table} (NOLOCK)  saqsge_backup_table JOIN SAQGPE ON saqsge_backup_table.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND saqsge_backup_table.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND saqsge_backup_table.SERVICE_RECORD_ID = SAQGPE.SERVICE_RECORD_ID AND saqsge_backup_table.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPE.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQGPE.ENTITLEMENT_XML,'') = '' """.format(saqsge_backup_table = str(saqsge_backup_table),QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
+	Sql.RunQuery("""UPDATE SAQGPE SET ENTITLEMENT_XML = saqsge_backup_table.ENTITLEMENT_XML,CONFIGURATION_STATUS = saqsge_backup_table.CONFIGURATION_STATUS FROM  {saqsge_backup_table} (NOLOCK)  saqsge_backup_table JOIN SAQGPE ON saqsge_backup_table.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND saqsge_backup_table.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND saqsge_backup_table.SERVICE_RECORD_ID = SAQGPE.SERVICE_RECORD_ID AND saqsge_backup_table.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPE.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQGPE.ENTITLEMENT_XML,'') = '' """.format(saqsge_backup_table = str(saqsge_backup_table),QuoteRecordId=Qt_rec_id,RevisionRecordId=rev_rec_id,TreeParam=TreeParam))
 
 	drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
 
