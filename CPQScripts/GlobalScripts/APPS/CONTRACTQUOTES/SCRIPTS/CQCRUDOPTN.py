@@ -5358,7 +5358,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					RevisionRecordId=self.quote_revision_record_id)
 					)
 			
-			creating backup table for saqgpe table insert...
+			#creating backup table for saqgpe table insert...
 			saqsge_backup_table = "saqsge_backup_table_{}".format(self.contract_quote_id) 
 
 			drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
