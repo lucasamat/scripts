@@ -297,11 +297,10 @@ class SYLDRTLIST:
 							rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
 							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 						if RECORD_ID == 'SYOBJR-00005' and str(TreeParam)=="Z0110":
-							Trace.Write('###at 300')
 							for column in Columns:
+								Trace.Write('col-->'+str(column))
 								if column.split('_')[0]=="DELIVERY" and column.split('_')[1].isdigit():
 									Columns.remove(column)
-						Trace.Write('###304'+str(RECORD_ID)+':'+str(TreeParam))
 			#Hide columns in Related list based on Quote type End
 			Obj_Name = obj_obj.OBJ_REC_ID            
 			COLUMN_REC_ID = obj_obj.COLUMN_REC_ID            
