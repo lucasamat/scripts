@@ -5304,71 +5304,71 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					RevisionRecordId=self.quote_revision_record_id
 					))
 
-			# self._process_query("""INSERT SAQGPE (
-			# 		CPS_CONFIGURATION_ID,
-			# 		CPS_MATCH_ID,
-			# 		--ENTITLEMENT_XML,
-			# 		SERVICE_ID,
-			# 		SERVICE_RECORD_ID,
-			# 		GOT_CODE,
-			# 		GOTCODE_RECORD_ID,
-			# 		GREENBOOK,
-			# 		GREENBOOK_RECORD_ID,
-			# 		KB_VERSION,
-			# 		PM_ID,
-			# 		PM_RECORD_ID,
-			# 		QUOTE_ID,
-			# 		QUOTE_RECORD_ID,
-			# 		QTEREV_ID,
-			# 		QTEREV_RECORD_ID,
-			# 		QTEGBKENT_RECORD_ID,
-			# 		QTEGGTPME_RECORD_ID,
-			# 		QUOTE_REV_GOT_CD_PM_EVNT_ENTITLEMENTS_RECORD_ID,
-			# 		CPQTABLEENTRYADDEDBY,
-			# 		CPQTABLEENTRYDATEADDED
-			# 		) 
-			# 		SELECT pm_entitlement.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_GOT_CD_PM_EVNT_ENTITLEMENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT DISTINCT 
-			# 		SAQSGE.CPS_CONFIGURATION_ID,
-			# 		SAQSGE.CPS_MATCH_ID,
-			# 		--SAQSGE.ENTITLEMENT_XML,
-			# 		SAQGPM.SERVICE_ID,
-			# 		SAQGPM.SERVICE_RECORD_ID,
-			# 		SAQGPM.GOT_CODE,
-			# 		SAQGPM.GOTCODE_RECORD_ID,
-			# 		SAQGPM.GREENBOOK,
-			# 		SAQGPM.GREENBOOK_RECORD_ID,
-			# 		SAQSGE.KB_VERSION,
-			# 		SAQGPM.PM_ID,
-			# 		SAQGPM.PM_RECORD_ID,
-			# 		SAQGPM.QUOTE_ID,
-			# 		SAQGPM.QUOTE_RECORD_ID,
-			# 		SAQGPM.QTEREV_ID,
-			# 		SAQGPM.QTEREV_RECORD_ID,
-			# 		SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID as QTEGBKENT_RECORD_ID,
-			# 		SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEGGTPME_RECORD_ID
-			# 		FROM SAQSGE (NOLOCK)
-			# 		JOIN SAQGPM(NOLOCK) ON SAQGPM.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID 
-			# 		AND SAQGPM.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQGPM.GREENBOOK_RECORD_ID = SAQSGE.GREENBOOK_RECORD_ID
-			# 		WHERE SAQSGE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSGE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.SERVICE_ID = '{TreeParam}' )pm_entitlement LEFT JOIN SAQGPE (NOLOCK) AS EVENT_ENTITLEMENT ON pm_entitlement.QUOTE_RECORD_ID = EVENT_ENTITLEMENT.QUOTE_RECORD_ID  AND pm_entitlement.QTEREV_RECORD_ID = EVENT_ENTITLEMENT.QTEREV_RECORD_ID AND pm_entitlement.GREENBOOK_RECORD_ID = EVENT_ENTITLEMENT.GREENBOOK_RECORD_ID AND pm_entitlement.GOTCODE_RECORD_ID = EVENT_ENTITLEMENT.GOTCODE_RECORD_ID AND pm_entitlement.PM_RECORD_ID = EVENT_ENTITLEMENT.PM_RECORD_ID AND pm_entitlement.QTEGGTPME_RECORD_ID = EVENT_ENTITLEMENT.QTEGGTPME_RECORD_ID AND ISNULL(EVENT_ENTITLEMENT.QTEGGTPME_RECORD_ID,'') = '' """.format(
-			# 		UserName=self.user_name,
-			# 		TreeParam=self.tree_param,
-			# 		QuoteId = self.contract_quote_id,
-			# 		QuoteRecordId=self.contract_quote_record_id,
-			# 		RevisionId=self.quote_revision_id,
-			# 		RevisionRecordId=self.quote_revision_record_id)
-			# 		)
+			self._process_query("""INSERT SAQGPE (
+					CPS_CONFIGURATION_ID,
+					CPS_MATCH_ID,
+					--ENTITLEMENT_XML,
+					SERVICE_ID,
+					SERVICE_RECORD_ID,
+					GOT_CODE,
+					GOTCODE_RECORD_ID,
+					GREENBOOK,
+					GREENBOOK_RECORD_ID,
+					KB_VERSION,
+					PM_ID,
+					PM_RECORD_ID,
+					QUOTE_ID,
+					QUOTE_RECORD_ID,
+					QTEREV_ID,
+					QTEREV_RECORD_ID,
+					QTEGBKENT_RECORD_ID,
+					QTEGGTPME_RECORD_ID,
+					QUOTE_REV_GOT_CD_PM_EVNT_ENTITLEMENTS_RECORD_ID,
+					CPQTABLEENTRYADDEDBY,
+					CPQTABLEENTRYDATEADDED
+					) 
+					SELECT pm_entitlement.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_GOT_CD_PM_EVNT_ENTITLEMENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT DISTINCT 
+					SAQSGE.CPS_CONFIGURATION_ID,
+					SAQSGE.CPS_MATCH_ID,
+					--SAQSGE.ENTITLEMENT_XML,
+					SAQGPM.SERVICE_ID,
+					SAQGPM.SERVICE_RECORD_ID,
+					SAQGPM.GOT_CODE,
+					SAQGPM.GOTCODE_RECORD_ID,
+					SAQGPM.GREENBOOK,
+					SAQGPM.GREENBOOK_RECORD_ID,
+					SAQSGE.KB_VERSION,
+					SAQGPM.PM_ID,
+					SAQGPM.PM_RECORD_ID,
+					SAQGPM.QUOTE_ID,
+					SAQGPM.QUOTE_RECORD_ID,
+					SAQGPM.QTEREV_ID,
+					SAQGPM.QTEREV_RECORD_ID,
+					SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID as QTEGBKENT_RECORD_ID,
+					SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEGGTPME_RECORD_ID
+					FROM SAQSGE (NOLOCK)
+					JOIN SAQGPM(NOLOCK) ON SAQGPM.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID 
+					AND SAQGPM.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQGPM.GREENBOOK_RECORD_ID = SAQSGE.GREENBOOK_RECORD_ID
+					WHERE SAQSGE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSGE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.SERVICE_ID = '{TreeParam}' )pm_entitlement LEFT JOIN SAQGPE (NOLOCK) AS EVENT_ENTITLEMENT ON pm_entitlement.QUOTE_RECORD_ID = EVENT_ENTITLEMENT.QUOTE_RECORD_ID  AND pm_entitlement.QTEREV_RECORD_ID = EVENT_ENTITLEMENT.QTEREV_RECORD_ID AND pm_entitlement.GREENBOOK_RECORD_ID = EVENT_ENTITLEMENT.GREENBOOK_RECORD_ID AND pm_entitlement.GOTCODE_RECORD_ID = EVENT_ENTITLEMENT.GOTCODE_RECORD_ID AND pm_entitlement.PM_RECORD_ID = EVENT_ENTITLEMENT.PM_RECORD_ID AND pm_entitlement.QTEGGTPME_RECORD_ID = EVENT_ENTITLEMENT.QTEGGTPME_RECORD_ID AND ISNULL(EVENT_ENTITLEMENT.QTEGGTPME_RECORD_ID,'') = '' """.format(
+					UserName=self.user_name,
+					TreeParam=self.tree_param,
+					QuoteId = self.contract_quote_id,
+					QuoteRecordId=self.contract_quote_record_id,
+					RevisionId=self.quote_revision_id,
+					RevisionRecordId=self.quote_revision_record_id)
+					)
 			
-			#creating backup table for saqgpe table insert...
-			# saqsge_backup_table = "saqsge_backup_table_{}".format(self.contract_quote_id) 
+			creating backup table for saqgpe table insert...
+			saqsge_backup_table = "saqsge_backup_table_{}".format(self.contract_quote_id) 
 
-			# drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
+			drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
 
 
-			# saqsge_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSGE.GREENBOOK,SAQSGE.GREENBOOK_RECORD_ID,SAQSGE.SERVICE_RECORD_ID,SAQSGE.QUOTE_RECORD_ID,SAQSGE.QTEREV_RECORD_ID,SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,SAQSGE.ENTITLEMENT_XML,SAQSGE.CONFIGURATION_STATUS INTO "+str(saqsge_backup_table)+" FROM SAQSGE (NOLOCK) WHERE SAQSGE.QUOTE_RECORD_ID = ''{}'' AND SAQSGE.QTEREV_RECORD_ID = ''{}'' AND SAQSGE.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
+			saqsge_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSGE.GREENBOOK,SAQSGE.GREENBOOK_RECORD_ID,SAQSGE.SERVICE_RECORD_ID,SAQSGE.QUOTE_RECORD_ID,SAQSGE.QTEREV_RECORD_ID,SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,SAQSGE.ENTITLEMENT_XML,SAQSGE.CONFIGURATION_STATUS INTO "+str(saqsge_backup_table)+" FROM SAQSGE (NOLOCK) WHERE SAQSGE.QUOTE_RECORD_ID = ''{}'' AND SAQSGE.QTEREV_RECORD_ID = ''{}'' AND SAQSGE.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
 
-			# Sql.RunQuery("""UPDATE SAQGPE SET ENTITLEMENT_XML = saqsge_backup_table.ENTITLEMENT_XML,CONFIGURATION_STATUS = saqsge_backup_table.CONFIGURATION_STATUS FROM  {saqsge_backup_table} (NOLOCK)  saqsge_backup_table JOIN SAQGPE ON saqsge_backup_table.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND saqsge_backup_table.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND saqsge_backup_table.SERVICE_RECORD_ID = SAQGPE.SERVICE_RECORD_ID AND saqsge_backup_table.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPE.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQGPE.ENTITLEMENT_XML,'') = '' """.format(saqsge_backup_table = str(saqsge_backup_table),QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
+			Sql.RunQuery("""UPDATE SAQGPE SET ENTITLEMENT_XML = saqsge_backup_table.ENTITLEMENT_XML,CONFIGURATION_STATUS = saqsge_backup_table.CONFIGURATION_STATUS FROM  {saqsge_backup_table} (NOLOCK)  saqsge_backup_table JOIN SAQGPE ON saqsge_backup_table.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND saqsge_backup_table.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND saqsge_backup_table.SERVICE_RECORD_ID = SAQGPE.SERVICE_RECORD_ID AND saqsge_backup_table.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPE.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQGPE.ENTITLEMENT_XML,'') = '' """.format(saqsge_backup_table = str(saqsge_backup_table),QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam=self.tree_param))
 
-			# drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
+			drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
 		else:
 			self._process_query("""INSERT SAQRGG (
 					GOT_CODE,
