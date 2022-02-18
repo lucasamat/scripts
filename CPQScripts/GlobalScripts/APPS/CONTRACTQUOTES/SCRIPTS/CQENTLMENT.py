@@ -1153,10 +1153,9 @@ class Entitlements:
 									if entitlement_value != "Some Inclusions":
 										ancillary_object_dict['Z0101'] = "DELETE"
 						if str(serviceId) in ("Z0009") and key in ( "AGS_{}_PQB_QTETYP".format(serviceId)) and str(tableName) in ('SAQTSE'):
-							Trace.Write("condition satisfied")
 							if entitlement_value in ("Event Based","Flex Event Based"):
-								Trace.Write("if condition satisfied")
 								try:
+									Log.Info("cqcrudoptn script call")
 									ScriptExecutor.ExecuteGlobal(
 											"CQCRUDOPTN",
 										{
@@ -1169,8 +1168,6 @@ class Entitlements:
 									)
 								except Exception as e:
 									Trace.Write("Exception While running CQCRUDOPTN "+str(e))
-							Trace.Write("script called")
-
 						Trace.Write("PMevents changes started "+str(key)+" - "+str(tableName))
 						if key in ( "AGS_{}_NET_PRMALB".format(serviceId)) and str(tableName) in ('SAQTSE'):
 							Trace.Write("entitlement_value_chk "+str(entitlement_value))
@@ -2623,6 +2620,7 @@ class Entitlements:
 			# Trace.Write("attributemy"+str(AttributeList))
 			# Trace.Write("attributemywhere"+str(responsive_where))
 			Trace.Write("tableName before roll down call---"+str(tableName))
+			Log.Info("before rolldown call")
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")			
 			try:			
 				CQENTIFLOW.iflow_entitlement(tableName,where,ancillary_dict)
