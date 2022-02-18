@@ -325,7 +325,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 	else:
 		if service_id == "Z0117":
-			get_total_sum  = Sql.GetFirst("SELECT SUM(ESTVAL_INGL_CURR) as estsum FROM SAQRIT WHERE QUOTE_ID='3050003866'")
+			get_total_sum  = Sql.GetFirst("SELECT SUM(ESTVAL_INGL_CURR) as estsum FROM SAQRIT WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,
+			RevisionRecordId=quote_revision_rec_id))
 			if get_total_sum:
 				Sql.RunQuery("""INSERT SAQIBP (
 						
