@@ -973,6 +973,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			row = {}
 			if TITLE == 'DISCOUNT' and '%' in VALUE:
 				VALUE = VALUE.replace('%','')
+			Trace.Write("TITLE_CHK "+str(TITLE)+" - "+str(VALUE))
 			TITLE_NAME = TITLE.split(',')[0]
 			row = {TITLE_NAME: str(VALUE)}
 			
