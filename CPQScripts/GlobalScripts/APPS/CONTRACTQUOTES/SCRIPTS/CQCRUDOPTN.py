@@ -1375,8 +1375,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		for index in range(0, get_totalweeks):
 			countweeks += 1
 			#Trace.Write('countweeks--'+str(countweeks))
-			billing_date="DATEADD(week, {weeks}, '{BillingDate}')".format(weeks=index, BillingDate=start_date.strftime('%m/%d/%Y'))
-			Trace.Write('billing_date--'+str(billing_date))
+			billing_date = start_date + datetime.timedelta(days=(7*countweeks))
 			periods_insert = Sql.RunQuery("""INSERT SAQRDS (QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,DELIVERY_DATE,DELIVERY_PERIOD) select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,'{quote_id}' as QUOTE_ID,'{contract_rec_id}' as QUOTE_RECORD_ID,'{qt_rev_id}' as QTEREV_ID,'{qt_rev_recid}' as QTEREV_RECORD_ID,'{delivery_date}' as DELIVERY_DATE,'{delivery_period}' as DELIVERY_PERIOD """.format(quote_id=self.contract_quote_id,contract_rec_id= self.contract_quote_record_id,qt_rev_id = self.quote_revision_id,qt_rev_recid = self.quote_revision_record_id,delivery_date =billing_date,delivery_period=index+1))
 
 	def CreateEntitlements(self,OfferingRow_detail):		
