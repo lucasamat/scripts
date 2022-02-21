@@ -3163,12 +3163,10 @@ class SYLDRTLIST:
 						pass
 					getdate_indication = ''
 					for inm in ik:
-						value123 = str(inm).split(",")[0].replace("[", "").lstrip()
-						value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
-						#a = str(inm).split(",")
-						#value123 = a[0].replace("[", "").lstrip()
-						#valu = ",".join(a[1:])
-						#value1234 = valu.replace("]", "").lstrip()
+						a = str(inm).split(",")
+						value123 = a[0].replace("[", "").lstrip()
+						valu = ",".join(a[1:])
+						value1234 = valu.replace("]", "").lstrip()
 						if value1234 == "ACQUIRED" or value1234 == "PRICED":
 							value1234 = value1234.replace(value1234,"<img title="+str(value1234).title()+"src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Green_Tick.svg> "+str(value1234))
 						if value1234 == "APPROVAL REQUIRED":
