@@ -3167,7 +3167,7 @@ class SYLDRTLIST:
 						valu = ",".join(a[1:])
 						value1234 = valu.replace("]", "").lstrip()
 						if value1234 == "ACQUIRED" or value1234 == "PRICED":
-							value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Green_Tick.svg> "+str(value1234))
+							value1234 = value1234.replace(value1234,"<img title="+str(value1234).title()+"src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Green_Tick.svg> "+str(value1234))
 						if value1234 == "APPROVAL REQUIRED":
 							value1234 = value1234.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
 						if value1234 == "ACQUIRING":                        
