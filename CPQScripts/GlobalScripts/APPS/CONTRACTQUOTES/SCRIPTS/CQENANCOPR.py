@@ -951,7 +951,7 @@ class AncillaryProductOperation:
 
 				try:
 					##saqgpe ent columns update
-					get_ancillary = Sql.GetList("select * from SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
+					get_ancillary = Sql.GetFirst("select * from SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
 					if get_ancillary:
 						for offering in get_ancillary:
 							where_condition = "WHERE "+self.where_string.replace('SERVICE_ID','PAR_SERVICE_ID')+ " AND SERVICE_ID = '{}'".format(get_ancillary.SERVICE_ID)
