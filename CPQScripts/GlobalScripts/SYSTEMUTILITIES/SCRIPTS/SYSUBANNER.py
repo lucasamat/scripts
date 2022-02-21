@@ -6,7 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
-from CPQScripts.GlobalScripts.SYSTEMUTILITIES.SCRIPTS.SYBLKETRLG import SubtabName
+# from CPQScripts.GlobalScripts.SYSTEMUTILITIES.SCRIPTS.SYBLKETRLG import SubtabName
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
