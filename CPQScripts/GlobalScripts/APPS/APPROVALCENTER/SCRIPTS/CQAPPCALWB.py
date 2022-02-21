@@ -14,6 +14,7 @@ from System import Convert
 import sys
 from SYDATABASE import SQL
 Sql = SQL()
+import CQCPQC4CWB
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
 try:
 	contract_quote_rec_id = Quote.QuoteId
