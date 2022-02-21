@@ -96,7 +96,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
             )
     elif writeback == "approver_list":
         contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
-        approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND APPROVALSTATUS = 'APPROVAL REQUIRED'".format(contract_quote_id.QUOTE_ID))
+        approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}'".format(contract_quote_id.QUOTE_ID))
         approver_list = []
         #approver_step_list =[]
         if contract_quote_id and approver_list_id:
@@ -143,7 +143,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
     
     elif writeback == "delete_approver_list":
         contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
-        approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID,OWNER_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND APPROVALSTATUS != 'APPROVAL REQUIRED'".format(contract_quote_id.QUOTE_ID))
+        approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID,OWNER_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND APPROVALSTATUS = 'APPROVED' OR APPROVALSTATUS = 'REJECTED' ".format(contract_quote_id.QUOTE_ID))
         #approver_list = []
         if contract_quote_id and approver_list_id:
             for app in approver_list_id:
