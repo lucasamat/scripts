@@ -4435,7 +4435,7 @@ class SYLDRTLIST:
 								+ "</th>"
 								)
 						elif (str(RECORD_ID)=="SYOBJR-00005" and str(TreeParentParam)=="Complementary Products" and invs.split('_')[0]=="DELIVERY" and len(invs.split('_'))>1 ):
-							if split_values[1].isdigit() and getRevision.REVISION_STATUS!='APPROVED':
+							if invs.split('_')[1].isdigit() and getRevision.REVISION_STATUS!='APPROVED':
 								data_formatter = "partsListEditLink"
 							else:
 								data_formatter = ""
