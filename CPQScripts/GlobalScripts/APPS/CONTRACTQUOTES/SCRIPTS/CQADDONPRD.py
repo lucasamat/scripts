@@ -9,9 +9,49 @@ from SYDATABASE import SQL
 Sql = SQL()
 import sys
 import datetime
+import re
 User_name = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
 User_Id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
 
+def _construct_dict_xml(updateentXML):
+	entxmldict = {}
+	pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+	pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+	entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+	display_val_dict = {}
+	if updateentXML:
+		for m in re.finditer(pattern_tag, updateentXML):
+			sub_string = m.group(1)
+			x=re.findall(pattern_name,sub_string)
+			if x:
+				entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
+				if entitlement_display_value_tag_match:
+					display_val_dict[x[0]] = entitlement_display_value_tag_match[0].upper()
+			entxmldict[x[0]]=sub_string
+	return entxmldict
+
+def _entitlement_parent_inherit(OfferingRow_detail):
+	par_service_id = OfferingRow_detail.SERVICE_ID
+	contract_quote_rec_id = OfferingRow_detail.QUOTE_RECORD_ID
+	quote_revision_rec_id = OfferingRow_detail.QTEREV_RECORD_ID
+	service_id = OfferingRow_detail.ADNPRD_ID
+	get_parent_xml = Sql.GetFirst("SELECT * FROM SAQTSE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_rec_id, quote_revision_rec_id ,par_service_id) )
+	getall_recid = Sql.GetFirst("SELECT * FROM SAQTSE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' ".format(contract_quote_rec_id, quote_revision_rec_id, service_id ,par_service_id) )
+	get_parent_dict = {}
+	get_service_xml_dict = {}
+	assign_xml = ""
+	if get_parent_xml:
+		get_parent_dict = _construct_dict_xml(get_parent_xml.ENTITLEMENT_XML)
+	if getall_recid:
+		get_service_xml_dict =  _construct_dict_xml(getall_recid.ENTITLEMENT_XML)
+	if get_parent_dict and get_service_xml_dict:
+		for key,value in get_service_xml_dict.items():
+			#temp_val = value
+			if key in get_parent_dict.keys()  :
+				value = get_parent_dict[key]
+			assign_xml += value
+		Sql.RunQuery("UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' AND SERVICE_ID ='{}'".format(assign_xml,contract_quote_rec_id, quote_revision_rec_id ,par_service_id,service_id) )
+	
 def _addon_service_level_entitlement(OfferingRow_detail):
 	Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 						
@@ -154,7 +194,7 @@ def _addon_service_level_entitlement(OfferingRow_detail):
 		values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 		insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 		Sql.RunQuery(insert_qtqtse_query)
-		
+		_entitlement_parent_inherit(OfferingRow_detail)
 		# try:
 		# 	Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
 		# 	where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(OfferingRow_detail.QUOTE_RECORD_ID, OfferingRow_detail.QTEREV_RECORD_ID, OfferingRow_detail.ADNPRD_ID)
