@@ -58,6 +58,7 @@ def _insert_item_level_parts():
 def insert_quote_billing_plan():
 	Trace.Write('inside billing mtraix---')
 	delete_qt_bill_mat = Sql.RunQuery("DELETE FROM QT__Billing_Matrix_Header WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' and  ownerId = {} and cartId ={}".format(contract_quote_record_id,quote_revision_record_id,cartobj.USERID,cartobj.CART_ID))
+	delete_qt_year_mat = Sql.RunQuery("DELETE FROM QT__Billing_Matrix_Header WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' and  ownerId = {} and cartId ={}".format(contract_quote_record_id,quote_revision_record_id,cartobj.USERID,cartobj.CART_ID))
 	services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id))
 	item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID".format(contract_quote_record_id,quote_revision_record_id))
 	if item_billing_plan_obj is not None and services_obj:
@@ -200,9 +201,13 @@ def insert_quote_billing_plan():
 		Quote.SetGlobal('BM_YEAR_1', 'BM_YEAR_1')
 		Quote.GetCustomField('BM_YEAR_1').Content = 'BM_YEAR_1'
 	if SUM_YEAR2:
-		Quote.GetCustomField('BM_YEAR_1').Content = 'BM_YEAR_2'
-		M1_Y2 = SUM_YEAR2.MONTH_1
-		Quote.SetGlobal('M1_Y2', str(M1_Y2))
+		
+		if str(SUM_YEAR2.MONTH_1) != "":
+			M1_Y2 = SUM_YEAR2.MONTH_1
+			Quote.SetGlobal('M1_Y2', str(M1_Y2))
+			Quote.GetCustomField('BM_YEAR_2').Content = 'BM_YEAR_2'
+		else:
+			Quote.SetGlobal('M1_Y2', '')
 		M2_Y2 = SUM_YEAR2.MONTH_2
 		Quote.SetGlobal('M2_Y2', str(M2_Y2))
 		M3_Y2 = SUM_YEAR2.MONTH_3
@@ -226,8 +231,14 @@ def insert_quote_billing_plan():
 		M12_Y2 = SUM_YEAR2.MONTH_12
 		Quote.SetGlobal('M12_Y2', str(M12_Y2))
 	if SUM_YEAR3:
-		Quote.GetCustomField('BM_YEAR_3').Content = 'BM_YEAR_3'
-		M1_Y3 = SUM_YEAR3.MONTH_1
+		#Quote.GetCustomField('BM_YEAR_3').Content = 'BM_YEAR_3'
+		#M1_Y3 = SUM_YEAR3.MONTH_1
+		if str(SUM_YEAR2.MONTH_1) != "":
+			M1_Y3 = SUM_YEAR3.MONTH_1
+			Quote.SetGlobal('M1_Y3', str(M1_Y2))
+			Quote.GetCustomField('BM_YEAR_3').Content = 'BM_YEAR_3'
+		else:
+			Quote.SetGlobal('M1_Y3', '')
 		Quote.SetGlobal('M1_Y3', str(M1_Y3))
 		M2_Y3 = SUM_YEAR3.MONTH_2
 		Quote.SetGlobal('M2_Y3', str(M2_Y3))
