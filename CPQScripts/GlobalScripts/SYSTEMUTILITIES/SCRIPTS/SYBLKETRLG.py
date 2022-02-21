@@ -983,7 +983,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			row = {TITLE_NAME: str(VALUE)}
 			
 			if obj_name =="SAQRDS" and TITLE == "DELIVERY_DATE":
-				get_cpqid = Sql.GetFirst("SELECT CpqTableEntryId from SAQRDS WHERE DELIVERY_PERIOD = '"+str(rec)+"' ")
+				get_cpqid = Sql.GetFirst("SELECT CpqTableEntryId from SAQRDS WHERE DELIVERY_PERIOD = '"+str(rec)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 				cpqid = get_cpqid.CpqTableEntryId
 			else:
 				cpqid = rec.split("-")[1].lstrip("0")
