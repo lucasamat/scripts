@@ -961,8 +961,8 @@ class AncillaryProductOperation:
 																			'where_cond' :where_condition, 
 																			'ent_level_table': rec_table
 																			})
-				except:
-					Log.Info("EXCEPT----entitlement nac update error ")
+				except Exception as e:
+					Log.Info("EXCEPT----entitlement nac update error-"+str(e))
 
 		except Exception as e:
 			Log.Info("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
