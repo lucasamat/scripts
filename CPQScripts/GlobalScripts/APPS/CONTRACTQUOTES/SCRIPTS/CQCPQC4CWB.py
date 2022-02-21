@@ -143,7 +143,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
     
     elif writeback == "delete_approver_list":
         contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
-        approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID,OWNER_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND (APPROVALSTATUS = 'APPROVED' OR APPROVALSTATUS = 'REJECTED')".format(contract_quote_id.QUOTE_ID))
+        approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID,OWNER_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND (APPROVALSTATUS = 'APPROVED' OR APPROVALSTATUS = 'REJECTED') AND OWNER_ID != '' ".format(contract_quote_id.QUOTE_ID))
         #approver_list = []
         if contract_quote_id and approver_list_id:
             for app in approver_list_id:
@@ -152,6 +152,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 c4c_object_id =app.OWNER_ID
                 #approver_list.append(approver)
                 role_code_id = "71"
+                
                 requestdata = (
                     '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
                     + str(writeback)
@@ -160,6 +161,9 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                     +"</c4c_object_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
                 )
                 Trace.Write("requestdata"+str(requestdata))
+                emp_approver = 'USR-'+str(approver)
+                update_obj_id="""UPDATE ACAPTX SET OWNER_ID = '' WHERE APRTRXOBJ_ID = '{quote_id}' AND APRCHNSTP_APPROVER_ID ='{emp_approver}' AND OWNER_ID ='{c4c_object_id}'""".format(c4c_object_id=c4c_object_id,quote_id =contract_quote_id.QUOTE_ID,emp_approver = emp_approver)
+                #Sql.RunQuery(update_obj_id)
                 LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='CPQ_TO_C4C_WRITEBACK'")
                 LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
                 if LOGIN_CREDENTIALS is not None:
