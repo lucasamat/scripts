@@ -51,6 +51,24 @@ class SyncFPMQuoteAndHanaDatabase:
             #spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_id)+"'' ' ")
             temp_table_count = SqlHelper.GetFirst("SELECT count(*) as CNT FROM {}".format(str(spare_parts_temp_table_name)))
             Log.Info("TempTablecount--->"+str(temp_table_count.CNT))
+            parts_value = 0
+            entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+            entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+            quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+            entitlement_value_str = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(Service_Id)+'[^>]*?_TSC_SCPT</ENTITLEMENT_ID>')
+            value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+            for m in re.finditer(quote_item_tag, entitlement_xml):
+                sub_string = m.group(1)
+                scheduled_parts =re.findall(entitlement_value_str,sub_string)
+                scheduled_value =re.findall(value,sub_string)
+                if scheduled_parts and scheduled_value:
+                    parts_value = scheduled_value[0]
+                    break
+
+            if self.tree_param == 'Z0108':
+                schedule_mode= "SCHEDULED" if int(parts_value) > 9 else "UNSCHEDULED"
+            elif self.tree_param == 'Z0110':
+                schedule_mode= " "
             Sql.RunQuery("""
                             INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,STPACCOUNT_ID, SHPACCOUNT_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
@@ -124,7 +142,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 0.00 as SALESUOM_CONVERSION_FACTOR,
                                 MAMTRL.UNIT_OF_MEASURE as SALESUOM_ID,
                                 MAMTRL.UOM_RECORD_ID as SALESUOM_RECORD_ID, 
-								CASE WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY < 10 THEN 'ON REQUEST' WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY > 10 THEN 'LOW QUANTITY ONSITE' WHEN SAQTSV.SERVICE_ID='Z0108' AND  TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY <=9 THEN 'UNSCHEDULED' ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
+								{schedule_mode} AS SCHEDULE_MODE,
                                 SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
                                 SAQTSV.SERVICE_ID as SERVICE_ID,
                                 SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
@@ -159,7 +177,8 @@ class SyncFPMQuoteAndHanaDatabase:
                                         RevisionRecordId=self.quote_revision_id,
                                         UserId=User.Id,
                                         sold_to=self.account_info['SOLD TO'],
-                                        ship_to=self.account_info['SHIP TO']
+                                        ship_to=self.account_info['SHIP TO'],
+                                        schedule_mode = schedule_mode
                                     )
             )
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
