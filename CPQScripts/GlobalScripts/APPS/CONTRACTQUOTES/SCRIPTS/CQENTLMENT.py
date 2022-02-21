@@ -2138,6 +2138,7 @@ class Entitlements:
 
 				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtse_obj.QUOTE_ID}})
 			elif customer_wants_participate == 'Yes':
+				Sql.RunQuery("UPDATE SAQSPT SET CUSTOMER_ACCEPT_PART='True' WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"'")
 				Trace.Write('2118----------'+str(saqtse_obj.QUOTE_ID))
 				#iflow for spare parts...
 				webclient = System.Net.WebClient()
