@@ -200,7 +200,7 @@ def insert_quote_billing_plan():
 		Quote.SetGlobal('BM_YEAR_1', 'BM_YEAR_1')
 	if SUM_YEAR2:
 		M1_Y2 = SUM_YEAR2.MONTH_1
-		Quote.SetGlobal('M1_Y2', str(M1_Y2))
+		Quote.SetGlobal('M2_Y2', str(M1_Y2))
 		M2_Y2 = SUM_YEAR2.MONTH_2
 		Quote.SetGlobal('M2_Y2', str(M2_Y2))
 		M3_Y2 = SUM_YEAR2.MONTH_3
@@ -225,7 +225,7 @@ def insert_quote_billing_plan():
 		Quote.SetGlobal('M12_Y2', str(M12_Y2))
 	if SUM_YEAR3:
 		M1_Y3 = SUM_YEAR3.MONTH_1
-		Quote.SetGlobal('M1_Y3', str(M1_Y3))
+		Quote.SetGlobal('M3_Y3', str(M1_Y3))
 		M2_Y3 = SUM_YEAR3.MONTH_2
 		Quote.SetGlobal('M2_Y3', str(M2_Y3))
 		M3_Y3 = SUM_YEAR3.MONTH_3
