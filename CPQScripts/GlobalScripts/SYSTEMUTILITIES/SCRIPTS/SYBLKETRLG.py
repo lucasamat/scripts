@@ -970,6 +970,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id"),TreeParam))
 					update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_rec_id,Quote.GetGlobal("quote_revision_record_id")))
 				return ""
+
+
 		for index,rec in enumerate(selected_rows):
 			row = {}
 			if TITLE == 'DISCOUNT' and '%' in VALUE:
@@ -1234,6 +1236,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						Sql.RunQuery("""UPDATE SAQRSP SET {column} = {value} , {column1} = '{value1}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,column1=TITLE.split(',')[1],value1 = ALLVALUES1[index] if str(type(ALLVALUES1))=="<type 'ArrayList'>" else ALLVALUES1,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_REV_PO_PRODUCT_LIST_ID))
 				elif obj_name == "SAQRIS":
 					Sql.RunQuery("""UPDATE SAQRIS SET {column} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value= VALUE,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_REV_ITEM_SUMMARY_RECORD_ID))
+
+					saqris_offering_descriptionquery = Sql.GetFirst("SELECT SERVICE_ID FROM SAQRIS (NOLOCK) WHERE {rec_name} = '{rec_id}'".format(rec_name = objh_head,rec_id = sql_obj.QUOTE_REV_ITEM_SUMMARY_RECORD_ID))
+
+					Sql.RunQuery("""UPDATE SAQRIT SET {column} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}'""".format(column=TITLE.split(',')[0],value= VALUE,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id = saqris_offering_descriptionquery.SERVICE_ID))
+
+					Sql.RunQuery("""UPDATE SAQICO SET {column} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}'""".format(column=TITLE.split(',')[0],value= VALUE,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id = saqris_offering_descriptionquery.SERVICE_ID))
 				else:
 					Table.TableActions.Update(obj_name, objh_head, row)
 				#A055S000P01-8729 end
