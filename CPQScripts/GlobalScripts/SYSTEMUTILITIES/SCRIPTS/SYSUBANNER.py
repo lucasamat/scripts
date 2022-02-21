@@ -2887,7 +2887,11 @@ def Related_Sub_Banner(
         
         if get_quote_status and (str(quote_status.REVISION_STATUS) == 'PREPARING REVISION' or str(quote_status.REVISION_STATUS) == 'NEW REVISION' or str(quote_status.REVISION_STATUS) == 'RECALLED') and Submit_approval == "True":
             Trace.Write("submit for approval")
-            sec_rel_sub_bnr += (
+            GetSelfAppr = Sql.GetFirst("SELECT CpqTableEntryId FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND APRCHN_ID = 'SELFAPPR'".format(quote_status.QUOTE_ID))
+            if GetSelfAppr is not None:
+                sec_rel_sub_bnr += ""
+            else:
+                sec_rel_sub_bnr += (
                     '<button class="btnconfig cust_def_btn submitbutton" data-target="#SUBMIT_MODAL_SECTION" data-toggle="modal" id="submit_for_approval" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
                     )
         # else:
