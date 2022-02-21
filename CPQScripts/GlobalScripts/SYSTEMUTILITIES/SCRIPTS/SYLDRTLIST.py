@@ -297,8 +297,9 @@ class SYLDRTLIST:
 							rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
 							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 						if RECORD_ID == 'SYOBJR-00005' and str(TreeParam)=="Z0110":
+							columns_string = Columns
 							Columns = []
-							for column in eval(Columns):
+							for column in eval(columns_string):
 								split_values = column.split('_')
 								if len(split_values) > 1 and split_values[0]=="DELIVERY":
 									if not(split_values[1].isdigit()):
