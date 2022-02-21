@@ -14,16 +14,31 @@ from System import Convert
 import sys
 from SYDATABASE import SQL
 Sql = SQL()
+TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
 try:
-    contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+	contract_quote_rec_id = Quote.QuoteId
 except:
-    contract_quote_record_id = ""
+	contract_quote_rec_id = ''
 
 try:
-    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-    
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
-    quote_revision_record_id =  ""
+	quote_revision_record_id = ""
+
+try:
+	current_prod = Product.Name
+	
+except:
+	current_prod = "Sales"
+try:
+	TabName = TestProduct.CurrentTab
+except:
+	TabName = "Quotes"
+
+contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+user_id = str(User.Id)
+user_name = str(User.UserName)
 
 
 contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
