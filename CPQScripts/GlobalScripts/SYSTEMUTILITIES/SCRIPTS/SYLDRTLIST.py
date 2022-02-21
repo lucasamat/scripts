@@ -4604,6 +4604,18 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)
+						elif ObjectName == "SAQRSP" and str(qstring) == "Target Quantity":
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" class="cust_qty" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+							)
 						elif RECORD_ID == 'SYOBJR-00007' and str(invs) in billing_date_column: # Billing Matrix Date Change Model and Footer - Start
 							
 							footer_formatter = ''
