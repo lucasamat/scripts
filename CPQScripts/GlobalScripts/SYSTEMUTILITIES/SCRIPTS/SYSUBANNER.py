@@ -2066,7 +2066,6 @@ def Related_Sub_Banner(
         curr = currency.GLOBAL_CURRENCY
         Total=(get_quote_details.TOTAL_AMOUNT_INGL_CURR)
         get_service_id=Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-        trace.Write("")
         if get_service_id:
             if get_service_id.SERVICE_ID in('Z0110','Z0108'):
                 Total=(get_quote_details.NET_VALUE_INGL_CURR)
