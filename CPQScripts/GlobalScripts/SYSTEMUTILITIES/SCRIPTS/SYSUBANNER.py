@@ -2080,6 +2080,7 @@ def Related_Sub_Banner(
             ThirdLable = "Total Amount Including Tax/VAT"
             ThirdValue = str("%.2f" % round(float(Total),2))+curr if str(Total) != '' else '0.00'+" "+curr
         elif get_quote_details:
+            Trace.Write("subTabName_CHK "+str(subTabName))
             if subTabName == "Items":
                 PrimaryLable = "Total Excluding Tax/VAT"
                 PrimaryValue = '0.00'+" "+curr
