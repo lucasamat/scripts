@@ -1587,13 +1587,16 @@ class Entitlements:
 						Sql.RunQuery("DELETE FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%'".format(self.quote_id))
 					# Approval Trigger - Start								
 					#import ACVIORULES
-					violationruleInsert = ACVIORULES.ViolationConditions()
-					header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-					if header_obj:
-						Trace.Write("Inside Approval Trigger")
-						violationruleInsert.InsertAction(
-														header_obj.RECORD_ID, self.revision_recordid, "SAQTRV"
-														)
+					try:
+						violationruleInsert = ACVIORULES.ViolationConditions()
+						header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+						if header_obj:
+							Trace.Write("Inside Approval Trigger")
+							violationruleInsert.InsertAction(
+															header_obj.RECORD_ID, self.revision_recordid, "SAQTRV"
+															)
+					except:
+						Trace.Write("violation error")
 					
 					# Approval Trigger - End
 				#15007 END
