@@ -120,7 +120,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 + str(role_code_id)
                 +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
             )
-            #Log.Info("requestdata--"+str(requestdata)+"QUOTE_ID"+str(contract_quote_id.QUOTE_ID))
+            Log.Info("requestdata--"+str(requestdata)+"QUOTE_ID"+str(contract_quote_id.QUOTE_ID))
 
             Trace.Write("requestdata"+str(requestdata))
         # LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='CPQ_TO_C4C_WRITEBACK'")
