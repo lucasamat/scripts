@@ -350,6 +350,7 @@ class ContractQuoteItem:
 					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id)
 			)			
 
+			# Update Tool Config
 			Sql.RunQuery("""UPDATE SAQICO
 						SET SAQICO.TOLCFG = PRCFVA.TOOL_CONFIGURATION		
 							FROM SAQICO (NOLOCK)
