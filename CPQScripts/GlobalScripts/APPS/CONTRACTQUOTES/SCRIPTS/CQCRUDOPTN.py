@@ -5011,6 +5011,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				)
 
 			self._process_query("""INSERT SAQGPM(CHAMBER_QUANTITY,
+					ADDUSR_RECORD_ID,
 					GOT_CODE,
 					GOTCODE_RECORD_ID,
 					GREENBOOK,
@@ -5044,6 +5045,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					)SELECT pmsa_pmevents.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(
 					SELECT DISTINCT
 					0 as CHAMBER_QUANTITY,
+					MAEAPK.ASSEMBLY_ID,
 					SAQRGG.GOT_CODE,
 					SAQRGG.GOTCODE_RECORD_ID,
 					SAQRGG.GREENBOOK,
@@ -5421,6 +5423,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				)
 
 			self._process_query("""INSERT SAQGPM(CHAMBER_QUANTITY,
+					ADDUSR_RECORD_ID,
 					GOT_CODE,
 					GOTCODE_RECORD_ID,
 					GREENBOOK,
@@ -5454,6 +5457,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					)SELECT pmsa_pmevents.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(
 					SELECT DISTINCT
 					0 as CHAMBER_QUANTITY,
+					MAEAPK.ASSEMBLY_ID,
 					SAQRGG.GOT_CODE,
 					SAQRGG.GOTCODE_RECORD_ID,
 					SAQRGG.GREENBOOK,
