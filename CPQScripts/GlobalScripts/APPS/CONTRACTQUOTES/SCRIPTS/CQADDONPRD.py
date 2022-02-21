@@ -196,7 +196,8 @@ def _addon_service_level_entitlement(OfferingRow_detail):
 		values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 		insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 		Sql.RunQuery(insert_qtqtse_query)
-		_entitlement_parent_inherit(OfferingRow_detail)
+		if OfferingRow_detail.ADNPRD_ID == 'Z0116':
+			_entitlement_parent_inherit(OfferingRow_detail)
 		# try:
 		# 	Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
 		# 	where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(OfferingRow_detail.QUOTE_RECORD_ID, OfferingRow_detail.QTEREV_RECORD_ID, OfferingRow_detail.ADNPRD_ID)
