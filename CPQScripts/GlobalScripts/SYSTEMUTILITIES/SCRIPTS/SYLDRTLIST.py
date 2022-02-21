@@ -306,6 +306,7 @@ class SYLDRTLIST:
 										Columns.append(column)
 								else:
 									Columns.append(column)
+							Columns = str(Columns)
 			#Hide columns in Related list based on Quote type End
 			Obj_Name = obj_obj.OBJ_REC_ID            
 			COLUMN_REC_ID = obj_obj.COLUMN_REC_ID            
