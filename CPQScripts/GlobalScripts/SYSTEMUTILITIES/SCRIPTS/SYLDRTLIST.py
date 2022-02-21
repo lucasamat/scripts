@@ -4427,19 +4427,6 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 								)
-						elif str(RECORD_ID) == "SYOBJR-98881" and str(invs) == "DELIVERY_DATE":
-							data_formatter = "deliveryDateLink" if getRevision.REVISION_STATUS!="APPROVED" else ""
-							table_header += (
-								'<th  data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
-								+ str(qstring)
-								+ '" data-formatter="'+str(data_formatter)+'" data-sortable="true" '
-								+ rowspan
-								+'>'
-								+ str(qstring)
-								+ "</th>"
-								)
 						elif (str(RECORD_ID) == "SYOBJR-95556" and str(invs)=="PM_FREQUENCY"):
 							data_formatter = "PMFrequencyBulkEditHyperLink" if getRevision.REVISION_STATUS!="APPROVED" else ""
 							table_header += (
@@ -4521,6 +4508,19 @@ class SYLDRTLIST:
 								+ str("STATUS")
 								+ "</th>"
 							)
+						elif str(RECORD_ID) == "SYOBJR-98881" and str(invs) == "DELIVERY_DATE":
+							data_formatter = "deliveryDateLink" if getRevision.REVISION_STATUS!="APPROVED" else ""
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-formatter="'+str(data_formatter)+'" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+								)
 						else:                     
 							visible = ""
 							if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_DATE':
