@@ -72,7 +72,7 @@ today_current_date = now.strftime('%m/%d/%Y')
 current_date_obj = str(now).split(" ")[0].strip()
 today_date_obj = datetime.datetime.strptime(str(current_date_obj),"%Y-%m-%d")
 today_date_string = str(today_date_obj).split(" ")[0].strip()
-target_mail_date_obj = today_date_obj + timedelta(days=7)
+target_mail_date_obj = today_date_obj + timedelta(days=14)
 target_mail_date_obj= target_mail_date_obj
 target_mail_date = str(target_mail_date_obj).split(" ")[0].strip()
 #target_mail_date = target_mail_date.replace("-","/")
