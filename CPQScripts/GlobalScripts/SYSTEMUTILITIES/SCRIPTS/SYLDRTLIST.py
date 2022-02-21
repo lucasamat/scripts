@@ -4414,8 +4414,21 @@ class SYLDRTLIST:
 						if RECORD_ID == 'SYOBJR-34575' and str(invs) == 'QTEREVSPT_RECORD_ID':
 							visible = 'data-visible="false"'
 						
-						if (str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" and str(Product.GetGlobal("TreeParentLevel2"))=="Product Offerings") or (str(RECORD_ID)=="SYOBJR-00005" and str(invs) == "CUSTOMER_ANNUAL_QUANTITY" and str(TreeParentParam)=="Complementary Products") :
+						if (str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" and str(Product.GetGlobal("TreeParentLevel2"))=="Product Offerings") or (str(RECORD_ID)=="SYOBJR-00005" and str(TreeParentParam)=="Complementary Products" and ( str(invs) == "CUSTOMER_ANNUAL_QUANTITY" or (invs.split('_')[0]=="DELIVERY" and invs.split('_')[1].isdigit()) ) ):
 							data_formatter = "partsListEditLink" if getRevision.REVISION_STATUS!='APPROVED' else ''
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-formatter="'+str(data_formatter)+'" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+								)
+						elif str(RECORD_ID) == "SYOBJR-98881" and str(invs) == "DELIVERY_DATE":
+							data_formatter = "deliveryDateLink" if getRevision.REVISION_STATUS!="APPROVED" else ""
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
