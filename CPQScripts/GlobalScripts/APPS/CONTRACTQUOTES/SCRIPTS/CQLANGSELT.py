@@ -233,6 +233,7 @@ def insert_quote_billing_plan():
 	if SUM_YEAR3:
 		#Quote.GetCustomField('BM_YEAR_3').Content = 'BM_YEAR_3'
 		#M1_Y3 = SUM_YEAR3.MONTH_1
+		M1_Y3 =''
 		if str(SUM_YEAR2.MONTH_1) != "":
 			M1_Y3 = SUM_YEAR3.MONTH_1
 			Quote.SetGlobal('M1_Y3', str(M1_Y2))
