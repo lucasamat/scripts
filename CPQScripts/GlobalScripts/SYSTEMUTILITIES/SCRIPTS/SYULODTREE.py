@@ -641,6 +641,7 @@ class TreeView:
 								for index in range(1, years+1):
 									type = "OBJECT RELATED LAYOUT"
 									subTabName = "Year {}".format(index)
+									Trace.Write('subTabName--'+str(subTabName))
 									if ObjRecId and RelatedId:
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
