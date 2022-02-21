@@ -5039,7 +5039,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,
 					CPQTABLEENTRYADDEDBY,
 					CPQTABLEENTRYDATEADDED
-					)SELECT pmsa_pmevents.CHAMBER_QUANTITY,
+					)SELECT DISTINCT pmsa_pmevents.CHAMBER_QUANTITY,
 					pmsa_pmevents.GOT_CODE,
 					pmsa_pmevents.GOTCODE_RECORD_ID,
 					pmsa_pmevents.GREENBOOK,
@@ -5471,7 +5471,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,
 					CPQTABLEENTRYADDEDBY,
 					CPQTABLEENTRYDATEADDED
-					)SELECT pmsa_pmevents.CHAMBER_QUANTITY,
+					)SELECT DISTINCT pmsa_pmevents.CHAMBER_QUANTITY,
 					pmsa_pmevents.GOT_CODE,
 					pmsa_pmevents.GOTCODE_RECORD_ID,
 					pmsa_pmevents.GREENBOOK,
