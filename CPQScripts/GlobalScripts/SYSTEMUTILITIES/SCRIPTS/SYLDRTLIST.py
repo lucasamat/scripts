@@ -297,7 +297,14 @@ class SYLDRTLIST:
 							rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
 							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 						if RECORD_ID == 'SYOBJR-00005' and str(TreeParam)=="Z0110":
-							Columns = str([column for column in eval(Columns) if not(column.split('_')[0]=="DELIVERY" and column.split('_')[1].isdigit())])
+							Columns = []
+							for column in eval(Columns):
+								split_values = column.split('_')
+								if len(split_values) > 1 and split_values[0]=="DELIVERY":
+									if not(split_values[1].isdigit()):
+										Columns.append(column)
+								else:
+									Columns.append(column)
 			#Hide columns in Related list based on Quote type End
 			Obj_Name = obj_obj.OBJ_REC_ID            
 			COLUMN_REC_ID = obj_obj.COLUMN_REC_ID            
@@ -4414,8 +4421,24 @@ class SYLDRTLIST:
 						if RECORD_ID == 'SYOBJR-34575' and str(invs) == 'QTEREVSPT_RECORD_ID':
 							visible = 'data-visible="false"'
 						
-						if (str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" and str(Product.GetGlobal("TreeParentLevel2"))=="Product Offerings") or (str(RECORD_ID)=="SYOBJR-00005" and str(TreeParentParam)=="Complementary Products" and ( str(invs) == "CUSTOMER_ANNUAL_QUANTITY" or (invs.split('_')[0]=="DELIVERY" and invs.split('_')[1].isdigit()) ) ):
+						if((str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" and str(Product.GetGlobal("TreeParentLevel2"))=="Product Offerings") or (str(RECORD_ID)=="SYOBJR-00005" and str(TreeParentParam)=="Complementary Products" and str(invs) == "CUSTOMER_ANNUAL_QUANTITY")):
 							data_formatter = "partsListEditLink" if getRevision.REVISION_STATUS!='APPROVED' else ''
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-formatter="'+str(data_formatter)+'" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+								)
+						elif (str(RECORD_ID)=="SYOBJR-00005" and str(TreeParentParam)=="Complementary Products" and invs.split('_')[0]=="DELIVERY" and len(invs.split('_'))>1 ):
+							if split_values[1].isdigit() and getRevision.REVISION_STATUS!='APPROVED':
+								data_formatter = "partsListEditLink"
+							else:
+								data_formatter = ""
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
@@ -5600,10 +5623,6 @@ class SYLDRTLIST:
 						delivery_date_joined =",".join(["'{}'".format(delivery_data)])
 						
 						Columns = Columns.replace(']', ','+delivery_date_joined+']')
-			elif Wh_OBJECT_NAME == 'SAQSPT' and str(TreeParam)=="Z0110":
-				for column in Columns:
-					if column.split('_')[0]=="DELIVERY" and column.split('_')[1].isdigit():
-						Columns.remove(column)
 			CurrentObj = Sql.GetFirst(
 				"select API_NAME, OBJECT_NAME from  SYOBJD (nolock) where PARENT_OBJECT_RECORD_ID = '"
 				+ str(PARENT_LOOKUP_REC_ID)
