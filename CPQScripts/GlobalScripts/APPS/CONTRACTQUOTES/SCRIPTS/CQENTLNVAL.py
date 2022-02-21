@@ -203,7 +203,7 @@ def _construct_dict_xml(updateentXML):
 			entxmldict[x[0]]=sub_string
 	return entxmldict,display_val_dict
 
-def entitlemt_attr_update(partnumber,entitlement_table, where):
+def entitlemnt_attr_update(partnumber,entitlement_table, where):
 	get_equipment = Sql.GetList("SELECT * FROM {} {}".format(entitlement_table, where))
 	entitlement_details = [{
 								"field":["INTCPV","Intercept","AGS_{}_VAL_INTCPT".format(partnumber)]						
@@ -430,7 +430,7 @@ elif action == 'get_from_prenli':
 elif action == 'ENTITLEMENT_UPDATE':
 	Result = ChildEntRequest(partnumber,ent_level_table,where_cond)
 elif action == 'ENTITLEMENT_COLUMN_UPDATE':
-	Result = entitlemt_attr_update(partnumber,ent_level_table,where_cond)
+	Result = entitlemnt_attr_update(partnumber,ent_level_table,where_cond)
 
 
 
