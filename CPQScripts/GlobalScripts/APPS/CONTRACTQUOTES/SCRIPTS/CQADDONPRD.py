@@ -47,8 +47,10 @@ def _entitlement_parent_inherit(OfferingRow_detail):
 	if get_parent_dict and get_service_xml_dict:
 		for key,value in get_service_xml_dict.items():
 			#temp_val = value
-			if key in get_parent_dict.keys()  :
+			#if key in get_parent_dict.keys() :
+			if 'AGS_{}_PQB_BILTYP'.format(par_service_id) in get_parent_dict.keys() and key == 'AGS_Z0116_PQB_BILTYP':
 				value = get_parent_dict[key]
+				value = value.replace(par_service_id,"Z0116")
 			assign_xml += value
 		Sql.RunQuery("UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' AND SERVICE_ID ='{}'".format(assign_xml,contract_quote_rec_id, quote_revision_rec_id ,par_service_id,service_id) )
 	
