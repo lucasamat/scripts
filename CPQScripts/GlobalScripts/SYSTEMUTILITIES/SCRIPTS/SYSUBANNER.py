@@ -2066,6 +2066,7 @@ def Related_Sub_Banner(
         curr = currency.GLOBAL_CURRENCY
         Total=(get_quote_details.TOTAL_AMOUNT_INGL_CURR)
         get_service_id=Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        trace.Write("")
         if get_service_id:
             if get_service_id.SERVICE_ID in('Z0110','Z0108'):
                 Total=(get_quote_details.NET_VALUE_INGL_CURR)
@@ -2078,7 +2079,7 @@ def Related_Sub_Banner(
             SecondValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
             ThirdLable = "Total Amount Including Tax/VAT"
             ThirdValue = str("%.2f" % round(float(Total),2))+curr if str(Total) != '' else '0.00'+" "+curr
-        if SubtabName == "Offerings":
+        elif subTabName == "Offerings":
             saqris_details = Sql.GetFirst("SELECT SUM(ESTIMATED_VALUE) AS ESTIMATED_VALUE, SUM(NET_VALUE_INGL_CURR) AS NET_VALUE_INGL_CURR FROM SAQRIS (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
             PrimaryLable = "Total Tax/VAT/GST"
             PrimaryValue = '0.00'+" "+curr
