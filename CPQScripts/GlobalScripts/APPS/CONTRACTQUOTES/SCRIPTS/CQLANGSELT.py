@@ -200,8 +200,9 @@ def insert_quote_billing_plan():
 		Quote.SetGlobal('BM_YEAR_1', 'BM_YEAR_1')
 		Quote.GetCustomField('BM_YEAR_1').Content = 'BM_YEAR_1'
 	if SUM_YEAR2:
+		Quote.GetCustomField('BM_YEAR_1').Content = 'BM_YEAR_2'
 		M1_Y2 = SUM_YEAR2.MONTH_1
-		Quote.SetGlobal('M2_Y2', str(M1_Y2))
+		Quote.SetGlobal('M1_Y2', str(M1_Y2))
 		M2_Y2 = SUM_YEAR2.MONTH_2
 		Quote.SetGlobal('M2_Y2', str(M2_Y2))
 		M3_Y2 = SUM_YEAR2.MONTH_3
