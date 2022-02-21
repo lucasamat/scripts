@@ -2090,10 +2090,12 @@ def Related_Sub_Banner(
                 FifthLable = "Total Margin"
                 FifthValue = '0.00'+" "+curr
             elif subTabName == "Offerings":
+                saqris_details = Sql.GetFirst("SELECT SUM(ESTIMATED_VALUE) AS ESTIMATED_VALUE, SUM(NET_VALUE_INGL_CURR) AS NET_VALUE_INGL_CURR FROM SAQRIS (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                 PrimaryLable = "Total Tax/VAT/GST"
                 PrimaryValue = '0.00'+" "+curr
                 SecondLable = "Total Est Net Val"
-                SecondValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                # SecondValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                SecondValue = str("%.2f" % round(float(saqris_details.ESTIMATED_VALUE),2))+" "+curr if str(saqris_details.ESTIMATED_VALUE) != '' else '0.00'+" "+curr
                 ThirdLable = "Total Net Val"
                 ThirdValue = '0.00'+" "+curr
                 FourthLable = "Total  Amt"
