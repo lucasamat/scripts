@@ -3256,6 +3256,7 @@ class SYLDRTLIST:
 								decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
 								
 							if value1234 is not None:
+								Trace.Write("value123--"+str(value123))
 								if value1234 != "":
 									if "-" in value1234:										
 										##A055S000P01-12021
