@@ -124,11 +124,12 @@ def equipment_predefined():
 		##total seed coefficent update
 		try:
 			Trace.Write("try"+str(TreeParam))
-			ent_value = 'Y' 
+			ent_value = ''
+			ent_code = '001' 
 			entitlement_id = 'AGS_{}_VAL_TBCOST'.format(TreeParam)
 			if entitlement_id in updateentXML:
 				Trace.Write("try")
-				get_value_qry = Sql.GetFirst("SELECT ENTITLEMENT_DISPLAY_VALUE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID ='{}'".format(entitlement_id,TreeParam))
+				get_value_qry = Sql.GetFirst("SELECT ENTITLEMENT_DISPLAY_VALUE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID ='{} ' AND ENTITLEMENT_VALUE_CODE = '{}'".format(entitlement_id,TreeParam,ent_code))
 				if get_value_qry:
 					if get_value_qry.ENTITLEMENT_DISPLAY_VALUE:
 						ent_value = get_value_qry.ENTITLEMENT_DISPLAY_VALUE
