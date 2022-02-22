@@ -2938,7 +2938,7 @@ class SYLDRTLIST:
 					#Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
 					
 					for inm in ik:
-    					Trace.Write('inm--->'+str(inm))
+						Trace.Write('inm--->'+str(inm))
 						value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 						value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
 						if (
