@@ -2087,6 +2087,7 @@ def Related_Sub_Banner(
         elif get_quote_details:
             Trace.Write("subTabName_CHK "+str(subTabName))
             if subTabName == "Items":
+                saqrit_details = Sql.GetFirst("SELECT SUM(TOTAL_AMOUNT_INGL_CURR) AS TOTAL_AMOUNT_INGL_CURR, SUM(TAX_AMOUNT_INGL_CURR) AS TAX_AMOUNT_INGL_CURR, SUM(TOTAL_AMOUNT_INGL_CURR) AS TOTAL_AMOUNT_INGL_CURR FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                 PrimaryLable = "Total Excluding Tax/VAT"
                 PrimaryValue = '0.00'+" "+curr
                 SecondLable = "Tax/VAT"
@@ -2114,19 +2115,25 @@ def Related_Sub_Banner(
                 FifthValue = '0.00'+" "+curr
             else:
                 PrimaryLable = "Total Sales Price"
-                PrimaryValue = str("%.2f" % round(float(get_quote_details.SALES_PRICE_INGL_CURR),2))+" "+curr if str(get_quote_details.SALES_PRICE_INGL_CURR) != '' else '0.00'+" "+curr
+                #PrimaryValue = str("%.2f" % round(float(get_quote_details.SALES_PRICE_INGL_CURR),2))+" "+curr if str(get_quote_details.SALES_PRICE_INGL_CURR) != '' else '0.00'+" "+curr
+                PrimaryValue = decimal_format.format(float(get_quote_details.SALES_PRICE_INGL_CURR))+" "+ curr if str(get_quote_details.SALES_PRICE_INGL_CURR) != '' else '0.00'+" "+curr
                 SecondLable = "Total Discount %"
-                SecondValue = str("%.2f" % round(float(get_quote_details.DISCOUNT_PERCENT),2))+" "+curr if str(get_quote_details.DISCOUNT_PERCENT) != '' else '0.00'+" "+curr
+                #SecondValue = str("%.2f" % round(float(get_quote_details.DISCOUNT_PERCENT),2))+" "+curr if str(get_quote_details.DISCOUNT_PERCENT) != '' else '0.00'+" "+curr
+                SecondValue = decimal_format.format(float(get_quote_details.DISCOUNT_PERCENT))+" "+ curr if str(get_quote_details.DISCOUNT_PERCENT) != '' else '0.00'+" "+curr
                 ThirdLable = "Total Discount Amount"
-                ThirdValue = str("%.2f" % round(float(get_quote_details.DISCOUNT_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.DISCOUNT_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                #ThirdValue = str("%.2f" % round(float(get_quote_details.DISCOUNT_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.DISCOUNT_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                ThirdValue = decimal_format.format(float(get_quote_details.DISCOUNT_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.DISCOUNT_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
                 FourthLable = "Total Credit"
-                FourthValue = str("%.2f" % round(float(get_quote_details.CREDIT_INGL_CURR),2))+" "+curr if str(get_quote_details.CREDIT_INGL_CURR) != '' else '0.00'+" "+curr
+                #FourthValue = str("%.2f" % round(float(get_quote_details.CREDIT_INGL_CURR),2))+" "+curr if str(get_quote_details.CREDIT_INGL_CURR) != '' else '0.00'+" "+curr
+                FourthValue = decimal_format.format(float(get_quote_details.CREDIT_INGL_CURR))+" "+ curr if str(get_quote_details.CREDIT_INGL_CURR) != '' else '0.00'+" "+curr
                 FifthValue = "Total Excluding Tax/VAT"
                 FifthValue = '0.00'+" "+curr
                 SixthLable = "Tax/VAT"
-                SixthValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                #SixthValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                SixthValue = decimal_format.format(float(get_quote_details.TAX_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
                 SeventhLable = "Total Amount Including Tax/VAT"
-                SeventhValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                #SeventhValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                SeventhValue = decimal_format.format(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
     item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
     if item_detail:
         #if subTabName == "Details" or subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module" and ObjName == "SAQRIT":
