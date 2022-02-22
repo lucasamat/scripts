@@ -508,6 +508,8 @@ if action == 'GET_RESPONSE':
 	Result = entitlement_request(partnumber,request_url,request_type)
 elif action == 'get_from_prenli':
 	Result = entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond)
+elif action == 'get_edit_attr_list':
+	Result = entitlement_attributes_editability_request(partnumber,inserted_value_list,ent_level_table,where_cond)
 elif action == 'ENTITLEMENT_UPDATE':
 	Result = ChildEntRequest(partnumber,ent_level_table,where_cond)
 elif action == 'ENTITLEMENT_COLUMN_UPDATE':
