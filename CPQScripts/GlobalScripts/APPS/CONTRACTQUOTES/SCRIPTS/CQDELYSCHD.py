@@ -47,21 +47,23 @@ def delete_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id):
 	return 'data'
 
 def periods_insert(contract_quote_record_id,quote_revision_record_id):
-	quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
-	getQuote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '"+str(rev_rec_id)+"' ")
-	contract_start_date = str(quotedetails.CONTRACT_VALID_FROM).split(' ')[0]
-	contract_end_date = str(quotedetails.CONTRACT_VALID_TO).split(' ')[0]
-	start_date = datetime.datetime.strptime(contract_start_date, '%m/%d/%Y')
-	end_date = datetime.datetime.strptime(contract_end_date, '%m/%d/%Y')
-	diff1 = end_date - start_date
-	get_totalweeks,remainder = divmod(diff1.days,7)
-	countweeks =0
-	for index in range(0, get_totalweeks):
-		countweeks += 1
-		#Trace.Write('countweeks--'+str(countweeks))
-		billing_date = start_date + datetime.timedelta(days=(7*countweeks))
-		Query = "INSERT SAQRDS (QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,DELIVERY_DATE,DELIVERY_PERIOD) select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,'{quote_id}' as QUOTE_ID,'{contract_rec_id}' as QUOTE_RECORD_ID,'{qt_rev_id}' as QTEREV_ID,'{qt_rev_recid}' as QTEREV_RECORD_ID,'{delivery_date}' as DELIVERY_DATE,'{delivery_period}' as DELIVERY_PERIOD ".format(quote_id=getQuote_details.QUOTE_ID,contract_rec_id= contract_quote_record_id,qt_rev_id = getQuote_details.QTEREV_ID,qt_rev_recid = quote_revision_record_id,delivery_date =billing_date,delivery_period=index+1)
-		periods_insert = Sql.RunQuery(Query)
+	count = Sql.GetFirst("SELECT COUNT(*) as CNT FROM SAQRDS WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
+	if count.CNT==0:
+		quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+		getQuote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '"+str(rev_rec_id)+"' ")
+		contract_start_date = str(quotedetails.CONTRACT_VALID_FROM).split(' ')[0]
+		contract_end_date = str(quotedetails.CONTRACT_VALID_TO).split(' ')[0]
+		start_date = datetime.datetime.strptime(contract_start_date, '%m/%d/%Y')
+		end_date = datetime.datetime.strptime(contract_end_date, '%m/%d/%Y')
+		diff1 = end_date - start_date
+		get_totalweeks,remainder = divmod(diff1.days,7)
+		countweeks =0
+		for index in range(0, get_totalweeks):
+			countweeks += 1
+			#Trace.Write('countweeks--'+str(countweeks))
+			billing_date = start_date + datetime.timedelta(days=(7*countweeks))
+			Query = "INSERT SAQRDS (QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,DELIVERY_DATE,DELIVERY_PERIOD) select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,'{quote_id}' as QUOTE_ID,'{contract_rec_id}' as QUOTE_RECORD_ID,'{qt_rev_id}' as QTEREV_ID,'{qt_rev_recid}' as QTEREV_RECORD_ID,'{delivery_date}' as DELIVERY_DATE,'{delivery_period}' as DELIVERY_PERIOD ".format(quote_id=getQuote_details.QUOTE_ID,contract_rec_id= contract_quote_record_id,qt_rev_id = getQuote_details.QTEREV_ID,qt_rev_recid = quote_revision_record_id,delivery_date =billing_date,delivery_period=index+1)
+			periods_insert = Sql.RunQuery(Query)
 
 def  insert_qty_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id,QTY):
 	delete_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id)
