@@ -2075,7 +2075,7 @@ def Related_Sub_Banner(
             Trace.Write("summar_SHP")
             PrimaryLable = "Total Excluding Tax/VAT"
             #PrimaryValue = '0.00'+" "+curr
-            PrimaryValue = decimal_format.format(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+            PrimaryValue = decimal_format.format(float(get_quote_details.NET_VALUE_INGL_CURR))+" "+ curr if str(get_quote_details.NET_VALUE_INGL_CURR) != '' else '0.00'+" "+curr
             #PrimaryValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
             SecondLable = "Tax/VAT"
             SecondValue = decimal_format.format(float(get_quote_details.TAX_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
