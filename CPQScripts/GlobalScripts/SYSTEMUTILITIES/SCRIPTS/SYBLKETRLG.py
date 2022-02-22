@@ -934,6 +934,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			if(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQSAP" and TITLE == "PM_FREQUENCY"):
 				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam,qury_str=qury_str))
 				return ""
+			elif(SELECTALL=="PERIOD_BULKEDIT_ALL" and obj_name == "SAQRDS" and TITLE == "DELIVERY_DATE"):
+				Sql.RunQuery("""UPDATE SAQRDS SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),qury_str=qury_str))
+				return ""
 			elif(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQGPA" and TITLE == "PM_FREQUENCY"):
 				if str(TreeParam) == "Z0009":
 					Sql.RunQuery("""UPDATE SAQGPA SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = 'Z0009' PM_FREQUENCY_EDITABLE = 'True' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),qury_str=qury_str))
