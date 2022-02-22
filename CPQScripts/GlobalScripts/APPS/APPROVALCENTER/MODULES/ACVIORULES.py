@@ -995,6 +995,27 @@ class ViolationConditions:
                         fflag = 1
                         Trace.Write("FLAG SET TO 1")
                         break
+    def ItemApproval(self,RecordId):
+        BDHead = {"Primary KPI Performance Ent":"Std Srvc + All PM's","Wet Clean Labor Ent":"Shared","Non Consumable Ent":"Some Exclusions","Consumable Ent":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"}
+
+        listofAPI = []
+        GetAPI = Sql.GetList("SELECT API_NAME,FIELD_LABEL FROM SYOBJD (NOLOCK) WHERE LEN(API_NAME) = 6 AND OBJECT_NAME = 'SAQICO'")
+        for x in GetAPI:
+            GetSAQICOValue = Sql.GetFirst("SELECT {} FROM SAQICO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(x.API_NAME,RecordId))
+            ApiName = x.API_NAME
+            listofAPI.append(str(x.FIELD_LABEL)+"_"+str(x.API_NAME)+"_"+str(eval("GetSAQICOValue."+ApiName)))
+        for x in listofAPI:
+            for y in BDHead:
+                if y in x and x.split("_")[2] == BDHead[y]:
+
+                    GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
+                    line.append(GetSAQICO.LINE)
+                    
+        Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+        if len(line) != 0:
+            return 1
+        else:
+            return 0
     # def insertviolationtableafterRecall(self, chainrecordId, RecordId, ObjectName, Objh_Id):
     #     """Insert violation record after recall."""
     #     CSSqlObjs = Sql.GetList(
