@@ -5067,7 +5067,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					pmsa_pmevents.QTEREVGOT_RECORD_ID,,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(
 					SELECT DISTINCT
 					0 as CHAMBER_QUANTITY,
-					MAEAPK.ASSEMBLY_ID,
 					SAQRGG.GOT_CODE,
 					SAQRGG.GOTCODE_RECORD_ID,
 					SAQRGG.GREENBOOK,
@@ -5197,8 +5196,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						saqgpm_backup_table.SERVICE_ID,
 						saqgpm_backup_table.SERVICE_DESCRIPTION,
 						saqgpm_backup_table.SERVICE_RECORD_ID,
-						saqgpm_backup_table.PM_FREQUENCY,
-						saqgpm_backup_table.SSCM_PM_FREQUENCY,
+						MAEAPK.PM_FREQUENCY,
+						MAEAPK.SSCM_PM_FREQUENCY,
 						saqgpm_backup_table.PM_FREQUENCY_EDITABLE,
 						saqgpm_backup_table.PROCESS_TYPE,
 						saqgpm_backup_table.DEVICE_NODE,
@@ -5499,7 +5498,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					pmsa_pmevents.QTEREVGOT_RECORD_ID,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(
 					SELECT DISTINCT
 					0 as CHAMBER_QUANTITY,
-					MAEAPK.ASSEMBLY_ID,
 					SAQRGG.GOT_CODE,
 					SAQRGG.GOTCODE_RECORD_ID,
 					SAQRGG.GREENBOOK,
@@ -5630,8 +5628,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						saqgpm_backup_table.SERVICE_ID,
 						saqgpm_backup_table.SERVICE_DESCRIPTION,
 						saqgpm_backup_table.SERVICE_RECORD_ID,
-						saqgpm_backup_table.PM_FREQUENCY,
-						saqgpm_backup_table.SSCM_PM_FREQUENCY,
+						MAEAPK.PM_FREQUENCY,
+						MAEAPK.SSCM_PM_FREQUENCY,
 						saqgpm_backup_table.PM_FREQUENCY_EDITABLE,
 						saqgpm_backup_table.PROCESS_TYPE,
 						saqgpm_backup_table.DEVICE_NODE,
