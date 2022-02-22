@@ -2090,7 +2090,8 @@ def Related_Sub_Banner(
                 PrimaryLable = "Total Excluding Tax/VAT"
                 PrimaryValue = '0.00'+" "+curr
                 SecondLable = "Tax/VAT"
-                SecondValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                #SecondValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+                SecondValue = decimal_format.format(float(get_quote_details.TAX_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
                 ThirdLable = "Total Est Net Value"
                 ThirdValue = '0.00'+" "+curr
                 FourthLable = "Total Net Value"
@@ -2103,7 +2104,8 @@ def Related_Sub_Banner(
                 PrimaryValue = '0.00'+" "+curr
                 SecondLable = "Total Est Net Val"
                 # SecondValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
-                SecondValue = str("%.2f" % round(float(saqris_details.ESTIMATED_VALUE),2))+" "+curr if str(saqris_details.ESTIMATED_VALUE) != '' else '0.00'+" "+curr
+                #SecondValue = str("%.2f" % round(float(saqris_details.ESTIMATED_VALUE),2))+" "+curr if str(saqris_details.ESTIMATED_VALUE) != '' else '0.00'+" "+curr
+                SecondValue = decimal_format.format(float(get_quote_details.ESTIMATED_VALUE))+" "+ curr if str(get_quote_details.ESTIMATED_VALUE) != '' else '0.00'+" "+curr
                 ThirdLable = "Total Net Val"
                 ThirdValue = '0.00'+" "+curr
                 FourthLable = "Total  Amt"
