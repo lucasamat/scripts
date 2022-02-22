@@ -2979,11 +2979,11 @@ class approvalCenter:
 				values = ""
 				eachsplit = eachkey.split(".")
 				if str(eachsplit[1]) == "OWNER_NAME":
-					getaccountid = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					getaccountid = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getaccountid:
-						acct_id=str(getaccountid.ACCOUNT_ID)
-						acct_name=str(getaccountid.ACCOUNT_NAME)
-						values =str(acct_name)+"-"+str(acct_id)
+						acct_id=str(getaccountid.QUOTE_ID)
+						acct_name=str(getaccountid.QTEREV_ID)
+						values =str(acct_id)+"-"+str(acct_name)
 				elif str(eachsplit[1]) == "MEMBER_ID":
 					getcontractmanager = Sql.GetFirst("SELECT MEMBER_NAME FROM SAQDLT (NOLOCK) WHERE C4C_PARTNERFUNCTION_ID = 'Sales Employee' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getcontractmanager:
