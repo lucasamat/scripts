@@ -33,8 +33,8 @@ def quote_items_pricing(Qt_id):
 	##updating saqrit
 	Sql.RunQuery("""UPDATE SAQICO 
 				SET 
-				TAXVDC = TNTVDC * TAXVTP,
-				TAXVGC = TNTVGC * TAXVTP
+				TAXVDC = (TNTVDC * TAXVTP)/100,
+				TAXVGC = (TNTVGC * TAXVTP)/100
 				FROM SAQICO (NOLOCK) 
 				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID in ('Z0046','Z0100','Z0116','Z0117')""".format(QuoteRecordId= contract_quote_record_id ,QuoteRevisionRecordId =contract_quote_revision_record_id))
 
