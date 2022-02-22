@@ -3099,7 +3099,7 @@ class approvalCenter:
 					+ str(splitformailbodyappend[0])
 					+ " "
 					+ str(bodystr) 
-					+ "<tr><td colspan='12'>By Approving the Quote, you are agreeing to the terms and pricing contained within this revision of the Quote. <br> Any subsequent revisions of the quote may require additional approvals. The content of this message is Applied Material Confidential. If you are not the intended recipient and have received this message in error, any use or distribution is prohibited. Please notify us immediately by replying to this email and delete this message from your computer system.</td></tr></tbody></table></body></html>"
+					+ "</tbody></table></body></html>"
 				)
 			# ApproveLink = """https://sandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&ACTION=APPROVEBTN&ApproveDesc=Approved&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
 			#     transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),
