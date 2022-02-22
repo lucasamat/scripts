@@ -898,7 +898,7 @@ def remove_html_tags(text):
 	return re.sub(clean, "", text)
 
 
-def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,ALLVALUES3,DEL_PN,ADD_PN,SELECTALL,offering_description):
+def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,ALLVALUES3,DEL_PN,ADD_PN,SELECTALL,offering_description,delivery_schedules):
 	Sql = SQL()
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -950,6 +950,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				return ""
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQRSP" and (TITLE == "QUANTITY" or TITLE=="NEW_PART")):
 				Sql.RunQuery("""UPDATE SAQRSP SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}' """.format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParentParam,greenbook=TreeParam,qury_str=qury_str))
+				return ""
+			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQSPT"):
+				Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}'""".format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParentParam,qury_str=qury_str))
 				return ""
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQSPT" and TITLE == "CUSTOMER_ANNUAL_QUANTITY"):
 				Trace.Write('CUSTOMER_ANNUAL_QUANTITY')
@@ -1039,6 +1042,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			##multi select bulk edit..	
 			elif (TreeParentParam == 'Complementary Products' and obj_name == "SAQSPT"):
 				Sql = SQL()
+				if str(TreeParam)=="Z0108" and delivery_schedules!="":
+					for row in delivery_schedules:
+						update_columns = ""
+						for key,val in enumerate(row):
+							update_columns+=" DELIVERY_"+str(key+1)+" = '"+str(val)+"',"
+						Sql.RunQuery("""UPDATE SAQSPT SET {column} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=update_columns[:-1],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				if TITLE == "CUSTOMER_ANNUAL_QUANTITY":
 					value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES
 					Trace.Write('1014---'+str(value))
@@ -2010,6 +2019,10 @@ try:
 except:
 	SubtabName = ""
 try:
+	delivery_schedules = Param.DELIVERY_SCHEDULES
+except:
+	delivery_schedules = ""
+try:
 	offering_description = Param.offering_description
 except:
 	offering_description = ""
@@ -2025,7 +2038,7 @@ if ELEMENT == "RELATEDEDIT":
 	
 	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL))
 elif ELEMENT == "SAVE":
-	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,ALLVALUES3,DEL_PN,ADD_PN,SELECTALL,offering_description))
+	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,ALLVALUES3,DEL_PN,ADD_PN,SELECTALL,offering_description,delivery_schedules))
 else:
 	ApiResponse = ApiResponseFactory.JsonResponse("")
 
