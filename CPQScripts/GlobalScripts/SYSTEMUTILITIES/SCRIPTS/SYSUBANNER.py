@@ -2061,23 +2061,29 @@ def Related_Sub_Banner(
     #     PrimaryValue = ""       
     if TreeParam == 'Quote Items' and (subTabName == "Summary" or subTabName == "Offerings" or subTabName == "Items" or subTabName == "Annualized Items" or subTabName == "Entitlement Cost/price"):
         Trace.Write("quoteitemshp===")
-        get_quote_details = Sql.GetFirst("select CREDIT_INGL_CURR,NET_VALUE_INGL_CURR,DISCOUNT_AMOUNT_INGL_CURR,SALES_PRICE_INGL_CURR,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TAX_AMOUNT_INGL_CURR,TOTAL_AMOUNT_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-        currency = Sql.GetFirst("SELECT GLOBAL_CURRENCY FROM SAQTRV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
-        curr = currency.GLOBAL_CURRENCY
+        get_quote_details = Sql.GetFirst("select CREDIT_INGL_CURR,NET_VALUE_INGL_CURR,DISCOUNT_AMOUNT_INGL_CURR,SALES_PRICE_INGL_CURR,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TAX_AMOUNT_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,GLOBAL_CURRENCY_RECORD_ID,GLOBAL_CURRENCY from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        # currency = Sql.GetFirst("SELECT GLOBAL_CURRENCY FROM SAQTRV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
+        curr = get_quote_details.GLOBAL_CURRENCY
         Total=(get_quote_details.TOTAL_AMOUNT_INGL_CURR)
         get_service_id=Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         if get_service_id:
             if get_service_id.SERVICE_ID in('Z0110','Z0108'):
                 Total=(get_quote_details.NET_VALUE_INGL_CURR)
+        get_rounding_place = Sql.GetFirst("SELECT * FROM PRCURR WHERE CURRENCY_RECORD_ID = '{}' ".format(get_quote_details.GLOBAL_CURRENCY_RECORD_ID))
+        decimal_format = "{:,." + str(get_rounding_place.DISPLAY_DECIMAL_PLACES) + "f}"
         if subTabName == "Summary":
             Trace.Write("summar_SHP")
             PrimaryLable = "Total Excluding Tax/VAT"
             #PrimaryValue = '0.00'+" "+curr
-            PrimaryValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+            PrimaryValue = decimal_format.format(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+            #PrimaryValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
             SecondLable = "Tax/VAT"
-            SecondValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+            SecondValue = decimal_format.format(float(get_quote_details.TAX_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+            
+            #SecondValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
             ThirdLable = "Total Amount Including Tax/VAT"
-            ThirdValue = str("%.2f" % round(float(Total),2))+curr if str(Total) != '' else '0.00'+" "+curr
+            #ThirdValue = str("%.2f" % round(float(Total),2))+curr if str(Total) != '' else '0.00'+" "+curr
+            ThirdValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else '0.00'+" "+curr
         elif get_quote_details:
             Trace.Write("subTabName_CHK "+str(subTabName))
             if subTabName == "Items":
