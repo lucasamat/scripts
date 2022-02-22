@@ -3004,8 +3004,8 @@ class approvalCenter:
 					GETFPM = Sql.GetFirst("SELECT SUM(QUANTITY) AS QUANTITY FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if GETFPM:
 						values=str(GETFPM.QUANTITY)
-				elif str(eachsplit[1]) == "TOTAL_AMOUNT_INGL_CURR":
-					getnetprice = Sql.GetFirst("SELECT TOTAL_AMOUNT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getnetprice.NET_PRICE_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
