@@ -2906,7 +2906,8 @@ class SYLDRTLIST:
 			
 			Trace.Write("CHKNG_QUERY_J "+str(Qury_str))
 			if Query_Obj is not None:
-				for ik in Query_Obj:					                  
+				for ik in Query_Obj:
+					Trace.Write('ik--->'+str(ik))					                  
 					new_dict = {}
 					ids = {}
 					seg_pric = {}
@@ -2937,6 +2938,7 @@ class SYLDRTLIST:
 					#Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
 					
 					for inm in ik:
+    					Trace.Write('inm--->'+str(inm))
 						value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 						value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
 						if (
