@@ -2905,6 +2905,7 @@ class SYLDRTLIST:
 						QueryCount = QueryCount_Obj.cnt
 			
 			Trace.Write("CHKNG_QUERY_J "+str(Qury_str))
+			Trace.Write('Query_Obj--->'+str(Query_Obj))
 			if Query_Obj is not None:
 				for ik in Query_Obj:
 					Trace.Write('ik--->'+str(ik))					                  
