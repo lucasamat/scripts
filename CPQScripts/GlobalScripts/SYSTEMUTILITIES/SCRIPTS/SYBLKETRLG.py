@@ -1046,7 +1046,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					for row in delivery_schedules:
 						update_columns = ""
 						for key,val in enumerate(row):
-							update_columns+=" DELIVERY_"+str(key+1)+" = '"+str(val)+"',"
+							update_columns+=" DELIVERY_"+str(key+1)+" = '"+str(val)+"'," if val!='' else ''
 						Sql.RunQuery("""UPDATE SAQSPT SET {column} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=update_columns[:-1],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				if TITLE == "CUSTOMER_ANNUAL_QUANTITY":
 					value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES
