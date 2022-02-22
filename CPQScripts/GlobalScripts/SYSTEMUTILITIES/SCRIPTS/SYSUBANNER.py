@@ -2087,7 +2087,7 @@ def Related_Sub_Banner(
         elif get_quote_details:
             Trace.Write("subTabName_CHK "+str(subTabName))
             if subTabName == "Items":
-                saqrit_details = Sql.GetFirst("SELECT SUM(TOTAL_AMOUNT_INGL_CURR) AS TOTAL_AMOUNT_INGL_CURR, SUM(TAX_AMOUNT_INGL_CURR) AS TAX_AMOUNT_INGL_CURR, SUM(TOTAL_AMOUNT_INGL_CURR) AS TOTAL_AMOUNT_INGL_CURR FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                #saqrit_details = Sql.GetFirst("SELECT SUM(TOTAL_AMOUNT_INGL_CURR) AS TOTAL_AMOUNT_INGL_CURR, SUM(TAX_AMOUNT_INGL_CURR) AS TAX_AMOUNT_INGL_CURR, SUM(TOTAL_AMOUNT_INGL_CURR) AS TOTAL_AMOUNT_INGL_CURR FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                 PrimaryLable = "Total Excluding Tax/VAT"
                 PrimaryValue = '0.00'+" "+curr
                 SecondLable = "Tax/VAT"
