@@ -2035,10 +2035,10 @@ class SyncQuoteAndCustomTables:
 									if 'EQUIPMENT_DATES' in offering_data:
 										api1 =[]
 										for offering_equipment_ids in offering_data['EQUIPMENT_DATES']:
-											for key,value in offering_equipment_ids.items():
-												start_date = value['CONTRACT_START_DATE']
-												end_date = value['CONTRACT_END_DATE']
-												api1.append([key,start_date,end_date,Quote.GetGlobal("contract_quote_record_id"),Quote.GetGloba("quote_revision_record_id"),service_offering_id])
+											equipment_id = offering_equipment_ids['EQUIPMENT_ID']
+											start_date = offering_equipment_ids['CONTRACT_START_DATE']
+											end_date = offering_equipment_ids['CONTRACT_END_DATE']
+											api1.append([equipment_id,start_date,end_date,Quote.GetGlobal("contract_quote_record_id"),Quote.GetGloba("quote_revision_record_id"),service_offering_id])
 										records = ', '.join(map(str, [str(tuple(equipment_record)) for equipment_record in api1])).replace("None","null").replace("'","''")    
 										datetime_string = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
 										Trace.Write("records"+str(records))
