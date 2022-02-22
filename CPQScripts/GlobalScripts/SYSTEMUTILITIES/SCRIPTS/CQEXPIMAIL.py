@@ -23,6 +23,7 @@ class qt_expiration_mail_trigger:
     def mailtrigger(self,expired_quotes):
         Trace.Write("Mail Sending Function"+str(expired_quotes))
         
+        
         for quotes in expired_quotes:
             getting_quotes = Sql.GetFirst("SELECT OWNER_NAME,OWNER_ID,QUOTE_ID,CONTRACT_VALID_TO,QUOTE_EXPIRE_DATE FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '"+str(quotes)+"'")
             # for quote in getting_quotes:
