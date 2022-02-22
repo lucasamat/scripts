@@ -107,11 +107,11 @@ def LoadSummary():
         TotalSalesPrice = decimal_format.format(float(getRevisionDetails.SALES_PRICE_INGL_CURR))
         TotalDiscount = decimal_format.format(float(getRevisionDetails.DISCOUNT_PERCENT))
         Tax = decimal_format.format(float(getRevisionDetails.TAX_AMOUNT_INGL_CURR))
-        TotalCost = decimal_format.format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))
+        total_including = decimal_format.format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))
         DiscountAmount = decimal_format.format(float(getRevisionDetails.DISCOUNT_AMOUNT_INGL_CURR))
         #BDPrice = decimal_format.format(float(getRevisionDetails.BD_PRICE_INGL_CURR))
         #CeilingPrice = decimal_format.format(float(getRevisionDetails.CEILING_PRICE_INGL_CURR))
-        NetPrice = decimal_format.format(float(getRevisionDetails.NET_VALUE_INGL_CURR))
+        total_excluding = decimal_format.format(float(getRevisionDetails.NET_VALUE_INGL_CURR))
         NetValue = ""
         TargetPrice = decimal_format.format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))
         Credit = decimal_format.format(float(getRevisionDetails.CREDIT_INGL_CURR))
@@ -124,11 +124,11 @@ def LoadSummary():
         #Quote.GetCustomField('TOTAL_NET_VALUE').Content = decimal_format.format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))+ " " +curr
         ##Updating the revision table values to custom fields code ends..
     else:
-        TotalCost = 0.00
+        total_including = 0.00
         BDPrice = 0.00
         CeilingPrice = 0.00
         TargetPrice = 0.00
-        NetPrice = 0.00
+        total_excluding = 0.00
         NetValue = 0.00
         Credit = 0.00
         TotalDiscount = 0.00
@@ -145,7 +145,7 @@ def LoadSummary():
     QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
     QuoteRevisionId = getQuoteDetails.QTEREV_ID
     QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
-    return sec_str,str(TotalSalesPrice) + " " +curr,str(TotalDiscount)+ " %",str(TotalCost)+ " " +curr,str(Tax)+ " " +curr,str(NetPrice)+ " " +curr,str(NetValue)+ " " +curr,str(Credit)+ " " +curr,str(DiscountAmount)+ " " +curr
+    return sec_str,str(TotalSalesPrice) + " " +curr,str(TotalDiscount)+ " %",str(total_including)+ " " +curr,str(Tax)+ " " +curr,str(NetValue)+ " " +curr,str(total_excluding)+ " " +curr,str(Credit)+ " " +curr,str(DiscountAmount)+ " " +curr
 
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
