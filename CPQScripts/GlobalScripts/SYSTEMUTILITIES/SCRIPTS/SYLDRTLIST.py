@@ -9942,6 +9942,7 @@ class SYLDRTLIST:
 			Trace.Write('Start:'+str(int(Page_start)-1)+',End:'+str(Page_End))
 			for row in range(int(Page_start)-1,int(Page_End)):
 				Query_Obj.append(ordered_values[row])
+			Trace.Write('Spare Parts count--->'+str(len(Query_Obj)))
 		else:
 			Query_Obj = Sql.GetList("select top "+ str(PerPage)+ " "+ str(select_obj_str)+ ",CpqTableEntryId from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs)+ ") AS ROW, * from SAQSPT (nolock) "+ str(Qustr)+ " ) m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)+ " ")	
 			
