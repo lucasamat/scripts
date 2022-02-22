@@ -2905,10 +2905,8 @@ class SYLDRTLIST:
 						QueryCount = QueryCount_Obj.cnt
 			
 			Trace.Write("CHKNG_QUERY_J "+str(Qury_str))
-			Trace.Write('Query_Obj--->'+str(Query_Obj))
 			if Query_Obj is not None:
-				for ik in Query_Obj:
-					Trace.Write('ik--->'+str(ik))					                  
+				for ik in Query_Obj:				                  
 					new_dict = {}
 					ids = {}
 					seg_pric = {}
@@ -2939,7 +2937,6 @@ class SYLDRTLIST:
 					#Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
 					
 					for inm in ik:
-						Trace.Write('inm--->'+str(inm))
 						value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 						value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
 						if (
@@ -9918,7 +9915,8 @@ class SYLDRTLIST:
 			for child in child_parts:
 				parent_parts.append(child.PAR_PART_NUMBER)
 				parent_part = Sql.GetFirst("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PART_NUMBER = '"+str(child.PAR_PART_NUMBER)+"' ")
-				ordered_values.append(parent_part)
+				if parent_part is not None:
+					ordered_values.append(parent_part)
 				ordered_values.append(child)
 
 			parents_list = str(tuple(parent_parts))
