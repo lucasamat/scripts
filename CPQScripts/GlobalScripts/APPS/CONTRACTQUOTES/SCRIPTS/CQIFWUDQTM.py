@@ -215,7 +215,7 @@ def quote_items_pricing(Qt_id):
 
 	#updating value to quote summary ends
 	try:
-		Log.Info('CPS__BILLING CALL---')
+		Log.Info('CPS__BILLING CALL---'+str(contract_quote_record_id))
 		# get_services = Sql.GetList("SELECT SERVICE_ID from SAQTSE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id ))
 		# get_services_list = []
 		# for val in get_services:
