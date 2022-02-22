@@ -28,7 +28,7 @@ class qt_expiration_mail_trigger:
             # for quote in getting_quotes:
             employee_table = Sql.GetFirst("SELECT EMAIL FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '"+str(getting_quotes.OWNER_ID)+"'")
             expiration_date = str(getting_quotes.QUOTE_EXPIRE_DATE).split(" ")[0].strip()
-            Subject = "Your Quote is going to Expire in 7 Days"
+            Subject = "Your Quote is going to Expire in 14 Days"
             mailBody = """
                         Dear """+str(getting_quotes.OWNER_NAME)+""",<br><br>
                             This is to notify that the Quote Number """+str(getting_quotes.QUOTE_ID)+""" will be expired on """+str(expiration_date)+"""
