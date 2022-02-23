@@ -1431,6 +1431,8 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					Trace.Write("else 1404"+str(current_obj_api_name)) 
 					Coeff_values =""
 					symbol = " %"
+					if str(ObjectName) == "SAQICO":
+						symbol =""
 					Decimal_Value = 2 if str(ObjectName) == 'SAQIGB' else 3  ## decimal precision for SAQIGB
 					Decimal_Values = 2										
 					if current_obj_value and str(ObjectName) == "SAQICO" and str(current_obj_api_name) =="FAB_VALUEDRIVER_COEFFICIENT" or str(current_obj_api_name) == "TOOL_VALUEDRIVER_COEFFICIENT":					
