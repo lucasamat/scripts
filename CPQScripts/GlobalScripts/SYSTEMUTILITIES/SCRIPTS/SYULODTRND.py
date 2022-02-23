@@ -2390,7 +2390,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 		Ad_on_prd = ""
 	if	Product.GetGlobal("TreeParentLevel0") == "Complementary Products" and TreeSuperParentParam == "Product Offerings":
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
-		entitlement_obj=Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE SERVICE_ID='Z0092' AND QUOTE_RECORD_ID ={} AND QTEREV_RECORD_ID = {}".format(quoteid,quote_revision_record_id))
+		entitlement_obj=Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE SERVICE_ID='Z0092' AND QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(quoteid,quote_revision_record_id))
 		spare_parts_visibility = 'False'
 		if entitlement_obj:
 			entitlement_xml = entitlement_obj.ENTITLEMENT_XML
