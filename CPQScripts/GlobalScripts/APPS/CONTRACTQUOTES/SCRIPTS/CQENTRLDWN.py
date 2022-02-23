@@ -937,7 +937,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					##value driver
 					val_list = []
 					val_coeff = []
-					get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID NOT IN {} AND ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING LEVEL')) ".format(get_serviceid, ('AGS_{}_VAL_UPIMPV'.format(get_serviceid) , 'AGS_{}_VAL_CSTSEG'.format(get_serviceid), 'AGS_{}_VAL_SVCCMP'.format(get_serviceid), 'AGS_{}_VAL_QLYREQ'.format(get_serviceid) ) ) )
+					get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK)  WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID NOT IN {}  ".format(get_serviceid, ('AGS_{}_VAL_UPIMPV'.format(get_serviceid) , 'AGS_{}_VAL_CSTSEG'.format(get_serviceid), 'AGS_{}_VAL_SVCCMP'.format(get_serviceid), 'AGS_{}_VAL_QLYREQ'.format(get_serviceid) ) ) )
 					val_list = [i.ENTITLEMENT_ID for i in get_valuedriver_ids]
 					if get_valuedriver_ids:
 						lst = str(tuple([i.ENTITLEMENT_ID for i in get_valuedriver_ids])).replace(",)",')')
