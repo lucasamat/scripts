@@ -17,7 +17,7 @@ from SYDATABASE import SQL
 import datetime
 Sql = SQL()
 import SYCNGEGUID as CPQID
-
+import time
 UserId = str(User.Id)
 UserName = str(User.UserName)
 INCLUDESPARE =add_style =  ""
@@ -508,7 +508,9 @@ def _insert_subtotal_by_offerring_quote_table():
 
 
 #generate documnet start
-
+QuoteHelper.Edit(c4c_quote_id)
+time.sleep( 5 )
+Quote.RefreshActions()
 get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 def insert_bill_doc(parts_list,billing_matrix):
 	_insert_subtotal_by_offerring_quote_table()
