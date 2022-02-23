@@ -6107,11 +6107,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									if pm_event_attribute_value != "":
 										self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
 										qte_type_flag=1
-									if (self.tree_param in ("Z0009") and "Included - < Quarterly" in pm_event_attribute_value):
-										additional_where = " AND (MAEAPK.MNTEVT_LEVEL = 'Chamber / Module PM' OR MAEAPK.MNTEVT_LEVEL = 'Scheduled Maintenance') AND (MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly')"
-										if pm_event_attribute_value != "":
-											self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
-											qte_type_flag=1
+								if (self.tree_param in ("Z0009") and "Included - < Quarterly" in pm_event_attribute_value):
+									additional_where = " AND (MAEAPK.MNTEVT_LEVEL = 'Chamber / Module PM' OR MAEAPK.MNTEVT_LEVEL = 'Scheduled Maintenance') AND (MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly')"
+									if pm_event_attribute_value != "":
+										self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
+										qte_type_flag=1
 							else:
 								# pm_event_attribute_value = re.findall(pattern_name,sub_string)
 								
@@ -6250,8 +6250,17 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								# Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value))
 								if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
 									#applied_preventive_maintainence_quote_type_changed = "Yes"
-									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed)
-									qte_type_flag=1
+									if (self.tree_param in ("Z0009") and "Included - All PM" in pm_event_attribute_value):
+										additional_where = " AND ((MAEAPK.MNTEVT_LEVEL = 'Chamber / Module PM' OR MAEAPK.MNTEVT_LEVEL = 'Scheduled Maintenance') AND MAEAPK.MNTEVT_LEVEL != '') "
+										Trace.Write("additional_where_chk_1 "+str(additional_where))
+										if pm_event_attribute_value != "":
+											self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
+											qte_type_flag=1
+									if (self.tree_param in ("Z0009") and "Included - < Quarterly" in pm_event_attribute_value):
+										additional_where = " AND (MAEAPK.MNTEVT_LEVEL = 'Chamber / Module PM' OR MAEAPK.MNTEVT_LEVEL = 'Scheduled Maintenance') AND (MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly')"
+										if pm_event_attribute_value != "":
+											self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
+											qte_type_flag=1
 								else:
 									# pm_event_attribute_value = re.findall(pattern_name,sub_string)
 									
