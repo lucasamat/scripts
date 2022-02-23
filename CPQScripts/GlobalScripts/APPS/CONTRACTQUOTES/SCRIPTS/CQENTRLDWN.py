@@ -705,8 +705,8 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	elif objectName == 'SAQSGE':
 		obj_list = ['SAQSCE','SAQSAE']
 		is_changed = True
-	if objectName in ('SAQTSE','SAQSGE') and get_serviceid == 'Z0009':
-		obj_list.append('SAQGPE')
+	if objectName in ('SAQTSE','SAQSGE') and get_serviceid in ('Z0009','Z0010'):
+		obj_list = ['SAQSCE','SAQSGE','SAQSAE','SAQGPE']
 	#and 'Z0007' not in get_serviceid
 	elif objectName == 'SAQSCE' :
 		obj_list = ['SAQSAE']
@@ -1095,7 +1095,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					TGT.CpqTableEntryDateModified = '{}',
 					TGT.CONFIGURATION_STATUS = '{}'
 					FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
-					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID {} """.format(userid,datetimenow,getinnercon.CONFIGURATION_STATUS,'SAQSGE',obj,where)
+					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} """.format(userid,datetimenow,getinnercon.CONFIGURATION_STATUS,'SAQSGE',obj,where)
 					Log.Info('update_query--863----'+str(update_query))
 					Sql.RunQuery(update_query)
 				else:
