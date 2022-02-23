@@ -850,7 +850,91 @@ def billingmatrix_create():
 
 
 
-
+def qt_bill_insert():
+	contract_quote_record_id= contract_quote_rec_id
+	quote_revision_record_id= quote_revision_rec_id
+	cartobj = Sql.GetFirst("select CART_ID, USERID from CART where ExternalId = '{}'".format(Quote.CompositeNumber))
+	delete_qt_bill_mat = Sql.RunQuery("DELETE FROM QT__Billing_Matrix_Header WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' and  ownerId = {} and cartId ={}".format(contract_quote_record_id,quote_revision_record_id,cartobj.USERID,cartobj.CART_ID))
+	delete_qt_year_mat = Sql.RunQuery("DELETE FROM QT__BM_YEAR_1 WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' and  ownerId = {} and cartId ={}".format(contract_quote_record_id,quote_revision_record_id,cartobj.USERID,cartobj.CART_ID))
+	services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id))
+	item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID".format(contract_quote_record_id,quote_revision_record_id))
+	if item_billing_plan_obj is not None and services_obj:
+		quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
+		years = quotient + (1 if remainder > 0 else 0)
+		if not years:
+			years = 1
+		for index in range(1, years+1):
+			YearCount = "Year {}".format(index)
+			no_of_year = index
+			#YearCount1 = index
+			if YearCount:
+				end = int(YearCount.split(' ')[-1]) * 12
+				start = end - 12 + 1
+				item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
+															AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
+															FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' 
+															AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID, BILLING_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+															contract_quote_record_id,quote_revision_record_id, start, end))
+				if item_billing_plans_obj:
+					billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]
+					date_columns = " ,".join(['MONTH_{}'.format(index) for index in range(1, len(billing_date_column)+1)])
+					header_select_date_columns = ",".join(["'{}' AS MONTH_{}".format(date_column, index) for index, date_column in enumerate(billing_date_column, 1)])
+					select_date_columns = ",".join(['[{}] AS MONTH_{}'.format(date_column, index) for index, date_column in enumerate(billing_date_column, 1)])
+					sum_select_date_columns = ",".join(['SUM([{}]) AS MONTH_{}'.format(date_column, index) for index, date_column in enumerate(billing_date_column, 1)])
+					Sql.RunQuery("""INSERT QT__Billing_Matrix_Header (
+										QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,{DateColumn},YEAR,ownerId,cartId
+									)
+									SELECT TOP 1
+										QUOTE_ID,										
+										QUOTE_RECORD_ID,QTEREV_RECORD_ID,
+										{SelectDateColoumn},
+										{Year} as YEAR,
+										{UserId} as ownerId,{CartId} as cartId
+									FROM SAQIBP (NOLOCK)
+									WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
+										QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,DateColumn=date_columns,Year=no_of_year,SelectDateColoumn=header_select_date_columns, UserId= cartobj.USERID,CartId = cartobj.CART_ID
+										))
+					pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
+					
+					for service_obj in services_obj:
+						Qustr = "WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(contract_quote_record_id,quote_revision_record_id,
+																						service_obj.SERVICE_ID, billing_date_column[0], billing_date_column[-1])				
+						
+						Sql.RunQuery("""INSERT QT__BM_YEAR_1 (
+										ANNUAL_BILLING_AMOUNT,BILLING_START_DATE,BILLING_END_DATE,
+										BILLING_TYPE,BILLING_YEAR,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,
+										GREENBOOK,GREENBOOK_RECORD_ID,ITEM_LINE_ID,
+										QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
+										QTEITM_RECORD_ID,SERIAL_NUMBER,SERVICE_DESCRIPTION,
+										SERVICE_ID,SERVICE_RECORD_ID,YEAR,EQUIPMENT_QUANTITY,
+										{DateColumn},ownerId,cartId
+									)
+									SELECT  ANNUAL_BILLING_AMOUNT,BILLING_START_DATE,
+												BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
+												EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
+												ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
+												QTEITM_RECORD_ID,SERIAL_NUMBER,
+												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,
+												YEAR,EQUIPMENT_QUANTITY,{SelectDateColoumn},{UserId} as ownerId,{CartId} as cartId
+										FROM (
+											SELECT 
+												ANNUAL_BILLING_AMOUNT,BILLING_VALUE,BILLING_DATE,BILLING_START_DATE,
+												BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
+												EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
+												LINE as ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
+												QTEITM_RECORD_ID,SERIAL_NUMBER,
+												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,{BillingYear} as YEAR,EQUIPMENT_QUANTITY,{CartId} as cartId
+											FROM SAQIBP 
+											{WhereString}
+										) AS IQ
+										PIVOT
+										(
+											SUM(BILLING_VALUE)
+											FOR BILLING_DATE IN ({PivotColumns})
+										)AS PVT ORDER BY GREENBOOK,SERVICE_ID
+									""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
+											DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId= cartobj.USERID,CartId = cartobj.CART_ID)								
+									)
 
 if contract_quote_rec_id:
 	ApiResponse = ApiResponseFactory.JsonResponse(_insert_billing_matrix())
