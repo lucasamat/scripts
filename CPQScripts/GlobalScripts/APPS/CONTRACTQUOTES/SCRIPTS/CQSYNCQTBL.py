@@ -1738,8 +1738,17 @@ class SyncQuoteAndCustomTables:
 																	) A
 																""".format(UserId=User.Id,UserName=User.UserName,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, SalesorgId=salesorg_data.get("SALESORG_ID"), SalesorgName=salesorg_data.get("SALESORG_NAME"), SalesorgRecordId=salesorg_data.get("SALESORG_RECORD_ID"), ServiceIds=service_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id,ContractValidFrom=contract_quote_obj.CONTRACT_VALID_FROM,
 																ContractValidTo=contract_quote_obj.CONTRACT_VALID_TO))							
+								quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+								quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
+								ServicerecordId = service_id_first								
+								Log.Info("ServicerecordId_docutype"+str(ServicerecordId))
+								getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
+								if getRevision is None:
+									Log.Info("ServicerecordId_dcallocutype"+str(ServicerecordId))
+									ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':ServicerecordId})								
+								
 								contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")						
 								get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
 								account_info = {}
 								for keyobj in get_party_role:
@@ -1863,14 +1872,7 @@ class SyncQuoteAndCustomTables:
 								
 								entitle_start_time = time.time()
 								#Log.Info("CreateEntitlements start ==> "+str(entitle_start_time))
-								quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-								quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
-								ServicerecordId = service_id_first								
-								Log.Info("ServicerecordId_docutype"+str(ServicerecordId))
-								getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
-								if getRevision is None:
-									#Log.Info("ServicerecordId_docutype"+str(ServicerecordId))
-									ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':ServicerecordId})
+								
 								try:
 									self.CreateEntitlements(quote_record_id)
 								except:
