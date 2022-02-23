@@ -5011,7 +5011,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					RevisionRecordId=self.quote_revision_record_id
 					)
 				)
-			Log.Info("additional_where_Chksz "+str(additional_where))
+			Log.Info("additional_where_Chksz "+str(kwargs.get('additional_where')))
 			Log.Info("""INSERT SAQGPM(CHAMBER_QUANTITY,
 					GOT_CODE,
 					GOTCODE_RECORD_ID,
