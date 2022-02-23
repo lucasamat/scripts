@@ -1431,8 +1431,7 @@ class SyncQuoteAndCustomTables:
 								service_id_first = payload_json.get('SERVICE_IDS').split(',')[1]
 							else:
 								service_id_first = payload_json.get('SERVICE_IDS').split(',')[0]
-
-							Log.Info("service_id_first"+str(service_id_first))			
+			
 							product_offering = payload_json.get('SERVICE_IDS').split(',')
 
 						if payload_json.get('SAQFEQ'):
@@ -1738,14 +1737,16 @@ class SyncQuoteAndCustomTables:
 																	) A
 																""".format(UserId=User.Id,UserName=User.UserName,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, SalesorgId=salesorg_data.get("SALESORG_ID"), SalesorgName=salesorg_data.get("SALESORG_NAME"), SalesorgRecordId=salesorg_data.get("SALESORG_RECORD_ID"), ServiceIds=service_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id,ContractValidFrom=contract_quote_obj.CONTRACT_VALID_FROM,
 																ContractValidTo=contract_quote_obj.CONTRACT_VALID_TO))							
-								quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-								quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
+								#quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+								#quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
 								ServicerecordId = service_id_first								
-								Log.Info("ServicerecordId_docutype"+str(ServicerecordId))
+								#Log.Info("ServicerecordId_docutype"+str(ServicerecordId))
 								getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
-								if getRevision is None:
-									Log.Info("ServicerecordId_dcallocutype"+str(ServicerecordId))
-									ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':ServicerecordId})								
+								getService = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_id))
+								if getRevision is None and getService is not None:
+									ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':ServicerecordId})	
+								else:
+									ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':""})
 								
 								contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")						
@@ -2285,14 +2286,14 @@ class SyncQuoteAndCustomTables:
 sync_obj = SyncQuoteAndCustomTables(Quote)
 sync_obj.create_custom_table_record()
 #A055S000P01-9608 START
-quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+'''quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
 getService = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_id))
 if getService is None:
 	getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
 
 	if getRevision is None:
-		ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':""})
+		ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':""})'''
 ##A055S000P01-9608 END...
 
 
