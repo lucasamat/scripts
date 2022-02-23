@@ -39,4 +39,6 @@ except:
     RevisionRecordId = "" 
     ServicerecordId = ""
 Log.Info("CQDOCUTYPE called for Quote Record ID--->"+str(QuoteRecordId))   
+Log.Info("CQDOCUTYPE called for ServicerecordId--->"+str(ServicerecordId))
+Log.Info("CQDOCUTYPE called for RevisionRecordId-->"+str(RevisionRecordId))
 update_document_type(QuoteRecordId,RevisionRecordId,ServicerecordId)
