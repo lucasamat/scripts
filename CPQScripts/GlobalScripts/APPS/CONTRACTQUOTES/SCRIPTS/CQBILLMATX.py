@@ -846,6 +846,7 @@ def billingmatrix_create():
 													),amount_column="YEAR_"+str((index) + 1),
 													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 				#self.insert_quote_items_billing_plan()
+	qt_bill_insert()
 #A055S000P01-3924-billing matrix creation end
 
 
