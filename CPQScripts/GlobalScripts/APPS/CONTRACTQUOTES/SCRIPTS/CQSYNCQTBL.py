@@ -1866,6 +1866,7 @@ class SyncQuoteAndCustomTables:
 								ServicerecordId = service_id_first								
 								getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
 								if getRevision is None:
+									Log.Info("ServicerecordId_docutype"+str(ServicerecordId))
 									ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':ServicerecordId})
 								try:
 									self.CreateEntitlements(quote_record_id)
