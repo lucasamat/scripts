@@ -5011,6 +5011,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					RevisionRecordId=self.quote_revision_record_id
 					)
 				)
+			Log.Info("additional_where_Chksz "+str(additional_where))
 			Log.Info("""INSERT SAQGPM(CHAMBER_QUANTITY,
 					GOT_CODE,
 					GOTCODE_RECORD_ID,
@@ -6094,9 +6095,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							# quote_type_attribute_value =re.findall(pattern_name,sub_string)
 							#Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value)+" - "+str(pm_event_attribute_value))
 							if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
+								additional_where = ""
 								if self.tree_param == 'Z0010':
 									Trace.Write("self.tools_from_ui----"+str(self.tools_from_ui))
 									self.tools_from_ui = "No"
+									
 									self.applied_preventive_maintainence_quote_type_changed = "Yes"
 									self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
 									qte_type_flag=1
@@ -6190,9 +6193,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			##To write the below condition to call the function when the user is changing the quote type or preventive maintainence labor attribute in the service level entitlement when the tools are added before...
 			if self.tools_from_ui != "Yes":
 				if self.applied_preventive_maintainence_quote_type_changed == "Yes" and self.tree_param in ("Z0009"):
+					additional_where = ""
 					quote_type_attribute_value = self.entitlement_value
 					batch_group_record_id = ""
-					self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed)
+					self.applied_preventive_maintainence(batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
 				if self.pmevents_changes_insert == "Yes":
 					batch_group_record_id = str(Guid.NewGuid()).upper()
 					equipment_record_ids = []
@@ -6249,6 +6253,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								# Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value))
 								if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
 									#applied_preventive_maintainence_quote_type_changed = "Yes"
+									additional_where = ""
 									if (self.tree_param in ("Z0009") and "Included - All PM" in pm_event_attribute_value):
 										additional_where = " AND ((MAEAPK.MNTEVT_LEVEL = 'Chamber / Module PM' OR MAEAPK.MNTEVT_LEVEL = 'Scheduled Maintenance') AND MAEAPK.MNTEVT_LEVEL != '') "
 										Trace.Write("additional_where_chk_1 "+str(additional_where))
