@@ -652,7 +652,7 @@ def _equp_predefined_value_driver_update(previous_xml):
 	val_list = []
 	val_coeff = []
 	##getting value driver attributes
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID NOT IN {}  ".format(get_serviceid, ('AGS_{}_VAL_UPIMPV'.format(get_serviceid) , 'AGS_{}_VAL_CSTSEG'.format(get_serviceid), 'AGS_{}_VAL_SVCCMP'.format(get_serviceid), 'AGS_{}_VAL_QLYREQ'.format(get_serviceid) ) ) )
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID NOT IN {}  ".format(get_serviceid, ('AGS_{}_VAL_UPIMPV'.format(get_serviceid) , 'AGS_{}_VAL_CSTSEG'.format(get_serviceid), 'AGS_{}_VAL_SVCCMP'.format(get_serviceid), 'AGS_{}_VAL_QLYREQ'.format(get_serviceid) ) ) )
 	val_list = [i.ENTITLEMENT_ID for i in get_valuedriver_ids]
 	##constructing the list with all value driver and its coefficient
 	if get_valuedriver_ids:
