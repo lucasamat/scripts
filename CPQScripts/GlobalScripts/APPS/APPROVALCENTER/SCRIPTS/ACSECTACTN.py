@@ -445,6 +445,12 @@ class approvalCenter:
 							if getQuote.QUOTE_STATUS == "APPROVED":
 								
 								result = ScriptExecutor.ExecuteGlobal("QTPOSTACRM", {"QUOTE_ID": getQuote.QUOTE_ID, 'Fun_type':'cpq_to_crm'})
+			try:
+				##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+				CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			except Exception as e:
+				Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
 		elif str(ACTION) == "REJECT":
 			if ApproveDesc == '':                    
 				ApproveDesc = str(self.datetime_value)
