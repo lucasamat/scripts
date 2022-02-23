@@ -716,9 +716,12 @@ class SyncQuoteAndCustomTables:
 									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up,'EXCHANGERATE_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID})
 									##A055S000P01-4418 exchange rate details ends..
 								else:
-									if contract_quote_data.get("GLOBAL_CURRENCY") == salesorg_currency.CURRENCY:
-										createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-										salesorg_data.update({'EXCHANGE_RATE':1.00,'EXCHANGE_RATE_DATE':createddate})
+									# If condition commented for FPM scenario - getting currency = NTD, global currency = USD and exchnage rate tyep = ZC07. There is no record for this combination in PREXRT so we update exchange rate as 1 and exchange rate as current date 
+									#if contract_quote_data.get("GLOBAL_CURRENCY") == salesorg_currency.CURRENCY:
+									createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+									salesorg_data.update({'EXCHANGE_RATE':1.00,'EXCHANGE_RATE_DATE':createddate})
+									
+
 								##Commented the below code already we updated the exchange rate details in the above code..
 								# TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
 								# if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
