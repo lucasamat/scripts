@@ -1430,7 +1430,9 @@ class SyncQuoteAndCustomTables:
 							if (re.match(r'C4C_GEN_SRV',payload_json.get('SERVICE_IDS'))):
 								service_id_first = payload_json.get('SERVICE_IDS').split(',')[1]
 							else:
-								service_id_first = payload_json.get('SERVICE_IDS').split(',')[0]		
+								service_id_first = payload_json.get('SERVICE_IDS').split(',')[0]
+
+							Log.Info("service_id_first"+str(service_id_first))			
 							product_offering = payload_json.get('SERVICE_IDS').split(',')
 
 						if payload_json.get('SAQFEQ'):
@@ -1864,7 +1866,7 @@ class SyncQuoteAndCustomTables:
 								quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 								quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
 								ServicerecordId = service_id_first								
-								Log.Info("ServicerecordId_docutype"+str(service_id_first))
+								Log.Info("ServicerecordId_docutype"+str(ServicerecordId))
 								getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
 								if getRevision is None:
 									#Log.Info("ServicerecordId_docutype"+str(ServicerecordId))
