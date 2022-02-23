@@ -301,6 +301,7 @@ def valuedriver_onchage():
 						querystring = querystring + entxmldict[uptime_key]
 					else:
 						querystring = querystring + entxmldict[key]
+				updateentXML = querystring
 				Update_xml_uptime = ("UPDATE {TreeParam} SET ENTITLEMENT_XML = '{querystring}' {where_condition}".format(TreeParam=TreeParam,querystring=querystring,where_condition=where_condition))
 				Sql.RunQuery(Update_xml_uptime)
 	except:
