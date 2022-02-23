@@ -155,7 +155,24 @@ def greenbook_predefined():
 		#for val in get_valuedriver_ids:
 		#if 'GREENBOOK' in val.ENTITLEMENT_DESCRIPTION.upper():
 		ent_value = rec.GREENBOOK
-		updateentXML = updating_xml(entxmldict,updateentXML,"AGS_{}_VAL_GRNBKV".format(TreeParam),ent_value)		
+		updateentXML = updating_xml(entxmldict,updateentXML,"AGS_{}_VAL_GRNBKV".format(TreeParam),ent_value)
+		
+		##total seed coefficent update
+		try:
+			Trace.Write("try"+str(TreeParam))
+			ent_value = ''
+			ent_code = '001' 
+			entitlement_id = 'AGS_{}_VAL_TBCOST'.format(TreeParam)
+			if entitlement_id in updateentXML:
+				Trace.Write("try")
+				get_value_qry = Sql.GetFirst("SELECT ENTITLEMENT_DISPLAY_VALUE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID ='{} ' AND ENTITLEMENT_VALUE_CODE = '{}'".format(entitlement_id,TreeParam,ent_code))
+				if get_value_qry:
+					if get_value_qry.ENTITLEMENT_DISPLAY_VALUE:
+						ent_value = get_value_qry.ENTITLEMENT_DISPLAY_VALUE
+						updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
+		except Exception as e:
+			Trace.Write("exceptt"+str(e))
+			pass		
 		#Sql.RunQuery( "UPDATE SAQSGE SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
 		##rolldown
 		for roll_obj in ['SAQSGE','SAQSCE','SAQSAE']:
