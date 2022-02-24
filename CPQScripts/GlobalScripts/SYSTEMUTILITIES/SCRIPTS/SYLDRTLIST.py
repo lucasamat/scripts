@@ -4706,7 +4706,8 @@ class SYLDRTLIST:
 							)
 						
 						
-						else:                    
+						else:
+							Trace.Write('4710--qstring----'+ str(qstring))                  
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
