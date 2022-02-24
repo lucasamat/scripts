@@ -6762,7 +6762,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 				fab_location_msg_notification = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE RECORD_ID ='429E4C2B-F380-45E6-A364-D65429357461' and MESSAGE_LEVEL = 'INFORMATION'")
 
 				fab_location_data = Sql.GetList(" SELECT * FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-				if not fab_location_data:
+				if fab_location_data:
 					Trace.Write("fab_delete###===========")
 					quote_config_change = (
 						'<div  class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infor_icon_green.svg" alt="Warning">'
