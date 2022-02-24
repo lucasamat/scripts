@@ -266,7 +266,7 @@ def SaveAttachments():
 	return ""
 
 
-def DownloadAttachments()
+def DownloadAttachments():
 	c4c_quote_id = Quote.CompositeNumber
 	cartobj = Sql.GetFirst("select CART_ID, USERID from CART where ExternalId = '{}'".format(c4c_quote_id))
 	get_last_attached_filename = Sql.GetList("SELECT id, cart_id, owner_id, user_id, content, fileName, dateCreated, contentType, contentLength, quoteId FROM CartAttachments WHERE owner_id ='"+str(cartobj.USERID)+"' and cart_id ='"+str(cartobj.CART_ID)+"' and  id = ( SELECT MAX(id) FROM CartAttachments )")
