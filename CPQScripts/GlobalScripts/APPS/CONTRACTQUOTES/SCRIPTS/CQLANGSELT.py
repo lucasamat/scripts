@@ -652,10 +652,10 @@ def _insert_subtotal_by_offerring_quote_table():
             else:
                 newRow['NET_PRICE_INGL_CURR'] = 0
             newRow['SERVICE_ID'] = val.SERVICE_ID
-            if val.NET_VALUE:
-                newRow['NET_VALUE'] = val.NET_VALUE
-            else:
-                newRow['NET_VALUE'] = 0
+            # if val.NET_VALUE:
+            #     newRow['NET_VALUE'] = val.NET_VALUE
+            # else:
+            #     newRow['NET_VALUE'] = 0
             newRow['SERVICE_RECORD_ID'] = val.SERVICE_RECORD_ID
             newRow['SERVICE_DESCRIPTION'] = val.SERVICE_DESCRIPTION
             newRow['QUANTITY'] = val.QUANTITY
