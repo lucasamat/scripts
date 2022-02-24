@@ -264,7 +264,14 @@ def SaveAttachments():
 	Sql.RunQuery("INSERT INTO SAQRAT(QUOTE_REV_ATTACHMENT_RECORD_ID,ATTACH_FILE_FORMAT,ATTACH_FILE_NAME,ATTACH_FILE_PATH,ATTACH_TYPE,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID) VALUES (CONVERT(VARCHAR(4000), NEWID()),'{}','{}','{}','{}','{}','{}','{}','{}')".format(FileFormat,DocumentName,"",FileFormat,getrevdetails.QUOTE_ID,Quote.GetGlobal("contract_quote_record_id"),getrevdetails.QTEREV_ID,Quote.GetGlobal("quote_revision_record_id")))		
 	Trace.Write("Save Success")
 	return ""
+
 	
+def DownloadAttachments()
+	c4c_quote_id = Quote.CompositeNumber
+	cartobj = Sql.GetFirst("select CART_ID, USERID from CART where ExternalId = '{}'".format(c4c_quote_id))
+	get_last_attached_filename = Sql.GetList("SELECT id, cart_id, owner_id, user_id, content, fileName, dateCreated, contentType, contentLength, quoteId FROM CartAttachments WHERE owner_id ='"+str(cartobj.USERID)+"' and cart_id ='"+str(cartobj.CART_ID)+"' and  id = ( SELECT MAX(id) FROM CartAttachments )")
+
+	return True
 try:
 	RECORD_ID=Param.RECORD_ID
 except:
@@ -309,8 +316,8 @@ except:
 	pass
 
 
-
-
+if QT_DWD == "DOWNLOAD_ATTACHMENT":
+	ApiResponse = ApiResponseFactory.JsonResponse(DownloadAttachments())
 if attach == "YES":
 	ApiResponse = ApiResponseFactory.JsonResponse(attachments())
 if save == "YES" and DocumentName != "":
