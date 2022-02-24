@@ -149,10 +149,10 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.Customer_Eligibility='X' THEN 'True' ELSE 'False' END AS CUSTOMER_ELIGIBLE,
                                 'True' as CUSTOMER_PARTICIPATE,
                                 'True' as CUSTOMER_ACCEPT_PART,
-                                TEMP_TABLE.YEAR_1_DEMAND AS YEAR_1_DEMAND,
-                                TEMP_TABLE.YEAR_2_DEMAND AS YEAR_2_DEMAND,
-                                TEMP_TABLE.YEAR_3_DEMAND AS YEAR_3_DEMAND,
-                                '{sold_to}' as STPACCOUNT_ID,
+                                CASE WHEN TEMP_TABLE.YEAR_1_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_1_DEMAND AS YEAR_1_DEMAND,
+		                        CASE WHEN TEMP_TABLE.YEAR_2_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_2_DEMAND AS YEAR_2_DEMAND,
+		                        CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND AS YEAR_3_DEMAND,
+		                                '{sold_to}' as STPACCOUNT_ID,
                                 '{ship_to}' as SHPACCOUNT_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
                             JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
@@ -268,10 +268,10 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.Customer_Eligibility='X' THEN 'True' ELSE 'False' END AS CUSTOMER_ELIGIBLE,
                                 'True' as CUSTOMER_PARTICIPATE,
                                 'True' as CUSTOMER_ACCEPT_PART,
-                                TEMP_TABLE.YEAR_1_DEMAND AS YEAR_1_DEMAND,
-                                TEMP_TABLE.YEAR_2_DEMAND AS YEAR_2_DEMAND,
-                                TEMP_TABLE.YEAR_3_DEMAND AS YEAR_3_DEMAND,
-                                '{sold_to}' as STPACCOUNT_ID,
+                                CASE WHEN TEMP_TABLE.YEAR_1_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_1_DEMAND AS YEAR_1_DEMAND,
+                                CASE WHEN TEMP_TABLE.YEAR_2_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_2_DEMAND AS YEAR_2_DEMAND,
+                                CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND AS YEAR_3_DEMAND,
+		                        '{sold_to}' as STPACCOUNT_ID,
                                 '{ship_to}' as SHPACCOUNT_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
                             JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
