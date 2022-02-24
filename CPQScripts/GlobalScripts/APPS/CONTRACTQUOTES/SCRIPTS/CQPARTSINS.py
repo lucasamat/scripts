@@ -149,9 +149,9 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.Customer_Eligibility='X' THEN 'True' ELSE 'False' END AS CUSTOMER_ELIGIBLE,
                                 'True' as CUSTOMER_PARTICIPATE,
                                 'True' as CUSTOMER_ACCEPT_PART,
-                                CASE WHEN TEMP_TABLE.YEAR_1_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_1_DEMAND AS YEAR_1_DEMAND,
-		                        CASE WHEN TEMP_TABLE.YEAR_2_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_2_DEMAND AS YEAR_2_DEMAND,
-		                        CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND AS YEAR_3_DEMAND,
+                                CASE WHEN TEMP_TABLE.YEAR_1_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_1_DEMAND END AS YEAR_1_DEMAND,
+		                        CASE WHEN TEMP_TABLE.YEAR_2_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_2_DEMAND END AS YEAR_2_DEMAND,
+		                        CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
 		                                '{sold_to}' as STPACCOUNT_ID,
                                 '{ship_to}' as SHPACCOUNT_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
@@ -268,9 +268,9 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.Customer_Eligibility='X' THEN 'True' ELSE 'False' END AS CUSTOMER_ELIGIBLE,
                                 'True' as CUSTOMER_PARTICIPATE,
                                 'True' as CUSTOMER_ACCEPT_PART,
-                                CASE WHEN TEMP_TABLE.YEAR_1_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_1_DEMAND AS YEAR_1_DEMAND,
-                                CASE WHEN TEMP_TABLE.YEAR_2_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_2_DEMAND AS YEAR_2_DEMAND,
-                                CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND AS YEAR_3_DEMAND,
+                                CASE WHEN TEMP_TABLE.YEAR_1_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_1_DEMAND END AS YEAR_1_DEMAND,
+                                CASE WHEN TEMP_TABLE.YEAR_2_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_2_DEMAND END AS YEAR_2_DEMAND,
+                                CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
 		                        '{sold_to}' as STPACCOUNT_ID,
                                 '{ship_to}' as SHPACCOUNT_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
