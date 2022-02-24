@@ -575,7 +575,7 @@ class ViolationConditions:
                                 else:
                                     objname = str(result.WHERE_CONDITION_01).split(".")[0].replace("(","").replace(" ","")
                                     Select_Query = Sql.GetFirst(
-                                    "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(result.WHERE_CONDITION_01) + ")"
+                                    "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
                                     )
                                     if Select_Query is not None:
                                         fflag = 1
