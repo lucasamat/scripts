@@ -562,19 +562,26 @@ class ViolationConditions:
                     if "PRENVL" in result.WHERE_CONDITION_01 and (result.APRCHNSTP_NUMBER == 1 or result.APRCHNSTP_NUMBER == 2):
                         fflag = 2
                         if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
-                            splitval = str(result.WHERE_CONDITION_01).split("OR")[0]
-                            if "180" in splitval:
-                                checkVal = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV(NOLOCK) WHERE CANCELLATION_PERIOD < 180 AND QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
-                                if checkVal:
-                                    fflag = 1
+                            splitval = str(result.WHERE_CONDITION_01).split("OR")
+                            for s in splitval:
+                                count = 0
+                                if "PRENVL" in s and count == 0:
+                                    result = ItemApproval(RecordId)
+                                    count += 1
+                                    if result == 1:
+                                        fflag = 1
+                                    else:
+                                        fflag = 0
                                 else:
-                                    BDHeadEnt(RecordId)
-                            elif "SAQTDA" in splitval:
-                                checkVal = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTDA (NOLOCK) WHERE (SAQTDA.TOOLIDLING_ID = 'Idling Exception' AND SAQTDA.TOOLIDLING_DISPLAY_VALUE = 'Yes' )  OR ( SAQTDA.TOOLIDLING_ID = 'Max % of Tools to be idled' AND SAQTDA.TOOLIDLING_DISPLAY_VALUE > '0.3' )  OR ( SAQTDA.TOOLIDLING_ID = 'Warm / Hot Idle Fee' AND SAQTDA.TOOLIDLING_DISPLAY_VALUE < '0.3')  AND QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
-                                if checkVal:
-                                    fflag = 1
-                                else:
-                                    BDEnt(RecordId)             
+                                    objname = str(result.WHERE_CONDITION_01).split(".")[0].replace("(","").replace(" ","")
+                                    Select_Query = Sql.GetFirst(
+                                    "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(result.WHERE_CONDITION_01) + ")"
+                                    )
+                                    if Select_Query is not None:
+                                        fflag = 1
+                                    elif Select_Query is None and fflag != 1:
+                                        fflag = 0
+
                                     
                                     #A055S000P01-15007 END
                     #A055S000P01-3687 START
