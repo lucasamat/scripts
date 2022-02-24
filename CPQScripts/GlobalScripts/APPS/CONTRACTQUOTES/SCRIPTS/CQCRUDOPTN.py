@@ -6678,6 +6678,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		# 	gettransactionmessage = 'This quote requires approval due to the following:'
 		# 	for val in get_approvaltxn_steps:				
 		# 		gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '+val.APRCHN_ID +' | Description : ' +val.APRCHN_DESCRIPTION+'</label></div></div>')
+		quote_config_change = ""
 		ent_message_query = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE RECORD_ID ='864BA37C-7523-4C7D-A586-6CEF1CABD682' and MESSAGE_LEVEL = 'WARNING'")
 		ent_msg_txt = msg_txt = getostfactor = msg_app_txt = getpricefactor = ent_msg_gen_txt =""
 		# AllParams = Param.AllParams
@@ -6763,7 +6764,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 				fab_location_data = Sql.GetList(" SELECT * FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 				if not fab_location_data:
 					Trace.Write("fab_delete###===========")
-					gettransactionmessage = (
+					quote_config_change = (
 						'<div  class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infor_icon_green.svg" alt="Warning">'
 						+ str(fab_location_msg_notification.MESSAGE_LEVEL)
 						+ " : "
@@ -6894,7 +6895,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 			# 		+ "</label></div></div>"
 			# 	)
 		# Is Changed Information Notification
-		return ent_msg_txt,msg_app_txt,gettransactionmessage,ent_msg_gen_txt
+		return ent_msg_txt,msg_app_txt,gettransactionmessage,ent_msg_gen_txt,quote_config_change
 
 class ContractQuoteApprovalModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
