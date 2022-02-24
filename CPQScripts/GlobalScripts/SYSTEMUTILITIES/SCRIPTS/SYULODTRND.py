@@ -956,7 +956,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
 				if current_prod == "Sales" and ObjectName != "ACAPMA" and ObjectName != "ACAPTX" and ObjectName != "ACACHR":
 					if ObjectName == "SAQDOC":
-    						script = (
+						script = (
 							"SELECT "
 							+ str(API_NAMES)
 							+ " FROM "
