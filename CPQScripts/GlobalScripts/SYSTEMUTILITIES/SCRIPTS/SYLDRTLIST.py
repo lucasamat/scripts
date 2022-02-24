@@ -4571,7 +4571,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)
 					else:   
-						Trace.Write("invs-chk_02 "+str(invs))                    
+						Trace.Write("invs-chk_02 "+str(invs)+"----4574----"+str(qstring))                    
 						if str(qstring) == "Key": 							
 							if ObjectName == "CTCICO":
 								table_header += (
