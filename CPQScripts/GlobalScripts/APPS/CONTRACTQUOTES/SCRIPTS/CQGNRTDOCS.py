@@ -322,7 +322,7 @@ try:
 except:
 	pass
 
-
+Trace.Write('QT_DWD--'+str(QT_DWD))
 if QT_DWD == "DOWNLOAD_ATTACHMENT":
 	ApiResponse = ApiResponseFactory.JsonResponse(DownloadAttachments())
 if attach == "YES":
