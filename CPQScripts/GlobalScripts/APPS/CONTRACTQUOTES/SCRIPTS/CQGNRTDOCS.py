@@ -265,7 +265,19 @@ def SaveAttachments():
 	Trace.Write("Save Success")
 	return ""
 	
-
+try:
+	RECORD_ID=Param.RECORD_ID
+except:
+	RECORD_ID = ""
+try:
+	ObjectName=Param.ObjectName
+except:
+	ObjectName = ""
+try:
+	QT_DWD=Param.QT_DWD
+except:
+	QT_DWD = ""
+	
 try:
 	Language = Param.Language_selection
 except:
