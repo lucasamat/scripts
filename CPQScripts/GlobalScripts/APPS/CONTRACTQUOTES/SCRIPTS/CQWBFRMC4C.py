@@ -20,8 +20,8 @@ if 'Param' in globals():
         ##To Fetch the Picklist value based on the value from C4C...
         opportunity_status_dictionary = {"LOST":"OPPORTUNITY LOST", "CANCELLED":"OPPORTUNITY CANCELLED","WON" : "OPPROTUNITY WON"}        
         ##To update the revision status in cpq based on the status from c4c value....        
-        Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = '{}' FROM SAQTRV JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID  WHERE OPPORTUNITY_ID = '{}'".format(opportunity_status_dictionary.get(str(opportunity_status)),opportunity_id))
+        #Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = '{}' FROM SAQTRV JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID  WHERE OPPORTUNITY_ID = '{}'".format(opportunity_status_dictionary.get(str(opportunity_status)),opportunity_id))
         Sql.RunQuery("UPDATE SAOPQT SET OPPORTUNITY_STATUS = '{}' FROM SAOPQT WHERE OPPORTUNITY_ID = '{}'".format(opportunity_status_dictionary.get(str(opportunity_status)),opportunity_id))
         quote_header_object = Sql.GetFirst("SELECT SAQTRV.QUOTE_RECORD_ID,SAQTRV.QTEREV_RECORD_ID FROM SAQTRV JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID  WHERE SAOPQT.OPPORTUNITY_ID = '{}' AND SAQTRV.ACTIVE = 1".format(opportunity_id))
-        if quote_header_object is not None:
-            CQCPQC4CWB.writeback_to_c4c("quote_header",quote_header_object.QUOTE_RECORD_ID,quote_header_object.QTEREV_RECORD_ID)
+        # if quote_header_object is not None:
+        #     CQCPQC4CWB.writeback_to_c4c("quote_header",quote_header_object.QUOTE_RECORD_ID,quote_header_object.QTEREV_RECORD_ID)
