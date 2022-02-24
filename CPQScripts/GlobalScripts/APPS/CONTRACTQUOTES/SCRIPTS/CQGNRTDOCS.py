@@ -265,11 +265,18 @@ def SaveAttachments():
 	Trace.Write("Save Success")
 	return ""
 
-	
+
 def DownloadAttachments()
 	c4c_quote_id = Quote.CompositeNumber
 	cartobj = Sql.GetFirst("select CART_ID, USERID from CART where ExternalId = '{}'".format(c4c_quote_id))
 	get_last_attached_filename = Sql.GetList("SELECT id, cart_id, owner_id, user_id, content, fileName, dateCreated, contentType, contentLength, quoteId FROM CartAttachments WHERE owner_id ='"+str(cartobj.USERID)+"' and cart_id ='"+str(cartobj.CART_ID)+"' and  id = ( SELECT MAX(id) FROM CartAttachments )")
+	if get_last_attached_filename:
+		fileContent =get_last_attached_filename.content
+		fileName = get_last_attached_filename.fileName
+
+		responseJson = {"ErrorMsg":None, "File":fileContent, "FileName":fileName}
+
+		ApiResponse = ApiResponseFactory.JsonResponse(responseJson)
 
 	return True
 try:
