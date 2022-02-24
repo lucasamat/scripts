@@ -4636,6 +4636,18 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)
+						elif ObjectName == "SAQRAT" and str(qstring) == "Attachment File Name":
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" class="cust_billing_name" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-formatter="documentrealtedhyperlink" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+							)
 						elif ObjectName == "SAQRSP" and str(qstring) == "Target Quantity":
 							table_header += (
 								'<th  data-field="'
