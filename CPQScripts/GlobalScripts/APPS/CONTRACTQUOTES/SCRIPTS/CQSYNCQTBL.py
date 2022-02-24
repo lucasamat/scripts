@@ -634,7 +634,7 @@ class SyncQuoteAndCustomTables:
 							"PAYMENTTERM_NAME":pay_name,
 							"PAYMENTTERM_RECORD_ID":payrec,
 							"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
-							"CANCELLATION_PERIOD":"181", 
+							"CANCELLATION_PERIOD":"160", 
 							"CANCELLATION_PERIOD_NOTPER":"0",
 							"COMPANY_ID":salesorg_obj.COMPANY_ID,
 							"COMPANY_NAME":salesorg_obj.COMPANY_NAME,
