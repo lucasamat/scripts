@@ -1,4 +1,5 @@
-
+#script to populate quote tables
+#author:Dhurga Gopalakrishnan
 import clr
 #clr.AddReference("System.Net")
 clr.AddReference("IronPython")
