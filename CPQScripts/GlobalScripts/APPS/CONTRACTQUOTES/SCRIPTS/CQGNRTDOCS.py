@@ -269,6 +269,7 @@ def SaveAttachments():
 
 
 def DownloadAttachments():
+	Trace.Write('QT_DWD---RECORD_ID-'+str(RECORD_ID))
 	c4c_quote_id = Quote.CompositeNumber
 	cartobj = Sql.GetFirst("select CART_ID, USERID from CART where ExternalId = '{}'".format(c4c_quote_id))
 	get_last_attached_filename = Sql.GetFirst("SELECT id, cart_id, owner_id, user_id, content, fileName, dateCreated, contentType, contentLength, quoteId FROM CartAttachments WHERE owner_id ='"+str(cartobj.USERID)+"' and cart_id ='"+str(cartobj.CART_ID)+"' and  id = ( SELECT MAX(id) FROM CartAttachments )")
@@ -324,7 +325,7 @@ try:
 except:
 	pass
 
-Trace.Write('QT_DWD----'+str(QT_DWD))
+Trace.Write('QT_DWD---RECORD_ID-'+str(RECORD_ID))
 if QT_DWD == "DOWNLOAD_ATTACHMENT":
 	ApiResponse = ApiResponseFactory.JsonResponse(DownloadAttachments())
 if attach == "YES":
