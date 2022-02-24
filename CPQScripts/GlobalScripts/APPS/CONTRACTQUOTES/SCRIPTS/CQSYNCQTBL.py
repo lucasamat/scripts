@@ -1940,22 +1940,48 @@ class SyncQuoteAndCustomTables:
 							##A055S000P01-10174 code starts...
 							try:
 								for service_level_equipment_json_data in payload_json.get('SAQSCO'):
-									##MORE THAN 1000 tools insert function
-									items  = str(service_level_equipment_json_data.get('EQUIPMENT_IDS'))
-									elements = items.split(',')
-									count = 1;
-									elementframe=''
-									for ele in elements:
-										if elementframe == '':
-											elementframe = ele
+									if service_level_equipment_json_data.get('SERVICE_OFFERING_ID') in covered_object_data:
+										covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')].append(service_level_equipment_json_data.get('EQUIPMENT_ID'))
+									else:
+										covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')] = [service_level_equipment_json_data.get('EQUIPMENT_ID')]
+									
+									for service_id, value in covered_object_data.items():
+										Trace.Write("service_id"+str(service_id))
+										Trace.Write("value"+str(value))
+										if len(value) == 1000:
+											previous_index = 0
+											for index in range(0, len(value), 1000):
+												records = ','.join(value[previous_index:index])
+												Trace.Write("records"+str(records))
+												previous_index = index
+												quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+												quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_id,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+												quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
+												#Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
+												service_id = service_id
+												service_type = quote_service_obj.SERVICE_TYPE
+												quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+												Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
+												ScriptExecutor.ExecuteGlobal(
+																		"CQCRUDOPTN",
+																	{
+																		"NodeType"   : "COVERED OBJ MODEL",
+																		"ActionType" : "ADD_COVERED_OBJ",
+																		"Opertion"    : "ADD",
+																		"AllValues"  : False,
+																		"TriggerFrom"   : "python_script",
+																		"Values"	  : quote_fab_equipments_record_id,
+																		"ServiceId"  : service_id,
+																		"ServiceType" : service_type,
+																	},
+																)
 										else:
-											elementframe += ', ' + ele
-										if count == 1000:
-											quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = elementframe,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-											quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+											elements = (','.join(value))
+											quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = elements,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+											quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_id,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 											quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
 											#Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
-											service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
+											service_id = service_id
 											service_type = quote_service_obj.SERVICE_TYPE
 											quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 											Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
@@ -1972,34 +1998,6 @@ class SyncQuoteAndCustomTables:
 																	"ServiceType" : service_type,
 																},
 															)
-											count=0
-											elementframe=''
-										count += 1
-									if count != 0:
-										quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = elementframe,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-										
-										quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-										quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
-										#Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
-										service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
-										service_type = quote_service_obj.SERVICE_TYPE
-										quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
-										Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
-										ScriptExecutor.ExecuteGlobal(
-																"CQCRUDOPTN",
-															{
-																"NodeType"   : "COVERED OBJ MODEL",
-																"ActionType" : "ADD_COVERED_OBJ",
-																"Opertion"    : "ADD",
-																"AllValues"  : False,
-																"TriggerFrom"   : "python_script",
-																"Values"	  : quote_fab_equipments_record_id,
-																"ServiceId"  : service_id,
-																"ServiceType" : service_type,
-															},
-														)
-
-
 									'''##Fetching the records from SAQFEQ to insert the equipments in to SAQSCO table for service level...
 									quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = service_level_equipment_json_data.get('EQUIPMENT_IDS'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 									##Get the service type based on the service....
