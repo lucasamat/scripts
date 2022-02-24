@@ -407,7 +407,7 @@ class DeleteConfirmPopup:
                         Sql.RunQuery(QueryStatement)
         elif ObjName == "SAQFBL":
             Trace.Write("SAQFBL======")
-            fab_location = Sql.GetFirst("SELECT * FROM SAQFBL (NOLOCK) WHERE QUOTE_FABLOCATION_RECORD_ID = '"+st(RecordId)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
+            fab_location = Sql.GetFirst("SELECT * FROM SAQFBL (NOLOCK) WHERE QUOTE_FABLOCATION_RECORD_ID = '"+str(RecordId)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
             if fab_location:
                 TOOLDELETELIST = ["SAQFBL","SAQTSV","SAQSGB","SAQSCO","SAQFEQ","SAQTSE"]
                 for Table in TOOLDELETELIST:
