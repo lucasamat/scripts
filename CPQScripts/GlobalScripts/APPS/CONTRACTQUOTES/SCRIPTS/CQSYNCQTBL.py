@@ -1943,8 +1943,7 @@ class SyncQuoteAndCustomTables:
 									if service_level_equipment_json_data.get('SERVICE_OFFERING_ID') in covered_object_data:
 										covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')].append(service_level_equipment_json_data.get('EQUIPMENT_ID'))
 									else:
-										covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')] = [service_level_equipment_json_data.get('EQUIPMENT_ID')]
-									()	
+										covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')] = [service_level_equipment_json_data.get('EQUIPMENT_ID')]	
 								Log.Info("covered_object_data"+str(covered_object_data))
 								for service_id, value in covered_object_data.items():
 									#Trace.Write("service_id"+str(service_id))
