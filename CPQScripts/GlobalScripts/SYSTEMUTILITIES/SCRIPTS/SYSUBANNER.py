@@ -2134,36 +2134,38 @@ def Related_Sub_Banner(
                 SeventhLable = "Total Amount Including Tax/VAT"
                 #SeventhValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
                 SeventhValue = decimal_format.format(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
-    item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
-    if item_detail:
-        #if subTabName == "Details" or subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module" and ObjName == "SAQRIT":
-        if subTabName == "Details" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module":
-            Trace.Write("SAQRIT-DETAIL222===")
-            valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
-            Trace.Write("valid_from===="+str(valid_from))
-            valid_date = str(item_detail.CONTRACT_VALID_TO).split(" ")[0]            
-            #if item_detail:
-            PrimaryLable = "Product Offering Id"
-            PrimaryValue =  item_detail.SERVICE_ID
-            SecondLable = "Quantity"
-            SecondValue = item_detail.QUANTITY
-            ThirdLable = "Contract Start Date"
-            ThirdValue = valid_from
-            FourthLable = "Contract End Date"
-            FourthValue = valid_date
+    
+    if TreeParam == 'Quote Items' and (subTabName == "Details" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module")
+        item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
+        if item_detail:
+            #if subTabName == "Details" or subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module" and ObjName == "SAQRIT":
+            if subTabName == "Details" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module":
+                Trace.Write("SAQRIT-DETAIL222===")
+                valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
+                Trace.Write("valid_from===="+str(valid_from))
+                valid_date = str(item_detail.CONTRACT_VALID_TO).split(" ")[0]            
+                #if item_detail:
+                PrimaryLable = "Product Offering Id"
+                PrimaryValue =  item_detail.SERVICE_ID
+                SecondLable = "Quantity"
+                SecondValue = item_detail.QUANTITY
+                ThirdLable = "Contract Start Date"
+                ThirdValue = valid_from
+                FourthLable = "Contract End Date"
+                FourthValue = valid_date
 
-        elif subTabName == "Entitlements":
-            Trace.Write("entitlements===")
-            PrimaryLable = "Product Offering ID"
-            PrimaryValue = str(item_detail.SERVICE_ID)
-            SecondLable = "Product Offering Description"
-            SecondValue = str(item_detail.SERVICE_DESCRIPTION)
-            ThirdLable = "Fab Location ID"
-            ThirdValue = str(item_detail.FABLOCATION_ID)
-            FourthLable = "Greenbook"
-            FourthValue =  str(item_detail.GREENBOOK)
-            FifthLable = "Equipment ID"
-            FifthValue = str(item_detail.OBJECT_ID)
+            elif subTabName == "Entitlements":
+                Trace.Write("entitlements===")
+                PrimaryLable = "Product Offering ID"
+                PrimaryValue = str(item_detail.SERVICE_ID)
+                SecondLable = "Product Offering Description"
+                SecondValue = str(item_detail.SERVICE_DESCRIPTION)
+                ThirdLable = "Fab Location ID"
+                ThirdValue = str(item_detail.FABLOCATION_ID)
+                FourthLable = "Greenbook"
+                FourthValue =  str(item_detail.GREENBOOK)
+                FifthLable = "Equipment ID"
+                FifthValue = str(item_detail.OBJECT_ID)
         # if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module":
         #     Trace.Write("SAQRIT-DETAIL333===")            
         #     if item_detail:
