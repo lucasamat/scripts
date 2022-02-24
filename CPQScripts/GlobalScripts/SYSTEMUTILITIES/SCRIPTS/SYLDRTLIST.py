@@ -3214,7 +3214,7 @@ class SYLDRTLIST:
 							curr_symbol_obj = ""
 							try:
 								if cur_api_name_obj.CURRENCY_INDEX != "":
-									if str(ObjectName) == "SAQIBP":
+									if (str(ObjectName) == "SAQIBP") or (str(ObjectName) == "SAQICO" and cur_api_name_obj.CURRENCY_INDEX == 'QUOTE_CURRENCY_RECORD_ID'):
 										contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
 										curr_symbol_obj = Sql.GetFirst(
 											"select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select "
