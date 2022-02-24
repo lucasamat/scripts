@@ -1444,10 +1444,6 @@ class SyncQuoteAndCustomTables:
 									equipment_data[equipment_json_data.get('FAB_LOCATION_ID')].append(equipment_json_data.get('EQUIPMENT_ID'))
 								else:
 									equipment_data[equipment_json_data.get('FAB_LOCATION_ID')] = [equipment_json_data.get('EQUIPMENT_ID')]								
-								if equipment_json_data.get('SERVICE_OFFERING_ID') in covered_object_data:
-									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')].append(equipment_json_data.get('EQUIPMENT_IDS'))
-								else:
-									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')]
 								Log.Info("equipment_data"+str(equipment_data))
 						
 						##A055S000P01-8690 starts..
