@@ -6710,6 +6710,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 
 			fab_location_data = Sql.GetList(" SELECT * FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 			if not fab_location_data:
+				Trace.Write("fab_delete###===========")
 				msg_app_txt = (
 					'<div  class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infor_icon_green.svg" alt="Warning">'
 					+ str(fab_location_msg_notification.MESSAGE_LEVEL)
