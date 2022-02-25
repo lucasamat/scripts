@@ -446,6 +446,9 @@ class SYLDRTLIST:
 							rem_add_year = get_total_amt.billval+get_diff
 							update_billing_val = "UPDATE SAQIBP SET "+get_ttl_amt+"={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=get_year_max.cpqid,quote_revision_rec_id=quote_revision_record_id)
 							Sql.RunQuery(update_billing_val)
+							if get_ttl_amt = 'ESTVAL_INDT_CURR':
+								update_billing_val_psma = "UPDATE SAQIBP SET ESTVAL_INDT_CURR ={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=get_year_max.cpqid,quote_revision_rec_id=quote_revision_record_id)
+								Sql.RunQuery(update_billing_val_psma)
 					except:
 						pass
 				if item_billing_plans_obj:
