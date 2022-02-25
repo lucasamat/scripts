@@ -1947,7 +1947,7 @@ class SyncQuoteAndCustomTables:
 									##geting Contract dates and temp tools 
 									equipment_id = service_level_equipment_json_data.get('EQUIPMENT_ID')
 									start_date = service_level_equipment_json_data.get('CONTRACT_START_DATE').replace('T00:00:00.000','')
-									end_date = service_level_equipment_json_data.get('CONTRACR_END_DATE').replace('T00:00:00.000','')
+									end_date = service_level_equipment_json_data.get('CONTRACT_END_DATE').replace('T00:00:00.000','')
 									service_id =service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
 									temp_tool =service_level_equipment_json_data.get('TEMP_TOOL')
 									coverd_object_tool_dates.append([equipment_id,start_date,end_date,service_id,temp_tool,Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")])
