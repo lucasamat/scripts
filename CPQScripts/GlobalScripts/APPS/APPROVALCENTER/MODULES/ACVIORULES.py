@@ -1006,6 +1006,7 @@ class ViolationConditions:
         BDHead = {"Primary KPI Performance Ent":"Std Srvc + All PM's","Wet Clean Labor Ent":"Shared","Non Consumable Ent":"Some Exclusions","Consumable Ent":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"}
 
         listofAPI = []
+        line = []
         GetAPI = Sql.GetList("SELECT API_NAME,FIELD_LABEL FROM SYOBJD (NOLOCK) WHERE LEN(API_NAME) = 6 AND OBJECT_NAME = 'SAQICO'")
         for x in GetAPI:
             GetSAQICOValue = Sql.GetFirst("SELECT {} FROM SAQICO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(x.API_NAME,RecordId))
