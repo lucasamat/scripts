@@ -411,7 +411,7 @@ class DeleteConfirmPopup:
             
             if fab_location:
                 saqsco_equ_details = Sql.GetList("SELECT * FROM SAQSCO (NOLOCK) WHERE FABLOCATION_RECORD_ID = '{fab_location_rec_id}' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'".format(fab_location_rec_id = fab_location.FABLOCATION_RECORD_ID))
-                TOOLDELETELIST = ["SAQFBL","SAQTSV","SAQSGB","SAQSCO","SAQFEQ","SAQTSE","SAQSAP","SAQSCA"]
+                TOOLDELETELIST = ["SAQFBL","SAQSCO","SAQFEQ","SAQSAP","SAQSCA","SAQSKP"]
                 for Table in TOOLDELETELIST:
                     if Table == "SAQFBL":
                         QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' and FABLOCATION_ID = '{fab_id}' and QUOTE_FABLOCATION_RECORD_ID = '{fab_location_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(ObjectName = Table,fab_id = fab_location.FABLOCATION_ID,fab_location_rec_id = fab_location.QUOTE_FABLOCATION_RECORD_ID,quote_revision_record_id=quote_revision_record_id)
