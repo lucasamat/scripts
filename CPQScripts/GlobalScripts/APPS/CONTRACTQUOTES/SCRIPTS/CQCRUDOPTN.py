@@ -1927,6 +1927,8 @@ class PartsListModel(ContractQuoteCrudOpertion):
 				parent_based_condition = ""
 				if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009") or  self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 					parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"		
+				if self.tree_param == 'Z0009' and self.inclusion == 1:
+					parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0100'"	
 				# if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 				# 	ent_table = "SAQTSE"
 				if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
