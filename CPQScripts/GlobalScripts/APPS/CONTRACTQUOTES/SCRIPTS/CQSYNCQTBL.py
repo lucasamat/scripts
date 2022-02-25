@@ -602,7 +602,7 @@ class SyncQuoteAndCustomTables:
 						
 					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
-						Log.Info(custom_fields_detail.get("ExchangeRateType"))
+						Log.Info("ExchangeRateType"+str(custom_fields_detail.get("ExchangeRateType")))
 						revision_start_date = datetime.datetime.now().strftime("%m/%d/%Y")
 						revision_end_date = date.today()+ timedelta(days=365)
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
