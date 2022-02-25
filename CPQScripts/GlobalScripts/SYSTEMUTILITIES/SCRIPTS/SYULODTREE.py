@@ -2250,10 +2250,10 @@ class TreeView:
 														sub_string = m.group(1)
 														get_ent_id =re.findall(pattern_id,sub_string)
 														get_ent_name=re.findall(pattern_name,sub_string)
-														Trace.Write("get_ent_id_CHK "+str(get_ent_id)+"get_ent_name_CHK "+str(get_ent_name))
+														#Trace.Write("get_ent_id_CHK "+str(get_ent_id)+"get_ent_name_CHK "+str(get_ent_name))
 														if get_ent_id and get_ent_name:
 															#get_disp_val = re.findall(display_pattern_name,sub_string)
-															Trace.Write("get_ent_id-"+str(get_ent_id)+"--"+str(get_ent_name))
+															#Trace.Write("get_ent_id-"+str(get_ent_id)+"--"+str(get_ent_name))
 															# Z0099_pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_Z0099_NET_PRMALB</ENTITLEMENT_ID>')
 															# Z0099_pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included - All PM)</ENTITLEMENT_DISPLAY_VALUE>')
 															# if Z0099_pattern_id and Z0099_pattern_name:
@@ -2442,13 +2442,14 @@ class TreeView:
 							elif getZ0009 is not None:
 								#Trace.Write("elif getZ0009 is not None")
 								if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
-									Trace.Write("if RecId 222== '1F47A350-4E38-41C9-A5C5-F5")
+									Trace.Write("if RecId 222== '1F47A350-4E38-41C9-A5C5-F5-"+str(NodeText))
 									findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
 										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 									)
 									if not findSubChildAvailable:
+										Trace.Write("inside not")
 										findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
@@ -2479,7 +2480,7 @@ class TreeView:
 							tab_list= [(tab.TAB_LABEL).upper() for tab in pages_tab]
 							object_list = [tab.PRIMARY_OBJECT_NAME for tab in pages_tab]
 							tab_obj_dict = {tab_list[i]: object_list[i] for i in range(len(tab_list))}
-							Trace.Write("NodeText"+str(NodeText))
+							Trace.Write("NodeText--"+str(NodeText))
 							# Trace.Write("tab_list----"+str(tab_list))
 							if NodeText in tab_list:
 								Product.SetGlobal("page_tab",NodeText)
@@ -2567,6 +2568,10 @@ class TreeView:
 											Subwhere_string += " AND SERVICE_ID = '{}' ".format(NodeText)
 											Quote.SetGlobal("SERVICE",NodeText)
 											#service_id_1 = str(NodeText)
+										elif NodeText == "Add-On Products":
+											Trace.Write("add-on product--")
+											service_id = Product.GetGlobal("SERVICE")
+											Subwhere_string += " AND SERVICE_ID = '{}'".format(str(service_id))
 										elif addon_obj:											
 											if 'SERVICE_ID' in Subwhere_string:
 												Subwhere_string = Subwhere_string.replace('SERVICE_ID','PAR_SERVICE_ID')
