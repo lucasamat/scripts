@@ -3169,7 +3169,7 @@ class SYLDRTLIST:
 						value123 = a[0].replace("[", "").lstrip()
 						valu = ",".join(a[1:])
 						value1234 = valu.replace("]", "").lstrip()
-						Trace.Write("value1234_chkz "+str(value1234))
+						
 						if value1234 == "ACQUIRED" or value1234 == "PRICED":
 							value1234 = value1234.replace(value1234,"<img title="+str(value1234).title()+"src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Green_Tick.svg> "+str(value1234))
 						if value1234 == "APPROVAL REQUIRED":
@@ -3181,10 +3181,11 @@ class SYLDRTLIST:
 						if value1234 == "ASSEMBLY IS MISSING":
 							value1234 = value1234.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
 						if value1234 == "ON HOLD - COSTING":
+							Trace.Write("cmng_inside_on_hold_1 "+str(value1234))
 							value1234 = value1234.replace("ON HOLD - COSTING","<img title='ON HOLD - COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
 						if value1234 == "PARTIALLY PRICED":
 							value1234 = value1234.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-						if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
+						if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "ON HOLD - COSTING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
 							value1234 = value1234
 						if value123 == objRecName:
 							current_rec_id = value1234
@@ -9457,10 +9458,11 @@ class SYLDRTLIST:
 					if value1234 == "ASSEMBLY IS MISSING":
 						value1234 = value1234.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
 					if value1234 == "ON HOLD - COSTING":
+						Trace.Write("cmng_inside_on_hold_2 "+str(value1234))
 						value1234 = value1234.replace("ON HOLD - COSTING","<img title='ON HOLD - COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
 					if value1234 == "PARTIALLY PRICED":
 						value1234 = value1234.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-					if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
+					if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "ON HOLD - COSTING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
 						value1234 = value1234
 					if value123 == objRecName:
 						current_rec_id = value1234
