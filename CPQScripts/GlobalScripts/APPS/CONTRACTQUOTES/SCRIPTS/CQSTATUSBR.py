@@ -685,18 +685,18 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				get_ent_config_status = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(contract_quote_rec_id,quote_revision_record_id,service_id.SERVICE_ID))
 				if get_ent_config_status.COUNT > 0 or service_id.MATERIALCONFIG_TYPE =='SIMPLE MATERIAL' or service_id.SERVICE_ID == 'Z0117':
 					data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":contract_quote_rec_id, "ContractQuoteRevisionRecordId":quote_revision_record_id, "ServiceId":service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
-					try:
-						#Approval Trigger - Start		
-						
-						violationruleInsert = ACVIORULES.ViolationConditions()
-						header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-						if header_obj:			
-							violationruleInsert.InsertAction(
-															header_obj.RECORD_ID, quote_revision_record_id, "SAQTRV"
-															)
-						# Approval Trigger - End
-					except:
-						Trace.Write("EXCEPT APPROVAL TRIGGER")
+					
+					#Approval Trigger - Start		
+					
+					violationruleInsert = ACVIORULES.ViolationConditions()
+					header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+					if header_obj:			
+						violationruleInsert.InsertAction(
+														header_obj.RECORD_ID, quote_revision_record_id, "SAQTRV"
+														)
+					# Approval Trigger - End
+					""" except:
+						Trace.Write("EXCEPT APPROVAL TRIGGER") """
 					Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_record_id))
 					try:
 						##Calling the iflow for quote header writeback to cpq to c4c code starts..
