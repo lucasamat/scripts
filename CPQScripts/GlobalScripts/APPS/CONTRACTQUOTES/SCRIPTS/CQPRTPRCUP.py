@@ -90,7 +90,7 @@ account_info['globalCurrency']= '{"name":"KOMK-HWAER","values":["'+str(glb_curr)
 #curr = 'USD'
 #dis = '01'
 #salesorg = '2034'
-#div = '98'
+div = '22'
 
 #UPDATE PRICING PROCEDURE TO SAQITM
 
