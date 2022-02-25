@@ -1,10 +1,4 @@
-# =========================================================================================================================================
-#   __script_name : CQBILLMATX.PY
-#   __script_description : THIS SCRIPT IS USED TO  genarte billing matrix
-#   __primary_author__ : DHURGA GOPALAKRISHNAN
-#   __create_date : 05/01/2022
-#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
-# ==========================================================================================================================================
+
 import re
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
@@ -12,8 +6,9 @@ import datetime
 import sys
 
 
-Param = Param 
 Sql = SQL()
+Param = Param 
+
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
 input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
 Qt_rec_id = input_data[0]
@@ -29,14 +24,7 @@ try:
 	quote_revision_rec_id = input_data[-1]	
 except:
 	quote_revision_rec_id =  ""
-try:
-	current_prod = Product.Name	
-except:
-	current_prod = "Sales"
-try:
-	TabName = TestProduct.CurrentTab
-except:
-	TabName = "Quotes"
+
 user_id = str(User.Id)
 user_name = str(User.UserName)
 
@@ -399,7 +387,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 							COMVAL_INGL_CURR as COMMITTED_VALUE_INGL_CURR,
 							ISNULL({amount_column}, 0) / {get_val}	as 	ESTVAL_INGL_CURR,
 							{amount_column} AS DOC_CURRENCY,
-							ISNULL({amount_column}, 0) / {get_val}	as 	ESTVAL_INDT_CURR,		,	
+							ISNULL({amount_column}, 0) / {get_val}	as 	ESTVAL_INDT_CURR,	
 							QUOTE_RECORD_ID,
 							QTEREV_ID,
 							QTEREV_RECORD_ID,
@@ -855,4 +843,4 @@ def billingmatrix_create():
 
 if contract_quote_rec_id:
 	ApiResponse = ApiResponseFactory.JsonResponse(_insert_billing_matrix())
-	#insert_quote_billing_plan()
+	#_insert_billing_matrix()
