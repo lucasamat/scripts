@@ -100,6 +100,11 @@ def CommonTreeViewHTMLDetail(
 	quote_record_id = None
 	if ObjectName == 'SAQRIB':
 		quote_record_id = Product.GetGlobal("contract_quote_record_id")
+	if ObjectName == 'SAQSAF':
+    	sending_fab_object = Sql.GetFirst("SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID = '"+str(primary_value)+"'")
+		if sending_fab_object:
+			Product.SetGlobal("sending_fab_id", str(sending_fab_object.SNDFBL_ID))
+			
 	# Billing Matrix Details Load - End
 	
 	#getyear calculatin start
