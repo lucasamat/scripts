@@ -700,7 +700,7 @@ class TreeView:
 						if getZ0009 is not None:
 							getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 							#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-							Trace.Write("return value Z0009====---"+str(getZ0009))
+							Trace.Write("return1 value Z0009====---"+str(getZ0009))
 					except:
 						getZ0009 = ""
 					if getZ0009 is None or getZ0009 == 0:
@@ -2424,7 +2424,7 @@ class TreeView:
 								getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 								if getZ0009 is not None:
 									getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
-									Trace.Write("return value Z0009====---"+str(getZ0009))
+									Trace.Write("return2 value Z0009====---"+str(getZ0009))
 							except:
 								getZ0009 = ""
 							if getZ0009 is None or getZ0009 == 0:
@@ -2633,7 +2633,7 @@ class TreeView:
 				if getZ0009 is not None:
 					getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 					#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-					Trace.Write("return value Z0009====---"+str(getZ0009))
+					Trace.Write("return3 value Z0009====---"+str(getZ0009))
 			except:
 				getZ0009 = ""
 			if getZ0009 is None or getZ0009 == 0:
@@ -2762,7 +2762,7 @@ class TreeView:
 						if getZ0009 is not None:
 							getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 							#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-							Trace.Write("return value Z0009====---"+str(getZ0009))
+							Trace.Write("return8 value Z0009====---"+str(getZ0009))
 					except:
 						getZ0009 = ""
 					if getZ0009 is None or getZ0009 == 0:
@@ -3009,7 +3009,7 @@ class TreeView:
 					if getZ0009 is not None:
 						getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 						#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-						Trace.Write("return value Z0009====---"+str(getZ0009))
+						Trace.Write("return5 value Z0009====---"+str(getZ0009))
 				except:
 					getZ0009 = ""
 				if getZ0009 is None or getZ0009 == 0:
@@ -3179,7 +3179,7 @@ class TreeView:
 							if getZ0009 is not None:
 								getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 								#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-								Trace.Write("return value Z0009====---"+str(getZ0009))
+								Trace.Write("return6 value Z0009====---"+str(getZ0009))
 						except:
 							getZ0009 = ""
 						if getZ0009 is None or getZ0009 == 0:
@@ -3239,7 +3239,7 @@ class TreeView:
 									if getZ0009 is not None:
 										getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 										#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-										Trace.Write("return value Z0009====---"+str(getZ0009))
+										Trace.Write("return7 value Z0009====---"+str(getZ0009))
 								except:
 									getZ0009 = ""
 								if getZ0009 is None or getZ0009 == 0:
