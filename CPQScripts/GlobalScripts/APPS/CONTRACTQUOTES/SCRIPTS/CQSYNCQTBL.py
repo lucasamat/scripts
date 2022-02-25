@@ -2018,7 +2018,7 @@ class SyncQuoteAndCustomTables:
 								coverd_object_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(columns)+" INTO "+str(coverd_object_temp_table_name)+" FROM (SELECT DISTINCT "+str(columns)+" FROM (VALUES "+str(records)+") AS TEMP("+str(columns)+")) OQ ' ")    
 								saqsco_update ="""UPDATE A SET A.CONTRACT_VALID_FROM = B.CONTRACT_START_DATE,A.CONTRACT_VALID_TO =B.CONTRACT_END_DATE,A.TEMP_TOOL = B.TEMP_TOOL FROM SAQSCO A INNER JOIN {} B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID and A.SERVICE_ID =B.SERVICE_ID where A.QUOTE_RECORD_ID = '{Quote_id}' AND A.QTEREV_RECORD_ID = '{qtrv_id}'""".format(coverd_object_temp_table_name,Quote_id =Quote.GetGlobal("contract_quote_record_id"),qtrv_id =Quote.GetGlobal("quote_revision_record_id"))
 								Sql.RunQuery(saqsco_update)
-								coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' "							
+								coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")							
 							except Exception as e:
 								Log.Info("EXCEPTION: Iteration Over non sequence for none type"+str(e))
 							##A055S000P01-10174 code ends...A055S000P01-16530
