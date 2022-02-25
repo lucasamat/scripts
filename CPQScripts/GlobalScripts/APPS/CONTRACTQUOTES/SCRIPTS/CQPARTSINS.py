@@ -424,18 +424,20 @@ class SyncFPMQuoteAndHanaDatabase:
                 record_count +=1
                 rec = record.group(1)
                 temp_value = value
+                child_temp_value = value
+                child_temp_flag=0
                 for ele in re.finditer(pattern2,rec):
                     if col_flag == 0:
                         self.columns +=','+ele.group(1)
                     if ele.group(1) == '"PARENT_PART_NUMBER"':
                         self.part_numbers.append(str(ele.group(2)))
-                    #    partdesc = ele.group(2) or ''
-                    #    partdesc = re.sub(r"'|\\","",partdesc)
-                    #    temp_value +=','+partdesc if partdesc !='' else None
-                    #else:
                     temp_value +=','+ele.group(2) if ele.group(2) !='' else None
-                #if col_flag == 0:
-                #	self.columns +=')'
+                    if ele.group(1) == '"CHILD_PART_NUMBER"' and ele.group(2) != '':
+                        child_temp_value +=','+'null'
+                        child_temp_flag=1
+                    else:
+                        child_temp_value +=','+ele.group(2) if ele.group(2) !='' else None
+                                    
                 temp_value +=')'
                 temp_value = re.sub(r"'",'"',temp_value)
                 temp_value = re.sub(r'"',"''",temp_value)
@@ -444,6 +446,16 @@ class SyncFPMQuoteAndHanaDatabase:
                 else:
                     self.records += ', '+temp_value
                 temp_value =''
+                
+                if child_temp_flag == 1:
+                    child_temp_value += ')'
+                    child_temp_value = re.sub(r"'",'"',child_temp_value)
+                    child_temp_value = re.sub(r'"',"''",child_temp_value)
+                    if self.records == '':
+                        self.records = child_temp_value
+                    else:
+                        self.records += ', '+child_temp_value
+                    child_temp_value=''
                 col_flag=1
             Log.Info("Total Records from HANA::"+str(record_count))
             Log.Info("Total Parts List:: " +str(self.part_numbers))
