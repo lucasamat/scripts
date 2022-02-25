@@ -2612,7 +2612,7 @@ class TreeView:
 										ChildDict["nodes"] = list2
 								NewList = []                                
 								ChildList.append(ChildDict)
-								#Trace.Write("ChildList"+str(ChildList))
+								Trace.Write("ChildList"+str(ChildList))
 								
 		else:
 			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
