@@ -2468,7 +2468,7 @@ class TreeView:
 							tab_list= [(tab.TAB_LABEL).upper() for tab in pages_tab]
 							object_list = [tab.PRIMARY_OBJECT_NAME for tab in pages_tab]
 							tab_obj_dict = {tab_list[i]: object_list[i] for i in range(len(tab_list))}
-							Trace.Write("NodeText--"+str(NodeText))
+							#Trace.Write("NodeText--"+str(NodeText))
 							# Trace.Write("tab_list----"+str(tab_list))
 							if NodeText in tab_list:
 								Product.SetGlobal("page_tab",NodeText)
@@ -2502,7 +2502,7 @@ class TreeView:
 									DynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
 									PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)
 									ordersBy = str(findSubChildOne.ORDERS_BY)
-									Trace.Write("NodeApiName--"+str(NodeApiName))
+									#Trace.Write("NodeApiName--"+str(NodeApiName))
 									if parobj == "True":
 										if NodeValue != "":
 											Node_name = NodeValue
