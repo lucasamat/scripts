@@ -3453,7 +3453,7 @@ class SYLDRTLIST:
 														'<input  type= "checkbox" id ="' + value123 + '" class= "custom"  value="' + value1234 + '" style="text-align: center;" checked   disabled><span class="lbl"></span>'
 													)
 									else:
-										Trace.Write("cmto else===")
+										Trace.Write("cmto else==="+str(value123))
 										new_dict[value123] = (
 													'<input  type= "checkbox" id ="' + value123 + '" class= "custom"  value="' + value1234 + '" style="text-align: center;"   disabled><span class="lbl"></span>'
 												)
