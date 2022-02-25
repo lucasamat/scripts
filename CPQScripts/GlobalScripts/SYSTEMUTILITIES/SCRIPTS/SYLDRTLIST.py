@@ -5148,7 +5148,7 @@ class SYLDRTLIST:
 						string_value = string.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
 					if string == "ON HOLD - COSTING":
 						Trace.Write("cmng_inside_on_hold_1 "+str(value1234))
-						value1234 = value1234.replace("ON HOLD - COSTING","<img title='ON HOLD - COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
+						string_value = string.replace("ON HOLD - COSTING","<img title='ON HOLD - COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
 					if string == "PARTIALLY PRICED":
 						string_value = string.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
 					if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "PARTIALLY PRICED" and string != "ACQUIRING" and string != "PRICED":                        
