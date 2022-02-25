@@ -293,9 +293,9 @@ class SyncFPMQuoteAndHanaDatabase:
                                         ship_to=self.account_info['SHIP TO']
                                     )
             )
-            #spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+            spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
         except Exception:
-            #spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+            spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
             Log.Info("Exception in Query insertion in SAQSPT")
         
     def update_records_saqspt(self):
@@ -437,16 +437,7 @@ class SyncFPMQuoteAndHanaDatabase:
                         child_temp_flag=1
                     else:
                         child_temp_value +=','+ele.group(2) if ele.group(2) !='' else None
-                                    
-                temp_value +=')'
-                temp_value = re.sub(r"'",'"',temp_value)
-                temp_value = re.sub(r'"',"''",temp_value)
-                if self.records == '':
-                    self.records = temp_value
-                else:
-                    self.records += ', '+temp_value
-                temp_value =''
-                
+                                   
                 if child_temp_flag == 1:
                     child_temp_value += ')'
                     child_temp_value = re.sub(r"'",'"',child_temp_value)
@@ -456,6 +447,16 @@ class SyncFPMQuoteAndHanaDatabase:
                     else:
                         self.records += ', '+child_temp_value
                     child_temp_value=''
+                
+                temp_value +=')'
+                temp_value = re.sub(r"'",'"',temp_value)
+                temp_value = re.sub(r'"',"''",temp_value)
+                if self.records == '':
+                    self.records = temp_value
+                else:
+                    self.records += ', '+temp_value
+                temp_value =''
+                
                 col_flag=1
             Log.Info("Total Records from HANA::"+str(record_count))
             Log.Info("Total Parts List:: " +str(self.part_numbers))
