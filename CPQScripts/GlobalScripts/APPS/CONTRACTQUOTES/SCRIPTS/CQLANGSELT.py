@@ -773,12 +773,14 @@ def _insert_subtotal_by_offerring_quote_table():
         Quote.SetGlobal('NP', str(total_net_price))
         Quote.SetGlobal('NEV', str(total_net_value))
         Quote.SetGlobal('TX', str(total_tax_amt))'''
-    get_quotetotal = Sql.GetFirst("SELECT SUM(NET_VALUE_INGL_CURR) as netprice,SUM(ESTIMATED_VALUE) as est_val,SUM(TAX_AMOUNT_INGL_CURR) as taxtotal from SAQRIS where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+    get_quotetotal = Sql.GetFirst("SELECT SUM(NET_VALUE_INGL_CURR) as netprice,SUM(ESTIMATED_VALUE) as est_val,SUM(TAX_AMOUNT_INGL_CURR) as taxtotal,SUM(TOTAL_AMOUNT) as totamt from SAQRIS where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
     if get_quotetotal:
         Quote.GetCustomField('doc_net_price').Content = str(get_quotetotal.netprice)
         Quote.GetCustomField('tot_est').Content = str(get_quotetotal.est_val)
         if str(get_quotetotal.taxtotal):
             Quote.GetCustomField('taxtotal').Content = str(get_quotetotal.taxtotal)
+        if str(get_quotetotal.totamt):
+            Quote.GetCustomField('TL_NET_VALUE').Content = str(get_quotetotal.totamt)
 
     return True
 #Document XML end
