@@ -409,16 +409,19 @@ class DeleteConfirmPopup:
             Trace.Write("SAQFBL======")
             fab_location = Sql.GetFirst("SELECT * FROM SAQFBL (NOLOCK) WHERE QUOTE_FABLOCATION_RECORD_ID = '"+str(RecordId)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
             
-            if fab_location:
-                saqsco_equ_details = Sql.GetList("SELECT * FROM SAQSCO (NOLOCK) WHERE FABLOCATION_RECORD_ID = '"+str(fab_location.FABLOCATION_RECORD_ID)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
+            if fab_location:                
                 TOOLDELETELIST = ["SAQFBL","SAQSCO","SAQFEQ","SAQSAP","SAQSCA","SAQSKP"]
                 for Table in TOOLDELETELIST:
+                    saqsco_equ_details = Sql.GetList("SELECT * FROM SAQSCO (NOLOCK) WHERE FABLOCATION_RECORD_ID = '"+str(fab_location.FABLOCATION_RECORD_ID)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
+                    for equp in saqsco_equ_details:
+                        if equp.EQUIPMENT_RECORD_ID:
+                            if Table in ("SAQSAP","SAQSKP"):
+                                QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"'  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND EQUIPMENT_RECORD_ID = '{equp_rec_id}'".format(ObjectName = Table,quote_revision_record_id=quote_revision_record_id,equp_rec_id = equp.EQUIPMENT_RECORD_ID)
+                                Sql.RunQuery(QueryStatement)
                     if Table == "SAQFBL":
                         QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' and FABLOCATION_ID = '{fab_id}' and QUOTE_FABLOCATION_RECORD_ID = '{fab_location_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(ObjectName = Table,fab_id = fab_location.FABLOCATION_ID,fab_location_rec_id = fab_location.QUOTE_FABLOCATION_RECORD_ID,quote_revision_record_id=quote_revision_record_id)
                         Sql.RunQuery(QueryStatement)
-                    if Table in ("SAQSAP","SAQSKP"):
-                        QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"'  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND EQUIPMENT_RECORD_ID = '{equp_rec_id}'".format(ObjectName = Table,quote_revision_record_id=quote_revision_record_id,equp_rec_id = saqsco_equ_details.EQUIPMENT_RECORD_ID)
-                        Sql.RunQuery(QueryStatement)
+                    
                     else:
                         QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' and FABLOCATION_ID = '{fab_id}' and FABLOCATION_RECORD_ID = '{fab_location_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(ObjectName = Table,fab_id = fab_location.FABLOCATION_ID,fab_location_rec_id = fab_location.FABLOCATION_RECORD_ID,quote_revision_record_id=quote_revision_record_id)
                         Sql.RunQuery(QueryStatement)
