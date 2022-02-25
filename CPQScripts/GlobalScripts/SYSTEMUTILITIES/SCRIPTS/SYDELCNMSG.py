@@ -410,7 +410,7 @@ class DeleteConfirmPopup:
             fab_location = Sql.GetFirst("SELECT * FROM SAQFBL (NOLOCK) WHERE QUOTE_FABLOCATION_RECORD_ID = '"+str(RecordId)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
             
             if fab_location:
-                saqsco_equ_details = Sql.GetList("SELECT * FROM SAQSCO (NOLOCK) WHERE FABLOCATION_RECORD_ID = '"+str(fab_location_rec_id)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'".format(fab_location_rec_id = fab_location.FABLOCATION_RECORD_ID))
+                saqsco_equ_details = Sql.GetList("SELECT * FROM SAQSCO (NOLOCK) WHERE FABLOCATION_RECORD_ID = '{fab_location_rec_id}' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'".format(fab_location_rec_id = fab_location.FABLOCATION_RECORD_ID))
                 TOOLDELETELIST = ["SAQFBL","SAQTSV","SAQSGB","SAQSCO","SAQFEQ","SAQTSE","SAQSAP","SAQSCA"]
                 for Table in TOOLDELETELIST:
                     if Table == "SAQFBL":
