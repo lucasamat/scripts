@@ -102,7 +102,7 @@ try:
 			contract_quote_record_id = None				
 
 
-			Log.Info("456 type(price) --->"+str(price))
+			Log.Info("456 type(price) --->"+str(list(price)))
 			if str(type(price)) == "<type 'Dictionary[str, object]'>":
 				#Log.Info("type condition--->")
 				price = [price]
