@@ -408,14 +408,17 @@ class DeleteConfirmPopup:
         elif ObjName == "SAQFBL":
             Trace.Write("SAQFBL======")
             fab_location = Sql.GetFirst("SELECT * FROM SAQFBL (NOLOCK) WHERE QUOTE_FABLOCATION_RECORD_ID = '"+str(RecordId)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
+
+            fab_rec_id = fab_location.FABLOCATION_RECORD_ID
             
             if fab_location:                
                 TOOLDELETELIST = ["SAQFBL","SAQSCO","SAQFEQ","SAQSAP","SAQSCA","SAQSKP"]
                 for Table in TOOLDELETELIST:
-                    saqsco_equ_details = Sql.GetList("SELECT * FROM SAQSCO (NOLOCK) WHERE FABLOCATION_RECORD_ID = '"+str(fab_location.FABLOCATION_RECORD_ID)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
-                    for equp in saqsco_equ_details:
-                        if equp.EQUIPMENT_RECORD_ID:
-                            if Table in ("SAQSAP","SAQSKP"):
+                    if Table in ("SAQSAP","SAQSKP"):
+                        saqsco_equ_details = Sql.GetList("SELECT * FROM SAQSCO (NOLOCK) WHERE FABLOCATION_RECORD_ID = '"+str(fab_rec_id)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
+                        for equp in saqsco_equ_details:
+                            if equp.EQUIPMENT_RECORD_ID:
+                                Trace.Write("delete_saqsap====")                            
                                 QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"'  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND EQUIPMENT_RECORD_ID = '{equp_rec_id}'".format(ObjectName = Table,quote_revision_record_id=quote_revision_record_id,equp_rec_id = equp.EQUIPMENT_RECORD_ID)
                                 Sql.RunQuery(QueryStatement)
                     if Table == "SAQFBL":
