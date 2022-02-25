@@ -4198,7 +4198,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('GOT_CODE','ASSEMBLY_ID','EQNODE','PROCES','PM_ID','MNTEVT_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOLCFG'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('GOT_CODE','ASSEMBLY_ID','EQNODE','PROCES','PM_ID','PM_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOLCFG'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns1:
