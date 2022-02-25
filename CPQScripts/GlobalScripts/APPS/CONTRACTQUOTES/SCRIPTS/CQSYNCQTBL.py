@@ -1937,13 +1937,23 @@ class SyncQuoteAndCustomTables:
 								fab_equip_assem_end_time = time.time()
 								#Log.Info("fab_equip_assem_start_time end==> "+str(fab_equip_assem_end_time - fab_equip_assem_start_time))
 								
-							##A055S000P01-10174 code starts...
+							##A055S000P01-10174 code starts...modified for A055S000P01-16530
 							try:
+								coverd_object_tool_dates=[]
 								for service_level_equipment_json_data in payload_json.get('SAQSCO'):
 									if service_level_equipment_json_data.get('SERVICE_OFFERING_ID') in covered_object_data:
 										covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')].append(service_level_equipment_json_data.get('EQUIPMENT_ID'))
 									else:
 										covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')] = [service_level_equipment_json_data.get('EQUIPMENT_ID')]	
+								
+									##geting Contract dates and temp tools 
+									equipment_id = service_level_equipment_json_data.get('EQUIPMENT_ID')
+									start_date = service_level_equipment_json_data.get('CONTRACT_START_DATE').replace('T00:00:00.000','')
+									end_date = service_level_equipment_json_data.get('CONTRACR_END_DATE').replace('T00:00:00.000','')
+									service_id =service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
+									temp_tool =service_level_equipment_json_data.get('TEMP_TOOL')
+									coverd_object_tool_dates.append([equipment_id,start_date,end_date,service_id,temp_tool,Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")])
+								records = ', '.join(map(str, [str(tuple(equipment_record)) for equipment_record in api1])).replace("None","null").replace("'","''")
 								Log.Info("covered_object_data"+str(covered_object_data))
 								for service_id, value in covered_object_data.items():
 									#Trace.Write("service_id"+str(service_id))
@@ -1998,64 +2008,21 @@ class SyncQuoteAndCustomTables:
 																"ServiceId"  : service_id,
 																"ServiceType" : service_type,
 															},
-														)
-									'''##Fetching the records from SAQFEQ to insert the equipments in to SAQSCO table for service level...
-									quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = service_level_equipment_json_data.get('EQUIPMENT_IDS'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-									##Get the service type based on the service....
-									quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-									##Get the SAQFEQ table autonumber record id values to insert into SAQSCO...
-
-									quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
-									Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
-									##Get the service id to send the param value for CQCRUDOPTN script..
-									service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
-									##Get the SERVICE_TYPE to send the param value for CQCRUDOPTN script..
-									service_type = quote_service_obj.SERVICE_TYPE
-									##Get the SAQTMT table record (quote record id)...
-									quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
-									Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
-									##Calling the script to insert SAQSCO,SAQSCA,SAQSFB,SAQSGB,SAQSAP and SAQSKP table data......
-									
-									ScriptExecutor.ExecuteGlobal(
-															"CQCRUDOPTN",
-														{
-															"NodeType"   : "COVERED OBJ MODEL",
-															"ActionType" : "ADD_COVERED_OBJ",
-															"Opertion"    : "ADD",
-															"AllValues"  : False,
-															"TriggerFrom"   : "python_script",
-															"Values"	  : quote_fab_equipments_record_id,
-															"ServiceId"  : service_id,
-															"ServiceType" : service_type,
-														},
-													)'''
+														)	
+								##update for temp tool and dates
+								QuoteId=quote_id
+								datetime_string = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
+								columns ="EQUIPMENT_ID,CONTRACT_START_DATE,CONTRACT_END_DATE,SERVICE_ID,TEMP_TOOL,QUOTE_RECORD_ID,QTEREV_RECORD_ID"
+								coverd_object_temp_table_name = "SAQSCO_BKP_{}_{}".format(QuoteId, datetime_string)    
+								coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
+								coverd_object_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(columns)+" INTO "+str(coverd_object_temp_table_name)+" FROM (SELECT DISTINCT "+str(columns)+" FROM (VALUES "+str(records)+") AS TEMP("+str(columns)+")) OQ ' ")    
+								saqsco_update ="""UPDATE A SET A.CONTRACT_VALID_FROM = B.CONTRACT_START_DATE,A.CONTRACT_VALID_TO =B.CONTRACT_END_DATE,A.TEMP_TOOL = B.TEMP_TOOL FROM SAQSCO A INNER JOIN {} B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID and A.SERVICE_ID =B.SERVICE_ID where A.QUOTE_RECORD_ID = '{Quote_id}' AND A.QTEREV_RECORD_ID = '{qtrv_id}'""".format(coverd_object_temp_table_name,Quote_id =Quote.GetGlobal("contract_quote_record_id"),qtrv_id =Quote.GetGlobal("quote_revision_record_id"))
+								Sql.RunQuery(saqsco_update)
+								coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' "							
 							except Exception as e:
 								Log.Info("EXCEPTION: Iteration Over non sequence for none type"+str(e))
-							##A055S000P01-10174 code ends...
-							#warranty start and end date update in saqsco
-							'''try:
-								QuoteId=quote_id
-								for offering_data in payload_json.get('SAQSCO'):
-									service_offering_id = offering_data['SERVICE_OFFERING_ID']
-									if 'EQUIPMENT_DATES' in offering_data:
-										api1 =[]
-										for offering_equipment_ids in offering_data['EQUIPMENT_DATES']:
-											equipment_id = offering_equipment_ids['EQUIPMENT_ID']
-											start_date = offering_equipment_ids['CONTRACT_START_DATE']
-											end_date = offering_equipment_ids['CONTRACT_END_DATE']
-											api1.append([equipment_id,start_date,end_date,Quote.GetGlobal("contract_quote_record_id"),Quote.GetGloba("quote_revision_record_id"),service_offering_id])
-										records = ', '.join(map(str, [str(tuple(equipment_record)) for equipment_record in api1])).replace("None","null").replace("'","''")    
-										datetime_string = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
-										Trace.Write("records"+str(records))
-										columns ="EQUIPMENT_ID,CONTRACT_START_DATE,CONTRACT_END_DATE,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID"
-										coverd_object_temp_table_name = "SAQSCO_BKP_{}_{}".format(QuoteId, datetime_string)    
-										coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
-										coverd_object_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(columns)+" INTO "+str(coverd_object_temp_table_name)+" FROM (SELECT DISTINCT "+str(columns)+" FROM (VALUES "+str(records)+") AS TEMP("+str(columns)+")) OQ ' ")    
-										saqsco_update ="""UPDATE A SET A.CONTRACT_VALID_FROM = B.CONTRACT_START_DATE,A.CONTRACT_VALID_TO =B.CONTRACT_END_DATE FROM SAQSCO A INNER JOIN {} B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID and A.SERVICE_ID =B.SERVICE_ID where A.QUOTE_RECORD_ID = '{Quote_id}' AND A.QTEREV_RECORD_ID = '{qtrv_id}' and A.SERVICE_ID = '{service_offering_id}'""".format(coverd_object_temp_table_name,Quote_id =Quote.GetGlobal("contract_quote_record_id"),qtrv_id =Quote.GetGloba("quote_revision_record_id"),service_offering_id =service_offering_id)
-										Sql.RunQuery(saqsco_update)
-										coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
-							except Exception as e:
-								Log.Info("EXCEPTION: Iteration Over non sequence for none type in update covered objects"+str(e))'''
+							##A055S000P01-10174 code ends...A055S000P01-16530
+							
 						payload_table_info = Sql.GetTable("SYINPL")
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
