@@ -67,7 +67,7 @@ if GetPricingProcedure is not None:
 	dis = GetPricingProcedure.DISTRIBUTIONCHANNEL_ID
 	salesorg = GetPricingProcedure.SALESORG_ID
 	div = GetPricingProcedure.DIVISION_ID
-	exch = GetPricingProcedure.EXCHANGE_RATE_TYPE
+	exch = GetPricingProcedure.EXCHANGE_RATE_TYPE or "ZC07"
 	contract_quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
 	country=GetPricingProcedure.COUNTRY
 	taxk1 = GetPricingProcedure.ACCTAXCLA_ID
