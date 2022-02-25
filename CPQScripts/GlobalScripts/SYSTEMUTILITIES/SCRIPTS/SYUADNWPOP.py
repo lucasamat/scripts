@@ -989,7 +989,7 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND "
 			
 			Pagination_M = Sql.GetFirst(
-			"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND {}FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
+			"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND {}FAB_LOCATION_ID NOT IN (SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
 				ObjectName, account_id, where_string,contract_quote_record_id,quote_revision_record_id
 				)
 			)
