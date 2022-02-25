@@ -2436,12 +2436,19 @@ class TreeView:
 								)
 							elif getZ0009 is not None:
 								#Trace.Write("elif getZ0009 is not None")
-								if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
+								if (ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
 									Trace.Write("if RecId 222== '1F47A350-4E38-41C9-A5C5-F5-"+str(NodeText))
 									findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
 										+ "'  ORDER BY abs(DISPLAY_ORDER) "
+									)
+								elif ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' and getZ0009 == 1:
+									Trace.Write("if RecId 2122== '1F47A350-4E38-41C9-A5C5-F5-"+str(NodeText))
+									findSubChildAvailable = Sql.GetList(
+										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+										+ str(ParRecId)
+										+ "' AND NODE_NAME IN ('GOT_CODE','Add-On Products') ORDER BY abs(DISPLAY_ORDER) "
 									)
 								else:
 									#Trace.Write("else Z0009")
