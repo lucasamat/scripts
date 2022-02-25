@@ -849,6 +849,7 @@ def POPUPLISTVALUEADDNEW(
 			fab_id = TreeParam.split(' - ')
 			account_id = account_id[len(account_id)-1]
 			where_string = ""
+			Pagination_M = ""
 			if A_Keys != "" and A_Values != "":
 				A_Keys = list(A_Keys)
 				A_Values = list(A_Values)
