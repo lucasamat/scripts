@@ -2184,6 +2184,7 @@ class TreeView:
 
 									# A055S000P01-14557 - New Parts, Inclusion , Exclusion Subtabs starts
 									elif subTabName in ("Events","Service New Parts","Service Parts List","Service Inclusions",'Greenbook Inclusions','Green Parts List','Green New Parts') :
+										Trace.Write("inside dynamic subtab- "+str(subTabName))
 										ent_table_list = ["SAQTSE"]
 										subtab_temp_variable = subTabName 
 										whr_str_greenbook =""
