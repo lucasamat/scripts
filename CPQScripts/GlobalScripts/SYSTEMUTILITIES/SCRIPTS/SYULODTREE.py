@@ -2449,7 +2449,7 @@ class TreeView:
 										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 									)
 									if not findSubChildAvailable:
-										Trace.Write("inside not")
+										Trace.Write("inside1 not")
 										findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
@@ -2514,6 +2514,7 @@ class TreeView:
 									DynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
 									PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)
 									ordersBy = str(findSubChildOne.ORDERS_BY)
+									Trace.Write("NodeApiName--"+str(NodeApiName))
 									if parobj == "True":
 										if NodeValue != "":
 											Node_name = NodeValue
@@ -2568,10 +2569,7 @@ class TreeView:
 											Subwhere_string += " AND SERVICE_ID = '{}' ".format(NodeText)
 											Quote.SetGlobal("SERVICE",NodeText)
 											#service_id_1 = str(NodeText)
-										elif NodeText == "Add-On Products":
-											Trace.Write("add-on product--")
-											service_id = Product.GetGlobal("SERVICE")
-											Subwhere_string += " AND SERVICE_ID = '{}'".format(str(service_id))
+										
 										elif addon_obj:											
 											if 'SERVICE_ID' in Subwhere_string:
 												Subwhere_string = Subwhere_string.replace('SERVICE_ID','PAR_SERVICE_ID')
