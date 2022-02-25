@@ -144,7 +144,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 TEMP_TABLE.RETURN_TYPE AS RETURN_TYPE,
                                 TEMP_TABLE.ODCC_FLAG AS ODCC_FLAG,
                                 TEMP_TABLE.ODCC_FLAG_DESCRIPTION as ODCC_FLAG_DESCRIPTION,
-                                CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER='' THEN null ELSE TEMP_TABLE.PARENT_PART_NUMBER END AS PAR_PART_NUMBER,
+                                CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER='"EMPTY"' THEN null ELSE TEMP_TABLE.PARENT_PART_NUMBER END AS PAR_PART_NUMBER,
                                 TEMP_TABLE.Material_Eligibility AS EXCHANGE_ELIGIBLE,
                                 CASE WHEN TEMP_TABLE.Customer_Eligibility='X' THEN 'True' ELSE 'False' END AS CUSTOMER_ELIGIBLE,
                                 'True' as CUSTOMER_PARTICIPATE,
@@ -265,7 +265,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 TEMP_TABLE.RETURN_TYPE AS RETURN_TYPE,
                                 TEMP_TABLE.ODCC_FLAG AS ODCC_FLAG,
                                 TEMP_TABLE.ODCC_FLAG_DESCRIPTION as ODCC_FLAG_DESCRIPTION,
-                                CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER='EMPTY' THEN null ELSE TEMP_TABLE.PARENT_PART_NUMBER END AS PAR_PART_NUMBER,
+                                CASE WHEN ISNULL(TEMP_TABLE.CHILD_PART_NUMBER,'')='' THEN null ELSE TEMP_TABLE.PARENT_PART_NUMBER END AS PAR_PART_NUMBER,
                                 TEMP_TABLE.Material_Eligibility AS EXCHANGE_ELIGIBLE,
                                 CASE WHEN TEMP_TABLE.Customer_Eligibility='X' THEN 'True' ELSE 'False' END AS CUSTOMER_ELIGIBLE,
                                 'True' as CUSTOMER_PARTICIPATE,
@@ -433,7 +433,7 @@ class SyncFPMQuoteAndHanaDatabase:
                         self.part_numbers.append(str(ele.group(2)))
                     temp_value +=','+ele.group(2) if ele.group(2) !='' else None
                     if ele.group(1) == '"CHILD_PART_NUMBER"' and ele.group(2) != '':
-                        child_temp_value +=','+'EMPTY'
+                        child_temp_value +=','+'null'
                         child_temp_flag=1
                     else:
                         child_temp_value +=','+ele.group(2) if ele.group(2) !='' else None
