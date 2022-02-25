@@ -719,12 +719,7 @@ class TreeView:
 								+ str(RecId)
 								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 							)
-							if not findSubChildAvailable:
-								findSubChildAvailable = Sql.GetList(
-									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)
+							
 						else:
 							#Trace.Write("else Z0009")
 							findChildOneObj = Sql.GetList(
@@ -2446,14 +2441,7 @@ class TreeView:
 									findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)
-									if not findSubChildAvailable:
-										Trace.Write("inside1 not")
-										findSubChildAvailable = Sql.GetList(
-										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+										+ "'  ORDER BY abs(DISPLAY_ORDER) "
 									)
 								else:
 									#Trace.Write("else Z0009")
@@ -2664,12 +2652,7 @@ class TreeView:
 						+ str(ParRecId)
 						+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 					)
-					if not findSubChildAvailable:
-						findSubChildAvailable = Sql.GetList(
-							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-							+ str(ParRecId)
-							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)
+					
 				else:
 					#Trace.Write("else Z0009")
 					findSubChildAvailable = Sql.GetList(
@@ -2798,12 +2781,7 @@ class TreeView:
 								+ str(ParRecId)
 								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 							)
-							if not findSubChildAvailable:
-								findSubChildAvailable = Sql.GetList(
-									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)
+							
 						else:
 							#Trace.Write("else Z0009")
 							findSubChildAvailable = Sql.GetList(
@@ -3050,12 +3028,7 @@ class TreeView:
 							+ str(ParRecId)
 							+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 						)
-						if not findSubChildAvailable:
-							findSubChildAvailable = Sql.GetList(
-								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-								+ str(ParRecId)
-								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)
+						
 					else:
 						#Trace.Write("else Z0009")
 						findSubChildAvailable = Sql.GetList(
@@ -3225,12 +3198,7 @@ class TreeView:
 									+ str(ParRecId)
 									+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 								)
-								if not findSubChildAvailable:
-									findSubChildAvailable = Sql.GetList(
-										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-										)
+								
 							else:
 								#Trace.Write("else Z0009")
 								findSubChildAvailable = Sql.GetList(
@@ -3290,12 +3258,7 @@ class TreeView:
 											+ str(ParRecId)
 											+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 										)
-										if not findSubChildAvailable:
-											findSubChildAvailable = Sql.GetList(
-												"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-												+ str(ParRecId)
-												+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-												)
+										
 									else:
 										#Trace.Write("else Z0009")
 										findSubChildAvailable = Sql.GetList(
