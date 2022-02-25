@@ -300,6 +300,8 @@ try:
 								Log.Info("QTPOSTPTPR TOTAL_TAX ==> "+str(GetSum.TOTAL_TAX))
 								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = {total_unit}, NET_PRICE_INGL_CURR ={total_net}, YEAR_1_INGL_CURR={total_net}  FROM SAQRIT
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{SERVICE_ID}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=getpartsdata.SERVICE_ID))
+								Log.Info("""UPDATE SAQTRV SET SALES_PRICE_INGL_CURR = {total_unit}, TOTAL_AMOUNT_INGL_CURR ={total_net}, TAX_AMOUNT_INGL_CURR ={total_tax} FROM SAQTRV
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID IN('Z0108','Z0110')""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
 								Sql.RunQuery("""UPDATE SAQTRV SET SALES_PRICE_INGL_CURR = {total_unit}, TOTAL_AMOUNT_INGL_CURR ={total_net}, TAX_AMOUNT_INGL_CURR ={total_tax} FROM SAQTRV
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID IN('Z0108','Z0110')""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
 								Sql.RunQuery("""UPDATE SAQRIT 
