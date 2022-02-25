@@ -2441,7 +2441,7 @@ class TreeView:
 									findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
-										+ "'  AND NODE_NAME IN ('GOT_CODE','Add-On Products') ORDER BY abs(DISPLAY_ORDER) "
+										+ "'  ORDER BY abs(DISPLAY_ORDER) "
 									)
 								else:
 									#Trace.Write("else Z0009")
