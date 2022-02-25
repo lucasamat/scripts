@@ -433,6 +433,12 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 								{
 								"field":["HEDBIN","Head break-in","AGS_{}_STT_HDBRIN".format(partnumber)]
 								},
+								{
+								"field":["WETCLN_ENT","Wet Cleans Labor","AGS_{}_NET_WECLLB".format(partnumber)]
+								},
+								{
+								"field":["SPQTEV","Split Quote","AGS_{}_PQB_SPLQTE".format(partnumber)]
+								},
 						]
 			
 	if get_equipment:
