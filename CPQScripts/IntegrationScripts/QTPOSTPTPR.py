@@ -135,7 +135,7 @@ try:
 			for i in price:	
 				insert_data = []	
 				Itemidinfo = str(i["itemId"]).split(";")
-				Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
+				Log.Info("456 Itemidinfo --->"+str(i))
 				QUOTE = str(Itemidinfo[1])
 				currencyType = str(Itemidinfo[3])
 				contract_quote_record_id = None		
