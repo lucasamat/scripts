@@ -2441,7 +2441,7 @@ class TreeView:
 									findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
-										+ "'  ORDER BY abs(DISPLAY_ORDER) "
+										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC'  ORDER BY abs(DISPLAY_ORDER) "
 									)
 								# elif ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' and getZ0009 == 1:
 								# 	Trace.Write("if RecId 2122== '1F47A350-4E38-41C9-A5C5-F5-"+str(NodeText))
