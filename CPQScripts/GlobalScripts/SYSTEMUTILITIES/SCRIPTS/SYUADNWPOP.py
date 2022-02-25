@@ -1344,7 +1344,7 @@ def POPUPLISTVALUEADDNEW(
 			if where_string:
 				where_string += " AND"
 			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID in {get_fab} AND SALESORG_ID = '{sales_org}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT SND_EQUIPMENT_RECORD_ID FROM SAQASE (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND SNDFBL_ID in {get_fab}  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+				"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID in {get_fab} AND SALESORG_ID = '{sales_org}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT SND_EQUIPMENT_RECORD_ID FROM SAQASE (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND SNDFBL_ID in {get_fab}  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' )".format(
 					ObjectName = ObjectName,
 					account_id = account_id,
 					get_fab = get_fab,
@@ -1355,7 +1355,7 @@ def POPUPLISTVALUEADDNEW(
 			)
 			order_by = "order by FABLOCATION_NAME ASC"
 			pop_val = {}
-			where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND SALESORG_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT SND_EQUIPMENT_RECORD_ID FROM SAQASE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SNDFBL_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+			where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND SALESORG_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT SND_EQUIPMENT_RECORD_ID FROM SAQASE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SNDFBL_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
 				account_record_id,
 				Product.GetGlobal("TreeParam"),
 				sales_org,
