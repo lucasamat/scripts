@@ -265,7 +265,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 TEMP_TABLE.RETURN_TYPE AS RETURN_TYPE,
                                 TEMP_TABLE.ODCC_FLAG AS ODCC_FLAG,
                                 TEMP_TABLE.ODCC_FLAG_DESCRIPTION as ODCC_FLAG_DESCRIPTION,
-                                CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER='' THEN null ELSE TEMP_TABLE.PARENT_PART_NUMBER END AS PAR_PART_NUMBER,
+                                CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER='null' THEN null ELSE TEMP_TABLE.PARENT_PART_NUMBER END AS PAR_PART_NUMBER,
                                 TEMP_TABLE.Material_Eligibility AS EXCHANGE_ELIGIBLE,
                                 CASE WHEN TEMP_TABLE.Customer_Eligibility='X' THEN 'True' ELSE 'False' END AS CUSTOMER_ELIGIBLE,
                                 'True' as CUSTOMER_PARTICIPATE,
