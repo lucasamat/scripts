@@ -1438,14 +1438,12 @@ class SyncQuoteAndCustomTables:
 							product_offering = payload_json.get('SERVICE_IDS').split(',')
 
 						if payload_json.get('SAQFEQ'):
-
 							for equipment_json_data in payload_json.get('SAQFEQ'):
 								if equipment_json_data.get('FAB_LOCATION_ID') in equipment_data:									
 									equipment_data[equipment_json_data.get('FAB_LOCATION_ID')].append(equipment_json_data.get('EQUIPMENT_ID'))
 								else:
 									equipment_data[equipment_json_data.get('FAB_LOCATION_ID')] = [equipment_json_data.get('EQUIPMENT_ID')]								
-								Log.Info("equipment_data"+str(equipment_data))
-						
+								#Log.Info("equipment_data"+str(equipment_data))
 						##A055S000P01-8690 starts..
 						if payload_json.get('SAEMPL'):
 							employee = payload_json.get('SAEMPL')
