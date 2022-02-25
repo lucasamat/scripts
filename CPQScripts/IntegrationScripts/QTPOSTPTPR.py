@@ -206,7 +206,7 @@ try:
 				#insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"]))
 				insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"],i["grossValue"]))
 				
-    			Log.Info("UNIT_PRICE---22---"+str(insert_data))
+				Log.Info("UNIT_PRICE---22---"+str(insert_data))
 				#Log.Info("4521 batch_group_record_id --->"+str(batch_group_record_id))
 				#Log.Info("4521 contract_quote_record_id --->"+str(contract_quote_record_id))
 				getpartsdata =''
