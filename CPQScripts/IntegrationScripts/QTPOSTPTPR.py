@@ -390,6 +390,10 @@ try:
 										Sql.RunQuery("""UPDATE SAQICO SET {pricing_field} ={total_net}  FROM SAQICO (NOLOCK)
 										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field = pricing_field_annualized))
 
+					GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE) AS TOTAL_UNIT, SUM(EXTENDED_UNIT_PRICE) AS TOTAL_EXT , SUM(TAX_AMOUNT_INGL_CURR) AS TOTAL_TAX FROM SAQSPT WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID IN('Z0108','Z0110') AND (CUSTOMER_ANNUAL_QUANTITY IS NOT NULL AND CUSTOMER_ANNUAL_QUANTITY > 0) ".format( QUOTE,revision_rec_id))
+					
+					Sql.RunQuery("""UPDATE SAQTRV SET SALES_PRICE_INGL_CURR = {total_unit}, TOTAL_AMOUNT_INGL_CURR ={total_net}, TAX_AMOUNT_INGL_CURR ={total_tax} FROM SAQTRV WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID IN('Z0108','Z0110')""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
+								
 						
 					Sql.RunQuery(
 								"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
