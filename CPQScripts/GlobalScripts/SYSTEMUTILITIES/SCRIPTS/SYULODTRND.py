@@ -103,7 +103,7 @@ def CommonTreeViewHTMLDetail(
 	if ObjectName == 'SAQSAF':
 		Trace.Write("ObjectName ------ObjectName"+str(ObjectName))
 		Trace.Write("SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID = '"+str(primary_value)+"'")
-    	sending_fab_object = Sql.GetFirst("SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID = '"+str(primary_value)+"'")
+		sending_fab_object = Sql.GetFirst("SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID = '"+str(primary_value)+"'")
 		if sending_fab_object:
 			Product.SetGlobal("sending_fab_id", str(sending_fab_object.SNDFBL_ID))
 			
