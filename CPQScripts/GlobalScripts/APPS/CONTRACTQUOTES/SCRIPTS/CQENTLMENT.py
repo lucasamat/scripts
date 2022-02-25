@@ -1132,9 +1132,9 @@ class Entitlements:
 							if tableName == "SAQSGE":
 								Quote.SetGlobal("Greenbook_Entitlement","Yes")
 							#Trace.Write("entitlement_value -----"+str(entitlement_value))
-							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included")):
+							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included") or (serviceId == 'Z0009' and entitlement_value == "Some Inclusions" and key == "AGS_{}_TSC_NONCNS".format(serviceId)) ):
 								ancillary_object_dict['Z0101'] = "INSERT"								
-							elif not (serviceId == 'Z0092' and entitlement_value == "Some Inclusions"):
+							elif not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included") or (serviceId == 'Z0009' and entitlement_value == "Some Inclusions" and key == "AGS_{}_TSC_NONCNS".format(serviceId)) ):
 								#Trace.Write("z0101 else")
 								count_temp_z0101 += 1
 								if  count_temp_z0101 == 3:
@@ -1152,6 +1152,12 @@ class Entitlements:
 									ancillary_object_dict['Z0100'] = "DELETE"
 									if entitlement_value != "Some Inclusions":
 										ancillary_object_dict['Z0101'] = "DELETE"
+							if serviceId == 'Z0009' and key == "AGS_{}_TSC_NONCNS".format(serviceId):
+								if entitlement_value == "Some Inclusions":
+									ancillary_object_dict['Z0100'] = "INSERT"
+								else:
+									ancillary_object_dict['Z0100'] = "DELETE"
+
 						if str(serviceId) in ("Z0009") and key in ( "AGS_{}_PQB_QTETYP".format(serviceId)) and str(tableName) in ('SAQTSE'):
 							if entitlement_value in ("Event Based","Flex Event Based"):
 								try:
