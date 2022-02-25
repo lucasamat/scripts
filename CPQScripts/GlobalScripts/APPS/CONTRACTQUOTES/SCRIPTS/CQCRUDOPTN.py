@@ -1166,6 +1166,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					parent_based_condition = ""
 					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009") or  self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 						parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"		
+					if self.tree_param == 'Z0009' and self.inclusion == 1:
+						parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0100'"	
 					# if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
 					# 	ent_table = "SAQTSE"
 					if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035","Z0009"):
@@ -1188,7 +1190,6 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 									break
 							if flag_excluse==1 :
 								parent_based_condition = " AND SAQTSV.SERVICE_ID in ('Z0100','Z0101')"		
-
 
 					#fab_count = SqlHelper.GetList("SELECT COUNT(FABLOCATION_ID) AS COUNT from SAQSCO WHERE GREENBOOK = '"+str(self.tree_param)"' AND 	SERVICE_ID = '"+str(self.treeparentparam)+"' AND QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' GROUP BY FABLOCATION_ID")
 					fab_count = Sql.GetFirst("SELECT COUNT(DISTINCT FABLOCATION_ID) AS COUNT from SAQSCO WHERE GREENBOOK = '{}' AND 	SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY FABLOCATION_ID".format(self.tree_param,self.tree_parent_level_0,self.contract_quote_record_id, self.quote_revision_record_id ))
