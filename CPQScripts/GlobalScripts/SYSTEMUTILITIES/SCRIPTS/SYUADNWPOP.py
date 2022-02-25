@@ -845,9 +845,9 @@ def POPUPLISTVALUEADDNEW(
 		elif str(ObjectName) == "SAQSAF" and str(CurrentTab) == "Quotes":
 			TreeParam = Product.GetGlobal("TreeParam")
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")  
-			account_id = TreeParam.split(' - ')
+			#account_id = TreeParam.split(' - ')
 			fab_id = TreeParam.split(' - ')
-			account_id = account_id[len(account_id)-1]
+			account_id = Product.GetGlobal("stp_account_id")
 			where_string = ""
 			Pagination_M = ""
 			if A_Keys != "" and A_Values != "":
