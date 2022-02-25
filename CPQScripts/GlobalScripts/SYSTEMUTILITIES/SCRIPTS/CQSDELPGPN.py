@@ -16,7 +16,7 @@ Sql = SQL()
 # Param = Param
 
 
-class qt_expiration_mail_trigger:
+class qt_pricing_review_mail_trigger:
     def __init__(self, Quote):
         self.quote = Quote
 
@@ -53,3 +53,7 @@ class qt_expiration_mail_trigger:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
                 fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
                 Trace.Write("TEST::"+str(exc_type) +str(fname)+str(exc_tb.tb_lineno))
+
+obj = qt_pricing_review_mail_trigger(Quote)   
+
+obj.mailtrigger(pricing_review)
