@@ -453,7 +453,7 @@ try:
 					Log.Info("QTPOSTPTPR ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
 			'''
 			###calling script for saqris,saqtrv insert
-			CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})
+			#CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})
 			
 except:
 	Log.Info("QTPOSTPTPR ERROR---->:" + str(sys.exc_info()[1]))
