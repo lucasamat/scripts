@@ -3419,7 +3419,7 @@ class SYLDRTLIST:
 										value1234 = str(value1234).encode('utf-8').decode('utf-8')
 									except:
 										value1234 = value1234
-									Trace.Write("CHKZ_J_3_1"+str(value1234))
+									Trace.Write("CHKZ_J_3_1"+str(type(value1234)))
 									new_dict[str(value123)] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")
 								else:
 									if data_type_val == "DATE":
