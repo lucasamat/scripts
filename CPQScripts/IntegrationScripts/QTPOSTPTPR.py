@@ -304,7 +304,7 @@ try:
 								Log.Info("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = '{total_net} - {total_tax}', SALES_PRICE_INGL_CURR = {total_unit}, TOTAL_AMOUNT_INGL_CURR ={total_net}, TAX_AMOUNT_INGL_CURR ={total_tax} FROM SAQTRV
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID IN('Z0108','Z0110')""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
 								if getpartsdata.SERVICE_ID in('Z0108','Z0110'):
-									Sql.RunQuery("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = '{total_net} - {total_tax}', SALES_PRICE_INGL_CURR = '{total_unit}', TOTAL_AMOUNT_INGL_CURR ='{total_net}', TAX_AMOUNT_INGL_CURR ='{total_tax}' FROM SAQTRV
+									Sql.RunQuery("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = {total_net} - {total_tax}, SALES_PRICE_INGL_CURR = '{total_unit}', TOTAL_AMOUNT_INGL_CURR ='{total_net}', TAX_AMOUNT_INGL_CURR ='{total_tax}' FROM SAQTRV
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
 								Sql.RunQuery("""UPDATE SAQRIT 
 												SET NET_VALUE_INGL_CURR = NET_PRICE_INGL_CURR + ISNULL(TAX_AMOUNT, 0) 
