@@ -234,9 +234,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								YEAR_1_DEMAND,
 								YEAR_2_DEMAND,
 								YEAR_3_DEMAND,
-								YEAR_1_DEMAND,
-								YEAR_1_DEMAND,
-        						ODCC_FLAG_DESCRIPTION,
+								ODCC_FLAG_DESCRIPTION,
         						PROD_INSP_MEMO,
 								SHELF_LIFE	
 								{UserId} as CPQTABLEENTRYADDEDBY, 
