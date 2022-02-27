@@ -294,6 +294,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                     )
             )
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+            self.validation_for_arp_carp()
         except Exception:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
             Log.Info("Exception in Query insertion in SAQSPT")
@@ -482,9 +483,6 @@ class SyncFPMQuoteAndHanaDatabase:
 
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER IN "+str(val)+" AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
         
-        #if self.service_id == 'Z0108':
-         #   Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE='SCHEDULED' WHERE PART_NUMBER IN "+str(val)+" AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
-            
     def validation_for_arp_carp(self):
         requestdata = "client_id=application&grant_type=client_credentials&username=954e4350-7854-465b-8c0f-d428d3ea9cdf&password=Ieo.mslSbRzZE0NmuR3ubwcbXsfqTc&scope=nodesafeaccessscope"
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
@@ -506,7 +504,20 @@ class SyncFPMQuoteAndHanaDatabase:
             
     def update_arp_carp(self):
         response = self.arp_carp_response
-        self.warning_message_arp_carp()
+        pattern = re.compile(r'(\{[^>]*?\})')
+        for record in re.finditer(pattern, response):
+            rec = record.group(1)
+            reqtype=re.search(r'\"Request_type\"\:\s*\"([^>]*?)\"',str(rec))
+            reqstatus=re.search(r'\"Status\"\:\s*\"([^>]*?)\"',str(rec))
+            reqmaterial=re.search(r'\"Material Number\"\:\s*\"([^>]*?)\"',str(rec))
+            if reqtype:
+                reqtype= str(reqtype.group(1))
+            if reqstatus:
+                reqstatus= str(reqstatus.group(1))
+            if reqmaterial:
+                reqmaterial=str(reqmaterial.group(1))
+                Sql.RunQuery("UPDATE SAQSPT SET PRICE_REQUEST_STATUS={}, PRICE_REQUEST_TYPE={} WHERE PART_NUMBER={} AND QUOTE_RECORD_ID={} AND QTEREV_RECORD_ID={}".format(reqstatus,reqtype,reqmaterial,str(self.quote_record_id),str(self.quote_revision_id)))
+                self.warning_message_arp_carp()
         
     def CQPARTIFLW_iflow(self):
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
@@ -562,8 +573,4 @@ if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     fpm_obj = SyncFPMQuoteAndHanaDatabase()
     fpm_obj.fetch_quotebasic_info()
     fpm_obj.prepare_backup_table()
-    fpm_obj.periods_insert() 
-    #fpm_obj.validation_for_arp_carp()
-    
-    
-    
+    fpm_obj.periods_insert()
