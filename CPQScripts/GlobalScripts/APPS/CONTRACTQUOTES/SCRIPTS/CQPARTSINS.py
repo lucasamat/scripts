@@ -41,9 +41,9 @@ class SyncFPMQuoteAndHanaDatabase:
         spare_parts_temp_table_name = re.sub(r'-','_',spare_parts_temp_table_name)
         self.columns = re.sub(r'\"|\{','',self.columns)
         self.columns = re.sub(r',,',',',self.columns)
-        Log.Info("Columns--->"+str(self.columns))
-        Log.Info("Values---->"+str(self.records))
-        Log.Info("TempTableName--->"+str(spare_parts_temp_table_name))
+        #Log.Info("Columns--->"+str(self.columns))
+        #Log.Info("Values---->"+str(self.records))
+        #Log.Info("TempTableName--->"+str(spare_parts_temp_table_name))
         Trace.Write("Spare_part_insert")
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
@@ -51,7 +51,7 @@ class SyncFPMQuoteAndHanaDatabase:
             #spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_id)+"'' ' ")
             temp_table_count = SqlHelper.GetFirst("SELECT count(*) as CNT FROM {}".format(str(spare_parts_temp_table_name)))
             Log.Info("TempTablecount--->"+str(temp_table_count.CNT))
-            Log.Info("saqspt+++"+str("""
+            '''Log.Info("saqspt+++"+str("""
                             INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,STPACCOUNT_ID, SHPACCOUNT_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
                                 CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID,
@@ -169,7 +169,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                         sold_to=self.account_info['SOLD TO'],
                                         ship_to=self.account_info['SHIP TO']
                                     )
-))
+            ))'''
             Sql.RunQuery("""
                             INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,PROD_INSP_MEMO,SHELF_LIFE,STPACCOUNT_ID, SHPACCOUNT_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
@@ -322,7 +322,6 @@ class SyncFPMQuoteAndHanaDatabase:
                 
                 getschedule_details = Sql.RunQuery("INSERT SAQSPD  (QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,DELIVERY_SCHED_CAT,DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,PART_NUMBER,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID,CUSTOMER_ANNUAL_QUANTITY,DELIVERY_MODE,SCHEDULED_MODE,MATERIALSTATUS_ID,MATERIALSTATUS_RECORD_ID,SALESUOM_ID,SALESUOM_RECORD_ID,MATPRIGRP_ID,UOM_ID,DELIVERY_SCHEDULE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID)  select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_PART_DELIVERY_SCHEDULES_RECORD_ID,null as DELIVERY_SCHED_CAT,{delivery_date} as DELIVERY_SCHED_DATE,PART_DESCRIPTION,PART_RECORD_ID,PART_NUMBER, 0 as QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QUOTE_SERVICE_PART_RECORD_ID as QTEREVSPT_RECORD_ID,QTEREV_RECORD_ID,CUSTOMER_ANNUAL_QUANTITY,DELIVERY_MODE,SCHEDULE_MODE as SCHEDULED_MODE,MATERIALSTATUS_ID,MATERIALSTATUS_RECORD_ID,SALESUOM_ID,SALESUOM_RECORD_ID,MATPRIGRP_ID,BASEUOM_ID as UOM_ID,'{deli_sch}' as DELIVERY_SCHEDULE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID FROM SAQSPT where SCHEDULE_MODE= 'SCHEDULED' and DELIVERY_MODE = 'OFFSITE' and QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and CUSTOMER_ANNUAL_QUANTITY >0".format(delivery_date =delivery_week_date,contract_rec_id= self.quote_record_id,qt_rev_id = self.quote_revision_id,deli_sch ='WEEKLY'))
 
-
     def periods_insert(self):
         if str(self.service_id) == "Z0108":
             count = Sql.GetFirst("SELECT COUNT(*) as CNT FROM SAQRDS WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' ")
@@ -336,7 +335,6 @@ class SyncFPMQuoteAndHanaDatabase:
                 countweeks =0
                 for index in range(0, get_totalweeks):
                     countweeks += 1
-                    #Trace.Write('countweeks--'+str(countweeks))
                     billing_date = start_date + datetime.timedelta(days=(7*countweeks))
                     Query = "INSERT SAQRDS (QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,DELIVERY_DATE,DELIVERY_PERIOD) select CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID,'{quote_id}' as QUOTE_ID,'{contract_rec_id}' as QUOTE_RECORD_ID,'{qt_rev_id}' as QTEREV_ID,'{qt_rev_recid}' as QTEREV_RECORD_ID,'{delivery_date}' as DELIVERY_DATE,'{delivery_period}' as DELIVERY_PERIOD ".format(quote_id=self.quote_id,contract_rec_id= self.quote_record_id,qt_rev_id = self.qt_rev_id,qt_rev_recid = self.quote_revision_id,delivery_date =billing_date,delivery_period=index+1)
                     periods_insert = Sql.RunQuery(Query)
@@ -518,10 +516,7 @@ class SyncFPMQuoteAndHanaDatabase:
                 reqmaterial=str(reqmaterial.group(1))
                 Sql.RunQuery("UPDATE SAQSPT SET PRICE_REQUEST_STATUS={}, PRICE_REQUEST_TYPE={} WHERE PART_NUMBER={} AND QUOTE_RECORD_ID={} AND QTEREV_RECORD_ID={}".format(reqstatus,reqtype,reqmaterial,str(self.quote_record_id),str(self.quote_revision_id)))
                 self.warning_message_arp_carp()
-        
-    def CQPARTIFLW_iflow(self):
-        CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
-    
+
     def warning_message_arp_carp(self):
         Warning_Message = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE RECORD_ID ='4D34C7DD-765E-4D85-86F7-152C77808E9C' and MESSAGE_LEVEL = 'WARNING'")
         msg_app_txt=''
@@ -539,10 +534,12 @@ class SyncFPMQuoteAndHanaDatabase:
         elif Warning_Message and check_active_query:
             msg_app_txt =""
         return msg_app_txt
-	
+        
+    def CQPARTIFLW_iflow(self):
+        CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
+    
        
 Log.Info("CQPARTINS script called --> from CPI")
-#Log.Info("Param.CPQ_Column----"+str(type(Param)))
 Log.Info("Param.CPQ_Column----QuoteID---"+str(Param.CPQ_Columns["QuoteID"]))
 Parameter = {}
 try:
@@ -559,18 +556,13 @@ try:
 except:
 	current_prod = "SALES"
 
-
+fpm_obj = SyncFPMQuoteAndHanaDatabase()
+fpm_obj.fetch_quotebasic_info()
 if Parameter["Action"] == 'Delete':
-    fpm_obj = SyncFPMQuoteAndHanaDatabase()
-    fpm_obj.fetch_quotebasic_info()
     if Parameter["Delete_Partlist"]:
         fpm_obj.delete_child_records_6kw_partlist(Parameter["Delete_Partlist"])
     else:
         fpm_obj.delete_child_records_6kw()
-  
-
-if Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
-    fpm_obj = SyncFPMQuoteAndHanaDatabase()
-    fpm_obj.fetch_quotebasic_info()
+elif Param.CPQ_Columns["QuoteID"] and Parameter["Action"] == 'Default':
     fpm_obj.prepare_backup_table()
     fpm_obj.periods_insert()
