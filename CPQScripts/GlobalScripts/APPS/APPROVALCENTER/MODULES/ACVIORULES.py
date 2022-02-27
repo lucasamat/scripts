@@ -574,10 +574,13 @@ class ViolationConditions:
                                     else:
                                         fflag = 0
                                 else:
-                                    objname = str(result.WHERE_CONDITION_01).split(".")[0].replace("(","").replace(" ","")
-                                    Select_Query = Sql.GetFirst(
-                                    "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
-                                    )
+                                    try:
+                                        objname = str(result.WHERE_CONDITION_01).split(".")[0].replace("(","").replace(" ","")
+                                        Select_Query = Sql.GetFirst(
+                                        "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
+                                        )
+                                    except:
+                                        Trace.Write("Exception Occurs in the Aciorules")
                                     if Select_Query is not None:
                                         fflag = 1
                                     elif Select_Query is None and fflag != 1:
