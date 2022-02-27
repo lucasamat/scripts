@@ -2066,9 +2066,9 @@ def Related_Sub_Banner(
         curr = get_quote_details.GLOBAL_CURRENCY
         Total=(get_quote_details.TOTAL_AMOUNT_INGL_CURR)
         get_service_id=Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-        if get_service_id:
-            if get_service_id.SERVICE_ID in('Z0110','Z0108'):
-                Total=(get_quote_details.NET_VALUE_INGL_CURR)
+        #if get_service_id:
+        #    if get_service_id.SERVICE_ID in('Z0110','Z0108'):
+        #        Total=(get_quote_details.NET_VALUE_INGL_CURR)
         get_rounding_place = Sql.GetFirst("SELECT * FROM PRCURR WHERE CURRENCY_RECORD_ID = '{}' ".format(get_quote_details.GLOBAL_CURRENCY_RECORD_ID))
         decimal_format = "{:,." + str(get_rounding_place.DISPLAY_DECIMAL_PLACES) + "f}"
         if subTabName == "Summary":
