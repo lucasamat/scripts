@@ -1141,7 +1141,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 							val = eval("get_delivery.DELIVERY_"+str(i))
 							delivery_sum += int(val) if val else 0
 					if get_delivery.CUSTOMER_ANNUAL_QUANTITY and delivery_sum <= get_delivery.CUSTOMER_ANNUAL_QUANTITY:
-						Sql.RunQuery("""UPDATE SAQSPT SET {title} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(title = TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						if ALLVALUES!='':
+							Sql.RunQuery("""UPDATE SAQSPT SET {title} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(title = TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						else:
+							Sql.RunQuery("""UPDATE SAQSPT SET {title} = NULL WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(title = TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				
 				count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_RECORD_ID= '"+str(Qt_rec_id)+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")
 				if (TreeParam == 'Z0108' or TreeParam == 'Z0110') and "CUSTOMER_ANNUAL_QUANTITY" in TITLE:
