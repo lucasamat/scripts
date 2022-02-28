@@ -9,6 +9,7 @@ from SYDATABASE import SQL
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQ
 from datetime import *
+import sys
 import datetime
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
