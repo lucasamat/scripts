@@ -271,9 +271,7 @@ def insert_quote_billing_plan():
 									newRow['ANNUAL_BILLING_AMOUNT'] = val.ANNUAL_BILLING_AMOUNT
 								else:
 									newRow['ANNUAL_BILLING_AMOUNT'] = ''
-								newRow['BILLING_START_DATE'] = ''
-								newRow['BILLING_END_DATE'] = ''
-								newRow['BILLING_TYPE'] = val.BILLING_TYPE
+								newRow['BILLING_TYPE'] = get_ttl_amt
 								newRow['EQUIPMENT_ID'] =  val.EQUIPMENT_ID
 								newRow['GREENBOOK'] = val.GREENBOOK
 								newRow['YEAR'] =  val.BILLING_YEAR
