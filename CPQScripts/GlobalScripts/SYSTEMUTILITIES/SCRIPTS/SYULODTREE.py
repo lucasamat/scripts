@@ -2421,6 +2421,7 @@ class TreeView:
 									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 								)
 							try:
+								Trace.Write("curr service---"+str(Quote.GetGlobal("SERVICE")))
 								getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 								if getZ0009 is not None:
 									getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
