@@ -43,7 +43,7 @@ class qt_pricing_review_mail_trigger:
             mailCred.UserName = str(LOGIN_CRE.USER_NAME)
             mailCred.Password = str(LOGIN_CRE.PASSWORD)
             mailClient.Credentials = mailCred
-            toEmail = MailAddress(str(recepient))
+            toEmail = MailAddress("ponvelselvam.aathiappan@bostonharborconsulting.com")
             fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
             msg = MailMessage(fromEmail, toEmail)
             msg.Subject = Subject
