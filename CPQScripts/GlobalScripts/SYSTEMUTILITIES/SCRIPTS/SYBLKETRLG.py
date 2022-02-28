@@ -1137,7 +1137,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						if i==int(TITLE.split('_')[1]):
 							delivery_sum += int(ALLVALUES)
 						else:
-    						val = eval("get_delivery.DELIVERY_"+str(i))
+							val = eval("get_delivery.DELIVERY_"+str(i))
 							Trace.Write('###val-'+str(i)+'-->'+str(val))
 							delivery_sum += int(val) if val is not None or val!='' else 0
 					Trace.Write('###Delivery Sum--->'+str(delivery_sum))
