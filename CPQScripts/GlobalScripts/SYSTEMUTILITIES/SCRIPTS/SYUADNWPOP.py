@@ -1594,7 +1594,7 @@ def POPUPLISTVALUEADDNEW(
 				]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 			sec_str = '<div class="row modulebnr brdr ma_mar_btm">ADD RECEIVING FAB LOCATION<button type="button" class="close flt_rt" onclick="closepopup_scrl()" data-dismiss="modal">X</button></div>'
-			sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Sales Org">Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="ALL">ALL</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Fab Name">Sales Org</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="All">All</abbr></div></div> <button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add_receiving_fab" class="btnconfig" onclick="add_receving_fab()" data-dismiss="modal">ADD</button></div></div>'
+			sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Sales Org">Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="ALL">ALL</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Fab Name">Sales Org</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="All">All</abbr></div></div> <button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add_receiving_fab_shp" class="btnconfig" onclick="add_receving_fab()" data-dismiss="modal">ADD</button></div></div>'
 
 			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
 			sec_str += (
@@ -1629,7 +1629,7 @@ def POPUPLISTVALUEADDNEW(
 						+ "</th>"
 					)
 			sec_str += '</tr></thead><tbody class ="user_id" ></tbody></table>'
-			sec_str += '<div id="fablocation_footer"></div>'
+			sec_str += '<div id="add_receiving_fab_footer"></div>'
 			values_list = ""
 			values_lists = ""
 			a_test = []
