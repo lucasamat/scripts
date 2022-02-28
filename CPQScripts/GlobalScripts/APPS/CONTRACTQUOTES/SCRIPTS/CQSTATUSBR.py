@@ -5,7 +5,7 @@
 #   __create_date : 18/11/2021
 #   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-import renot_acquired_status--
+import re
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
