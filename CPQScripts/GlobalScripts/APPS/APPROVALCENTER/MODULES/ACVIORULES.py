@@ -566,7 +566,7 @@ class ViolationConditions:
                             for s in splitval:
                                 count = 0
                                 if "PRENVL" in s and count == 0:
-                                    #result = self.ItemApproval(RecordId)
+                                    res = self.ItemApproval(RecordId)
                                     res = 1
                                     count += 1
                                     if res == 1:
