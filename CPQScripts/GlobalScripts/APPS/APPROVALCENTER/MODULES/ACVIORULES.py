@@ -544,7 +544,7 @@ class ViolationConditions:
                     + str(val.APPROVAL_CHAIN_RECORD_ID)
                     + "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER"
                 )
-                Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER")
+                Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND (WHERE_CONDITION_01) <> '' ORDER BY APRCHNSTP_NUMBER")
                 for result in CSSqlObjs:
                     GetObjName = Sql.GetFirst(
                         "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_RECORD_ID) + "'"
@@ -567,9 +567,9 @@ class ViolationConditions:
                                 count = 0
                                 if "PRENVL" in s and count == 0:
                                     #result = self.ItemApproval(RecordId)
-                                    result = 1
+                                    res = 1
                                     count += 1
-                                    if result == 1:
+                                    if res == 1:
                                         fflag = 1
                                     else:
                                         fflag = 0
