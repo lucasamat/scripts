@@ -2089,14 +2089,14 @@ def Related_Sub_Banner(
             if subTabName == "Items":
                 #saqrit_details = Sql.GetFirst("SELECT SUM(TOTAL_AMOUNT_INGL_CURR) AS TOTAL_AMOUNT_INGL_CURR, SUM(TAX_AMOUNT_INGL_CURR) AS TAX_AMOUNT_INGL_CURR, SUM(TOTAL_AMOUNT_INGL_CURR) AS TOTAL_AMOUNT_INGL_CURR FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                 PrimaryLable = "Total Excluding Tax/VAT"
-                PrimaryValue = decimal_format.format(float("0.00"))+" "+curr
+                PrimaryValue = decimal_format.format(float(get_quote_details.NET_VALUE_INGL_CURR))+" "+ curr if str(get_quote_details.NET_VALUE_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
                 SecondLable = "Tax/VAT"
                 #SecondValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
                 SecondValue = decimal_format.format(float(get_quote_details.TAX_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
                 ThirdLable = "Total Est Net Value"
                 ThirdValue = decimal_format.format(float("0.00"))+" "+curr
                 FourthLable = "Total Net Value"
-                FourthValue =decimal_format.format(float("0.00"))+" "+curr
+                FourthValue =decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
                 FifthLable = "Total Margin"
                 FifthValue = decimal_format.format(float("0.00"))+" "+curr
             elif subTabName == "Offerings":
