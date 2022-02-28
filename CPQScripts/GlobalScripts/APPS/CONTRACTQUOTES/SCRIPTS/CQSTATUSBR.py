@@ -609,8 +609,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		get_documents_date_validation_accepted = Sql.GetFirst("SELECT DATE_ACCEPTED FROM SAQDOC (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))				
 		get_documents_date_validation_rejected = Sql.GetFirst("SELECT DATE_REJECTED FROM SAQDOC (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		#if getsalesorg_ifo and getfab_info:
-			Trace.Write('not_acquired_status--'+str(price_bar))
-			Trace.Write('COMPLETE STAGE---'+str(Text))
+		Trace.Write('not_acquired_status--'+str(price_bar))
+		Trace.Write('COMPLETE STAGE---'+str(Text))
 		if getsalesorg_ifo:
 			if Text == "COMPLETE STAGE":		
 				Trace.Write('salesorg--present---')
