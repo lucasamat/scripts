@@ -1074,9 +1074,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					#A055S000P01-14051 end
 				elif TITLE.split(',') == ["CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_ACCEPT_PART","CUSTOMER_PARTICIPATE","EXCHANGE_ELIGIBLE"]:
 					value = ALLVALUES[index] if ALLVALUES[index] != '' else 'NULL'
-					Trace.Write("CUSTOMER_ANNUAL_QUANTITY:"+value)
-				
-
 					Sql.RunQuery("""UPDATE SAQSPT SET {column} = {val},{column1} = '{value1}',{column2} = '{value2}',{column3} = '{value3}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],val=value,column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],column3=TITLE.split(',')[3],value3 = ALLVALUES3[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 					get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE,SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}'" .format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 					if get_schedulemode and str(TreeParam) =="Z0108":
@@ -1131,7 +1128,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					#A055S000P01-14051 end
 				elif TITLE=="CUSTOMER_PART_NUMBER":
 					Sql.RunQuery("""UPDATE SAQSPT SET CUSTOMER_PART_NUMBER = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
-				elif "DELIVERY_" in TITLE:
+				elif TITLE.split('_')[0]=="DELIVERY" and TITLE.split('_')[1].isdigit():
 					delivery_columns = "CUSTOMER_ANNUAL_QUANTITY"
 					for i in range(1,53):
 						delivery_columns +=", DELIVERY_"+str(i)

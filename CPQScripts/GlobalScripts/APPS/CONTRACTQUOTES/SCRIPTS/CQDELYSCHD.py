@@ -40,7 +40,6 @@ def insert_deliveryschedule_request(rec_id,QuoteRecordId,rev_rec_id,Service_id):
 	return 'Data'
 
 def delete_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id):
-	Trace.Write('38----'+str(rec_id))
 	get_delivery_schedule_details = Sql.GetFirst("SELECT * from SAQSPD where QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and QTEREVSPT_RECORD_ID = '{rec_id}'".format(contract_rec_id= QuoteRecordId,qt_rev_id = rev_rec_id,rec_id=rec_id) )
 	if get_delivery_schedule_details:
 		delete_delivery_schedules = Sql.RunQuery("DELETE  FROM SAQSPD where QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and QTEREVSPT_RECORD_ID = '{rec_id}'".format(contract_rec_id= QuoteRecordId,qt_rev_id = rev_rec_id,rec_id=rec_id) )
