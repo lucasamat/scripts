@@ -9904,6 +9904,7 @@ class SYLDRTLIST:
 			parent_parts = []
 			child_parts=Sql.GetList("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NOT NULL AND PAR_PART_NUMBER!='' ")
 			for child in child_parts:
+				Trace.Write("child--->"+str(child.PAR_PART_NUMBER))
 				parent_parts.append(child.PAR_PART_NUMBER)
 				parent_part = Sql.GetFirst("SELECT "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PART_NUMBER = '"+str(child.PAR_PART_NUMBER)+"' ")
 				if parent_part is not None:
@@ -9924,6 +9925,7 @@ class SYLDRTLIST:
 					fetch_count +=1000
 					ordered_values.extend(parts) #appending parts without having any child parts
 			else:
+				Trace.Write("notin_condition--->"+str(notin_condition))
 				parts = Sql.GetList("SELECT TOP 1000 "+str(select_obj_str)+",CpqTableEntryId from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL "+str(notin_condition)+" ORDER BY CpqTableEntryId ASC ")
 				ordered_values.extend(parts) #appending parts without having any child parts
 			Query_Obj = []
