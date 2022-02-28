@@ -209,7 +209,7 @@ def insert_quote_billing_plan():
                     for service_obj in services_obj:
                         Qustr = "WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(contract_quote_record_id,quote_revision_record_id,
                                                                                         service_obj.SERVICE_ID, billing_date_column[0], billing_date_column[-1])				
-                        Trace.Write('service---'+str(service_obj.SERVICE_ID))
+                        Trace.Write('service---'+str(select_date_columns))
                         get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(service_obj.SERVICE_ID,contract_quote_record_id))
                         if get_billing_type:
                             get_billing_types = get_billing_type.BILLING_TYPE
