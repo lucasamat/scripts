@@ -20,7 +20,7 @@ class qt_pricing_review_mail_trigger:
     def __init__(self, Quote):
         self.quote = Quote
 
-    def mailtrigger(self):
+    def mailtrigger(self,QUOTE_ID,QTEREV_ID,ACTION):
         
         
         #for quotes in pricing_review:
