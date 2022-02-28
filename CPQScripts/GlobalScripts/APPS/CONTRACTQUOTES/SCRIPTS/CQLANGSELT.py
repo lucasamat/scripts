@@ -219,7 +219,7 @@ def insert_quote_billing_plan():
 								get_ttl_amt = 'ESTVAL_INGL_CURR'
 							else:
 								get_ttl_amt = 'BILLING_VALUE'
-						S = Sql.GetList("""SELECT DISTINCT TOP 1000 * FROM ( SELECT * FROM (
+						get_bill_details_obj = Sql.GetList("""SELECT DISTINCT TOP 1000 * FROM ( SELECT * FROM (
 																				SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
 																				AS ROW, SERVICE_ID,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,ESTVAL_INGL_CURR,{BillingYear} as BILLING_YEAR,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,[WARRANTY_END_DATE], {SelectDateColoumn}
 																						FROM (
@@ -236,31 +236,31 @@ def insert_quote_billing_plan():
 
 																				) OQ WHERE ROW BETWEEN 1 AND 1000 ) AS FQ ORDER BY EQUIPMENT_ID""".format(BillingYear=no_of_year,PivotColumns=pivot_columns,WhereString=Qustr,SelectDateColoumn=select_date_columns))
 						# getdetails = Sql.GetList("""SELECT DISTINCT TOP 1000 * FROM ( SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID) AS ROW, SERVICE_ID,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,{get_ttl_amt},{BillingYear} as BILLING_YEAR,ESTVAL_INGL_CURR,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,[WARRANTY_END_DATE], {SelectDateColoumn},{UserId} as ownerId,{CartId} as cartId FROM (SELECTSERVICE_ID,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,{get_ttl_amt},{BillingYear} as BILLING_YEAR,ESTVAL_INGL_CURR,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CONVERT(VARCHAR(10),FORMAT(BILLING_DATE,'MM-dd-yyyy'),101) AS [BILLING_DATE] FROM SAQIBP {WhereString}) AS IQ PIVOT(SUM({get_ttl_amt}) FOR BILLING_DATE IN ({PivotColumns}))AS PVT ) OQ WHERE ROW BETWEEN 1 AND 1000 ) AS FQ ORDER BY EQUIPMENT_ID""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId= cartobj.USERID,CartId = cartobj.CART_ID,get_ttl_amt=get_ttl_amt))
-						get_bill_details_obj = Sql.GetList(""" SELECT TOP 10000 ANNUAL_BILLING_AMOUNT,BILLING_START_DATE,
-												BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
-												EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
-												ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
-												QTEITM_RECORD_ID,SERIAL_NUMBER,
-												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,
-												YEAR,EQUIPMENT_QUANTITY,{SelectDateColoumn},{UserId} as ownerId,{CartId} as cartId
-										FROM (
-											SELECT 
-												ANNUAL_BILLING_AMOUNT,{get_ttl_amt},BILLING_DATE,BILLING_START_DATE,
-												BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
-												EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
-												LINE as ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
-												QTEITM_RECORD_ID,SERIAL_NUMBER,
-												SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,{BillingYear} as YEAR,EQUIPMENT_QUANTITY,{CartId} as cartId
-											FROM SAQIBP 
-											{WhereString}
-										) AS IQ
-										PIVOT
-										(
-											SUM({get_ttl_amt})
-											FOR BILLING_DATE IN ({PivotColumns})
-										)AS PVT ORDER BY GREENBOOK,SERVICE_ID
-									""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
-											DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId= cartobj.USERID,CartId = cartobj.CART_ID,get_ttl_amt=get_ttl_amt)	)
+						# get_bill_details_obj = Sql.GetList(""" SELECT TOP 10000 ANNUAL_BILLING_AMOUNT,BILLING_START_DATE,
+						# 						BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
+						# 						EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
+						# 						ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
+						# 						QTEITM_RECORD_ID,SERIAL_NUMBER,
+						# 						SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,
+						# 						YEAR,EQUIPMENT_QUANTITY,{SelectDateColoumn},{UserId} as ownerId,{CartId} as cartId
+						# 				FROM (
+						# 					SELECT 
+						# 						ANNUAL_BILLING_AMOUNT,{get_ttl_amt},BILLING_DATE,BILLING_START_DATE,
+						# 						BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
+						# 						EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
+						# 						LINE as ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
+						# 						QTEITM_RECORD_ID,SERIAL_NUMBER,
+						# 						SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,{BillingYear} as YEAR,EQUIPMENT_QUANTITY,{CartId} as cartId
+						# 					FROM SAQIBP 
+						# 					{WhereString}
+						# 				) AS IQ
+						# 				PIVOT
+						# 				(
+						# 					SUM({get_ttl_amt})
+						# 					FOR BILLING_DATE IN ({PivotColumns})
+						# 				)AS PVT ORDER BY GREENBOOK,SERVICE_ID
+						# 			""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
+						# 					DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId= cartobj.USERID,CartId = cartobj.CART_ID,get_ttl_amt=get_ttl_amt)	)
 
 						
 						
@@ -271,15 +271,15 @@ def insert_quote_billing_plan():
 									newRow['ANNUAL_BILLING_AMOUNT'] = val.ANNUAL_BILLING_AMOUNT
 								else:
 									newRow['ANNUAL_BILLING_AMOUNT'] = ''
-								newRow['BILLING_START_DATE'] = val.BILLING_START_DATE
-								newRow['BILLING_END_DATE'] = val.BILLING_END_DATE
+								newRow['BILLING_START_DATE'] = ''
+								newRow['BILLING_END_DATE'] = ''
 								newRow['BILLING_TYPE'] = val.BILLING_TYPE
 								newRow['EQUIPMENT_ID'] =  val.EQUIPMENT_ID
 								newRow['GREENBOOK'] = val.GREENBOOK
-								newRow['YEAR'] =  val.YEAR
+								newRow['YEAR'] =  val.BILLING_YEAR
 								newRow['BILLING_INTERVAL'] =  ''
 								newRow['SERVICE_ID'] = val.SERVICE_ID
-								newRow['SERIAL_NUMBER'] =  val.SERIAL_NUMBER
+								newRow['SERIAL_NUMBER'] =  ''
 								if val.MONTH_1:
 									newRow['MONTH_1'] = val.MONTH_1
 								else:
