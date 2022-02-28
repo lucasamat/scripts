@@ -1763,9 +1763,6 @@ class PartsListModel(ContractQuoteCrudOpertion):
 			record_ids = str(str(record_ids)[1:-1].replace("'",""))
 			parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")			
 			primaryQueryItems = SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID,SAP_PART_NUMBER, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAMTRL.MATERIAL_RECORD_ID as BATCH_RECORD_ID,MAMTRL.SAP_PART_NUMBER, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(self.contract_quote_id)+"'' as QUOTE_ID, ''"+str(self.contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAMTRL (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAMTRL.MATERIAL_RECORD_ID'")
-			self._process_query("""DELETE SYSPBT FROM SYSPBT JOIN SAQSPT ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID AND  SYSPBT.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-
-			self._process_query("""DELETE SYSPBT FROM SYSPBT JOIN SAQRSP ON SYSPBT.SAP_PART_NUMBER = SAQRSP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND  SYSPBT.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 			Trace.Write('##action type '+str(self.action_type))
 			if self.tree_param == 'Z0108' or self.tree_param == 'Z0110':
 				part_nos =[]
