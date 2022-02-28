@@ -1136,7 +1136,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					delivery_sum = 0
 					for i in range(1,53):
 						if i==int(TITLE.split('_')[1]):
-							delivery_sum += int(ALLVALUES) if ALLVALUES else 0
+							delivery_sum += int(ALLVALUES) if ALLVALUES and ALLVALUES!='' else 0
 						else:
 							val = eval("get_delivery.DELIVERY_"+str(i))
 							delivery_sum += int(val) if val else 0
