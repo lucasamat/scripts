@@ -3808,11 +3808,11 @@ class SYLDRTLIST:
 				rowspan = ''
 				#Trace.Write("@3394--"+str(qstring))
 				#A055S000P01-4401
-				if RECORD_ID == 'SYOBJR-00009':
+				#if RECORD_ID == 'SYOBJR-00009':
 					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 					# 	rowspan = 'rowspan="3"'
 					# else:
-					rowspan = 'rowspan="2"'
+					#rowspan = 'rowspan="2"'
 					#table_header += '<th colspan="5" data-align="right"><div><label class="onlytext"><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 				# if RECORD_ID == 'SYOBJR-34575':
 				# 	rowspan = 'rowspan="3"'
