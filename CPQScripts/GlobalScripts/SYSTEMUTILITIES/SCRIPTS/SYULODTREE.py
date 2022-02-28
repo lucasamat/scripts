@@ -3444,34 +3444,31 @@ class TreeView:
 			return True
 	#A055S000P01-4578 ends
 	def PMSATree(self,TreeParam):
-		Check = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV (NOLOCK) WHERE SERVICE_ID = 'Z0004' AND QTEREV_RECORD_ID ='{}'".format(quote_revision_record_id))
 		flag = 0
-		if Check is None:
-			
-			TableName = 'SAQTSE'
-			contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-			entitlement_obj = SqlHelper.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,"Z0009"))
-			
-			quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-			pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-			pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Flex Event Based</ENTITLEMENT_DISPLAY_VALUE>')
-			pattern_new_parts_only = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event Based</ENTITLEMENT_DISPLAY_VALUE>')
-			pattern_new_parts_Z0010 = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event based</ENTITLEMENT_DISPLAY_VALUE>')
-			#Trace.Write("PMSA----->"+str(pattern_new_parts_only_yes))
-			entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-			for m in re.finditer(quote_item_tag, entitlement_xml):
-				sub_string = m.group(1)
-				#Trace.Write("substring----->"+str(sub_string))
-				attribute_id =re.findall(pattern_consumable,sub_string)
-				attribute =re.findall(pattern_new_parts_only,sub_string)
-				attribute_value =re.findall(pattern_new_parts_only_yes,sub_string)
-				attribute_Z0010 =re.findall(pattern_new_parts_Z0010,sub_string)
-				#Trace.Write("attrvalue----->"+str(attribute_value))
-				if len(attribute_id) != 0 and (len(attribute_value) != 0 or len(attribute) != 0 or len(attribute_Z0010) != 0):
-					Trace.Write("YES 3440")
-					flag = 1
-					break
+		TableName = 'SAQTSE'
+		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+		entitlement_obj = SqlHelper.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
+		
+		quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+		pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+		pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Flex Event Based</ENTITLEMENT_DISPLAY_VALUE>')
+		pattern_new_parts_only = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event Based</ENTITLEMENT_DISPLAY_VALUE>')
+		pattern_new_parts_Z0010 = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event based</ENTITLEMENT_DISPLAY_VALUE>')
+		#Trace.Write("PMSA----->"+str(pattern_new_parts_only_yes))
+		entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+		for m in re.finditer(quote_item_tag, entitlement_xml):
+			sub_string = m.group(1)
+			#Trace.Write("substring----->"+str(sub_string))
+			attribute_id =re.findall(pattern_consumable,sub_string)
+			attribute =re.findall(pattern_new_parts_only,sub_string)
+			attribute_value =re.findall(pattern_new_parts_only_yes,sub_string)
+			attribute_Z0010 =re.findall(pattern_new_parts_Z0010,sub_string)
+			#Trace.Write("attrvalue----->"+str(attribute_value))
+			if len(attribute_id) != 0 and (len(attribute_value) != 0 or len(attribute) != 0 or len(attribute_Z0010) != 0):
+				Trace.Write("YES 3440")
+				flag = 1
+				break
 		if flag == 1:
 			return 1
 		else:
