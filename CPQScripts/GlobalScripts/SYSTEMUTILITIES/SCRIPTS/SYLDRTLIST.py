@@ -9958,7 +9958,7 @@ class SYLDRTLIST:
 
 			parents_list = str(tuple(parent_parts))
 			parents_list = re.sub(r'\,\)',')',parents_list)
-			notin_condition = " AND PART_NUMBER NOT IN "+str(parents_list) if len(parent_parts)>1 else ""
+			notin_condition = " AND PART_NUMBER NOT IN "+str(parents_list) if len(parent_parts)>0 else ""
 			no_child_count = Sql.GetFirst("select COUNT(*) AS CNT from SAQSPT (nolock) "+str(Qustr)+" AND PAR_PART_NUMBER IS NULL "+str(notin_condition))
 
 			no_child_count = no_child_count.CNT #count of parts without having any child
