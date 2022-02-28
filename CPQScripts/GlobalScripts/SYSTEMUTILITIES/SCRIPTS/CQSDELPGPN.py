@@ -52,6 +52,7 @@ class qt_pricing_review_mail_trigger:
             mailClient.Send(msg)
         except Exception as e:
             self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : "+str(e)
+            Trace.Write(self.exceptMessage)
 
 
 
