@@ -330,10 +330,10 @@ def insert_quote_billing_plan():
 								else:
 									val.MONTH_12 =''
 								
-								newRow['QUOTE_RECORD_ID'] = val.QUOTE_RECORD_ID
-								newRow['QUOTE_ID'] = val.QUOTE_ID
+								newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
+								newRow['QUOTE_ID'] = c4c_quote_id
 								
-								newRow['QTEREV_RECORD_ID'] = val.QTEREV_RECORD_ID
+								newRow['QTEREV_RECORD_ID'] = quote_revision_record_id
 								
 
 
