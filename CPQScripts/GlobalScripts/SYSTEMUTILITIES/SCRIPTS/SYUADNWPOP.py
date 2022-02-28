@@ -415,7 +415,7 @@ def POPUPLISTVALUEADDNEW(
 			else:
 				date_field = "NORECORDS"
 		# ADD FAB POPUP STARTS JOE
-		elif str(ObjectName) == "SAQFBL" and str(CurrentTab) == "Quotes":
+		elif str(ObjectName) == "SAQFBL" and str(CurrentTab) == "Quotes" and TABLEID ! = "ADDNEW__SYOBJR_00038_SYOBJ_00919":
 			TreeParam = Product.GetGlobal("TreeParam")
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")  
 			account_id = TreeParam.split(' - ')
@@ -1542,7 +1542,7 @@ def POPUPLISTVALUEADDNEW(
 				+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
 			)
 		##Added the below code for the receiving fab popup...
-		elif "SYOBJR_98789" in TABLEID and str(CurrentTab) == "Quotes":
+		elif "SYOBJR_00038" in TABLEID and str(CurrentTab) == "Quotes":
 			TreeParam = Product.GetGlobal("TreeParam")
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			fab_id = TreeParam.split(' - ')
