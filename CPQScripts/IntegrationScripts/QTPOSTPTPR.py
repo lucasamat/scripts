@@ -391,6 +391,9 @@ try:
 										##saqico insert 
 										Sql.RunQuery("""UPDATE SAQICO SET {pricing_field} ={total_net}  FROM SAQICO (NOLOCK)
 										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field = pricing_field_annualized))
+						
+						###calling script for saqris,saqtrv insert
+						CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})
 					'''
 					GetSum = Sql.GetFirst( "SELECT SUM(UNIT_PRICE) AS TOTAL_UNIT, SUM(EXTENDED_UNIT_PRICE) AS TOTAL_EXT , SUM(TAX_AMOUNT_INGL_CURR) AS TOTAL_TAX FROM SAQSPT WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID IN('Z0108','Z0110') AND (CUSTOMER_ANNUAL_QUANTITY IS NOT NULL AND CUSTOMER_ANNUAL_QUANTITY > 0) ".format( QUOTE,revision_rec_id))
 					
