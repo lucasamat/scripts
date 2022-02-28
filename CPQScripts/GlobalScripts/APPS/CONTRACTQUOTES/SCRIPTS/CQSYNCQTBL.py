@@ -1831,7 +1831,7 @@ class SyncQuoteAndCustomTables:
 											cm = '0'+str(cm) if len(cm)==1 else cm        
 											validto = cy+cm+cd
 										
-										CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),'["'+str(account_info.get('SHIP TO'))+'"]',salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,contract_quote_id,quote_revision_record_id,auth)					
+										CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),'["00'+str(account_info.get('SHIP TO'))+'"]',salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,contract_quote_id,quote_revision_record_id,auth)					
 									# #A055S000P01-14047 start
 									# try:
 									# 	if val == "Z0108":
