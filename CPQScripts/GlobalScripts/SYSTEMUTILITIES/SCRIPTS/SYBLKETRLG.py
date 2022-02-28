@@ -1127,6 +1127,19 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					#A055S000P01-14051 end
 				elif TITLE=="CUSTOMER_PART_NUMBER":
 					Sql.RunQuery("""UPDATE SAQSPT SET CUSTOMER_PART_NUMBER = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+				elif "DELIVERY_" in TITLE:
+					delivery_columns = "CUSTOMER_ANNUAL_QUANTITY"
+					for i in range(1,53):
+						delivery_columns +=", DELIVERY_"+str(i)
+					get_delivery = Sql.GetFirst("SELECT {delivery_columns} FROM SAQSPT WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' ".format(delivery_columns=delivery_columns,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+					delivery_sum = 0
+					for i in range(1,53):
+						if i==int(TITLE.split('_')[1]):
+							delivery_sum += int(ALLVALUES)
+						else:
+							delivery_sum += int(eval("get_delivery.DELIVERY_"+i))
+					if delivery_sum <= get_delivery.CUSTOMER_ANNUAL_QUANTITY:
+						Sql.RunQuery("""UPDATE SAQSPT SET {title} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(title = TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				else:
 					Sql.RunQuery("""UPDATE SAQSPT SET {title} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(title = TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_RECORD_ID= '"+str(Qt_rec_id)+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")
