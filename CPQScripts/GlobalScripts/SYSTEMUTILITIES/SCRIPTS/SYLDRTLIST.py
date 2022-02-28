@@ -9943,7 +9943,8 @@ class SYLDRTLIST:
 		return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 
 	def SPARE_PARTS_ORDERING(self,select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs):
-		Trace.Write("WH_API_NAMEs--->"+str(Wh_API_NAMEs))
+		Trace.Write("WH_API_NAMEs--->"+str(Wh_API_NAMEs)+str(select_obj_str)+str(Qustr)+str(PerPage)+str(Page_End))
+
 		if "CpqTableEntryId" in str(Wh_API_NAMEs) or "QUOTE_RECORD_ID" in str(Wh_API_NAMEs):
 			ordered_values = []
 			parent_parts = []
