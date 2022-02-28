@@ -3758,13 +3758,13 @@ class SYLDRTLIST:
 					
 		
 			# Item Covered Object Column Grouping - Start
-			table_group_columns = ''
-			table_group_columns_delivery = ''
-			table_group_columns1 = ''
-			table_group_columns2 = ''
-			table_group_columns_delivery2 =''
-			table_group_columns3 = ''
-			table_group_columns4 = ''
+			#table_group_columns = ''
+			#table_group_columns_delivery = ''
+			#table_group_columns1 = ''
+			#table_group_columns2 = ''
+			#table_group_columns_delivery2 =''
+			#table_group_columns3 = ''
+			#table_group_columns4 = ''
 			#table_group_columns5 = ''
 			#A055S000P01-4401 pricing view
 			##cost grouping
@@ -4181,78 +4181,32 @@ class SYLDRTLIST:
 						+ str(qstring)
 						+ "</th>"
 					)  
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('QUANTITY','GREENBOOK','FABLOCATION_ID','CNTYER','STADTE','ENDDTE','TENVGC','TNTVGC','TNTMGC','BILTYP','PRINT_FLAG'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns:
-						table_header += '<th colspan="11" '+rowspan_level1+'  data-align="right"><div>CONTRACT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('GOT_CODE','ASSEMBLY_ID','EQNODE','PROCES','PM_ID','MNTEVT_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOLCFG'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns1:
-						table_header += '<th colspan="10" '+rowspan_level1+'  data-align="right"><div>OBJECT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns1 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
-						
-					
-				# elif RECORD_ID == 'SYOBJR-34575' and delivery_date_column_joined:
-				# 	Trace.Write('3991-')
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('QUANTITY','GREENBOOK','FABLOCATION_ID','CNTYER','STADTE','ENDDTE','TENVGC','TNTVGC','TNTMGC','BILTYP','PRINT_FLAG'):
 				# 	align = ''
 				# 	rowspan_level1 = ""
+				# 	if not table_group_columns:
+				# 		table_header += '<th colspan="11" '+rowspan_level1+'  data-align="right"><div>CONTRACT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 				# 	if str(invs) in right_align_list:
 				# 		align = 'right'
 				# 	elif str(invs) in center_align_list:
 				# 		align = 'center'
-				# 	if not table_group_columns_delivery2:
-				# 		#table_header += '<th colspan="12" '+rowspan_level1+'  data-align="center"><div>CEILING PRICE<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="celing_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-				# 		for invs in delivery_date_column_joined:
-				# 			table_header += (
-				# 						'<th data-toggle="bootstrap-table" data-field="'
-				# 						+ str(invs)
-				# 						+ '" data-filter-control="input" '+rowspan_level1+' data-align="'
-				# 						+ str(align)
-				# 						+'" data-title-tooltsip="'
-				# 						+ str(invs)
-				# 						+ '" data-sortable="true">'
-				# 						+ str(invs)
-				# 						+ "</th>"
-				# 					)           
+				# 	table_group_columns += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
 				# 	continue
-				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','DISCOUNT','SALES_PRICE_INGL_CURR','YEAR_OVER_YEAR'):
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('GOT_CODE','ASSEMBLY_ID','EQNODE','PROCES','PM_ID','MNTEVT_LEVEL','KIT_NAME','KIT_NUMBER','KPU','TOLCFG'):
 				# 	align = ''
 				# 	rowspan_level1 = ""
 				# 	if not table_group_columns1:
-				# 		table_header += '<th colspan="6" '+rowspan_level1+'  data-align="center"><div>PRICE<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 		table_header += '<th colspan="10" '+rowspan_level1+'  data-align="right"><div>OBJECT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 				# 	if str(invs) in right_align_list:
 				# 		align = 'right'
 				# 	elif str(invs) in center_align_list:
@@ -4269,71 +4223,71 @@ class SYLDRTLIST:
 				# 				+ "</th>"
 				# 			)           
 				# 	continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('SPSPCT','WTYSTE','WTYEND','WTYDAY','INWRTY'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns2:
-						table_header += '<th colspan="5" '+rowspan_level1+'  data-align="right"><div>WTY/SPLIT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="warranty_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns2 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue				
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('SPSPCT','WTYSTE','WTYEND','WTYDAY','INWRTY'):
+				# 	align = ''
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns2:
+				# 		table_header += '<th colspan="5" '+rowspan_level1+'  data-align="right"><div>WTY/SPLIT INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="warranty_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	table_group_columns2 += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
+				# 	continue				
 
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('UIMVCI','UIMVPI','CAVVCI','CAVVPI','ATGKEY','ATGKEC','ATGKEP','NWPTOC','NWPTOP','AMNCCI','AMNPPI'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns3:
-						table_header += '<th colspan="11" '+rowspan_level1+'  data-align="right"><div>CAT 4 INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cat_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns3 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('UIMVCI','UIMVPI','CAVVCI','CAVVPI','ATGKEY','ATGKEC','ATGKEP','NWPTOC','NWPTOP','AMNCCI','AMNPPI'):
+				# 	align = ''
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns3:
+				# 		table_header += '<th colspan="11" '+rowspan_level1+'  data-align="right"><div>CAT 4 INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cat_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	table_group_columns3 += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
+				# 	continue
 
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TRGPRC','SLSPRC','BDVPRC','CELPRC','TGADJP','YOYPCT','USRPRC','BCHPGC','BCHDPT','CTPDFP'):
-					align = ''
-					rowspan_level1 = ""
-					if not table_group_columns4:
-						table_header += '<th colspan="10" '+rowspan_level1+'  data-align="right"><div>PRICE INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns4 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('TRGPRC','SLSPRC','BDVPRC','CELPRC','TGADJP','YOYPCT','USRPRC','BCHPGC','BCHDPT','CTPDFP'):
+				# 	align = ''
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns4:
+				# 		table_header += '<th colspan="10" '+rowspan_level1+'  data-align="right"><div>PRICE INFO<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	table_group_columns4 += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
+				# 	continue
 
 				elif len(cell_api) > 0 and invs in cell_api:
 					table_header += (
@@ -4730,21 +4684,21 @@ class SYLDRTLIST:
 								+ "</th>"
 							)
 			table_header += "</tr>"
-		if RECORD_ID == 'SYOBJR-00009':
-			grouping_columns = ""
-			if table_group_columns:
-				grouping_columns += table_group_columns
-			if table_group_columns1:
-				grouping_columns += table_group_columns1
-			if table_group_columns2:
-				grouping_columns += table_group_columns2
-			if table_group_columns3:
-				grouping_columns += table_group_columns3
-			if table_group_columns4:
-				grouping_columns += table_group_columns4
+		#if RECORD_ID == 'SYOBJR-00009':
+		#	grouping_columns = ""
+		#	if table_group_columns:
+		#		grouping_columns += table_group_columns
+		#	if table_group_columns1:
+		#		grouping_columns += table_group_columns1
+		#	if table_group_columns2:
+		#		grouping_columns += table_group_columns2
+		#	if table_group_columns3:
+		#		grouping_columns += table_group_columns3
+		#	if table_group_columns4:
+		#		grouping_columns += table_group_columns4
 			# if table_group_columns5:
 			# 	grouping_columns += table_group_columns5 
-			table_header += "<tr >{}</tr>".format(grouping_columns)
+		#	table_header += "<tr >{}</tr>".format(grouping_columns)
 		# if RECORD_ID == 'SYOBJR-34575':
 		# 	grouping_columns_delivery = ""
 		# 	#if table_group_columns:
