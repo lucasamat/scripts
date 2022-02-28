@@ -1046,9 +1046,13 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Sql = SQL()
 				update_columns = ""
 				if obj_name == "SAQSPT" and str(TreeParam)=="Z0108" and delivery_schedules!="" and len(delivery_schedules)>0:
-					for key,val in enumerate(delivery_schedules[index]):
-						update_columns+=" DELIVERY_"+str(key+1)+" = '"+str(val)+"'," if val!='' else " DELIVERY_"+str(key+1)+" = NULL," 
-					if update_columns!="":
+					annual_quantity = ALLVALUES[index] if ALLVALUES[index] != '' else 'NULL'
+					delivery_sum = 0
+					for val in delivery_schedules[index]:
+    					delivery_sum += int(val) if val else 0
+					if annual_quantity and delivery_sum <= annual_quantity:
+						for key,val in enumerate(delivery_schedules[index]):
+							update_columns+=" DELIVERY_"+str(key+1)+" = '"+str(val)+"'," if val!='' else " DELIVERY_"+str(key+1)+" = NULL," 
 						Sql.RunQuery("""UPDATE SAQSPT SET {column} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=update_columns[:-1],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				if TITLE == "CUSTOMER_ANNUAL_QUANTITY":
 					value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES
@@ -1139,8 +1143,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						else:
 							val = eval("get_delivery.DELIVERY_"+str(i))
 							delivery_sum += int(val) if val else 0
-					Trace.Write('###Delivery Sum--->'+str(delivery_sum))
-					if delivery_sum <= get_delivery.CUSTOMER_ANNUAL_QUANTITY:
+					if get_delivery.CUSTOMER_ANNUAL_QUANTITY and delivery_sum <= get_delivery.CUSTOMER_ANNUAL_QUANTITY:
 						Sql.RunQuery("""UPDATE SAQSPT SET {title} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(title = TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 				else:
 					Sql.RunQuery("""UPDATE SAQSPT SET {title} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(title = TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
