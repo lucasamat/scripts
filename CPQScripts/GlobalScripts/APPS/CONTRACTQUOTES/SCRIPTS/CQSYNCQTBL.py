@@ -65,6 +65,11 @@ class SyncQuoteAndCustomTables:
 			'FabLocationID':self.quote.GetCustomField('FabLocationID').Content,
 			'FabLocationName':self.quote.GetCustomField('FabLocationName').Content,
 			'FabLocation':self.quote.GetCustomField('FabLocation').Content,
+			'AdditionalShipToName':self.quote.GetCustomField('AdditionalShipToName').Content,
+			'AdditionalShipToEmail':self.quote.GetCustomField('AdditionalShipToEmail').Content,
+			'AdditionalShipToPhone':self.quote.GetCustomField('AdditionalShipToPhone').Content,
+			'AdditionalShipToID':self.quote.GetCustomField('AdditionalShipToID').Content,
+			'AdditionalShipToAddress1':self.quote.GetCustomField('AdditionalShipToAddress1').Content,
 			'QuoteExpirationDate':datetime.datetime.strptime(self.quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date(),
 			'PricingDate':datetime.datetime.strptime(self.quote.GetCustomField('PricingDate').Content, '%Y-%m-%d').date(),
 			'ContractType':self.quote.GetCustomField('ContractType').Content,
@@ -1167,6 +1172,23 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(PayerDetails)
+					if custom_fields_detail.get("AdditionalShipToName"):
+						AdditionalShiptoDetails = {
+							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+							"ADDRESS": custom_fields_detail.get("AdditionalShipToAddress1"),
+							"EMAIL": custom_fields_detail.get("AdditionalShipToEmail"),
+							"PRIMARY": "0",
+							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+							"PARTY_ID": custom_fields_detail.get("AdditionalShipToID"),
+							"PARTY_NAME": custom_fields_detail.get("AdditionalShipToName"),
+							"CPQ_PARTNER_FUNCTION": "SHIP TO",
+							"PHONE": custom_fields_detail.get("AdditionalShipToPhone"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
+						}
+						quote_involved_party_table_info.AddRow(AdditionalShiptoDetails)
 					if custom_fields_detail.get("SellerID"):
 						SellerDetails = {
 							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
