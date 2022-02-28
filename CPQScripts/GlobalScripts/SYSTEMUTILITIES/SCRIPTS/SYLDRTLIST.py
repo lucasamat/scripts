@@ -292,10 +292,10 @@ class SYLDRTLIST:
 							rem_list_sp = ["NEW_PART"]
 							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])							
 						
-						if RECORD_ID == "SYOBJR-00009":
-							Trace.Write("QUOTE_ITEM_COVERED_OBJECT_RECORD_ID=======")                                
-							rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
-							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+						# if RECORD_ID == "SYOBJR-00009":
+						# 	Trace.Write("QUOTE_ITEM_COVERED_OBJECT_RECORD_ID=======")                                
+						# 	rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
+						# 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 						if RECORD_ID == 'SYOBJR-00005' and str(TreeParam)=="Z0110":
 							columns_string = Columns
 							Columns = []
@@ -3621,11 +3621,11 @@ class SYLDRTLIST:
 			#A055S000P01-682 start to hide the Actions column for related list
 			rowspan = ''
 			#A055S000P01-4401
-			if RECORD_ID == 'SYOBJR-00009':
+			#if RECORD_ID == 'SYOBJR-00009':
 				# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				# 	rowspan = 'rowspan="3"' 
 				# else:
-				rowspan = 'rowspan="2"' 
+				#rowspan = 'rowspan="2"' 
 				
 				#table_header += '<th colspan="23" data-align="right"><div><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 			# if RECORD_ID == 'SYOBJR-34575':
