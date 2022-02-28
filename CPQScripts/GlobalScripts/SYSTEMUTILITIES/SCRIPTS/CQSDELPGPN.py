@@ -51,9 +51,7 @@ class qt_pricing_review_mail_trigger:
             msg.Body = mailBody  
             mailClient.Send(msg)
         except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            Trace.Write("TEST::"+str(exc_type) +str(fname)+str(exc_tb.tb_lineno))
+            self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : "+str(e)
 
 
 
