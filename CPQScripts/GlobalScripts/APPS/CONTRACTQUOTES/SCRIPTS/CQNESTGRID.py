@@ -6384,6 +6384,14 @@ def UpdateBreadcrumb():
 			eq_id = str(qry.PARTY_ID)
 		else:
 			eq_id = "Involved Parties"
+	elif TreeParam == "Customer Information" and TABLENAME == 'SAQSAF':
+		qry = Sql.GetFirst(
+		"SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
+		)
+		if qry:
+			eq_id = str(qry.PARTY_ID)
+		else:
+			eq_id = "Sending fab"
 	elif TreeParam == "Customer Information" and TABLENAME == 'SAQICT':
 		qry = Sql.GetFirst(
 		"SELECT CONTACT_ID FROM SAQICT (NOLOCK) WHERE QUOTE_REV_INVOLVED_PARTY_CONTACT_ID = '{recid}'".format(recid=CURR_REC_ID)
