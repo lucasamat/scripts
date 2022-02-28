@@ -317,7 +317,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			if contract_quote_obj:
 				contract_quote_id = contract_quote_obj.QUOTE_ID
 			count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_ID= '"+str(contract_quote_id)+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")      
-			if count.CNT==0:
+			if count.CNT > 0:
 				Log.Info("PART PRICING IFLOW STARTED !")
 				CQPARTIFLW.iflow_pricing_call(str(self.user_name),str(contract_quote_id),str(self.contract_quote_revision_record_id))
 				
