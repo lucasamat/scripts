@@ -5,7 +5,7 @@
 #   __create_date : 18/11/2021
 #   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-import re
+import renot_acquired_status--
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
@@ -599,7 +599,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			Trace.Write("price_preview_status_CHK"+str(price_preview_status))
 			if len(price_preview_status) > 1:
 				price_bar = "acquired_status"
-			elif 'ACQUIRED' in price_preview_status:
+			if 'ACQUIRED' in price_preview_status:
 				price_bar = "not_acquired_status"
 			else:
 				price_bar = "acquired_status"
