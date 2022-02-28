@@ -1049,7 +1049,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					annual_quantity = ALLVALUES[index] if ALLVALUES[index] != '' else 'NULL'
 					delivery_sum = 0
 					for val in delivery_schedules[index]:
-    					delivery_sum += int(val) if val else 0
+						delivery_sum += int(val) if val else 0
 					if annual_quantity and delivery_sum <= annual_quantity:
 						for key,val in enumerate(delivery_schedules[index]):
 							update_columns+=" DELIVERY_"+str(key+1)+" = '"+str(val)+"'," if val!='' else " DELIVERY_"+str(key+1)+" = NULL," 
