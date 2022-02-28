@@ -612,8 +612,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		if getsalesorg_ifo:
 			if Text == "COMPLETE STAGE":		
 				Trace.Write('salesorg--present---')
-				Trace.Write('not_acquired_status--')
-				Trace.Write('COMPLETE STAGE---')
+				Trace.Write('not_acquired_status--'+str(price_bar))
+				Trace.Write('COMPLETE STAGE---'+str(Text))
 				if ((get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) or (get_service_ifo.SERVICE_ID == get_addon_service_id.SERVICE_ID) ) and incomplete_status == '' and complete_status != '' and Text == "COMPLETE STAGE":
 					Trace.Write('stage--1')
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
