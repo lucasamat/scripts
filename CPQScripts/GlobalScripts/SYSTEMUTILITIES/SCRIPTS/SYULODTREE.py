@@ -2630,13 +2630,13 @@ class TreeView:
 					+ str(ParRecId)
 					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
 					)
-			if Product.GetGlobal("PMSA_TREE") == '1':
-				Trace.Write("addon pmsa")
-				findChildOneObj = Sql.GetList(
-					"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
-					+ str(ParRecId)
-					+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
-				)
+			# if Product.GetGlobal("PMSA_TREE") == '1':
+			# 	Trace.Write("addon pmsa")
+			# 	findChildOneObj = Sql.GetList(
+			# 		"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
+			# 		+ str(ParRecId)
+			# 		+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
+			# 	)
 			try:
 				getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 				if getZ0009 is not None:
