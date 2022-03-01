@@ -45,8 +45,8 @@ if contract_quote_record_obj:
     contract_end_date = contract_quote_record_obj.CONTRACT_VALID_TO
     #contract_currency = contract_quote_record_obj.QUOTE_CURRENCY
     #contract_currency_record_id = contract_quote_record_obj.QUOTE_CURRENCY_RECORD_ID
-    c4c_quote_id = contract_quote_record_obj.C4C_QUOTE_ID
-    source_contract_id = contract_quote_record_obj.SOURCE_CONTRACT_ID
+    #c4c_quote_id = contract_quote_record_obj.C4C_QUOTE_ID
+    #source_contract_id = contract_quote_record_obj.SOURCE_CONTRACT_ID
 else:
     contract_quote_id = None
     #contract_quote_name = None
@@ -60,8 +60,8 @@ else:
     contract_end_date = None
     #contract_currency = None
     #contract_currency_record_id = None
-    c4c_quote_id = None
-    source_contract_id = None
+    #c4c_quote_id = None
+    #source_contract_id = None
 def get_res(self, query_string, table_total_rows):
     for offset_skip_count in range(0, table_total_rows+1, 1000):
         pagination_condition = "WHERE SNO>={Skip_Count} AND SNO<={Fetch_Count}".format(Skip_Count=offset_skip_count+1, Fetch_Count=offset_skip_count+1000)
