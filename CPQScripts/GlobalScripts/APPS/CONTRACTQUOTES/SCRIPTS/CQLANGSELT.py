@@ -122,6 +122,8 @@ def _insert_item_level_parts():
 #quote table insert for billing matrix
 def insert_quote_billing_plan():
 	Trace.Write('inside billing mtraix---')
+	quote_get_bill_details = Quote.QuoteTables["BM_YEAR_1"]
+	quote_get_bill_details.Rows.Clear()
 	#delete_qt_bill_mat = Sql.RunQuery("DELETE FROM QT__Billing_Matrix_Header WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' and  ownerId = {} and cartId ={}".format(contract_quote_record_id,quote_revision_record_id,cartobj.USERID,cartobj.CART_ID))
 	#delete_qt_year_mat = Sql.RunQuery("DELETE FROM QT__BM_YEAR_1 WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' and  ownerId = {} and cartId ={}".format(contract_quote_record_id,quote_revision_record_id,cartobj.USERID,cartobj.CART_ID))
 	services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id))
@@ -204,8 +206,7 @@ def insert_quote_billing_plan():
 										QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,DateColumn=date_columns,Year=no_of_year,SelectDateColoumn=header_select_date_columns, UserId= cartobj.USERID,CartId = cartobj.CART_ID
 										))'''
 					pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
-					quote_get_bill_details = Quote.QuoteTables["BM_YEAR_1"]
-					quote_get_bill_details.Rows.Clear()
+					
 					for service_obj in services_obj:
 						Qustr = "WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(contract_quote_record_id,quote_revision_record_id,
 																						service_obj.SERVICE_ID, billing_date_column[0], billing_date_column[-1])				
@@ -235,36 +236,9 @@ def insert_quote_billing_plan():
 																						)AS PVT
 
 																				) OQ WHERE ROW BETWEEN 1 AND 1000 ) AS FQ ORDER BY EQUIPMENT_ID""".format(BillingYear=no_of_year,PivotColumns=pivot_columns,WhereString=Qustr,SelectDateColoumn=select_date_columns))
-						# getdetails = Sql.GetList("""SELECT DISTINCT TOP 1000 * FROM ( SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID) AS ROW, SERVICE_ID,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,{get_ttl_amt},{BillingYear} as BILLING_YEAR,ESTVAL_INGL_CURR,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,[WARRANTY_END_DATE], {SelectDateColoumn},{UserId} as ownerId,{CartId} as cartId FROM (SELECTSERVICE_ID,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,{get_ttl_amt},{BillingYear} as BILLING_YEAR,ESTVAL_INGL_CURR,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CONVERT(VARCHAR(10),FORMAT(BILLING_DATE,'MM-dd-yyyy'),101) AS [BILLING_DATE] FROM SAQIBP {WhereString}) AS IQ PIVOT(SUM({get_ttl_amt}) FOR BILLING_DATE IN ({PivotColumns}))AS PVT ) OQ WHERE ROW BETWEEN 1 AND 1000 ) AS FQ ORDER BY EQUIPMENT_ID""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId= cartobj.USERID,CartId = cartobj.CART_ID,get_ttl_amt=get_ttl_amt))
-						# get_bill_details_obj = Sql.GetList(""" SELECT TOP 10000 ANNUAL_BILLING_AMOUNT,BILLING_START_DATE,
-						# 						BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
-						# 						EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
-						# 						ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
-						# 						QTEITM_RECORD_ID,SERIAL_NUMBER,
-						# 						SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,
-						# 						YEAR,EQUIPMENT_QUANTITY,{SelectDateColoumn},{UserId} as ownerId,{CartId} as cartId
-						# 				FROM (
-						# 					SELECT 
-						# 						ANNUAL_BILLING_AMOUNT,{get_ttl_amt},BILLING_DATE,BILLING_START_DATE,
-						# 						BILLING_END_DATE,BILLING_TYPE,{BillingYear} as BILLING_YEAR,
-						# 						EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,GREENBOOK,GREENBOOK_RECORD_ID,
-						# 						LINE as ITEM_LINE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEITMCOB_RECORD_ID,
-						# 						QTEITM_RECORD_ID,SERIAL_NUMBER,
-						# 						SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,{BillingYear} as YEAR,EQUIPMENT_QUANTITY,{CartId} as cartId
-						# 					FROM SAQIBP 
-						# 					{WhereString}
-						# 				) AS IQ
-						# 				PIVOT
-						# 				(
-						# 					SUM({get_ttl_amt})
-						# 					FOR BILLING_DATE IN ({PivotColumns})
-						# 				)AS PVT ORDER BY GREENBOOK,SERVICE_ID
-						# 			""".format(BillingYear=no_of_year,WhereString=Qustr, PivotColumns=pivot_columns, 
-						# 					DateColumn=date_columns, SelectDateColoumn=select_date_columns,UserId= cartobj.USERID,CartId = cartobj.CART_ID,get_ttl_amt=get_ttl_amt)	)
-
-						
-						
+					
 						if get_bill_details_obj:
+							Trace.Write('BILLING_YEAR--242----'+str(val.BILLING_YEAR))
 							for val in get_bill_details_obj:
 								newRow = quote_get_bill_details.AddNewRow()
 								if val.ANNUAL_BILLING_AMOUNT:
