@@ -109,7 +109,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 DISTINCT
                                 MAMTRL.UNIT_OF_MEASURE as BASEUOM_ID,
                                 MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
-                                CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER!='' THEN TEMP_TABLE.CHILD_PART_NUMBER ELSE MAMTRL.SAP_PART_NUMBER END AS CUSTOMER_PART_NUMBER,
+                                NULL AS CUSTOMER_PART_NUMBER,
                                 MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
                                 CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN NULL ELSE 'OFFSITE' END AS DELIVERY_MODE,
                                 0.00 as EXTENDED_UNIT_PRICE,
@@ -152,7 +152,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.YEAR_1_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_1_DEMAND END AS YEAR_1_DEMAND,
 		                        CASE WHEN TEMP_TABLE.YEAR_2_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_2_DEMAND END AS YEAR_2_DEMAND,
 		                        CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
-		                                '{sold_to}' as STPACCOUNT_ID,
+		                        '{sold_to}' as STPACCOUNT_ID,
                                 '{ship_to}' as SHPACCOUNT_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
                             JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
@@ -231,7 +231,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 DISTINCT
                                 MAMTRL.UNIT_OF_MEASURE as BASEUOM_ID,
                                 MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
-                                CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER!='' THEN TEMP_TABLE.CHILD_PART_NUMBER ELSE MAMTRL.SAP_PART_NUMBER END AS CUSTOMER_PART_NUMBER,
+                                NULL AS CUSTOMER_PART_NUMBER,
                                 MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
                                 CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN NULL ELSE 'OFFSITE' END AS DELIVERY_MODE,
                                 0.00 as EXTENDED_UNIT_PRICE,
@@ -302,7 +302,7 @@ class SyncFPMQuoteAndHanaDatabase:
             Log.Info("Exception in Query insertion in SAQSPT")
         
     def update_records_saqspt(self):
-        update_customer_pn = """UPDATE SAQSPT SET SAQSPT.CUSTOMER_PART_NUMBER = M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND S.EXCHANGE_ELIGIBLE='True' AND S.ODCC_FLAG='True'""".format(quote_rec_id = self.quote_record_id,sales_id = self.sales_org_id,stp_acc_id=str(self.account_info['SOLD TO']),quote_revision_rec_id =self.quote_revision_id)
+        update_customer_pn = """UPDATE SAQSPT SET SAQSPT.CUSTOMER_PART_NUMBER = M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND S.EXCHANGE_ELIGIBLE='True' AND S.ODCC_FLAG!='ZZZ'""".format(quote_rec_id = self.quote_record_id,sales_id = self.sales_org_id,stp_acc_id=str(self.account_info['SOLD TO']),quote_revision_rec_id =self.quote_revision_id)
         Sql.RunQuery(update_customer_pn)
 
         update_uom_recs = """UPDATE SAQSPT SET SAQSPT.BASEUOM_ID = M.UNIT_OF_MEASURE,SAQSPT.BASEUOM_RECORD_ID = M.UOM_RECORD_ID FROM SAQSPT S INNER JOIN MAMTRL M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE   S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,quote_revision_rec_id =self.quote_revision_id)
