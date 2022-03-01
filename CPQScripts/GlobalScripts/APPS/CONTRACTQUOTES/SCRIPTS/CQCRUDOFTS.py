@@ -139,7 +139,6 @@ def sending_fablocation_insert(values,all_values,A_Keys,A_Values):
                 MAFBLC.ACCOUNT_RECORD_ID,
                 '{QuoteRecId}' as QUOTE_RECORD_ID,
                 '{QuoteId}' as QUOTE_ID,
-                '' as QUOTE_NAME,
                 '{RevisionId}' as QTEREV_ID,
                 '{RevisionRecordId}' as QTEREV_RECORD_ID,
                 MAFBLC.COUNTRY,
