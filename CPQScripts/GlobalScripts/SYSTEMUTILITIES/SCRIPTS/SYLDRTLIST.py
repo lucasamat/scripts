@@ -2745,8 +2745,6 @@ class SYLDRTLIST:
 					
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND GOT_CODE = '"+str(TreeParam)+"' "
 				elif RECORD_ID == "SYOBJR-00005":
-					select_obj_str=''.join(('PRICING_STATUS,',select_obj_str))
-					Trace.Write("1-PRICING_STATUS-->"+str(select_obj_str))
 					Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr,PerPage, Page_start, Page_End,"CpqTableEntryId")
 					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 				elif RECORD_ID == "SYOBJR-00030":
@@ -8902,9 +8900,7 @@ class SYLDRTLIST:
 										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif RECORD_ID == "SYOBJR-00005":
-						Trace.Write("@9106")
-						select_obj_str=''.join(('PRICING_STATUS,',select_obj_str))
-						Trace.Write("PRICING_STATUS-->"+str(select_obj_str))
+						
 						Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs)
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)	
 					else:
@@ -9587,7 +9583,10 @@ class SYLDRTLIST:
 		return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 
 	def SPARE_PARTS_ORDERING(self,select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs):
-		Trace.Write("select_obj_str--->"+str(select_obj_str))
+		
+		select_obj_str=''.join(('PRICING_STATUS,',select_obj_str))
+		
+		Trace.Write("PRICING_STATUS--->"+str(select_obj_str))
 
 		if "CpqTableEntryId" in str(Wh_API_NAMEs) or "QUOTE_RECORD_ID" in str(Wh_API_NAMEs):
 			ordered_values = []
