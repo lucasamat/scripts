@@ -271,7 +271,7 @@ class SyncQuoteAndCustomTables:
 								val = "COMPREHENSIVE SERVICES"
 							elif str(ent_disp_val) == 'Complementary':
 								val = "COMPLEMENTARY PRODUCTS"
-							Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(val),quote_record_id,OfferingRow_detail.SERVICE_ID,Quote.GetGlobal("quote_revision_record_id")))
+							Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(val),quote_record_id,Quote.GetGlobal("quote_revision_record_id")))
 							Log.Info("ENTERED POA----------->"+str(val))
 							Log.Info("ENTERED POA--service--------->"+str(OfferingRow_detail.SERVICE_ID))
 						#A055S000P01-7401 END                    
