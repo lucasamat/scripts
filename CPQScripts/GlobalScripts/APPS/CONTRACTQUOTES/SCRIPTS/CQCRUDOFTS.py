@@ -38,9 +38,9 @@ if contract_quote_record_obj:
     salesorg_id = contract_quote_record_obj.SALESORG_ID
     salesorg_name = contract_quote_record_obj.SALESORG_NAME
     salesorg_record_id = contract_quote_record_obj.SALESORG_RECORD_ID
-    account_id = contract_quote_record_obj.ACCOUNT_ID
-    account_name = contract_quote_record_obj.ACCOUNT_NAME
-    account_record_id = contract_quote_record_obj.ACCOUNT_RECORD_ID
+    #account_id = contract_quote_record_obj.ACCOUNT_ID
+    #account_name = contract_quote_record_obj.ACCOUNT_NAME
+    #account_record_id = contract_quote_record_obj.ACCOUNT_RECORD_ID
     contract_start_date = contract_quote_record_obj.CONTRACT_VALID_FROM
     contract_end_date = contract_quote_record_obj.CONTRACT_VALID_TO
     contract_currency = contract_quote_record_obj.QUOTE_CURRENCY
@@ -53,9 +53,9 @@ else:
     salesorg_id = None
     salesorg_name = None
     salesorg_record_id = None
-    account_id = None
-    account_record_id = None
-    account_name = None
+    #account_id = None
+    #account_record_id = None
+    #account_name = None
     contract_start_date = None
     contract_end_date = None
     contract_currency = None
