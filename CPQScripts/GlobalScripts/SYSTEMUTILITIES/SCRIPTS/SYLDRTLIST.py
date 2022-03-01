@@ -3383,7 +3383,7 @@ class SYLDRTLIST:
 							if str(ObjectName) == "SAQDOC":
 								img_list.append('STATUS')
 							if value123 in img_list:
-								new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
+								new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + str(value1234) + '">' + str(imgValue) + "</abbr>")
 							else:
 								if not re.match(r'[A-Za-z0-9]',str(value1234)):
 									Trace.Write("encode character")
