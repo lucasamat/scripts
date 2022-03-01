@@ -8902,7 +8902,7 @@ class SYLDRTLIST:
 					elif RECORD_ID == "SYOBJR-00005":
 						Trace.Write("@9106")
 						select_obj_str.insert(0,'PRICING_STATUS')
-						Trace.Write(select_obj_str)
+						Trace.Write("PRICING_STATUS-->"+str(select_obj_str))
 						Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs)
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)	
 					else:
