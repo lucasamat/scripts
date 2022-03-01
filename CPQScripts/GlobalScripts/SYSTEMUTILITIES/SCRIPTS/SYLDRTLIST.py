@@ -9609,11 +9609,7 @@ class SYLDRTLIST:
 		return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 
 	def SPARE_PARTS_ORDERING(self,select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs):
-		
-		#select_obj_str=''.join(('PRICING_STATUS,',select_obj_str))
-		select_obj_str='PRICING_STATUS,' + select_obj_str
-
-		
+			
 		Trace.Write("new_PRICING_STATUS--->"+str(select_obj_str))
 
 
