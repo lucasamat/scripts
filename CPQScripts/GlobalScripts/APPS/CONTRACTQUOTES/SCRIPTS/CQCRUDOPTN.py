@@ -1114,7 +1114,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 										DISTINCT
 										MAMTRL.UNIT_OF_MEASURE as BASEUOM_ID,
 										MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
-										MAMTRL.SAP_PART_NUMBER as CUSTOMER_PART_NUMBER,
+										NULL as CUSTOMER_PART_NUMBER,
 										MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
 										'{delivery_mode}' as DELIVERY_MODE,
 										0.00 as EXTENDED_UNIT_PRICE,
