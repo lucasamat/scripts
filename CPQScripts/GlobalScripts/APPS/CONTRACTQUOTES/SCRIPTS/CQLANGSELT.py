@@ -124,6 +124,8 @@ def insert_quote_billing_plan():
 	Trace.Write('inside billing mtraix---')
 	quote_get_bill_details = Quote.QuoteTables["BM_YEAR_1"]
 	quote_get_bill_details.Rows.Clear()
+	quote_bills_header = Quote.QuoteTables["Billing_Matrix_Header"]
+	quote_bills_header.Rows.Clear()
 	#delete_qt_bill_mat = Sql.RunQuery("DELETE FROM QT__Billing_Matrix_Header WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' and  ownerId = {} and cartId ={}".format(contract_quote_record_id,quote_revision_record_id,cartobj.USERID,cartobj.CART_ID))
 	#delete_qt_year_mat = Sql.RunQuery("DELETE FROM QT__BM_YEAR_1 WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}' and  ownerId = {} and cartId ={}".format(contract_quote_record_id,quote_revision_record_id,cartobj.USERID,cartobj.CART_ID))
 	services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id))
@@ -164,8 +166,7 @@ def insert_quote_billing_plan():
 										QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,DateColumn=date_columns,Year=no_of_year,SelectDateColoumn=header_select_date_columns, UserId= cartobj.USERID,CartId = cartobj.CART_ID
 										))
 					#for val in a:
-					quote_bills_header = Quote.QuoteTables["Billing_Matrix_Header"]
-					quote_bills_header.Rows.Clear()
+					
 					if get_bill_details_obj:
 						for val in get_bill_details_obj:
 							newRow = quote_bills_header.AddNewRow()
@@ -227,7 +228,7 @@ def insert_quote_billing_plan():
 																								SELECT
 																										SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,BILLING_VALUE,ESTVAL_INGL_CURR,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CONVERT(VARCHAR(10),FORMAT(BILLING_DATE,'MM-dd-yyyy'),101) AS [BILLING_DATE]                                          
 																								FROM SAQIBP
-																								 {WhereString}
+																								{WhereString}
 																						) AS IQ
 																						PIVOT
 																						(
@@ -252,7 +253,7 @@ def insert_quote_billing_plan():
 								newRow['YEAR'] =  val.BILLING_YEAR
 								newRow['BILLING_INTERVAL'] =  ''
 								newRow['SERVICE_ID'] = val.SERVICE_ID
-                                newRow['SERVICE_DESCRIPTION'] = val.SERVICE_DESCRIPTION
+								newRow['SERVICE_DESCRIPTION'] = val.SERVICE_DESCRIPTION
 								newRow['SERIAL_NUMBER'] =  ''
 								if val.MONTH_1:
 									newRow['MONTH_1'] = val.MONTH_1
@@ -525,10 +526,10 @@ def insert_quote_billing_plan():
 		M12_Y5 = SUM_YEAR5.MONTH_12
 		Quote.SetGlobal('M12_Y5', str(M12_Y5))
 	GetYear1EndDate = Sql.GetFirst("""SELECT
-   ID,
-   (SELECT MAX(convert(date, LastUpdateDate))
-	  FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
-   AS LastUpdateDate
+ID,
+(SELECT MAX(convert(date, LastUpdateDate))
+	FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
+AS LastUpdateDate
 	FROM QT__Billing_Matrix_Header
 	where QUOTE_RECORD_ID = '"""+str(contract_quote_record_id)+"""' AND YEAR = '1' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
 
@@ -726,7 +727,7 @@ def _insert_subtotal_by_offerring_quote_table():
 				newRow['NET_PRICE_INGL_CURR'] = val.NET_VALUE_INGL_CURR
 			else:
 				val.NET_PRICE_INGL_CURR =''
-		   
+		
 			
 			newRow['QUOTE_RECORD_ID'] = val.QUOTE_RECORD_ID
 			newRow['QUOTE_ID'] = val.QUOTE_ID
