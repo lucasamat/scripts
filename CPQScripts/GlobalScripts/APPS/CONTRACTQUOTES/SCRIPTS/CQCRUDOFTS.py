@@ -31,7 +31,7 @@ except:
 contract_quote_record_obj = Sql.GetFirst("SELECT * FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
 if contract_quote_record_obj:
     contract_quote_id = contract_quote_record_obj.QUOTE_ID
-    contract_quote_name = contract_quote_record_obj.QUOTE_NAME
+    #contract_quote_name = contract_quote_record_obj.QUOTE_NAME
     quote_type = contract_quote_record_obj.QUOTE_TYPE
     quote_revision_id = contract_quote_record_obj.QTEREV_ID
     quote_revision_record_id = contract_quote_record_obj.QTEREV_RECORD_ID
@@ -49,7 +49,7 @@ if contract_quote_record_obj:
     source_contract_id = contract_quote_record_obj.SOURCE_CONTRACT_ID
 else:
     contract_quote_id = None
-    contract_quote_name = None
+    #contract_quote_name = None
     salesorg_id = None
     salesorg_name = None
     salesorg_record_id = None
