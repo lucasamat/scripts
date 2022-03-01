@@ -783,13 +783,14 @@ def billingmatrix_create():
 					for index in range(0, total_months+1):
 						Trace.Write('index--'+str(index))
 						billing_month_end += 1
-						insert_item_per_billing(total_months=total_months, 
-												billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
-													Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
-													),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
-													Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
-													), amount_column="YEAR_"+str((index/12) + 1),
-													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
+						if str(index) == '0':
+							insert_item_per_billing(total_months=total_months, 
+													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
+														),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+														Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
+														), amount_column="YEAR_"+str((index/12) + 1),
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 				
 				elif str(get_ent_bill_cycle).upper() == "MONTHLY" :
 					if billing_day in (29,30,31):
