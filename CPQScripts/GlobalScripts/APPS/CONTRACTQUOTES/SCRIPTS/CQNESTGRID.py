@@ -1699,7 +1699,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	else:
 		sale_type = None
 	if sale_type != "TOOL RELOCATION":
-		if TreeParam == 'Fab Locations':
+		if TreeParam == 'Fab Locations' or TreeParam == "Customer Information":
 			Parent_Equipmentid = Sql.GetFirst(
 				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
@@ -1727,7 +1727,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				)
 			)
 	elif sale_type == "TOOL RELOCATION":
-		if TreeParam == 'Fab Locations':
+		if TreeParam == 'Fab Locations' or TreeParam == "Customer Information":
 			Parent_Equipmentid = Sql.GetFirst(
 				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
