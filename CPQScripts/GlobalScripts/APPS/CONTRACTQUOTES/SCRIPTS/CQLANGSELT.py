@@ -238,9 +238,10 @@ def insert_quote_billing_plan():
 																				) OQ WHERE ROW BETWEEN 1 AND 1000 ) AS FQ ORDER BY EQUIPMENT_ID""".format(BillingYear=no_of_year,PivotColumns=pivot_columns,WhereString=Qustr,SelectDateColoumn=select_date_columns))
 					
 						if get_bill_details_obj:
-							Trace.Write('BILLING_YEAR--242----'+str(val.BILLING_YEAR))
+							
 							for val in get_bill_details_obj:
 								newRow = quote_get_bill_details.AddNewRow()
+								Trace.Write('BILLING_YEAR--242----'+str(val.BILLING_YEAR))
 								if val.ANNUAL_BILLING_AMOUNT:
 									newRow['ANNUAL_BILLING_AMOUNT'] = val.ANNUAL_BILLING_AMOUNT
 								else:
