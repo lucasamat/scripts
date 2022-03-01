@@ -14,7 +14,7 @@ input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
 Qt_rec_id = input_data[0]
 REVISION_rec_ID = input_data[-1]
 
-Log.Info("Billing---started-----"+str(Qt_rec_id)+"--REVISION_rec_ID---"+str(REVISION_rec_ID))
+Log.Info("BM----"+str(Qt_rec_id)+"------REVISION_ID---"+str(REVISION_rec_ID))
 try:
 	contract_quote_rec_id = input_data[0]
 	#contract_quote_rec_id = Param.Quote_Record_ID
