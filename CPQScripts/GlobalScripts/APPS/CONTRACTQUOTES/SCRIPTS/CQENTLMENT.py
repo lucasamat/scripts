@@ -1133,10 +1133,10 @@ class Entitlements:
 								Quote.SetGlobal("Greenbook_Entitlement","Yes")
 							#Trace.Write("entitlement_value -----"+str(entitlement_value))
 							#or (serviceId == 'Z0009' and entitlement_value == "Some Inclusions" and key == "AGS_{}_TSC_NONCNS".format(serviceId))
-							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included")  :
+							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included") ) :
 								Trace.Write("111")
 								ancillary_object_dict['Z0101'] = "INSERT"								
-							elif not serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included")  :
+							elif not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included") ) :
 								Trace.Write("222")
 								count_temp_z0101 += 1
 								if  count_temp_z0101 == 3:
