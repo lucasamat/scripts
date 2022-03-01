@@ -2631,7 +2631,7 @@ class TreeView:
 					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
 					)
 			
-			if Product.GetGlobal("PMSA_TREE") == '1' :
+			if Product.GetGlobal("PMSA_TREE") == '1' and ParRecId in  ('4237BF62-7934-4CFF-811A-7A64282CE693','FE46CADE-B72F-46FF-9E01-1699D2955E6B'):
 				Trace.Write("addon pmsa")
 				findChildOneObj = Sql.GetList(
 					"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
