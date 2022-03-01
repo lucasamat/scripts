@@ -294,8 +294,8 @@ class SYLDRTLIST:
 						
 						if RECORD_ID == "SYOBJR-00009":
 						# 	Trace.Write("QUOTE_ITEM_COVERED_OBJECT_RECORD_ID=======")                                
-						 	rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
-						 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+							rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
+							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 						if RECORD_ID == 'SYOBJR-00005' and str(TreeParam)=="Z0110":
 							columns_string = Columns
 							Columns = []
@@ -8819,7 +8819,7 @@ class SYLDRTLIST:
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00811").GetValue()
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 						elif str(RECORD_ID) == "SYOBJR-00029":
-    						quote_rec_id = Product.GetGlobal("contract_quote_record_id")
+							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 							if TreeSuperParentParam == "Product Offerings":
 								service_id = TreeParam.split('-')[0]	
@@ -8924,7 +8924,7 @@ class SYLDRTLIST:
 										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif RECORD_ID == "SYOBJR-00005":
-						Trace.Write("2-Pricing_status"str(select_obj_str))
+						Trace.Write("2-Pricing_status"+str(select_obj_str))
 						Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs)
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)	
 					else:
