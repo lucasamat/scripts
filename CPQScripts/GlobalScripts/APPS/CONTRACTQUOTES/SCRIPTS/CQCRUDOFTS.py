@@ -155,7 +155,7 @@ def sending_fablocation_insert(values,all_values,A_Keys,A_Values):
                 MAFBLC.STATE_RECORD_ID
                 FROM SYSPBT(NOLOCK)
                 JOIN MAFBLC(NOLOCK) ON MAFBLC.FAB_LOCATION_RECORD_ID = SYSPBT.BATCH_RECORD_ID 
-            WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}')fab_location """.format(
+            WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')fab_location """.format(
             UserName=User.UserName,
             UserId=User.Id,
             QuoteId =contract_quote_id ,
