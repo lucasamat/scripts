@@ -32,7 +32,7 @@ contract_quote_record_obj = Sql.GetFirst("SELECT * FROM SAQTRV(NOLOCK) WHERE QUO
 if contract_quote_record_obj:
     contract_quote_id = contract_quote_record_obj.QUOTE_ID
     #contract_quote_name = contract_quote_record_obj.QUOTE_NAME
-    quote_type = contract_quote_record_obj.QUOTE_TYPE
+    #quote_type = contract_quote_record_obj.QUOTE_TYPE
     quote_revision_id = contract_quote_record_obj.QTEREV_ID
     quote_revision_record_id = contract_quote_record_obj.QTEREV_RECORD_ID
     salesorg_id = contract_quote_record_obj.SALESORG_ID
