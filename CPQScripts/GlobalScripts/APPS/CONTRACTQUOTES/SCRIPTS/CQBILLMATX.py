@@ -660,7 +660,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 						
 						ESTVAL_INGL_CURR = IQ.ESTVAL_INGL_CURR,
 						BILLING_VALUE_INGL_CURR = IQ.BILLING_VALUE_INGL_CURR,
-						ESTVAL_INDT_CURR = IQ.ESTVAL_INDT_CURR,
+						ESTVAL_INDT_CURR = IQ.ESTVAL_INDT_CURR
 					
 					FROM SAQIBP
 						INNER JOIN 
