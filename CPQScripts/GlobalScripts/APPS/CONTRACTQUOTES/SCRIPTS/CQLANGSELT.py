@@ -565,7 +565,8 @@ def insert_quote_billing_plan():
 	try:
 		Y1ED = GetYear1EndDate.LastUpdateDate
 		d1 = '{}-{}-{}'.format(Y1ED.Month, Y1ED.Day, Y1ED.Year)
-		Quote.SetGlobal('Year1EndDate', str(d1))		
+		Quote.SetGlobal('Year1EndDate', str(d1))
+		Trace.Write('570----Year1EndDate--'+str(d1))		
 	except:
 		Trace.Write('570------')
 		pass
