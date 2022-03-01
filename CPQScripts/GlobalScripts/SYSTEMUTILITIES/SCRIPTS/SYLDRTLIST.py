@@ -3383,7 +3383,7 @@ class SYLDRTLIST:
 							if str(ObjectName) == "SAQDOC":
 								img_list.append('STATUS')
 							if value123 in img_list:
-								value1234 = re.sub(r'\[|\]|\"','',value1234)
+								value1234 = re.sub(r'\[|\]|\"','',str(value1234))
 								Trace.Write("CHKZ_J_3_1"+str(value1234))
 								new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + str(value1234) + '">' + str(imgValue) + "</abbr>")
 							else:
@@ -3397,7 +3397,7 @@ class SYLDRTLIST:
 										value1234 = str(value1234).encode('utf-8').decode('utf-8')
 									except:
 										value1234 = value1234
-									value1234 = re.sub(r'\[|\]|\"','',value1234)
+									value1234 = re.sub(r'\[|\]|\"','',str(value1234))
 									Trace.Write("CHKZ_J_3_1"+str(value1234))
 									new_dict[str(value123)] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")
 								else:
