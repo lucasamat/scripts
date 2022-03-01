@@ -43,8 +43,8 @@ if contract_quote_record_obj:
     #account_record_id = contract_quote_record_obj.ACCOUNT_RECORD_ID
     contract_start_date = contract_quote_record_obj.CONTRACT_VALID_FROM
     contract_end_date = contract_quote_record_obj.CONTRACT_VALID_TO
-    contract_currency = contract_quote_record_obj.QUOTE_CURRENCY
-    contract_currency_record_id = contract_quote_record_obj.QUOTE_CURRENCY_RECORD_ID
+    #contract_currency = contract_quote_record_obj.QUOTE_CURRENCY
+    #contract_currency_record_id = contract_quote_record_obj.QUOTE_CURRENCY_RECORD_ID
     c4c_quote_id = contract_quote_record_obj.C4C_QUOTE_ID
     source_contract_id = contract_quote_record_obj.SOURCE_CONTRACT_ID
 else:
@@ -58,8 +58,8 @@ else:
     #account_name = None
     contract_start_date = None
     contract_end_date = None
-    contract_currency = None
-    contract_currency_record_id = None
+    #contract_currency = None
+    #contract_currency_record_id = None
     c4c_quote_id = None
     source_contract_id = None
 def get_res(self, query_string, table_total_rows):
