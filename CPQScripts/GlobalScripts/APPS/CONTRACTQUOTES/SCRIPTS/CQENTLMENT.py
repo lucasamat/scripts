@@ -2182,7 +2182,7 @@ class Entitlements:
 					validto = cy+cm+cd
 				Trace.Write('2159----------'+str(User.UserName)+str(account_info.get('SOLD TO'))+str(account_info.get('SHIP TO')))
 
-				CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.quote_id,self.revision_recordid,auth)
+				CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),'["00'+str(account_info.get('SHIP TO'))+'"]',salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.quote_id,self.revision_recordid,auth)
 
 
 		except:
