@@ -8900,7 +8900,6 @@ class SYLDRTLIST:
 										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
 							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 					elif RECORD_ID == "SYOBJR-00005":
-						
 						Query_Obj = ObjSYLDRTLIST.SPARE_PARTS_ORDERING(select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs)
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)	
 					else:
@@ -9584,7 +9583,7 @@ class SYLDRTLIST:
 
 	def SPARE_PARTS_ORDERING(self,select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs):
 		
-		select_obj_str=''.join(('PRICING_STATUS,',select_obj_str))
+		#select_obj_str=''.join(('PRICING_STATUS,',select_obj_str))
 		
 		Trace.Write("PRICING_STATUS--->"+str(select_obj_str))
 
