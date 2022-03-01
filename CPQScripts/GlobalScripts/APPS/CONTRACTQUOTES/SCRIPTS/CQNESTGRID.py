@@ -177,7 +177,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 				+ str(TreeParentParam)
 				+ "'"
 			)
-	elif TreeParam == "Fab Locations":
+	elif TreeParam == "Fab Locations" or TreeParam == "Customer Information":
 		Trace.Write("Fab22")
 		if str(where_string)!="":
 			where_string = " AND "+str(where_string)
