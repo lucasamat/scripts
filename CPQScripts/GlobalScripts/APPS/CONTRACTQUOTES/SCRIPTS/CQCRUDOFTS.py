@@ -307,7 +307,7 @@ def sending_equipment_insert():
                                 relocation_equp_type = "SENDING EQUIPMENT" if "Sending Account -" in tree_param else "RECEIVING EQUIPMENT" if "Receiving Account -" in tree_param else "",
                             )
                         )
-            Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id))
+        Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id))
 
 
 def receiving_equipment_insert():
@@ -447,7 +447,7 @@ def receiving_equipment_insert():
                             )
                         )
             
-            Sql.RunQuery(
+        Sql.RunQuery(
                     """INSERT SAQFGB(
                         FABLOCATION_ID,
                         FABLOCATION_NAME,
@@ -500,7 +500,7 @@ def receiving_equipment_insert():
                                         fab = get_fab,
                                     )
                     )		
-            Sql.RunQuery(
+        Sql.RunQuery(
                     """
                         INSERT SAQFEA (
                             QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,
@@ -630,12 +630,12 @@ except:
     A_Values = ""
 
 if subtab_name == "Sending Fab Locations":
-    def sending_fablocation_insert(values,all_values,A_Keys,A_Values):
+    sending_fablocation_insert(values,all_values,A_Keys,A_Values)
 elif subtab_name == "Sending Equipment":
-    def sending_equipment_insert(values,all_values,A_Keys,A_Values):
+    sending_equipment_insert(values,all_values,A_Keys,A_Values)
 elif subtab_name == "Receiving Fab Locations":
-    def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
+    receiving_fablocation_insert(values,all_values,A_Keys,A_Values)
 elif subtab_name == "Receiving Equipment":
-    def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
+    receiving_equipment_insert(values,all_values,A_Keys,A_Values)
     
         
