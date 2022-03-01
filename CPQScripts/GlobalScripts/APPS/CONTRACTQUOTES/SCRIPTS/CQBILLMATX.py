@@ -88,7 +88,131 @@ def _insert_billing_matrix():
 	billingmatrix_create()
 	#BM_line_item_end_time = time.time()		
 	return True
+def insert_item_per_billing(total_months=1, billing_date='',billing_end_date ='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
+	get_billing_cycle = get_billing_type = ''
+	#Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
+	Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
+	for data,val in get_billling_data_dict.items():
+		if 'AGS_'+str(service_id)+'_PQB_BILCYC' in data:
+			get_billing_cycle = val
+		elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
+			get_billing_type =val
+	#Trace.Write('get_billing_cycle---'+str(get_billing_cycle))
+	Trace.Write(str(service_id)+'----billing_type---'+str(get_billing_type)+'--CYCLE---'+str(get_billing_cycle))
+	if get_billing_cycle == "Monthly":				
+		get_val =12
+	elif str(get_billing_cycle).upper() == "QUARTERLY":			
+		get_val = 4
+	elif str(get_billing_cycle).upper() == "ANNUALLY":				
+		get_val = 1
+	else:				
+		get_val =12
+	amount_column_split = amount_column.replace('_',' ')
+	if service_id == "Z0117":
+		get_total_sum  = Sql.GetFirst("SELECT SUM({amount_column}) as estsum FROM SAQRIT WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'  and SERVICE_ID='Z0117'".format(QuoteRecordId=contract_quote_rec_id,
+		RevisionRecordId=quote_revision_rec_id,amount_column=amount_column))
+		if get_total_sum:
+			Sql.RunQuery("""INSERT SAQIBP (
+					
+					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID,DOC_CURRENCY, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,ESTVAL_INDT_CURR,
+					QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
+					BILLING_DATE, BILLING_YEAR,
+					EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
+					SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
+				) 
+				SELECT top 1
+					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
+					{billing_end_date} as BILLING_END_DATE,
+					{BillingDate} as BILLING_START_DATE,
+					{amount_column} AS ANNUAL_BILLING_AMOUNT,
+					0  as BILLING_VALUE,
+					0  as  BILLING_VALUE_INGL_CURR,
+					'{billing_type}' as BILLING_TYPE,
+					SAQRIT.LINE AS LINE,
+					SAQSCO.QUOTE_ID,
+					{amount_column} AS DOC_CURRENCY,
+					SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,	
+					SAQRIT.COMVAL_INGL_CURR	 as COMMITTED_VALUE_INGL_CURR,
+					{amount_column}	as 	ESTVAL_INGL_CURR,
+					{amount_column}	as 	ESTVAL_INDT_CURR,		
+					SAQSCO.QUOTE_RECORD_ID,
+					SAQSCO.QTEREV_ID,
+					SAQSCO.QTEREV_RECORD_ID,
+					{BillingDate} as BILLING_DATE,						
+					'{amount_column_split}' as BILLING_YEAR,
+					SAQSCO.EQUIPMENT_DESCRIPTION,
+					SAQSCO.EQUIPMENT_ID,									
+					SAQSCO.EQUIPMENT_RECORD_ID,						
+					'' as QTEITMCOB_RECORD_ID,
+					SAQSCO.SERVICE_DESCRIPTION,
+					SAQSCO.SERVICE_ID,
+					SAQSCO.SERVICE_RECORD_ID, 
+					''  as GREENBOOK,
+					''  as  GREENBOOK_RECORD_ID,
+					SAQSCO.SERIAL_NO AS SERIAL_NUMBER,
+					SAQSCO.WARRANTY_START_DATE,
+					SAQSCO.WARRANTY_END_DATE,    
+					{UserId} as CPQTABLEENTRYADDEDBY, 
+					GETDATE() as CPQTABLEENTRYDATEADDED
+					FROM SAQSCO (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK LEFT JOIN SAQIBP (NOLOCK) on SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID AND
+					EXISTS (SELECT * FROM  SAQIBP (NOLOCK) WHERE SAQIBP.ANNUAL_BILLING_AMOUNT <> SAQRIT.NET_PRICE AND SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID)
+					WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'   and SAQRIT.ESTIMATED_VALUE  IS NOT NULL  AND SAQRIT.OBJECT_ID IS NOT NULL )A """.format(
+					UserId=user_id, QuoteRecordId=contract_quote_rec_id,
+					RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
+					BillingDate=billing_date,
+					get_val=get_val,
+					service_id = service_id,billing_type =get_billing_type,amount_column=get_total_sum.estsum,amount_column_split=amount_column_split))
+			Sql.RunQuery("""INSERT SAQIBP (					
+						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,DOC_CURRENCY,ESTVAL_INDT_CURR,
+						QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
+						BILLING_DATE, BILLING_YEAR,
+						EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
+						SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
+					) 
+					SELECT top 1
+						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
+						{billing_end_date} as BILLING_END_DATE,
+						{BillingDate} as BILLING_START_DATE,
+						{amount_column} AS ANNUAL_BILLING_AMOUNT,
+						0  as BILLING_VALUE,
+						0  as  BILLING_VALUE_INGL_CURR,
+						'{billing_type}' as BILLING_TYPE,
+						LINE,
+						QUOTE_ID,
+						QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,
+						
+						COMVAL_INGL_CURR as COMMITTED_VALUE_INGL_CURR,
+						{amount_column}	as 	ESTVAL_INGL_CURR,
+						{amount_column} AS DOC_CURRENCY,
+						{amount_column}	as 	ESTVAL_INDT_CURR,	
+						QUOTE_RECORD_ID,
+						QTEREV_ID,
+						QTEREV_RECORD_ID,
+						{BillingDate} as BILLING_DATE,						
+						'{amount_column_split}' as BILLING_YEAR,
+						'' as EQUIPMENT_DESCRIPTION,
+						'' as EQUIPMENT_ID,									
+						'' as EQUIPMENT_RECORD_ID,						
+						'' as QTEITMCOB_RECORD_ID,
+						SERVICE_DESCRIPTION,
+						SERVICE_ID,
+						SERVICE_RECORD_ID, 
+						''  as GREENBOOK,
+						''  as GREENBOOK_RECORD_ID,
+						'' AS SERIAL_NUMBER,
+						'' as WARRANTY_START_DATE,
+						'' as WARRANTY_END_DATE,    
+						{UserId} as CPQTABLEENTRYADDEDBY, 
+						GETDATE() as CPQTABLEENTRYDATEADDED
+					FROM  SAQRIT (NOLOCK) 
+					WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND  ESTIMATED_VALUE IS NOT NULL AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{service_id}' AND (OBJECT_ID  IS NULL OR OBJECT_ID = '')""".format(
+						UserId=user_id, QuoteRecordId=contract_quote_rec_id,
+						RevisionRecordId=quote_revision_rec_id,
+						BillingDate=billing_date,billing_end_date=billing_end_date,
+						get_val=get_val,
+						service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 
+						
 def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date ='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
 	get_billing_cycle = get_billing_type = ''
 	#Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
@@ -311,110 +435,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 	else:
-		if service_id == "Z0117":
-			get_total_sum  = Sql.GetFirst("SELECT SUM({amount_column}) as estsum FROM SAQRIT WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'  and SERVICE_ID='Z0117'".format(QuoteRecordId=contract_quote_rec_id,
-			RevisionRecordId=quote_revision_rec_id,amount_column=amount_column))
-			if get_total_sum:
-				Sql.RunQuery("""INSERT SAQIBP (
-						
-						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID,DOC_CURRENCY, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,ESTVAL_INDT_CURR,
-						QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
-						BILLING_DATE, BILLING_YEAR,
-						EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
-						SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
-					) 
-					SELECT top 1
-						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
-						{billing_end_date} as BILLING_END_DATE,
-						{BillingDate} as BILLING_START_DATE,
-						{amount_column} AS ANNUAL_BILLING_AMOUNT,
-						0  as BILLING_VALUE,
-						0  as  BILLING_VALUE_INGL_CURR,
-						'{billing_type}' as BILLING_TYPE,
-						SAQRIT.LINE AS LINE,
-						SAQSCO.QUOTE_ID,
-						ISNULL({amount_column}, 0) / {get_val} AS DOC_CURRENCY,
-						SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,	
-						SAQRIT.COMVAL_INGL_CURR	 as COMMITTED_VALUE_INGL_CURR,
-						ISNULL({amount_column}, 0) / {get_val}	as 	ESTVAL_INGL_CURR,
-						ISNULL({amount_column}, 0) / {get_val}	as 	ESTVAL_INDT_CURR,		
-						SAQSCO.QUOTE_RECORD_ID,
-						SAQSCO.QTEREV_ID,
-						SAQSCO.QTEREV_RECORD_ID,
-						{BillingDate} as BILLING_DATE,						
-						'{amount_column_split}' as BILLING_YEAR,
-						SAQSCO.EQUIPMENT_DESCRIPTION,
-						SAQSCO.EQUIPMENT_ID,									
-						SAQSCO.EQUIPMENT_RECORD_ID,						
-						'' as QTEITMCOB_RECORD_ID,
-						SAQSCO.SERVICE_DESCRIPTION,
-						SAQSCO.SERVICE_ID,
-						SAQSCO.SERVICE_RECORD_ID, 
-						''  as GREENBOOK,
-						''  as  GREENBOOK_RECORD_ID,
-						SAQSCO.SERIAL_NO AS SERIAL_NUMBER,
-						SAQSCO.WARRANTY_START_DATE,
-						SAQSCO.WARRANTY_END_DATE,    
-						{UserId} as CPQTABLEENTRYADDEDBY, 
-						GETDATE() as CPQTABLEENTRYDATEADDED
-						FROM SAQSCO (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK LEFT JOIN SAQIBP (NOLOCK) on SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID AND
-						EXISTS (SELECT * FROM  SAQIBP (NOLOCK) WHERE SAQIBP.ANNUAL_BILLING_AMOUNT <> SAQRIT.NET_PRICE AND SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID)
-						WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'   and SAQRIT.ESTIMATED_VALUE  IS NOT NULL  AND SAQRIT.OBJECT_ID IS NOT NULL )A """.format(
-						UserId=user_id, QuoteRecordId=contract_quote_rec_id,
-						RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
-						BillingDate=billing_date,
-						get_val=get_val,
-						service_id = service_id,billing_type =get_billing_type,amount_column=get_total_sum.estsum,amount_column_split=amount_column_split))
-				Sql.RunQuery("""INSERT SAQIBP (					
-							QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,DOC_CURRENCY,ESTVAL_INDT_CURR,
-							QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
-							BILLING_DATE, BILLING_YEAR,
-							EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
-							SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
-						) 
-						SELECT top 1
-							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
-							{billing_end_date} as BILLING_END_DATE,
-							{BillingDate} as BILLING_START_DATE,
-							{amount_column} AS ANNUAL_BILLING_AMOUNT,
-							0  as BILLING_VALUE,
-							0  as  BILLING_VALUE_INGL_CURR,
-							'{billing_type}' as BILLING_TYPE,
-							LINE,
-							QUOTE_ID,
-							QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,
-							
-							COMVAL_INGL_CURR as COMMITTED_VALUE_INGL_CURR,
-							ISNULL({amount_column}, 0) / {get_val}	as 	ESTVAL_INGL_CURR,
-							ISNULL({amount_column}, 0) / {get_val} AS DOC_CURRENCY,
-							ISNULL({amount_column}, 0) / {get_val}	as 	ESTVAL_INDT_CURR,	
-							QUOTE_RECORD_ID,
-							QTEREV_ID,
-							QTEREV_RECORD_ID,
-							{BillingDate} as BILLING_DATE,						
-							'{amount_column_split}' as BILLING_YEAR,
-							'' as EQUIPMENT_DESCRIPTION,
-							'' as EQUIPMENT_ID,									
-							'' as EQUIPMENT_RECORD_ID,						
-							'' as QTEITMCOB_RECORD_ID,
-							SERVICE_DESCRIPTION,
-							SERVICE_ID,
-							SERVICE_RECORD_ID, 
-							''  as GREENBOOK,
-							''  as GREENBOOK_RECORD_ID,
-							'' AS SERIAL_NUMBER,
-							'' as WARRANTY_START_DATE,
-							'' as WARRANTY_END_DATE,    
-							{UserId} as CPQTABLEENTRYADDEDBY, 
-							GETDATE() as CPQTABLEENTRYDATEADDED
-						FROM  SAQRIT (NOLOCK) 
-						WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND  ESTIMATED_VALUE IS NOT NULL AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{service_id}' AND (OBJECT_ID  IS NULL OR OBJECT_ID = '')""".format(
-							UserId=user_id, QuoteRecordId=contract_quote_rec_id,
-							RevisionRecordId=quote_revision_rec_id,
-							BillingDate=billing_date,billing_end_date=billing_end_date,
-							get_val=get_val,
-							service_id = service_id,billing_type =get_billing_type,amount_column=get_total_sum.estsum,amount_column_split=amount_column_split))		
-		elif service_id == "Z0009":
+				
+		if service_id == "Z0009":
 			Sql.RunQuery("""INSERT SAQIBP (
 						
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID,DOC_CURRENCY, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,ESTVAL_INDT_CURR,
@@ -736,7 +758,40 @@ def billingmatrix_create():
 				#Log.Info(str(get_billing_type)+'--475--'+str(get_ent_bill_cycle))
 				billing_month_end = 0
 				entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
-				if str(get_ent_bill_cycle).upper() == "MONTHLY" or str(get_ent_bill_cycle).upper() == "ONE ITEM PER QUOTE":
+				if str(get_ent_bill_cycle).upper() == "ONE ITEM PER QUOTE":
+					if billing_day in (29,30,31):
+						if start_date.month == 2:
+							isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
+							end_day = 29 if isLeap(start_date.year) else 28
+							start_date = start_date.replace(day=end_day)
+						elif start_date.month in (4, 6, 9, 11) and billing_day == 31:
+							start_date = start_date.replace(day=30)
+						else:
+							start_date = start_date.replace(day=billing_day)
+					else:
+						start_date = start_date.replace(day=billing_day)
+					end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
+					#end_date = str(contract_end_date).split(' ')[0]
+					diff1 = end_date - start_date
+
+					avgyear = 365.2425        # pedants definition of a year length with leap years
+					avgmonth = 365.2425/12.0  # even leap years have 12 months
+					years, remainder = divmod(diff1.days, avgyear)
+					years, months = int(years), int(remainder // avgmonth)            
+					
+					total_months = years * 12 + months
+					for index in range(0, total_months+1):
+						Trace.Write('index--'+str(index))
+						billing_month_end += 1
+						insert_item_per_billing(total_months=total_months, 
+												billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+													Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
+													),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+													Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
+													), amount_column="YEAR_"+str((index/12) + 1),
+													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
+				
+				elif str(get_ent_bill_cycle).upper() == "MONTHLY" :
 					if billing_day in (29,30,31):
 						if start_date.month == 2:
 							isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
