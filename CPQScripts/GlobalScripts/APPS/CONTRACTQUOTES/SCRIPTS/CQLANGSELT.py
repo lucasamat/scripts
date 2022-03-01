@@ -523,7 +523,7 @@ def insert_quote_billing_plan():
 		Quote.SetGlobal('M11_Y5', str(M11_Y5))
 		M12_Y5 = SUM_YEAR5.MONTH_12
 		Quote.SetGlobal('M12_Y5', str(M12_Y5))
-	GetYear1EndDate = SqlHelper.GetFirst("""SELECT
+	GetYear1EndDate = Sql.GetFirst("""SELECT
    ID,
    (SELECT MAX(convert(date, LastUpdateDate))
 	  FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
@@ -533,7 +533,7 @@ def insert_quote_billing_plan():
 
 	#DATES_YEAR_1 = SqlHelper.GetFirst("SELECT MONTH_1, MONTH_1, MONTH_2, MONTH_3, MONTH_4, MONTH_5, MONTH_6, MONTH_7, MONTH_8, MONTH_9, MONTH_10, MONTH_10, MONTH_11, MONTH_12 FROM #QT__Billing_Matrix_Header(NOLOCK) WHERE QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '4'")
 
-	GetYear2EndDate = SqlHelper.GetFirst("""SELECT
+	GetYear2EndDate = Sql.GetFirst("""SELECT
 	ID,
 	(SELECT MAX(convert(date, LastUpdateDate))
 		FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
