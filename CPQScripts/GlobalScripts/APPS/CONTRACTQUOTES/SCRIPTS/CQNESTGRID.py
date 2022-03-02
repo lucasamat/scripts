@@ -1664,6 +1664,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	Columns = [
 		#"QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID",
 		"EQUIPMENTCATEGORY_ID",
+		"INCLUDED",
 		"SERIAL_NUMBER",
 		"ASSEMBLY_ID",
 		"ASSEMBLY_DESCRIPTION",
@@ -1772,7 +1773,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		if sale_type != "TOOL RELOCATION":
 			if TreeParam == 'Fab Locations' or TreeParam == "Customer Information":
 				child_obj_recid = Sql.GetList(
-					"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
+					"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,INCLUDED,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
 					+ str(recid)
 					+ "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
 					+ " AND QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ) m where m.ROW BETWEEN ".format(
@@ -1838,7 +1839,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		elif sale_type == "TOOL RELOCATION":
 			if TreeParam == 'Fab Locations' or TreeParam == "Customer Information":
 				child_obj_recid = Sql.GetList(
-					"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
+					"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,INCLUDED,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
 					+ str(recid)
 					+ "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
 					+ " and QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
@@ -1951,6 +1952,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			chld_dict["QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
 				"SAQFEA", str(child.QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID)
 			)
+			chld_dict["INCLUDED"] = ('<abbr id ="" title="' + str(child.INCLUDED) + '">' + str(child.INCLUDED) + "</abbr>")
 			chld_dict["EQUIPMENTCATEGORY_ID"] = ('<abbr id ="" title="' + str(child.EQUIPMENTCATEGORY_ID) + '">' + str(child.EQUIPMENTCATEGORY_ID) + "</abbr>") 
 			chld_dict["SERIAL_NUMBER"] = ('<abbr id ="" title="' + str(child.SERIAL_NUMBER) + '">' + str(child.SERIAL_NUMBER) + "</abbr>") 
 			chld_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(child.ASSEMBLY_ID) + '">' + str(child.ASSEMBLY_ID) + "</abbr>")
@@ -3656,10 +3658,10 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
 	if ATTRIBUTE_VALUE is None or ATTRIBUTE_VALUE == "" or ATTRIBUTE_VALUE_STR is None or ATTRIBUTE_VALUE_STR == "":
 		#Trace.Write("empty search --->")
 
-		if TreeParam == 'Fab Locations':
+		if TreeParam == 'Fab Locations' or TreeParam == 'Customer Information':
 			#Trace.Write("Level 1 empty search ---->")
 			child_obj_recid = Sql.GetList(
-				"select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
+				"select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,INCLUDED,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
 				+ str(recid)
 				+ "' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY  {ORDER_BY}".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), ORDER_BY = orderby
@@ -3804,6 +3806,7 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
 			# data formation in Dictonary format.
 			chld_dict["ACTIONS"] = str(Action_str1)
 			chld_dict["QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID"] = str(cld.QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID)
+			chld_dict["INCLUDED"] = str(cld.INCLUDED)
 			chld_dict["EQUIPMENT_ID"] = str(cld.EQUIPMENT_ID)
 			chld_dict["ASSEMBLY_ID"] = str(cld.ASSEMBLY_ID)
 			chld_dict["EQUIPMENTCATEGORY_ID"] = str(cld.EQUIPMENTCATEGORY_ID)
