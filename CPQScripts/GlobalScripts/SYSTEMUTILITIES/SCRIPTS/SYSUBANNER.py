@@ -2653,12 +2653,12 @@ def Related_Sub_Banner(
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
                         send_and_receive = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION FROM SAQTIP (NOLOCK) WHERE CPQ_PARTNER_FUNCTION IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(ContractRecordId),quote_revision_record_id))
                         sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-                        if len(send_and_receive) == 0 and TreeParam == "Fab Locations":
+                        #if len(send_and_receive) == 0 and TreeParam == "Fab Locations":
                             # if sale_type.SALE_TYPE == "NEW":
-                            for btn in multi_buttons:
-                                if "ADD FAB" in btn:
-                                    if quote_status.QUOTE_STATUS != 'APPROVED':
-                                        sec_rel_sub_bnr += (str(btn))
+                        for btn in multi_buttons:
+                            if "ADD FAB" in btn:
+                                if quote_status.QUOTE_STATUS != 'APPROVED':
+                                    sec_rel_sub_bnr += (str(btn))
                         else:
                             sec_rel_sub_bnr += ""
                         # sec_rel_sub_bnr += (
