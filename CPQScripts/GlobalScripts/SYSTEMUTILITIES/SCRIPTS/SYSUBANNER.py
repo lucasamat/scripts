@@ -3166,7 +3166,7 @@ def Related_Sub_Banner(
             if str(subTabName)=="Events" and str(TreeSuperParentParam)!="Z0009":
                 sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_00011_SYOBJ_00974" onclick="PM_FrequencyInlineEdit()" class="btnconfig" >INLINE EDIT</button>')
             elif 'Add-On Products' in str(TreeParam) and ("INCLUDE ADD-ON PRODUCTS" not in sec_rel_sub_bnr) and ("ADD CREDITS" not in sec_rel_sub_bnr):
-                if "ADD FROM LIST" in sec_rel_sub_bnr:
+                if "ADD FROM LIST" in add_button:
                     sec_rel_sub_bnr+= ""
                 else:
                     sec_rel_sub_bnr+= str(add_button)
