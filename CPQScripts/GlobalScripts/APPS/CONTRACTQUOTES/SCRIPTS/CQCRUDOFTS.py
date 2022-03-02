@@ -285,6 +285,103 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
         # Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id))
 
 
+def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
+    master_object_name = "SAQSAF"
+    if values:
+        record_ids = []
+        if all_values:
+            query_string = "SELECT QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID FROM SAQSAF (NOLOCK) WHERE SNDACC_ID = '{acc}' AND  FAB_LOCATION_ID NOT IN  (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' )".format(
+                    acc=Product.GetGlobal("stp_account_id"),
+                    salesorgrecid=salesorg_record_id,
+                    QuoteRecordId=contract_quote_record_id,
+                    RevisionRecordId=quote_revision_record_id
+                )			
+            query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
+                Query_String=query_string
+            )
+            table_count_data = Sql.GetFirst(query_string_for_count)
+            if table_count_data is not None:
+                table_total_rows = table_count_data.count
+            if table_total_rows:
+                record_ids = [data for data in get_res(query_string, table_total_rows)]
+        else:                    
+            record_ids = [
+                CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
+                if value.strip() != "" and master_object_name in value
+                else value
+                for value in values
+            ]
+        batch_group_record_id = str(Guid.NewGuid()).upper()
+        record_ids = str(str(record_ids)[1:-1].replace("'",""))
+        parameter = Sql.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")		
+        primaryQueryItems = Sql.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAFBLC.FAB_LOCATION_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(contract_quote_id)+"'' as QUOTE_ID, ''"+str(contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAFBLC (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAFBLC.FAB_LOCATION_RECORD_ID'")
+        
+        Sql.RunQuery(""" INSERT SAQFBL (FABLOCATION_ID,
+                FABLOCATION_NAME,
+                FABLOCATION_RECORD_ID,
+                ACCOUNT_ID,
+                ACCOUNT_NAME,
+                ACCOUNT_RECORD_ID,
+                QUOTE_ID,
+                QUOTE_RECORD_ID,
+                QTEREV_RECORD_ID,
+                QTEREV_ID,
+                COUNTRY, 
+                COUNTRY_RECORD_ID, 
+                MNT_PLANT_ID, 
+                MNT_PLANT_NAME,
+                MNT_PLANT_RECORD_ID,
+                FABLOCATION_STATUS, 
+                ADDRESS_1, 
+                ADDRESS_2, 
+                CITY, 
+                STATE,
+                STATE_RECORD_ID,
+                QUOTE_FABLOCATION_RECORD_ID,
+                CPQTABLEENTRYADDEDBY,
+                CPQTABLEENTRYDATEADDED, 
+                CpqTableEntryModifiedBy,
+                CpqTableEntryDateModified) 
+                SELECT fab_location.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FABLOCATION_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,'{UserId}' as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM 
+                    (SELECT DISTINCT 
+                    SAQSAF.SNDFBL_ID,
+                    SAQSAF.SNDFBL_NAME,
+                    SAQSAF.SNDFBL_RECORD_ID,
+                    SAQSAF.ACCOUNT_ID,
+                    SAQSAF.SNDACC_NAME,
+                    SAQSAF.SNDACC_RECORD_ID,
+                    '{QuoteRecId}' as QUOTE_RECORD_ID,
+                    '{QuoteId}' as QUOTE_ID,
+                    '{QuoteName}' as QUOTE_NAME,
+                    '{RevisionId}' as QTEREV_ID,
+                    '{RevisionRecordId}' as QTEREV_RECORD_ID,
+                    SAQSAF.COUNTRY,
+                    SAQSAF.COUNTRY_RECORD_ID,
+                    SAQSAF.MNT_PLANT_ID,
+                    SAQSAF.MNT_PLANT_NAME,
+                    SAQSAF.MNT_PLANT_RECORD_ID,
+                    SAQSAF.SNDFBL_STATUS AS FABLOCATION_STATUS,
+                    SAQSAF.ADDRESS_1,
+                    SAQSAF.ADDRESS_2,
+                    SAQSAF.CITY,
+                    SAQSAF.STATE,
+                    SAQSAF.STATE_RECORD_ID
+                    FROM SYSPBT(NOLOCK)
+                    JOIN SAQSAF(NOLOCK) ON SAQSAF.FAB_LOCATION_RECORD_ID = SYSPBT.BATCH_RECORD_ID 
+                WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}')fab_location """.format(UserName=User.UserName,
+                UserId=User.Id,
+                QuoteRecId=contract_quote_record_id,
+                RevisionId=quote_revision_id,
+                RevisionRecordId=quote_revision_record_id,
+                QuoteName=contract_quote_name))
+                    
+        
+        Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+                                    BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id
+                                )
+                            )
+
+
 def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
     master_object_name = "SAQASE"
     if values:
