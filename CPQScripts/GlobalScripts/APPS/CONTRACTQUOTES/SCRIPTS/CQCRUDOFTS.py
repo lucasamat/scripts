@@ -154,13 +154,14 @@ def sending_fablocation_insert(values,all_values,A_Keys,A_Values):
                 MAFBLC.STATE_RECORD_ID
                 FROM SYSPBT(NOLOCK)
                 JOIN MAFBLC(NOLOCK) ON MAFBLC.FAB_LOCATION_RECORD_ID = SYSPBT.BATCH_RECORD_ID 
-            WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')fab_location """.format(
+            WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' )fab_location """.format(
             UserName=User.UserName,
             UserId=User.Id,
             QuoteId =contract_quote_id ,
             QuoteRecId=contract_quote_record_id,
             RevisionId=quote_revision_id,
-            RevisionRecordId=quote_revision_record_id))
+            RevisionRecordId=quote_revision_record_id,
+            BatchGroupRecordId = BatchGroupRecordId))
         
         
         Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
