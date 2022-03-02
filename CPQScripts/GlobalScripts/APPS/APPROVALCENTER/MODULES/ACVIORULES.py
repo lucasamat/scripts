@@ -1067,15 +1067,15 @@ class ViolationConditions:
     def ItemApproval(self,RecordId,aprchName,service):
         
         if aprchName == "NSDR":
-            res = NSDREnt(RecordId,service)
+            res = self.NSDREnt(RecordId,service)
         elif aprchName == "BD":
-            res = BDEnt(RecordId,service)
+            res = self.BDEnt(RecordId,service)
         elif aprchName == "BD Head":
-            res = BDHeadEnt(RecordId,service)
+            res = self.BDHeadEnt(RecordId,service)
         elif aprchName == "Regional BD":
-            res = RegionalBDHead(RecordId,service)
+            res = self.RegionalBDHead(RecordId,service)
         elif aprchName == "Global BD Head":
-            res = GlobalBDHead(RecordId,service)
+            res = self.GlobalBDHead(RecordId,service)
         
         return res
     # def insertviolationtableafterRecall(self, chainrecordId, RecordId, ObjectName, Objh_Id):
