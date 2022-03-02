@@ -17,8 +17,8 @@ class ContractQuoteItemAnnualizedPricing:
 		self.user_id = str(User.Id)
 		self.user_name = str(User.UserName)		
 		self.datetime_value = datetime.datetime.now()
-		self.contract_quote_record_id = kwargs.get('contract_quote_record_id')
-		self.contract_quote_revision_record_id = kwargs.get('contract_quote_revision_record_id')
+		self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+		self.contract_quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 		self.records = kwargs.get('records')
 		
 	
@@ -35,6 +35,7 @@ class ContractQuoteItemAnnualizedPricing:
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.LINE_ID = '{LineId}'""".format(UpdateFields=update_fields_str, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id))
 					if 'ADDCOF' in update_fields_str:
 						self._rolldown_from_coeff_level(line_id)
+						self._rolldown_from_total_price_level(line_id)
 					else:
 						self._rolldown_from_total_price_level(line_id)
 
@@ -130,8 +131,7 @@ class ContractQuoteItemAnnualizedPricing:
 		Sql.RunQuery("UPDATE SAQICO SET TCWOSS = SQ.TOTAL_COST_WOSEEDSTOCK, TCWISS = SQ.TOTAL_COST_WISEEDSTOCK FROM SAQICO (NOLOCK) JOIN (SELECT QUOTE_RECORD_ID,SERVICE_ID,SUM(CONVERT(FLOAT,TOTAL_COST_WOSEEDSTOCK)) AS TOTAL_COST_WOSEEDSTOCK,SUM(CONVERT(FLOAT,TOTAL_COST_WISEEDSTOCK)) AS TOTAL_COST_WISEEDSTOCK,QTEREV_RECORD_ID,LINE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE_ID = '{LineId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID,LINE)SQ ON SQ.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SQ.SERVICE_ID = SAQICO.SERVICE_ID AND SQ.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND SQ.LINE = SAQICO.LINE".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id))
 
 parameters = {}
-parameters['contract_quote_record_id']=str(Param.ContractQuoteRecordId)
-parameters['contract_quote_revision_record_id']=str(Param.ContractQuoteRevisionRecordId)
+parameters['records']=str(Param.Records)
 
 contract_quote_item_obj = ContractQuoteItemAnnualizedPricing(**parameters)
 contract_quote_item_obj._do_opertion()
