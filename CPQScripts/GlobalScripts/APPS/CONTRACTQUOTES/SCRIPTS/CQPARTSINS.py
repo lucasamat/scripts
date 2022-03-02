@@ -276,7 +276,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
                                 CASE WHEN TEMP_TABLE.PROD_INSP_MEMO='' THEN null ELSE TEMP_TABLE.PROD_INSP_MEMO END AS PROD_INSP_MEMO,
                                 CASE WHEN TEMP_TABLE.SHELF_LIFE='' THEN null ELSE TEMP_TABLE.SHELF_LIFE END AS SHELF_LIFE,
-                                'ACQUIRING...' AS PRICING_STATUS,
+                                'ACQUIRING' AS PRICING_STATUS,
 		                        '{sold_to}' as STPACCOUNT_ID,
                                 '{ship_to}' as SHPACCOUNT_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
