@@ -352,7 +352,6 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
                     SAQSAF.SNDACC_RECORD_ID,
                     '{QuoteRecId}' as QUOTE_RECORD_ID,
                     '{QuoteId}' as QUOTE_ID,
-                    '{QuoteName}' as QUOTE_NAME,
                     '{RevisionId}' as QTEREV_ID,
                     '{RevisionRecordId}' as QTEREV_RECORD_ID,
                     SAQSAF.COUNTRY,
@@ -371,6 +370,7 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
                 WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')fab_location """.format(
                 UserName=User.UserName,
                 UserId=User.Id,
+                QuoteId =contract_quote_id ,
                 QuoteRecId=contract_quote_record_id,
                 RevisionId=quote_revision_id,
                 RevisionRecordId=quote_revision_record_id,
