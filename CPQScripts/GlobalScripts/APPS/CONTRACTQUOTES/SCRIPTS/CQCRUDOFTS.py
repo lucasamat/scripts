@@ -284,8 +284,7 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                         {UserId} as CpqTableEntryModifiedBy,
                                         GETDATE() as CpqTableEntryDateModified,
                                         MAEQUP.SUBSTRATE_SIZE,
-                                        MAEQUP.TECHNOLOGY,
-                                        '{is_temptool}' AS TEMP_TOOL 
+                                        MAEQUP.TECHNOLOGY
                                         FROM MAEQUP (NOLOCK)
                                         JOIN SYSPBT (NOLOCK) ON SYSPBT.BATCH_RECORD_ID = MAEQUP.EQUIPMENT_RECORD_ID JOIN MAEQCT(NOLOCK)
                                         ON MAEQUP.EQUIPMENTCATEGORY_ID = MAEQCT.EQUIPMENTCATEGORY_ID
