@@ -42,7 +42,6 @@ try:
 
 	audit_fields = SqlHelper.GetFirst("SELECT USERS.USERNAME,SAQDOC.CpqTableEntryDateModified,SAQDOC.CPQTABLEENTRYDATEADDED,SAQDOC.CPQTABLEENTRYADDEDBY,SAQDOC.CpqTableEntryModifiedBy from USERS inner join SAQDOC(NOLOCK)  on SAQDOC.CpqTableEntryModifiedBy = USERS.ID  ")
 
-	Log.Info('16-------spare quote---'+str(recid))
 	extline_pri = 0.00
 	# QuoteproductTotals = Quote.QuoteTables["SAQITM"]
 
@@ -51,7 +50,6 @@ try:
 	# 	extline_pri += float(i['EXTENDED_UNIT_PRICE'])
 	# 	Quote.SetGlobal('SubtotalLineItems', str(extline_pri))
 	Quote.GetCustomField('SubtotalLineItems').Content = str(extline_pri)
-	Log.Info('52--extline_pri------'+str(extline_pri))
 
 
 
@@ -65,7 +63,6 @@ try:
 	QuoteproductTotalsco = Quote.QuoteTables["SAQICO"]
 
 	for i in QuoteproductTotalsco.Rows:
-		Log.Info('SAQICO---'+str(i['EXTENDED_PRICE']))
 		#exts_price += float(i['EXTENDED_PRICE'])
 		exts_price += float(i['EXTENDED_PRICE'] +(i['TAX']))
 		Quote.SetGlobal('SubtotalTools', str(exts_price))
@@ -78,26 +75,19 @@ try:
 
 	getdynamicrcords = SqlHelper.GetList("Select * from QT__SAQIFP where QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 	for val in getdynamicrcords:
-		Log.Info('16---spare quote--UNIT_PRICE entry--')
 		extt_price += float(val.UNIT_PRICE)
 		fptotal += float(val.EXTENDED_PRICE)
 		Quote.SetGlobal('SubtotalspareTools', str(extt_price))
-		Log.Info('16--75---extt_price--UNIT_PRICE--SAQIFP--SUBTOTSL---'+str(extt_price))
 		Quote.SetGlobal('SubtotalTools', str(extt_price))
 		Quote.SetGlobal('totalspareTools', str(fptotal))
 	Quote.GetCustomField('SubtotalTools').Content = str(extt_price)
-	Log.Info('16---spare quote--extt_price--UNIT_PRICE--SAQIFP--SUBTOTSL---'+str(extt_price))
-	Log.Info('16---spare quote---TOTAL_PRICE--SAQIFP--total--'+str(fptotal))
 
 	ext_price = 0.00
 	QuoteproductTotals = Quote.QuoteTables["SAQICO"]
-	Log.Info('150------QuoteproductTotalsfp----'+str(QuoteproductTotals.Rows.Count))
 	for i in QuoteproductTotals.Rows:
-		Log.Info('93---'+str(ext_price))
 		#ext_price += float(i['SUBTOTAL'])
 		#ext_price = round(float(ext_price) + float(i['SUBTOTAL']), 2)
 		Quote.GetCustomField('SubtotalTools').Content = str(ext_price)
-	Log.Info(str(ext_price))
 	tableInfo = SqlHelper.GetTable("SAQDOC")
 except:
 	pass
@@ -123,16 +113,13 @@ def english_doc():
 		Quote.GetCustomField('Line_Item_Detail_View').Content = 'Yes'
 		Quote.GetCustomField('Condensed_View').Content = 'Yes'
 		Quote.SetGlobal('condview', 'Yes')
-		Log.Info('Checked')
 	elif lidv == False:
 		Quote.GetCustomField('Line_Item_Detail_View').Content = 'No'
 		Quote.SetGlobal('condview', 'No')
-		Log.Info('unChecked')
 	sp_view = Param.Spare_view
 	'''if sp_view == True:
 		Quote.GetCustomField('Include_Spare_Item_Detail').Content = 'Yes'
 		Quote.SetGlobal('spareview', 'Yes')
-		Log.Info('Checked')
 	elif sp_view == False:
 		Quote.GetCustomField('Include_Spare_Item_Detail').Content = 'No'
 		Quote.SetGlobal('spareview', 'No')
@@ -146,7 +133,6 @@ def english_doc():
 		mm = (end_date. year - start_date. year) * 12 + (end_date. month - start_date. month)
 		quotient, remainder = divmod(mm, 12)
 		getyears = quotient + (1 if remainder > 0 else 0)
-		Log.Info('getyears-----'+str(getyears))
 		Quote.GetCustomField('GetBillingMatrix_Year').Content = str(getyears)
 	# Quote.Save()
 	
@@ -171,22 +157,18 @@ def chinese_doc():
 	if cv == True:
 		Quote.GetCustomField('Condensed_View').Content = 'Yes'
 		Quote.SetGlobal('condview', 'Yes')
-		Log.Info('Checked')
 	elif cv == False:
 		Quote.GetCustomField('Condensed_View').Content = 'No'
 		Quote.SetGlobal('condview', 'No')
-		Log.Info('unChecked')
 	Quote.Save()
 	lidv = Param.Line_View
 	if lidv == True:
 		Quote.GetCustomField('Line_Item_Detail_View').Content = 'Yes'
 		Quote.GetCustomField('Condensed_View').Content = 'Yes'
 		Quote.SetGlobal('condview', 'Yes')
-		Log.Info('Checked')
 	elif lidv == False:
 		Quote.GetCustomField('Line_Item_Detail_View').Content = 'No'
 		Quote.SetGlobal('condview', 'No')
-		Log.Info('unChecked')
 	
 	recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
 	getyears = ""
@@ -197,7 +179,6 @@ def chinese_doc():
 		mm = (end_date. year - start_date. year) * 12 + (end_date. month - start_date. month)
 		quotient, remainder = divmod(mm, 12)
 		getyears = quotient + (1 if remainder > 0 else 0)
-		Log.Info('getyears-----'+str(getyears))
 		Quote.GetCustomField('GetBillingMatrix_Year').Content = str(getyears)
 	Quote.Save()
 	
@@ -216,27 +197,21 @@ def chinese_doc():
 	
 def fpm_doc():
 	cv = Param.Condensed_View
-	Log.Info('cv'+str(cv))
 	if cv == True:
 		Quote.GetCustomField('Condensed_View').Content = 'Yes'
 		Quote.SetGlobal('condview', 'Yes')
-		Log.Info('Checked')
 	elif cv == False:
 		Quote.GetCustomField('Condensed_View').Content = 'No'
 		Quote.SetGlobal('condview', 'No')
-		Log.Info('unChecked')
 	Quote.Save()
 	lidv = Param.Line_View
-	Log.Info('lidv'+str(lidv))
 	if lidv == True:
 		Quote.GetCustomField('Line_Item_Detail_View').Content = 'Yes'
 		Quote.GetCustomField('Condensed_View').Content = 'Yes'
 		Quote.SetGlobal('condview', 'Yes')
-		Log.Info('Checked'+str(Quote.GetCustomField('Line_Item_Detail_View').Content))
 	elif lidv == False:
 		Quote.GetCustomField('Line_Item_Detail_View').Content = 'No'
 		Quote.SetGlobal('condview', 'No')
-		Log.Info('unChecked')
 	Quote.Save()
 	
 	Quote.Save()

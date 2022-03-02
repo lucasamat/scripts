@@ -26,7 +26,6 @@ except:
     quote_revision_record_id =  ""
 try:
     def getting_cps_tax(service_id):
-        Log.Info("Function_call_cps")
         contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
         webclient = System.Net.WebClient()
@@ -79,7 +78,6 @@ try:
                 if data['conditionType'] == 'ZWSC' and data['conditionTypeDescription'] == 'VAT Asia':
                     tax_percentage = data['conditionRate']
                     break
-            Log.Info("tax_percentage"+str(tax_percentage))
             update_tax = "UPDATE SAQRIS SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQRIS.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIS.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SERVICE_ID = '{service_id}'".format(TaxPercentage=tax_percentage,service_id=service_id,QuoteRecordId = contract_quote_record_id,QuoteRevisionRecordId=quote_revision_record_id)
             Sql.RunQuery(update_tax)
 

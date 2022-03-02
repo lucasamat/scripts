@@ -735,7 +735,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			if quote_line_item_obj:
 				quote_revision_obj = Sql.GetFirst("SELECT QTEREV_ID,QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' ".format(QuoteRecordId=contract_quote_rec_id))
 				if quote_revision_obj:
-					Log.Info("====> QTPOSTACRM called from ==> "+str(quote_revision_obj.QUOTE_ID)+'--'+str(quote_revision_obj.QTEREV_ID))
+					#Log.Info("====> QTPOSTACRM called from ==> "+str(quote_revision_obj.QUOTE_ID)+'--'+str(quote_revision_obj.QTEREV_ID))
 					ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':quote_revision_obj.QUOTE_ID,'REVISION_ID':quote_revision_obj.QTEREV_ID, 'Fun_type':'cpq_to_sscm'})
 					SqlHelper.GetFirst("sp_executesql @T=N'update A SET A.STATUS = (CASE WHEN A.STATUS =''ERROR'' THEN ''ERROR'' WHEN A.STATUS =''PARTIALLY PRICED'' THEN ''ERROR'' END) from SAQRIT A inner join ( select SERVICE_ID,LINE,SAQICO.QUOTE_ID from SAQICO WHERE SAQICO.QUOTE_ID = ''"+str(quote_revision_obj.QUOTE_ID)+"'' group by SERVICE_ID,LINE,SAQICO.QUOTE_ID Having count(*) > 1 ) as od on od.LINE = A.LINE AND od.SERVICE_ID = A.SERVICE_ID '")
 					SqlHelper.GetFirst("sp_executesql @T=N'update A SET A.STATUS = (CASE WHEN A.STATUS =''ACQUIRING'' THEN ''ACQUIRING'' WHEN A.STATUS =''ERROR'' THEN ''ERROR'' END) from SAQRIT A inner join ( select SERVICE_ID,LINE,SAQICO.QUOTE_ID from SAQICO WHERE SAQICO.QUOTE_ID = ''"+str(quote_revision_obj.QUOTE_ID)+"'' group by SERVICE_ID,LINE,SAQICO.QUOTE_ID Having count(*) > 1 ) as od on od.LINE = A.LINE AND od.SERVICE_ID = A.SERVICE_ID '")
@@ -750,7 +750,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				contract_quote_id = contract_quote_obj.QUOTE_ID
 			count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_ID= '"+str(contract_quote_id)+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")      
 			if count.CNT==0:
-				Log.Info("PART PRICING IFLOW STARTED WHEN USER CLICK COMPLETE STAGE!")
+				#Log.Info("PART PRICING IFLOW STARTED WHEN USER CLICK COMPLETE STAGE!")
 				CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(contract_quote_id),str(quote_revision_record_id))
 				#If Qty is null for all parts to call this function with specific parameters
 				###calling script for saqris,saqtrv insert

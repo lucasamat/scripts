@@ -56,7 +56,6 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 + str(c4c_quote_object_id)
                 +"</c4c_quote_object_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
             )
-        Log.Info("requestdata for quote header--"+str(requestdata))
     elif writeback == "opportunity_header":
         ##To Fetch the values from revision table....
         revision_obj = Sql.GetFirst("select REVISION_STATUS,DOC_CURRENCY,ISNULL(NET_VALUE_INGL_CURR,0) AS NET_VALUE_INGL_CURR,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
@@ -95,7 +94,6 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 + str(opportunity_object_id)
                 +"</opportunity_object_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
             )
-        Log.Info("requestdata for opportunity_header--"+str(requestdata))
     elif writeback == "approver_list":
         contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
         approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND (APPROVALSTATUS = 'APPROVAL REQUIRED' OR APPROVALSTATUS = 'REQUESTED')".format(contract_quote_id.QUOTE_ID))
@@ -122,7 +120,6 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 + str(role_code_id)
                 +"</role_code_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
             )
-            Log.Info("requestdata--"+str(requestdata)+"QUOTE_ID"+str(contract_quote_id.QUOTE_ID))
 
             Trace.Write("requestdata"+str(requestdata))
         # LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='CPQ_TO_C4C_WRITEBACK'")

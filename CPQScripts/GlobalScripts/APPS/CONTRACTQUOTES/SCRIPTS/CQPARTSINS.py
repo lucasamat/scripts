@@ -50,7 +50,7 @@ class SyncFPMQuoteAndHanaDatabase:
             spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
             #spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_id)+"'' ' ")
             temp_table_count = SqlHelper.GetFirst("SELECT count(*) as CNT FROM {}".format(str(spare_parts_temp_table_name)))
-            Log.Info("TempTablecount--->"+str(temp_table_count.CNT))
+            #Log.Info("TempTablecount--->"+str(temp_table_count.CNT))
             '''Log.Info("saqspt+++"+str("""
                             INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,STPACCOUNT_ID, SHPACCOUNT_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
@@ -379,7 +379,7 @@ class SyncFPMQuoteAndHanaDatabase:
     def prepare_backup_table(self):
         res = ''.join(str(ele) for ele in self.response)
         cnt = res.count("Material_Eligibility")
-        Log.Info("first response----->2"+str(res))
+        #Log.Info("first response----->2"+str(res))
         if cnt == 1:
             res = re.sub(r'\[',"['",res)
             res= re.sub(r'\]',"']",res)
@@ -389,13 +389,13 @@ class SyncFPMQuoteAndHanaDatabase:
             res= re.sub(r'\]',"}",res)
             res = re.sub(r':',' : ',res)
             res= re.sub(r'\}\{',', ',res)
-            Log.Info("sec response----->2"+str(res))
+            #Log.Info("sec response----->2"+str(res))
         if self.response:
             response = ','.join(str(ele) for ele in self.response)
             record_count=0
             if cnt ==1:
                 response=res
-            Log.Info("PrepareBackuptable----->2"+str(response))
+            #Log.Info("PrepareBackuptable----->2"+str(response))
             response=response.replace("null",'""')
             response=response.replace("None",'""')
             response=response.replace("true",'1')
@@ -459,8 +459,8 @@ class SyncFPMQuoteAndHanaDatabase:
                 temp_value =''
                 
                 col_flag=1
-            Log.Info("Total Records from HANA::"+str(record_count))
-            Log.Info("Total Parts List:: " +str(self.part_numbers))
+            #Log.Info("Total Records from HANA::"+str(record_count))
+            #Log.Info("Total Parts List:: " +str(self.part_numbers))
             if record_count >0:
                 self._insert_spare_parts()
                 self.update_records_saqspt()  
@@ -494,11 +494,11 @@ class SyncFPMQuoteAndHanaDatabase:
         partnos = str(self.part_numbers)
         partnos = re.sub(r"'",'',partnos)
         requestdata = '{"materials":'+str(partnos)+',"soldtoParty":"'+str(self.account_info['SOLD TO'])+'","salesOrg":"'+str(self.sales_org_id)+'"}'
-        Log.Info("RData-->"+str(requestdata))
+        #Log.Info("RData-->"+str(requestdata))
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = auth
         self.arp_carp_response = webclient.UploadString('https://carp-arp.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com',str(requestdata))
-        Log.Info("Resarpcarp-->"+str(self.arp_carp_response))
+        #Log.Info("Resarpcarp-->"+str(self.arp_carp_response))
         if self.arp_carp_response:
             self.update_arp_carp()
             

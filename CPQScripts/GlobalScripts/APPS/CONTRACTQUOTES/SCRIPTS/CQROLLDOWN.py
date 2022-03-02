@@ -19,7 +19,7 @@ userName = str(User.UserName)
 import CQADDONPRD
 
 gettodaydate = datetime.datetime.now().strftime("%Y-%m-%d")
-Log.Info('ROLL DWON STARTS-CQROLLDWON---')
+#Log.Info('ROLL DWON STARTS-CQROLLDWON---')
 def cloneEntitlement(ProductPartnumber):
 	webclient = System.Net.WebClient()
 	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
@@ -34,7 +34,7 @@ def cloneEntitlement(ProductPartnumber):
 	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 	requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
 	
-	Log.Info("requestdata--" + str(requestdata))
+	#Log.Info("requestdata--" + str(requestdata))
 	response1 = webclient.UploadString(Request_URL, str(requestdata))
 	response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
 	return eval(response1)
@@ -303,16 +303,16 @@ def CoveredObjEntitlement():
 				ancillary_dict[rec.SERVICE_ID] = 'INSERT'
 
 	if ancillary_dict:
-		Log.Info("inside ancillary1111"+str(ancillary_dict)+'--'+str(Qt_rec_id))
+		#Log.Info("inside ancillary1111"+str(ancillary_dict)+'--'+str(Qt_rec_id))
 		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
 		for anc_key,anc_val in ancillary_dict.items():
-			Log.Info("vall--"+str(anc_key)  )
+			#Log.Info("vall--"+str(anc_key)  )
 			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{anc_key}' AND QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID = '{service_id}' AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{rev_rec_id}')".format(anc_key =anc_key,Qt_rec_id = Qt_rec_id,rev_rec_id = rev_rec_id,service_id = TreeParam ))
 			
 			if anc_val == "INSERT" :
 				
 				ActionType = "{}_SERVICE".format(anc_val)
-				Log.Info("inside ancillary")
+				#Log.Info("inside ancillary")
 				ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where_condition, "quote_record_id": Qt_rec_id, "revision_rec_id": rev_rec_id, "ActionType":ActionType, "ancillary_obj": anc_key, "service_id" : TreeParam , "tablename":"SAQTSE"})
 	
 	##ancillary entitlement insert
@@ -365,7 +365,7 @@ def CoveredObjItemEntitlement():
 					JOIN SAQICO (NOLOCK) ON SAQICO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQICO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ
 				""".format(UserId=User.Id, QuoteRecordId=Qt_rec_id, ServiceId=TreeParam)
-	Log.Info("SAQIEN_query--235-----"+str(SAQIEN_query))
+	#Log.Info("SAQIEN_query--235-----"+str(SAQIEN_query))
 	Sql.RunQuery(SAQIEN_query)
 	#insert to SAQSPT
 	SAQSPEaddon_query = """
@@ -381,7 +381,7 @@ def CoveredObjItemEntitlement():
 					JOIN SAQSPT (NOLOCK) ON SAQSPT.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSPT.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ
 				""".format(UserId=User.Id, QuoteRecordId=Qt_rec_id, ServiceId=TreeParam)
-	Log.Info("SAQSPEaddon_query--251---------"+str(SAQSPEaddon_query))
+	#Log.Info("SAQSPEaddon_query--251---------"+str(SAQSPEaddon_query))
 	Sql.RunQuery(SAQSPEaddon_query)
 	#insert to SAQSPT
 	# SAQIPE_query = """
