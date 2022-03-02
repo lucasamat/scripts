@@ -2380,6 +2380,7 @@ def POPUPLISTVALUEADDNEW(
 
 				invs = str(invs).strip()
 				qstring = Header_details.get(str(invs)) or ""
+				Trace.Write("qstring_CHKZ "+str(qstring))
 				if key == 0:
 					sec_str += (
 						'<th data-field="'
