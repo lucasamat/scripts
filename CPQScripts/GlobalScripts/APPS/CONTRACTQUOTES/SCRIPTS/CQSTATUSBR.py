@@ -698,13 +698,15 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 							Sql.RunQuery("DELETE FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' ".format(Quote.CompositeNumber))
 							Sql.RunQuery("DELETE FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%'".format(Quote.CompositeNumber))
 						#Approval Trigger - Start		
-						
-						violationruleInsert = ACVIORULES.ViolationConditions()
-						header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-						if header_obj:			
-							violationruleInsert.InsertAction(
-															header_obj.RECORD_ID, quote_revision_record_id, "SAQTRV"
-															)
+						try:
+							violationruleInsert = ACVIORULES.ViolationConditions()
+							header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+							if header_obj:			
+								violationruleInsert.InsertAction(
+																header_obj.RECORD_ID, quote_revision_record_id, "SAQTRV"
+																)
+						except:
+							Trace.Write("violation error")
 						# Approval Trigger - End
 					'''except:
 						Trace.Write("EXCEPT APPROVAL TRIGGER")'''
