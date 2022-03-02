@@ -565,6 +565,7 @@ class ViolationConditions:
                         service = [x.SERVICE_ID for x in getService]
                         if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
                             splitval = str(result.WHERE_CONDITION_01).split("OR")
+                            Trace.Write("SPLITVAL--->"+str(splitval))
                             for s in splitval:
                                 count = 0
                                 if "PRENVL" in s and count == 0:
@@ -581,8 +582,9 @@ class ViolationConditions:
                                         Select_Query = Sql.GetFirst(
                                         "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
                                         )
+                                        Trace.Write("585 SELECT QUERY--->"+str(Select_Query))
                                     except:
-                                        Trace.Write("Exception Occurs in the Aciorules")
+                                        Trace.Write("Exception Else 587")
                                     if Select_Query is not None:
                                         fflag = 1
                                     elif Select_Query is None and fflag != 1:
