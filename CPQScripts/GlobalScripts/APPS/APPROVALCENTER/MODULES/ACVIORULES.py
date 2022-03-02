@@ -947,8 +947,9 @@ class ViolationConditions:
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
                     
-        Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+        
         if len(line) != 0:
+            Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
             return 0    
@@ -978,8 +979,9 @@ class ViolationConditions:
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
                     
-        Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+        
         if len(line) != 0:
+            Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
             return 0    
@@ -1008,8 +1010,9 @@ class ViolationConditions:
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
                     
-        Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+        
         if len(line) != 0:
+            Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
             return 0
@@ -1033,8 +1036,9 @@ class ViolationConditions:
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
                     
-        Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+        
         if len(line) != 0:
+            Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
             return 0
@@ -1059,8 +1063,9 @@ class ViolationConditions:
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
                     
-        Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+        
         if len(line) != 0:
+            Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
             return 0
