@@ -347,7 +347,7 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
                     SAQSAF.SNDFBL_ID,
                     SAQSAF.SNDFBL_NAME,
                     SAQSAF.SNDFBL_RECORD_ID,
-                    SAQSAF.ACCOUNT_ID,
+                    SAQSAF.SNDACC_ID,
                     SAQSAF.SNDACC_NAME,
                     SAQSAF.SNDACC_RECORD_ID,
                     '{QuoteRecId}' as QUOTE_RECORD_ID,
@@ -367,7 +367,7 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
                     SAQSAF.STATE_RECORD_ID
                     FROM SYSPBT(NOLOCK)
                     JOIN SAQSAF(NOLOCK) ON SAQSAF.QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID = SYSPBT.BATCH_RECORD_ID 
-                WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')fab_location """.format(
+                WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')fab_location """.format(
                 UserName=User.UserName,
                 UserId=User.Id,
                 QuoteId =contract_quote_id ,
