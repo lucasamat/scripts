@@ -2384,7 +2384,7 @@ def POPUPLISTVALUEADDNEW(
 					sec_str += (
 						'<th data-field="'
 						+ str(invs)
-						+ '" data-formatter="nsosKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ '" data-formatter="nsoKeyHyperLink" data-sortable="true" data-title-tooltip="'
 						+ str(qstring)
 						+ '" data-filter-control="input">'
 						+ str(qstring)
@@ -2401,7 +2401,7 @@ def POPUPLISTVALUEADDNEW(
 						+ "</th>"
 					)
 			sec_str += '</tr></thead><tbody class ="user_id" ></tbody></table>'
-			sec_str += '<div id="nsos_footer"></div>'
+			sec_str += '<div id="nso_footer"></div>'
 			values_list = ""
 			values_lists = ""
 			a_test = []
