@@ -2641,7 +2641,7 @@ class ContractQuoteItem:
 						--ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
 						null as LINE,
 						{ObjectName}.ASSEMBLY_ID as OBJECT_ID,
-						'NSO' as OBJECT_TYPE,
+						'ASSEMBLY' as OBJECT_TYPE,
 						{ObjectName}.FABLOCATION_ID as FABLOCATION_ID,
 						{ObjectName}.FABLOCATION_NAME as FABLOCATION_NAME,
 						{ObjectName}.FABLOCATION_RECORD_ID as FABLOCATION_RECORD_ID,			
