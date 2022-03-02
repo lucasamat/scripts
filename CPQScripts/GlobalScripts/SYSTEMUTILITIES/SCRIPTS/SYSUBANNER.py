@@ -2702,6 +2702,7 @@ def Related_Sub_Banner(
                                 sec_rel_sub_bnr += (str(add_button))
                         else:
                             sec_rel_sub_bnr += (str(add_button))
+                        
                     # sec_rel_sub_bnr += (
                     #     '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
                     #     ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">ADD OFFERINGS</button>'
@@ -2721,7 +2722,12 @@ def Related_Sub_Banner(
                     #         ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">INCLUDE ADD-ON PRODUCTS</button>'
                     #     )     
                 
-                
+                elif CurrentRecordId =="SYOBJR-00005":
+                    if quote_status.QUOTE_STATUS !='APPROVED':
+                        Trace.Write("inside----FPM")
+                        if str(TreeParam) == "Z0110" or str(Treeparam) == "Z0108":
+                            sec_rel_sub_bnr += ( '<button id="PRICE__' + str(buttonid) + '" onclick="Pricing(this,' ')" class="btnconfig" data-target="" data-toggle="modal">PRICING</button>')
+
 
                 elif CurrentRecordId == "SYOBJR-98800" and TreeParam != "Fab Locations":
                     Trace.Write('98800=====')
