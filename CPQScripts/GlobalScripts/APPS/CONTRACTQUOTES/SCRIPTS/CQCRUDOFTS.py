@@ -314,7 +314,7 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
         batch_group_record_id = str(Guid.NewGuid()).upper()
         record_ids = str(str(record_ids)[1:-1].replace("'",""))
         parameter = Sql.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")		
-        primaryQueryItems = Sql.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAFBLC.FAB_LOCATION_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(contract_quote_id)+"'' as QUOTE_ID, ''"+str(contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAFBLC (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAFBLC.FAB_LOCATION_RECORD_ID'")
+        primaryQueryItems = Sql.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT SAQSAF.QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(contract_quote_id)+"'' as QUOTE_ID, ''"+str(contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM SAQSAF (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = SAQSAF.QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID'")
         
         Sql.RunQuery(""" INSERT SAQFBL (FABLOCATION_ID,
                 FABLOCATION_NAME,
@@ -367,13 +367,15 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
                     SAQSAF.STATE,
                     SAQSAF.STATE_RECORD_ID
                     FROM SYSPBT(NOLOCK)
-                    JOIN SAQSAF(NOLOCK) ON SAQSAF.FAB_LOCATION_RECORD_ID = SYSPBT.BATCH_RECORD_ID 
-                WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}')fab_location """.format(UserName=User.UserName,
+                    JOIN SAQSAF(NOLOCK) ON SAQSAF.QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID = SYSPBT.BATCH_RECORD_ID 
+                WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')fab_location """.format(
+                UserName=User.UserName,
                 UserId=User.Id,
                 QuoteRecId=contract_quote_record_id,
                 RevisionId=quote_revision_id,
                 RevisionRecordId=quote_revision_record_id,
-                QuoteName=contract_quote_name))
+                QuoteName=contract_quote_name,
+                BatchGroupRecordId=batch_group_record_id))
                     
         
         Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
