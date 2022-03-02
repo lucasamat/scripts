@@ -199,6 +199,9 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                 else value
                 for value in values
             ]
+            
+        ##To Fetch fab location details...
+        get_fab_details = Sql.GetFirst("SELECT FABLOCATION_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME from MAEQUP WHERE FABLOCATION_ID = '{}'".format(Product.GetGlobal("sending_fab_id")))    
         batch_group_record_id = str(Guid.NewGuid()).upper()
         record_ids = str(str(record_ids)[1:-1].replace("'",""))
         parameter = Sql.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")		
@@ -206,15 +209,15 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
         
         Sql.RunQuery(
                             """
-                                INSERT SAQFEQ (
-                                    QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
-                                    EQUIPMENT_ID,
-                                    EQUIPMENT_RECORD_ID,
-                                    EQUIPMENT_DESCRIPTION,                            
-                                    FABLOCATION_ID,
-                                    FABLOCATION_NAME,
-                                    FABLOCATION_RECORD_ID,
-                                    SERIAL_NUMBER,
+                                INSERT SAQASE (
+                                    QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID,
+                                    SND_EQUIPMENT_ID,
+                                    SND_EQUIPMENT_RECORD_ID,
+                                    SND_EQUIPMENT_DESCRIPTION,                            
+                                    SNDFBL_ID,
+                                    SNDFBL_NAME,
+                                    SNDFBL_RECORD_ID,
+                                    #SERIAL_NUMBER,
                                     QUOTE_RECORD_ID,
                                     QUOTE_ID,
                                     QUOTE_NAME,
@@ -226,33 +229,33 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                     EQUIPMENTCATEGORY_ID,
                                     EQUIPMENTCATEGORY_DESCRIPTION,
                                     EQUIPMENT_STATUS,
-                                    PBG,
+                                    #PBG,
                                     GREENBOOK,
                                     GREENBOOK_RECORD_ID,
                                     MNT_PLANT_RECORD_ID,
                                     MNT_PLANT_ID,
                                     MNT_PLANT_NAME,
-                                    WARRANTY_START_DATE,
-                                    WARRANTY_END_DATE,
-                                    SALESORG_ID,
-                                    SALESORG_NAME,
-                                    SALESORG_RECORD_ID,
-                                    CUSTOMER_TOOL_ID,
+                                    #WARRANTY_START_DATE,
+                                    #WARRANTY_END_DATE,
+                                    #SALESORG_ID,
+                                    #SALESORG_NAME,
+                                    #SALESORG_RECORD_ID,
+                                    #CUSTOMER_TOOL_ID,
                                     CPQTABLEENTRYADDEDBY,
                                     CPQTABLEENTRYDATEADDED,
                                     CpqTableEntryModifiedBy,
                                     CpqTableEntryDateModified,
-                                    RELOCATION_FAB_TYPE,
-                                    RELOCATION_EQUIPMENT_TYPE,WAFER_SIZE,
-                                    TECHNOLOGY,
-                                    TEMP_TOOL
+                                    WAFER_SIZE,
+                                    TECHNOLOGY
                                     ) SELECT
-                                        CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
+                                        CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID,
                                         MAEQUP.EQUIPMENT_ID,
                                         MAEQUP.EQUIPMENT_RECORD_ID,
                                         MAEQUP.EQUIPMENT_DESCRIPTION,  
-                                        {fab_id},{fab_name},{fab_recid},                    
-                                        MAEQUP.SERIAL_NO,
+                                        {fab_id},
+                                        {fab_name},
+                                        {fab_recid},                    
+                                        #MAEQUP.SERIAL_NO,
                                         '{QuoteRecId}' as QUOTE_RECORD_ID,
                                         '{QuoteId}' as QUOTE_ID,
                                         '{QuoteName}' as QUOTE_NAME,
@@ -264,20 +267,22 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                         MAEQUP.EQUIPMENTCATEGORY_ID,
                                         MAEQCT.EQUIPMENTCATEGORY_DESCRIPTION,
                                         MAEQUP.EQUIPMENT_STATUS,
-                                        MAEQUP.PBG,
+                                        #MAEQUP.PBG,
                                         MAEQUP.GREENBOOK,
                                         MAEQUP.GREENBOOK_RECORD_ID,
                                         MAEQUP.MNT_PLANT_RECORD_ID,
                                         MAEQUP.MNT_PLANT_ID,
                                         MAEQUP.MNT_PLANT_NAME,
-                                        {warranty_start},{warranty_end},{salesorg_id},{salesorg_name},{salesorg_recid},
-                                        MAEQUP.CUSTOMER_TOOL_ID,
+                                        # {warranty_start},
+                                        # {warranty_end},
+                                        # {salesorg_id},
+                                        # {salesorg_name},
+                                        # {salesorg_recid},
+                                        #MAEQUP.CUSTOMER_TOOL_ID,
                                         '{UserName}' AS CPQTABLEENTRYADDEDBY,
                                         GETDATE() as CPQTABLEENTRYDATEADDED,
                                         {UserId} as CpqTableEntryModifiedBy,
                                         GETDATE() as CpqTableEntryDateModified,
-                                        '{relocation_fab_type}' AS RELOCATION_FAB_TYPE,
-                                        '{relocation_equp_type}' AS RELOCATION_EQUIPMENT_TYPE,
                                         MAEQUP.SUBSTRATE_SIZE,
                                         MAEQUP.TECHNOLOGY,
                                         '{is_temptool}' AS TEMP_TOOL 
@@ -288,15 +293,9 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                         SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
                                         AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
                                 """.format(
-                                fab_id=" '"+str(get_fab_details.FABLOCATION_ID)+"' AS FABLOCATION_ID" if tool_type=="TEMP_TOOL" else " MAEQUP.FABLOCATION_ID ",
-                                fab_name=" '"+str(get_fab_details.FABLOCATION_NAME)+"' AS FABLOCATION_NAME" if tool_type=="TEMP_TOOL" else " MAEQUP.FABLOCATION_NAME ",
-                                fab_recid = " '"+str(get_fab_details.FABLOCATION_RECORD_ID)+"' AS FABLOCATION_RECORD_ID" if tool_type=="TEMP_TOOL" else " MAEQUP.FABLOCATION_RECORD_ID ",
-                                salesorg_id = " '"+str(get_salesorg.SALESORG_ID)+"' AS SALESORG_ID" if tool_type=="TEMP_TOOL" else " MAEQUP.SALESORG_ID ",
-                                salesorg_name = " '"+str(get_salesorg.SALESORG_NAME)+"' AS SALESORG_NAME" if tool_type=="TEMP_TOOL" else " MAEQUP.SALESORG_NAME ",
-                                salesorg_recid = " '"+str(get_salesorg.SALESORG_RECORD_ID)+"' AS SALESORG_RECORD_ID" if tool_type=="TEMP_TOOL" else " MAEQUP.SALESORG_RECORD_ID ",
-                                warranty_start = " NULL AS WARRANTY_START_DATE" if tool_type=="TEMP_TOOL" else " MAEQUP.WARRANTY_START_DATE ",
-                                warranty_end = " NULL AS WARRANTY_END_DATE" if tool_type=="TEMP_TOOL" else " MAEQUP.WARRANTY_END_DATE ",
-                                is_temptool = "TRUE" if tool_type=="TEMP_TOOL" else "",
+                                fab_id=Product.GetGlobal("sending_fab_id"),
+                                fab_name= get_fab_details.FABLOCATION_NAME,
+                                fab_recid = get_fab_details.FABLOCATION_RECORD_ID,
                                 treeparam=tree_param,
                                 treeparentparam=tree_parent_level_0,
                                 QuoteId=contract_quote_id,
@@ -306,9 +305,7 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                 QuoteRecId=contract_quote_record_id,
                                 RevisionId=quote_revision_id,
                                 RevisionRecordId=quote_revision_record_id,
-                                QuoteName=contract_quote_name,
-                                relocation_fab_type = "SENDING FAB" if "Sending Account -" in tree_param else "RECEIVING FAB" if "Receiving Account -" in tree_param else "",
-                                relocation_equp_type = "SENDING EQUIPMENT" if "Sending Account -" in tree_param else "RECEIVING EQUIPMENT" if "Receiving Account -" in tree_param else "",
+                                QuoteName=contract_quote_name
                             )
                         )
         Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id))
