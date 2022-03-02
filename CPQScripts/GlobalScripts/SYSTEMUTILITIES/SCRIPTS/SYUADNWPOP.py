@@ -1344,7 +1344,7 @@ def POPUPLISTVALUEADDNEW(
 			if where_string:
 				where_string += " AND"
 			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID in {get_fab} AND SALESORG_ID = '{sales_org}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT SND_EQUIPMENT_RECORD_ID FROM SAQASE (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND SNDFBL_ID in {get_fab}  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' )".format(
+				"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID = {get_fab} AND SALESORG_ID = '{sales_org}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT SND_EQUIPMENT_RECORD_ID FROM SAQASE (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND SNDFBL_ID =  {get_fab}  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' )".format(
 					ObjectName = ObjectName,
 					account_id = account_id,
 					get_fab = get_fab,
