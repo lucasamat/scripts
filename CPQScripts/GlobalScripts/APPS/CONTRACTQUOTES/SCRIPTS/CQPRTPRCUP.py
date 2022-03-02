@@ -151,7 +151,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 			start = start + 1000
 			end = end + 1000
 			requestdata = ''
-			#for currencies in ('docCurrency','globalCurrency'):
+			##for currencies in ('docCurrency','globalCurrency'):
 			currencies='globalCurrency'
 			if len(partids) == 1:
 				#Log.Info("**Single-Partids**")
