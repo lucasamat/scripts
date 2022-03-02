@@ -2221,7 +2221,7 @@ class TreeView:
 													# 	pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
 													# 	pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
 													# else:
-													pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(service_id)+'_TSC_NONCNS|AGS_'+str(service_id)+'_TSC_CONSUM|AGS_'+str(service_id)+'_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+													pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(service_id)+'_TSC_NONCNS|AGS_'+str(service_id)+'_TSC_CONADD|AGS_'+str(service_id)+'_TSC_CONSUM|AGS_'+str(service_id)+'_NON_CONSUMABLE)</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="Inclusions"
 												elif subtab_temp_variable in ('Service New Parts','Green New Parts'):
@@ -2230,7 +2230,7 @@ class TreeView:
 													subtab_temp ="New Parts"
 												elif subtab_temp_variable in ('Service Parts List','Green Parts List')  :
 													#if service_id != 'Z0092' :
-													pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(service_id)+'_TSC_NONCNS|AGS_'+str(service_id)+'_TSC_CONSUM|AGS_'+str(service_id)+'_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+													pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(service_id)+'_TSC_NONCNS|AGS_'+str(service_id)+'_TSC_CONADD|AGS_'+str(service_id)+'_TSC_CONSUM|AGS_'+str(service_id)+'_NON_CONSUMABLE)</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
 													# else:
 													# 	pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
@@ -3136,7 +3136,7 @@ class TreeView:
 										updateentXML = greenbook_entitlement_object.ENTITLEMENT_XML
 										flag_excluse=0
 										pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-										pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW)</ENTITLEMENT_ID>')
+										pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW|AGS_[^>]*?_TSC_CONADD)</ENTITLEMENT_ID>')
 										pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions|Yes)</ENTITLEMENT_DISPLAY_VALUE>')
 										for m in re.finditer(pattern_tag, updateentXML):
 											sub_string = m.group(1)
