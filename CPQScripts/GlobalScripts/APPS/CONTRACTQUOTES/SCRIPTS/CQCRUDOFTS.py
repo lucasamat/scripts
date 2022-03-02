@@ -374,7 +374,6 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
                 QuoteRecId=contract_quote_record_id,
                 RevisionId=quote_revision_id,
                 RevisionRecordId=quote_revision_record_id,
-                QuoteName=contract_quote_name,
                 BatchGroupRecordId=batch_group_record_id))
                     
         
