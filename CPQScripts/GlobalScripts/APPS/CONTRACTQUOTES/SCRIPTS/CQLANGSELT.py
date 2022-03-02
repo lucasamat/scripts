@@ -236,7 +236,7 @@ def insert_quote_billing_plan():
 																								FOR BILLING_DATE IN ({PivotColumns})
 																						)AS PVT
 
-																				) OQ WHERE ROW BETWEEN 1 AND 10000 ) AS FQ ORDER BY EQUIPMENT_ID""".format(BillingYear=no_of_year,PivotColumns=pivot_columns,WhereString=Qustr,SelectDateColoumn=select_date_columns))
+																				) OQ WHERE ROW BETWEEN 1 AND 10000 ) AS FQ ORDER BY EQUIPMENT_ID""".format(BillingYear=no_of_year,PivotColumns=pivot_columns,WhereString=Qustr,SelectDateColoumn=select_date_columns,get_ttl_amt=get_ttl_amt))
 					
 						if get_bill_details_obj:
 							
