@@ -1357,11 +1357,11 @@ def POPUPLISTVALUEADDNEW(
 			pop_val = {}
 			where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND SALESORG_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT SND_EQUIPMENT_RECORD_ID FROM SAQASE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SNDFBL_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
 				account_record_id,
-				Product.GetGlobal("TreeParam"),
+				Product.GetGlobal("sending_fab_id"),
 				sales_org,
 				where_string,
 				contract_quote_record_id,
-				Product.GetGlobal("TreeParam"),
+				Product.GetGlobal("sending_fab_id"),
 				quote_revision_record_id,
 			)
 			table_data = Sql.GetList(
