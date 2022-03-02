@@ -296,16 +296,14 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                 fab_id=Product.GetGlobal("sending_fab_id"),
                                 fab_name= get_fab_details.FABLOCATION_NAME,
                                 fab_recid = get_fab_details.FABLOCATION_RECORD_ID,
-                                treeparam=tree_param,
-                                treeparentparam=tree_parent_level_0,
-                                QuoteId=contract_quote_id,
-                                BatchGroupRecordId=batch_group_record_id,
                                 UserName=user_name,
                                 UserId=user_id,
+                                QuoteId=contract_quote_id,
                                 QuoteRecId=contract_quote_record_id,
                                 RevisionId=quote_revision_id,
                                 RevisionRecordId=quote_revision_record_id,
-                                QuoteName=contract_quote_name
+                                QuoteName=contract_quote_name,
+                                BatchGroupRecordId=batch_group_record_id,
                             )
                         )
         Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id))
