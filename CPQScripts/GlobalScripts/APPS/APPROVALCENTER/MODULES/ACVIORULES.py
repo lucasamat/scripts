@@ -973,7 +973,7 @@ class ViolationConditions:
             listofAPI.append(str(x.FIELD_LABEL)+"_"+str(x.API_NAME)+"_"+str(eval("GetSAQICOValue."+ApiName)))
         for x in listofAPI:
             for y in BDHead:
-                if y in x and x.split("_")[2] == BDHead[y]:
+                if y == x and x.split("_")[2] == BDHead[y]:
 
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
