@@ -1663,8 +1663,8 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	)
 	Columns = [
 		#"QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID",
-		"EQUIPMENTCATEGORY_ID",
 		"INCLUDED",
+		"EQUIPMENTCATEGORY_ID",
 		"SERIAL_NUMBER",
 		"ASSEMBLY_ID",
 		"ASSEMBLY_DESCRIPTION",
