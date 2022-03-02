@@ -6745,11 +6745,11 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 					+ "'  and QTEREV_RECORD_ID = '"
 					+ str(RevisionRecordId)
 					+ "' and SERVICE_TYPE = '"
-					+ str(TreeSuperParentParam)
+					+ str(TreeTopSuperParentParam)
 					+ "'and SERVICE_ID = '"
-					+ str(TreeParentParam)
+					+ str(TreeSuperParentParam)
 					+ "' and GREENBOOK = '"
-					+ str(TreeParam)
+					+ str(TreeParentParam)
 					+ "') m where m.ROW BETWEEN "
 					+ str(Page_start)
 					+ " and "
