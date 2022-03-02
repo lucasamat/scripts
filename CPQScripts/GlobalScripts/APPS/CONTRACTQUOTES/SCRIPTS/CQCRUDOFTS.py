@@ -217,7 +217,6 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                     SNDFBL_RECORD_ID,
                                     QUOTE_RECORD_ID,
                                     QUOTE_ID,
-                                    QUOTE_NAME,
                                     QTEREV_ID,
                                     QTEREV_RECORD_ID,
                                     KPU,
@@ -247,7 +246,6 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                         '{fab_recid}' as SNDFBL_RECORD_ID,
                                         '{QuoteRecId}' as QUOTE_RECORD_ID,
                                         '{QuoteId}' as QUOTE_ID,
-                                        '{QuoteName}' as QUOTE_NAME,
                                         '{RevisionId}' as QTEREV_ID,
                                         '{RevisionRecordId}' as QTEREV_RECORD_ID,
                                         MAEQUP.KPU,
@@ -283,7 +281,6 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                 QuoteRecId=contract_quote_record_id,
                                 RevisionId=quote_revision_id,
                                 RevisionRecordId=quote_revision_record_id,
-                                QuoteName= '',
                                 BatchGroupRecordId=batch_group_record_id
                             )
                         )
