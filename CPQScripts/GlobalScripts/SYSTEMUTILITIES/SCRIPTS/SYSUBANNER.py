@@ -2912,7 +2912,7 @@ def Related_Sub_Banner(
         Trace.Write("Submit_approval"+str(Submit_approval))
         # Trace.Write("Quote_item_obj"+str(Quote_item_obj))
         
-        if get_quote_status and (str(quote_status.REVISION_STATUS) == 'PREPARING REVISION' or str(quote_status.REVISION_STATUS) == 'NEW REVISION' or str(quote_status.REVISION_STATUS) == 'RECALLED') and Submit_approval == "True":
+        if get_quote_status and (str(quote_status.REVISION_STATUS) == 'PREPARING REVISION' or str(quote_status.REVISION_STATUS) == 'NEW REVISION' or str(quote_status.REVISION_STATUS) == 'RECALLED' or str(quote_status.REVISION_STATUS) == 'ACQUIRING') and Submit_approval == "True":
             Trace.Write("submit for approval")
             GetSelfAppr = Sql.GetFirst("SELECT CpqTableEntryId FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND APRCHN_ID = 'SELFAPPR'".format(quote_status.QUOTE_ID))
             if GetSelfAppr is not None:
