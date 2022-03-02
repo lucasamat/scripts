@@ -2548,7 +2548,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"SERVICE_ID":ADDON_PRD_ID,
 				"SERVICE_RECORD_ID": get_addon.SERVICE_RECORD_ID,
 				"GL_ACCOUNT_NO": credit_details.HKONT if credit_details.HKONT else '',
-				"SALESORDER_NO": credit_details.BELNR if credit_details.BELNR else ''
+				"SALESORDER_NO": credit_details.ZUONR if credit_details.ZUONR else ''
 			}
 			credit_table_info = Sql.GetTable(table_name)
 			saqrcv_ids = []
