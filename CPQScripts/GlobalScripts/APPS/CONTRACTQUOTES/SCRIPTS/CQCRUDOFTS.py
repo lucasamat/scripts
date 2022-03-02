@@ -206,86 +206,6 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
         record_ids = str(str(record_ids)[1:-1].replace("'",""))
         parameter = Sql.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")		
         primaryQueryItems = Sql.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAEQUP.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(contract_quote_id)+"'' as QUOTE_ID, ''"+str(contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAEQUP (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAEQUP.EQUIPMENT_RECORD_ID'")
-        Log.Info("""
-                                INSERT SAQASE (
-                                    QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID,
-                                    SND_EQUIPMENT_ID,
-                                    SND_EQUIPMENT_RECORD_ID,
-                                    SND_EQUIPMENT_DESCRIPTION,                            
-                                    SNDFBL_ID,
-                                    SNDFBL_NAME,
-                                    SNDFBL_RECORD_ID,
-                                    QUOTE_RECORD_ID,
-                                    QUOTE_ID,
-                                    QUOTE_NAME,
-                                    QTEREV_ID,
-                                    QTEREV_RECORD_ID,
-                                    KPU,
-                                    PLATFORM,
-                                    EQUIPMENTCATEGORY_RECORD_ID,
-                                    EQUIPMENTCATEGORY_ID,
-                                    EQUIPMENTCATEGORY_DESCRIPTION,
-                                    EQUIPMENT_STATUS,
-                                    GREENBOOK,
-                                    GREENBOOK_RECORD_ID,
-                                    MNT_PLANT_RECORD_ID,
-                                    MNT_PLANT_ID,
-                                    MNT_PLANT_NAME,
-                                    CPQTABLEENTRYADDEDBY,
-                                    CPQTABLEENTRYDATEADDED,
-                                    CpqTableEntryModifiedBy,
-                                    CpqTableEntryDateModified,
-                                    WAFER_SIZE,
-                                    TECHNOLOGY
-                                    ) SELECT
-                                        CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID,
-                                        MAEQUP.EQUIPMENT_ID,
-                                        MAEQUP.EQUIPMENT_RECORD_ID,
-                                        MAEQUP.EQUIPMENT_DESCRIPTION,  
-                                        {fab_id},
-                                        {fab_name},
-                                        {fab_recid},
-                                        '{QuoteRecId}' as QUOTE_RECORD_ID,
-                                        '{QuoteId}' as QUOTE_ID,
-                                        '{QuoteName}' as QUOTE_NAME,
-                                        '{RevisionId}' as QTEREV_ID,
-                                        '{RevisionRecordId}' as QTEREV_RECORD_ID,
-                                        MAEQUP.KPU,
-                                        MAEQUP.PLATFORM,
-                                        MAEQUP.EQUIPMENTCATEGORY_RECORD_ID,
-                                        MAEQUP.EQUIPMENTCATEGORY_ID,
-                                        MAEQCT.EQUIPMENTCATEGORY_DESCRIPTION,
-                                        MAEQUP.EQUIPMENT_STATUS,
-                                        MAEQUP.GREENBOOK,
-                                        MAEQUP.GREENBOOK_RECORD_ID,
-                                        MAEQUP.MNT_PLANT_RECORD_ID,
-                                        MAEQUP.MNT_PLANT_ID,
-                                        MAEQUP.MNT_PLANT_NAME,
-                                        '{UserName}' AS CPQTABLEENTRYADDEDBY,
-                                        GETDATE() as CPQTABLEENTRYDATEADDED,
-                                        {UserId} as CpqTableEntryModifiedBy,
-                                        GETDATE() as CpqTableEntryDateModified,
-                                        MAEQUP.SUBSTRATE_SIZE,
-                                        MAEQUP.TECHNOLOGY
-                                        FROM MAEQUP (NOLOCK)
-                                        JOIN SYSPBT (NOLOCK) ON SYSPBT.BATCH_RECORD_ID = MAEQUP.EQUIPMENT_RECORD_ID JOIN MAEQCT(NOLOCK)
-                                        ON MAEQUP.EQUIPMENTCATEGORY_ID = MAEQCT.EQUIPMENTCATEGORY_ID
-                                        WHERE 
-                                        SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
-                                        AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
-                                """.format(
-                                fab_id=Product.GetGlobal("sending_fab_id"),
-                                fab_name= get_fab_details.FABLOCATION_NAME,
-                                fab_recid = get_fab_details.FABLOCATION_RECORD_ID,
-                                UserName=User.UserName,
-                                UserId=User.Id,
-                                QuoteId=contract_quote_id,
-                                QuoteRecId=contract_quote_record_id,
-                                RevisionId=quote_revision_id,
-                                RevisionRecordId=quote_revision_record_id,
-                                QuoteName= '',
-                                BatchGroupRecordId=batch_group_record_id,
-                            ))
         Sql.RunQuery("""
                                 INSERT SAQASE (
                                     QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID,
@@ -323,8 +243,8 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                         MAEQUP.EQUIPMENT_RECORD_ID,
                                         MAEQUP.EQUIPMENT_DESCRIPTION,  
                                         {fab_id} as SNDFBL_ID,
-                                        {fab_name} as SNDFBL_NAME,
-                                        {fab_recid} as SNDFBL_RECORD_ID,
+                                        '{fab_name}' as SNDFBL_NAME,
+                                        '{fab_recid}' as SNDFBL_RECORD_ID,
                                         '{QuoteRecId}' as QUOTE_RECORD_ID,
                                         '{QuoteId}' as QUOTE_ID,
                                         '{QuoteName}' as QUOTE_NAME,
