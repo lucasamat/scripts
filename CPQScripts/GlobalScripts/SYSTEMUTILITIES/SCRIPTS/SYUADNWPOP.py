@@ -2480,7 +2480,7 @@ def POPUPLISTVALUEADDNEW(
 			)
 			stp_account_id = Product.GetGlobal("stp_account_id")
 			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAACNT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAACNT.ACCOUNT_RECORD_ID WHERE MAFBLC.ACCOUNT_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT SRCFBL_ID FROM SAQSCF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(
+				"SELECT COUNT(PRLPBE.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE GREENBOOK NOT IN (SELECT GREENBOOK FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(
 					ObjectName,stp_account_id, contract_quote_record_id,quote_revision_record_id
 				)
 			)
@@ -2505,12 +2505,12 @@ def POPUPLISTVALUEADDNEW(
 
 			if where_string:
 				where_string += " AND"
-			where_string += """ MAFBLC.ACCOUNT_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT SRCFBL_ID FROM SAQSCF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
+			where_string += """  GREENBOOK NOT IN (SELECT GREENBOOK FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
 				stp_account_id, contract_quote_record_id, quote_revision_record_id 
 			)
 
 			table_data = Sql.GetList(
-				"select top {} {} from {} (NOLOCK) JOIN SAACNT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAACNT.ACCOUNT_RECORD_ID {} {} ".format(PerPage,
+				"select top {} {} from {} (NOLOCK) {} {} ".format(PerPage,
 					", ".join(ordered_keys),
 					ObjectName,
 					"WHERE " + where_string if where_string else "",
@@ -2519,7 +2519,7 @@ def POPUPLISTVALUEADDNEW(
 				)
 			)
 			table_data = Sql.GetList(
-				"select {} from {} (NOLOCK) JOIN SAACNT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAACNT.ACCOUNT_RECORD_ID {} {} {}".format(", ".join(ordered_keys),
+				"select {} from {} (NOLOCK) {} {} {}".format(", ".join(ordered_keys),
 					ObjectName,
 					"WHERE " + where_string if where_string else "",
 					order_by,pagination_condition
@@ -2528,7 +2528,7 @@ def POPUPLISTVALUEADDNEW(
 			)
 
 			QueryCountObj = Sql.GetFirst(
-					"select count(*) as cnt from {} (NOLOCK) JOIN SAACNT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAACNT.ACCOUNT_RECORD_ID {} ".format(                    
+					"select count(*) as cnt from {} (NOLOCK) {} ".format(                    
 					ObjectName,
 					"WHERE " + where_string if where_string else ""
 					
@@ -2571,7 +2571,7 @@ def POPUPLISTVALUEADDNEW(
 							new_value_dict["SELECT"] = False """
 
 					for data in row_data:
-						if str(data.Key) == "FAB_LOCATION_RECORD_ID":
+						if str(data.Key) == "PRICEBOOK_ENTRIES_RECORD_ID":
 							pop_val = str(data.Value) + "|Offerings"
 							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 							new_value_dict[data.Key] = cpqidval
