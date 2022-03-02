@@ -5895,7 +5895,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 								qury_str+=" "+key+" LIKE '%"+val+"%' AND "
 					if self.tree_param != '' and self.tree_parent_level_0 == 'Add-On Products' : 
-					#modified for temp tool same multiple equipment
+					#modified for temp tool same multiple equipment need to check for temp
 					#ADDED FOR ADD ON PRODUCT SCENARIO
 						query_string ="select SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, SAQFEQ.EQUIPMENT_ID, SAQFEQ.SERIAL_NUMBER, SAQFEQ.PBG, SAQFEQ.PLATFORM, SAQFEQ.FABLOCATION_ID, SAQFEQ.FABLOCATION_NAME from  SAQFEQ(NOLOCK) JOIN SAQSCO ON SAQSCO.QUOTE_ID = SAQFEQ.QUOTE_ID  AND SAQSCO.EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID AND SAQSCO.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID  WHERE SAQFEQ.QUOTE_RECORD_ID = '{quo_rec_id}' AND SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}' AND {Qury_Str} NOT EXISTS(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID ='{TreeParam}' ) ".format(quo_rec_id=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam = self.tree_param,Qury_Str=qury_str)
 					elif self.tree_param == 'Z0004':
