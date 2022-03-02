@@ -999,8 +999,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			if obj_name =="SAQRDS" and TITLE == "DELIVERY_DATE":
 				get_cpqid = Sql.GetFirst("SELECT CpqTableEntryId from SAQRDS WHERE DELIVERY_PERIOD = '"+str(rec)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 				cpqid = get_cpqid.CpqTableEntryId
-			elif obj_name =="SAQRSP" and TITLE == "QUANTITY":
-				get_cpqid = Sql.GetFirst("SELECT CpqTableEntryId from SAQRSP WHERE PART_NUMBER  = '"+str(rec)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 			else:
 				cpqid = rec.split("-")[1].lstrip("0")
 			##to update changed value in related tables in tool relcoation matrix
