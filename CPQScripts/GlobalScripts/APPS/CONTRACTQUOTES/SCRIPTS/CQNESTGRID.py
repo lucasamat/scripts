@@ -6902,10 +6902,8 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 					+ str(TreeTopSuperParentParam)
 					+ "' and SERVICE_ID = '"
 					+ str(TreeSuperParentParam)
-					+ "' and FABLOCATION_ID = '"
-					+ str(TreeParentParam)
 					+ "' and GREENBOOK = '"
-					+ str(TreeParam) +"' "
+					+ str(TreeParentParam) +"' "
 				)
 		elif TreeTopSuperParentParam == "Complementary Products":
 			Trace.Write('6902--------')
