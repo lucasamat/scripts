@@ -21,9 +21,11 @@ try:
 except:
 	contract_quote_rec_id = ''
 try:
-	quote_revision_rec_id = input_data[-1]	
+	quote_revision_rec_id = input_data[-1]
+	#quote_revision_rec_id =Quote.GetGlobal("quote_revision_record_id")
 except:
 	quote_revision_rec_id =  ""
+	
 
 user_id = str(User.Id)
 user_name = str(User.UserName)
