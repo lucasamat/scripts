@@ -286,6 +286,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		#         + str(TreeParam)
 		#         + "' "
 		#     )  
+		Trace.Write("Chkng_tree_Param "+str(TreeParam))
 		if TreeSuperParentParam.startswith("Sending"):
 			Qstr = (
 				"select top "
