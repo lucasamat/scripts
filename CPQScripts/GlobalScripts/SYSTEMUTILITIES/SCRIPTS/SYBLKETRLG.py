@@ -924,7 +924,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
 		item_lines_record_ids = []
-		if (obj_name in ('SAQSAP','SAQRSP','SAQSPT','SAQGPA','SAQRIS','SAQRDS') and (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeSuperParentParam in ('Comprehensive Services','Complementary Products') or (TreeSuperTopParentParam == "Comprehensive Services") or (TreeParam == 'Quote Items'))):
+		if (obj_name in ('SAQSAP','SAQRSP','SAQSPT','SAQGPA','SAQRIS','SAQRDS') and (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeSuperParentParam in ('Comprehensive Services','Complementary Products') or (TreeSuperTopParentParam == "Comprehensive Services") or (TreeParam == 'Quote Items'))) and not (TITLE == 'QUANTITY' and obj_name == 'SAQRSP'):
 			selected_rows = selectPN if selectPN else selected_rows
 			qury_str = ""
 			Trace.Write(str(CLICKEDID)+'--Values-->'+str(A_Values))
