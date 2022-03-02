@@ -90,7 +90,7 @@ account_info['globalCurrency']= '{"name":"KOMK-HWAER","values":["'+str(glb_curr)
 #curr = 'USD'
 #dis = '01'
 #salesorg = '2034'
-div = '56'
+div = '22'
 
 #UPDATE PRICING PROCEDURE TO SAQITM
 
@@ -113,7 +113,7 @@ Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 
 
 start = 1
-end = 25
+end = 1000
 L = 1
 
 # Taxm1Qurey=Sql.GetFirst("SELECT ISNULL(SRVTAXCLA_ID,1) as SRVTAXCLA_ID FROM SAQITM (NOLOCK) WHERE QUOTE_ID ='{quote}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(quote=QUOTE, revision_rec_id = revision))
@@ -148,8 +148,8 @@ if part_query or ancillary_part_query or fpm_part_query:
 			except:
 				odcc_flag = ['' for r in get_part_query] 
 				str_odcc_flag =''
-			start = start + 25
-			end = end + 25
+			start = start + 1000
+			end = end + 1000
 			requestdata = ''
 			for currencies in ('docCurrency','globalCurrency'):
 				if len(partids) == 1:
