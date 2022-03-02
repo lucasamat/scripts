@@ -9,11 +9,11 @@ from SYDATABASE import SQL
 import Webcom.Configurator.Scripting.Test.TestProduct
 Sql = SQL()
 if Product.PartNumber =="QT" and Product.Attributes.GetByName('Services') is not None:
-	Log.Info('script called--87-inside script---')
+	#Log.Info('script called--87-inside script---')
 	#ServiceProducts=['Z0090','Z0091','Z0092','Z0006','Z0007','Z0035','Z0110','Z0108','Z0009','Z0010','Z0046']
 	ServiceProducts=['Z0091','Z0092','Z0007','Z0110','Z0010','Z0009','Z0046','Z0100','Z0090','Z0006','Z0103','Z0113','Z0114','Z0068','Z0115','Z0111']
 	for prd in ServiceProducts:
-		Log.Info('script called--90--service id-----'+str(prd))
+		#Log.Info('script called--90--service id-----'+str(prd))
 		Product.GetContainerByName('Services').AddNewRow(str(prd),False)
 # Added this list and conduction for pricing calculation in Segment tab
 def enable_disable_execute_rules():

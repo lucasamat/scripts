@@ -31,8 +31,8 @@ Sql = SQL()
 QUOTE = Param.CPQ_Columns['Entries']
 revision = Param.CPQ_Columns['Revision']
 script_start_time = time.time()
-Log.Info("QUOTE ID---> "+str(QUOTE)+"CPS Price Script Started")
-Log.Info("------->CPI Hitting  2021")
+# Log.Info("QUOTE ID---> "+str(QUOTE)+"CPS Price Script Started")
+# Log.Info("------->CPI Hitting  2021")
 webclient = System.Net.WebClient()
 webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0=";
@@ -41,9 +41,9 @@ response = eval(response)
 Request_URL="https://cpservices-pricing.cfapps.us10.hana.ondemand.com/api/v1/statelesspricing"
 webclient.Headers[System.Net.HttpRequestHeader.Authorization] ="Bearer "+str(response['access_token'])
 
-Log.Info("654 response['access_token'] --->"+str(response['access_token']))
-Log.Info("revision_CUP==>"+str(revision))
-Log.Info("QUOTE_CUP==>"+str(QUOTE))
+# Log.Info("654 response['access_token'] --->"+str(response['access_token']))
+# Log.Info("revision_CUP==>"+str(revision))
+# Log.Info("QUOTE_CUP==>"+str(QUOTE))
 
 x = datetime.datetime.today()
 x= str(x)
@@ -124,7 +124,7 @@ part_query = SqlHelper.GetList("SELECT DISTINCT PART_NUMBER, ANNUAL_QUANTITY FRO
 if not part_query:
 	ancillary_part_query = Sql.GetFirst("SELECT DISTINCT PART_NUMBER, QUANTITY as ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQRSP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND INCLUDED =1 AND SERVICE_ID = 'Z0100' AND QUANTITY >0 )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+" ")
 if not part_query:
-    Log.Info("Validate FPM QUERY")
+    #Log.Info("Validate FPM QUERY")
     fpm_part_query = Sql.GetFirst("SELECT DISTINCT PART_NUMBER, CUSTOMER_ANNUAL_QUANTITY as ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, CUSTOMER_ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQSPT (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+" ")
 if part_query or ancillary_part_query or fpm_part_query:
 
@@ -153,7 +153,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 			requestdata = ''
 			for currencies in ('docCurrency','globalCurrency'):
 				if len(partids) == 1:
-					Log.Info("**Single-Partids**")
+					#Log.Info("**Single-Partids**")
 					if quantity[0] == 0 or quantity[0] == '':
 						quantity[0]=1
 					quantity[0] = int(quantity[0])
@@ -163,7 +163,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 					s = ','.join(li)	
 					requestdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">  <soapenv:Body> <cpq_columns><root> {"docCurrency":"'+curr+'","locCurrency":"'+glb_curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(s)+']} </root> <CPSToken>'+str(response['access_token'])+'</CPSToken></cpq_columns> </soapenv:Body></soapenv:Envelope>'
 				else:
-					Log.Info("**Multiple-Partids**")
+					#Log.Info("**Multiple-Partids**")
 					for index,val in enumerate(zip(partids,quantity,odcc_flag)):
 						p=val[0]
 						q=val[1]
@@ -221,9 +221,9 @@ else:
 		item_string = '{"itemId":"1","externalId":null,"quantity":{"value":'+str(1)+',"unit":"EA"},"exchRateType":"'+exchange_rate_type+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(serviceId)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-ALAND","values":["'+str(country)+'"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMK-SPART","values":["'+str(salesorg_obj.DIVISION_ID)+'"]},{"name":"KOMP-SPART","values":["'+str(salesorg_obj.DIVISION_ID)+'"]},{"name":"KOMP-PMATN","values":["'+str(serviceId)+'"]},{"name":"KOMK-WAERK","values":["'+str(salesorg_obj.DOC_CURRENCY)+'"]},{"name":"KOMK-HWAER","values":["'+str(salesorg_obj.DOC_CURRENCY)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(salesorg_obj.DISTRIBUTIONCHANNEL_ID)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg_obj.SALESORG_ID)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[{"factor":1.0,"key":"AGS_LAB_OPT6"},{"factor":13.0,"key":"AGS_LAB_OPT8"}],"statistical":true,"subItems":[]}'
 
 	requestdata = '{"docCurrency":"'+salesorg_obj.DOC_CURRENCY+'","locCurrency":"'+salesorg_obj.DOC_CURRENCY+'","pricingProcedure":"'+pricing_procedure_id+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+item_string+']}'
-	Log.Info("requestdata--171---"+str(requestdata))
+	#Log.Info("requestdata--171---"+str(requestdata))
 	response1 = webclient.UploadString(Request_URL,str(requestdata))
-	Log.Info("res--173-------"+str(response1))
+	#Log.Info("res--173-------"+str(response1))
 	response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"').replace(": null",': " None"')
 	response1 = eval(response1)
 	#Log.Info("res--176------"+str(response1))

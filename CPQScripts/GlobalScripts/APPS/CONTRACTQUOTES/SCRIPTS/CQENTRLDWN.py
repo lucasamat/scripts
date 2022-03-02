@@ -29,7 +29,7 @@ except:
 	objectName = Param.objectName
 	wherecon = Param.where
 	ancillary_dict = Param.ancillary_dict
-Log.Info("ancillary_dict1-"+str(ancillary_dict))
+#Log.Info("ancillary_dict1-"+str(ancillary_dict))
 wherecon = wherecon.replace("&#39;","'")
 objItems = objs.split('=')
 where = wherecon.split(",")[0]
@@ -38,7 +38,7 @@ sectionid = wherecon.split(",")[2]
 objectName = objItems[0]
 quote = objItems[2].split(",")[1]
 revision =  objItems[2].split(",")[2]
-Log.Info("QUOTE--------->"+str(quote)+'---'+str(revision))
+#Log.Info("QUOTE--------->"+str(quote)+'---'+str(revision))
 userid = objItems[2].split(",")[0]
 get_serviceid = SAQITMWhere.split('SERVICE_ID = ')
 get_serviceid = get_serviceid[len(get_serviceid)-1].replace("'","")
@@ -58,10 +58,10 @@ Log.Info("ancillary_dict--"+str(ancillary_dict))
 #Log.Info("attributeList--"+str(attributeList))
 
 def sendEmail(level):
-	Log.Info('284-----entitlement email started-----')
+	#Log.Info('284-----entitlement email started-----')
 	getQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(quote))
 	getEmail = Sql.GetFirst("SELECT email from users where id={}".format(userid))
-	Log.Info("SELECT email from users where id='{}'".format(userid))
+	#Log.Info("SELECT email from users where id='{}'".format(userid))
 	userEmail = ""
 	userEmail = str(getEmail.email)
 	Header = "<!DOCTYPE html><html><head><style>h4{font-weight:normal; font-family:sans-serif;} table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black';}</style> </head> <body><h4>Hi, <br> <br>The Entitlement settings have been applied to the equipment in the following quote:</br></h4>"
@@ -692,7 +692,7 @@ def _equp_predefined_value_driver_update(previous_xml):
 ## Entitlement rolldown fn
 def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	is_changed = False
-	Log.Info('604--objectName----'+str(objectName))
+	#Log.Info('604--objectName----'+str(objectName))
 	# if 'Z00068' in get_serviceid:
 	# 	objectName = 'SAQSCE'
 	# 	obj_list = ['SAQTSE','SAQSGE','SAQSAE']
@@ -1072,7 +1072,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 
 			else:
 				where = wherecon.split(",")[0]
-				Log.Info('else part roll down'+str(objectName)+'--'+str(obj)+'--'+str(join)+'--'+str(where))
+				#Log.Info('else part roll down'+str(objectName)+'--'+str(obj)+'--'+str(join)+'--'+str(where))
 				update_field_str = ""
 				if obj == 'SAQSAE':
 					update_query = """ UPDATE TGT 
@@ -1084,7 +1084,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					TGT.CONFIGURATION_STATUS = '{}'
 					FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
 					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID {} """.format(userid,datetimenow,getinnercon.CONFIGURATION_STATUS,'SAQSCE',obj,where)
-					Log.Info('update_query--863----'+str(update_query))
+					#Log.Info('update_query--863----'+str(update_query))
 					Sql.RunQuery(update_query)
 				elif obj == 'SAQGPE':
 					update_query = """ UPDATE TGT 

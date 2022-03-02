@@ -300,7 +300,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 
 
 def getting_cps_tax(quote_id = None,quote_record_id = None,item_lines_record_ids=None):		
-	Log.Info("getting_cps_tax function"+str(item_lines_record_ids))
+	#Log.Info("getting_cps_tax function"+str(item_lines_record_ids))
 	webclient = System.Net.WebClient()
 	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0=";
@@ -331,19 +331,19 @@ def getting_cps_tax(quote_id = None,quote_record_id = None,item_lines_record_ids
 	if STPObj:
 		stp_account_id = str(STPObj.ACCOUNT_ID)
 	if item_lines_record_ids:		
-		Log.Info("getting_cps_tax function item_lines_record_ids")	
+		#Log.Info("getting_cps_tax function item_lines_record_ids")	
 		items_data = []
 		item_line_record_ids_str = "','".join([item_line_record_id for item_line_record_id in item_lines_record_ids])
 		item_lines_obj = Sql.GetList("SELECT * FROM SAQICO (NOLOCK) WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID IN ('{item_line_record_ids_str}')".format(item_line_record_ids_str = item_line_record_ids_str))
 		if item_lines_obj:
-			Log.Info("getting_cps_tax function item_lines_obj")	
+			#Log.Info("getting_cps_tax function item_lines_obj")	
 			for item_line_obj in item_lines_obj:
 				itemid = str(item_line_obj.EQUIPMENT_ID)+";"+str(quote_id)+";"+str(1)
 				item_string = '{"itemId":"'+str(itemid)+'","externalId":null,"quantity":{"value":'+str(1)+',"unit":"EA"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(item_line_obj.EQUIPMENT_ID)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-LAND1","values":["CN"]},{"name":"KOMK-ALAND","values":["CN"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMP-TAXM1","values":["'+str(item_line_obj.SRVTAXCLA_ID)+'"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(div)+'"]},{"name":"KOMP-PMATN","values":["'+str(item_line_obj.EQUIPMENT_ID)+'"]},{"name":"KOMK-WAERK","values":["'+str(curr)+'"]},{"name":"KOMK-HWAER","values":["'+str(curr)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
 				items_data.append(item_string)
 			items_string = ','.join(items_data)
 			requestdata = '{"docCurrency":"'+curr+'","locCurrency":"'+curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(items_string)+']}'
-			Log.Info("requestdata-----",requestdata)
+			#Log.Info("requestdata-----",requestdata)
 			response1 = webclient.UploadString(Request_URL,str(requestdata))			
 			response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"').replace(": null",': " None"')
 			response1 = eval(response1)
@@ -1812,7 +1812,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			WHERE SAQTSE.QUOTE_RECORD_ID ='{QuoteRecordId}'  AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.SERVICE_ID = '{ServiceId}')IQ""".format(UserId=User.Id, QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), ServiceId=Quote.GetGlobal("TreeParentLevel0"), revision_rec_id = quote_revision_record_id) )
 
 			Trace.Write("SAQSGB INSERT FROM SYBLKETRLG")
-			Log.Info("SYBLKETRLG - SAQSGB")
+			#Log.Info("SYBLKETRLG - SAQSGB")
 			Sql.RunQuery(
 				"""
 					INSERT SAQSGB (

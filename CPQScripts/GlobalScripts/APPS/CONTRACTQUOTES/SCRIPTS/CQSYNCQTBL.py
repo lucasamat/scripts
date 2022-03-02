@@ -609,7 +609,7 @@ class SyncQuoteAndCustomTables:
 						
 					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
-						Log.Info("ExchangeRateType"+str(custom_fields_detail.get("ExchangeRateType")))
+						#Log.Info("ExchangeRateType"+str(custom_fields_detail.get("ExchangeRateType")))
 						revision_start_date = datetime.datetime.now().strftime("%m/%d/%Y")
 						revision_end_date = date.today()+ timedelta(days=365)
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
@@ -793,7 +793,7 @@ class SyncQuoteAndCustomTables:
 							CustPricing = GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE
 						else:
 							CustPricing = ""
-						Log.Info("FindProcedureID")
+						#Log.Info("FindProcedureID")
 						#Log.Info("valueeeeeeeeeee"+str(GetPricingProcedure.PRICINGPROCEDURE_ID)+"CustPricing"+str(CustPricing))
 						if GetPricingProcedure:
 							Log.Info("PRICING PROCEDURE VALUE"+str(GetPricingProcedure.PRICINGPROCEDURE_ID))

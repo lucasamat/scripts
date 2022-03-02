@@ -394,7 +394,7 @@ class DeleteConfirmPopup:
             quote_obj = Sql.GetFirst("select QUOTE_TYPE from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
             if quote_obj:
                 #getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()
-                Log.Info("SYDELCNMSG - SAQSGB")
+                #Log.Info("SYDELCNMSG - SAQSGB")
                 if quote_obj.QUOTE_TYPE == "ZTBC - TOOL BASED":
                     TOOLDELETELIST = ["SAQTSV","SAQSCA","SAQICO","SAQSCE","SAQSGE","SAQICO","SAQIEN","SAQSFB","SAQSGB","SAQSCO","SAQTSE","SAQSFE","SAQSGE"]
                     for Table in TOOLDELETELIST:

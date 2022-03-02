@@ -354,8 +354,8 @@ def POPUPLISTVALUE(VALUE, TABLEID, OPERATION, RETURN, IDVALUE, LOOKUPOBJ):
                                 + "'"
                             )
                             Selected_Countries_List = (Selected_Countries.COUNTRIES).split(",")
-                            Log.Info("61616161 COUNTRIES COUNTRIES---->" + str(Selected_Countries_List))
-                            Log.Info("61616161 Selected_Countries.COUNTRIES ------>" + str(type(Selected_Countries_List)))
+                            # Log.Info("61616161 COUNTRIES COUNTRIES---->" + str(Selected_Countries_List))
+                            # Log.Info("61616161 Selected_Countries.COUNTRIES ------>" + str(type(Selected_Countries_List)))
                             if "ALL COUNTRIES" not in Selected_Countries_List:
                                 for req in Countries_List:
                                     if str(req).upper() in Selected_Countries_List:
