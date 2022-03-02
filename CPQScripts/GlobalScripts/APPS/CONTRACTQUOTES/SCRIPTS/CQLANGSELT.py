@@ -223,20 +223,20 @@ def insert_quote_billing_plan():
 								get_ttl_amt = 'BILLING_VALUE'
 						get_bill_details_obj = Sql.GetList("""SELECT DISTINCT TOP 1000 * FROM ( SELECT * FROM (
 																				SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
-																				AS ROW, SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,ESTVAL_INGL_CURR,{BillingYear} as BILLING_YEAR,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,[WARRANTY_END_DATE], {SelectDateColoumn}
+																				AS ROW, SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,{get_ttl_amt},{BillingYear} as BILLING_YEAR,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,[WARRANTY_END_DATE], {SelectDateColoumn}
 																						FROM (
 																								SELECT
-																										SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,BILLING_VALUE,ESTVAL_INGL_CURR,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CONVERT(VARCHAR(10),FORMAT(BILLING_DATE,'MM-dd-yyyy'),101) AS [BILLING_DATE]                                          
+																										SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,{get_ttl_amt},ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CONVERT(VARCHAR(10),FORMAT(BILLING_DATE,'MM-dd-yyyy'),101) AS [BILLING_DATE]                                          
 																								FROM SAQIBP
 																								{WhereString}
 																						) AS IQ
 																						PIVOT
 																						(
-																								SUM(BILLING_VALUE)
+																								SUM({get_ttl_amt})
 																								FOR BILLING_DATE IN ({PivotColumns})
 																						)AS PVT
 
-																				) OQ WHERE ROW BETWEEN 1 AND 1000 ) AS FQ ORDER BY EQUIPMENT_ID""".format(BillingYear=no_of_year,PivotColumns=pivot_columns,WhereString=Qustr,SelectDateColoumn=select_date_columns))
+																				) OQ WHERE ROW BETWEEN 1 AND 10000 ) AS FQ ORDER BY EQUIPMENT_ID""".format(BillingYear=no_of_year,PivotColumns=pivot_columns,WhereString=Qustr,SelectDateColoumn=select_date_columns))
 					
 						if get_bill_details_obj:
 							
