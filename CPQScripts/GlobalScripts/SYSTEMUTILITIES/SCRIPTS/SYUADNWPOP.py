@@ -2499,7 +2499,7 @@ def POPUPLISTVALUEADDNEW(
 			if SortColumn != '' and SortColumnOrder !='':
 				order_by = "order by "+SortColumn + " " + SortColumnOrder
 			else:
-				order_by = "order by FAB_LOCATION_NAME ASC"
+				order_by = "order by GREENBOOK ASC"
 
 			pop_val = {}
 
