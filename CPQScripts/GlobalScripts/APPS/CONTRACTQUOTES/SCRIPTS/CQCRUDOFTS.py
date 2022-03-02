@@ -161,7 +161,7 @@ def sending_fablocation_insert(values,all_values,A_Keys,A_Values):
             QuoteRecId=contract_quote_record_id,
             RevisionId=quote_revision_id,
             RevisionRecordId=quote_revision_record_id,
-            BatchGroupRecordId = BatchGroupRecordId))
+            BatchGroupRecordId = batch_group_record_id))
         
         
         Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
