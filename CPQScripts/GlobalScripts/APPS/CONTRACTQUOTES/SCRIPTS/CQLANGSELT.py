@@ -478,7 +478,7 @@ def insert_quote_billing_plan():
 	if SUM_YEAR4:
 		M1_Y4 =''
 		if str(SUM_YEAR4.MONTH_1) != "":
-			M1_Y4 = SUM_YEAR.MONTH_1
+			M1_Y4 = SUM_YEAR4.MONTH_1
 			Quote.SetGlobal('M1_Y4', str(M1_Y4))
 			Quote.GetCustomField('BM_YEAR_4').Content = 'BM_YEAR_4'
 		else:
@@ -510,7 +510,7 @@ def insert_quote_billing_plan():
 	if SUM_YEAR5:
 		M1_Y5 =''
 		if str(SUM_YEAR5.MONTH_1) != "":
-			M1_Y5 = SUM_YEAR.MONTH_1
+			M1_Y5 = SUM_YEAR5.MONTH_1
 			Quote.SetGlobal('M1_Y5', str(M1_Y5))
 			Quote.GetCustomField('BM_YEAR_5').Content = 'BM_YEAR_5'
 		else:
