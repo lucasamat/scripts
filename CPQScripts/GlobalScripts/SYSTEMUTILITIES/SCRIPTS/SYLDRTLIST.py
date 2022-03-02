@@ -9361,8 +9361,8 @@ class SYLDRTLIST:
 							img_list.append('PRICING_STATUS')
 						
 						if value123 in img_list:
+							value1234 = re.sub(r'\[|\]|\"','',str(value1234))
 							Trace.Write("8883"+str(imgValue))
-							
 							new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
 						else:
 							Trace.Write("8886")
