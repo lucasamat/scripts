@@ -17,7 +17,7 @@ REVISION_rec_ID = input_data[-1]
 Log.Info("BM----"+str(Qt_rec_id)+"------REVISION_ID---"+str(REVISION_rec_ID))
 try:
 	contract_quote_rec_id = input_data[0]
-	#contract_quote_rec_id = Param.Quote_Record_ID
+	#contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
 except:
 	contract_quote_rec_id = ''
 try:
