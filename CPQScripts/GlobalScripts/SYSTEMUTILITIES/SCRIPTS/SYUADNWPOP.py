@@ -896,7 +896,7 @@ def POPUPLISTVALUEADDNEW(
 				]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 			sec_str = '<div class="row modulebnr brdr ma_mar_btm">ADD FAB LOCATION<button type="button" class="close flt_rt" onclick="closepopup_scrl()" data-dismiss="modal">X</button></div>'
-			sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Sales Org">Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="ALL">ALL</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Fab Name">Sales Org</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="All">All</abbr></div></div> <button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="fts_add_fab" class="btnconfig" onclick="add_sending_fab_fts()" data-dismiss="modal">ADD</button></div></div>'
+			sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Sales Org">Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="ALL">ALL</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Fab Name">Sales Org</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="All">All</abbr></div></div> <button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="fts_add_fab" class="btnconfig" onclick="add_fab_fts()" data-dismiss="modal">ADD</button></div></div>'
 
 			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
 			sec_str += (
@@ -1686,7 +1686,7 @@ def POPUPLISTVALUEADDNEW(
 			if where_string:
 				where_string += " AND "
 			Pagination_M = Sql.GetFirst(
-			"SELECT COUNT(SAQSAF.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQSAF.SNDACC_ID = SAQTMT.ACCOUNT_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'AND SAQSAF.QTEREV_RECORD_ID = '{}' AND {} SNDFBL_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
+			"SELECT COUNT(SAQSAF.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQSAF.SNDACC_ID = SAQTMT.ACCOUNT_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'AND QTEREV_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
 				ObjectName, contract_quote_record_id,quote_revision_record_id,where_string, contract_quote_record_id,quote_revision_record_id
 				)
 				)
@@ -1709,7 +1709,7 @@ def POPUPLISTVALUEADDNEW(
 
 			pop_val = {}
 			
-			where_string += """ SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQSAF.QTEREV_RECORD_ID = '{}' AND SNDFBL_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(
+			where_string += """ SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SNDFBL_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(
 				contract_quote_record_id,quote_revision_record_id, contract_quote_record_id,quote_revision_record_id
 			)
 
@@ -3591,7 +3591,8 @@ def POPUPLISTVALUEADDNEW(
 				"PRODUCT_TYPE",
 				]
 			if TreeParam == "Product Offerings":
-				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND  MAADPR.VISIBLE_INCONFIG = 'TRUE' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID  )""".format(contract_quote_record_id,quote_revision_record_id)
+
+				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND  MAADPR.VISIBLE_INCONFIG = 'TRUE' AND MAADPR.PRDOFR_DOCTYP ='{}' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID  )""".format(get_docutype.DOCTYP_ID,contract_quote_record_id,quote_revision_record_id)
 			else:
 				where_string += """ PRODUCT_TYPE ='{}' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(
 					Product.GetGlobal("TreeParam"), contract_quote_record_id,quote_revision_record_id
