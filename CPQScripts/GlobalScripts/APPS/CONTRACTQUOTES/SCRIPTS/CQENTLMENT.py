@@ -1134,15 +1134,15 @@ class Entitlements:
 							#Trace.Write("entitlement_value -----"+str(entitlement_value))
 							#or (serviceId == 'Z0009' and entitlement_value == "Some Inclusions" and key == "AGS_{}_TSC_NONCNS".format(serviceId))
 							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included") ) :
-								Trace.Write("111")
+								#Trace.Write("111")
 								ancillary_object_dict['Z0101'] = "INSERT"								
 							elif not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included") ) :
-								Trace.Write("222")
+								#Trace.Write("222")
 								count_temp_z0101 += 1
 								if  count_temp_z0101 == 3:
 									ancillary_object_dict['Z0101'] = "DELETE"
 							if  serviceId == 'Z0092'  and key == "AGS_{}_TSC_CONSUM".format(serviceId):
-								Trace.Write("333")
+								#Trace.Write("333")
 								if entitlement_value in ("Some Inclusions","Included"):
 									#Trace.Write("z0092--if--"+str(entitlement_value))
 									ancillary_object_dict['Z0100'] = "INSERT"
@@ -1161,7 +1161,22 @@ class Entitlements:
 							# 		ancillary_object_dict['Z0100'] = "INSERT"
 							# 	else:
 							# 		ancillary_object_dict['Z0100'] = "DELETE"
+						if str(serviceId) == 'Z0092' and key == 'AGS_{}_TSC_CONADD'.format(serviceId):
+							Trace.Write("333")
+							if entitlement_value in ("Some Inclusions","Included"):
+								#Trace.Write("z0092--if--"+str(entitlement_value))
+								ancillary_object_dict['Z0100'] = "INSERT"
+								if entitlement_value == "Some Inclusions":
+									ancillary_object_dict['Z0101'] = "INSERT"
+								
+								#Trace.Write("z0092--if11--"+str(ancillary_object_dict))
+							else:
+								#Trace.Write("z0092---else--"+str(entitlement_value))
+								ancillary_object_dict['Z0100'] = "DELETE"
+								if entitlement_value != "Some Inclusions":
+									ancillary_object_dict['Z0101'] = "DELETE"
 
+						
 						if str(serviceId) in ("Z0009") and key in ( "AGS_{}_PQB_QTETYP".format(serviceId)) and str(tableName) in ('SAQTSE'):
 							if entitlement_value in ("Event Based","Flex Event Based"):
 								try:
