@@ -1686,7 +1686,7 @@ def POPUPLISTVALUEADDNEW(
 			if where_string:
 				where_string += " AND "
 			Pagination_M = Sql.GetFirst(
-			"SELECT COUNT(SAQSAF.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQSAF.SNDACC_ID = SAQTMT.ACCOUNT_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'AND SAQSAF.QTEREV_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
+			"SELECT COUNT(SAQSAF.CpqTableEntryId) as count FROM {} (NOLOCK)  WHERE QUOTE_RECORD_ID = '{}'AND QTEREV_RECORD_ID = '{}' AND {} SNDFBL_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
 				ObjectName, contract_quote_record_id,quote_revision_record_id,where_string, contract_quote_record_id,quote_revision_record_id
 				)
 				)
@@ -1709,12 +1709,12 @@ def POPUPLISTVALUEADDNEW(
 
 			pop_val = {}
 			
-			where_string += """ SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTMT.QTEREV_RECORD_ID = '{}' AND SNDFBL_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(
+			where_string += """QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SNDFBL_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(
 				contract_quote_record_id,quote_revision_record_id, contract_quote_record_id,quote_revision_record_id
 			)
 
 			table_data = Sql.GetList(
-				"select  {} from {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQSAF.SNDACC_ID = SAQTMT.ACCOUNT_RECORD_ID {} {} {}".format(", ".join(ordered_keys),
+				"select  {} from {} (NOLOCK) {} {} {}".format(", ".join(ordered_keys),
 					ObjectName,
 					"WHERE " + where_string if where_string else "",
 					order_by,pagination_condition
@@ -1723,7 +1723,7 @@ def POPUPLISTVALUEADDNEW(
 			)
 
 			QueryCountObj = Sql.GetFirst(
-					"select count(*) as cnt from {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQSAF.SNDACC_ID = SAQTMT.ACCOUNT_RECORD_ID {} ".format(                    
+					"select count(*) as cnt from {} (NOLOCK)  {} ".format(                    
 					ObjectName,
 					"WHERE " + where_string if where_string else ""
 					
