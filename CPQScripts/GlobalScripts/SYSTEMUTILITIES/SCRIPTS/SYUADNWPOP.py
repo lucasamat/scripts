@@ -1252,7 +1252,7 @@ def POPUPLISTVALUEADDNEW(
 			if	query_shp_values:
 				sales_org = query_shp_values.SALESORG_ID
 				region = query_shp_values.REGION	
-			sec_str = '<div class="row modulebnr brdr ma_mar_btm">INSTALLED BASE EQUIPMENT LIST<button type="button" class="close flt_rt" onclick="closepopup_scrl()" data-dismiss="modal">X</button></div>'
+			sec_str = '<div class="row modulebnr brdr ma_mar_btm">SENDING EQUIPMENT LIST<button type="button" class="close flt_rt" onclick="closepopup_scrl()" data-dismiss="modal">X</button></div>'
 			sec_str += '<div class="col-md-12 padlftrhtnone" id="btnhide"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Customer Region</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{region}">{region}</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Sales Org</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{sales_org}">{sales_org}</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{}">{}</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add-equipment" class="btnconfig" onclick="add_sending_equipment()" data-dismiss="modal">ADD</button></div></div>'.format(
 				Product.GetGlobal("TreeParam"), Product.GetGlobal("TreeParam"),sales_org = sales_org,region = region
 			)
@@ -1290,7 +1290,7 @@ def POPUPLISTVALUEADDNEW(
 						+ "</th>"
 					)
 			sec_str += '</tr></thead><tbody class ="equipments_id" ></tbody></table>'
-			sec_str += '<div id="equipments_footer"></div>'
+			sec_str += '<div id="sending_equipments_footer"></div>'
 			values_list = ""
 			values_lists = ""
 			a_test = []
