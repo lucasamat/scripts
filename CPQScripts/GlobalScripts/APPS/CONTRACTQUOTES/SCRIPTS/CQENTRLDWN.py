@@ -693,7 +693,7 @@ def _equp_predefined_value_driver_update(previous_xml):
 def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	is_changed = False
 	Log.Info('604--objectName----'+str(objectName))
-	# if 'Z0007' in get_serviceid:
+	# if 'Z00068' in get_serviceid:
 	# 	objectName = 'SAQSCE'
 	# 	obj_list = ['SAQTSE','SAQSGE','SAQSAE']
 	obj_list = []
@@ -707,7 +707,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		is_changed = True
 	if objectName in ('SAQTSE','SAQSGE') and get_serviceid in ('Z0009','Z0010'):
 		obj_list = ['SAQSCE','SAQSGE','SAQSAE','SAQGPE']
-	#and 'Z0007' not in get_serviceid
+	#and 'Z00068' not in get_serviceid
 	elif objectName == 'SAQSCE' :
 		obj_list = ['SAQSAE']
 		is_changed = True
@@ -737,7 +737,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			
 			###roll down for all levels starts
 			
-			if obj == 'SAQTSE'  and GetXMLsecField and 'Z0007' in get_serviceid:
+			if obj == 'SAQTSE'  and GetXMLsecField and 'Z00068' in get_serviceid:
 				where_condition = SAQITMWhere.replace('A.','')
 				updateentXML = ""
 				for value in GetXMLsecField:
@@ -780,7 +780,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 				#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
 					
 			# elif obj == 'SAQSFE' and GetXMLsecField:
-			# 	if 'Z0007' in get_serviceid and objectName == 'SAQSCE': 
+			# 	if 'Z00068' in get_serviceid and objectName == 'SAQSCE': 
 			# 		where_condition = SAQITMWhere.replace('A.','')					
 			# 		get_value_query = Sql.GetList("select QUOTE_RECORD_ID,QTEREV_RECORD_ID ,FABLOCATION_RECORD_ID, FABLOCATION_ID from SAQSFB {} ".format(where_condition) )
 					
@@ -886,7 +886,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			# 			Sql.RunQuery(UpdateEntitlement)
 								
 			elif obj == 'SAQSGE' and GetXMLsecField:
-				if 'Z0007' in get_serviceid and objectName == 'SAQSCE':
+				if 'Z00068' in get_serviceid and objectName == 'SAQSCE':
 					where_condition = SAQITMWhere.replace('A.','')
 					#fab_val = where_cond.split('AND ')
 					#where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
@@ -1296,7 +1296,7 @@ getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_ID,CP
 get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID,getinnercon.QTEREV_RECORD_ID))
 ###SAQSCE temp table
 ent_temp = ""
-if 'Z0007' in get_serviceid or (('Z0091' in get_serviceid or 'Z0016' in get_serviceid) and objectName == 'SAQSCE'):
+if 'Z00068' in get_serviceid or (('Z0091' in get_serviceid or 'Z0016' in get_serviceid) and objectName == 'SAQSCE'):
 	where_condition = SAQITMWhere.replace('A.','').replace("'","''")
 
 	ent_temp = "SAQSCE_ENT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
