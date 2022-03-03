@@ -1985,9 +1985,10 @@ class SyncQuoteAndCustomTables:
 								records = ', '.join(map(str, [str(tuple(equipment_record)) for equipment_record in coverd_object_tool_dates])).replace("None","null").replace("'","''")
 								Log.Info("covered_object_data"+str(covered_object_data))
 								if equipment_fab_data:
+									Log.Info("equipment_fab_data"+str(equipment_fab_data))
 									for fab_location_id, value in equipment_fab_data.items():
 										Trace.Write("fab_location_id"+str(fab_location_id))
-										Trace.Write("value"+str(value))
+										Trace.Write("value------temp"+str(value))
 										equipment_temp_insert = Sql.RunQuery("""
 																	INSERT SAQFEQ
 																	(QTEREV_RECORD_ID,QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID,TEMP_TOOL, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
