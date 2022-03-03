@@ -4234,7 +4234,7 @@ def POPUPLISTVALUEADDNEW(
 		##COVERED OBJECTS STARTS
 
 		##Add receiving equipment popup.....
-		elif str(ObjectName) == "SAQSCO" and str(CurrentTab) == "Quotes" and TreeParam == "Customer Information":
+		elif str(ObjectName) == "SAQFEQ" and str(CurrentTab) == "Quotes" and TreeParam == "Customer Information":
 			TreeParam = Product.GetGlobal("TreeParam")
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")  
 			account_id = Product.GetGlobal("stp_account_id")
