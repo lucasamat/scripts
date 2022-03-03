@@ -5996,12 +5996,14 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					if table_total_rows:
 						record_ids = [data for data in self.get_results(query_string, table_total_rows)]                    
 				else:
+					Log.Info("crudifvalues"+str(self.values))
 					record_ids = [
 						CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
 						if value.strip() != "" and master_object_name in value
 						else value
 						for value in self.values
 					]
+					Log.Info("record_ids---record_ids"+str(record_ids))
 				batch_group_record_id = str(Guid.NewGuid()).upper()
 				record_ids = str(str(record_ids)[1:-1].replace("'",""))
 				parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
