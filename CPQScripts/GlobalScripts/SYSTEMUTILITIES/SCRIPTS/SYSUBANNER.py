@@ -3199,8 +3199,8 @@ def Related_Sub_Banner(
                 else:
                     if  "INLINE EDIT" in add_button:
                         sec_rel_sub_bnr+= str(add_button)
-                    if "ADD NSOS" in add_button:
-                        sec_rel_sub_bnr+= str(add_button)
+                    if "ADD NSOS" in multi_buttons:
+                        sec_rel_sub_bnr+= str(multi_buttons)
                     else:
                         sec_rel_sub_bnr+= str(add_button)
             else:
