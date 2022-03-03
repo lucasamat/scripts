@@ -590,7 +590,8 @@ def Related_Sub_Banner(
                         SecondValue = getService.SERVICE_DESCRIPTION
                 ThirdLable = "Add-On Products"
                 ThirdValue = "All"
-            elif TabName == "Quotes" and str(TreeParam) == "Customer Information" and (SubtabName == 'Accounts'or SubtabName ='Details' or SubtabName = 'COntracts'):
+            elif TabName == "Quotes" and str(TreeParam) == "Customer Information" and (subTabName == 'Accounts'or subTabName ='Details' or subTabName = 'Contacts'):
+                Trace.Write("SubTabName--->")
                 PrimaryLable = "Customer Information"
                 PrimaryValue = "Use the Customer Information functionality to manage your quote Accounts Contacts..."  
             elif TreeParam =="Sales Team":
