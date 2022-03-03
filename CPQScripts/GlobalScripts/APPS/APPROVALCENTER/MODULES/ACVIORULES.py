@@ -608,7 +608,7 @@ class ViolationConditions:
                         Select_Query = (
                             "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE (" + str(result.WHERE_CONDITION_01) + ")"
                         )
-                        Log.Info("ACVIORULES--->"+str(Select_Query))
+                        Trace.Write("611 ELSE SELECT QUERY --->"+str(Select_Query))
                         
                     TargeobjRelation = Sql.GetFirst(
                         "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
@@ -643,14 +643,16 @@ class ViolationConditions:
                         Log.Info("elif flag")
                         Trace.Write("elif flag")
                     else:
-                        #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                        #Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
-                        #SqlQuery = Sql.GetFirst(Select_Query)
-                        Log.Info("else flag")
-                        Trace.Write("else flag")
+                        try:
+                            Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
+                            Log.Info("648 ELSE SELECT QUERY--->" + str(Select_Query))
+                            SqlQuery = Sql.GetFirst(Select_Query)
+                            #Log.Info("else flag")
+                            Trace.Write("else flag")
+                        except:
+                            SqlQuery = SqlQuery
                     if SqlQuery is not None:
-                        Log.Info("Inside the approval heaeder "+str(method)+" -index- "+str(index))
-                        '"+str(Objh_Id)+"'
+                        Trace.Write("Inside the approval heaeder ")
                         where_conditon = (
                             " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
                             + str(val.APPROVAL_CHAIN_RECORD_ID)
