@@ -559,7 +559,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                         BatchGroupRecordId=batch_group_record_id,
                                         UserName=User.UserName,
                                         UserId=User.Id,
-                                        fab = get_fab,
+                                        fab = Product.GetGlobal("receiving_fab_id")
                                     )
                     )		
         self._process_query(
