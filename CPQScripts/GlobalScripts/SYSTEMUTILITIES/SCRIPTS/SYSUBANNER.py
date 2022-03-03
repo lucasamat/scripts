@@ -283,7 +283,7 @@ def Related_Sub_Banner(
             )
             if TreeParam == "Customer Information":
                 involved_parties_object = Sql.GetFirst("SELECT PARTY_ID,PARTY_NAME,CPQ_PARTNER_FUNCTION FROM SAQTIP WHERE PARTY_ID = '{}' ".format(Product.GetGlobal("stp_account_Id")))
-                if subTabName == "Sending Fab Locations"  and TreeParam == "Customer Information":
+                if subTabName == "Sending Fab Locations" or subTabName == "Sending Fab Location Details"  and TreeParam == "Customer Information":
                     Trace.Write("subTabName"+str(subTabName)+str(CurrentRecordId))
                     PrimaryLable = "Party ID"
                     PrimaryValue = involved_parties_object.PARTY_ID
@@ -291,13 +291,25 @@ def Related_Sub_Banner(
                     SecondValue = involved_parties_object.PARTY_NAME.upper()
                     ThirdLable = "Role"
                     ThirdValue = "SENDING ACCOUNT"
-                elif subTabName == "Receiving Fab Locations" and TreeParam == "Customer Information":
+                    if subTabName == "Sending Fab Location Details":
+                        FourthLable = "Fab Location ID"
+                        FourthValue = Product.getGlobal("sending_fab_id")
+                    else:
+                        FourthLable = "Fab Locations"
+                        FourthValue = "ALL"
+                elif subTabName == "Receiving Fab Locations" OR subTabName == "Receiving Fab Location Details" and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
                     PrimaryValue = involved_parties_object.PARTY_ID.upper()
                     SecondLable = "Party Name"
                     SecondValue = involved_parties_object.PARTY_NAME
                     ThirdLable = "Role"
                     ThirdValue = "RECEIVING ACCOUNT"
+                    if subTabName == "Receiving Fab Locations Details":
+                        FourthLable = "Fab Location ID"
+                        FourthValue = Product.getGlobal("receiving_fab_id")
+                    else:
+                        FourthLable = "Fab Locations"
+                        FourthValue = "ALL"
             if TreeParam == 'Revisions':
                 rev_quote = Sql.GetFirst(" SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND ACTIVE = 'TRUE' ".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
                 if rev_quote: 
