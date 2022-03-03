@@ -2869,7 +2869,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						nso_table_info = SqlHelper.GetTable("SAQSCN")
 						nso_table = {
 							"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"BUSINESS_UNIT": nso_data.BUSINESS_UNIT,
+							"BUSINESS_UNIT": nso_data.get("BUSINESS_UNIT"),
 							"CONTRACT_VALID_FROM": eqp.CONTRACT_VALID_FROM,
 							"CONTRACT_VALID_TO": eqp.CONTRACT_VALID_TO,
 							"DIVISION_ID": nso_data.DIVISION_ID,
