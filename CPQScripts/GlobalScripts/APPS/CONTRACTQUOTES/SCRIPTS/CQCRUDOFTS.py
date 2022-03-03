@@ -461,8 +461,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                     CpqTableEntryDateModified,
                                     RELOCATION_FAB_TYPE,
                                     RELOCATION_EQUIPMENT_TYPE,WAFER_SIZE,
-                                    TECHNOLOGY,
-                                    TEMP_TOOL
+                                    TECHNOLOGY
                                     ) SELECT
                                         CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
                                         SAQASE.SND_EQUIPMENT_ID,
@@ -502,8 +501,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                         '{relocation_fab_type}' AS RELOCATION_FAB_TYPE,
                                         '{relocation_equp_type}' AS RELOCATION_EQUIPMENT_TYPE,
                                         SAQASE.SUBSTRATE_SIZE,
-                                        SAQASE.TECHNOLOGY,
-                                        '{is_temptool}' AS TEMP_TOOL 
+                                        SAQASE.TECHNOLOGY
                                         FROM SYSPBT (NOLOCK)
                                         JOIN SAQASE (NOLOCK) ON SYSPBT.BATCH_RECORD_ID = SAQASE.EQUIPMENT_RECORD_ID JOIN MAEQCT(NOLOCK)
                                         ON SAQASE.EQUIPMENTCATEGORY_ID = MAEQCT.EQUIPMENTCATEGORY_ID
@@ -518,8 +516,8 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                 QuoteRecId=contract_quote_record_id,
                                 RevisionId=quote_revision_id,
                                 RevisionRecordId=quote_revision_record_id,
-                                relocation_fab_type = "SENDING FAB" if "Sending Account -" in tree_param else "RECEIVING FAB" if "Receiving Account -" in tree_param else "",
-                                relocation_equp_type = "SENDING EQUIPMENT" if "Sending Account -" in tree_param else "RECEIVING EQUIPMENT" if "Receiving Account -" in tree_param else "",
+                                relocation_fab_type = "RECEIVING FAB",
+                                relocation_equp_type ="RECEIVING EQUIPMENT",
                             )
                         )
             
@@ -567,7 +565,6 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                         JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID
                         WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'  AND NOT EXISTS (SELECT * FROM SAQFGB B WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQFEQ.GREENBOOK = B.GREENBOOK AND FABLOCATION_ID IN {fab})
                         ) FB""".format(
-                                        treeparam=tree_param,
                                         QuoteRecordId=contract_quote_record_id,
                                         RevisionRecordId=quote_revision_record_id,
                                         BatchGroupRecordId=batch_group_record_id,
@@ -663,8 +660,6 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                 SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND MAEQTY.COSTING_RELEVANT = 'True'
                                 AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
                         """.format(
-                        treeparam=tree_param,
-                        treeparentparam=tree_parent_level_0,
                         QuoteId=contract_quote_id,
                         BatchGroupRecordId=batch_group_record_id,
                         UserName=User.UserName,
