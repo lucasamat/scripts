@@ -4232,6 +4232,354 @@ def POPUPLISTVALUEADDNEW(
 
 		# Offerings - End
 		##COVERED OBJECTS STARTS
+
+		##Add receiving equipment popup.....
+		elif str(ObjectName) == "SAQSCO" and str(CurrentTab) == "Quotes" and TreeParam == "Customer Information":
+			TreeParam = Product.GetGlobal("TreeParam")
+			TreeParentParam = Product.GetGlobal("TreeParentLevel0")  
+			account_id = Product.GetGlobal("stp_account_id")
+			where_string = ""
+			if A_Keys != "" and A_Values != "":
+				A_Keys = list(A_Keys)
+				A_Values = list(A_Values)
+				for key, value in zip(A_Keys, A_Values):
+					if value.strip():
+						if where_string:
+							where_string += " AND "
+						where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
+			DIVNAME = "VIEW_DIV_ID"
+			new_value_dict = {}
+			ObjectName = "SAQASE"
+			table_id = "add_receiving_equipment"
+			Header_details = {
+				"QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID": "KEY",
+				"SND_EQUIPMENT_ID":"EQUIPMENT ID",
+				"SND_EQUIPMENT_DESCRIPTION":"EQUIPMENT_DESCRIPTION",
+				"GREENBOOK": "GREENBOOK",
+				"PLATFORM": "PLATFORM",
+			}
+			ordered_keys = [
+				"QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID",
+				"SND_EQUIPMENT_ID",
+				"SND_EQUIPMENT_DESCRIPTION",
+				"GREENBOOK",
+				"PLATFORM",
+			]
+			Objd_Obj = Sql.GetList(
+				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
+				+ str(ObjectName)
+				+ "'"
+			)
+			lookup_disply_list = []
+			if Objd_Obj is not None:
+				attr_list = {}
+				api_names = [inn.API_NAME for inn in Objd_Obj]
+				for attr in Objd_Obj:
+					attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
+					if str(attr.LOOKUP_API_NAME) != "" and str(attr.LOOKUP_API_NAME) is not None:
+						lookup_disply_list.append(str(attr.API_NAME))
+				checkbox_list = [
+					inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
+				]
+				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+			query_shp_values = Sql.GetFirst(" SELECT SALESORG_ID,REGION FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+			if	query_shp_values:
+				sales_org = query_shp_values.SALESORG_ID
+				region = query_shp_values.REGION	
+			sec_str = '<div class="row modulebnr brdr ma_mar_btm">INSTALLED BASE EQUIPMENT LIST<button type="button" class="close flt_rt" onclick="closepopup_scrl()" data-dismiss="modal">X</button></div>'
+			sec_str += '<div class="col-md-12 padlftrhtnone" id="btnhide"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Customer Region</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{region}">{region}</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Sales Org</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{sales_org}">{sales_org}</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{}">{}</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add-equipment" class="btnconfig" onclick="add_receiving_equipment()" data-dismiss="modal">ADD</button></div></div>'.format(
+				Product.GetGlobal("TreeParam"), Product.GetGlobal("TreeParam"),sales_org = sales_org,region = region
+			)
+
+			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec header_section_div">'
+			sec_str += (
+				'<table id="'
+				+ str(table_id)
+				+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true"> <thead><tr>'
+			)
+			sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
+
+			for key, invs in enumerate(list(ordered_keys)):
+
+				invs = str(invs).strip()
+				qstring = Header_details.get(str(invs)) or ""
+				if key == 0:
+					sec_str += (
+						'<th data-field="'
+						+ str(invs)
+						+ '" data-formatter="fablocationListKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ str(qstring)
+						+ '" data-filter-control="input">'
+						+ str(qstring)
+						+ "</th>"
+					)
+				else:
+					sec_str += (
+						'<th data-field="'
+						+ invs
+						+ '" data-title-tooltip="'
+						+ str(qstring)
+						+ '" data-sortable="true" data-filter-control="input">'
+						+ str(qstring)
+						+ "</th>"
+					)
+			sec_str += '</tr></thead><tbody class ="equipments_id" ></tbody></table>'
+			sec_str += '<div id="equipments_footer"></div>'
+			values_list = ""
+			values_lists = ""
+			a_test = []
+			for invsk in list(Header_details):
+				table_ids = "#" + str(table_id)
+				filter_class = table_ids + " .bootstrap-table-filter-control-" + str(invsk)
+				values_lists += "var " + str(invsk) + ' = $("' + str(filter_class) + '").val(); '
+				values_lists += " ATTRIBUTE_VALUEList.push(" + str(invsk) + "); "
+				a_test.append(invsk)
+				filter_control_function += (
+					'$("'
+					+ filter_class
+					+ '").change( function(){ var table_id = $(this).closest("table").attr("id"); var a_list = '
+					+ str(a_test)
+					+ "; ATTRIBUTE_VALUEList = []; "
+					+ str(values_lists)
+					+ ' SortColumn = localStorage.getItem("SortColumn"); SortColumnOrder = localStorage.getItem("SortColumnOrder"); PerPage = $("#PageCountValue").val(); PageInform = "1___" + PerPage + "___" + PerPage; cpq.server.executeScript("SYUADNWPOP", {\'TABLEID\': "'
+					+ str(TABLEID)
+					+ "\", 'OPER': 'NO', 'RECORDID': \""
+					+ str(RECORDID)
+					+ "\", 'RECORDFEILD':  \""
+					+ str(RECORDFEILD)
+					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList,'TOOL_TYPE':localStorage.getItem('TOOL_TYPE')}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; try { if(date_field.length > 0) { $(\""
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); $("#noRecDisp").remove() } else{ var date_field = [];$("'
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#equipments_addnew").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); } else{ $("'
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); } } ; });  });'
+				)
+				
+
+			sales_org_record_id = None
+			account_record_id = None
+			quote_obj = Sql.GetFirst(
+				"SELECT SAQTMT.ACCOUNT_RECORD_ID, SAQTRV.SALESORG_RECORD_ID FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTMT.QTEREV_RECORD_ID = '{}'".format(
+					contract_quote_record_id,quote_revision_record_id
+				)
+			)
+			if quote_obj:
+				sales_org_record_id = quote_obj.SALESORG_RECORD_ID
+				account_record_id = quote_obj.ACCOUNT_RECORD_ID
+			if offset_skip_count%10==1:
+				offset_skip_count-=1
+			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
+				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
+			)
+			get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,account_id,quote_revision_record_id) )
+			if get_fab_query:
+				get_fab = tuple([fab.FABLOCATION_ID for fab in get_fab_query])
+			else:
+				get_fab = ""
+			if where_string:
+				where_string += " AND"
+			Pagination_M = Sql.GetFirst(
+				"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE SNDACC_ID = '{}' AND SNDFBL_ID = '{}' AND SALESORG_ID = '{}' AND ISNULL(GREENBOOK, '') <> '' AND {} QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+					ObjectName,
+					account_record_id,
+					Product.GetGlobal("TreeParam"),
+					sales_org,
+					where_string,
+					contract_quote_record_id,
+					Product.GetGlobal("TreeParam"),
+					quote_revision_record_id,
+				)
+			)   	
+			order_by = "order by FABLOCATION_NAME ASC"
+			pop_val = {}
+			where_string += """ SNDACC_ID = '{}' AND SNDFBL_ID = '{}' AND SALESORG_ID = '{}' AND ISNULL(GREENBOOK, '') <> '' AND {} QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+				account_record_id,
+				Product.GetGlobal("TreeParam"),
+				sales_org,
+				where_string,
+				contract_quote_record_id,
+				Product.GetGlobal("TreeParam"),
+				quote_revision_record_id,
+			)
+			table_data = Sql.GetList(
+				"select {} from {} (NOLOCK) {} {} {}".format(
+					", ".join(ordered_keys),
+					ObjectName,
+					"WHERE " + where_string if where_string else "",
+					order_by,
+					pagination_condition,
+				)
+			)
+			if table_data is not None :
+				for row_data in table_data:
+					data_id = str(ObjectName)
+
+					new_value_dict = {}
+
+					for data in row_data:
+						if str(data.Key) == "QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID":
+							pop_val = str(data.Value)
+							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
+							new_value_dict[data.Key] = cpqidval
+						else:
+							new_value_dict[data.Key] = data.Value
+						new_value_dict["pop_val"] = pop_val
+					date_field.append(new_value_dict)
+			QueryCount = len(date_field)
+
+			pagination_total_count = 0
+			if Pagination_M is not None:
+				pagination_total_count = Pagination_M.count
+			if offset_skip_count == 0:
+				offset_skip_count = 1
+				records_end = fetch_count
+			else:
+				offset_skip_count += 1
+				records_end = offset_skip_count + fetch_count -1
+			records_end = pagination_total_count if pagination_total_count < records_end else records_end
+			records_start_and_end = "{} - {} of ".format(offset_skip_count, records_end)
+			disable_next_and_last = ""
+			disable_previous_and_first = ""
+			if records_end == pagination_total_count:
+				disable_next_and_last = "class='btn-is-disabled' style=\'pointer-events:none\' "
+			if offset_skip_count == 0:
+				disable_previous_and_first = "class='btn-is-disabled' style=\'pointer-events:none\' "
+			current_page = int(math.ceil(offset_skip_count / fetch_count)) + 1
+
+			Product.SetGlobal("QueryCount", str(QueryCount))
+			pagination_table_id = "pagination_{}".format(table_id)
+
+			var_str = """<div id="{Parent_Div_Id}" class="col-md-12 brdr listContStyle padbthgt30">
+								<div class="col-md-4 pager-numberofitem  clear-padding">
+									<span class="pager-number-of-items-item flt_lt_pad2_mar2022" id="RecordsStartAndEnd">{Records_Start_And_End}</span>
+									<span class="pager-number-of-items-item flt_lt_pad2_mar" id="TotalRecordsCount">{Pagination_Total_Count}</span>
+									<div class="clear-padding fltltmrgtp3">
+										<div class="pull-right vralign">
+											<select onchange="ShowResultCountFunc(this, '{ShowResultCountFuncTb}', 'addEquipment', '{TableId}')" id="ShowResultCount" class="form-control selcwdt">
+												<option value="10" {Selected_10}>10</option>
+												<option value="20" {Selected_20}>20</option>
+												<option value="50" {Selected_50}>50</option>
+												<option value="100" {Selected_100}>100</option>
+												<option value="200" {Selected_200}>200</option>
+											</select> 
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-8 col-md-4  clear-padding inpadtex" data-bind="visible: totalItemCount">
+									<div class="clear-padding col-xs-12 col-sm-6 col-md-12 brd0">
+										<ul class="pagination pagination">
+											<li class="disabled">
+												<a onclick="GetFirstResultFunc('{GetFirstResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_First}><i class="fa fa-caret-left fnt14bold"></i><i class="fa fa-caret-left fnt14"></i></a>
+											</li>
+											<li class="disabled"><a onclick="GetPreviuosResultFunc('{GetPreviuosResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Previous}><i class="fa fa-caret-left fnt14"></i>PREVIOUS</a></li>
+											<li class="disabled"><a onclick="GetNextResultFunc('{GetNextResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Next}>NEXT<i class="fa fa-caret-right fnt14"></i></a></li>
+											<li class="disabled"><a onclick="GetLastResultFunc('{GetLastResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Last}><i class="fa fa-caret-right fnt14"></i><i class="fa fa-caret-right fnt14bold"></i></a></li>
+										</ul>
+									</div> 
+								</div> 
+								<div class="col-md-4 pad3"> 
+									<span id="page_count" class="currentPage page_right_content">{Current_Page}</span>
+									<span class="page_right_content padrt2">Page </span>
+								</div>
+							</div>""".format(
+				Parent_Div_Id=pagination_table_id,
+				Records_Start_And_End=records_start_and_end,
+				Pagination_Total_Count=pagination_total_count,
+				ShowResultCountFuncTb=pagination_table_id,
+				Selected_10="selected" if fetch_count == 10 else "",
+				Selected_20="selected" if fetch_count == 20 else "",
+				Selected_50="selected" if fetch_count == 50 else "",
+				Selected_100="selected" if fetch_count == 100 else "",
+				Selected_200="selected" if fetch_count == 200 else "",
+				GetFirstResultFuncTb=pagination_table_id,
+				Disable_First=disable_previous_and_first,
+				GetPreviuosResultFuncTb=pagination_table_id,
+				Disable_Previous=disable_previous_and_first,
+				GetNextResultFuncTb=pagination_table_id,
+				Disable_Next=disable_next_and_last,
+				GetLastResultFuncTb=pagination_table_id,
+				Disable_Last=disable_next_and_last,
+				Current_Page=current_page,
+				TableId=TABLEID,
+			)
+			# else:
+			#     date_field = "NORECORDS"
+			#     Trace.Write("No Equipment Records")
+			table_ids = "#" + str(table_id)
+			# Filter based on table MultiSelect Dropdown column - Start
+
+			for index, col_name in enumerate(ordered_keys):
+				table, api_name = ObjectName, col_name
+				obj_data = Sql.GetFirst(
+					"SELECT API_NAME, DATA_TYPE, PICKLIST FROM  SYOBJD WHERE OBJECT_NAME='"
+					+ str(table)
+					+ "' and API_NAME = '"
+					+ str(api_name)
+					+ "'"
+				)
+				if obj_data is not None:
+					if str(obj_data.PICKLIST).upper() == "TRUE":
+						filter_tag = (
+							'<div id = "'
+							+ str(table_id)
+							+ "_RelatedMutipleCheckBoxDrop_"
+							+ str(index)
+							+ '" class="form-control bootstrap-table-filter-control-'
+							+ str(api_name)
+							+ " RelatedMutipleCheckBoxDrop_"
+							+ str(index)
+							+ ' "></div>'
+						)
+						filter_tags.append(filter_tag)
+						filter_types.append("select")
+						if obj_data.DATA_TYPE == "CHECKBOX":
+							filter_values.append(["True", "False"])
+						else:
+							# Trace.Write("=============$$$$$$$$$$$$$>>>>>>>>>>>>> "+"SELECT DISTINCT {Column} FROM {Table}".format(Column=api_name, Table=table))
+							data_obj = Sql.GetList(
+								"SELECT DISTINCT {Column} FROM {Table}".format(Column=api_name, Table=table)
+							)
+							if data_obj is not None:
+								filter_values.append([row_data.Value for data in data_obj for row_data in data])
+					else:
+						filter_tag = (
+							'<input type="text" class="form-control wth100visble bootstrap-table-filter-control-'
+							+ str(api_name)
+							+ '">'
+						)
+						filter_tags.append(filter_tag)
+						filter_types.append("input")
+						filter_values.append("")
+
+			filter_drop_down = (
+				"try { if( document.getElementById('"
+				+ str(table_id)
+				+ "') ) { var listws = document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control')[i].innerHTML = data6[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data8[j]); if(data11[j].length>5){ $('#"
+				+ str(table_id)
+				+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter}); }else{$('#"
+				+ str(table_id)
+				+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter ,autoDropDownHeight: true});} } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control')[i].innerHTML = data9[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data11[j]); $('#"
+				+ str(table_id)
+				+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, scrollBarSize :10 }); } } }, 5000); }"
+			)
+			dbl_clk_function += (
+				'$("'
+				+ str(table_ids)
+				+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+				+ str(table_ids)
+				+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
+			)
 		elif str(ObjectName) == "SAQSCO" and str(CurrentTab) == "Quotes":
 			where_string = ""
 			if A_Keys != "" and A_Values != "":
