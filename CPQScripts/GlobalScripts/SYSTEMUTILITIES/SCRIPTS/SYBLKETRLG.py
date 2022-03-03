@@ -1065,25 +1065,78 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						Sql.RunQuery("""UPDATE SAQSPT SET DELIVERY_1 = NULL ,DELIVERY_2 = NULL ,DELIVERY_3 = NULL ,DELIVERY_4 = NULL ,DELIVERY_5 = NULL ,DELIVERY_6 = NULL ,DELIVERY_7 = NULL ,DELIVERY_8 = NULL ,DELIVERY_9 = NULL ,DELIVERY_10 = NULL ,DELIVERY_11 = NULL ,DELIVERY_12 = NULL ,DELIVERY_13 = NULL ,DELIVERY_14 = NULL ,DELIVERY_15 = NULL ,DELIVERY_16 = NULL ,DELIVERY_17 = NULL ,DELIVERY_18 = NULL ,DELIVERY_19 = NULL ,DELIVERY_20 = NULL ,DELIVERY_21 = NULL ,DELIVERY_22 = NULL ,DELIVERY_23 = NULL ,DELIVERY_24 = NULL ,DELIVERY_25 = NULL ,DELIVERY_26 = NULL ,DELIVERY_27 = NULL ,DELIVERY_28 = NULL ,DELIVERY_29 = NULL ,DELIVERY_30 = NULL ,DELIVERY_31 = NULL ,DELIVERY_32 = NULL ,DELIVERY_33 = NULL ,DELIVERY_34 = NULL ,DELIVERY_35 = NULL ,DELIVERY_36 = NULL ,DELIVERY_37 = NULL ,DELIVERY_38 = NULL ,DELIVERY_39 = NULL ,DELIVERY_40 = NULL ,DELIVERY_41 = NULL ,DELIVERY_42 = NULL ,DELIVERY_43 = NULL ,DELIVERY_44 = NULL ,DELIVERY_45 = NULL ,DELIVERY_46 = NULL ,DELIVERY_47 = NULL ,DELIVERY_48 = NULL ,DELIVERY_49 = NULL ,DELIVERY_50 = NULL ,DELIVERY_51 = NULL ,DELIVERY_52 = NULL WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 					else:
 						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						
+						get_schedule_values = Sql.GetFirst("SELECT DELIVERY_1,DELIVERY_2,DELIVERY_3,DELIVERY_4,DELIVERY_5,DELIVERY_6,DELIVERY_7,DELIVERY_8,DELIVERY_9,DELIVERY_10,DELIVERY_11,DELIVERY_12,DELIVERY_13,DELIVERY_14,DELIVERY_15,DELIVERY_16,DELIVERY_17,DELIVERY_18,DELIVERY_19,DELIVERY_20,DELIVERY_21,DELIVERY_22,DELIVERY_23,DELIVERY_24,DELIVERY_25,DELIVERY_26,DELIVERY_27,DELIVERY_28,DELIVERY_29,DELIVERY_30,DELIVERY_31,DELIVERY_32,DELIVERY_33,DELIVERY_34,DELIVERY_35,DELIVERY_36,DELIVERY_37,DELIVERY_38,DELIVERY_39,DELIVERY_40,DELIVERY_41,DELIVERY_42,DELIVERY_43,DELIVERY_44,DELIVERY_45,DELIVERY_46,DELIVERY_47,DELIVERY_48,DELIVERY_49,DELIVERY_50,DELIVERY_51,DELIVERY_52 FROM SAQSPT  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' ".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+
+						schedule_sum = 0
+						notnull_columns = []
+						for i in range(1,53):
+							val = eval('get_schedule_values.DELIVERY_'+str(i))
+							if val:
+								schedule_sum+=int(val)
+								notnull_columns.append('DELIVERY_'+str(i))
+
+						if value<schedule_sum:
+							length = len(notnull_columns) - 1
+							required_value = schedule_sum - value
+							update_col = ''
+							for key,val in enumerate(notnull_columns):
+								if required_value!=0:
+									current_val = eval('get_schedule_values.'+str(notnull_columns[length-key]))
+									if current_val >= required_value:
+										current_val = current_val-required_value
+										required_value = 0
+									else:
+										current_val = 0
+										required_value -= current_val
+									update_col += str(notnull_columns[length-key])+" = '"+str(current_val)+"',"
+							Sql.RunQuery("""UPDATE SAQSPT SET {cols} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(cols = update_col[:-1],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 						#A055S000P01-14051 start
-						get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE,SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' and CUSTOMER_ANNUAL_QUANTITY > 0".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
-						if get_schedulemode and str(TreeParam) =="Z0108":
-							delivery_method = get_schedulemode.DELIVERY_MODE
-							sch_mode = get_schedulemode.SCHEDULE_MODE
-							if delivery_method == "OFFSITE" and sch_mode == "SCHEDULED" and str(TreeParam) == 'Z0108':
-								ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108','QTY':value})
+						# get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE,SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' and CUSTOMER_ANNUAL_QUANTITY > 0".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						# if get_schedulemode and str(TreeParam) =="Z0108":
+						# 	delivery_method = get_schedulemode.DELIVERY_MODE
+						# 	sch_mode = get_schedulemode.SCHEDULE_MODE
+						# 	if delivery_method == "OFFSITE" and sch_mode == "SCHEDULED" and str(TreeParam) == 'Z0108':
+						# 		ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108','QTY':value})
 						#else:
 							#ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'DELETE_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108'})
 					#A055S000P01-14051 end
 				elif TITLE.split(',') == ["CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_ACCEPT_PART","CUSTOMER_PARTICIPATE","EXCHANGE_ELIGIBLE"]:
 					value = ALLVALUES[index] if ALLVALUES[index] != '' else 'NULL'
 					Sql.RunQuery("""UPDATE SAQSPT SET {column} = {val},{column1} = '{value1}',{column2} = '{value2}',{column3} = '{value3}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],val=value,column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],column3=TITLE.split(',')[3],value3 = ALLVALUES3[index],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
-					get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE,SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}'" .format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
-					if get_schedulemode and str(TreeParam) =="Z0108":
-						delivery_method = get_schedulemode.DELIVERY_MODE
-						sch_mode = get_schedulemode.SCHEDULE_MODE
-						if delivery_method == "OFFSITE" and sch_mode == "SCHEDULED" and str(TreeParam) == 'Z0108':
-							ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108','QTY':ALLVALUES[index]})
+					
+					get_schedule_values = Sql.GetFirst("SELECT DELIVERY_1,DELIVERY_2,DELIVERY_3,DELIVERY_4,DELIVERY_5,DELIVERY_6,DELIVERY_7,DELIVERY_8,DELIVERY_9,DELIVERY_10,DELIVERY_11,DELIVERY_12,DELIVERY_13,DELIVERY_14,DELIVERY_15,DELIVERY_16,DELIVERY_17,DELIVERY_18,DELIVERY_19,DELIVERY_20,DELIVERY_21,DELIVERY_22,DELIVERY_23,DELIVERY_24,DELIVERY_25,DELIVERY_26,DELIVERY_27,DELIVERY_28,DELIVERY_29,DELIVERY_30,DELIVERY_31,DELIVERY_32,DELIVERY_33,DELIVERY_34,DELIVERY_35,DELIVERY_36,DELIVERY_37,DELIVERY_38,DELIVERY_39,DELIVERY_40,DELIVERY_41,DELIVERY_42,DELIVERY_43,DELIVERY_44,DELIVERY_45,DELIVERY_46,DELIVERY_47,DELIVERY_48,DELIVERY_49,DELIVERY_50,DELIVERY_51,DELIVERY_52 FROM SAQSPT  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' ".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+
+					schedule_sum = 0
+					notnull_columns = []
+					for i in range(1,53):
+						val = eval('get_schedule_values.DELIVERY_'+str(i))
+						if val:
+							schedule_sum+=int(val)
+							notnull_columns.append('DELIVERY_'+str(i))
+
+					if value<schedule_sum:
+						length = len(notnull_columns) - 1
+						required_value = schedule_sum - value
+						update_col = ''
+						for key,val in enumerate(notnull_columns):
+							if required_value!=0:
+								current_val = eval('get_schedule_values.'+str(notnull_columns[length-key]))
+								if current_val >= required_value:
+									current_val = current_val-required_value
+									required_value = 0
+								else:
+									current_val = 0
+									required_value -= current_val
+								update_col += str(notnull_columns[length-key])+" = '"+str(current_val)+"',"
+						Sql.RunQuery("""UPDATE SAQSPT SET {cols} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(cols = update_col[:-1],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+					
+					# get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE,SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}'" .format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+					# if get_schedulemode and str(TreeParam) =="Z0108":
+					# 	delivery_method = get_schedulemode.DELIVERY_MODE
+					# 	sch_mode = get_schedulemode.SCHEDULE_MODE
+					# 	if delivery_method == "OFFSITE" and sch_mode == "SCHEDULED" and str(TreeParam) == 'Z0108':
+					# 		ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108','QTY':ALLVALUES[index]})
 					
 					'''
 					if int(ALLVALUES2[index])==0:
@@ -1172,12 +1225,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 									for parts in parts_record_query:
 										Sql.RunQuery("DELETE FROM SAQSPT WHERE QUOTE_SERVICE_PART_RECORD_ID = '"+str(parts.QUOTE_SERVICE_PART_RECORD_ID)+"'")
 							#A055S000P01-14051 start
-							get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE,SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' and CUSTOMER_ANNUAL_QUANTITY > 0".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
-							if get_schedulemode and str(TreeParam) =="Z0108":
-								delivery_method = get_schedulemode.DELIVERY_MODE
-								sch_mode = get_schedulemode.SCHEDULE_MODE
-								if delivery_method == "OFFSITE" and sch_mode == "SCHEDULED" and str(TreeParam) == 'Z0108':
-									ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_BULK_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108','QTY':annual_qty})
+							# get_schedulemode = Sql.GetFirst("SELECT DELIVERY_MODE,SCHEDULE_MODE FROM SAQSPT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' and CUSTOMER_ANNUAL_QUANTITY > 0".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+							# if get_schedulemode and str(TreeParam) =="Z0108":
+							# 	delivery_method = get_schedulemode.DELIVERY_MODE
+							# 	sch_mode = get_schedulemode.SCHEDULE_MODE
+							# 	if delivery_method == "OFFSITE" and sch_mode == "SCHEDULED" and str(TreeParam) == 'Z0108':
+							# 		ScriptExecutor.ExecuteGlobal("CQDELYSCHD", {'Action':'INSERT_BULK_QTY','rec_id':sql_obj.QUOTE_SERVICE_PART_RECORD_ID,'QuoteRecordId':Qt_rec_id,'rev_rec_id':Quote.GetGlobal("quote_revision_record_id"),'Service_id':'Z0108','QTY':annual_qty})
 								
 							#A055S000P01-14051 end
 					else:
