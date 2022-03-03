@@ -293,7 +293,7 @@ def Related_Sub_Banner(
                     ThirdValue = "SENDING ACCOUNT"
                     if subTabName == "Sending Fab Location Details" or subTabName == "Sending Equipment":
                         FourthLable = "Fab Location ID"
-                        FourthValue = Product.getGlobal("sending_fab_id")
+                        FourthValue = Product.GetGlobal("sending_fab_id")
                     else:
                         FourthLable = "Fab Locations"
                         FourthValue = "ALL"
@@ -306,7 +306,7 @@ def Related_Sub_Banner(
                     ThirdValue = "RECEIVING ACCOUNT"
                     if subTabName == "Receiving Fab Locations Details" or subTabName == "Receiving Equipment":
                         FourthLable = "Fab Location ID"
-                        FourthValue = Product.getGlobal("receiving_fab_id")
+                        FourthValue = Product.GetGlobal("receiving_fab_id")
                     else:
                         FourthLable = "Fab Locations"
                         FourthValue = "ALL"
