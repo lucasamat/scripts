@@ -2072,18 +2072,16 @@ def Related_Sub_Banner(
         get_rounding_place = Sql.GetFirst("SELECT * FROM PRCURR WHERE CURRENCY_RECORD_ID = '{}' ".format(get_quote_details.GLOBAL_CURRENCY_RECORD_ID))
         decimal_format = "{:,." + str(get_rounding_place.DISPLAY_DECIMAL_PLACES) + "f}"
         if subTabName == "Summary":
-            Trace.Write("summar_SHP")
-            PrimaryLable = "Total Excluding Tax/VAT"
-            #PrimaryValue = '0.00'+" "+curr
+            PrimaryLable = "Total Est Net Val"
             PrimaryValue = decimal_format.format(float(get_quote_details.NET_VALUE_INGL_CURR))+" "+ curr if str(get_quote_details.NET_VALUE_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
-            #PrimaryValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
-            SecondLable = "Tax/VAT"
+            SecondLable = "Total Net Val"
             SecondValue = decimal_format.format(float(get_quote_details.TAX_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
-            
-            #SecondValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
-            ThirdLable = "Total Amount Including Tax/VAT"
-            #ThirdValue = str("%.2f" % round(float(Total),2))+curr if str(Total) != '' else '0.00'+" "+curr
+            ThirdLable = "Total Tax/VAT/GST"
             ThirdValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
+            FourthLable = "Total Amt"
+            FourthValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
+            FifthLable = "Total Margin Pct"
+            FifthValue = decimal_format.format(float("0.00"))+" "+curr
         elif get_quote_details:
             Trace.Write("subTabName_CHK "+str(subTabName))
             if subTabName == "Items":
