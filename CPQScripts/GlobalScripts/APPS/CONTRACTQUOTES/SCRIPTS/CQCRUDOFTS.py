@@ -492,7 +492,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                         '{relocation_equp_type}' AS RELOCATION_EQUIPMENT_TYPE,
                                         SAQASE.TECHNOLOGY
                                         FROM SYSPBT (NOLOCK)
-                                        JOIN SAQASE (NOLOCK) ON SYSPBT.QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID = SAQASE.EQUIPMENT_RECORD_ID JOIN MAEQCT(NOLOCK)
+                                        JOIN SAQASE (NOLOCK) ON SYSPBT.BATCH_RECORD_ID = SAQASE.QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID JOIN MAEQCT(NOLOCK)
                                         ON SAQASE.EQUIPMENTCATEGORY_ID = MAEQCT.EQUIPMENTCATEGORY_ID
                                         WHERE 
                                         SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}'
