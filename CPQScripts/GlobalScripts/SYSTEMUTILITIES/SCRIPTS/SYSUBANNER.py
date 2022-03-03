@@ -585,7 +585,7 @@ def Related_Sub_Banner(
                 ThirdValue = "All"
             elif TabName == "Quotes" and str(TreeParam) == "Customer Information":
                 PrimaryLable = "Customer Information"
-                PrimaryValue = "Use the Customer Information functionality to manage your quote Accounts Contacts..."    
+                PrimaryValue = "Use the Customer Information functionality to manage your quote Accounts Contacts..."  
             elif TreeParam =="Sales Team":
                 PrimaryLable = "Sales Team"
                 PrimaryValue = "Use the Sale Team functionality to manage all contributors to your Quote..."
