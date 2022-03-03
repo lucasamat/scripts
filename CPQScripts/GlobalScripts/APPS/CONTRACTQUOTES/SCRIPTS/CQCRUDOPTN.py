@@ -5984,7 +5984,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	def _create(self):
 		Trace.Write("inside create"+str(self.action_type))
 		if self.action_type == "ADD_COVERED_OBJ":
-			Log.Info("self.action_typeNSERt"+str(self.action_type))
 			Trace.Write("add covered object")
 			covered_start_time = time.time()
 			master_object_name = "SAQFEQ"
@@ -6010,7 +6009,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							query_string = "SELECT QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND RELOCATION_EQUIPMENT_TYPE = '{tree_param}' AND {Qury_Str} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{TreeParam}'  AND RELOCATION_EQUIPMENT_TYPE = '{tree_param}')".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam = self.tree_param if self.tree_parent_level_0 == 'Comprehensive Services' else self.tree_parent_level_0,Qury_Str=qury_str,tree_param=str(self.tree_param).upper())
 						else:
 							query_string = "SELECT QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ (NOLOCK) LEFT JOIN SAQSCO(NOLOCK) ON SAQSCO.EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID AND SAQSCO.TEMP_TOOL = SAQFEQ.TEMP_TOOL WHERE SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND {Qury_Str} AND SAQSCO.SERVICE_ID ='{TreeParam}' AND ISNULL(SAQSCO.EQUIPMENT_RECORD_ID,'')='' ".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,TreeParam = self.tree_param,Qury_Str=qury_str)
-							Log.Info("query_string_SAQSCOINSERt"+str(query_string))
 					query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
 						Query_String=query_string
 					)
@@ -6020,14 +6018,12 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					if table_total_rows:
 						record_ids = [data for data in self.get_results(query_string, table_total_rows)]                    
 				else:
-					Log.Info("crudifvalues"+str(self.values))
 					record_ids = [
 						CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
 						if value.strip() != "" and master_object_name in value
 						else value
 						for value in self.values
 					]
-					Log.Info("record_ids---record_ids"+str(record_ids))
 				batch_group_record_id = str(Guid.NewGuid()).upper()
 				record_ids = str(str(record_ids)[1:-1].replace("'",""))
 				parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
