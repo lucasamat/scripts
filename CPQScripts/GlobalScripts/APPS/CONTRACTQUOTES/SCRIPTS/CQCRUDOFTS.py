@@ -248,7 +248,7 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                         '{fab_recid}' as SNDFBL_RECORD_ID,
                                         MAEQUP.ACCOUNT_ID,
                                         MAEQUP.ACCOUNT_NAME,
-                                        MAEQCT.ACCOUNT_RECORD_ID,
+                                        MAEQUP.ACCOUNT_RECORD_ID,
                                         '{QuoteRecId}' as QUOTE_RECORD_ID,
                                         '{QuoteId}' as QUOTE_ID,
                                         '{RevisionId}' as QTEREV_ID,
