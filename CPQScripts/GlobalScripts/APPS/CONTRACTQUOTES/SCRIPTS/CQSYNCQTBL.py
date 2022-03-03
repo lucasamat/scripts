@@ -1998,20 +1998,44 @@ class SyncQuoteAndCustomTables:
 																	) A
 																""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 								#covered object insert
-								for service_id, value in covered_object_data.items():
-									#Trace.Write("service_id"+str(service_id))
-									#Trace.Write("value"+str(value))
-									Log.Info("value_equipments"+str(len(value)))
-									if len(value) == 1000:
-										previous_index = 0
-										for index in range(0, len(value), 1000):
-											records = ','.join(value[previous_index:index])
-											Trace.Write("records"+str(records))
-											previous_index = index
-											quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+								if covered_object_data:
+									for service_id, value in covered_object_data.items():
+										#Trace.Write("service_id"+str(service_id))
+										#Trace.Write("value"+str(value))
+										Log.Info("value_equipments"+str(len(value)))
+										if len(value) == 1000:
+											previous_index = 0
+											for index in range(0, len(value), 1000):
+												records = ','.join(value[previous_index:index])
+												Trace.Write("records"+str(records))
+												previous_index = index
+												quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+												quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_id,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+												quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
+												Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
+												service_id = service_id
+												service_type = quote_service_obj.SERVICE_TYPE
+												quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+												Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
+												ScriptExecutor.ExecuteGlobal(
+																		"CQCRUDOPTN",
+																	{
+																		"NodeType"   : "COVERED OBJ MODEL",
+																		"ActionType" : "ADD_COVERED_OBJ",
+																		"Opertion"    : "ADD",
+																		"AllValues"  : False,
+																		"TriggerFrom"   : "python_script",
+																		"Values"	  : quote_fab_equipments_record_id,
+																		"ServiceId"  : service_id,
+																		"ServiceType" : service_type,
+																	},
+																)
+										else:
+											elements = (','.join(value))
+											quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = elements,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 											quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_id,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 											quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
-											Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
+											#Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
 											service_id = service_id
 											service_type = quote_service_obj.SERVICE_TYPE
 											quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
@@ -2028,40 +2052,17 @@ class SyncQuoteAndCustomTables:
 																	"ServiceId"  : service_id,
 																	"ServiceType" : service_type,
 																},
-															)
-									else:
-										elements = (','.join(value))
-										quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = elements,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-										quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_id,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-										quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
-										#Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
-										service_id = service_id
-										service_type = quote_service_obj.SERVICE_TYPE
-										quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
-										Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
-										ScriptExecutor.ExecuteGlobal(
-																"CQCRUDOPTN",
-															{
-																"NodeType"   : "COVERED OBJ MODEL",
-																"ActionType" : "ADD_COVERED_OBJ",
-																"Opertion"    : "ADD",
-																"AllValues"  : False,
-																"TriggerFrom"   : "python_script",
-																"Values"	  : quote_fab_equipments_record_id,
-																"ServiceId"  : service_id,
-																"ServiceType" : service_type,
-															},
-														)	
-								##update for temp tool and dates
-								QuoteId=quote_id
-								datetime_string = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
-								columns ="EQUIPMENT_ID,CONTRACT_START_DATE,CONTRACT_END_DATE,SERVICE_ID,TEMP_TOOL,QUOTE_RECORD_ID,QTEREV_RECORD_ID"
-								coverd_object_temp_table_name = "SAQSCO_BKP_{}_{}".format(QuoteId, datetime_string)    
-								coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
-								coverd_object_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(columns)+" INTO "+str(coverd_object_temp_table_name)+" FROM (SELECT DISTINCT "+str(columns)+" FROM (VALUES "+str(records)+") AS TEMP("+str(columns)+")) OQ ' ")    
-								saqsco_update ="""UPDATE A SET A.CONTRACT_VALID_FROM = B.CONTRACT_START_DATE,A.CONTRACT_VALID_TO =B.CONTRACT_END_DATE,A.TEMP_TOOL = B.TEMP_TOOL FROM SAQSCO A INNER JOIN {} B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID and A.SERVICE_ID =B.SERVICE_ID where A.QUOTE_RECORD_ID = '{Quote_id}' AND A.QTEREV_RECORD_ID = '{qtrv_id}'""".format(coverd_object_temp_table_name,Quote_id =Quote.GetGlobal("contract_quote_record_id"),qtrv_id =Quote.GetGlobal("quote_revision_record_id"))
-								Sql.RunQuery(saqsco_update)
-								coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")	
+															)	
+									##update for temp tool and dates
+									QuoteId=quote_id
+									datetime_string = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
+									columns ="EQUIPMENT_ID,CONTRACT_START_DATE,CONTRACT_END_DATE,SERVICE_ID,TEMP_TOOL,QUOTE_RECORD_ID,QTEREV_RECORD_ID"
+									coverd_object_temp_table_name = "SAQSCO_BKP_{}_{}".format(QuoteId, datetime_string)    
+									coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")
+									coverd_object_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(columns)+" INTO "+str(coverd_object_temp_table_name)+" FROM (SELECT DISTINCT "+str(columns)+" FROM (VALUES "+str(records)+") AS TEMP("+str(columns)+")) OQ ' ")    
+									saqsco_update ="""UPDATE A SET A.CONTRACT_VALID_FROM = B.CONTRACT_START_DATE,A.CONTRACT_VALID_TO =B.CONTRACT_END_DATE,A.TEMP_TOOL = B.TEMP_TOOL FROM SAQSCO A INNER JOIN {} B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID and A.SERVICE_ID =B.SERVICE_ID where A.QUOTE_RECORD_ID = '{Quote_id}' AND A.QTEREV_RECORD_ID = '{qtrv_id}'""".format(coverd_object_temp_table_name,Quote_id =Quote.GetGlobal("contract_quote_record_id"),qtrv_id =Quote.GetGlobal("quote_revision_record_id"))
+									Sql.RunQuery(saqsco_update)
+									coverd_object_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(coverd_object_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(coverd_object_temp_table_name)+" END  ' ")	
 							except Exception as e:
 								Log.Info("EXCEPTION: Iteration Over non sequence for none type"+str(e))
 							##A055S000P01-10174 code ends...A055S000P01-16530
