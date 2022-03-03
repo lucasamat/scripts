@@ -1086,7 +1086,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 									if current_val >= required_value:
 										current_val = current_val-required_value
 										required_value = 0
-										break
 									else:
 										current_val = 0
 										required_value -= current_val
