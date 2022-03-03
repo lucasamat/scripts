@@ -617,6 +617,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
 								MAEQUP.SERIAL_NO,
 								'{QuoteRecId}' as QUOTE_RECORD_ID,
 								'{QuoteId}' as QUOTE_ID,
+                                '' as QUOTE_NAME,
 								'{RevisionId}' as QTEREV_ID,
 								'{RevisionRecordId}' as QTEREV_RECORD_ID,
 								MAEQUP.EQUIPMENTCATEGORY_RECORD_ID,
