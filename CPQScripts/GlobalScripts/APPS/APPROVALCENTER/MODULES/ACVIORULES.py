@@ -566,8 +566,9 @@ class ViolationConditions:
                         if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
                             splitval = str(result.WHERE_CONDITION_01).split("OR")
                             Trace.Write("SPLITVAL--->"+str(splitval))
+                            count = 0
                             for s in splitval:
-                                count = 0
+                                
                                 if "PRENVL" in s and count == 0:
                                     Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
                                     res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service)
@@ -576,7 +577,7 @@ class ViolationConditions:
                                     if res == 1:
                                         fflag = 1
                                     else:
-                                        fflag = 0
+                                        fflag = 2
                                 else:
                                     if "PRENVL" not in s:
                                         try:
