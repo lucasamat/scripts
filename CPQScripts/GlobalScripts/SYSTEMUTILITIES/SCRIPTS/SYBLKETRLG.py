@@ -1089,6 +1089,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 									else:
 										current_val = 0
 										required_value -= current_val
+									Trace.Write('###@'+str(notnull_columns[length-key])+" = '"+str(current_val)+"',")
 									update_col += str(notnull_columns[length-key])+" = '"+str(current_val)+"',"
 							Sql.RunQuery("""UPDATE SAQSPT SET {cols} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(cols = update_col[:-1],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 						#A055S000P01-14051 start
