@@ -1072,7 +1072,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						notnull_columns = []
 						for i in range(1,53):
 							val = eval('get_schedule_values.DELIVERY_'+str(i))
-							if val:
+							if val and val!=0:
 								schedule_sum+=int(val)
 								notnull_columns.append('DELIVERY_'+str(i))
 
