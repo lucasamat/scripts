@@ -645,7 +645,6 @@ class ViolationConditions:
                         #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
                         #Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                         #SqlQuery = Sql.GetFirst(Select_Query)
-                        
                         Log.Info("else flag")
                         Trace.Write("else flag")
                     if SqlQuery is not None:
