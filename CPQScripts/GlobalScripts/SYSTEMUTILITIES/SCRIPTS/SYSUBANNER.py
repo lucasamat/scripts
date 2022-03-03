@@ -290,7 +290,7 @@ def Related_Sub_Banner(
                     SecondValue = involved_parties_object.PARTY_NAME
                     ThirdLable = "Role"
                     ThirdValue = "Sending Account"
-                elif SubTabName == "Receiving Fab Locations" and TreeParam == "Customer Information":
+                elif subTabName == "Receiving Fab Locations" and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
                     PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
                     SecondLable = "Party Name"
