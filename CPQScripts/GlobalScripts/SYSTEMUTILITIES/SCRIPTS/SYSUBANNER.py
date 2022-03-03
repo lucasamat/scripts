@@ -3197,7 +3197,12 @@ def Related_Sub_Banner(
                 if "ADD FROM LIST" in add_button:
                     sec_rel_sub_bnr+= ""
                 else:
-                    sec_rel_sub_bnr+= str(add_button)
+                    if  "INLINE EDIT" in add_button:
+                        sec_rel_sub_bnr+= str(add_button)
+                    if "ADD NSOS" in add_button:
+                        sec_rel_sub_bnr+= str(add_button)
+                    else:
+                        sec_rel_sub_bnr+= str(add_button)
             else:
                 if str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
                     sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
