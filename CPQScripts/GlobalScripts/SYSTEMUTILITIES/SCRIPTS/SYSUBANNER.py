@@ -1143,10 +1143,10 @@ def Related_Sub_Banner(
                             ThirdValue = str(ListVal[2].split(" ")[0])
                         elif ObjName == "SAQTIP":
                             Trace.Write("SHP_Sub "+str(ListVal[3]))
-                            ThirdLable = "Party ID"
+                            ThirdLable = "Party Name"
                             ThirdValue = str(ListVal[2]) 
-                            FourthLable = "Party Name"
-                            FourthValue = str(ListVal[3])   
+                            # FourthLable = "Party Name"
+                            # FourthValue = str(ListVal[3])  
                         elif ObjName == "CTCTIP":
                             ThirdLable = "Party ID"
                             ThirdValue = str(ListVal[2])
