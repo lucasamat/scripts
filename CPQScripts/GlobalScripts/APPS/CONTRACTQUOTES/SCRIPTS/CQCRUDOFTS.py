@@ -552,14 +552,14 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                         FROM SYSPBT (NOLOCK)
                         JOIN SAQFEQ (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID
                         JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID
-                        WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'  AND NOT EXISTS (SELECT * FROM SAQFGB B WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQFEQ.GREENBOOK = B.GREENBOOK AND FABLOCATION_ID IN {fab})
+                        WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'  AND NOT EXISTS (SELECT * FROM SAQFGB B WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQFEQ.GREENBOOK = B.GREENBOOK AND FABLOCATION_ID IN '{fab}')
                         ) FB""".format(
                                         QuoteRecordId=contract_quote_record_id,
                                         RevisionRecordId=quote_revision_record_id,
                                         BatchGroupRecordId=batch_group_record_id,
                                         UserName=User.UserName,
                                         UserId=User.Id,
-                                        fab = Product.GetGlobal("receiving_fab_id")
+                                        fab = "('"+str(Product.GetGlobal("receiving_fab_id"))+"')"
                                     )
                     )		
         self._process_query(
