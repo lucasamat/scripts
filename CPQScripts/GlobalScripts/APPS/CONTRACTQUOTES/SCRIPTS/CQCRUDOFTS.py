@@ -372,7 +372,7 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
                     SAQSAF.STATE,
                     SAQSAF.STATE_RECORD_ID
                     FROM SYSPBT(NOLOCK)
-                    JOIN SAQSAF(NOLOCK) ON SAQSAF.QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID = SYSPBT.BATCH_RECORD_ID 
+                    JOIN SAQSAF(NOLOCK) ON SAQSAF.SNDFBL_RECORD_ID = SYSPBT.BATCH_RECORD_ID 
                 WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')fab_location """.format(
                 UserName=User.UserName,
                 UserId=User.Id,
