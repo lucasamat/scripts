@@ -1076,9 +1076,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 								schedule_sum+=int(val)
 								notnull_columns.append('DELIVERY_'+str(i))
 
-						if value<schedule_sum:
+						if int(value)<schedule_sum:
 							length = len(notnull_columns) - 1
-							required_value = schedule_sum - value
+							required_value = schedule_sum - int(value)
 							update_col = ''
 							for key,val in enumerate(notnull_columns):
 								if required_value!=0:
