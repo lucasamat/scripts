@@ -93,7 +93,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 				""".format(	AttributeName=self.related_list_attr_name)
 		)
 		if related_list_obj:			
-			table_columns = eval(related_list_obj.COLUMNS)[1:]
+			table_columns = eval(related_list_obj.COLUMNS)
 			Trace.Write("table_columns"+str(table_columns))
 			columns = ",".join(table_columns)		
 			self.object_name = related_list_obj.OBJECT_NAME
