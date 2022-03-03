@@ -281,13 +281,22 @@ def Related_Sub_Banner(
             ThirdQuery = Sql.GetFirst(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
             )
-            if subTabName == "Sending Fab Locations"  and TreeParam == "Customer Information":
+            if TreeParam == "Customer Information":
+                involved_parties_object = Sql.GetFirst("SELECT PARTY_ID,PARTY_NAME,CPQ_PARTNER_FUNCTION FROM SAQTIP WHERE PARTY_ID = '{}' ".format(Product.GetGlobal("stp_account_Id")))
+                if subTabName == "Sending Fab Locations"  and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
                     PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
                     SecondLable = "Party Name"
-                    SecondValue = str(ListVal[2])
+                    SecondValue = involved_parties_object.PARTY_NAME
                     ThirdLable = "Role"
                     ThirdValue = "Sending Account"
+                elif SubTabName == "Receiving Fab Locations" and TreeParam == "Customer Information":
+                    PrimaryLable = "Party ID"
+                    PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
+                    SecondLable = "Party Name"
+                    SecondValue = involved_parties_object.PARTY_NAME
+                    ThirdLable = "Role"
+                    ThirdValue = "Receiving Account"
             if TreeParam == 'Revisions':
                 rev_quote = Sql.GetFirst(" SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND ACTIVE = 'TRUE' ".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
                 if rev_quote: 
