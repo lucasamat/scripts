@@ -285,14 +285,14 @@ def Related_Sub_Banner(
                 involved_parties_object = Sql.GetFirst("SELECT PARTY_ID,PARTY_NAME,CPQ_PARTNER_FUNCTION FROM SAQTIP WHERE PARTY_ID = '{}' ".format(Product.GetGlobal("stp_account_Id")))
                 if subTabName == "Sending Fab Locations"  and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
-                    PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
+                    PrimaryValue = involved_parties_object.PARTY_ID
                     SecondLable = "Party Name"
                     SecondValue = involved_parties_object.PARTY_NAME
                     ThirdLable = "Role"
                     ThirdValue = "Sending Account"
                 elif subTabName == "Receiving Fab Locations" and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
-                    PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
+                    PrimaryValue = involved_parties_object.PARTY_ID
                     SecondLable = "Party Name"
                     SecondValue = involved_parties_object.PARTY_NAME
                     ThirdLable = "Role"
