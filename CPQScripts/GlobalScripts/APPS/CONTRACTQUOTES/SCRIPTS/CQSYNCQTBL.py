@@ -1740,6 +1740,37 @@ class SyncQuoteAndCustomTables:
 																	) A
 																""".format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 								SAQFBL_end = time.time()
+							equipment_fab_data = {} 
+							for service_level_temp_equipment_json_data in payload_json.get('SAQSCO'):
+								#temptool logic starts:A055S000P01-16705
+								if service_level_temp_equipment_json_data.get('TEMP_TOOL')=='true':
+									if service_level_temp_equipment_json_data.get('FAB_LOCATION_ID') in equipment_fab_data:
+										equipment_fab_data[service_level_temp_equipment_json_data.get('FAB_LOCATION_ID')].append(service_level_temp_equipment_json_data.get('EQUIPMENT_ID'))
+									else:
+										equipment_fab_data[service_level_temp_equipment_json_data.get('FAB_LOCATION_ID')] = [service_level_temp_equipment_json_data.get('EQUIPMENT_ID')]
+							if equipment_fab_data:
+								Log.Info("equipment_fab_data"+str(equipment_fab_data))
+								for fab_location_id, value in equipment_fab_data.items():
+									Trace.Write("fab_location_id"+str(fab_location_id))
+									Trace.Write("value------temp"+str(value))
+									equipment_temp_insert = Sql.RunQuery("""
+																INSERT SAQFEQ
+																(QTEREV_RECORD_ID,QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID,TEMP_TOOL, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+															SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+																SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,'' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID,'True' as TEMP_TOOL FROM MAEQUP (NOLOCK)
+																JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME WHERE ISNULL(SERIAL_NO, '') <> '' AND FABLOCATION_ID = '{FabLocationId}'
+																) A
+															""".format(UserId=User.Id,UserName=User.Name,QuoteId=contract_quote_obj.QUOTE_ID, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=Quote.GetGlobal("quote_revision_record_id"),quote_rev_id=quote_rev_id))
+
+									Log.Info("""
+																INSERT SAQFEQ
+																(QTEREV_RECORD_ID,QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID,TEMP_TOOL, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+															SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+																SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,'' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID,'True' as TEMP_TOOL FROM MAEQUP (NOLOCK)
+																JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME WHERE ISNULL(SERIAL_NO, '') <> '' AND FABLOCATION_ID = '{FabLocationId}'
+																) A
+															""".format(UserId=User.Id,UserName=User.Name,QuoteId=contract_quote_obj.QUOTE_ID, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=Quote.GetGlobal("quote_revision_record_id"),quote_rev_id=quote_rev_id))
+								
 								#Log.Info("SAQFBL time----------"+str(SAQFBL_end-SAQFBL_start))
 
 							if product_offering:
@@ -1774,41 +1805,6 @@ class SyncQuoteAndCustomTables:
 								
 								contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")						
-								#
-								equipment_fab_data = {} 
-								for service_level_temp_equipment_json_data in payload_json.get('SAQSCO'):
-									#temptool logic starts:A055S000P01-16705
-									if service_level_temp_equipment_json_data.get('TEMP_TOOL')=='true':
-										if service_level_temp_equipment_json_data.get('FAB_LOCATION_ID') in equipment_fab_data:
-											equipment_fab_data[service_level_temp_equipment_json_data.get('FAB_LOCATION_ID')].append(service_level_temp_equipment_json_data.get('EQUIPMENT_ID'))
-										else:
-											equipment_fab_data[service_level_temp_equipment_json_data.get('FAB_LOCATION_ID')] = [service_level_temp_equipment_json_data.get('EQUIPMENT_ID')]
-								if equipment_fab_data:
-									Log.Info("equipment_fab_data"+str(equipment_fab_data))
-									for fab_location_id, value in equipment_fab_data.items():
-										Trace.Write("fab_location_id"+str(fab_location_id))
-										Trace.Write("value------temp"+str(value))
-										equipment_temp_insert = Sql.RunQuery("""
-																	INSERT SAQFEQ
-																	(QTEREV_RECORD_ID,QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID,TEMP_TOOL, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-																SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-																	SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,'' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID,'True' as TEMP_TOOL FROM MAEQUP (NOLOCK)
-																	JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME WHERE ISNULL(SERIAL_NO, '') <> '' AND FABLOCATION_ID = '{FabLocationId}'
-																	) A
-																""".format(UserId=User.Id,UserName=User.Name,QuoteId=contract_quote_obj.QUOTE_ID, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=Quote.GetGlobal("quote_revision_record_id"),quote_rev_id=quote_rev_id))
-
-										Log.Info("""
-																	INSERT SAQFEQ
-																	(QTEREV_RECORD_ID,QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID,TEMP_TOOL, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-																SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-																	SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,'' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID,'True' as TEMP_TOOL FROM MAEQUP (NOLOCK)
-																	JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME WHERE ISNULL(SERIAL_NO, '') <> '' AND FABLOCATION_ID = '{FabLocationId}'
-																	) A
-																""".format(UserId=User.Id,UserName=User.Name,QuoteId=contract_quote_obj.QUOTE_ID, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=Quote.GetGlobal("quote_revision_record_id"),quote_rev_id=quote_rev_id))
-
-								
-								
-								
 								get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
 								account_info = {}
 								for keyobj in get_party_role:
