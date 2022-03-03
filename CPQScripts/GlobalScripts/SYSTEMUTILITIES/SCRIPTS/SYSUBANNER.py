@@ -283,7 +283,7 @@ def Related_Sub_Banner(
             )
             if TreeParam == "Customer Information":
                 involved_parties_object = Sql.GetFirst("SELECT PARTY_ID,PARTY_NAME,CPQ_PARTNER_FUNCTION FROM SAQTIP WHERE PARTY_ID = '{}' ".format(Product.GetGlobal("stp_account_Id")))
-                if(subTabName == "Sending Fab Locations" or subTabName == "Sending Fab Location Details") and TreeParam == "Customer Information":
+                if(subTabName == "Sending Fab Locations" or subTabName == "Sending Fab Location Details" or subTabName == "Sending Equipment") and TreeParam == "Customer Information":
                     Trace.Write("subTabName"+str(subTabName)+str(CurrentRecordId))
                     PrimaryLable = "Party ID"
                     PrimaryValue = involved_parties_object.PARTY_ID
@@ -291,20 +291,20 @@ def Related_Sub_Banner(
                     SecondValue = involved_parties_object.PARTY_NAME.upper()
                     ThirdLable = "Role"
                     ThirdValue = "SENDING ACCOUNT"
-                    if subTabName == "Sending Fab Location Details":
+                    if subTabName == "Sending Fab Location Details" or subTabName == "Sending Equipment":
                         FourthLable = "Fab Location ID"
                         FourthValue = Product.getGlobal("sending_fab_id")
                     else:
                         FourthLable = "Fab Locations"
                         FourthValue = "ALL"
-                elif(subTabName == "Receiving Fab Locations" or subTabName == "Receiving Fab Location Details") and TreeParam == "Customer Information":
+                elif(subTabName == "Receiving Fab Locations" or subTabName == "Receiving Fab Location Details" or subTabName == "Receiving Equipment") and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
                     PrimaryValue = involved_parties_object.PARTY_ID.upper()
                     SecondLable = "Party Name"
                     SecondValue = involved_parties_object.PARTY_NAME
                     ThirdLable = "Role"
                     ThirdValue = "RECEIVING ACCOUNT"
-                    if subTabName == "Receiving Fab Locations Details":
+                    if subTabName == "Receiving Fab Locations Details" or subTabName == "Receiving Equipment":
                         FourthLable = "Fab Location ID"
                         FourthValue = Product.getGlobal("receiving_fab_id")
                     else:
