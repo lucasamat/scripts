@@ -826,7 +826,7 @@ class TreeView:
 		try:
 			Trace.Write("Clean Booking Checklist")
 			user_id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
-			saqdlt_query = Sql.GetFirst("SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER'".format(qte_rec_id = contract_quote_record_id,revision_rec_id = quote_revision_record_id,member_id = user_id))
+			saqdlt_query = Sql.GetFirst("SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER'".format(qte_rec_id = contract_quote_record_id,revision_rec_id = quote_revision_record_id))
 			if saqdlt_query:
 				if str(saqdlt_query.MEMBER_ID) == str(user_id):
 					Trace.Write("subtab_not empty")
