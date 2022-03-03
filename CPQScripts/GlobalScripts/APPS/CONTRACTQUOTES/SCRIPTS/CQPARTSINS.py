@@ -395,7 +395,7 @@ class SyncFPMQuoteAndHanaDatabase:
             record_count=0
             if cnt ==1:
                 response=res
-            #Log.Info("PrepareBackuptable----->2"+str(response))
+            Log.Info("PrepareBackuptable----->2"+str(response))
             response=response.replace("null",'""')
             response=response.replace("None",'""')
             response=response.replace("true",'1')
@@ -459,7 +459,7 @@ class SyncFPMQuoteAndHanaDatabase:
                 temp_value =''
                 
                 col_flag=1
-            #Log.Info("Total Records from HANA::"+str(record_count))
+            Log.Info("Total Records from HANA::"+str(record_count))
             #Log.Info("Total Parts List:: " +str(self.part_numbers))
             if record_count >0:
                 self._insert_spare_parts()
