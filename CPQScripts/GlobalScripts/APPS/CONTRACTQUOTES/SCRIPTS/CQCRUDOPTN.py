@@ -2918,7 +2918,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 									GETDATE() as CPQTABLEENTRYDATEADDED,
 									{UserId} as CpqTableEntryModifiedBy,
 									GETDATE() as CpqTableEntryDateModified
-									FROM PRLPBE (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID WHERE CpqTableEntryId = '{cpq_entry}'
+									FROM PRLPBE (NOLOCK) WHERE PRLPBE.CpqTableEntryId = '{cpq_entry}'
 						""".format(
 								QuoteId=self.contract_quote_id,
 								UserName=self.user_name,
