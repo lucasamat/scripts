@@ -112,6 +112,10 @@ def edit_assembly_level(Values):
 	#Trace.Write('bb--'+str(chamber_res_list))
 	return chamber_res_list
 
+def save_assembly_level(fab_id,equipment_id,assembly_id):
+	Trace.Write(str(included_value)+'-'+str(fab_id)+'-'+str(equipment_id)+'-'+str(assembly_id))
+	#Sql.RunQuery("UPDATE SAQFEA SET INCLUDED = ")
+
 def Request_access_token():
 	webclient = System.Net.WebClient()
 	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
@@ -498,33 +502,47 @@ try:
 	Trace.Write("check script called"+str(ACTION))
 except:
 	ACTION = ""
-
 try:
-	TABNAME = Param.TABNAME
+	included_value = Param.included_value
 except:
-	TABNAME = ""
-
+	included_value = ''
 try:
-	selected_values= eval(Param.Values)
-	#Trace.Write('selected_values-----'+str(selected_values))
+	equipment_id = Param.equipment_id
 except:
-	selected_values =[]
+	equipment_id =""
+
 try:
-	unselected_values= eval(Param.unselected_list)
-	#Trace.Write('unselected_list-----'+str(unselected_values))
-except Exception as e:
-	#Trace.Write('unselected_values--error-'+str(e))
-	unselected_values =[]
+	grid_assembly_id = Param.selected_assembly
+except:
+	grid_assembly_id = ''
+try:
+	grid_fab_id = Param.selected_fab
+except:
+	grid_fab_id = ''
 
-if ACTION == 'UPDATE_ASSEMBLY':
-	#selected_values = list(selected_values)
-	#Trace.Write('values----'+str(selected_values))
-	ApiResponse = ApiResponseFactory.JsonResponse(update_assembly_level(selected_values))
-elif ACTION == 'EDIT_ASSEMBLY':
-	#Trace.Write('values----'+str(selected_values))
-	ApiResponse = ApiResponseFactory.JsonResponse(edit_assembly_level(selected_values))
+if ACTION == 'SAVE_ASSEMBLY':
+	ApiResponse = ApiResponseFactory.JsonResponse(save_assembly_level(grid_fab_id,equipment_id,grid_assembly_id))
+# try:
+# 	selected_values= eval(Param.Values)
+# 	#Trace.Write('selected_values-----'+str(selected_values))
+# except:
+# 	selected_values =[]
+# try:
+# 	unselected_values= eval(Param.unselected_list)
+# 	#Trace.Write('unselected_list-----'+str(unselected_values))
+# except Exception as e:
+# 	#Trace.Write('unselected_values--error-'+str(e))
+# 	unselected_values =[]
 
-elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list :
+# if ACTION == 'UPDATE_ASSEMBLY':
+# 	#selected_values = list(selected_values)
+# 	#Trace.Write('values----'+str(selected_values))
+# 	ApiResponse = ApiResponseFactory.JsonResponse(update_assembly_level(selected_values))
+# elif ACTION == 'EDIT_ASSEMBLY':
+# 	#Trace.Write('values----'+str(selected_values))
+# 	ApiResponse = ApiResponseFactory.JsonResponse(edit_assembly_level(selected_values))
+
+if ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list :
 	Trace.Write('inside update')
 	#Log.Info('ent_params_lis----------'+str(ent_params_list))
 	ent_where = ent_params_list[0]
