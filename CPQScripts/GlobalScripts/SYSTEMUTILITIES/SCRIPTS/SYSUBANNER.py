@@ -3197,8 +3197,7 @@ def Related_Sub_Banner(
                 if "ADD FROM LIST" in add_button:
                     sec_rel_sub_bnr+= ""
                 else:
-                    if  "INLINE EDIT" in add_button:
-                        sec_rel_sub_bnr+= str(add_button)
+                    Trace.Write("Mul_chk_H "+str(multi_buttons))
                     if "ADD NSOS" in multi_buttons:
                         sec_rel_sub_bnr+= str(multi_buttons)
                     else:
