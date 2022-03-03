@@ -1181,7 +1181,12 @@ try:
 	parts_list_include = Param.parts_list_include
 except:
 	parts_list_include = ''
-Trace.Write("parts_list---"+str(parts_list)+"--billing_matrix---inside--"+str(billing_matrix)+'----'+str(parts_list_include))
+try:
+	include_part_delivery = Param.include_part_delivery
+except:
+	include_part_delivery = ''
+    
+Trace.Write("parts_list---"+str(parts_list)+"--billing_matrix---inside--"+str(billing_matrix)+'----'+str(parts_list_include)+'--include_part_delivery---'+str(include_part_delivery))
 
 if str(parts_list) == 'True' and str(billing_matrix) == 'True':
 	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
