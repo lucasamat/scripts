@@ -1952,7 +1952,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			chld_dict["QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
 				"SAQFEA", str(child.QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID)
 			)
-			chld_dict["INCLUDED"] = ('<abbr id ="" title="' + str(child.INCLUDED) + '">' + str(child.INCLUDED) + "</abbr>")
+			chld_dict["INCLUDED"] =str(child.INCLUDED)
 			chld_dict["EQUIPMENTCATEGORY_ID"] = ('<abbr id ="" title="' + str(child.EQUIPMENTCATEGORY_ID) + '">' + str(child.EQUIPMENTCATEGORY_ID) + "</abbr>") 
 			chld_dict["SERIAL_NUMBER"] = ('<abbr id ="" title="' + str(child.SERIAL_NUMBER) + '">' + str(child.SERIAL_NUMBER) + "</abbr>") 
 			chld_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(child.ASSEMBLY_ID) + '">' + str(child.ASSEMBLY_ID) + "</abbr>")
