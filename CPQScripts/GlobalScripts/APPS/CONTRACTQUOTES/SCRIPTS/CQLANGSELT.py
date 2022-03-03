@@ -1092,7 +1092,9 @@ def language_select():
 
 			sec_str += '<table class="wth100mrg8"><tbody>'
 	return sec_str
-
+def _insert_parts_delivery():
+    Trace.Write('scussces--')
+    return True
 
 def fpm_quote_doc():
 	Trace.Write('FPM QUOTE CREATION __DOC')
@@ -1202,6 +1204,13 @@ elif str(parts_list_include) == 'True' and str(parts_list) == 'True':
 	Trace.Write('881---FPPM QUote--')
 	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
 	Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content = 'YES'
+    
+	ApiResponse = ApiResponseFactory.JsonResponse(fpm_quote_doc())
+elif str(parts_list_include) == 'True' and str(parts_list) == 'True' and include_part_delivery == 'True':
+	Trace.Write('881---FPPM QUote--')
+	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
+	Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content = 'YES'
+    Quote.GetCustomField('PARTS_DELIVERY_SCHEDULE').Content = 'YES'
 	ApiResponse = ApiResponseFactory.JsonResponse(fpm_quote_doc())
 if action_type == "DOCUMENT":
 	Trace.Write("inside"+str(action_type))
