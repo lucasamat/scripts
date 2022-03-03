@@ -460,7 +460,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                     CpqTableEntryModifiedBy,
                                     CpqTableEntryDateModified,
                                     RELOCATION_FAB_TYPE,
-                                    RELOCATION_EQUIPMENT_TYPE,WAFER_SIZE,
+                                    RELOCATION_EQUIPMENT_TYPE,
                                     TECHNOLOGY
                                     ) SELECT
                                         CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
