@@ -1703,7 +1703,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	if sale_type != "TOOL RELOCATION":
 		if TreeParam == 'Fab Locations' or TreeParam == "Customer Information":
 			Parent_Equipmentid = Sql.GetFirst(
-				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}'".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
 					RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 					EquipmentId=recid,
@@ -1711,7 +1711,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			)
 		elif TreeParentParam == 'Fab Locations':
 			Parent_Equipmentid = Sql.GetFirst(
-				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and  FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and  FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}' ".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
 					RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 					FablocationId=Product.GetGlobal("TreeParam"),
@@ -1720,7 +1720,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			)
 		elif TreeSuperParentParam == 'Fab Locations':
 			Parent_Equipmentid = Sql.GetFirst(
-				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}'AND GREENBOOK = '{GreenBook}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}'AND GREENBOOK = '{GreenBook}' ".format(
 					ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),
 					RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 					FablocationId = Product.GetGlobal("TreeParentLevel0"),
@@ -1731,7 +1731,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	elif sale_type == "TOOL RELOCATION":
 		if TreeParam == 'Fab Locations' or TreeParam == "Customer Information":
 			Parent_Equipmentid = Sql.GetFirst(
-				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' ".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
 					RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 					EquipmentId=recid,
@@ -1739,7 +1739,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			)
 		elif TreeParentParam == 'Fab Locations':
 			Parent_Equipmentid = Sql.GetFirst(
-				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' ".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
 					RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 					FablocationId=Product.GetGlobal("TreeParam"),
@@ -1748,7 +1748,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			)
 		elif TreeTopSuperParentParam == 'Fab Locations':
 			Parent_Equipmentid = Sql.GetFirst(
-				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}'AND GREENBOOK = '{GreenBook}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}'AND GREENBOOK = '{GreenBook}' ".format(
 					ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),
 					RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 					FablocationId = Product.GetGlobal("TreeParentLevel0"),
@@ -1758,7 +1758,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			)
 		elif TreeSuperParentParam == 'Fab Locations':
 			Parent_Equipmentid = Sql.GetFirst(
-				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+				"select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}'".format(
 					ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),
 					RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 					FablocationId = Product.GetGlobal("TreeParam"),
