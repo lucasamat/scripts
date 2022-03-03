@@ -465,10 +465,10 @@ class SyncFPMQuoteAndHanaDatabase:
                 self._insert_spare_parts()
                 self.update_records_saqspt()  
                 self.insert_delivery_schedule()
-                try:
-                    self.CQPARTIFLW_iflow()        
-                except Exception:
-                    Log.Info("PART PRICING IFLOW ERROR!")
+                #try:
+                #    self.CQPARTIFLW_iflow()        
+                #except Exception:
+                #    Log.Info("PART PRICING IFLOW ERROR!")
 
     def delete_child_records_6kw(self):
         Trace.Write('Delete Child called!!!')
@@ -560,7 +560,9 @@ except:
 
 fpm_obj = SyncFPMQuoteAndHanaDatabase()
 fpm_obj.fetch_quotebasic_info()
-if Parameter["Action"] == 'Delete':
+if Parameter["Action"] == 'Price':
+    fpm_obj.CQPARTIFLW_iflow()
+elif Parameter["Action"] == 'Delete':
     if Parameter["Delete_Partlist"]:
         fpm_obj.delete_child_records_6kw_partlist(Parameter["Delete_Partlist"])
     else:
