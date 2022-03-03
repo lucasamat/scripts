@@ -2870,8 +2870,6 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						nso_table = {
 							"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
 							"BUSINESS_UNIT": nso_data.BUSINESS_UNIT,
-							"CONTRACT_VALID_FROM": eqp.CONTRACT_VALID_FROM,
-							"CONTRACT_VALID_TO": eqp.CONTRACT_VALID_TO,
 							"DIVISION_ID": nso_data.DIVISION_ID,
 							"DIVISION_RECORD_ID": nso_data.DIVISION_RECORD_ID,
 							"EQUIPMENT_DESCRIPTION": eqp.EQUIPMENT_DESCRIPTION,
