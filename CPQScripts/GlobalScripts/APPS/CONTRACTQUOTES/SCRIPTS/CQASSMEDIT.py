@@ -115,6 +115,7 @@ def edit_assembly_level(Values):
 def save_assembly_level(fab_id,equipment_id,assembly_id):
 	Trace.Write(str(included_value)+'-'+str(fab_id)+'-'+str(equipment_id)+'-'+str(assembly_id))
 	#Sql.RunQuery("UPDATE SAQFEA SET INCLUDED = ")
+	return True
 
 def Request_access_token():
 	webclient = System.Net.WebClient()
