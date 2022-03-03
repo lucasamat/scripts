@@ -2863,13 +2863,15 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					Trace.Write("cpq_entry_Chk_J"+str(cpq_entry))
 				nso_master_table = Sql.GetList("SELECT BUSINESS_UNIT,DIVISION_ID,DIVISION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,POSS_NSO_DESCRIPTION,POSS_NSO_PART_ID,SAP_PART_NUMBER FROM PRLPBE (NOLOCK) WHERE CpqTableEntryId = '{cpq_entry}'".format(cpq_entry = cpq_entry))
 				for nso_data in nso_master_table:
-					nso_equipment_list = Sql.GetList("SELECT EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,EQUIPMENT_STATUS,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QTESRVGBK_RECORD_ID,QTESRV_RECORD_ID,SERIAL_NO,TEMP_TOOL FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0123'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+					nso_equipment_list = Sql.GetList("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,EQUIPMENT_STATUS,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QTESRVGBK_RECORD_ID,QTESRV_RECORD_ID,SERIAL_NO,TEMP_TOOL FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0123'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 					for eqp in nso_equipment_list:
 						Trace.Write("CHK_POSS_ "+str(nso_data))
 						nso_table_info = SqlHelper.GetTable("SAQSCN")
 						nso_table = {
 							"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
 							"BUSINESS_UNIT": nso_data.BUSINESS_UNIT,
+							"CONTRACT_VALID_FROM": eqp.CONTRACT_VALID_FROM,
+							"CONTRACT_VALID_TO": eqp.CONTRACT_VALID_TO,
 							"DIVISION_ID": nso_data.DIVISION_ID,
 							"DIVISION_RECORD_ID": nso_data.DIVISION_RECORD_ID,
 							"EQUIPMENT_DESCRIPTION": eqp.EQUIPMENT_DESCRIPTION,
@@ -2894,7 +2896,9 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							"QTESRV_RECORD_ID": eqp.QTESRV_RECORD_ID,
 							"SAP_PART_NUMBER": nso_data.SAP_PART_NUMBER,
 							"SERIAL_NO": eqp.SERIAL_NO,
-							"TEMP_TOOL": eqp.TEMP_TOOL
+							"TEMP_TOOL": eqp.TEMP_TOOL,
+							"POSS_COST": nso_data.POSS_COST,
+							"POSS_PRICE": nso_data.POSS_PRICE
 						} 
 						nso_table_info.AddRow(nso_table)
 						Sql.Upsert(nso_table_info)
