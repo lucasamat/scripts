@@ -1956,7 +1956,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			chld_dict["EQUIPMENTCATEGORY_ID"] = ('<abbr id ="" title="' + str(child.EQUIPMENTCATEGORY_ID) + '">' + str(child.EQUIPMENTCATEGORY_ID) + "</abbr>") 
 			chld_dict["SERIAL_NUMBER"] = ('<abbr id ="" title="' + str(child.SERIAL_NUMBER) + '">' + str(child.SERIAL_NUMBER) + "</abbr>") 
 			chld_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(child.ASSEMBLY_ID) + '">' + str(child.ASSEMBLY_ID) + "</abbr>")
-			chld_dict["ASSEMBLYTYPE_ID"] = ('<abbr id ="" title="' + str(child.ASSEMBLYTYPE_ID) + '">' + str(child.ASSEMBLYTYPE_ID) + "</abbr>")
+			chld_dict["ASSEMBLYTYPE_ID"] = ('<abbr id ="' + str(child.ASSEMBLYTYPE_ID) + '" title="' + str(child.ASSEMBLYTYPE_ID) + '">' + str(child.ASSEMBLYTYPE_ID) + "</abbr>")
 			chld_dict["ASSEMBLY_DESCRIPTION"] = ('<abbr id ="" title="' + str(child.ASSEMBLY_DESCRIPTION) + '">' + str(child.ASSEMBLY_DESCRIPTION) + "</abbr>")
 			chld_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(child.GOT_CODE) + '">' + str(child.GOT_CODE) + "</abbr>")
 			chld_dict["MNT_PLANT_ID"] = ('<abbr id ="" title="' + str(child.MNT_PLANT_ID) + '">' + str(child.MNT_PLANT_ID) + "</abbr>")
