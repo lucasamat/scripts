@@ -2853,6 +2853,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 
 
 		elif self.action_type == "ADD_NSO":
+			# CONTRACT_VALID_FROM,
+			# CONTRACT_VALID_TO,
             # "EQUIPMENT_DESCRIPTION"
             # "EQUIPMENT_ID"
             # "EQUIPMENT_RECORD_ID"
@@ -2883,8 +2885,6 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							INSERT SAQSCN (
                                 QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID,
                                 BUSINESS_UNIT,
-                                CONTRACT_VALID_FROM,
-                                CONTRACT_VALID_TO,
                                 DIVISION_ID,
                                 DIVISION_RECORD_ID,
                                 GREENBOOK,
@@ -2902,9 +2902,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
                                 CpqTableEntryDateModified
 								) SELECT
 									CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID,
-									PRLPBE.BUSINESS_UNIT,
-									SAQFEQ.CONTRACT_VALID_FROM,
-									SAQFEQ.CONTRACT_VALID_TO,                                
+									PRLPBE.BUSINESS_UNIT,                               
 									PRLPBE.DIVISION_ID,
 									PRLPBE.DIVISION_RECORD_ID,
 									PRLPBE.GREENBOOK,
@@ -2919,7 +2917,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 									'{UserName}' AS CPQTABLEENTRYADDEDBY,
 									GETDATE() as CPQTABLEENTRYDATEADDED,
 									{UserId} as CpqTableEntryModifiedBy,
-									GETDATE() as CpqTableEntryDateModified,
+									GETDATE() as CpqTableEntryDateModified
 									FROM PRLPBE (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID WHERE CpqTableEntryId = '{cpq_entry}'
 						""".format(
 								QuoteId=self.contract_quote_id,
