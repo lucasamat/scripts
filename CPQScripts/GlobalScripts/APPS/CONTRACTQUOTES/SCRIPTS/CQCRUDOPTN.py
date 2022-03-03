@@ -5960,6 +5960,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	def _create(self):
 		Trace.Write("inside create"+str(self.action_type))
 		if self.action_type == "ADD_COVERED_OBJ":
+			Log.Info("self.action_typeNSERt"+str(self.action_type))
 			Trace.Write("add covered object")
 			covered_start_time = time.time()
 			master_object_name = "SAQFEQ"
