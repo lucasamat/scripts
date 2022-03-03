@@ -112,9 +112,9 @@ def edit_assembly_level(Values):
 	#Trace.Write('bb--'+str(chamber_res_list))
 	return chamber_res_list
 
-def save_assembly_level(fab_id,equipment_id,assembly_id):
+def save_assembly_level(included_value,fab_id,equipment_id,assembly_id):
 	Trace.Write(str(included_value)+'-'+str(fab_id)+'-'+str(equipment_id)+'-'+str(assembly_id))
-	#Sql.RunQuery("UPDATE SAQFEA SET INCLUDED = ")
+	Sql.RunQuery("UPDATE SAQFEA SET INCLUDED = {} WHERE QUOTE_RECORD_ID= '{}' AND QTEREV_RECORD_ID ='{}' AND EQUIPMENT_ID = '{}' AND ASSEMBLY_ID = '{}' AND FABLOCATION_ID ='{}'".format(included_value,ContractRecordId,revision_record_id,equipment_id,assembly_id,fab_id))
 	return True
 
 def Request_access_token():
