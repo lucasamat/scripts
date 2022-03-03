@@ -2861,7 +2861,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					obj = rec.split('-')[0]
 					cpq_entry = rec.split('-')[1].lstrip('0')
 					Trace.Write("cpq_entry_Chk_J"+str(cpq_entry))
-				nso_master_table = Sql.GetFirst("SELECT BUSINESS_UNIT,DIVISION_ID,DIVISION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,POSS_NSO_DESCRIPTION,POSS_NSO_PART_ID,SAP_PART_NUMBER FROM PRLPBE (NOLOCK) WHERE CpqTableEntryId = '{cpq_entry}'".format(cpq_entry = cpq_entry))
+				nso_master_table = Sql.GetList("SELECT BUSINESS_UNIT,DIVISION_ID,DIVISION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,POSS_NSO_DESCRIPTION,POSS_NSO_PART_ID,SAP_PART_NUMBER FROM PRLPBE (NOLOCK) WHERE CpqTableEntryId = '{cpq_entry}'".format(cpq_entry = cpq_entry))
 				for nso_data in nso_master_table:
 					nso_equipment_list = Sql.GetList("SELECT EQUIPMENT_DESCRIPTION FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 					for eqp in nso_equipment_list:
@@ -2869,7 +2869,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						nso_table_info = SqlHelper.GetTable("SAQSCN")
 						nso_table = {
 							"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"BUSINESS_UNIT": nso_data.get("BUSINESS_UNIT"),
+							"BUSINESS_UNIT": nso_data.BUSINESS_UNIT,
 							"CONTRACT_VALID_FROM": eqp.CONTRACT_VALID_FROM,
 							"CONTRACT_VALID_TO": eqp.CONTRACT_VALID_TO,
 							"DIVISION_ID": nso_data.DIVISION_ID,
