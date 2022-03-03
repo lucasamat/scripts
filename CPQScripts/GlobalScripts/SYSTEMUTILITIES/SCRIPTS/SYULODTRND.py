@@ -107,7 +107,7 @@ def CommonTreeViewHTMLDetail(
 	elif ObjectName == 'SAQFBL':
 		receiving_fab_object = Sql.GetFirst("SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_FABLOCATION_RECORD_ID = '"+str(primary_value)+"'")
 		if receiving_fab_object:
-			Product.SetGlobal("receiving_fab_id", str(receiving_fab_object.SNDFBL_ID))
+			Product.SetGlobal("receiving_fab_id", str(receiving_fab_object.FABLOCATION_ID))
 			
 	# Billing Matrix Details Load - End
 	
