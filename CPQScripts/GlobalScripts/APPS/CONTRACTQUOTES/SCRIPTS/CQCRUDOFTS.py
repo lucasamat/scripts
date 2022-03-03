@@ -78,7 +78,7 @@ def sending_fablocation_insert(values,all_values,A_Keys,A_Values):
     if values:
         record_ids = []
         if all_values:
-            query_string = "SELECT FAB_LOCATION_RECORD_ID FROM MAFBLC (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  FAB_LOCATION_ID NOT IN  (SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' )".format(
+            query_string = "SELECT FAB_LOCATION_RECORD_ID FROM MAFBLC (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND  FAB_LOCATION_ID NOT IN  (SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' )".format(
                     acc=Product.GetGlobal("stp_account_id"),
                     salesorgrecid=salesorg_record_id,
                     QuoteRecordId=contract_quote_record_id,
