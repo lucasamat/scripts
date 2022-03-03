@@ -2861,47 +2861,47 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					obj = rec.split('-')[0]
 					cpq_entry = rec.split('-')[1].lstrip('0')
 					Trace.Write("cpq_entry_Chk_J"+str(cpq_entry))
-				nso_master_table = Sql.GetList("SELECT BUSINESS_UNIT,DIVISION_ID,DIVISION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,POSS_NSO_DESCRIPTION,POSS_NSO_PART_ID,SAP_PART_NUMBER,POSS_COST,POSS_PRICE FROM PRLPBE (NOLOCK) WHERE CpqTableEntryId = '{cpq_entry}'".format(cpq_entry = cpq_entry))
-				for nso_data in nso_master_table:
-					nso_equipment_list = Sql.GetList("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,EQUIPMENT_STATUS,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QTESRVGBK_RECORD_ID,QTESRV_RECORD_ID,SERIAL_NO,TEMP_TOOL FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0123' AND GREENBOOK = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_0))
-					for eqp in nso_equipment_list:
-						Trace.Write("CHK_POSS_ "+str(nso_data))
-						nso_table_info = SqlHelper.GetTable("SAQSCN")
-						nso_table = {
-							"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"BUSINESS_UNIT": nso_data.BUSINESS_UNIT,
-							"CONTRACT_VALID_FROM": eqp.CONTRACT_VALID_FROM,
-							"CONTRACT_VALID_TO": eqp.CONTRACT_VALID_TO,
-							"DIVISION_ID": nso_data.DIVISION_ID,
-							"DIVISION_RECORD_ID": nso_data.DIVISION_RECORD_ID,
-							"EQUIPMENT_DESCRIPTION": eqp.EQUIPMENT_DESCRIPTION,
-							"EQUIPMENT_ID": eqp.EQUIPMENT_ID,
-							"EQUIPMENT_RECORD_ID": eqp.EQUIPMENT_RECORD_ID,
-							"EQUIPMENT_STATUS": eqp.EQUIPMENT_STATUS,
-							"FABLOCATION_ID": eqp.FABLOCATION_ID,
-							"FABLOCATION_NAME": eqp.FABLOCATION_NAME,
-							"FABLOCATION_RECORD_ID": eqp.FABLOCATION_RECORD_ID,
-							"GREENBOOK": nso_data.GREENBOOK,
-							"GREENBOOK_RECORD_ID": nso_data.GREENBOOK_RECORD_ID,
-							"POSS_NSO_DESCRIPTION": nso_data.POSS_NSO_DESCRIPTION,
-							"POSS_NSO_PART_ID": nso_data.POSS_NSO_PART_ID,
-							"SERVICE_DESCRIPTION": eqp.SERVICE_DESCRIPTION,
-							"SERVICE_ID": eqp.SERVICE_ID,
-							"SERVICE_RECORD_ID": eqp.SERVICE_RECORD_ID,
-							"QUOTE_ID": str(self.contract_quote_id),
-							"QUOTE_RECORD_ID": str(self.contract_quote_record_id),
-							"QTEREV_ID": str(self.quote_revision_id),
-							"QTEREV_RECORD_ID": str(self.quote_revision_record_id),
-							"QTESRVGBK_RECORD_ID": eqp.QTESRVGBK_RECORD_ID,
-							"QTESRV_RECORD_ID": eqp.QTESRV_RECORD_ID,
-							"SAP_PART_NUMBER": nso_data.SAP_PART_NUMBER,
-							"SERIAL_NO": eqp.SERIAL_NO,
-							"TEMP_TOOL": eqp.TEMP_TOOL,
-							"POSS_COST": nso_data.POSS_COST,
-							"POSS_PRICE": nso_data.POSS_PRICE
-						} 
-						nso_table_info.AddRow(nso_table)
-						Sql.Upsert(nso_table_info)
+					nso_master_table = Sql.GetList("SELECT BUSINESS_UNIT,DIVISION_ID,DIVISION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,POSS_NSO_DESCRIPTION,POSS_NSO_PART_ID,SAP_PART_NUMBER,POSS_COST,POSS_PRICE FROM PRLPBE (NOLOCK) WHERE CpqTableEntryId = '{cpq_entry}'".format(cpq_entry = cpq_entry))
+					for nso_data in nso_master_table:
+						nso_equipment_list = Sql.GetList("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,EQUIPMENT_STATUS,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QTESRVGBK_RECORD_ID,QTESRV_RECORD_ID,SERIAL_NO,TEMP_TOOL FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0123' AND GREENBOOK = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_parent_level_0))
+						for eqp in nso_equipment_list:
+							Trace.Write("CHK_POSS_ "+str(nso_data))
+							nso_table_info = SqlHelper.GetTable("SAQSCN")
+							nso_table = {
+								"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
+								"BUSINESS_UNIT": nso_data.BUSINESS_UNIT,
+								"CONTRACT_VALID_FROM": eqp.CONTRACT_VALID_FROM,
+								"CONTRACT_VALID_TO": eqp.CONTRACT_VALID_TO,
+								"DIVISION_ID": nso_data.DIVISION_ID,
+								"DIVISION_RECORD_ID": nso_data.DIVISION_RECORD_ID,
+								"EQUIPMENT_DESCRIPTION": eqp.EQUIPMENT_DESCRIPTION,
+								"EQUIPMENT_ID": eqp.EQUIPMENT_ID,
+								"EQUIPMENT_RECORD_ID": eqp.EQUIPMENT_RECORD_ID,
+								"EQUIPMENT_STATUS": eqp.EQUIPMENT_STATUS,
+								"FABLOCATION_ID": eqp.FABLOCATION_ID,
+								"FABLOCATION_NAME": eqp.FABLOCATION_NAME,
+								"FABLOCATION_RECORD_ID": eqp.FABLOCATION_RECORD_ID,
+								"GREENBOOK": nso_data.GREENBOOK,
+								"GREENBOOK_RECORD_ID": nso_data.GREENBOOK_RECORD_ID,
+								"POSS_NSO_DESCRIPTION": nso_data.POSS_NSO_DESCRIPTION,
+								"POSS_NSO_PART_ID": nso_data.POSS_NSO_PART_ID,
+								"SERVICE_DESCRIPTION": eqp.SERVICE_DESCRIPTION,
+								"SERVICE_ID": eqp.SERVICE_ID,
+								"SERVICE_RECORD_ID": eqp.SERVICE_RECORD_ID,
+								"QUOTE_ID": str(self.contract_quote_id),
+								"QUOTE_RECORD_ID": str(self.contract_quote_record_id),
+								"QTEREV_ID": str(self.quote_revision_id),
+								"QTEREV_RECORD_ID": str(self.quote_revision_record_id),
+								"QTESRVGBK_RECORD_ID": eqp.QTESRVGBK_RECORD_ID,
+								"QTESRV_RECORD_ID": eqp.QTESRV_RECORD_ID,
+								"SAP_PART_NUMBER": nso_data.SAP_PART_NUMBER,
+								"SERIAL_NO": eqp.SERIAL_NO,
+								"TEMP_TOOL": eqp.TEMP_TOOL,
+								"POSS_COST": nso_data.POSS_COST,
+								"POSS_PRICE": nso_data.POSS_PRICE
+							} 
+							nso_table_info.AddRow(nso_table)
+							Sql.Upsert(nso_table_info)
 
 			# 		# maequp_data = Sql.GetFirst("SELECT * FROM MAEQUP (NOLOCK) WHERE CpqTableEntryId = '"+str(cpq_entry)+"'")
 			# 		self._process_query(
