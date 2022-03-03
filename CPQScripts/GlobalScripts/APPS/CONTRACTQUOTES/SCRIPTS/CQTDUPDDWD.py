@@ -54,18 +54,20 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 	def get_results(self, table_total_rows=0, colums='*'):		
 		start = 1
 		end = 1000
+		Trace.Write("col--"+str(colums))
+		
 		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))
 				
 		while start < table_total_rows:
 			query_string_with_pagination = """
-							SELECT DISTINCT * FROM (
-								SELECT DISTINCT *, ROW_NUMBER()OVER(ORDER BY CpqTableEntryId) AS SNO FROM (
-									SELECT DISTINCT *, CpqTableEntryId
+							SELECT DISTINCT {Columns} FROM (
+								SELECT DISTINCT {Columns}, ROW_NUMBER()OVER(ORDER BY CpqTableEntryId) AS SNO FROM (
+									SELECT DISTINCT {Columns}, CpqTableEntryId
 									FROM {TableName} (NOLOCK)
 									WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'
 									) IQ)OQ
 							WHERE SNO>={Skip_Count} AND SNO<={Fetch_Count}              
-							""".format( TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param, Skip_Count=start, Fetch_Count=end)
+							""".format(Columns=colums, TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param, Skip_Count=start, Fetch_Count=end)
 
 			table_data = Sql.GetList(query_string_with_pagination)
 
