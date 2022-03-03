@@ -1997,7 +1997,7 @@ class SyncQuoteAndCustomTables:
 									temp_tool =service_level_equipment_json_data.get('TEMP_TOOL')
 									coverd_object_tool_dates.append([equipment_id,start_date,end_date,service_id,temp_tool,Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")])
 								records = ', '.join(map(str, [str(tuple(equipment_record)) for equipment_record in coverd_object_tool_dates])).replace("None","null").replace("'","''")
-								Log.Info("covered_object_data"+str(covered_object_data))
+								#Log.Info("covered_object_data"+str(covered_object_data))
 								#covered object insert
 								if covered_object_data:
 									for service_id, value in covered_object_data.items():
