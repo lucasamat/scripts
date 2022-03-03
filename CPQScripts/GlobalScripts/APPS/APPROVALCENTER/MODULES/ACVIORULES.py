@@ -559,7 +559,7 @@ class ViolationConditions:
                     # )
                     #A055S000P01-15007 START
                     fflag = 0
-                    if "PRENVL" in result.WHERE_CONDITION_01 and (result.APRCHNSTP_NUMBER == 1 or result.APRCHNSTP_NUMBER == 2):
+                    if "PRENVL" in result.WHERE_CONDITION_01 and (result.APRCHN_ID == 'AMATAPPR'):
                         fflag = 2
                         getService = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND (PAR_SERVICE_ID = '' OR PAR_SERVICE_ID IS NULL)".format(RecordId))
                         service = [x.SERVICE_ID for x in getService]
@@ -569,6 +569,7 @@ class ViolationConditions:
                             for s in splitval:
                                 count = 0
                                 if "PRENVL" in s and count == 0:
+                                    Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
                                     res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service)
                                     #res = 1
                                     count += 1
@@ -577,18 +578,20 @@ class ViolationConditions:
                                     else:
                                         fflag = 0
                                 else:
-                                    try:
-                                        objname = str(result.WHERE_CONDITION_01).split(".")[0].replace("(","").replace(" ","")
-                                        Select_Query = Sql.GetFirst(
-                                        "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
-                                        )
-                                        Trace.Write("585 SELECT QUERY--->"+str(Select_Query))
-                                    except:
-                                        Trace.Write("Exception Else 587")
-                                    if Select_Query is not None:
-                                        fflag = 1
-                                    elif Select_Query is None and fflag != 1:
-                                        fflag = 0
+                                    if "PRENVL" not in s:
+                                        try:
+                                            objname = str(s).split(".")[0].replace("(","").replace(" ","").replace(")","")
+                                            Select_Query = Sql.GetFirst(
+                                            "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
+                                            )
+                                            Trace.Write("585 SELECT QUERY--->"+str(Select_Query))
+                                        except:
+                                            Select_Query = None
+                                            Trace.Write("Exception Else 587")
+                                        if Select_Query is not None:
+                                            fflag = 1
+                                        elif Select_Query is None and fflag != 1:
+                                            fflag = 0
 
                                     
                                     #A055S000P01-15007 END
@@ -1077,7 +1080,7 @@ class ViolationConditions:
         else:
             return 0
     def ItemApproval(self,RecordId,aprchName,service):
-        
+        Trace.Write("APRCHSTP NAME = "+str(aprchName))
         if aprchName == "NSDR":
             res = self.NSDREnt(RecordId,service)
         elif aprchName == "BD":
