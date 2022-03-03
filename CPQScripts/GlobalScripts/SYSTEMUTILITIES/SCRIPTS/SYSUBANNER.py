@@ -281,7 +281,7 @@ def Related_Sub_Banner(
             ThirdQuery = Sql.GetFirst(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
             )
-            if subTabName == "Sending Fab Locations"  and TreeParam = "Customer Information":
+            if subTabName == "Sending Fab Locations"  and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
                     PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
                     SecondLable = "Party Name"
