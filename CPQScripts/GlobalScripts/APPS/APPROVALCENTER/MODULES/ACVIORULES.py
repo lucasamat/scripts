@@ -540,9 +540,9 @@ class ViolationConditions:
             )
             for index, val in enumerate(CHSqlObjs):
                 CSSqlObjs = Sql.GetList(
-                    "SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"
+                    "SELECT * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"
                     + str(val.APPROVAL_CHAIN_RECORD_ID)
-                    + "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER"
+                    + "' AND WHERE_CONDITION_01 <> ''"
                 )
                 Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND (WHERE_CONDITION_01) <> '' ORDER BY APRCHNSTP_NUMBER")
                 for result in CSSqlObjs:
