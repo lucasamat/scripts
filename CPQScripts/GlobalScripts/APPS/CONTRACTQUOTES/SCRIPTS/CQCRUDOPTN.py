@@ -2863,7 +2863,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					Trace.Write("cpq_entry_Chk_J"+str(cpq_entry))
 				nso_master_table = Sql.GetList("SELECT BUSINESS_UNIT,DIVISION_ID,DIVISION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,POSS_NSO_DESCRIPTION,POSS_NSO_PART_ID,SAP_PART_NUMBER FROM PRLPBE (NOLOCK) WHERE CpqTableEntryId = '{cpq_entry}'".format(cpq_entry = cpq_entry))
 				for nso_data in nso_master_table:
-					nso_equipment_list = Sql.GetList("SELECT EQUIPMENT_DESCRIPTION FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+					nso_equipment_list = Sql.GetList("SELECT EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,EQUIPMENT_STATUS,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QTESRVGBK_RECORD_ID,QTESRV_RECORD_ID,SERIAL_NO,TEMP_TOOL FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 					for eqp in nso_equipment_list:
 						Trace.Write("CHK_POSS_ "+str(nso_data))
 						nso_table_info = SqlHelper.GetTable("SAQSCN")
