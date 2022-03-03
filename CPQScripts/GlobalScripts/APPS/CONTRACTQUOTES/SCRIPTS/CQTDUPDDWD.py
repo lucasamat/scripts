@@ -54,7 +54,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 	def get_results(self, table_total_rows=0, colums='*'):		
 		start = 1
 		end = 1000
-		colums="PRICING_STATUS,"+colums
+		colums="PRICING_STATUS,"+str(colums)
 		Trace.Write("col--"+str(colums))
 		
 		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))
