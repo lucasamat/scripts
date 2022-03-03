@@ -474,7 +474,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                         SAQASE.SERIAL_NO,
                                         '{QuoteRecId}' as QUOTE_RECORD_ID,
                                         '{QuoteId}' as QUOTE_ID,
-                                        '{QuoteName}' as QUOTE_NAME,
+                                        ' ' as QUOTE_NAME,
                                         '{RevisionId}' as QTEREV_ID,
                                         '{RevisionRecordId}' as QTEREV_RECORD_ID,
                                         SAQASE.KPU,
@@ -511,8 +511,6 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                         SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
                                         AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
                                 """.format(
-                                treeparam=tree_param,
-                                treeparentparam=tree_parent_level_0,
                                 QuoteId=contract_quote_id,
                                 BatchGroupRecordId=batch_group_record_id,
                                 UserName=User.UserName,
@@ -520,7 +518,6 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                 QuoteRecId=contract_quote_record_id,
                                 RevisionId=quote_revision_id,
                                 RevisionRecordId=quote_revision_record_id,
-                                QuoteName=contract_quote_name,
                                 relocation_fab_type = "SENDING FAB" if "Sending Account -" in tree_param else "RECEIVING FAB" if "Receiving Account -" in tree_param else "",
                                 relocation_equp_type = "SENDING EQUIPMENT" if "Sending Account -" in tree_param else "RECEIVING EQUIPMENT" if "Receiving Account -" in tree_param else "",
                             )
