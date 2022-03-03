@@ -1597,7 +1597,7 @@ class ContractQuoteItem:
 		#item_object_where_string = ""
 		#item_object_join_string = ""
 		if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP'):
-			join_condition_string = ' AND SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCO.TEMP_TOOL = SAQRIT.TEMP_TOOL'
+			join_condition_string = ' AND SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID AND ISNULL(SAQSCO.TEMP_TOOL,'') = ISNULL(SAQRIT.TEMP_TOOL,'')'
 		#if update:
 		item_object_where_string = "AND ISNULL(SAQRIO.EQUIPMENT_RECORD_ID,'') = '' "
 		item_object_join_string = "LEFT JOIN SAQRIO (NOLOCK) ON SAQRIO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQRIO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQRIO.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID AND SAQRIO.GREENBOOK_RECORD_ID = SAQSCE.GREENBOOK_RECORD_ID AND SAQRIO.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID"
@@ -1908,7 +1908,7 @@ class ContractQuoteItem:
 		dynamic_group_id_value = 'null as ENTITLEMENT_GROUP_ID'
 		dynamic_is_changed_value = 'null as IS_CHANGED'
 		if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP'):
-			join_condition_string = ' AND SAQRIT.FABLOCATION_RECORD_ID = {ObjectName}.FABLOCATION_RECORD_ID AND SAQRIT.OBJECT_ID = {ObjectName}.EQUIPMENT_ID AND SAQSCO.TEMP_TOOL = SAQRIT.TEMP_TOOL'.format(ObjectName=self.source_object_name)
+			join_condition_string = ' AND SAQRIT.FABLOCATION_RECORD_ID = {ObjectName}.FABLOCATION_RECORD_ID AND SAQRIT.OBJECT_ID = {ObjectName}.EQUIPMENT_ID AND ISNULL(SAQSCO.TEMP_TOOL,'') = ISNULL(SAQRIT.TEMP_TOOL,'')'.format(ObjectName=self.source_object_name)
 			dynamic_group_id_value = '{ObjectName}.ENTITLEMENT_GROUP_ID'.format(ObjectName=self.source_object_name)
 			dynamic_is_changed_value = '{ObjectName}.IS_CHANGED'.format(ObjectName=self.source_object_name)
 		elif self.quote_service_entitlement_type == 'OFRNG+EQUIP, OFRNG+EQUIP+ASSEM':
