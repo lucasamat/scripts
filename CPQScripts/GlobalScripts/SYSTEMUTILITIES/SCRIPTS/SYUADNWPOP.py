@@ -914,7 +914,7 @@ def POPUPLISTVALUEADDNEW(
 					sec_str += (
 						'<th data-field="'
 						+ str(invs)
-						+ '" data-formatter="MAfablocationKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ '" data-formatter="addSendingFabFtsLink" data-sortable="true" data-title-tooltip="'
 						+ str(qstring)
 						+ '" data-filter-control="input">'
 						+ str(qstring)
