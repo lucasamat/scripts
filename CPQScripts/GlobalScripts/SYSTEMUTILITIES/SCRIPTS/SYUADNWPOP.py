@@ -4385,21 +4385,21 @@ def POPUPLISTVALUEADDNEW(
 				"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE SNDACC_ID = '{}' AND SNDFBL_ID = '{}'  AND ISNULL(GREENBOOK, '') <> '' AND {} QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(
 					ObjectName,
 					account_record_id,
-					Product.GetGlobal("TreeParam"),
+					Product.GetGlobal("receiving_fab_id"),
 					where_string,
 					contract_quote_record_id,
-					Product.GetGlobal("TreeParam"),
+					Product.GetGlobal("receiving_fab_id"),
 					quote_revision_record_id,
 				)
 			)   	
-			order_by = "order by FABLOCATION_NAME ASC"
+			order_by = "order by SNDFBL_NAME ASC"
 			pop_val = {}
 			where_string += """ SNDACC_ID = '{}' AND SNDFBL_ID = '{}' AND ISNULL(GREENBOOK, '') <> '' AND {} QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
 				account_record_id,
-				Product.GetGlobal("TreeParam"),
+				Product.GetGlobal("receiving_fab_id"),
 				where_string,
 				contract_quote_record_id,
-				Product.GetGlobal("TreeParam"),
+				Product.GetGlobal("receiving_fab_id"),
 				quote_revision_record_id,
 			)
 			table_data = Sql.GetList(
