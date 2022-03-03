@@ -283,7 +283,7 @@ def Related_Sub_Banner(
             )
             if TreeParam == "Customer Information":
                 involved_parties_object = Sql.GetFirst("SELECT PARTY_ID,PARTY_NAME,CPQ_PARTNER_FUNCTION FROM SAQTIP WHERE PARTY_ID = '{}' ".format(Product.GetGlobal("stp_account_Id")))
-                if(subTabName == "Sending Fab Locations" or subTabName == "Sending Fab Location Details") and TreeParam == "Customer Information":
+                if subTabName == "Sending Fab Locations" or (subTabName == "Sending Fab Location Details")  and TreeParam == "Customer Information":
                     Trace.Write("subTabName"+str(subTabName)+str(CurrentRecordId))
                     PrimaryLable = "Party ID"
                     PrimaryValue = involved_parties_object.PARTY_ID
@@ -297,7 +297,7 @@ def Related_Sub_Banner(
                     else:
                         FourthLable = "Fab Locations"
                         FourthValue = "ALL"
-                elif(subTabName == "Receiving Fab Locations" or subTabName == "Receiving Fab Location Details") and TreeParam == "Customer Information":
+                elif subTabName == "Receiving Fab Locations" or (subTabName == "Receiving Fab Location Details") and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
                     PrimaryValue = involved_parties_object.PARTY_ID.upper()
                     SecondLable = "Party Name"
