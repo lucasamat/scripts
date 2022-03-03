@@ -522,7 +522,7 @@ except:
 	grid_fab_id = ''
 
 if ACTION == 'SAVE_ASSEMBLY':
-	ApiResponse = ApiResponseFactory.JsonResponse(save_assembly_level(grid_fab_id,equipment_id,grid_assembly_id))
+	ApiResponse = ApiResponseFactory.JsonResponse(save_assembly_level(included_value,grid_fab_id,equipment_id,grid_assembly_id))
 # try:
 # 	selected_values= eval(Param.Values)
 # 	#Trace.Write('selected_values-----'+str(selected_values))
