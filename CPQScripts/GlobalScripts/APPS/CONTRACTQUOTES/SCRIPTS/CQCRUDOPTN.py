@@ -2865,6 +2865,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				for data in nso_master_table:
 					nso_equipment_list = Sql.GetList("SELECT EQUIPMENT_DESCRIPTION FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 					for eqp in nso_equipment_list:
+						Trace.Write("CHK_POSS_ "+str(data))
 						nso_table_info = SqlHelper.GetTable("SAQSCN")
 						nso_table = {
 							"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
