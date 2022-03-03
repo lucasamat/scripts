@@ -850,7 +850,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							# else:
 							# 	edt_str = "NO"
 						elif obj_obj == 'SAQSPT':
-							Trace.write("@853"+str(RECORDID))
+							Trace.Write("@853"+str(RECORDID))
 							k = Sql.GetFirst("SELECT QUOTE_SERVICE_PART_RECORD_ID FROM SAQSPT WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
 							apply_all = ''
 							if TITLE =="CUSTOMER_PART_NUMBER":
