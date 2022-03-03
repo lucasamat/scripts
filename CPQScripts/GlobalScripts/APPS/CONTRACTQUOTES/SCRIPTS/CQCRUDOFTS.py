@@ -562,7 +562,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                         fab = "('"+str(Product.GetGlobal("receiving_fab_id"))+"')"
                                     )
                     )		
-        self._process_query(
+        Sql.RunQuery(
 					"""
 						INSERT SAQFEA (
 							QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,
