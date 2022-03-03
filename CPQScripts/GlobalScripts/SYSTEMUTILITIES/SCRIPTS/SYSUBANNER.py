@@ -328,7 +328,7 @@ def Related_Sub_Banner(
                         #ThirdValue = rev_quote.REVISION_STATUS
             # if str(CurrentRecordId) == 'SYOBJR-98799' and str(ObjName) == 'SAQDOC':                
             #     PrimaryLable = "Documents"
-            #     PrimaryValue = "All"
+            #     PrimaryValue = "All".
             if str(CurrentRecordId) == 'SYOBJR-00014' and str(TreeParentParam) == 'Approval Chain Steps':                
                 PrimaryLable = "Approval Chain Step Number"
                 PrimaryValue = str(TreeParentParam)
