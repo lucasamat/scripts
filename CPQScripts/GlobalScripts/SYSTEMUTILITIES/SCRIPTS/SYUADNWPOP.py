@@ -415,7 +415,7 @@ def POPUPLISTVALUEADDNEW(
 			else:
 				date_field = "NORECORDS"
 		# ADD FAB POPUP STARTS JOE
-		elif str(ObjectName) == "SAQFBL" and str(CurrentTab) == "Quotes" and TABLEID == "ADDNEW__SYOBJR_00038_SYOBJ_00919":
+		elif str(ObjectName) == "SAQFBL" and str(CurrentTab) == "Quotes" and TABLEID != "ADDNEW__SYOBJR_00038_SYOBJ_00919":
 			TreeParam = Product.GetGlobal("TreeParam")
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")  
 			account_id = TreeParam.split(' - ')
@@ -2366,7 +2366,7 @@ def POPUPLISTVALUEADDNEW(
 				]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 			sec_str = '<div class="row modulebnr brdr ma_mar_btm">ADD NSOS<button type="button" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
-			sec_str += '<div class="col-md-12 padlftrhtnone" id="nso_header"><div class="row pad-10 bg-lt-wt brdr"> <div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Add NSOS">ADD NSOS</abbr></div> <button type="button" class="btnconfig" data-dismiss="modal" id = "add_source_fab" onclick="closepopup_scrl(this)">CANCEL</button><button type="button" id="add-offerings" class="btnconfig" onclick="addnsos()" data-dismiss="modal">ADD</button></div></div>'.format(Product.GetGlobal("stp_account_Id"), Product.GetGlobal("stp_account_Id"), Product.GetGlobal("stp_account_name"), Product.GetGlobal("stp_account_name"))
+			sec_str += '<div class="col-md-12 padlftrhtnone" id="nso_header"><div class="row pad-10 bg-lt-wt brdr"> <div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Add NSOS">ADD NSOS</abbr></div> <b>Select from the list the parts below to add them to </b><button type="button" class="btnconfig" data-dismiss="modal" id = "add_source_fab" onclick="closepopup_scrl(this)">CANCEL</button><button type="button" id="add-offerings" class="btnconfig" onclick="addnsos()" data-dismiss="modal">ADD</button></div></div>'.format(Product.GetGlobal("stp_account_Id"), Product.GetGlobal("stp_account_Id"), Product.GetGlobal("stp_account_name"), Product.GetGlobal("stp_account_name"))
 
 			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
 			sec_str += (
