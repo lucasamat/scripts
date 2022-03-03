@@ -1489,7 +1489,7 @@ class SyncQuoteAndCustomTables:
 															SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,'' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID,'True' as TEMP_TOOL FROM MAEQUP (NOLOCK)
 															JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME WHERE ISNULL(SERIAL_NO, '') <> '' AND FABLOCATION_ID = '{FabLocationId}'
 															) A
-														""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
+														""".format(UserId=User.Id,UserName=User.Name,QuoteId=contract_quote_obj.QUOTE_ID, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=Quote.GetGlobal("quote_revision_record_id"),quote_rev_id=quote_rev_id))
 						##A055S000P01-8690 starts..
 						if payload_json.get('SAEMPL'):
 							employee = payload_json.get('SAEMPL')
