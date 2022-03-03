@@ -958,7 +958,7 @@ class ViolationConditions:
             Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
-            return 0    
+            return 2   
     def BDEnt(self,RecordId,service):
         Trace.Write("BD ENTITLEMENT")
         BDHead = {}
@@ -991,7 +991,7 @@ class ViolationConditions:
             Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
-            return 0    
+            return 2   
     def NSDREnt(self,RecordId,service):
         Trace.Write("NSDR ENTITLEMENT")
         BDHead = {}
@@ -1023,7 +1023,7 @@ class ViolationConditions:
             Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
-            return 0
+            return 2
     def RegionalBDHead(self,RecordId,service):
         Trace.Write("REGIONAL BD HEAD ENTITLEMENT")
         BDHead = {}
@@ -1050,7 +1050,7 @@ class ViolationConditions:
             Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
-            return 0
+            return 2
     
     def GlobalBDHead(self,RecordId,service):
         Trace.Write("GLOBAL BD HEAD ENTITLEMENT")
@@ -1078,7 +1078,7 @@ class ViolationConditions:
             Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
-            return 0
+            return 2
     def ItemApproval(self,RecordId,aprchName,service):
         Trace.Write("APRCHSTP NAME = "+str(aprchName))
         if aprchName == "NSDR":
