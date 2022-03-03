@@ -94,6 +94,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		)
 		if related_list_obj:			
 			table_columns = eval(related_list_obj.COLUMNS)[1:]
+			Trace.Write("table_columns"+str(table_columns))
 			columns = ",".join(table_columns)		
 			self.object_name = related_list_obj.OBJECT_NAME
 			total_count_obj = Sql.GetFirst("""
