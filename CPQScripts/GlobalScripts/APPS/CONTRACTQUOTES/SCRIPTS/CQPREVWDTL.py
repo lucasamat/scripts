@@ -754,17 +754,6 @@ def savecbc(Qt_rec_id, Quote_rec_id, MODE):
 	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
-
-def save_annualiziedgrid_inline(Quote,line,CAT1,CAT2,CAT3,CAT4,CAT5,CAT6,CAT7,CAT8,CAT9,CAT10,CAT11,CAT12,CAT13,CAT14,MODE):
-	Trace.Write("value===values"+str(Quote))
-	#Trace.Write("value===values2"+str(list(eval(values))))
-	get_quote_details =Sql.GetFirst("Select * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{Quote}' ".format(Quote = Quote))
-	for index,val in enumerate(line):
-		#Trace.Write("UPDATE SAQICO SET UIMVCI = '"+str(CAT1[index])+"' , UIMVPI = '"+str(CAT2[index])+"',CAVVCI = '"+str(CAT3[index])+"',CAVVPI = '"+str(CAT4[index])+"',ATGKEY = '"+str(CAT5[index])+"',ATGKEC = '"+str(CAT6[index])+"',ATGKEP = '"+str(CAT7[index])+"',NWPTOC = '"+str(CAT8[index])+"',NWPTOP = '"+str(CAT9[index])+"',AMNCCI = '"+str(CAT10[index])+"',AMNPPI = '"+str(CAT11[index])+"',USRPRC = '"+str(CAT12[index])+"',YOYPCT = '"+str(CAT13[index])+"',TGADJP = '"+str(CAT14[index])+"' WHERE LINE = '"+line[index]+"' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID))
-		#update_saqico = "UPDATE SAQICO SET UIMVCI = '"+ISNULL(CAT1[index],NULL))+"' , UIMVPI = '"+str(ISNULL(CAT2[index],NULL))+"',CAVVCI = '"+str(ISNULL(CAT3[index],NULL))+"',CAVVPI = '"+str(ISNULL(CAT4[index],NULL))+"',ATGKEY = '"+str(ISNULL(CAT5[index],NULL))+"',ATGKEC = '"+str(ISNULL(CAT6[index],NULL))+"',ATGKEP = '"+str(ISNULL(CAT7[index],NULL))+"',NWPTOC = '"+str(ISNULL(CAT8[index],NULL))+"',NWPTOP = '"+str(ISNULL(CAT9[index],NULL))+"',AMNCCI = '"+str(ISNULL(CAT10[index],NULL))+"',AMNPPI = '"+str(ISNULL(CAT11[index],NULL))+"',USRPRC = '"+str(ISNULL(CAT12[index],NULL))+"',YOYPCT = '"+str(ISNULL(CAT13[index],NULL))+"',TGADJP = '"+str(ISNULL(CAT14[index],NULL))+"' WHERE LINE = '"+line[index]+"' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID)
-		update_saqico = "UPDATE SAQICO SET UIMVCI = {cval1}, UIMVPI = {cval2},CAVVCI ={cval3},CAVVPI ={cval4},ATGKEY= '{cval5}',ATGKEC={cval6},ATGKEP={cval7},NWPTOC={cval8},NWPTOP={cval9},AMNCCI={cval10},AMNPPI={cval11},USRPRC={cval12},YOYPCT={cval13},TGADJP={cval14} WHERE LINE = '{line}' AND QUOTE_RECORD_ID ='{quote_rec_id}' AND QTEREV_RECORD_ID ='{quo_rev_rec_id}'".format(quote_rec_id = get_quote_details.MASTER_TABLE_QUOTE_RECORD_ID,quo_rev_rec_id = get_quote_details.QTEREV_RECORD_ID,line =line[index],cval1 = CAT1[index] if CAT1[index] != '' else 'NULL' ,cval2 = CAT2[index] if CAT2[index] != '' else 'NULL',cval3 = CAT3[index] if CAT3[index] != '' else 'NULL',cval4 =CAT4[index] if CAT4[index] != '' else 'NULL',cval5 =CAT5[index] if CAT5[index] != '' else '',cval6 =CAT6[index] if CAT6[index] != '' else 'NULL',cval7 =CAT7[index] if CAT7[index] != '' else 'NULL',cval8 =CAT8[index] if CAT8[index] != '' else 'NULL',cval9 =CAT9[index] if CAT9[index] != '' else 'NULL',cval10 =CAT10[index] if CAT10[index] != '' else 'NULL',cval11 =CAT11[index] if CAT11[index] != '' else 'NULL',cval12 =CAT12[index] if CAT12[index] != '' else 'NULL',cval13 =CAT13[index] if CAT13[index] != '' else 'NULL',cval14 =CAT14[index] if CAT14[index] != '' else 'NULL')
-		Sql.RunQuery(update_saqico)
-	return True
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
@@ -1486,71 +1475,6 @@ try:
 	values = Param.VALUES
 except:
 	values = ""
-
-try:
-	line = Param.line
-except:
-	line = ""
-try:
-	CAT1 = Param.CAT1
-except:
-	CAT1 = ""
-try:
-	CAT2 = Param.CAT2
-except:
-	CAT2 = ""
-try:
-	CAT3 = Param.CAT3
-except:
-	CAT3 = ""
-try:
-	CAT4 = Param.CAT4
-except:
-	CAT4 = ""
-try:
-	CAT5 = Param.CAT5
-except:
-	CAT5 = ""
-try:
-	CAT6 = Param.CAT6
-except:
-	CAT6 = ""
-try:
-	CAT2 = Param.CAT2
-except:
-	CAT2 = ""
-try:
-	CAT7 = Param.CAT7
-except:
-	CAT7 = ""
-try:
-	CAT8 = Param.CAT8
-except:
-	CAT8 = ""
-try:
-	CAT9 = Param.CAT9
-except:
-	CAT9 = ""
-try:
-	CAT10 = Param.CAT10
-except:
-	CAT10 = ""
-try:
-	CAT11 = Param.CAT11
-except:
-	CAT11 = ""
-try:
-	CAT12 = Param.CAT12
-except:
-	CAT12 = ""
-try:
-	CAT13 = Param.CAT13
-except:
-	CAT13 = ""
-try:
-	CAT14 = Param.CAT14
-except:
-	CAT14 = ""
 try: 
 	params = Param.params
 except:
@@ -1595,11 +1519,7 @@ elif ACTION == "CBC_COUNT":
 elif ACTION == "CBC_SAVE":
 	MODE = "SAVE"
 	Quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
-	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id,Quote_rec_id, MODE))
-elif ACTION == "ANNUAL_ITEM_SAVE":
-	MODE = "SAVE"
-	Quote = Quote.GetGlobal("contract_quote_record_id")
-	ApiResponse = ApiResponseFactory.JsonResponse(save_annualiziedgrid_inline(Quote,line,CAT1,CAT2,CAT3,CAT4,CAT5,CAT6,CAT7,CAT8,CAT9,CAT10,CAT11,CAT12,CAT13,CAT14,MODE))		
+	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id,Quote_rec_id, MODE))		
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
