@@ -287,16 +287,16 @@ def Related_Sub_Banner(
                     PrimaryLable = "Party ID"
                     PrimaryValue = involved_parties_object.PARTY_ID
                     SecondLable = "Party Name"
-                    SecondValue = involved_parties_object.PARTY_NAME
+                    SecondValue = involved_parties_object.PARTY_NAME.upper()
                     ThirdLable = "Role"
-                    ThirdValue = "Sending Account"
+                    ThirdValue = "SENDING ACCOUNT"
                 elif subTabName == "Receiving Fab Locations" and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
-                    PrimaryValue = involved_parties_object.PARTY_ID
+                    PrimaryValue = involved_parties_object.PARTY_ID.upper()
                     SecondLable = "Party Name"
                     SecondValue = involved_parties_object.PARTY_NAME
                     ThirdLable = "Role"
-                    ThirdValue = "Receiving Account"
+                    ThirdValue = "RECEIVING ACCOUNT"
             if TreeParam == 'Revisions':
                 rev_quote = Sql.GetFirst(" SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND ACTIVE = 'TRUE' ".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
                 if rev_quote: 
