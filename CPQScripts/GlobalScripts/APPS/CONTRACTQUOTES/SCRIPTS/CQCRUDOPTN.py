@@ -3844,9 +3844,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						CpqTableEntryDateModified
 						) SELECT
 							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
-							EQUIPMENT_ID,
-							EQUIPMENT_RECORD_ID,
-							EQUIPMENT_DESCRIPTION,                                
+							SAQFEQ.EQUIPMENT_ID,
+							SAQFEQ.EQUIPMENT_RECORD_ID,
+							SAQFEQ.EQUIPMENT_DESCRIPTION,                                
 							SAQFEQ.FABLOCATION_ID,
 							SAQFEQ.FABLOCATION_NAME,
 							SAQFEQ.FABLOCATION_RECORD_ID,
@@ -3897,11 +3897,12 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							SAQFEQ.QUOTE_ID = SAQTSV.QUOTE_ID AND
 							SAQTSV.SERVICE_ID = '{TreeParam}' AND
 							SAQTSV.SERVICE_TYPE = '{TreeParentParam}'
+							LEFT JOIN SAQSCO(NOLOCK) ON SAQSCO.EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID AND SAQSCO.TEMP_TOOL = SAQFEQ.TEMP_TOOL
 							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID=SAQFEQ.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID
 							JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID  AND SYSPBT.QTEREV_RECORD_ID=SAQTSV.QTEREV_RECORD_ID {equip_recid_join}
 							WHERE 
 							SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}'
-							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
+							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND ISNULL(SAQSCO.EQUIPMENT_RECORD_ID,'')=''                       
 					""".format(
 							TreeParam=self.tree_param,
 							equip_recid_join = " AND SYSPBT.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID " if self.tree_param == "Z0099" else "",
@@ -3917,132 +3918,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							RelocationEqType=self.tree_param if self.tree_parent_level_1 == 'Complementary Products' else ''
 						)
 			)
-			Log.Info("""
-					INSERT SAQSCO (
-						QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
-						EQUIPMENT_ID,
-						EQUIPMENT_RECORD_ID,
-						EQUIPMENT_DESCRIPTION,
-						FABLOCATION_ID,
-						FABLOCATION_NAME,
-						FABLOCATION_RECORD_ID,
-						WAFER_SIZE,
-						SALESORG_ID,
-						SALESORG_NAME,
-						SALESORG_RECORD_ID,
-						SERIAL_NO,
-						QUOTE_RECORD_ID,
-						QUOTE_ID,
-						QUOTE_NAME,
-						ACCOUNT_ID,
-						ACCOUNT_NAME,
-						ACCOUNT_RECORD_ID,
-						QTEREV_ID,
-						QTEREV_RECORD_ID,
-						KPU,
-						RELOCATION_EQUIPMENT_TYPE,
-						SERVICE_ID,
-						SERVICE_TYPE,
-						SERVICE_DESCRIPTION,
-						SERVICE_RECORD_ID,
-						EQUIPMENT_STATUS,
-						EQUIPMENTCATEGORY_ID,
-						EQUIPMENTCATEGORY_DESCRIPTION,
-						EQUIPMENTCATEGORY_RECORD_ID,
-						PLATFORM,
-						GREENBOOK,
-						GREENBOOK_RECORD_ID,
-						MNT_PLANT_RECORD_ID,
-						MNT_PLANT_NAME,
-						MNT_PLANT_ID,
-						WARRANTY_START_DATE,
-						WARRANTY_END_DATE,
-						CUSTOMER_TOOL_ID,
-						PAR_SERVICE_DESCRIPTION,
-						PAR_SERVICE_ID,
-						PAR_SERVICE_RECORD_ID,
-						TECHNOLOGY,
-						CONTRACT_VALID_FROM,
-						CONTRACT_VALID_TO,
-						TEMP_TOOL,
-						CPQTABLEENTRYADDEDBY,
-						CPQTABLEENTRYDATEADDED,
-						CpqTableEntryModifiedBy,
-						CpqTableEntryDateModified
-						) SELECT
-							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
-							EQUIPMENT_ID,
-							EQUIPMENT_RECORD_ID,
-							EQUIPMENT_DESCRIPTION,                                
-							SAQFEQ.FABLOCATION_ID,
-							SAQFEQ.FABLOCATION_NAME,
-							SAQFEQ.FABLOCATION_RECORD_ID,
-							SAQFEQ.WAFER_SIZE,
-							SAQFEQ.SALESORG_ID,
-							SAQFEQ.SALESORG_NAME,
-							SAQFEQ.SALESORG_RECORD_ID,
-							SERIAL_NUMBER,
-							SAQFEQ.QUOTE_RECORD_ID,
-							SAQFEQ.QUOTE_ID,
-							SAQFEQ.QUOTE_NAME,
-							'{account_id}' as ACCOUNT_ID,
-							'{account_name}' as ACCOUNT_NAME,
-							'{account_record_id}' as ACCOUNT_RECORD_ID,
-							SAQFEQ.QTEREV_ID,
-							SAQFEQ.QTEREV_RECORD_ID,
-							SAQFEQ.KPU,
-							'{RelocationEqType}' AS RELOCATION_EQUIPMENT_TYPE,
-							'{TreeParam}' as SERVICE_ID,
-							'{TreeParentParam}' as SERVICE_TYPE,
-							SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
-							SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
-							SAQFEQ.EQUIPMENT_STATUS,
-							SAQFEQ.EQUIPMENTCATEGORY_ID,
-							SAQFEQ.EQUIPMENTCATEGORY_DESCRIPTION,
-							SAQFEQ.EQUIPMENTCATEGORY_RECORD_ID,
-							SAQFEQ.PLATFORM,
-							SAQFEQ.GREENBOOK,
-							SAQFEQ.GREENBOOK_RECORD_ID,
-							SAQFEQ.MNT_PLANT_RECORD_ID,
-							SAQFEQ.MNT_PLANT_NAME,
-							SAQFEQ.MNT_PLANT_ID,
-							SAQFEQ.WARRANTY_START_DATE,
-							SAQFEQ.WARRANTY_END_DATE,
-							SAQFEQ.CUSTOMER_TOOL_ID,
-							SAQTSV.PAR_SERVICE_DESCRIPTION,
-							SAQTSV.PAR_SERVICE_ID,
-							SAQTSV.PAR_SERVICE_RECORD_ID,
-							SAQFEQ.TECHNOLOGY,
-							SAQTMT.CONTRACT_VALID_FROM,
-							SAQTMT.CONTRACT_VALID_TO,
-							SAQFEQ.TEMP_TOOL,
-							'{UserName}' AS CPQTABLEENTRYADDEDBY,
-							GETDATE() as CPQTABLEENTRYDATEADDED,
-							{UserId} as CpqTableEntryModifiedBy,
-							GETDATE() as CpqTableEntryDateModified
-							FROM SAQFEQ (NOLOCK) JOIN SAQTSV (NOLOCK) ON
-							SAQFEQ.QUOTE_ID = SAQTSV.QUOTE_ID AND
-							SAQTSV.SERVICE_ID = '{TreeParam}' AND
-							SAQTSV.SERVICE_TYPE = '{TreeParentParam}'
-							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID=SAQFEQ.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID
-							JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID  AND SYSPBT.QTEREV_RECORD_ID=SAQTSV.QTEREV_RECORD_ID {equip_recid_join}
-							WHERE 
-							SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}'
-							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
-					""".format(
-							TreeParam=self.tree_param,
-							equip_recid_join = " AND SYSPBT.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID " if self.tree_param == "Z0099" else "",
-							TreeParentParam=self.tree_parent_level_0,
-							QuoteRecordId=self.contract_quote_record_id,
-							RevisionRecordId=self.quote_revision_record_id,
-							BatchGroupRecordId=kwargs.get('batch_group_record_id'),
-							UserName=self.user_name,
-							UserId=self.user_id,
-							account_id=self.account_id,
-							account_name=self.account_name,
-							account_record_id=self.account_record_id,
-							RelocationEqType=self.tree_param if self.tree_parent_level_1 == 'Complementary Products' else ''
-						))
 			#if Quote.GetGlobal("ANCILLARY") == "YES":
 			#Z0099 UPDATE TEMP_TOOL FLAG
 			if self.tree_param == "Z0099":
@@ -6295,10 +6170,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						Trace.Write("EXCEPT----COV OBJ ENTITLEMENT IFLOW")
 				Entitlement_end_time = time.time()
 				#Log.Info("Entitlement end==> "+str(Entitlement_end_time - Entitlement_start_time)
-				# self._process_query(
-				# 	"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-				# 		BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
-				# 	))
+				self._process_query(
+					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
+					))
 				covered_end_time = time.time()
 				#Log.Info("ADD_COVERED_OBJ end==> "+str(covered_end_time - covered_start_time) +" QUOTE ID----"+str(self.contract_quote_id))
 				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='CMP' """.format(str(self.contract_quote_record_id),self.quote_revision_record_id))
