@@ -2396,7 +2396,7 @@ class ContractQuoteItem:
 						GETDATE() as CpqTableEntryDateModified, 
 						IQ.* FROM (
 					SELECT
-						
+						distinct
 						SAQSCO.CONTRACT_VALID_FROM,
 						SAQSCO.CONTRACT_VALID_TO,
 						SAQTRV.DOC_CURRENCY,
