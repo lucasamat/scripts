@@ -2853,83 +2853,103 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 
 
 		elif self.action_type == "ADD_NSO":
-			# CONTRACT_VALID_FROM,
-			# CONTRACT_VALID_TO,
-            # "EQUIPMENT_DESCRIPTION"
-            # "EQUIPMENT_ID"
-            # "EQUIPMENT_RECORD_ID"
-            # "EQUIPMENT_STATUS"
-            # "FABLOCATION_ID"
-            # "FABLOCATION_NAME"
-            # "FABLOCATION_RECORD_ID"
-            # "PBKENT_RECORD_ID"
-            # "SERVICE_DESCRIPTION"
-            # "SERVICE_ID"
-            # "SERVICE_RECORD_ID"
-            # "QUANTITY"
-            # "QTESRVGBK_RECORD_ID"
-            # "QTESRV_RECORD_ID"
-            # "SERIAL_NO"
-            # "TEMP_TOOL"
-			master_object_name = "PRLPBE"
-			if self.values:
-				record_ids = [value for value in self.values]
-				#Trace.Write("record_ids_chk_j "+str(record_ids))
-				for rec in record_ids:
-					obj = rec.split('-')[0]
-					cpq_entry = rec.split('-')[1].lstrip('0')
-					Trace.Write("cpq_entry_Chk_J"+str(cpq_entry))
-					# maequp_data = Sql.GetFirst("SELECT * FROM MAEQUP (NOLOCK) WHERE CpqTableEntryId = '"+str(cpq_entry)+"'")
-					self._process_query(
-						"""
-							INSERT SAQSCN (
-                                QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID,
-                                BUSINESS_UNIT,
-                                DIVISION_ID,
-                                DIVISION_RECORD_ID,
-                                GREENBOOK,
-                                GREENBOOK_RECORD_ID,
-                                POSS_NSO_DESCRIPTION,
-                                POSS_NSO_PART_ID,
-                                SAP_PART_NUMBER,
-                                QUOTE_ID,
-                                QUOTE_RECORD_ID,
-                                QTEREV_ID,
-                                QTEREV_RECORD_ID,
-                                CPQTABLEENTRYADDEDBY,
-                                CPQTABLEENTRYDATEADDED,
-                                CpqTableEntryModifiedBy,
-                                CpqTableEntryDateModified
-								) SELECT
-									CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID,
-									PRLPBE.BUSINESS_UNIT,                               
-									PRLPBE.DIVISION_ID,
-									PRLPBE.DIVISION_RECORD_ID,
-									PRLPBE.GREENBOOK,
-									PRLPBE.GREENBOOK_RECORD_ID,
-									PRLPBE.POSS_NSO_DESCRIPTION,
-									PRLPBE.POSS_NSO_PART_ID,
-									PRLPBE.SAP_PART_NUMBER,
-                                    '{QuoteId}' as QUOTE_ID,
-									'{QuoteRecId}' as QUOTE_RECORD_ID,
-									'{RevisionId}' as QTEREV_ID,
-									'{RevisionRecordId}' as QTEREV_RECORD_ID,
-									'{UserName}' AS CPQTABLEENTRYADDEDBY,
-									GETDATE() as CPQTABLEENTRYDATEADDED,
-									{UserId} as CpqTableEntryModifiedBy,
-									GETDATE() as CpqTableEntryDateModified
-									FROM PRLPBE (NOLOCK) WHERE PRLPBE.CpqTableEntryId = '{cpq_entry}'
-						""".format(
-								QuoteId=self.contract_quote_id,
-								UserName=self.user_name,
-								UserId=self.user_id,
-								cpq_entry=cpq_entry,
-								QuoteRecId=self.contract_quote_record_id,
-								QuoteName=self.contract_quote_name,
-								RevisionId=self.quote_revision_id,
-								RevisionRecordId=self.quote_revision_record_id
-						)
-					)
+			nso_master_table = Sql.GetFirst("SELECT BUSINESS_UNIT,DIVISION_ID,DIVISION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,POSS_NSO_DESCRIPTION,POSS_NSO_PART_ID,SAP_PART_NUMBER FROM PRLPBE (NOLOCK) WHERE CpqTableEntryId = '{cpq_entry}'".format(cpq_entry = cpq_entry))
+			for data in nso_master_table:
+				nso_equipment_list = Sql.GetList("SELECT EQUIPMENT_DESCRIPTION FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+				for eqp in nso_equipment_list:
+					nso_table_info = SqlHelper.GetTable("SAQSCN")
+					nso_table = {
+						"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
+						"BUSINESS_UNIT": data.BUSINESS_UNIT,
+						"CONTRACT_VALID_FROM": eqp.CONTRACT_VALID_FROM,
+						"CONTRACT_VALID_TO": eqp.CONTRACT_VALID_TO,
+						"DIVISION_ID": data.DIVISION_ID,
+						"DIVISION_RECORD_ID": data.DIVISION_RECORD_ID,
+						"EQUIPMENT_DESCRIPTION": eqp.EQUIPMENT_DESCRIPTION,
+						"EQUIPMENT_ID": eqp.EQUIPMENT_ID,
+						"EQUIPMENT_RECORD_ID": eqp.EQUIPMENT_RECORD_ID,
+						"EQUIPMENT_STATUS": eqp.EQUIPMENT_STATUS,
+						"FABLOCATION_ID": eqp.FABLOCATION_ID,
+						"FABLOCATION_NAME": eqp.FABLOCATION_NAME,
+						"FABLOCATION_RECORD_ID": eqp.FABLOCATION_RECORD_ID,
+						"GREENBOOK": data.GREENBOOK,
+						"GREENBOOK_RECORD_ID": data.GREENBOOK_RECORD_ID,
+						"POSS_NSO_DESCRIPTION": data.POSS_NSO_DESCRIPTION,
+						"POSS_NSO_PART_ID": data.POSS_NSO_PART_ID,
+						"SERVICE_DESCRIPTION": eqp.SERVICE_DESCRIPTION,
+						"SERVICE_ID": eqp.SERVICE_ID,
+						"SERVICE_RECORD_ID": eqp.SERVICE_RECORD_ID,
+						"QUOTE_ID": str(self.contract_quote_id),
+						"QUOTE_RECORD_ID": str(self.contract_quote_record_id),
+						"QTEREV_ID": str(self.quote_revision_id),
+						"QTEREV_RECORD_ID": str(self.quote_revision_record_id),
+						"QTESRVGBK_RECORD_ID": eqp.QTESRVGBK_RECORD_ID,
+						"QTESRV_RECORD_ID": eqp.QTESRV_RECORD_ID,
+						"SAP_PART_NUMBER": data.SAP_PART_NUMBER,
+						"SERIAL_NO": eqp.SERIAL_NO,
+						"TEMP_TOOL": eqp.TEMP_TOOL
+					} 
+					nso_table_info.AddRow(nso_table)
+					Sql.Upsert(nso_table_info)
+			# master_object_name = "PRLPBE"
+			# if self.values:
+			# 	record_ids = [value for value in self.values]
+			# 	#Trace.Write("record_ids_chk_j "+str(record_ids))
+			# 	for rec in record_ids:
+			# 		obj = rec.split('-')[0]
+			# 		cpq_entry = rec.split('-')[1].lstrip('0')
+			# 		Trace.Write("cpq_entry_Chk_J"+str(cpq_entry))
+			# 		# maequp_data = Sql.GetFirst("SELECT * FROM MAEQUP (NOLOCK) WHERE CpqTableEntryId = '"+str(cpq_entry)+"'")
+			# 		self._process_query(
+			# 			"""
+			# 				INSERT SAQSCN (
+            #                     QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID,
+            #                     BUSINESS_UNIT,
+            #                     DIVISION_ID,
+            #                     DIVISION_RECORD_ID,
+            #                     GREENBOOK,
+            #                     GREENBOOK_RECORD_ID,
+            #                     POSS_NSO_DESCRIPTION,
+            #                     POSS_NSO_PART_ID,
+            #                     SAP_PART_NUMBER,
+            #                     QUOTE_ID,
+            #                     QUOTE_RECORD_ID,
+            #                     QTEREV_ID,
+            #                     QTEREV_RECORD_ID,
+            #                     CPQTABLEENTRYADDEDBY,
+            #                     CPQTABLEENTRYDATEADDED,
+            #                     CpqTableEntryModifiedBy,
+            #                     CpqTableEntryDateModified
+			# 					) SELECT
+			# 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID,
+			# 						PRLPBE.BUSINESS_UNIT,                               
+			# 						PRLPBE.DIVISION_ID,
+			# 						PRLPBE.DIVISION_RECORD_ID,
+			# 						PRLPBE.GREENBOOK,
+			# 						PRLPBE.GREENBOOK_RECORD_ID,
+			# 						PRLPBE.POSS_NSO_DESCRIPTION,
+			# 						PRLPBE.POSS_NSO_PART_ID,
+			# 						PRLPBE.SAP_PART_NUMBER,
+            #                         '{QuoteId}' as QUOTE_ID,
+			# 						'{QuoteRecId}' as QUOTE_RECORD_ID,
+			# 						'{RevisionId}' as QTEREV_ID,
+			# 						'{RevisionRecordId}' as QTEREV_RECORD_ID,
+			# 						'{UserName}' AS CPQTABLEENTRYADDEDBY,
+			# 						GETDATE() as CPQTABLEENTRYDATEADDED,
+			# 						{UserId} as CpqTableEntryModifiedBy,
+			# 						GETDATE() as CpqTableEntryDateModified
+			# 						FROM PRLPBE (NOLOCK) WHERE PRLPBE.CpqTableEntryId = '{cpq_entry}'
+			# 			""".format(
+			# 					QuoteId=self.contract_quote_id,
+			# 					UserName=self.user_name,
+			# 					UserId=self.user_id,
+			# 					cpq_entry=cpq_entry,
+			# 					QuoteRecId=self.contract_quote_record_id,
+			# 					QuoteName=self.contract_quote_name,
+			# 					RevisionId=self.quote_revision_id,
+			# 					RevisionRecordId=self.quote_revision_record_id
+			# 			)
+			# 		)
 			
 					
 					
