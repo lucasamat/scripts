@@ -4382,9 +4382,8 @@ def POPUPLISTVALUEADDNEW(
 			if where_string:
 				where_string += " AND"
 			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE SNDACC_ID = '{}' AND SNDFBL_ID = '{}'  AND ISNULL(GREENBOOK, '') <> '' AND {} SND_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(
+				"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE SNDFBL_ID = '{}'  AND ISNULL(GREENBOOK, '') <> '' AND {} SND_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(
 					ObjectName,
-					account_id,
 					Product.GetGlobal("receiving_fab_id"),
 					where_string,
 					contract_quote_record_id,
@@ -4394,8 +4393,7 @@ def POPUPLISTVALUEADDNEW(
 			)   	
 			order_by = "order by SNDFBL_NAME ASC"
 			pop_val = {}
-			where_string += """ SNDACC_ID = '{}' AND SNDFBL_ID = '{}' AND ISNULL(GREENBOOK, '') <> '' AND {} SND_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
-				account_id,
+			where_string += """  SNDFBL_ID = '{}' AND ISNULL(GREENBOOK, '') <> '' AND {} SND_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
 				Product.GetGlobal("receiving_fab_id"),
 				where_string,
 				contract_quote_record_id,
