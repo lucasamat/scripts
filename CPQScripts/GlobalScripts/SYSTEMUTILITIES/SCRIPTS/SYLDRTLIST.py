@@ -4545,6 +4545,9 @@ class SYLDRTLIST:
 				if RECORD_ID == "SYOBJR-95556":
 					local_variable = "PM_FrequencyBulkedit" 
 				else:
+					if RECORD_ID == "SYOBJR-00005":
+						cls = "eq(3)"
+
 					local_variable = "PartsListBulkedit"
 				Trace.Write('@4578'+str(local_variable)+''+str(RECORD_ID))
 				dbl_clk_function += (
