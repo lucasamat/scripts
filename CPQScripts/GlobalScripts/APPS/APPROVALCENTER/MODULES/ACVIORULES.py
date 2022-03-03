@@ -927,6 +927,7 @@ class ViolationConditions:
         return True
 
     def BDHeadEnt(self,RecordId,service):
+        Trace.Write("BD HEAD ENTITLEMENT")
         BDHead = {}
         if "Z0091" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
@@ -956,6 +957,7 @@ class ViolationConditions:
         else:
             return 0    
     def BDEnt(self,RecordId,service):
+        Trace.Write("BD ENTITLEMENT")
         BDHead = {}
         if "Z0091" in service or "Z0035" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
@@ -988,6 +990,7 @@ class ViolationConditions:
         else:
             return 0    
     def NSDREnt(self,RecordId,service):
+        Trace.Write("NSDR ENTITLEMENT")
         BDHead = {}
         if "Z0091" in service:       
             BDHead.update({"95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
@@ -1019,6 +1022,7 @@ class ViolationConditions:
         else:
             return 0
     def RegionalBDHead(self,RecordId,service):
+        Trace.Write("REGIONAL BD HEAD ENTITLEMENT")
         BDHead = {}
         if "Z0110" in service:
             BDHead.update({"KPI - Monthly Consigned":"96%","Consignment Fee-Low Qty Parts":"1%","Fcst Redistribution-Frequency":"2 times/year"})
@@ -1046,6 +1050,7 @@ class ViolationConditions:
             return 0
     
     def GlobalBDHead(self,RecordId,service):
+        Trace.Write("GLOBAL BD HEAD ENTITLEMENT")
         BDHead = {}
         if "Z0110" in service:
             BDHead.update({"Cust. Commit-Consigned Parts":"Exception %","Cust. Commit-On Request Parts":"90%","Fcst Redistribution-Frequency":"2 times/year"})
@@ -1084,6 +1089,7 @@ class ViolationConditions:
         elif aprchName == "Global BD Head":
             res = self.GlobalBDHead(RecordId,service)
         
+        Trace.Write("ITEM APPROVAL RETURN VALUE = "+str(res))
         return res
     # def insertviolationtableafterRecall(self, chainrecordId, RecordId, ObjectName, Objh_Id):
     #     """Insert violation record after recall."""
