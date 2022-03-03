@@ -1273,7 +1273,7 @@ def POPUPLISTVALUEADDNEW(
 					sec_str += (
 						'<th data-field="'
 						+ str(invs)
-						+ '" data-formatter="fablocationListKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ '" data-formatter="addSendingEquipFtsLink" data-sortable="true" data-title-tooltip="'
 						+ str(qstring)
 						+ '" data-filter-control="input">'
 						+ str(qstring)
@@ -1612,7 +1612,7 @@ def POPUPLISTVALUEADDNEW(
 					sec_str += (
 						'<th data-field="'
 						+ str(invs)
-						+ '" data-formatter="MAfablocationKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ '" data-formatter="addReceivingFabFtsLink" data-sortable="true" data-title-tooltip="'
 						+ str(qstring)
 						+ '" data-filter-control="input">'
 						+ str(qstring)
