@@ -655,13 +655,10 @@ def Related_Sub_Banner(
             if TreeParam == "Customer Information" or TreeParam == "Quote Preview":	
                 if ObjName == 'SAQTIP':
                     ObjName = "SAQTIP"
-                    PrimaryLable = "Party ID"
-                    PrimaryValue = str(Product.GetGlobal("stp_account_id"))
-                    SecondLable = "Party Name"
+                    PrimaryLable = "Source Account ID"
+                    PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
+                    SecondLable = "Source Account Name"
                     SecondValue = str(Product.GetGlobal("stp_account_name"))
-                    ThirdLable = "Role"
-                    ThirdValue = "Sending Account"
-                    
                 elif ObjName == 'SAQSCF' and (subTabName == 'Source Fab Location Details' or subTabName == 'Source Fab Location'):
                     ObjName = "SAQSCF"
                 elif ObjName == 'SAQSTE' and (subTabName == 'Equipment details' or subTabName == 'Tool Relocation Matrix details'):
