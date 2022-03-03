@@ -294,9 +294,6 @@ def Related_Sub_Banner(
                     if subTabName == "Sending Fab Location Details":
                         FourthLable = "Fab Location ID"
                         FourthValue = Product.getGlobal("sending_fab_id")
-                    else:
-                        FourthLable = "Fab Locations"
-                        FourthValue = "ALL"
                 elif(subTabName == "Receiving Fab Locations" or subTabName == "Receiving Fab Location Details") and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
                     PrimaryValue = involved_parties_object.PARTY_ID.upper()
@@ -307,9 +304,6 @@ def Related_Sub_Banner(
                     if subTabName == "Receiving Fab Locations Details":
                         FourthLable = "Fab Location ID"
                         FourthValue = Product.getGlobal("receiving_fab_id")
-                    else:
-                        FourthLable = "Fab Locations"
-                        FourthValue = "ALL"
             if TreeParam == 'Revisions':
                 rev_quote = Sql.GetFirst(" SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND ACTIVE = 'TRUE' ".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
                 if rev_quote: 
