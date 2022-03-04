@@ -31,6 +31,7 @@ try:
 		Sucess = ""
 		Error = ""
 		SC_PartNumber_Data = ""
+		fpm_flag=0
 		
 		if hasattr(Param, 'CPQ_Columns'): 
 		
@@ -307,6 +308,7 @@ try:
 								Log.Info("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = '{total_net} - {total_tax}', SALES_PRICE_INGL_CURR = {total_unit}, TOTAL_AMOUNT_INGL_CURR ={total_net}, TAX_AMOUNT_INGL_CURR ={total_tax} FROM SAQTRV
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID IN('Z0108','Z0110')""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
 								if getpartsdata.SERVICE_ID in('Z0108','Z0110'):
+									fpm_flag=1
 									Sql.RunQuery("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = {total_net} - {total_tax}, SALES_PRICE_INGL_CURR = '{total_unit}', TOTAL_AMOUNT_INGL_CURR ='{total_net}', TAX_AMOUNT_INGL_CURR ='{total_tax}' FROM SAQTRV
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
 								Sql.RunQuery("""UPDATE SAQRIT 
@@ -461,11 +463,17 @@ try:
 			###calling script for saqris,saqtrv insert
 			#CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})
 			#BELOW DELETE QUERY ONLY FOR FPM PRODUCTS.
-			Sql.RunQuery("DELETE FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID= '{}' AND SERVICE_ID = 'Z0108' AND UNIT_PRICE <= 50 AND CUSTOMER_ANNUAL_QUANTITY <= 9".format(quote_record_id,revision_record_id))
+			if fpm_flag==1:
+				Sql.RunQuery("DELETE FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID= '{}' AND SERVICE_ID = 'Z0108' AND UNIT_PRICE <= 50 AND CUSTOMER_ANNUAL_QUANTITY <= 9".format(quote_record_id,revision_record_id))
 
-
-			Sql.RunQuery("DELETE FROM SAQSPT (NOLOCK) WHERE CUSTOMER_ANNUAL_QUANTITY<10 AND UNIT_PRICE <50 AND SCHEDULE_MODE='ON REQUEST' AND DELIVERY_MODE='OFFSITE' AND SERVICE_ID='Z0110' AND  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,revision_record_id))
-
+				Sql.RunQuery("DELETE FROM SAQSPT (NOLOCK) WHERE CUSTOMER_ANNUAL_QUANTITY<10 AND UNIT_PRICE <50 AND SCHEDULE_MODE='ON REQUEST' AND DELIVERY_MODE='OFFSITE' AND SERVICE_ID='Z0110' AND  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,revision_record_id))
+				
+				GetSum = Sql.GetFirst("SELECT SUM(UNIT_PRICE) AS TOTAL_UNIT, SUM(EXTENDED_UNIT_PRICE) AS TOTAL_EXT, SUM(TAX_AMOUNT_INGL_CURR)AS TOTAL_TAX  FROM SAQSPT (NOLOCK) WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID IN('Z0108','Z0110') AND (CUSTOMER_ANNUAL_QUANTITY IS NOT NULL AND CUSTOMER_ANNUAL_QUANTITY > 0)".format( quote_record_id,revision_record_id))
+						
+				Sql.RunQuery("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = {total_net} - {total_tax}, SALES_PRICE_INGL_CURR = '{total_unit}', TOTAL_AMOUNT_INGL_CURR ='{total_net}', TAX_AMOUNT_INGL_CURR ='{total_tax}' FROM SAQTRV (NOLOCK) 
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=quote_record_id,rev =revision_record_id))
+								
+			
 except:
 	Log.Info("QTPOSTPTPR ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("QTPOSTPTPR ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
