@@ -2104,9 +2104,9 @@ def Related_Sub_Banner(
         if subTabName == "Summary":
             PrimaryLable = "Total Est Net Val"
             PrimaryValue = decimal_format.format(float(get_quote_details.NET_VALUE_INGL_CURR))+" "+ curr if str(get_quote_details.NET_VALUE_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
-            SecondLable = "Total Net Val"
+            SecondLable = "Total Tax/VAT/GST"
             SecondValue = decimal_format.format(float(get_quote_details.TAX_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
-            ThirdLable = "Total Tax/VAT/GST"
+            ThirdLable = "Total Net Val"
             ThirdValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
             FourthLable = "Total Amt"
             FourthValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
