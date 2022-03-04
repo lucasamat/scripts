@@ -1364,7 +1364,9 @@ class ContractQuoteItem:
 		# 	""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		
 		# In Warranty
+		Trace.Write("===========> In Warranty ++ "+str(self.contract_quote_id)+"=== "+str(self.service_id))
 		if self.service_id.endswith("W"):
+			Trace.Write("===========> In Warranty ++1111 "+str(self.contract_quote_id)+"=== "+str(self.service_id))
 			Sql.RunQuery("""UPDATE SAQICO
 							SET INWRTY = 1		
 								FROM SAQICO (NOLOCK)							
