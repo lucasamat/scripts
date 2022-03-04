@@ -482,9 +482,9 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                         SAQASE.EQUIPMENT_STATUS,
                                         SAQASE.GREENBOOK,
                                         SAQASE.GREENBOOK_RECORD_ID,
-                                        SAQASE.MNT_PLANT_RECORD_ID,
-                                        SAQASE.MNT_PLANT_ID,
-                                        SAQASE.MNT_PLANT_NAME,
+                                        null as MNT_PLANT_RECORD_ID,
+                                        null as MNT_PLANT_ID,
+                                        null as MNT_PLANT_NAME,
                                         '' as SALESORG_ID,
                                         '' as SALESORG_NAME,
                                         '' as SALESORG_RECORD_ID,
@@ -513,12 +513,10 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                 relocation_equp_type ="RECEIVING EQUIPMENT",
                             ))
 
-        fab_object = Sql.GetFirst("""select FAB_LOCATION_ID,FAB_LOCATION_NAME,FAB_LOCATION_RECORD_ID from MAFBLC where
-        FAB_LOCATION_ID = '{}'""".format(
-            Product.GetGlobal("receiving_fab_id")
-                                         ))
+        fab_object = Sql.GetFirst("""select FAB_LOCATION_ID,FAB_LOCATION_NAME,FAB_LOCATION_RECORD_ID,MNT_PLANT_ID,MNT_PLANT_NAME,MNT_PLANT_RECORD_ID from MAFBLC where
+        FAB_LOCATION_ID = '{}'""".format(Product.GetGlobal("receiving_fab_id")))
         
-        Sql.RunQuery("""UPDATE SAQFEQ SET FABLOCATION_ID = '{fab_id}',FABLOCATION_NAME = '{fab_name}',FABLOCATION_RECORD_ID = '{fab_record_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID IS NULL""".format(fab_id = fab_object.FAB_LOCATION_ID ,fab_name = fab_object.FAB_LOCATION_NAME,fab_record_id = fab_object.FAB_LOCATION_RECORD_ID, QuoteRecId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id))
+        Sql.RunQuery("""UPDATE SAQFEQ SET FABLOCATION_ID = '{fab_id}',FABLOCATION_NAME = '{fab_name}',FABLOCATION_RECORD_ID = '{fab_record_id}',MNT_PLANT_ID = '{plant_id}',MNT_PLANT_NAME = '{plant_name}',MNT_PLANT_RECORD_ID = '{plant_record_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID IS NULL AND MNT_PLANT_ID IS NULL""".format(fab_id = fab_object.FAB_LOCATION_ID ,fab_name = fab_object.FAB_LOCATION_NAME,fab_record_id = fab_object.FAB_LOCATION_RECORD_ID,plant_id = fab_object.MNT_PLANT_ID,plant_name = fab_object.MNT_PLANT_NAME,plant_record_id = fab_object.MNT_PLANT_RECORD_ID,QuoteRecId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id))
             
         Sql.RunQuery(
                     """INSERT SAQFGB(
