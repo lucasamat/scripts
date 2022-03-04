@@ -338,6 +338,9 @@ class EntitlementView():
 			#editability contro strat
 			if ProductPartnumber == "Z0091":
 				get_attr_edit_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':overallattributeslist_visible,'action':'get_edit_attr_list'})
+				if get_attr_edit_based_list:
+					get_attr_edit_based_list[0]
+					attributeReadonlylst = get_attr_edit_based_list[1]
 			#editability control end
 			product_obj = Sql.GetFirst("""SELECT 
 										MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
