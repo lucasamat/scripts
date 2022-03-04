@@ -790,10 +790,17 @@ class ViolationConditions:
                                 if fflag == 1:
                                     SqlQuery = "val"
                                 else:
-                                    
-                                    Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                                    Trace.Write("===============" + str(Select_Query))
-                                    SqlQuery = Sql.GetFirst(Select_Query)
+                                    try:
+                                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
+                                        Log.Info("795 ELSE SELECT QUERY--->" + str(Select_Query))
+                                        SqlQuery = Sql.GetFirst(Select_Query)
+                                        #Log.Info("else flag")
+                                        Trace.Write("else flag")
+                                    except:
+                                        SqlQuery = Select_Query
+                                    #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
+                                    #Trace.Write("===============" + str(Select_Query))
+                                    #SqlQuery = Sql.GetFirst(Select_Query)
                                 if SqlQuery:
                                     Log.Info("@626Inside the approval Transcation")
 
