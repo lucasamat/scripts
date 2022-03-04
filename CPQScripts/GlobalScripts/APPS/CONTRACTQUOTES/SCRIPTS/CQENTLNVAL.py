@@ -198,6 +198,7 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 			#get_attr_non_editable_fields = Sql.GetFirst("select PRENLI.EDITABLE from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and EDITABLE = 'False'")
 		if get_attr_editable_fields_qery:
 			#if get_attr_editable_fields.EDITABLE == 'TRUE':
+			Trace.Write('get_attr_editable_fields------'+str(val))
 			get_attr_editable_fields.append(str(val))
 		else:
 			get_attr_non_editable_fields.append(str(val))
