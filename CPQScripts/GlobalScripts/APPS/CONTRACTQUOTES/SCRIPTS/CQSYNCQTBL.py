@@ -1740,7 +1740,7 @@ class SyncQuoteAndCustomTables:
 																	) A
 																""".format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 								SAQFBL_end = time.time()
-							if payload_json.get('SERVICE_IDS'):
+							if payload_json.get('SAQSCO'):
 								equipment_fab_data = {} 
 								for service_level_temp_equipment_json_data in payload_json.get('SAQSCO'):
 									#temptool logic starts:A055S000P01-16705
