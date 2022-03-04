@@ -711,7 +711,7 @@ def Related_Sub_Banner(
             elif subTabName == "Equipment" and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products" and sec_rel_sub_bnr == "") and CurrentTab == 'Quotes':		
                 sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                 if sale_type == 'TOOL RELOCATION' or TreeParam.startswith('Z0007'):
-                    sec_rel_sub_bnr += ''
+                    sec_rel_sub_bnr += (str(btn))
                 
                 else:
                     Trace.Write("Inside Else"+str(sec_rel_sub_bnr))
