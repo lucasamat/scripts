@@ -650,7 +650,7 @@ class ViolationConditions:
                             #Log.Info("else flag")
                             Trace.Write("else flag")
                         except:
-                            SqlQuery = SqlQuery
+                            SqlQuery = Select_Query
                     if SqlQuery is not None:
                         Trace.Write("Inside the approval heaeder ")
                         where_conditon = (
