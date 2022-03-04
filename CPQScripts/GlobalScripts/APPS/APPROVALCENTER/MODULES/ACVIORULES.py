@@ -769,8 +769,10 @@ class ViolationConditions:
                                                 count += 1
                                                 if res == 1:
                                                     fflag = 1
+                                                    Trace.Write("FLAG IS 1")
                                                 else:
                                                     fflag = 2
+                                                    Trace.Write("FLAG IS 2")
                                             else:
                                                 if "PRENVL" not in s:
                                                     try:
@@ -798,7 +800,7 @@ class ViolationConditions:
                                     #Trace.Write("===============" + str(Select_Query))
                                     #SqlQuery = Sql.GetFirst(Select_Query)
                                 if SqlQuery:
-                                    Log.Info("@626Inside the approval Transcation")
+                                    Trace.Write("@626Inside the approval Transcation")
 
                                     where_conditon = (
                                         " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
