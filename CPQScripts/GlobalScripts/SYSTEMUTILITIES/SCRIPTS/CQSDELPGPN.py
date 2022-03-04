@@ -34,22 +34,24 @@ class qt_pricing_review_mail_trigger:
                     Thank You
                     """
         try:
-            LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
-            mailClient = SmtpClient()
-            mailClient.Host = "smtp.gmail.com"
-            mailClient.Port = 587
-            mailClient.EnableSsl = "true"
-            mailCred = NetworkCredential()
-            mailCred.UserName = str(LOGIN_CRE.USER_NAME)
-            mailCred.Password = str(LOGIN_CRE.PASSWORD)
-            mailClient.Credentials = mailCred
-            toEmail = MailAddress("ponvelselvam.aathiappan@bostonharborconsulting.com")
-            fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
-            msg = MailMessage(fromEmail, toEmail)
-            msg.Subject = Subject
-            msg.IsBodyHtml = True
-            msg.Body = mailBody  
-            mailClient.Send(msg)
+            if pricing_review:
+                LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
+                mailClient = SmtpClient()
+                mailClient.Host = "smtp.gmail.com"
+                mailClient.Port = 587
+                mailClient.EnableSsl = "true"
+                mailCred = NetworkCredential()
+                mailCred.UserName = str(LOGIN_CRE.USER_NAME)
+                mailCred.Password = str(LOGIN_CRE.PASSWORD)
+                mailClient.Credentials = mailCred
+                toEmail = MailAddress(str(pricing_review.EMAIL))
+                #toEmail = MailAddress("ponvelselvam.aathiappan@bostonharborconsulting.com")
+                fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
+                msg = MailMessage(fromEmail, toEmail)
+                msg.Subject = Subject
+                msg.IsBodyHtml = True
+                msg.Body = mailBody  
+                mailClient.Send(msg)
         except Exception as e:
             self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : "+str(e)
             Trace.Write(self.exceptMessage)
