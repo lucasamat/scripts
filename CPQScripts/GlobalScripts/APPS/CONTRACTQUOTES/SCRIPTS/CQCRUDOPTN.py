@@ -2888,6 +2888,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								"SERVICE_DESCRIPTION": eqp.SERVICE_DESCRIPTION,
 								"SERVICE_ID": eqp.SERVICE_ID,
 								"SERVICE_RECORD_ID": eqp.SERVICE_RECORD_ID,
+								"QUANTITY": 1,
 								"QUOTE_ID": str(self.contract_quote_id),
 								"QUOTE_RECORD_ID": str(self.contract_quote_record_id),
 								"QTEREV_ID": str(self.quote_revision_id),
