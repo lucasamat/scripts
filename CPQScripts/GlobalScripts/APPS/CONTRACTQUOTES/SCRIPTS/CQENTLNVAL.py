@@ -129,6 +129,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 def entitlement_attributes_editability_request(partnumber,inserted_value_list,ent_level_table,where_cond):
 	Trace.Write("ent_level_table--"+str(ent_level_table))
 	level_name = get_clicked_greenbook = get_greenbook_value_itemlevel = ''
+	get_total_list =[]
 	if ent_level_table == "SAQTSE":
 		level_name = 'OFFERING LEVEL'
 	elif ent_level_table == "SAQSFE":
@@ -198,7 +199,10 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 			get_attr_non_editable_fields.append(str(val))
 	Trace.Write('get_attr_non_editable_fields------'+str(type(get_attr_non_editable_fields))+str(get_attr_non_editable_fields))
 	Trace.Write('get_attr_editable_fields------'+str(type(get_attr_editable_fields))+str(get_attr_editable_fields))
-	return get_attr_editable_fields,get_attr_non_editable_fields
+	get_total_list.append(get_attr_editable_fields)
+	get_total_list.append(get_attr_non_editable_fields)
+	Trace.Write('get_total_list------'+str(get_total_list))
+	return get_total_list
 
 #attribute editablity code end
 
