@@ -10,7 +10,6 @@ import datetime
 from SYDATABASE import SQL
 
 Sql = SQL()
-Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
 
 class ContractQuoteItemAnnualizedPricing:
 	def __init__(self, **kwargs):		
@@ -19,10 +18,9 @@ class ContractQuoteItemAnnualizedPricing:
 		self.datetime_value = datetime.datetime.now()
 		self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 		self.contract_quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-		self.records = kwargs.get('records')
-		
+		self.records = kwargs.get('records')		
 	
-	def _do_process(self):
+	def _do_opertion(self):
 		if self.records:
 			self.records = eval(self.records)			
 			for data in self.records:
