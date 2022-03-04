@@ -6,6 +6,7 @@
 #   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
+# from CPQScripts.GlobalScripts.SYSTEMUTILITIES.SCRIPTS.SYULODTRND import Product
 import Webcom.Configurator.Scripting.Test.TestProduct
 from datetime import datetime
 
@@ -2234,7 +2235,8 @@ class SYLDRTLIST:
 							get_gb_val = Sql.GetFirst("SELECT GREENBOOK FROM SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID= '"+str(quote_item_revision_rec_id)+"'")
 							if get_gb_val:
 								Qustr += "AND QTEITM_RECORD_ID = '"+str(quote_item_revision_rec_id)+"' AND GREENBOOK = '"+str(get_gb_val.GREENBOOK)+"'"
-						
+						if str(RECORD_ID) == "SYOBJR-00033":
+							Qustr += "AND SNDFBL_ID = '"+str(Product.GetGlobal('sending_fab_id'))+"'"
 						if str(RECORD_ID) == "SYOBJR-98872":
 							Wh_API_NAMEs +=",LINE"
 						if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825","SYOBJR-00016"):
