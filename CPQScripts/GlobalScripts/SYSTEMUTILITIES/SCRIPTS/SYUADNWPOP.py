@@ -4763,8 +4763,8 @@ def POPUPLISTVALUEADDNEW(
 						) """
 				else:
 					Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} {is_temptool} AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID = '{qurev_rec_id}')".format(where_string=str(where_string)+" AND " if where_string else "",
-						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id , restrict_tools = " EQUIPMENTCATEGORY_ID = 'Y' AND " if TreeParam == "Z0004" else "",is_temptool=" TEMP_TOOL ='TRUE' " if str(TreeParam)=="Z0099" else " ( TEMP_TOOL IS NULL OR TEMP_TOOL = 'FALSE') ")
+					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID = '{qurev_rec_id}')".format(where_string=str(where_string)+" AND " if where_string else "",
+						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id , restrict_tools = " EQUIPMENTCATEGORY_ID = 'Y' AND " if TreeParam == "Z0004" else "" ")
 					)
 
 			if str(PerPage) == "" and str(PageInform) == "":
@@ -4799,8 +4799,8 @@ def POPUPLISTVALUEADDNEW(
 			)
 			else:
 				Trace.Write('2572--POPUPPPPPPPPPPP----')
-				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} {is_temptool} AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID  = '{qurev_rec_id}')".format(
-					quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id, restrict_tools = " EQUIPMENTCATEGORY_ID = 'Y' AND " if TreeParam == "Z0004" else "",is_temptool=" TEMP_TOOL = 'TRUE' " if str(TreeParam)=="Z0099" else " ( TEMP_TOOL IS NULL OR TEMP_TOOL = 'FALSE') "
+				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID  = '{qurev_rec_id}')".format(
+					quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id, restrict_tools = " EQUIPMENTCATEGORY_ID = 'Y' AND " if TreeParam == "Z0004" else ""
 				)
 			if TreeParentParam == "Add-On Products" and TreeParam !="":
 				#A055S000P01-3251--start pagination issue on addfromlist popup in addonproducts

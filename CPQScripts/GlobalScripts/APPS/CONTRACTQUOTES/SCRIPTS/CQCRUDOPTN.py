@@ -3574,9 +3574,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							)
 				)
 				#Z0099 UPDATE TEMP_TOOL FLAG
-				if self.tree_param == "Z0099":
-					QueryStatement ="""UPDATE SAQSCO SET TEMP_TOOL ='1' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0099'  """.format(self.contract_quote_record_id,self.quote_revision_record_id)
-					Sql.RunQuery(QueryStatement)
+				# if self.tree_param == "Z0099":
+				# 	QueryStatement ="""UPDATE SAQSCO SET TEMP_TOOL ='1' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0099'  """.format(self.contract_quote_record_id,self.quote_revision_record_id)
+				# 	Sql.RunQuery(QueryStatement)
 			if self.tree_param == "Sending Equipment":
 				self._process_query(
 					"""
@@ -3807,9 +3807,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						)
 				)
 				#Z0099 UPDATE TEMP_TOOL FLAG
-				if self.tree_param =="Z0099":
-					QueryStatement ="""UPDATE SAQSCO SET TEMP_TOOL ='1' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0099'  """.format(self.contract_quote_record_id,self.quote_revision_record_id)
-					Sql.RunQuery(QueryStatement)
+				# if self.tree_param =="Z0099":
+				# 	QueryStatement ="""UPDATE SAQSCO SET TEMP_TOOL ='1' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0099'  """.format(self.contract_quote_record_id,self.quote_revision_record_id)
+				# 	Sql.RunQuery(QueryStatement)
 						
 		else:
 			#Trace.Write('3436---'+str(self.tree_param))
@@ -3944,9 +3944,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			)
 			#if Quote.GetGlobal("ANCILLARY") == "YES":
 			#Z0099 UPDATE TEMP_TOOL FLAG
-			if self.tree_param == "Z0099":
-				QueryStatement ="""UPDATE SAQSCO SET TEMP_TOOL ='1' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0099'  """.format(self.contract_quote_record_id,self.quote_revision_record_id)
-				Sql.RunQuery(QueryStatement)
+			# if self.tree_param == "Z0099":
+			# 	QueryStatement ="""UPDATE SAQSCO SET TEMP_TOOL ='1' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='Z0099'  """.format(self.contract_quote_record_id,self.quote_revision_record_id)
+			# 	Sql.RunQuery(QueryStatement)
 			
 
 			#4393 start
