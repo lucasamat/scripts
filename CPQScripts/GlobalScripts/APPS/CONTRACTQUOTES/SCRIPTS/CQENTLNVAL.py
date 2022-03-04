@@ -185,7 +185,7 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 	get_attr_editable_fields =[]
 	get_attr_non_editable_fields =[]
 	if get_clicked_greenbook == "" and ent_level_table == "SAQITE":
-		Trace.Write('107----get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
+		#Trace.Write('107----get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 		get_clicked_greenbook =get_greenbook_value_itemlevel
 	for val in inserted_value_list:
 		#Trace.Write(str(level_name)+'--level_name--value---'+str(val))
