@@ -2486,8 +2486,8 @@ def POPUPLISTVALUEADDNEW(
 			)
 			stp_account_id = Product.GetGlobal("stp_account_id")
 			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(PRLPBE.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE GREENBOOK NOT IN (SELECT GREENBOOK FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(
-					ObjectName,stp_account_id, contract_quote_record_id,quote_revision_record_id
+				"SELECT COUNT(PRLPBE.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE GREENBOOK = '{}' AND POSS_NSO_PART_ID NOT IN (SELECT POSS_NSO_PART_ID FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(
+					ObjectName,TreeParentParam, contract_quote_record_id,quote_revision_record_id
 				)
 			)
 
@@ -2511,8 +2511,8 @@ def POPUPLISTVALUEADDNEW(
 
 			if where_string:
 				where_string += " AND"
-			where_string += """  GREENBOOK NOT IN (SELECT GREENBOOK FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
-				stp_account_id, contract_quote_record_id, quote_revision_record_id 
+			where_string += """ GREENBOOK = '{}' AND  POSS_NSO_PART_ID NOT IN (SELECT POSS_NSO_PART_ID FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
+				TreeParentParam, contract_quote_record_id, quote_revision_record_id 
 			)
 
 			table_data = Sql.GetList(
