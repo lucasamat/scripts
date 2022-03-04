@@ -181,6 +181,8 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		Trace.Write("Fab22")
 		if str(where_string)!="":
 			where_string = " AND "+str(where_string)
+		if Product.GetGlobal("receiving_fab_id") and TreeParam == "Customer Information":
+			where_string += " AND FABLOCATION_ID = '"+str(Product.GetGlobal("receiving_fab_id"))+"'"
 		Qstr = (
 			"select top "
 			+ str(PerPage)
