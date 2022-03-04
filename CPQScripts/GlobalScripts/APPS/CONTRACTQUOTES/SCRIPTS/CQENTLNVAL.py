@@ -190,20 +190,23 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 	for val in inserted_value_list:
 		#Trace.Write(str(level_name)+'--level_name--value---'+str(val))
 		if level_name in ["OFFERING FAB LEVEL","OFFERING LEVEL"]:
-			get_attr_editable_fields = Sql.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and EDITABLE = 'True'")
-			get_attr_non_editable_fields = Sql.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and EDITABLE = 'False'")
+			get_attr_editable_fields = Sql.GetFirst("select EDITABLE from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and EDITABLE = 'True'")
+			get_attr_non_editable_fields = Sql.GetFirst("select EDITABLE from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and EDITABLE = 'False'")
+			
 		else:
-			get_attr_editable_fields= Sql.GetFirst("select PRENLI.ENTITLEMENTLEVEL_ID from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and EDITABLE = 'True'")
-			get_attr_non_editable_fields = Sql.GetFirst("select PRENLI.ENTITLEMENTLEVEL_ID from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and EDITABLE = 'False'")
-		if get_attr_editable_fields:
+			get_attr_editable_fields= Sql.GetFirst("select PRENLI.EDITABLE from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and EDITABLE = 'True'")
+			get_attr_non_editable_fields = Sql.GetFirst("select PRENLI.EDITABLE from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and EDITABLE = 'False'")
+		if get_attr_editable_fields.EDITABLE == 'TRUE':
 			get_attr_editable_fields.append(str(val))
-		if get_attr_non_editable_fields:
+		if get_attr_non_editable_fields.EDITABLE == 'FALSE':
 			get_attr_non_editable_fields.append(str(val))
 	
 	if len(get_attr_editable_fields) > 0:
 		get_total_list.append(get_attr_editable_fields)
 	if len(get_attr_editable_fields) > 0:
 		get_total_list.append(get_attr_non_editable_fields)
+	Trace.Write('get_attr_editable_fields------'+str(get_attr_editable_fields))
+	Trace.Write('get_attr_non_editable_fields------'+str(get_attr_non_editable_fields))
 	Trace.Write('get_total_list------'+str(get_total_list))
 	return get_total_list
 
