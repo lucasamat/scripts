@@ -1112,13 +1112,13 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					notnull_columns = []
 					for i in range(1,53):
 						val = eval('get_schedule_values.DELIVERY_'+str(i))
-						if val:
+						if val and val!=0:
 							schedule_sum+=int(val)
 							notnull_columns.append('DELIVERY_'+str(i))
 
-					if value<schedule_sum:
+					if int(value)<schedule_sum:
 						length = len(notnull_columns) - 1
-						required_value = schedule_sum - value
+						required_value = schedule_sum - int(value)
 						update_col = ''
 						for key,val in enumerate(notnull_columns):
 							if required_value!=0:
@@ -1127,8 +1127,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 									current_val = current_val-required_value
 									required_value = 0
 								else:
-									current_val = 0
 									required_value -= current_val
+									current_val = 0
+								Trace.Write('###@'+str(notnull_columns[length-key])+" = '"+str(current_val)+"',")
 								update_col += str(notnull_columns[length-key])+" = '"+str(current_val)+"',"
 						Sql.RunQuery("""UPDATE SAQSPT SET {cols} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(cols = update_col[:-1],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 					
