@@ -61,13 +61,13 @@ for keyobj in SAQTIP_INFO:
 GetPricingProcedure = Sql.GetFirst("SELECT DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY,COUNTRY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID,EXCHANGE_RATE_TYPE, GLOBAL_CURRENCY, ACCTAXCLA_ID, PAYMENTTERM_ID, INCOTERM_ID, COMPANY_ID, CONTRACT_VALID_FROM FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}' ".format(QUOTE,revision))
 if GetPricingProcedure is not None:
 	Trace.Write('inside----'+str(GetPricingProcedure))
-	PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID or "ZZCQAP"
+	PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
 	curr = GetPricingProcedure.DOC_CURRENCY
 	glb_curr =  GetPricingProcedure.GLOBAL_CURRENCY
 	dis = GetPricingProcedure.DISTRIBUTIONCHANNEL_ID
 	salesorg = GetPricingProcedure.SALESORG_ID
-	div = GetPricingProcedure.DIVISION_ID or "56"
-	exch = GetPricingProcedure.EXCHANGE_RATE_TYPE or "ZC07"
+	div = GetPricingProcedure.DIVISION_ID
+	exch = GetPricingProcedure.EXCHANGE_RATE_TYPE
 	contract_quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
 	country=GetPricingProcedure.COUNTRY
 	taxk1 = GetPricingProcedure.ACCTAXCLA_ID
@@ -86,15 +86,16 @@ if GetPricingProcedure is not None:
 account_info['docCurrency']= '{"name":"KOMK-WAERK","values":["'+str(curr)+'"]}'
 account_info['globalCurrency']= '{"name":"KOMK-HWAER","values":["'+str(glb_curr)+'"]}'
 #else:
-PricingProcedure = 'ZZCQAP'
+#PricingProcedure = 'ZZCQAP'
 #curr = 'USD'
 #dis = '01'
 #salesorg = '2034'
 div = '56'
 
 #UPDATE PRICING PROCEDURE TO SAQITM
-
-
+getPricingProc=SqlHelper.GetFirst("""SELECT PRICINGPROCEDURE_ID FROM SASAPP (NOLOCK) WHERE DISTRIBUTIONCHANNEL_ID='{}' AND DIVISION_ID='56' AND SALESORG_ID='{}'""".format(dis,salesorg))
+if getPricingProc:
+    PricingProcedure = getPricingProc.PRICINGPROCEDURE_ID
 # update_SAQITM = "UPDATE SAQITM SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQITM.QUOTE_ID = '{quote}' AND SAQITM.QTEREV_RECORD_ID='{revision_rec_id}'".format(prc=str(PricingProcedure), quote=QUOTE, revision_rec_id = revision)
 # Sql.RunQuery(update_SAQITM)
 update_SAQIFP = "UPDATE SAQIFP SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQIFP.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure), quote=QUOTE)
