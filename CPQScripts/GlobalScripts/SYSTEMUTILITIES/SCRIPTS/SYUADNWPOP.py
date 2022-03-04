@@ -997,12 +997,15 @@ def POPUPLISTVALUEADDNEW(
 			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 			)
+			sales_org_object = Sql.GetFirst(" SELECT SALESORG_ID,REGION FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+			sales_org_id = sales_org_object.SALESORG_ID
+
 			if where_string:
 				where_string += " AND "
 			
 			Pagination_M = Sql.GetFirst(
-			"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND {}FAB_LOCATION_ID NOT IN (SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
-				ObjectName, account_id, where_string,contract_quote_record_id,quote_revision_record_id
+			"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND MAFBLC.SALESORG_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
+				ObjectName, account_id,sales_org_id, where_string,contract_quote_record_id,quote_revision_record_id
 				)
 			)
 			if str(PerPage) == "" and str(PageInform) == "":
@@ -1022,7 +1025,7 @@ def POPUPLISTVALUEADDNEW(
 				order_by = "order by FAB_LOCATION_NAME ASC"
 
 			pop_val = {}
-			where_string += """  MAFBLC.ACCOUNT_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}')""".format(account_id,
+			where_string += """  MAFBLC.ACCOUNT_ID = '{}' AND MAFBLC.SALESORG_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}')""".format(account_id,sales_org_id,
 				contract_quote_record_id,quote_revision_record_id
 			)
 			table_data = Sql.GetList(
