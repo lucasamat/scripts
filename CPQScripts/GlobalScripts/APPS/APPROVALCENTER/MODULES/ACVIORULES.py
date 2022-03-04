@@ -771,8 +771,7 @@ class ViolationConditions:
                                                     fflag = 1
                                                     Trace.Write("FLAG IS 1")
                                                 else:
-                                                    fflag = 2
-                                                    Trace.Write("FLAG IS 2")
+                                                    Select_Query = None
                                             else:
                                                 if "PRENVL" not in s:
                                                     try:
