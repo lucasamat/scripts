@@ -540,9 +540,9 @@ class ViolationConditions:
             )
             for index, val in enumerate(CHSqlObjs):
                 CSSqlObjs = Sql.GetList(
-                    "SELECT * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"
+                    "SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"
                     + str(val.APPROVAL_CHAIN_RECORD_ID)
-                    + "' AND WHERE_CONDITION_01 <> ''"
+                    + "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER"
                 )
                 Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND (WHERE_CONDITION_01) <> '' ORDER BY APRCHNSTP_NUMBER")
                 for result in CSSqlObjs:
@@ -694,7 +694,7 @@ class ViolationConditions:
                         # Approval Rounding - End
 
                         CheckViolaionRule2 = Sql.GetList(
-                            "SELECT ACACST.APPROVAL_CHAIN_STEP_RECORD_ID,ACAPCH.APPROVAL_METHOD,ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
+                            "SELECT ACACST.APPROVAL_CHAIN_STEP_RECORD_ID,ACACST.APRCHN_ID,ACACST.APRCHNSTP_NAME,ACAPCH.APPROVAL_METHOD,ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
                             + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
                             + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
                             + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
@@ -752,6 +752,41 @@ class ViolationConditions:
                                 """ else:
                                     if str(ObjectName) == 'SAQTMT':
                                         rec_name = 'QUOTE_ID' """
+                                if "PRENVL" in result.WHERE_CONDITION_01 and (result.APRCHN_ID == 'AMATAPPR'):
+                                    fflag = 2
+                                    getService = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND (PAR_SERVICE_ID = '' OR PAR_SERVICE_ID IS NULL)".format(RecordId))
+                                    service = [x.SERVICE_ID for x in getService]
+                                    if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
+                                        splitval = str(result.WHERE_CONDITION_01).split("OR")
+                                        Trace.Write("SPLITVAL--->"+str(splitval))
+                                        count = 0
+                                        for s in splitval:
+                                            
+                                            if "PRENVL" in s and count == 0:
+                                                Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
+                                                res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service)
+                                                #res = 1
+                                                count += 1
+                                                if res == 1:
+                                                    fflag = 1
+                                                else:
+                                                    fflag = 2
+                                            else:
+                                                if "PRENVL" not in s:
+                                                    try:
+                                                        objname = str(s).split(".")[0].replace("(","").replace(" ","").replace(")","")
+                                                        Select_Query = Sql.GetFirst(
+                                                        "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
+                                                        )
+                                                        Trace.Write("585 SELECT QUERY--->"+str(Select_Query))
+                                                    except:
+                                                        Select_Query = None
+                                                        Trace.Write("Exception Else 587")
+                                                    if Select_Query is not None:
+                                                        fflag = 1
+                                                    elif Select_Query is None and fflag != 1:
+                                                        fflag = 0
+
                                 if fflag == 1:
                                     SqlQuery = "val"
                                 else:
