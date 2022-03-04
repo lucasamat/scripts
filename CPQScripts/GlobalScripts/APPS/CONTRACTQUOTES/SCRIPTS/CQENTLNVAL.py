@@ -199,9 +199,10 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 		if get_attr_editable_fields_qery:
 			#if get_attr_editable_fields.EDITABLE == 'TRUE':
 			Trace.Write('get_attr_editable_fields------'+str(val))
-			get_attr_editable_fields.append(str(val))
-		else:
 			get_attr_non_editable_fields.append(str(val))
+			
+		else:
+			get_attr_editable_fields.append(str(val))
 		#if get_attr_non_editable_fields:
 			#if get_attr_non_editable_fields.EDITABLE == 'FALSE':
 			#get_attr_non_editable_fields.append(str(val))
