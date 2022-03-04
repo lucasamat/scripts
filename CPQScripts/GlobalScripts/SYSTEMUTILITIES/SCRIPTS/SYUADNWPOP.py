@@ -4406,7 +4406,6 @@ def POPUPLISTVALUEADDNEW(
 					quote_revision_record_id,
 					where_string,
 					contract_quote_record_id,
-					Product.GetGlobal("receiving_fab_id"),
 					quote_revision_record_id,
 				)
 			)   	
@@ -4417,7 +4416,6 @@ def POPUPLISTVALUEADDNEW(
 				quote_revision_record_id,
 				where_string,
 				contract_quote_record_id,
-				Product.GetGlobal("receiving_fab_id"),
 				quote_revision_record_id,
 			)
 			table_data = Sql.GetList(
