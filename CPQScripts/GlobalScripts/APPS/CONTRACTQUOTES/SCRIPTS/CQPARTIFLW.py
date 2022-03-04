@@ -20,7 +20,7 @@ from SYDATABASE import SQL
 
 Sql = SQL()
 def iflow_pricing_call(user,entries,revision):
-    Log.Info('CQPARTIFLW-CQPARTIFLW-----')
+    #Log.Info('CQPARTIFLW-CQPARTIFLW-----')
     requestdata = (
         '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><UserName>'
         + str(user)
@@ -30,7 +30,7 @@ def iflow_pricing_call(user,entries,revision):
         +str(revision)
         +"</Revision></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
     )
-    Log.Info("2222222222222222      " + str(requestdata))
+    #Log.Info("2222222222222222      " + str(requestdata))
     LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='SAQIFP'")
     LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
     if LOGIN_CREDENTIALS is not None:
