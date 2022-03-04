@@ -6,7 +6,6 @@
 #   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
-from CPQScripts.GlobalScripts.SYSTEMUTILITIES.SCRIPTS.SYSUBANNER import ObjName
 import Webcom.Configurator.Scripting.Test.TestProduct
 from datetime import datetime
 
