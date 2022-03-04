@@ -295,7 +295,9 @@ class AncillaryProductOperation:
 					CpqTableEntryDateModified,
 					QTEREV_RECORD_ID,
 					KPU,
-					QTEREV_ID
+					QTEREV_ID,
+					CONTRACT_VALID_TO,
+					CONTRACT_VALID_FROM 
 											
 					) SELECT
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
@@ -341,7 +343,9 @@ class AncillaryProductOperation:
 						GETDATE(),
 						QTEREV_RECORD_ID,
 						KPU,
-						QTEREV_ID
+						QTEREV_ID,
+						CONTRACT_VALID_TO,
+						CONTRACT_VALID_FROM
 						FROM SAQSCO (NOLOCK)
 						WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND SERVICE_ID ='{par_service_id}' {addtional_where} AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND PAR_SERVICE_ID ='{par_service_id}' AND SERVICE_ID ='{serviceid}')
 												
