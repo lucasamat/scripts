@@ -26,7 +26,7 @@ class qt_pricing_review_mail_trigger:
         
         #for quotes in pricing_review:
         pricing_review = Sql.GetFirst("SELECT MEMBER_ID,MEMBER_NAME,EMAIL,QUOTE_ID FROM SAQDLT WHERE  QUOTE_RECORD_ID = '"+str(QUOTE_ID)+"' AND C4C_PARTNERFUNCTION_ID = 'PRICING PERSON'")
-        Subject = "Pricing Review Status Notification"
+        Subject = "Quote Number """+str(pricing_review.QUOTE_ID)""" Pricing Review Status Notification"
         mailBody = """
                     Dear """+str(pricing_review.MEMBER_NAME)+""",<br><br>
                     This is to notify that the Following Quote Number """+str(pricing_review.QUOTE_ID)+""" is in Pricing Review Status.
