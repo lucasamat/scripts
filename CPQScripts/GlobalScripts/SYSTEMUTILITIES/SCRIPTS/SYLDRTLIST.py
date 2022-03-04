@@ -3154,7 +3154,7 @@ class SYLDRTLIST:
 						if value1234 == "APPROVAL REQUIRED":
 							value1234 = value1234.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
 						if value1234 == "ACQUIRING":
-							Trace.Write("@3157"+str(ObjName))
+							Trace.Write("@3157"+str(RECORD_ID))
 							value1234 = value1234.replace("ACQUIRING","<img title='Acquiring' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg> ACQUIRING")
 						if value1234 == "ERROR":
 							value1234 = value1234.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg> ERROR")
@@ -9131,7 +9131,7 @@ class SYLDRTLIST:
 					if value1234 == "APPROVAL REQUIRED":
 						value1234 = value1234.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
 					if value1234 == "ACQUIRING": 
-						Trace.Write("@9135"+str(ObjName))                      
+						Trace.Write("@9135"+str(RECORD_ID))                      
 						value1234 = value1234.replace("ACQUIRING","<img title='Acquiring' src=/mt/APPLIEDMATERIALS_SIT/Additionalfiles/Cloud_Icon.svg> ACQUIRING")
 					if value1234 == "ERROR":
 						value1234 = value1234.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg> ERROR")
