@@ -674,10 +674,10 @@ class SyncQuoteAndCustomTables:
 						Quote.GetCustomField('QUOTE_EXCHANGE_RATE').Content = salesorg_data.get("EXCHANGE_RATE")
 						Quote.GetCustomField('QUOTE_PAYMENT_TERM').Content = salesorg_data.get("PAYMENTTERM_NAME")
 						#UPDATE BLUEBOOK TO SAQTRV
-						bluebook_obj = Sql.GetFirst(
-							"SELECT BLUEBOOK,BLUEBOOK_RECORD_ID FROM SASAAC(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}' AND DISTRIBUTIONCHANNEL_ID = '{}' AND DIVISION_ID = '{}' AND SALESORG_ID = '{}'".format(
-								custom_fields_detail.get("STPAccountID"), custom_fields_detail.get('DistributionChannel'), custom_fields_detail.get('Division'), custom_fields_detail.get("SalesOrgID")
-							)
+						# bluebook_obj = Sql.GetFirst(
+						# 	"SELECT BLUEBOOK,BLUEBOOK_RECORD_ID FROM SASAAC(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}' AND DISTRIBUTIONCHANNEL_ID = '{}' AND DIVISION_ID = '{}' AND SALESORG_ID = '{}'".format(
+						# 		custom_fields_detail.get("STPAccountID"), custom_fields_detail.get('DistributionChannel'), custom_fields_detail.get('Division'), custom_fields_detail.get("SalesOrgID")
+						# 	)
 						)
 						if bluebook_obj:
 							salesorg_data.update({"BLUEBOOK":bluebook_obj.BLUEBOOK,"BLUEBOOK_RECORD_ID":bluebook_obj.BLUEBOOK_RECORD_ID,})
