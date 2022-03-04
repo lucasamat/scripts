@@ -484,6 +484,8 @@ def POPUPLISTVALUEADDNEW(
 			)
 			sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
 
+			sales_org_object = Sql.GetFirst(" SELECT SALESORG_ID,REGION FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+			sales_org_id = sales_org_object.SALESORG_ID
 			for key, invs in enumerate(list(ordered_keys)):
 
 				invs = str(invs).strip()
@@ -578,8 +580,14 @@ def POPUPLISTVALUEADDNEW(
 				)
 			else:
 				Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'AND QTEREV_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
-					ObjectName, contract_quote_record_id,quote_revision_record_id,where_string, contract_quote_record_id,quote_revision_record_id
+				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID AND MAFBLC.SALESORG_ID = '{}' WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'AND QTEREV_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
+					ObjectName, 
+					sales_org_id,
+     				contract_quote_record_id,
+         			quote_revision_record_id,
+            		where_string,
+              		contract_quote_record_id,
+                	quote_revision_record_id
 				)
 			)
 
@@ -627,8 +635,9 @@ def POPUPLISTVALUEADDNEW(
 				)
 
 				table_data = Sql.GetList(
-					"select  {} from {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID {} {} {}".format(", ".join(ordered_keys),
+					"select  {} from {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID AND MAFBLC.SALESORG_ID = '{}' {} {} {}".format(", ".join(ordered_keys),
 						ObjectName,
+						sales_org_id,
 						"WHERE " + where_string if where_string else "",
 						order_by,pagination_condition
 						
@@ -636,8 +645,9 @@ def POPUPLISTVALUEADDNEW(
 				)
 
 				QueryCountObj = Sql.GetFirst(
-						"select count(*) as cnt from {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID {} ".format(                    
+						"select count(*) as cnt from {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID  AND MAFBLC.SALESORG_ID = '{}' {} ".format(                    
 						ObjectName,
+						sales_org_id,
 						"WHERE " + where_string if where_string else ""
 						
 					)
