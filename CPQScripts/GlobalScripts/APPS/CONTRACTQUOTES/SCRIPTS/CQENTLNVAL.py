@@ -190,13 +190,13 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 	for val in inserted_value_list:
 		#Trace.Write(str(level_name)+'--level_name--value---'+str(val))
 		if level_name in ["OFFERING FAB LEVEL","OFFERING LEVEL"]:
-			get_attr_editable_fields = Sql.GetFirst("select EDITABLE from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and EDITABLE = 'True'")
+			get_attr_editable_fields_qery = Sql.GetFirst("select EDITABLE from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and EDITABLE = 'True'")
 			#get_attr_non_editable_fields = Sql.GetFirst("select EDITABLE from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and EDITABLE = 'False'")
 			
 		else:
-			get_attr_editable_fields= Sql.GetFirst("select PRENLI.EDITABLE from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and EDITABLE = 'True'")
+			get_attr_editable_fields_qery= Sql.GetFirst("select PRENLI.EDITABLE from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and EDITABLE = 'True'")
 			#get_attr_non_editable_fields = Sql.GetFirst("select PRENLI.EDITABLE from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and EDITABLE = 'False'")
-		if get_attr_editable_fields:
+		if get_attr_editable_fields_qery:
 			#if get_attr_editable_fields.EDITABLE == 'TRUE':
 			get_attr_editable_fields.append(str(val))
 		else:
