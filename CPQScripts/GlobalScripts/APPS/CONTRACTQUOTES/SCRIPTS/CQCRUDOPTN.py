@@ -3567,8 +3567,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
 								AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
 						""".format(
-								TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
-								TreeParentParam=self.tree_parent_level_0 if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_1,
+								TreeParam=self.tree_param,
+								TreeParentParam=self.tree_parent_level_0,
 								QuoteRecordId=self.contract_quote_record_id,
 								RevisionRecordId=self.quote_revision_record_id,
 								BatchGroupRecordId=kwargs.get('batch_group_record_id'),
