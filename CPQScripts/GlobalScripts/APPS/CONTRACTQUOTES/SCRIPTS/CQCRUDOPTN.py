@@ -2899,11 +2899,16 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								"SERIAL_NO": eqp.SERIAL_NO,
 								"TEMP_TOOL": eqp.TEMP_TOOL,
 								"POSS_COST": nso_data.POSS_COST,
-								"POSS_PRICE": nso_data.POSS_PRICE
+								"POSS_PRICE": nso_data.POSS_PRICE,
+								"EXTENDED_POSS_COST": float(nso_data.POSS_COST) * 1,
+								"EXTENDED_POSS_PRICE": float(nso_data.POSS_PRICE) * 1
 							} 
 							nso_table_info.AddRow(nso_table)
 							Sql.Upsert(nso_table_info)
 
+							# saqscn_data = Sql.GetList("SELECT POSS_COST,POSS_PRICE FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{qte_rev_id}' AND SERVICE_ID = 'Z0123'".format(qte_rec_id= str(self.contract_quote_record_id),qte_rev_id= str(self.quote_revision_record_id)))
+							# for rec in saqscn_data:
+							# 	Sql.RunQuery("UPDATE SAQSCN SET EXTENDED_POSS_COST = {extended_cost}, EXTENDED_POSS_PRICE = {extended_price} WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{qte_rev_id}' AND SERVICE_ID = 'Z0123'".format(extended_cost = ,extended_price = ,qte_rec_id= str(self.contract_quote_record_id),qte_rev_id= str(self.quote_revision_record_id)))
 			# 		# maequp_data = Sql.GetFirst("SELECT * FROM MAEQUP (NOLOCK) WHERE CpqTableEntryId = '"+str(cpq_entry)+"'")
 			# 		self._process_query(
 			# 			"""
