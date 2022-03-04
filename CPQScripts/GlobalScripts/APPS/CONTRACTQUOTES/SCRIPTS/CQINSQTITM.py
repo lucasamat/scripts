@@ -1364,11 +1364,12 @@ class ContractQuoteItem:
 		# 	""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		
 		# In Warranty
-		Sql.RunQuery("""UPDATE SAQICO
-						SET INWRTY = 1		
-							FROM SAQICO (NOLOCK)							
-							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}W'
-							""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		if self.service_id.endswith("W"):
+			Sql.RunQuery("""UPDATE SAQICO
+							SET INWRTY = 1		
+								FROM SAQICO (NOLOCK)							
+								WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'
+								""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		pricing_46_start = time.time()
 		#Z0046 pricing update
 		if self.service_id == 'Z0046':
