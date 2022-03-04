@@ -196,7 +196,8 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 			get_attr_editable_fields.append(str(val))
 		if get_attr_non_editable_fields:
 			get_attr_non_editable_fields.append(str(val))
-	#Trace.Write('get_attr_leve_based_list--type return'+str(type(get_attr_leve_based_list)))
+	Trace.Write('get_attr_non_editable_fields------'+str(type(get_attr_non_editable_fields))+str(get_attr_non_editable_fields))
+	Trace.Write('get_attr_editable_fields------'+str(type(get_attr_editable_fields))+str(get_attr_editable_fields))
 	return get_attr_editable_fields,get_attr_non_editable_fields
 
 #attribute editablity code end
