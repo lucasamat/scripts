@@ -197,11 +197,11 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 			get_attr_editable_fields.append(str(val))
 		if get_attr_non_editable_fields:
 			get_attr_non_editable_fields.append(str(val))
-	Trace.Write('get_attr_non_editable_fields------'+str(type(get_attr_non_editable_fields))+str(get_attr_non_editable_fields))
-	Trace.Write('get_attr_editable_fields------'+str(type(get_attr_editable_fields))+str(get_attr_editable_fields))
-	if get_attr_editable_fields:
+	#Trace.Write('get_attr_non_editable_fields------'+str(type(get_attr_non_editable_fields))+str(get_attr_non_editable_fields))
+	#Trace.Write('get_attr_editable_fields------'+str(type(get_attr_editable_fields))+str(get_attr_editable_fields))
+	if len(get_attr_editable_fields) > 0:
 		get_total_list.append(get_attr_editable_fields)
-	if get_attr_editable_fields:
+	if len(get_attr_editable_fields) > 0:
 		get_total_list.append(get_attr_non_editable_fields)
 	Trace.Write('get_total_list------'+str(get_total_list))
 	return get_total_list
