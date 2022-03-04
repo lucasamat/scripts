@@ -127,8 +127,13 @@ class Entitlements:
 						webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 						#webclient.Headers.Add("If-Match", "111")
 						#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
-						webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')								
-						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
+						webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
+						get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(row.ENTITLEMENT_ID)+"' and SERVICE_ID = '"+str(serviceId)+"'")							
+						ent_type = 'Entitlement'
+						if get_ent_type:
+							if get_ent_type.ENTITLEMENT_TYPE:
+								ent_type = get_ent_type.ENTITLEMENT_TYPE
+						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and ent_type.upper() not in ('VALUE DRIVER','VALUE DRIVER COEFFICIENT'):
 							#Trace.Write('row--'+str(row.ENTITLEMENT_ID))
 							try:
 								requestdata = '{"characteristics":['								
