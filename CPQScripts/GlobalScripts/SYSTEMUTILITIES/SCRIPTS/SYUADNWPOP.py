@@ -4859,7 +4859,7 @@ def POPUPLISTVALUEADDNEW(
 							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 							new_value_dict[data.Key] = cpqidval
 						elif str(data.Key) == "TEMP_TOOL":
-							new_value_dict[data.Key] = '<input  type= "checkbox" class= "custom"  value="' + data.Value + '" style="text-align: center;" checked   disabled><span class="lbl"></span>'
+							new_value_dict[data.Key] = '<input  type= "checkbox" class= "custom"  value="' + str(data.Value) + '" style="text-align: center;" checked   disabled><span class="lbl"></span>'
 						else:
 							new_value_dict[data.Key] = data.Value
 						new_value_dict["pop_val"] = pop_val
