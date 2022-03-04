@@ -3150,14 +3150,24 @@ class SYLDRTLIST:
 						value1234 = valu.replace("]", "").lstrip()
 						
 						if value1234 == "ACQUIRED" or value1234 == "PRICED":
-							value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg'> "+str(value1234))
+							if RECORD_ID == 'SYOBJR-00005':
+								value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg'> ")
+							else:
+								value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg'> "+str(value1234))
+							
 						if value1234 == "APPROVAL REQUIRED":
 							value1234 = value1234.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
 						if value1234 == "ACQUIRING":
-							Trace.Write("@3157"+str(RECORD_ID))
-							value1234 = value1234.replace("ACQUIRING","<img title='Acquiring' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg> ACQUIRING")
+							if RECORD_ID == 'SYOBJR-00005':
+								value1234 = value1234.replace("ACQUIRING","<img title='Acquiring' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>")
+							else:
+								value1234 = value1234.replace("ACQUIRING","<img title='Acquiring' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg> ACQUIRING")
 						if value1234 == "ERROR":
-							value1234 = value1234.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg> ERROR")
+							if RECORD_ID == 'SYOBJR-00005':
+								value1234 = value1234.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>")
+							else:
+								value1234 = value1234.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg> ERROR")
+							
 						if value1234 == "ASSEMBLY IS MISSING":
 							value1234 = value1234.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
 						if value1234 == "ON HOLD - COSTING":
