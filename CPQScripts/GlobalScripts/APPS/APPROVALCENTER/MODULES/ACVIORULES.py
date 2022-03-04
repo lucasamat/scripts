@@ -782,10 +782,6 @@ class ViolationConditions:
                                                     except:
                                                         Select_Query = None
                                                         Trace.Write("Exception Else 587")
-                                                    if Select_Query is not None:
-                                                        fflag = 1
-                                                    elif Select_Query is None and fflag != 1:
-                                                        fflag = 0
 
                                 if fflag == 1:
                                     SqlQuery = "val"
