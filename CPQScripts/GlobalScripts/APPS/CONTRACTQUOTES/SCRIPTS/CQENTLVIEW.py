@@ -339,7 +339,7 @@ class EntitlementView():
 			if ProductPartnumber == "Z0091":
 				get_attr_edit_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':overallattributeslist_visible,'action':'get_edit_attr_list'})
 				if get_attr_edit_based_list:
-					get_attr_edit_based_list[0]
+					attributeEditlst = get_attr_edit_based_list[0]
 					Trace.Write('attributeReadonlylst--Z0091----'+str(attributeReadonlylst))
 					attributeReadonlylst = get_attr_edit_based_list[1]
 					Trace.Write('attributeReadonlylst--Z0091---after----'+str(attributeReadonlylst))
