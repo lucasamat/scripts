@@ -203,6 +203,7 @@ try:
 				#if cust_participate and str(cust_participate.CUSTOMER_PARTICIPATE).upper() == "TRUE" and str(cust_participate.ODCC_FLAG).upper() == "TRUE":
 				#conditions = response1['Entries'][0]['items'][0]['conditions']
 				for condition in i['conditions']:
+					Log.Info("zerulog-->"+str(condition))
 					if condition['conditionType'] == "ZERU":
 						core_credit_amount = condition['conditionValue']
 						break
