@@ -710,37 +710,37 @@ def Related_Sub_Banner(
 
             elif subTabName == "Equipment" and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products" and sec_rel_sub_bnr == "") and CurrentTab == 'Quotes':		
                 sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-                if sale_type == 'TOOL RELOCATION' or TreeParam.startswith('Z0007'):
-                    sec_rel_sub_bnr += (str(btn))
+                # if sale_type == 'TOOL RELOCATION' or TreeParam.startswith('Z0007'):
+                #     sec_rel_sub_bnr += (str(btn))
                 
-                else:
-                    Trace.Write("Inside Else"+str(sec_rel_sub_bnr))
-                    if quote_status.QUOTE_STATUS != 'APPROVED':
-                        Trace.Write("Inside addbut")  
-                        if len(multi_buttons)>0:
-                            Trace.Write("lenmulti---")
-                            for btn in multi_buttons:
-                                if "Sending Account" in TreeParam:
-                                    if "ADD UNMAPPED EQUIPMENTS" in btn:
-                                        sec_rel_sub_bnr += (str(btn))
-                                        if (subTabName == "Equipment" or subTabName == "Fab Value Drivers") and TreeParam.startswith("Sending"):
-                                            Trace.Write('opp=====')
-                                            PrimaryLable = "Sending Account ID"
-                                            PrimaryValue = str(TreeParam).split("-")[1].strip()
-                                            SecondLable = "Sending Fab Locations"
-                                            SecondValue = "ALL"
-                                            ThirdLable = "Equipment"
-                                            ThirdValue = "ALL"
-                                        
-                                else:
-                                    if "ADD FROM LIST" or "ADD TEMP TOOL" in btn:        
-                                        sec_rel_sub_bnr += (str(btn))
-                                        Trace.Write(str(btn))
-                                # else:
-                                #     sec_rel_sub_bnr += ''
-                        else:
-                            Trace.Write("lenmultibtn---+str"+str(sec_rel_sub_bnr))
-                            sec_rel_sub_bnr += str(add_button)
+                # else:
+                #     Trace.Write("Inside Else"+str(sec_rel_sub_bnr))
+                if quote_status.QUOTE_STATUS != 'APPROVED':
+                    Trace.Write("Inside addbut")  
+                    if len(multi_buttons)>0:
+                        Trace.Write("lenmulti---")
+                        for btn in multi_buttons:
+                            if "Sending Account" in TreeParam:
+                                if "ADD UNMAPPED EQUIPMENTS" in btn:
+                                    sec_rel_sub_bnr += (str(btn))
+                                    if (subTabName == "Equipment" or subTabName == "Fab Value Drivers") and TreeParam.startswith("Sending"):
+                                        Trace.Write('opp=====')
+                                        PrimaryLable = "Sending Account ID"
+                                        PrimaryValue = str(TreeParam).split("-")[1].strip()
+                                        SecondLable = "Sending Fab Locations"
+                                        SecondValue = "ALL"
+                                        ThirdLable = "Equipment"
+                                        ThirdValue = "ALL"
+                                    
+                            else:
+                                if "ADD FROM LIST" or "ADD TEMP TOOL" in btn:        
+                                    sec_rel_sub_bnr += (str(btn))
+                                    Trace.Write(str(btn))
+                            # else:
+                            #     sec_rel_sub_bnr += ''
+                    else:
+                        Trace.Write("lenmultibtn---+str"+str(sec_rel_sub_bnr))
+                        sec_rel_sub_bnr += str(add_button)
 
 
             elif TreeParam == "Contract Information" or TreeParam == "Contract Preview":	
