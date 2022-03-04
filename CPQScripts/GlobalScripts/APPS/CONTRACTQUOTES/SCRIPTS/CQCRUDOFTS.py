@@ -292,7 +292,7 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
 
 
 def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
-    master_object_name = "SAQSAF"
+    master_object_name = "MAFBLC"
     if values:
         record_ids = []
         if all_values:
