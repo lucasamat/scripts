@@ -88,7 +88,8 @@ try:
 
 			price = []
 			QUOTE = ''
-
+			quote_record_id = ''
+			revision_record_id = ''
 			for root, value in response1.items():
 				for root1 in value:
 					for inv in root1:			
@@ -152,7 +153,9 @@ try:
 					div = GetPricingProcedure.DIVISION_ID
 					exch = GetPricingProcedure.EXCHANGE_RATE_TYPE
 					contract_quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
+					quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
 					revision_rec_id = GetPricingProcedure.QTEREV_RECORD_ID
+					revision_record_id = GetPricingProcedure.QTEREV_RECORD_ID
 					exch_rate = GetPricingProcedure.EXCHANGE_RATE
 				#Log.Info("123 i[conditions] -->"+str(type(i['conditions'])))
 				Taxrate = '0.00'
@@ -457,7 +460,12 @@ try:
 			'''
 			###calling script for saqris,saqtrv insert
 			#CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})
-			
+			#BELOW DELETE QUERY ONLY FOR FPM PRODUCTS.
+			Sql.RunQuery("DELETE FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID= '{}' AND SERVICE_ID = 'Z0108' AND UNIT_PRICE <= 50 AND CUSTOMER_ANNUAL_QUANTITY <= 9".format(quote_record_id,revision_record_id))
+
+
+			Sql.RunQuery("DELETE FROM SAQSPT (NOLOCK) WHERE CUSTOMER_ANNUAL_QUANTITY<10 AND UNIT_PRICE <50 AND SCHEDULE_MODE='ON REQUEST' AND DELIVERY_MODE='OFFSITE' AND SERVICE_ID='Z0110' AND  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,revision_record_id))
+
 except:
 	Log.Info("QTPOSTPTPR ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("QTPOSTPTPR ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
