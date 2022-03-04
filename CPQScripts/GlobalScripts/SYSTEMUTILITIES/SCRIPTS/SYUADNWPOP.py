@@ -4776,7 +4776,7 @@ def POPUPLISTVALUEADDNEW(
 						) """
 				else:
 					Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID = '{qurev_rec_id}')".format(where_string=str(where_string)+" AND " if where_string else "",
+					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID NOT IN(SELECT QTEREVFEQ_RECORD_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID = '{qurev_rec_id}')".format(where_string=str(where_string)+" AND " if where_string else "",
 						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id , restrict_tools = " EQUIPMENTCATEGORY_ID = 'Y' AND " if TreeParam == "Z0004" else ""
 					))
 
@@ -4812,7 +4812,7 @@ def POPUPLISTVALUEADDNEW(
 			)
 			else:
 				Trace.Write('2572--POPUPPPPPPPPPPP----')
-				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID  = '{qurev_rec_id}')".format(
+				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND {restrict_tools} QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID NOT IN (SELECT QTEREVFEQ_RECORD_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID  = '{qurev_rec_id}')".format(
 					quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id, restrict_tools = " EQUIPMENTCATEGORY_ID = 'Y' AND " if TreeParam == "Z0004" else ""
 				)
 			if TreeParentParam == "Add-On Products" and TreeParam !="":
