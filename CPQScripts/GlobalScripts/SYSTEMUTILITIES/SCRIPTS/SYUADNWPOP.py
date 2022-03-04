@@ -415,7 +415,7 @@ def POPUPLISTVALUEADDNEW(
 			else:
 				date_field = "NORECORDS"
 		# ADD FAB POPUP STARTS JOE
-		elif str(ObjectName) == "SAQFBL" and str(CurrentTab) == "Quotes" and TABLEID != "ADDNEW__SYOBJR_00038_SYOBJ_00919":
+		elif str(ObjectName) == "SAQFBL" and str(CurrentTab) == "Quotes" and TABLEID == "ADDNEW__SYOBJR_00038_SYOBJ_00919":
 			TreeParam = Product.GetGlobal("TreeParam")
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")  
 			account_id = TreeParam.split(' - ')
