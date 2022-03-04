@@ -320,7 +320,7 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
         batch_group_record_id = str(Guid.NewGuid()).upper()
         record_ids = str(str(record_ids)[1:-1].replace("'",""))
         parameter = Sql.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")		
-        primaryQueryItems = Sql.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT SAQSAF.SNDFBL_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(contract_quote_id)+"'' as QUOTE_ID, ''"+str(contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM SAQSAF (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = SAQSAF.QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID'")
+        primaryQueryItems = Sql.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAFBLC.FAB_LOCATION_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(contract_quote_id)+"'' as QUOTE_ID, ''"+str(contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM SAQSAF (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAFBLC.FAB_LOCATION_RECORD_ID'")
         
         Sql.RunQuery(""" INSERT SAQFBL (FABLOCATION_ID,
                 FABLOCATION_NAME,
@@ -338,6 +338,9 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
                 MNT_PLANT_NAME,
                 MNT_PLANT_RECORD_ID,
                 FABLOCATION_STATUS, 
+                SALESORG_ID,
+                SALESORG_NAME,
+                SALESORG_RECORD_ID,
                 ADDRESS_1, 
                 ADDRESS_2, 
                 CITY, 
@@ -350,29 +353,32 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
                 CpqTableEntryDateModified) 
                 SELECT fab_location.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FABLOCATION_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,'{UserId}' as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM 
                     (SELECT DISTINCT 
-                    SAQSAF.SNDFBL_ID,
-                    SAQSAF.SNDFBL_NAME,
-                    SAQSAF.SNDFBL_RECORD_ID,
-                    SAQSAF.SNDACC_ID,
-                    SAQSAF.SNDACC_NAME,
-                    SAQSAF.SNDACC_RECORD_ID,
+                    MAFBLC.FAB_LOCATION_ID,
+                    MAFBLC.FAB_LOCATION_NAME,
+                    MAFBLC.FAB_LOCATION_RECORD_ID,
+                    MAFBLC.ACCOUNT_ID,
+                    MAFBLC.ACCOUNT_NAME,
+                    MAFBLC.ACCOUNT_RECORD_ID,
                     '{QuoteId}' as QUOTE_ID,
                     '{QuoteRecId}' as QUOTE_RECORD_ID,
                     '{RevisionId}' as QTEREV_ID,
                     '{RevisionRecordId}' as QTEREV_RECORD_ID,
-                    SAQSAF.COUNTRY,
-                    SAQSAF.COUNTRY_RECORD_ID,
-                    SAQSAF.MNT_PLANT_ID,
-                    SAQSAF.MNT_PLANT_NAME,
-                    SAQSAF.MNT_PLANT_RECORD_ID,
-                    SAQSAF.SNDFBL_STATUS AS FABLOCATION_STATUS,
-                    SAQSAF.ADDRESS_1,
-                    SAQSAF.ADDRESS_2,
-                    SAQSAF.CITY,
-                    SAQSAF.STATE,
-                    SAQSAF.STATE_RECORD_ID
+                    MAFBLC.COUNTRY,
+                    MAFBLC.COUNTRY_RECORD_ID,
+                    MAFBLC.MNT_PLANT_ID,
+                    MAFBLC.MNT_PLANT_NAME,
+                    MAFBLC.MNT_PLANT_RECORD_ID,
+                    MAFBLC.STATUS AS FABLOCATION_STATUS,
+                    MAFBLC.SALESORG_ID,
+                    MAFBLC.SALESORG_NAME,
+                    MAFBLC.SALESORG_RECORD_ID,
+                    MAFBLC.ADDRESS_1,
+                    MAFBLC.ADDRESS_2,
+                    MAFBLC.CITY,
+                    MAFBLC.STATE,
+                    MAFBLC.STATE_RECORD_ID
                     FROM SYSPBT(NOLOCK)
-                    JOIN SAQSAF(NOLOCK) ON SAQSAF.SNDFBL_RECORD_ID = SYSPBT.BATCH_RECORD_ID 
+                    JOIN MAFBLC(NOLOCK) ON MAFBLC.FAB_LOCATION_RECORD_ID = SYSPBT.BATCH_RECORD_ID 
                 WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')fab_location """.format(
                 UserName=User.UserName,
                 UserId=User.Id,
