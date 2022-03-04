@@ -206,8 +206,8 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 	if len(get_attr_editable_fields) > 0:
 		get_total_list.append(get_attr_non_editable_fields)
 	Trace.Write('get_attr_editable_fields------'+str(get_attr_editable_fields))
-	Trace.Write('get_attr_non_editable_fields------'+str(get_attr_non_editable_fields))
-	Trace.Write('get_total_list------'+str(get_total_list))
+	Trace.Write('get_attr_non_editable_fields---209---'+str(get_attr_non_editable_fields))
+	Trace.Write('get_total_list---210---'+str(get_total_list))
 	return get_total_list
 
 #attribute editablity code end
