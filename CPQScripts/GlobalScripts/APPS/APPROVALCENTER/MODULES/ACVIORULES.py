@@ -1000,7 +1000,10 @@ class ViolationConditions:
                     
         
         if len(line) != 0:
-            Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+            if len(line) == 1:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}'".format(line[0],RecordId))
+            else:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
             return 2   
@@ -1033,7 +1036,10 @@ class ViolationConditions:
                     
         
         if len(line) != 0:
-            Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+            if len(line) == 1:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}'".format(line[0],RecordId))
+            else:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
             return 2   
@@ -1065,7 +1071,10 @@ class ViolationConditions:
                     
         
         if len(line) != 0:
-            Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+            if len(line) == 1:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}'".format(line[0],RecordId))
+            else:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
             return 2
@@ -1092,7 +1101,10 @@ class ViolationConditions:
                     
         
         if len(line) != 0:
-            Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+            if len(line) == 1:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}'".format(line[0],RecordId))
+            else:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
             return 2
@@ -1120,7 +1132,10 @@ class ViolationConditions:
                     
         
         if len(line) != 0:
-            Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+            if len(line) == 1:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}'".format(line[0],RecordId))
+            else:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
             return 1
         else:
             return 2
