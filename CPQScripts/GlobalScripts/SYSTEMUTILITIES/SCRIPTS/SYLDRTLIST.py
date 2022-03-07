@@ -314,7 +314,8 @@ class SYLDRTLIST:
 			objsk_permiss = Sql.GetFirst(
 				"SELECT CAN_ADD, CAN_EDIT, CAN_DELETE FROM SYOBJR  WHERE SAPCPQ_ATTRIBUTE_NAME = '" + str(RECORD_ID) + "'"
 			)
-			PARENT_LOOKUP_REC_ID = obj_obj.PARENT_LOOKUP_REC_ID			
+			PARENT_LOOKUP_REC_ID = obj_obj.PARENT_LOOKUP_REC_ID	
+			Trace.Write("objsk_permiss_chk "+str(objsk_permiss.CAN_DELETE)+" obj_obj_chk "+str(obj_obj.CAN_DELETE))		
 			if objsk_permiss:
 				if str(objsk_permiss.CAN_EDIT).upper() == "TRUE":
 					Action_permission["Edit"] = obj_obj.CAN_EDIT                    
