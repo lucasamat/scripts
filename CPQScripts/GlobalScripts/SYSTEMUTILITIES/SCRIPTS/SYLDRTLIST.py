@@ -2954,7 +2954,8 @@ class SYLDRTLIST:
 							else:
 								Action_str += ''    
 
-					else:                        
+					else:  
+						Trace.Write("NOS_View")                      
 						if str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
 							Action_str += '<li><a class="dropdown-item" href="#" onclick="profileObjSet(this)" data-target="#viewProfileRelatedList" data-toggle="modal">VIEW<a><li>'
 						elif str(current_tab).upper() == "PROFILE" and (ObjectName != "SYPROF"):
