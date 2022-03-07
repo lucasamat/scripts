@@ -3825,6 +3825,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		# else:
 			#Trace.Write('3436---'+str(self.tree_param))
 		Trace.Write("self.trigger_from ---->"+str(self.trigger_from))
+		Trace.Write("@@batch record id in function-->"+str(kwargs.get('batch_group_record_id')))
 		self._process_query(
 			"""
 				INSERT SAQSCO (
@@ -6039,6 +6040,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						for value in self.values
 					]
 				batch_group_record_id = str(Guid.NewGuid()).upper()
+				Trace.Write('@@@Batch Group Record ID --->'+str(batch_group_record_id))
 				record_ids = str(str(record_ids)[1:-1].replace("'",""))
 				parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 				Trace.Write("record_ids--->"+str(record_ids))
