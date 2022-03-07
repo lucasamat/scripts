@@ -54,6 +54,7 @@ loop_count = 0
 #GET PRICING PROCEDURE
 contract_quote_record_id = None
 account_info={}
+taxk1=''
 pricingPro={'ZZCQAP':'ZC07','ZZCQNA':'M','ZZCQNA-KONDA':'75','ZZCQAP-KONDA':'S4'}
 
 
@@ -104,7 +105,7 @@ if getPricingProc:
 currency_attribute = account_info['docCurrency']+','+account_info['globalCurrency']+','+'{"name":"KOMK-KONDA","values":["'+str(pricingPro[PricingProcedure+'-KONDA'])+'"]}'
 # update_SAQITM = "UPDATE SAQITM SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQITM.QUOTE_ID = '{quote}' AND SAQITM.QTEREV_RECORD_ID='{revision_rec_id}'".format(prc=str(PricingProcedure), quote=QUOTE, revision_rec_id = revision)
 # Sql.RunQuery(update_SAQITM)
-update_SAQIFP = "UPDATE SAQIFP SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQIFP.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure), quote=QUOTE)
+update_SAQIFP = "UPDATE SAQIFP SET PRICINGPROCEDURE_ID = '{prc}', TAX_PERCENTAGE = '{tax}' WHERE SAQIFP.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure),tax=str(taxk1), quote=QUOTE)
 Sql.RunQuery(update_SAQIFP)
 
 price_listtype=''
