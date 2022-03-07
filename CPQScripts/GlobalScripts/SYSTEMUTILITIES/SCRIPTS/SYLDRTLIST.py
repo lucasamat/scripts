@@ -4379,6 +4379,19 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)
+							elif RECORD_ID == "SYOBJR-00005":
+								Trace.Write("CHKNG_ HYPERLINK")
+								table_header += (
+									'<th  data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-title-tooltip="'
+									+ str(qstring)
+									+ '" data-formatter="empty" data-sortable="true" '
+									+ rowspan
+									+'>'
+									+ str(qstring)
+									+ "</th>"
+								)
 							else:
 								Trace.Write("CHKNG_J_02 "+str(qstring))
 								table_header += (
