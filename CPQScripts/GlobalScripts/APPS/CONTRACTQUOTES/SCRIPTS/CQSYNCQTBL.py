@@ -1767,7 +1767,7 @@ class SyncQuoteAndCustomTables:
 																) 
 																SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOC_GB_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM ( 
 																select '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID from SAQFEQ where QUOTE_RECORD_ID = '{QuoteRecordId}' group by FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID) 
-																A """.format(UserId=User.Id,UserName=User.UserName,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))					
+																A """.format(UserId=User.Id,UserName=User.UserName,QuoteId=contract_quote_obj.QUOTE_ID, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),quote_revision_id=Quote.GetGlobal("quote_revision_record_id"),quote_rev_id=quote_rev_id))					
 										assembly_Temp_insert = Sql.RunQuery("""
 														INSERT SAQFEA
 														(QTEREV_RECORD_ID,QTEREV_ID,ASSEMBLY_DESCRIPTION, ASSEMBLY_ID, ASSEMBLY_RECORD_ID, EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GOT_CODE, MNT_PLANT_ID, MNT_PLANT_RECORD_ID, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WARRANTY_END_DATE, WARRANTY_START_DATE, SUBSTRATE_SIZE, ASSEMBLY_STATUS, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
@@ -1777,7 +1777,7 @@ class SyncQuoteAndCustomTables:
 														ON MAEQTY.EQUIPMENT_TYPE_ID = MAEQUP.EQUIPMENTTYPE_ID
 														WHERE MAEQUP.ACCOUNT_RECORD_ID = '{AccountRecordId}' AND MAEQTY.COSTING_RELEVANT = 'True' AND ISNULL(MAEQUP.SERIAL_NO, '') = '' AND SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
 														) A
-													""".format(UserId=User.Id,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME, QuoteRecordId=quote_record_id, AccountRecordId=contract_quote_obj.ACCOUNT_RECORD_ID,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
+													""".format(UserId=User.Id,UserName=User.UserName,QuoteId=contract_quote_obj.QUOTE_ID, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),quote_revision_id=Quote.GetGlobal("quote_revision_record_id"),quote_rev_id=quote_rev_id))
 											
 									
 
