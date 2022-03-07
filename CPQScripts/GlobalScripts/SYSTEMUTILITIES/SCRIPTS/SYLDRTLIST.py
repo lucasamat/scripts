@@ -9056,7 +9056,7 @@ class SYLDRTLIST:
 				elif str(current_tab).upper() == "ROLE":                    
 					Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW<a><li>'  
 				else: 
-								
+					Trace.Write("ObjectName_chk_j "+str(ObjectName))			
 					if ObjectName != "SAQIBP" and ObjectName != "SAQTRV" and ObjectName != "SAQSCN" and ObjectName != "SAQDOC":
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 
