@@ -4560,7 +4560,7 @@ class SYLDRTLIST:
 				if RECORD_ID == "SYOBJR-95556":
 					local_variable = "PM_FrequencyBulkedit" 
 				else:
-					if RECORD_ID == "SYOBJR-00005":
+					if RECORD_ID == "SYOBJR-00005" or RECORD_ID == "SYOBJR-98882":
 						Trace.Write("Doubleclick")
 						cls = "eq(3)"
 
