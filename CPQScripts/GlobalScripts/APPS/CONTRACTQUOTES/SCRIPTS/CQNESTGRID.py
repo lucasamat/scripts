@@ -8258,7 +8258,7 @@ def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			chld_dict["ASSEMBLY_DESCRIPTION"] = ('<abbr id ="" title="' + str(child.ASSEMBLY_DESCRIPTION) + '">' + str(child.ASSEMBLY_DESCRIPTION) + "</abbr>")
 			chld_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(child.EQUIPMENT_DESCRIPTION) + '">' + str(child.EQUIPMENT_DESCRIPTION) + "</abbr>")
 			
-			chld_dict["EQUIPMENTTYPE_ID"] = ('<abbr id ="" title="' + str(child.EQUIPMENTTYPE_ID) + '">' + str(child.EQUIPMENTTYPE_ID) + "</abbr>")
+			chld_dict["EQUIPMENTTYPE_ID"] = ('<abbr id ="' + str(child.EQUIPMENTTYPE_ID) + '" title="' + str(child.EQUIPMENTTYPE_ID) + '">' + str(child.EQUIPMENTTYPE_ID) + "</abbr>")
 			chld_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(child.GOT_CODE) + '">' + str(child.GOT_CODE) + "</abbr>")
 			chld_dict["MNT_PLANT_ID"] = ('<abbr id ="" title="' + str(child.MNT_PLANT_ID) + '">' + str(child.MNT_PLANT_ID) + "</abbr>")
 			chld_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(child.FABLOCATION_ID) + '">' + str(child.FABLOCATION_ID) + "</abbr>")
