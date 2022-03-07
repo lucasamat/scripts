@@ -17,104 +17,108 @@ import re
 Sql = SQL()
 
 #A055S000P01-6826- Relocation chamber starts...
-def update_assembly_level(Values):
-	#TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-	# TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-	# TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
-	#ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-	record_ids = [
-				CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
-				if value.strip() != "" and 'SAQSSA' in value
-				else value
-				for value in Values
-			]
-	#Trace.Write('unselected_values---'+str(unselected_values))
-	un_selected_record_ids = [
-				CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
-				if value.strip() != "" and 'SAQSSA' in value
-				else value
-				for value in unselected_values
-			]
-	record_ids = str(tuple(record_ids)).replace(",)",")")
-	un_selected_record_ids = str(tuple(un_selected_record_ids)).replace(",)",")")
-	# Trace.Write('record_ids------inside-'+str(record_ids))
-	#Trace.Write('un_selected_record_ids------inside-'+str(un_selected_record_ids))
-	try:
-		equipment_id = Param.equipment_id
-	except:
-		equipment_id =""
-	##update for selected assembly
-	if record_ids != '()':
-		Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} ".format(record_ids))
+# def update_assembly_level(Values):
+# 	#TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+# 	# TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+# 	# TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+# 	#ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+# 	record_ids = [
+# 				CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
+# 				if value.strip() != "" and 'SAQSSA' in value
+# 				else value
+# 				for value in Values
+# 			]
+# 	#Trace.Write('unselected_values---'+str(unselected_values))
+# 	un_selected_record_ids = [
+# 				CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
+# 				if value.strip() != "" and 'SAQSSA' in value
+# 				else value
+# 				for value in unselected_values
+# 			]
+# 	record_ids = str(tuple(record_ids)).replace(",)",")")
+# 	un_selected_record_ids = str(tuple(un_selected_record_ids)).replace(",)",")")
+# 	# Trace.Write('record_ids------inside-'+str(record_ids))
+# 	#Trace.Write('un_selected_record_ids------inside-'+str(un_selected_record_ids))
+# 	try:
+# 		equipment_id = Param.equipment_id
+# 	except:
+# 		equipment_id =""
+# 	##update for selected assembly
+# 	if record_ids != '()':
+# 		Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} ".format(record_ids))
 		
-		get_assembly_query = Sql.GetList("SELECT SND_ASSEMBLY_ID FROM SAQSSA where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(record_ids))
-		get_assembly = [val.SND_ASSEMBLY_ID for val in get_assembly_query]
-		get_assembly = str(tuple(get_assembly)).replace(',)',')')
-		if equipment_id:
-			Sql.RunQuery("update SAQSCA set INCLUDED = 1 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId, revision_record_id,TreeParentParam,equipment_id))
-	##update for un selected assembly
-	if un_selected_record_ids != '()':
-		#update SAQSSA
-		Sql.RunQuery("update SAQSSA set INCLUDED = 0 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} ".format(un_selected_record_ids))
+# 		get_assembly_query = Sql.GetList("SELECT SND_ASSEMBLY_ID FROM SAQSSA where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(record_ids))
+# 		get_assembly = [val.SND_ASSEMBLY_ID for val in get_assembly_query]
+# 		get_assembly = str(tuple(get_assembly)).replace(',)',')')
+# 		if equipment_id:
+# 			Sql.RunQuery("update SAQSCA set INCLUDED = 1 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId, revision_record_id,TreeParentParam,equipment_id))
+# 	##update for un selected assembly
+# 	if un_selected_record_ids != '()':
+# 		#update SAQSSA
+# 		Sql.RunQuery("update SAQSSA set INCLUDED = 0 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} ".format(un_selected_record_ids))
 		
-		#update SAQSCA
-		get_assembly_query = Sql.GetList("SELECT SND_ASSEMBLY_ID FROM SAQSSA where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(un_selected_record_ids))
-		get_assembly = [val.SND_ASSEMBLY_ID for val in get_assembly_query]
-		get_assembly = str(tuple(get_assembly)).replace(',)',')')
-		if equipment_id:
-			Sql.RunQuery("update SAQSCA set INCLUDED = 0 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId,revision_record_id,TreeParentParam,equipment_id))
+# 		#update SAQSCA
+# 		get_assembly_query = Sql.GetList("SELECT SND_ASSEMBLY_ID FROM SAQSSA where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(un_selected_record_ids))
+# 		get_assembly = [val.SND_ASSEMBLY_ID for val in get_assembly_query]
+# 		get_assembly = str(tuple(get_assembly)).replace(',)',')')
+# 		if equipment_id:
+# 			Sql.RunQuery("update SAQSCA set INCLUDED = 0 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId,revision_record_id,TreeParentParam,equipment_id))
 		
-	if equipment_id:
-		get_total_count = Sql.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,revision_record_id,TreeParentParam))
+# 	if equipment_id:
+# 		get_total_count = Sql.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,revision_record_id,TreeParentParam))
 		
-		included_count = Sql.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,revision_record_id,TreeParentParam))
+# 		included_count = Sql.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,revision_record_id,TreeParentParam))
 		
-		###updating equipment level tables
-		if get_total_count.cnt == included_count.cnt:
-			#update SAQSSE
-			Sql.RunQuery("update SAQSSE set INCLUDED = 'TOOL' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
-			#update SAQSCO
-			Sql.RunQuery("update SAQSCO set INCLUDED = 'TOOL' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
-			if 'Z0007' in TreeParentParam:
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
-				add_where = "and INCLUDED = 'TOOL'"
-				AttributeID = 'AGS_QUO_QUO_TYP'
-				NewValue = 'Tool based' 
-				update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam,'SAQSCE')
-				if update_flag:
-					##Assembly level roll down
-					where_cond = "SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
-					rolldown(where_cond)
-		##update chmaber as included for SAQSSE,SAQSCO and assembly rolldown
-		else:
-			Sql.RunQuery("update SAQSSE set INCLUDED = 'CHAMBER' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
-			Sql.RunQuery("update SAQSCO set INCLUDED = 'CHAMBER' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
-			if 'Z0007' in TreeParentParam:
-				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
-				add_where = "and INCLUDED = 'CHAMBER'"
-				AttributeID = 'AGS_QUO_QUO_TYP'
-				NewValue = 'Chamber based'
-				update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam,'SAQSCE')
-				if update_flag:
-					##Assembly level roll down					
-					where_cond = "SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
-					rolldown(where_cond)
-	return True
+# 		###updating equipment level tables
+# 		if get_total_count.cnt == included_count.cnt:
+# 			#update SAQSSE
+# 			Sql.RunQuery("update SAQSSE set INCLUDED = 'TOOL' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
+# 			#update SAQSCO
+# 			Sql.RunQuery("update SAQSCO set INCLUDED = 'TOOL' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
+# 			if 'Z0007' in TreeParentParam:
+# 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
+# 				add_where = "and INCLUDED = 'TOOL'"
+# 				AttributeID = 'AGS_QUO_QUO_TYP'
+# 				NewValue = 'Tool based' 
+# 				update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam,'SAQSCE')
+# 				if update_flag:
+# 					##Assembly level roll down
+# 					where_cond = "SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
+# 					rolldown(where_cond)
+# 		##update chmaber as included for SAQSSE,SAQSCO and assembly rolldown
+# 		else:
+# 			Sql.RunQuery("update SAQSSE set INCLUDED = 'CHAMBER' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
+# 			Sql.RunQuery("update SAQSCO set INCLUDED = 'CHAMBER' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
+# 			if 'Z0007' in TreeParentParam:
+# 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
+# 				add_where = "and INCLUDED = 'CHAMBER'"
+# 				AttributeID = 'AGS_QUO_QUO_TYP'
+# 				NewValue = 'Chamber based'
+# 				update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam,'SAQSCE')
+# 				if update_flag:
+# 					##Assembly level roll down					
+# 					where_cond = "SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
+# 					rolldown(where_cond)
+# 	return True
 
-def edit_assembly_level(Values):
-	#TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-	# TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-	# TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
-	#ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-	#Trace.Write('Values----'+str(Values))
-	get_rec = Sql.GetList("select SND_ASSEMBLY_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Values,ContractRecordId, revision_record_id,TreeParentParam))
-	chamber_res_list = [i.SND_ASSEMBLY_ID for i in get_rec]
-	#Trace.Write('bb--'+str(chamber_res_list))
-	return chamber_res_list
+# def edit_assembly_level(Values):
+# 	#TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+# 	# TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+# 	# TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+# 	#ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+# 	#Trace.Write('Values----'+str(Values))
+# 	get_rec = Sql.GetList("select SND_ASSEMBLY_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Values,ContractRecordId, revision_record_id,TreeParentParam))
+# 	chamber_res_list = [i.SND_ASSEMBLY_ID for i in get_rec]
+# 	#Trace.Write('bb--'+str(chamber_res_list))
+# 	return chamber_res_list
 
 def save_assembly_level(included_value,fab_id,equipment_id,assembly_id):
 	Trace.Write(str(included_value)+'-'+str(fab_id)+'-'+str(equipment_id)+'-'+str(assembly_id))
-	Sql.RunQuery("UPDATE SAQFEA SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND EQUIPMENT_ID = '{equipment_id}' AND ASSEMBLY_ID = '{assembly_id}' AND FABLOCATION_ID ='{fab_id}'".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,equipment_id=equipment_id,assembly_id=assembly_id,fab_id=fab_id))
+	if subtab_name.upper() == 'RECEIVING EQUIPMENT':
+		table_name = 'SAQFEA'
+	else:
+		table_name = 'SAQSCA'
+	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND EQUIPMENT_ID = '{equipment_id}' AND ASSEMBLY_ID = '{assembly_id}' AND FABLOCATION_ID ='{fab_id}'".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,equipment_id=equipment_id,assembly_id=assembly_id,fab_id=fab_id, table_name = table_name))
 	return True
 
 def Request_access_token():
@@ -511,7 +515,10 @@ try:
 	equipment_id = Param.equipment_id
 except:
 	equipment_id =""
-
+try:
+	subtab_name = Param.subtab
+except:
+	subtab_name = ''
 try:
 	grid_assembly_id = Param.selected_assembly
 except:
