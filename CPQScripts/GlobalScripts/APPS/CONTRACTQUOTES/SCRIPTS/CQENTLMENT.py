@@ -1030,6 +1030,7 @@ class Entitlements:
 				if Gettabledata:
 					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(Gettabledata.CPS_CONFIGURATION_ID)
 					Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':serviceId,'request_url':Request_URL,'request_type':"Existing"})
+					Fullresponse = str(Fullresponse)
 
 			if Fullresponse:
 				Fullresponse = eval(Fullresponse)
