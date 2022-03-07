@@ -422,6 +422,7 @@ def POPUPLISTVALUEADDNEW(
 			fab_id = TreeParam.split(' - ')
 			Trace.Write("check123"+str(account_id))
 			account_id = account_id[len(account_id)-1]
+			receiving_account_id = Product.GetGlobal("stp_account_id")
 			where_string = ""
 			if A_Keys != "" and A_Values != "":
 				A_Keys = list(A_Keys)
@@ -578,6 +579,19 @@ def POPUPLISTVALUEADDNEW(
 					ObjectName, account_id, where_string,contract_quote_record_id,quote_revision_record_id
 					)
 				)
+			elif(TreeParam == "Customer Information"):
+				Pagination_M = Sql.GetFirst(
+				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND MAFBLC.SALESORG_ID = '{}' AND QUOTE_RECORD_ID = '{}'AND QTEREV_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
+					ObjectName,
+					receiving_account_id,
+					sales_org_id,
+     				contract_quote_record_id,
+         			quote_revision_record_id,
+            		where_string,
+              		contract_quote_record_id,
+                	quote_revision_record_id
+					)
+				)	
 			else:
 				Pagination_M = Sql.GetFirst(
 				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID AND MAFBLC.SALESORG_ID = '{}' WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'AND QTEREV_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
@@ -628,7 +642,30 @@ def POPUPLISTVALUEADDNEW(
 						"WHERE " + where_string if where_string else ""	
 					)
 					)
+			elif(TreeParam == 'Customer Information'):
+				where_string += """ QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(
+					contract_quote_record_id,quote_revision_record_id, contract_quote_record_id,quote_revision_record_id
+				)
 
+				table_data = Sql.GetList(
+					"select  {} from {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND MAFBLC.SALESORG_ID = '{}' {} {} {}".format(", ".join(ordered_keys),
+						ObjectName,
+						receiving_account_id,
+						sales_org_id,
+						where_string if where_string else "",
+						order_by,pagination_condition
+						
+					)
+				)
+
+				QueryCountObj = Sql.GetFirst(
+						"select count(*) as cnt from {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND MAFBLC.SALESORG_ID = '{}' {} ".format(                    
+						ObjectName,
+						sales_org_id,
+						where_string if where_string else ""
+						
+					)
+					)
 			else:
 				where_string += """ SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(
 					contract_quote_record_id,quote_revision_record_id, contract_quote_record_id,quote_revision_record_id
