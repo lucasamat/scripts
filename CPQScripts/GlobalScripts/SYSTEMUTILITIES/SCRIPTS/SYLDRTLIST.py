@@ -3099,6 +3099,7 @@ class SYLDRTLIST:
 									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#viewProfileRelatedList" onclick="profileObjSetEdit(this)">EDIT</a></li>'
 								else:
 									Action_str += '<li><a class="dropdown-item" href="#" onclick="cont_openedit(this)" data-target="#cont_viewModalSection" data-toggle="modal">EDIT</a></li>'
+					Trace.Write("checkng_delete_btn_2 "+str(Action_permission.get("Delete")))
 					if str(Action_permission.get("Delete")).upper() == "TRUE":
 						#Trace.Write("ooooooooo"+str(ik.PARTY_ROLE))
 						if related_list_delete_permission:
