@@ -122,7 +122,7 @@ def save_assembly_level(included_value,Values):
 		guid_col = 'QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID'
 	record_ids = CPQID.KeyCPQId.GetKEYId(str(table_name), str(Values))
 				
-	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND {} = '{selected_value}' AND SERVICE_ID ='Z0007' ".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,selected_value=record_ids,table_name = table_name,guid_col = guid_col))
+	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND {guid_col} = '{selected_value}' AND SERVICE_ID ='Z0007' ".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,selected_value=record_ids,table_name = table_name,guid_col = guid_col))
 	return True
 
 def Request_access_token():
@@ -521,8 +521,8 @@ try:
 except:
 	subtab_name = ''
 try:
-	selected_value= eval(Param.selected_value)
-	#Trace.Write('selected_values-----'+str(selected_values))
+	selected_value= Param.selected_value
+	Trace.Write('selected_values-----'+str(selected_value))
 except:
 	selected_value =''
 
