@@ -521,7 +521,7 @@ try:
 except:
 	subtab_name = ''
 try:
-	selected_value= eval(Param.Value)
+	selected_value= eval(Param.selected_value)
 	#Trace.Write('selected_values-----'+str(selected_values))
 except:
 	selected_value =''
