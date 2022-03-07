@@ -2941,12 +2941,15 @@ class SYLDRTLIST:
 						
 					if primary_view != "":                        
 						if str(current_tab).upper() == "PROFILE" and (ObjectName != "SYPROD"):
+							Trace.write("VIEW_1")
 							Action_str += (
 								'<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 							)
 						elif str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
+							Trace.write("VIEW_2")
 							Action_str += '<li><a class="dropdown-item" href="#" onclick="profileObjSet(this)" data-target="#viewProfileRelatedList" data-toggle="modal">VIEW<a><li>'
 						elif ObjectName == "SAQTRV":
+							Trace.write("VIEW_3")
 							quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 							get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
 							if get_activerev:
@@ -2956,9 +2959,10 @@ class SYLDRTLIST:
 
 					else:                        
 						if str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
+							Trace.write("VIEW_4")
 							Action_str += '<li><a class="dropdown-item" href="#" onclick="profileObjSet(this)" data-target="#viewProfileRelatedList" data-toggle="modal">VIEW<a><li>'
 						elif str(current_tab).upper() == "PROFILE" and (ObjectName != "SYPROF"):
-							
+							Trace.write("VIEW_5")
 							Action_str += (
 								'<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)"  >VIEW<a><li>'
 							)
