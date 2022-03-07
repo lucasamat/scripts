@@ -99,10 +99,11 @@ div = '56'
 #UPDATE PRICING PROCEDURE TO SAQITM
 getPricingProc=SqlHelper.GetFirst("""SELECT PRICINGPROCEDURE_ID FROM SASAPP (NOLOCK) WHERE DISTRIBUTIONCHANNEL_ID='{}' AND DIVISION_ID='56' AND SALESORG_ID='{}'""".format(dis,salesorg))
 if getPricingProc:
-    PricingProcedure = getPricingProc.PRICINGPROCEDURE_ID
-    if exch == '':
-        exch = pricingPro[PricingProcedure]
+	PricingProcedure = getPricingProc.PRICINGPROCEDURE_ID
+	if exch == '':
+		exch = pricingPro[PricingProcedure]
 		update_SAQTRV = "UPDATE SAQTRV (NOLOCK) SET PRICINGPROCEDURE_ID = '{prc}', EXCHANGE_RATE_TYPE = '{EXCH}' WHERE SAQIFP.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure),EXCH=str(exch), quote=QUOTE)
+		Sql.RunQuery(update_SAQTRV)
 
 currency_attribute = account_info['docCurrency']+','+account_info['globalCurrency']+','+'{"name":"KOMK-KONDA","values":["'+str(pricingPro[PricingProcedure+'-KONDA'])+'"]}'
 # update_SAQITM = "UPDATE SAQITM SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQITM.QUOTE_ID = '{quote}' AND SAQITM.QTEREV_RECORD_ID='{revision_rec_id}'".format(prc=str(PricingProcedure), quote=QUOTE, revision_rec_id = revision)
@@ -134,8 +135,8 @@ part_query = SqlHelper.GetList("SELECT DISTINCT PART_NUMBER, ANNUAL_QUANTITY FRO
 if not part_query:
 	ancillary_part_query = Sql.GetFirst("SELECT DISTINCT PART_NUMBER, QUANTITY as ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQRSP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND INCLUDED =1 AND SERVICE_ID = 'Z0100' AND QUANTITY >0 )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+" ")
 if not part_query:
-    #Log.Info("Validate FPM QUERY")
-    fpm_part_query = Sql.GetFirst("SELECT DISTINCT PART_NUMBER, CUSTOMER_ANNUAL_QUANTITY as ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, CUSTOMER_ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQSPT (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+" ")
+	#Log.Info("Validate FPM QUERY")
+	fpm_part_query = Sql.GetFirst("SELECT DISTINCT PART_NUMBER, CUSTOMER_ANNUAL_QUANTITY as ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, CUSTOMER_ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQSPT (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+" ")
 if part_query or ancillary_part_query or fpm_part_query:
 
 	while L == 1:
