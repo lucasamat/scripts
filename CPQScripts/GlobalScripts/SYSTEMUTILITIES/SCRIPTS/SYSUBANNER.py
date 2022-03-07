@@ -297,7 +297,7 @@ def Related_Sub_Banner(
                     else:
                         FourthLable = "Fab Locations"
                         FourthValue = "ALL"
-                elif((subTabName == "Details" or subTabName == "Receiving Fab Locations" or subTabName == "Receiving Fab Location Details" or subTabName == "Receiving Equipment") and TreeParam == "Customer Information":
+                elif(subTabName == "Details" or subTabName == "Receiving Fab Locations" or subTabName == "Receiving Fab Location Details" or subTabName == "Receiving Equipment") and TreeParam == "Customer Information":
                     PrimaryLable = "Party ID"
                     PrimaryValue = involved_parties_object.PARTY_ID.upper()
                     SecondLable = "Party Name"
