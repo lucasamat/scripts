@@ -1985,7 +1985,7 @@ class SyncQuoteAndCustomTables:
 											
 								SAQFEA_end = time.time()
 								#Log.Info("SAQFEA-------"+str(SAQFEA_end-SAQFEA_start))
-								fab_equip_assem_end_time = time.time()
+								#fab_equip_assem_end_time = time.time()
 								#Log.Info("fab_equip_assem_start_time end==> "+str(fab_equip_assem_end_time - fab_equip_assem_start_time))
 								
 							##A055S000P01-10174 code starts...modified for A055S000P01-16530
