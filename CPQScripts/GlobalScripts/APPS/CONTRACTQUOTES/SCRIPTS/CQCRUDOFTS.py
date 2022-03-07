@@ -62,7 +62,7 @@ else:
     #contract_currency_record_id = None
     #c4c_quote_id = None
     #source_contract_id = None
-def get_res(self, query_string, table_total_rows):
+def get_res(query_string, table_total_rows):
     for offset_skip_count in range(0, table_total_rows+1, 1000):
         pagination_condition = "WHERE SNO>={Skip_Count} AND SNO<={Fetch_Count}".format(Skip_Count=offset_skip_count+1, Fetch_Count=offset_skip_count+1000)
         query_string_with_pagination = 'SELECT * FROM (SELECT *, ROW_NUMBER()OVER(ORDER BY EQUIPMENT_RECORD_ID) AS SNO FROM ({Query_String}) IQ)OQ {Pagination_Condition}'.format(
