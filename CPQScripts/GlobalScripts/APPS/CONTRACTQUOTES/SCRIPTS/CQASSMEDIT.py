@@ -112,12 +112,13 @@ Sql = SQL()
 # 	#Trace.Write('bb--'+str(chamber_res_list))
 # 	return chamber_res_list
 
-def save_assembly_level(included_value,fab_id,equipment_id,assembly_id):
+def save_assembly_level(included_value,fab_id,equipment_id,assembly_id,selected_value):
 	Trace.Write(str(included_value)+'-'+str(fab_id)+'-'+str(equipment_id)+'-'+str(assembly_id))
 	join_condition =''
 	if subtab_name.upper() == 'RECEIVING EQUIPMENT':
 		table_name = 'SAQFEA'
 	else:
+		Trace.Write("selected_value-"+str(selected_value))
 		table_name = 'SAQSCA'
 		if selected_value:
 			join_condition = " AND QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = '{}'".format(CPQID.KeyCPQId.GetKEYId(str(table_name), str(selected_value)))
@@ -538,7 +539,7 @@ try:
 except:
 	selected_value =''
 if ACTION == 'SAVE_ASSEMBLY':
-	ApiResponse = ApiResponseFactory.JsonResponse(save_assembly_level(included_value,grid_fab_id,equipment_id,grid_assembly_id))
+	ApiResponse = ApiResponseFactory.JsonResponse(save_assembly_level(included_value,grid_fab_id,equipment_id,grid_assembly_id,selected_value))
 # try:
 # 	selected_values= eval(Param.Values)
 # 	#Trace.Write('selected_values-----'+str(selected_values))
