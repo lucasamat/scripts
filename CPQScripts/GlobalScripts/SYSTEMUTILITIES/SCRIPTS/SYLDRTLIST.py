@@ -3005,7 +3005,7 @@ class SYLDRTLIST:
 							
 
 
-					
+					Trace.Write("checkng_delete_btn_j "+str(Action_permission.get("Edit")))
 					if str(Action_permission.get("Edit")).upper() == "TRUE":
 						if related_list_edit_permission:							
 							if primary_view != "":								
