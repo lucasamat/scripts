@@ -112,13 +112,17 @@ Sql = SQL()
 # 	#Trace.Write('bb--'+str(chamber_res_list))
 # 	return chamber_res_list
 
-def save_assembly_level(included_value,fab_id,equipment_id,assembly_id):
-	Trace.Write(str(included_value)+'-'+str(fab_id)+'-'+str(equipment_id)+'-'+str(assembly_id))
+def save_assembly_level(included_value,Values):
+	Trace.Write(str(included_value)+'--'+str(Values))
 	if subtab_name.upper() == 'RECEIVING EQUIPMENT':
 		table_name = 'SAQFEA'
+		guid_col = 'QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID'
 	else:
 		table_name = 'SAQSCA'
-	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND EQUIPMENT_ID = '{equipment_id}' AND ASSEMBLY_ID = '{assembly_id}' AND FABLOCATION_ID ='{fab_id}'".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,equipment_id=equipment_id,assembly_id=assembly_id,fab_id=fab_id, table_name = table_name))
+		guid_col = 'QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID'
+	record_ids = CPQID.KeyCPQId.GetKEYId(str(table_name), str(Values))
+				
+	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND {} = '{selected_value}' AND SERVICE_ID ='Z0007' ".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,selected_value=record_ids,table_name = table_name,guid_col = guid_col))
 	return True
 
 def Request_access_token():
@@ -511,30 +515,20 @@ try:
 	included_value = Param.included_value
 except:
 	included_value = ''
-try:
-	equipment_id = Param.equipment_id
-except:
-	equipment_id =""
+
 try:
 	subtab_name = Param.subtab
 except:
 	subtab_name = ''
 try:
-	grid_assembly_id = Param.selected_assembly
+	selected_value= eval(Param.Value)
+	#Trace.Write('selected_values-----'+str(selected_values))
 except:
-	grid_assembly_id = ''
-try:
-	grid_fab_id = Param.selected_fab
-except:
-	grid_fab_id = ''
+	selected_value =''
 
 if ACTION == 'SAVE_ASSEMBLY':
-	ApiResponse = ApiResponseFactory.JsonResponse(save_assembly_level(included_value,grid_fab_id,equipment_id,grid_assembly_id))
-# try:
-# 	selected_values= eval(Param.Values)
-# 	#Trace.Write('selected_values-----'+str(selected_values))
-# except:
-# 	selected_values =[]
+	ApiResponse = ApiResponseFactory.JsonResponse(save_assembly_level(included_value,selected_value))
+
 # try:
 # 	unselected_values= eval(Param.unselected_list)
 # 	#Trace.Write('unselected_list-----'+str(unselected_values))
