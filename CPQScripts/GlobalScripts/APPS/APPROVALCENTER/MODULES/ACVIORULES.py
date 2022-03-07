@@ -977,10 +977,14 @@ class ViolationConditions:
         BDHead = {}
         if "Z0091" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+        if "Z0091W" in service:
+            BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
         if "Z0035" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","On Wafer Specs Input":"Manual Input(Free text)"})
         if "Z0010" in service:
             BDHead.update({"Billing Type":"Fixed","Billing Cycle":"Quarterly","Billing Condition":"Shipment based","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
+        if "Z0100" in service:
+            BDHead.update({"Quote Type":"Usage based"})
         
         listofAPI = []
         line = []
@@ -1008,7 +1012,7 @@ class ViolationConditions:
     def BDEnt(self,RecordId,service):
         Trace.Write("BD ENTITLEMENT")
         BDHead = {}
-        if "Z0091" in service or "Z0035" in service:
+        if "Z0091" in service or "Z0035" in service or "Z0091W" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
         if "Z0010" in service:
             BDHead.update({"CoO Reduction Guarantees":"Included"})
@@ -1044,7 +1048,7 @@ class ViolationConditions:
     def NSDREnt(self,RecordId,service):
         Trace.Write("NSDR ENTITLEMENT")
         BDHead = {}
-        if "Z0091" in service:       
+        if "Z0091" in service or "Z0091W" in service:       
             BDHead.update({"95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
         
         if "Z0010" in service:
