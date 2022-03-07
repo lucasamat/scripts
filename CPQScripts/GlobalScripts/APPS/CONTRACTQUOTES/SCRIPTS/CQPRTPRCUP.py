@@ -102,6 +102,8 @@ if getPricingProc:
     PricingProcedure = getPricingProc.PRICINGPROCEDURE_ID
     if exch == '':
         exch = pricingPro[PricingProcedure]
+		update_SAQTRV = "UPDATE SAQTRV (NOLOCK) SET PRICINGPROCEDURE_ID = '{prc}', EXCHANGE_RATE_TYPE = '{EXCH}' WHERE SAQIFP.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure),EXCH=str(exch), quote=QUOTE)
+
 currency_attribute = account_info['docCurrency']+','+account_info['globalCurrency']+','+'{"name":"KOMK-KONDA","values":["'+str(pricingPro[PricingProcedure+'-KONDA'])+'"]}'
 # update_SAQITM = "UPDATE SAQITM SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQITM.QUOTE_ID = '{quote}' AND SAQITM.QTEREV_RECORD_ID='{revision_rec_id}'".format(prc=str(PricingProcedure), quote=QUOTE, revision_rec_id = revision)
 # Sql.RunQuery(update_SAQITM)
