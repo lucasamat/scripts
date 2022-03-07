@@ -619,9 +619,9 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                 MAEQUP.EQUIPMENT_STATUS,
                                 MAEQUP.EQUIPMENT_DESCRIPTION,
                                 MAEQUP.EQUIPMENT_RECORD_ID,                 
-                                MAEQUP.FABLOCATION_ID,
-                                MAEQUP.FABLOCATION_NAME,
-                                MAEQUP.FABLOCATION_RECORD_ID,
+                                null as FABLOCATION_ID,
+                                null as FABLOCATION_NAME,
+                                null as FABLOCATION_RECORD_ID,
                                 MAEQUP.SERIAL_NO,
                                 '{QuoteRecId}' as QUOTE_RECORD_ID,
                                 '{QuoteId}' as QUOTE_ID,
@@ -635,8 +635,8 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                 MAEQTY.EQUIPMENT_TYPE_DESCRIPTION,
                                 MAEQUP.EQUIPMENTTYPE_RECORD_ID,
                                 MAEQUP.GOT_CODE,
-                                MAEQUP.MNT_PLANT_RECORD_ID,
-                                MAEQUP.MNT_PLANT_ID,
+                                null as MNT_PLANT_RECORD_ID,
+                                null as MNT_PLANT_ID,
                                 MAEQUP.WARRANTY_START_DATE,
                                 MAEQUP.WARRANTY_END_DATE,
                                 MAEQUP.SALESORG_ID,
@@ -667,6 +667,12 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                     )
                 )
 
+        fab_object = Sql.GetFirst("""select FAB_LOCATION_ID,FAB_LOCATION_NAME,FAB_LOCATION_RECORD_ID,MNT_PLANT_ID,MNT_PLANT_NAME,MNT_PLANT_RECORD_ID from MAFBLC where
+        FAB_LOCATION_ID = '{}'""".format(Product.GetGlobal("receiving_fab_id")))
+        
+        Sql.RunQuery("""UPDATE SAQFEA SET FABLOCATION_ID = '{fab_id}',FABLOCATION_NAME = '{fab_name}',FABLOCATION_RECORD_ID = '{fab_record_id}',MNT_PLANT_ID = '{plant_id}',MNT_PLANT_RECORD_ID = '{plant_record_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID IS NULL AND MNT_PLANT_ID IS NULL""".format(fab_id = fab_object.FAB_LOCATION_ID ,fab_name = fab_object.FAB_LOCATION_NAME,fab_record_id = fab_object.FAB_LOCATION_RECORD_ID,plant_id = fab_object.MNT_PLANT_ID,plant_record_id = fab_object.MNT_PLANT_RECORD_ID,QuoteRecId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id))
+        
+        
         Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
                                     BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id
                                 )
