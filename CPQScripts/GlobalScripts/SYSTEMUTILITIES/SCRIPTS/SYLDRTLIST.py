@@ -2994,7 +2994,7 @@ class SYLDRTLIST:
 								Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW ACCOUNT</a></li>'
 							elif ObjectName == "SAQSPT":
 								pass
-							elif ObjectName != "SAQIBP":								
+							elif ObjectName != "SAQIBP" and ObjectName != "SAQSCN":								
 								Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 							elif ObjectName == "SAQSAO":
 								Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
