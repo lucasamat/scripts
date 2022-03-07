@@ -1440,13 +1440,13 @@ class ContractQuoteItem:
 						Sql.RunQuery("UPDATE SAQICO SET {pricing_field_gl} = '{voucher_amt}', {pricing_field_doc} = '{doc_curr}'  FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND GRNBOK = '{grnbok}' ".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id ,voucher_amt = get_voucher_value, grnbok = record.GREENBOOK, pricing_field_doc = pricing_field_doc, pricing_field_gl =pricing_field_gl, doc_curr = float(get_voucher_value) * float(self.exchange_rate)  ))
 		elif self.service_id == 'Z0123':
 			Sql.RunQuery("""UPDATE SAQICO 
-				SET TCWISS = POSS_COST,
-					CNTCST = POSS_COST,
-					CNTPRC = POSS_PRICE,
-					TRGPRC = POSS_PRICE,
-					USRPRC = POSS_PRICE,
-					{pricing_field_gl} = POSS_PRICE, 
-					{pricing_field_doc} = Convert(float,POSS_PRICE) * {exch_rate}
+				SET TCWISS = EXTENDED_POSS_COST,
+					CNTCST = EXTENDED_POSS_COST,
+					CNTPRC = EXTENDED_POSS_PRICE,
+					TRGPRC = EXTENDED_POSS_PRICE,
+					USRPRC = EXTENDED_POSS_PRICE,
+					{pricing_field_gl} = EXTENDED_POSS_PRICE, 
+					{pricing_field_doc} = Convert(float,EXTENDED_POSS_PRICE) * {exch_rate}
 					FROM SAQICO (NOLOCK) 
 					INNER JOIN SAQRIT (NOLOCK) ON  SAQICO.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = SAQRIT.SERVICE_ID AND SAQICO.GRNBOK = SAQRIT.GREENBOOK AND SAQRIT.EQUIPMENT_ID = SAQICO.EQUPID AND SAQICO.QTEITM_RECORD_ID = SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID
 					INNER JOIN  
