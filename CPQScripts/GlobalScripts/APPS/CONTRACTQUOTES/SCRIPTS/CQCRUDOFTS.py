@@ -179,10 +179,10 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
     if values:
         record_ids = []
         if all_values:
-            query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND FABLOCATION_ID = '{fab}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  EQUIPMENT_RECORD_ID NOT IN  (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
+            query_string = "select EQUIPMENT_RECORD_ID, EQUIPMENT_ID, EQUIPMENT_DESCRIPTION, SERIAL_NO, GREENBOOK, PLATFORM from MAEQUP (NOLOCK) WHERE  ACCOUNT_ID = '{acc}' AND FABLOCATION_ID = '{fab}' AND SALESORG_ID = '{salesorg_id} ' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  EQUIPMENT_RECORD_ID NOT IN (SELECT SND_EQUIPMENT_RECORD_ID FROM SAQASE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SNDFBL_ID = '{fab}' AND QTEREV_RECORD_ID =  '{RevisionRecordId}')".format(
                     acc=Product.GetGlobal("stp_account_id"),
                     fab=Product.GetGlobal("sending_fab_id"),
-                    salesorgrecid=salesorg_record_id,
+                    salesorg_id = salesorg_id,
                     QuoteRecordId=contract_quote_record_id,
                     RevisionRecordId=quote_revision_record_id
                 )			
@@ -203,9 +203,12 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
             ]
             
         ##To Fetch fab location details...
-        get_fab_details = Sql.GetFirst("SELECT FABLOCATION_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME from MAEQUP WHERE FABLOCATION_ID = '{}'".format(Product.GetGlobal("sending_fab_id")))    
+        get_fab_details = Sql.GetFirst("SELECT FABLOCATION_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME from MAEQUP WHERE FABLOCATION_ID = '{}'".format(Product.GetGlobal("sending_fab_id")))
+         
         batch_group_record_id = str(Guid.NewGuid()).upper()
+        
         record_ids = str(str(record_ids)[1:-1].replace("'",""))
+        
         parameter = Sql.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")		
         primaryQueryItems = Sql.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAEQUP.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(contract_quote_id)+"'' as QUOTE_ID, ''"+str(contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAEQUP (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAEQUP.EQUIPMENT_RECORD_ID'")
         Sql.RunQuery("""
@@ -290,7 +293,7 @@ def sending_equipment_insert(values,all_values,A_Keys,A_Values):
                                 BatchGroupRecordId=batch_group_record_id
                             )
                         )
-        # Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id))
+        Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id))
 
 
 def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
