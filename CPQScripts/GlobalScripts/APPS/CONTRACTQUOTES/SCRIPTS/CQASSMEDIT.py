@@ -114,11 +114,15 @@ Sql = SQL()
 
 def save_assembly_level(included_value,fab_id,equipment_id,assembly_id):
 	Trace.Write(str(included_value)+'-'+str(fab_id)+'-'+str(equipment_id)+'-'+str(assembly_id))
+	join_condition =''
 	if subtab_name.upper() == 'RECEIVING EQUIPMENT':
 		table_name = 'SAQFEA'
 	else:
 		table_name = 'SAQSCA'
-	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND EQUIPMENT_ID = '{equipment_id}' AND ASSEMBLY_ID = '{assembly_id}' AND FABLOCATION_ID ='{fab_id}' AND SERVICE_ID ='Z0007'".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,equipment_id=equipment_id,assembly_id=assembly_id,fab_id=fab_id, table_name = table_name))
+		if selected_value:
+			join_condition = " AND QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = '{}'".format(CPQID.KeyCPQId.GetKEYId(str(table_name), str(selected_value)))
+		
+	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND EQUIPMENT_ID = '{equipment_id}' AND ASSEMBLY_ID = '{assembly_id}' AND FABLOCATION_ID ='{fab_id}' AND SERVICE_ID ='Z0007' {join_condition}".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,equipment_id=equipment_id,assembly_id=assembly_id,fab_id=fab_id, table_name = table_name, join_condition= join_condition))
 	
 	return True
 
@@ -528,7 +532,11 @@ try:
 	grid_fab_id = Param.selected_fab
 except:
 	grid_fab_id = ''
-
+try:
+	selected_value= eval(Param.selected_value)
+	#Trace.Write('selected_values-----'+str(selected_values))
+except:
+	selected_value =''
 if ACTION == 'SAVE_ASSEMBLY':
 	ApiResponse = ApiResponseFactory.JsonResponse(save_assembly_level(included_value,grid_fab_id,equipment_id,grid_assembly_id))
 # try:
