@@ -3024,7 +3024,7 @@ class ContractQuoteItem:
 			self._ordering_item_line_no()
 
 			# Item Level entitlement Insert
-			if self.service_id == 'Z0101' or self.quote_service_entitlement_type in ('OFFERING+CONSIGNED+ON REQUEST','OFFERING'):
+			if self.quote_service_entitlement_type in ('OFFERING+CONSIGNED+ON REQUEST','OFFERING'):
 				self._service_based_quote_items_entitlement_insert(update=update)  
 			elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING + SCH. MAIN. EVENT','OFFERING + KIT'):
 				self._pmsa_quote_items_entitlement_insert(update=update)  
