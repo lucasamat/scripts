@@ -994,7 +994,7 @@ class ViolationConditions:
 
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
-                    
+                    Trace.Write("BD HEAD ENT X = "+str(x))
         
         if len(line) != 0:
             if len(line) == 1:
@@ -1030,7 +1030,7 @@ class ViolationConditions:
 
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
-                    
+                    Trace.Write("BD ENT X = "+str(x))
         
         if len(line) != 0:
             if len(line) == 1:
@@ -1065,7 +1065,7 @@ class ViolationConditions:
 
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
-                    
+                    Trace.Write("NSDR ENT X = "+str(x))
         
         if len(line) != 0:
             if len(line) == 1:
@@ -1095,7 +1095,7 @@ class ViolationConditions:
 
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
-                    
+                    Trace.Write("REGIONAL ENT X = "+str(x))
         
         if len(line) != 0:
             if len(line) == 1:
@@ -1126,7 +1126,7 @@ class ViolationConditions:
 
                     GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
-                    
+                    Trace.Write("GLOBAL ENT X = "+str(x))
         
         if len(line) != 0:
             if len(line) == 1:
