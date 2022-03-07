@@ -113,6 +113,24 @@ if 'SYOBJR_00029' in table_id:
         Sql.RunQuery("DELETE FROM SAQRSP WHERE CpqTableEntryId IN {}".format(tuple(rows)))
         Sql.RunQuery("DELETE FROM SAQRIP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0101' AND PART_NUMBER IN {}".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),tuple(parts)))
 #elif table_id == "SYOBJR_00005_7EAA11B4_82C9_400B_8E48_65497373A578":
+
+elif 'SYOBJR_98882' in table_id:
+    TreeParam = Product.GetGlobal("TreeParam")
+    TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+    TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+    TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+    if selectall == "yes":
+        Sql.RunQuery("DELETE FROM SAQSCN WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0123' AND GREENBOOK = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),TreeParentParam))
+
+    elif selectall == "no":
+        checkedrows = checkedrows.split(",")
+        checkedrows = tuple(checkedrows)
+        rows = []
+        parts = []
+        for x in checkedrows:
+            rows.append(x.split("-")[1])
+        Sql.RunQuery("DELETE FROM SAQSCN WHERE CpqTableEntryId IN {}".format(tuple(rows)))
+
 elif 'SYOBJR_00005' in table_id:
     if selectall == "yes":
         Sql.RunQuery("DELETE FROM SAQSPT WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),TreeParam))
