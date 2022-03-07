@@ -658,6 +658,7 @@ def POPUPLISTVALUEADDNEW(
 				QueryCountObj = Sql.GetFirst(
 						"select count(*) as cnt from {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND MAFBLC.SALESORG_ID = '{}' {} ".format(                    
 						ObjectName,
+						receiving_account_id,
 						sales_org_id,
 						where_string if where_string else ""
 						
