@@ -646,7 +646,7 @@ def Related_Sub_Banner(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
             )
                 
-                if TreeParam != 'Revisions':
+                if TreeParam != 'Revisions' and TreeParam != 'Customer Information':
                     Trace.Write("TreeParam--"+str(TreeParam))
                     PrimaryLable = str(TreeParam)
                     PrimaryValue = "ALL"
