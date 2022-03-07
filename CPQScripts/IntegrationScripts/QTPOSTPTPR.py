@@ -400,11 +400,12 @@ try:
 										
 										##saqico insert 
 										Sql.RunQuery("""UPDATE SAQICO SET {pricing_field} ={total_net},{pricing_field_doc} = {total_net}*{exch_rate}  FROM SAQICO (NOLOCK)
-										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field = pricing_field_annualized, pricing_field_doc=pricing_field_doc))
+										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id, pricing_field = pricing_field_annualized, pricing_field_doc=pricing_field_doc, exch_rate = exch_rate))
 						
 						Sql.RunQuery("""UPDATE SAQRSP SET UNIT_PRICE = UNIT_PRICE_INGL_CURR * {exch_rate} ,EXTENDED_PRICE = EXTENDED_PRICE_INGL_CURR * {exch_rate} FROM SAQRSP (NOLOCK)				
 									WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.SERVICE_ID = 'Z0100' AND QTEREV_RECORD_ID = '{rev}'
 								""".format(rev=revision_rec_id, QuoteRecordId=contract_quote_record_id,exch_rate = exch_rate))
+						
 						Sql.RunQuery("""UPDATE SAQRIT SET UNIT_PRICE  = UNIT_PRICE_INGL_CURR *"""+str(exch_rate)+""" FROM SAQRIT
 										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_unit=GetSum.TOTAL_UNIT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
 						
