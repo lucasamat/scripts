@@ -12,7 +12,7 @@ Sql = SQL()
 import SYCNGEGUID as CPQID
 
 def constructcat4editablity(Quote_rec_id,MODE):
-	Trace.Write("INSIDE_constructcat4editablity")
+	Trace.Write("Quote_rec_id"+str(Quote_rec_id))
 	return True
 
 
