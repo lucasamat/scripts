@@ -650,7 +650,7 @@ def Related_Sub_Banner(
                     Trace.Write("TreeParam--"+str(TreeParam))
                     PrimaryLable = str(TreeParam)
                     PrimaryValue = "ALL"
-                elif (rev_quote is None or rev_quote == '') and TreeParam == 'Revisions':
+                elif TreeParam == 'Revisions' and (rev_quote is None or rev_quote == '') :
                     PrimaryLable = str(TreeParam)
                     PrimaryValue = "ALL"    
                 if (
