@@ -33,7 +33,7 @@ def _insert_item_level_delivery_schedule():
 def _insert_item_level_parts():
     get_forecst_details_obj_insert = Quote.QuoteTables["SAQIFP"]
     get_forecst_details_obj_insert.Rows.Clear()
-    get_forecst_details_obj = SqlHelper.GetList("select QUOTE_ITEM_FORECAST_PART_RECORD_ID,CUSTOMER_PART_NUMBER,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,ANNUAL_QUANTITY,BASEUOM_ID,BASEUOM_RECORD_ID,LINE,DELIVERY_MODE,SCHEDULE_MODE,EXTENDED_PRICE,SERVICE_ID,SERVICE_DESCRIPTION,PART_DESCRIPTION,PART_NUMBER,PART_RECORD_ID,SERVICE_RECORD_ID,QUOTE_ID,UNIT_PRICE,DOC_CURRENCY,PRICINGPROCEDURE_ID,TAX,TAX_PERCENTAGE,QTEREV_RECORD_ID,QUOTE_RECORD_ID,QTEREV_ID,{UserId} as ownerId,{CartId} as cartId FROM SAQIFP where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID= '{rev_rec_id}'".format(QuoteRecordId=contract_quote_record_id,rev_rec_id=quote_revision_record_id,UserId= cartobj.USERID,CartId = cartobj.CART_ID))
+    get_forecst_details_obj = SqlHelper.GetList("select QUOTE_ITEM_FORECAST_PART_RECORD_ID,CUSTOMER_PART_NUMBER,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,ANNUAL_QUANTITY,BASEUOM_ID,BASEUOM_RECORD_ID,LINE,DELIVERY_MODE,SCHEDULE_MODE,EXTENDED_PRICE,UNIT_PRICE_INGL_CURR,SERVICE_ID,SERVICE_DESCRIPTION,PART_DESCRIPTION,PART_NUMBER,PART_RECORD_ID,SERVICE_RECORD_ID,QUOTE_ID,UNIT_PRICE,DOC_CURRENCY,EXTPRI_INGL_CURR,PRICINGPROCEDURE_ID,TAX,TAX_PERCENTAGE,QTEREV_RECORD_ID,QUOTE_RECORD_ID,QTEREV_ID,{UserId} as ownerId,{CartId} as cartId FROM SAQIFP where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID= '{rev_rec_id}'".format(QuoteRecordId=contract_quote_record_id,rev_rec_id=quote_revision_record_id,UserId= cartobj.USERID,CartId = cartobj.CART_ID))
     if get_forecst_details_obj:
         for val in get_forecst_details_obj:
             newRow = get_forecst_details_obj_insert.AddNewRow()
@@ -64,10 +64,10 @@ def _insert_item_level_parts():
                 newRow['SCHEDULE_MODE'] = val.SCHEDULE_MODE
             else:
                 val.SCHEDULE_MODE =''
-            if val.EXTENDED_PRICE:
-                newRow['EXTENDED_PRICE'] = val.EXTENDED_PRICE
+            if val.EXTPRI_INGL_CURR:
+                newRow['EXTENDED_PRICE'] = val.EXTPRI_INGL_CURR
             else:
-                val.EXTENDED_PRICE ='' 
+                val.EXTPRI_INGL_CURR ='' 
             if val.SERVICE_ID:
                 newRow['SERVICE_ID'] = val.SERVICE_ID
             else:
@@ -80,10 +80,10 @@ def _insert_item_level_parts():
                 newRow['PART_NUMBER'] = val.PART_NUMBER
             else:
                 val.PART_NUMBER ='' 
-            if val.UNIT_PRICE:
-                newRow['UNIT_PRICE'] = val.UNIT_PRICE
+            if val.UNIT_PRICE_INGL_CURR:
+                newRow['UNIT_PRICE'] = val.UNIT_PRICE_INGL_CURR
             else:
-                val.UNIT_PRICE =''
+                val.UNIT_PRICE_INGL_CURR =''
             if val.TAX_PERCENTAGE:
                 newRow['TAX_PERCENTAGE'] = val.TAX_PERCENTAGE
             else:
