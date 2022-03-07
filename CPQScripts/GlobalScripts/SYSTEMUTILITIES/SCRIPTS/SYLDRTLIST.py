@@ -5605,6 +5605,8 @@ class SYLDRTLIST:
 				col += ","+ ",".join(delivery_date_column)
 			select_obj_str = col
 			Trace.Write('@5221, Select obj str-->'+str(select_obj_str))
+			if RECORD_ID == "SYOBJR-00029" and SubTab.upper() =='INCLUSIONS':
+				select_obj_str = select_obj_str.replace('NEW_PART','UNIT_PRICE,EXTENDED_PRICE')
 			edit_field = []
 			OrderBy_obj = Sql.GetFirst("select ORDERS_BY from SYOBJR (NOLOCK) where RECORD_ID = '" + str(RECORD_ID) + "'")
 			
