@@ -92,6 +92,7 @@ def sending_fablocation_insert(values,all_values,A_Keys,A_Values):
             if table_count_data is not None:
                 table_total_rows = table_count_data.count
             if table_total_rows:
+                Trace.Write("values---->"+str(query_string)+"values 11"+str(table_total_rows))
                 record_ids = [data for data in get_res(query_string, table_total_rows)]
         else:                    
             record_ids = [
