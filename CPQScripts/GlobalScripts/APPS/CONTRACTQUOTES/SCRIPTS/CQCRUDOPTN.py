@@ -2875,6 +2875,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								poss_price = nso_data.POSS_PRICE
 							else:
 								poss_price = 0
+							Trace.Write("poss_price "+str(poss_price)+" poss_cost "+str(poss_cost))
 							nso_table = {
 								"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
 								"BUSINESS_UNIT": nso_data.BUSINESS_UNIT,
