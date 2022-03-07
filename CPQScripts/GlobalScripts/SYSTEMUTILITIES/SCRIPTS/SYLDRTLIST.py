@@ -2907,7 +2907,7 @@ class SYLDRTLIST:
 					pop_val = {}
 					list_lineup = []
 					list_lineup1 = []
-					if ObjectName != 'SAQIBP' and ObjectName != 'SAQDOC' and ObjectName != 'SAQSCN':
+					if ObjectName != 'SAQIBP' and ObjectName != 'SAQDOC':
 						Trace.Write("dropdown11==="+str(ObjectName))
 						Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left empty_ctrdrop_ul" aria-labelledby="dropdownMenuButton">'
 					elif ObjectName == "SAQDOC":
