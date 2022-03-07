@@ -6066,7 +6066,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						if quotetype_id:
 							quotetype_value =re.findall(quote_type_attribute_value,sub_string)
 							quotetype_value_for_offering = str(quotetype_value).upper()
-							Trace.Write("quotetype_value_for_offering -----"+str(quotetype_value_for_offering))
+							Log.Info("quotetype_value_for_offering -----"+str(quotetype_value_for_offering))
 							if quotetype_value_for_offering != "['EVENT BASED']" and quotetype_value_for_offering != "['FLEX EVENT BASED']":
 								self._insert_quote_service_covered_assembly(batch_group_record_id=batch_group_record_id)
 								break
