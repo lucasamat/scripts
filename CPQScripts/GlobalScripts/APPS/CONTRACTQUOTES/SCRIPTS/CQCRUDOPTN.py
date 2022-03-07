@@ -2871,7 +2871,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								poss_cost = nso_data.POSS_COST
 							else:
 								poss_cost = 0
-							if nso_data.POSS_PRICE != "":
+							if nso_data.POSS_PRICE:
 								poss_price = nso_data.POSS_PRICE
 							else:
 								poss_price = 0
