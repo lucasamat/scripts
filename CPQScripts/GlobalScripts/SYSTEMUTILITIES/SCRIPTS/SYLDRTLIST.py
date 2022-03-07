@@ -322,9 +322,9 @@ class SYLDRTLIST:
 				else:
 					Action_permission["Edit"] = objsk_permiss.CAN_EDIT                    
 				if str(objsk_permiss.CAN_DELETE).upper() == "TRUE":
-					Action_permission["Delete"] = obj_obj.CAN_DELETE                    
+					Action_permission["Delete"] = objsk_permiss.CAN_DELETE                    
 				else:
-					Action_permission["Delete"] = objsk_permiss.CAN_DELETE			
+					Action_permission["Delete"] = obj_obj.CAN_DELETE			
 			objd_where_obj = Sql.GetFirst("select * from  SYOBJD (NOLOCK) where RECORD_ID = '" + str(COLUMN_REC_ID) + "'")
 			
 			if objd_where_obj is not None:
