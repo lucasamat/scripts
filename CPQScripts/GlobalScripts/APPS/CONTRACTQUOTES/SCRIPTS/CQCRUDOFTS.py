@@ -81,6 +81,15 @@ def get_result_sending_equipment(query_string, table_total_rows):
         if table_data is not None:
             for row_data in table_data:
                 yield row_data.EQUIPMENT_RECORD_ID
+def get_result_receiving_fab(query_string, table_total_rows):
+    for offset_skip_count in range(0, table_total_rows+1, 1000):
+        pagination_condition = "WHERE SNO>={Skip_Count} AND SNO<={Fetch_Count}".format(Skip_Count=offset_skip_count+1, Fetch_Count=offset_skip_count+1000)
+        query_string_with_pagination = 'SELECT * FROM (SELECT *, ROW_NUMBER()OVER(ORDER BY EQUIPMENT_RECORD_ID) AS SNO FROM ({Query_String}) IQ)OQ {Pagination_Condition}'.format(
+                                        Query_String=query_string, Pagination_Condition=pagination_condition)
+        table_data = Sql.GetList(query_string_with_pagination)
+        if table_data is not None:
+            for row_data in table_data:
+                yield row_data.EQUIPMENT_RECORD_ID
 
 def sending_fablocation_insert(values,all_values,A_Keys,A_Values):
     master_object_name = "MAFBLC"
@@ -310,12 +319,11 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
     if values:
         record_ids = []
         if all_values:
-            query_string = "SELECT QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID FROM SAQSAF (NOLOCK) WHERE SNDACC_ID = '{acc}' AND  FAB_LOCATION_ID NOT IN  (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' )".format(
-                    acc=Product.GetGlobal("stp_account_id"),
-                    salesorgrecid=salesorg_record_id,
+            query_string = "select  FAB_LOCATION_RECORD_ID, FAB_LOCATION_ID, FAB_LOCATION_NAME from MAFBLC (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID AND MAFBLC.SALESORG_ID = '{salesorg_id}' WHERE  SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')".format(
+                    salesorg_id = salesorg_id,
                     QuoteRecordId=contract_quote_record_id,
                     RevisionRecordId=quote_revision_record_id
-                )			
+                )		
             query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
                 Query_String=query_string
             )
@@ -323,7 +331,7 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
             if table_count_data is not None:
                 table_total_rows = table_count_data.count
             if table_total_rows:
-                record_ids = [data for data in get_res(query_string, table_total_rows)]
+                record_ids = [data for data in get_result_receiving_fab(query_string, table_total_rows)]
         else:                    
             record_ids = [
                 CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
