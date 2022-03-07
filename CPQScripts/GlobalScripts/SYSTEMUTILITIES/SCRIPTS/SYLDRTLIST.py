@@ -2939,7 +2939,8 @@ class SYLDRTLIST:
 									+ "' and SE.SECTION_NAME ='BASIC INFORMATION'"
 								)
 						
-					if primary_view != "":                        
+					if primary_view != "":    
+						Trace.Write("NOS_View")                     
 						if str(current_tab).upper() == "PROFILE" and (ObjectName != "SYPROD"):
 							Action_str += (
 								'<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
@@ -2955,7 +2956,6 @@ class SYLDRTLIST:
 								Action_str += ''    
 
 					else:  
-						Trace.Write("NOS_View")                      
 						if str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
 							Action_str += '<li><a class="dropdown-item" href="#" onclick="profileObjSet(this)" data-target="#viewProfileRelatedList" data-toggle="modal">VIEW<a><li>'
 						elif str(current_tab).upper() == "PROFILE" and (ObjectName != "SYPROF"):
