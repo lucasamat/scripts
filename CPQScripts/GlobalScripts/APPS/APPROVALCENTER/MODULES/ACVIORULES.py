@@ -561,7 +561,7 @@ class ViolationConditions:
                     fflag = 0
                     if "PRENVL" in result.WHERE_CONDITION_01 and (result.APRCHN_ID == 'AMATAPPR'):
                         fflag = 2
-                        getService = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND (PAR_SERVICE_ID = '' OR PAR_SERVICE_ID IS NULL)".format(RecordId))
+                        getService = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(RecordId))
                         service = [x.SERVICE_ID for x in getService]
                         if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
                             splitval = str(result.WHERE_CONDITION_01).split("OR")
@@ -755,7 +755,7 @@ class ViolationConditions:
                                 fflag = 0
                                 if "PRENVL" in result.WHERE_CONDITION_01 and (result.APRCHN_ID == 'AMATAPPR'):
                                     fflag = 2
-                                    getService = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND (PAR_SERVICE_ID = '' OR PAR_SERVICE_ID IS NULL)".format(RecordId))
+                                    getService = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(RecordId))
                                     service = [x.SERVICE_ID for x in getService]
                                     if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
                                         splitval = str(result.WHERE_CONDITION_01).split("OR")
