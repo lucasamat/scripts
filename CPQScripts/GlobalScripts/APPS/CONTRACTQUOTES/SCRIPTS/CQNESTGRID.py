@@ -8250,7 +8250,7 @@ def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			chld_dict["ids"] = str(data_id)
 			# data formation in Dictonary format.
 
-			chld_dict["ACTIONS"] = str(Action_str1)
+			chld_dict["ACTIONS"] = str(Action_str1) 
 			chld_dict["INCLUDED"] = str(child.INCLUDED)
 			chld_dict["QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId("SAQSCA", str(child.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID))
 			chld_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(child.EQUIPMENT_ID) + '">' + str(child.EQUIPMENT_ID) + "</abbr>") 
