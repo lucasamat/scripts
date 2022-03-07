@@ -3826,7 +3826,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)         
 						else:  							
-							if str(TreeParam) != 'Quote Preview' and  str(TreeParam) != 'Billing Matrix' and RECORD_ID != "SYOBJR-00010":
+							if str(TreeParam) != 'Quote Preview' and  str(TreeParam) != 'Billing Matrix' and RECORD_ID != "SYOBJR-00010" and RECORD_ID != "SYOBJR-98882":
 								Trace.Write("CHKNG_J_04 "+str(qstring))
 								table_header += (
 									'<th  data-field="'
