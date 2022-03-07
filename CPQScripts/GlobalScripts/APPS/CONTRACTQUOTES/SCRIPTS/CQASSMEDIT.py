@@ -118,7 +118,7 @@ def save_assembly_level(included_value,fab_id,equipment_id,assembly_id):
 		table_name = 'SAQFEA'
 	else:
 		table_name = 'SAQSCA'
-	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND EQUIPMENT_ID = '{equipment_id}' AND ASSEMBLY_ID = '{assembly_id}' AND FABLOCATION_ID ='{fab_id}'".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,equipment_id=equipment_id,assembly_id=assembly_id,fab_id=fab_id, table_name = table_name))
+	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND EQUIPMENT_ID = '{equipment_id}' AND ASSEMBLY_ID = '{assembly_id}' AND FABLOCATION_ID ='{fab_id}' AND SERVICE_ID ='Z0007'".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,equipment_id=equipment_id,assembly_id=assembly_id,fab_id=fab_id, table_name = table_name))
 	return True
 
 def Request_access_token():
