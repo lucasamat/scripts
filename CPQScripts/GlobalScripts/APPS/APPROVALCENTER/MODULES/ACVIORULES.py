@@ -975,16 +975,26 @@ class ViolationConditions:
     def BDHeadEnt(self,RecordId,service):
         Trace.Write("BD HEAD ENTITLEMENT")
         BDHead = {}
+        if "Z0114" in service:
+            BDHead.update({"SW Maintenance Fee":"Excluded"})
         if "Z0091" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+        if "Z0009" in service:
+            BDHead.update({"PM Quantity Credit %":"0.3","Quote Type":"Event Based","Quote Type":"Flex Event Based","Additional Target KPI":"Mean TIme Between Clean","Additional Target KPI":"Green to Green","Contract Coverage":"7x16","Contract Coverage":"7x24","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Process Parts/Kits clean, recy":"Shared"})
         if "Z0091W" in service:
-            BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes"})
         if "Z0035" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","On Wafer Specs Input":"Manual Input(Free text)"})
         if "Z0010" in service:
             BDHead.update({"Billing Type":"Fixed","Billing Cycle":"Quarterly","Billing Condition":"Shipment based","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
+        if "Z0128" in service:
+            BDHead.update({"Billing Cycle":"Quarterly","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
         if "Z0100" in service:
             BDHead.update({"Quote Type":"Usage based"})
+        if "Z0004W" in service:
+            BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Consumable":"Some Exclusions"})
+        if "Z0004-Subfab" in service:
+            BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Consumable":"Some Exclusions","Non-Consumable":"Some Exclusions"})
         
         listofAPI = []
         line = []
@@ -1020,7 +1030,16 @@ class ViolationConditions:
             BDHead.update({"On-site Consigned Parts":"9","On-site Consigned Parts":"8","On-site Consigned Parts":"7","On-site Consigned Parts":"6"})
         if "Z0123" in service:
             BDHead.update({"Billing Type":"Fixed"})
-            
+        if "Z0128" in service:
+            BDHead.update({"CoO Reduction Guarantees":"Included"})
+        if "Z0009" in service:
+            BDHead.update({"CoO Reduction Guarantees":"Included","Primary KPI. Perf Guarantee":"First Time Right"})
+        if "Z0007" in service:
+            BDHead.update({"Decontamination":"Included","New Parts Only":"Yes"})
+        if "Z0004W" in service:
+            BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded"})
+        if "Z0004-Subfav" in service:
+            BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded","Repair Cust Owned Parts":"Yes"})
         
         listofAPI = []
         line = []
@@ -1048,15 +1067,23 @@ class ViolationConditions:
     def NSDREnt(self,RecordId,service):
         Trace.Write("NSDR ENTITLEMENT")
         BDHead = {}
+        if "Z0114" in service:
+            BDHead.update({"SW Maintenance Fee":"Excluded"})
         if "Z0091" in service or "Z0091W" in service:       
             BDHead.update({"95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
         
-        if "Z0010" in service:
+        if "Z0010" in service or "Z0128" in service:
             BDHead.update({"Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
         
         if "Z0110" in service:
             
             BDHead.update({"KPI - Monthly Consigned":"Exception %","KPI - ≥90% On Request":"Exception days","Perf. Credit NTE - Consigned":"Exception %","Perf. Credit NTE - On Request":"Exception %","Perf. Credit - Consigned Parts":"Exception %","Perf. Credit-On Request Parts":"Exception %","Consignment Fee-Low Qty Parts":"Exception %","Cust. Commit-Consigned Parts":"Per contract value","Cust. Commit-On Request Parts":"Exception %","Cust. Commit-On Request Parts":"Per contract value","Fcst Redistribution-Frequency":"Exception times/year"})
+        if "Z0009" in service:
+            BDHead.update({"Swap Kits (Applied provided)":"Excluded","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+        if "Z0004W" in service:
+            BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+        if "Z0004-Subfab" in service:
+            BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
         listofAPI = []
         line = []
         GetAPI = Sql.GetList("SELECT API_NAME,FIELD_LABEL FROM SYOBJD (NOLOCK) WHERE LEN(API_NAME) = 6 AND OBJECT_NAME = 'SAQICO'")
