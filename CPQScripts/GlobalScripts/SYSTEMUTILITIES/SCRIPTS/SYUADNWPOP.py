@@ -581,13 +581,10 @@ def POPUPLISTVALUEADDNEW(
 				)
 			elif(TreeParam == "Customer Information"):
 				Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND MAFBLC.SALESORG_ID = '{}' AND QUOTE_RECORD_ID = '{}'AND QTEREV_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
+				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND MAFBLC.SALESORG_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
 					ObjectName,
 					receiving_account_id,
 					sales_org_id,
-     				contract_quote_record_id,
-         			quote_revision_record_id,
-            		where_string,
               		contract_quote_record_id,
                 	quote_revision_record_id
 					)
@@ -643,8 +640,8 @@ def POPUPLISTVALUEADDNEW(
 					)
 					)
 			elif(TreeParam == 'Customer Information'):
-				where_string += """ QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(
-					contract_quote_record_id,quote_revision_record_id, contract_quote_record_id,quote_revision_record_id
+				where_string += """ AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(
+					contract_quote_record_id,quote_revision_record_id
 				)
 
 				table_data = Sql.GetList(
