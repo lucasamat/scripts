@@ -1080,7 +1080,7 @@ class Entitlements:
 										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
 										#Trace.Write(str(prdvalue["id"])+'-6778--------'+str(attribute["value"]))
 										if attribute["author"] in ("Default","System"):
-											#Trace.Write('524------'+str(prdvalue["id"]))
+											Trace.Write('524------'+str(prdvalue["id"]))
 											attributedefaultvalue.append(prdvalue["id"])
 										elif attribute["author"] == "User":
 											attribute_non_defaultvalue.append(prdvalue["id"])
@@ -1544,6 +1544,7 @@ class Entitlements:
 
 						# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
 						Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key)+str(ent_val_code))
+						Trace.Write("attributedefaultvalue--"+str(attributedefaultvalue))
 						if ent_disp_val in ('select','0'):
 							ent_disp_val =''
 						if ent_val_code in ('0'):
