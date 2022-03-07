@@ -1026,6 +1026,11 @@ class Entitlements:
 			getvalue = ""
 			Fullresponse = Product.GetGlobal('Fullresponse')
 			configuration_status = ""
+			if not Fullresponse:
+				if Gettabledata:
+					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(Gettabledata.CPS_CONFIGURATION_ID)
+					Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':serviceId,'request_url':Request_URL,'request_type':"Existing"})
+
 			if Fullresponse:
 				Fullresponse = eval(Fullresponse)
 				##getting configuration_status status
@@ -1069,12 +1074,12 @@ class Entitlements:
 								for prdvalue in Productvalue:
 									if prdvalue['id'].startswith('AGS_Z0046_'):
 										attributes_service_sublist.append(prdvalue['id'])
-									for attribute in prdvalue["values"]:									
-										if attribute["author"] in ("Default","System"):
-											#Trace.Write('524---658---'+str(prdvalue["id"]))
-											attributedefaultvalue.append(prdvalue["id"])
-										elif attribute["author"] == "User":
-											attribute_non_defaultvalue.append(prdvalue["id"])
+									# for attribute in prdvalue["values"]:									
+									# 	if attribute["author"] in ("Default","System"):
+									# 		#Trace.Write('524---658---'+str(prdvalue["id"]))
+									# 		attributedefaultvalue.append(prdvalue["id"])
+									# 	elif attribute["author"] == "User":
+									# 		attribute_non_defaultvalue.append(prdvalue["id"])
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
 										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
@@ -1086,9 +1091,9 @@ class Entitlements:
 											attribute_non_defaultvalue.append(prdvalue["id"])
 			else:
 				#get_status = Sql.GetFirst("SELECT * FROM {} WHERE {}".format(tableName,whereReq))
-				if Gettabledata:
+				
 					if Gettabledata.CONFIGURATION_STATUS:
-						configuration_status =  Gettabledata.CONFIGURATION_STATUS
+						configuration_status = Gettabledata.CONFIGURATION_STATUS
 			Trace.Write('524--787-whereReq--configuration_status--'+str(configuration_status))
 			#get
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
