@@ -2867,6 +2867,14 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						for eqp in nso_equipment_list:
 							Trace.Write("CHK_POSS_ "+str(nso_data))
 							nso_table_info = SqlHelper.GetTable("SAQSCN")
+							if nso_data.POSS_COST:
+								poss_cost = nso_data.POSS_COST
+							else:
+								poss_cost = 0
+							if nso_data.POSS_PRICE != "":
+								poss_price = nso_data.POSS_PRICE
+							else:
+								poss_price = 0
 							nso_table = {
 								"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
 								"BUSINESS_UNIT": nso_data.BUSINESS_UNIT,
@@ -2900,8 +2908,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								"TEMP_TOOL": eqp.TEMP_TOOL,
 								"POSS_COST": nso_data.POSS_COST,
 								"POSS_PRICE": nso_data.POSS_PRICE,
-								"EXTENDED_POSS_COST": float(nso_data.POSS_COST) * 1,
-								"EXTENDED_POSS_PRICE": float(nso_data.POSS_PRICE) * 1
+								"EXTENDED_POSS_COST": float(poss_cost.POSS_COST) * 1,
+								"EXTENDED_POSS_PRICE": float(poss_price.POSS_PRICE) * 1
 							} 
 							nso_table_info.AddRow(nso_table)
 							Sql.Upsert(nso_table_info)
