@@ -9057,7 +9057,7 @@ class SYLDRTLIST:
 					Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW<a><li>'  
 				else: 
 								
-					if ObjectName != "SAQIBP" and ObjectName != "SAQTRV" ObjectName != "SAQSCN" and ObjectName != "SAQDOC":
+					if ObjectName != "SAQIBP" and ObjectName != "SAQTRV" and ObjectName != "SAQSCN" and ObjectName != "SAQDOC":
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 
 					elif ObjectName == "SAQTRV" :
