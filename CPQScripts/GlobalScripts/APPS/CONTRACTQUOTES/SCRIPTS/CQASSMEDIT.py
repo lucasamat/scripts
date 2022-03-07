@@ -534,7 +534,7 @@ try:
 except:
 	grid_fab_id = ''
 try:
-	selected_value= eval(Param.selected_value)
+	selected_value= Param.selected_value
 	#Trace.Write('selected_values-----'+str(selected_values))
 except:
 	selected_value =''
