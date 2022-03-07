@@ -146,7 +146,6 @@ try:
 				GetPricingProcedure = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE,DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, GLOBAL_CURRENCY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID,EXCHANGE_RATE FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}'".format(QUOTE))
 				getservicerecord = Sql.GetFirst("select QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
 				if GetPricingProcedure is not None:
-					#PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
 					PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
 					curr = GetPricingProcedure.GLOBAL_CURRENCY
 					dis = GetPricingProcedure.DISTRIBUTIONCHANNEL_ID
