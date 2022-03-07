@@ -326,7 +326,7 @@ class SYLDRTLIST:
 				else:
 					Action_permission["Delete"] = obj_obj.CAN_DELETE			
 			objd_where_obj = Sql.GetFirst("select * from  SYOBJD (NOLOCK) where RECORD_ID = '" + str(COLUMN_REC_ID) + "'")
-			
+			Trace.Write("Action_permission_chk "+str(Action_permission))
 			if objd_where_obj is not None:
 				Wh_API_NAME = objd_where_obj.API_NAME
 				Wh_OBJECT_NAME = objd_where_obj.OBJECT_NAME
