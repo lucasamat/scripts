@@ -752,6 +752,7 @@ class ViolationConditions:
                                 """ else:
                                     if str(ObjectName) == 'SAQTMT':
                                         rec_name = 'QUOTE_ID' """
+                                fflag = 0
                                 if "PRENVL" in result.WHERE_CONDITION_01 and (result.APRCHN_ID == 'AMATAPPR'):
                                     fflag = 2
                                     getService = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND (PAR_SERVICE_ID = '' OR PAR_SERVICE_ID IS NULL)".format(RecordId))
