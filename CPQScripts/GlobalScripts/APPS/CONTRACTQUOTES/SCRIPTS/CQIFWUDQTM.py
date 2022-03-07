@@ -31,7 +31,7 @@ def quote_items_pricing(Qt_id):
 	
 	get_exch_rate = get_exch_rate.EXCHANGE_RATE
 	##updating saqrit
-	Sql.RunQuery("""UPDATE SAQICO 
+	Sql.RunQuery("""UPDATE SAQICO  
 				SET 
 				TAXVDC = (TNTVDC * TAXVTP)/100,
 				TAXVGC = (TNTVGC * TAXVTP)/100
