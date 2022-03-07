@@ -754,6 +754,12 @@ def savecbc(Qt_rec_id, Quote_rec_id, MODE):
 	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
+
+def constructcat4editablity(Qt_rec_id, Quote_rec_id, MODE):
+	Trace.Write("INSIDE_constructcat4editablity")
+	return True
+
+
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
@@ -1519,7 +1525,11 @@ elif ACTION == "CBC_COUNT":
 elif ACTION == "CBC_SAVE":
 	MODE = "SAVE"
 	Quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
-	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id,Quote_rec_id, MODE))		
+	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id,Quote_rec_id, MODE))
+elif ACTION == "CAT4_ENTITLMENT":
+	MODE = "EDIT"
+	Quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+	ApiResponse = ApiResponseFactory.JsonResponse(constructcat4editablity(Qt_rec_id,Quote_rec_id, MODE))		
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
