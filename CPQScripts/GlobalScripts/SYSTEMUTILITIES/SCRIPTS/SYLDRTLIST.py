@@ -9072,7 +9072,7 @@ class SYLDRTLIST:
 						docnode_action_btn = Sql.GetFirst("SELECT DOCUMENT_DESCRIPTION FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,ik.QUOTE_DOCUMENT_RECORD_ID))
 						if str(docnode_action_btn.DOCUMENT_DESCRIPTION) == "":
 							Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="doc_edit_desc(this)">EDIT DESC</a></li>'						    
-
+				Trace.Write("checkng_delete_btn "+str(Action_permission.get("Delete")))
 				if str(Action_permission.get("Edit")).upper() == "TRUE":
 					if ObjectName == "SAQTRV":
 						get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
