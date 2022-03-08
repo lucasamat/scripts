@@ -93,7 +93,7 @@ def _insert_billing_matrix():
 def insert_item_per_billing(total_months=1, billing_date='',billing_end_date ='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
 	get_billing_cycle = get_billing_type = ''
 	#Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
-	Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
+	Trace.Write(str(service_id)+'get_ent_val_type--'+str(psyl))
 	for data,val in get_billling_data_dict.items():
 		if 'AGS_'+str(service_id)+'_PQB_BILCYC' in data:
 			get_billing_cycle = val
@@ -122,7 +122,7 @@ def insert_item_per_billing(total_months=1, billing_date='',billing_end_date =''
 					EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
 					SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
 				) 
-				SELECT top 1
+				SELECT 
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
 					{billing_end_date} as BILLING_END_DATE,
 					{BillingDate} as BILLING_START_DATE,
@@ -171,7 +171,7 @@ def insert_item_per_billing(total_months=1, billing_date='',billing_end_date =''
 						EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
 						SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
 					) 
-					SELECT top 1
+					SELECT 
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
 						{billing_end_date} as BILLING_END_DATE,
 						{BillingDate} as BILLING_START_DATE,
