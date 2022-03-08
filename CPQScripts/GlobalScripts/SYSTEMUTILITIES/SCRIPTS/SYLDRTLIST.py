@@ -3916,7 +3916,7 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)
-							elif RECORD_ID in ("SYOBJR-00010","SYOBJR-98877"):
+							elif RECORD_ID in ("SYOBJR-00010"):
 								Trace.Write("CHKNG_EMPTY HYPERLINK")
 								table_header += (
 									'<th  data-field="'
@@ -3924,6 +3924,19 @@ class SYLDRTLIST:
 									+ '" data-filter-control="input" data-title-tooltip="'
 									+ str(qstring)
 									+ '" data-formatter="emptyHyperLink" data-sortable="true" '
+									+ rowspan
+									+'>'
+									+ str(qstring)
+									+ "</th>"
+								)
+							elif RECORD_ID in ("SYOBJR-98877"):
+								Trace.Write("CHKNG_EMPTY HYPERLINK----")
+								table_header += (
+									'<th  data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-title-tooltip="'
+									+ str(qstring)
+									+ '"  data-sortable="true" '
 									+ rowspan
 									+'>'
 									+ str(qstring)
