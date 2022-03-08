@@ -630,6 +630,11 @@ def _insert_subtotal_by_offerring_quote_table():
                 newRow['ESTIMATED_VALUE'] = val.ESTIMATED_VALUE
             else:
                 newRow['ESTIMATED_VALUE'] = 0
+
+            if val.TAX_AMOUNT_INGL_CURR:
+                newRow['TAX_AMOUNT_INGL_CURR'] = val.TAX_AMOUNT_INGL_CURR
+            else:
+                newRow['TAX_AMOUNT_INGL_CURR'] = 0
             newRow['GLOBAL_CURRENCY'] = val.GLOBAL_CURRENCY
             newRow['GLOBAL_CURRENCY_RECORD_ID'] = val.GLOBAL_CURRENCY_RECORD_ID
             newRow['LINE'] = val.LINE
