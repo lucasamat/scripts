@@ -2114,7 +2114,7 @@ def Related_Sub_Banner(
             FourthLable = "Total Amt"
             FourthValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
             FifthLable = "Total Margin Pct"
-            FifthValue = decimal_format.format(float("0.00"))+" "
+            FifthValue = decimal_format.format(float("0.00"))+" "+"%"
         elif get_quote_details:
             Trace.Write("subTabName_CHK "+str(subTabName))
             if subTabName == "Items":
