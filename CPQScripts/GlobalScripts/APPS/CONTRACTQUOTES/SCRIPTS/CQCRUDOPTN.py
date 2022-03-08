@@ -3974,6 +3974,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						RelocationEqType=self.tree_param if self.tree_parent_level_1 == 'Complementary Products' else ''
 					)
 			)'''
+		if self.tree_param.endswith("W"):
+			Log.Info("self.tree_param"+str(self.tree_param))
+		else:
+			Log.Info("self.tree_param_else"+str(self.tree_param))
 		self._process_query(
 			"""
 				INSERT SAQSCO (
