@@ -2460,7 +2460,7 @@ class ContractQuoteItem:
 		ancillary_join = ''
 		ancillary_whr_cond =''
 		if self.is_ancillary == True:
-			dynamic_ancillary_columns = " '0' AS NET_VALUE_INGL_CURR, '0' AS NET_PRICE_INGL_CURR, PAR_SAQRIT.PARQTEITM_LINE, PAR_SAQRIT.PARQTEITM_LINE_RECORD_ID,"
+			dynamic_ancillary_columns = " '0' AS NET_VALUE_INGL_CURR, '0' AS NET_PRICE_INGL_CURR, PAR_SAQRIT.LINE AS PARQTEITM_LINE, PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID AS PARQTEITM_LINE_RECORD_ID,"
 			dynamic_columns = "NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR,PARQTEITM_LINE, PARQTEITM_LINE_RECORD_ID,"
 			if self.service_id == 'Z0046' and self.get_billing_type_val.upper() == 'VARIABLE':
 				dynamic_ancillary_columns += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR,"
