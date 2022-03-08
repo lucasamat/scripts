@@ -3844,7 +3844,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			#Trace.Write('3436---'+str(self.tree_param))
 		Trace.Write("self.trigger_from ---->"+str(self.trigger_from))
 		Trace.Write("@@batch record id in function-->"+str(kwargs.get('batch_group_record_id')))
-		self._process_query(
+		'''self._process_query(
 			"""
 				INSERT SAQSCO (
 					QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
@@ -3973,8 +3973,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						account_record_id=self.account_record_id,
 						RelocationEqType=self.tree_param if self.tree_parent_level_1 == 'Complementary Products' else ''
 					)
-			)
-		'''self._process_query(
+			)'''
+		self._process_query(
 			"""
 				INSERT SAQSCO (
 					QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
@@ -4214,8 +4214,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					FROM SAQFEQ (NOLOCK) JOIN SAQTSV (NOLOCK) ON
 					SAQFEQ.QUOTE_ID = SAQTSV.QUOTE_ID AND
 					SAQTSV.SERVICE_ID = '{TreeParam}' AND
-					SAQTSV.SERVICE_TYPE = '{TreeParentParam}'
-					LEFT JOIN SAQSCO(NOLOCK) ON SAQSCO.EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID AND SAQSCO.TEMP_TOOL = SAQFEQ.TEMP_TOOL AND SAQSCO.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID AND SAQSCO.QUOTE_RECORD_ID=SAQFEQ.QUOTE_RECORD_ID AND SAQSCO.QTEREVFEQ_RECORD_ID = SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID 
+					SAQTSV.SERVICE_TYPE = '{TreeParentParam}' 
 					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID=SAQFEQ.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID
 					JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID  AND SYSPBT.QTEREV_RECORD_ID=SAQTSV.QTEREV_RECORD_ID AND SYSPBT.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID
 					WHERE 
@@ -4364,7 +4363,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						account_record_id=self.account_record_id,
 						RelocationEqType=self.tree_param if self.tree_parent_level_1 == 'Complementary Products' else ''
 					)
-			)'''
+			)
 			#4393 start
 		getdate = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
 		#get_warrent_dates= SqlHelper.GetList("select QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,WARRANTY_END_DATE from SAQSCO where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
