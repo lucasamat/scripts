@@ -227,7 +227,7 @@ class ConfigUpdateScript:
 					labels.append(objd_record.FIELD_LABEL)
 				##A055S000P01-9370 , A055S000P01-4191 code starts...
 				if self.current_tab_name == "Quote":
-					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Contract Valid From,Contract Valid To,Revision status,Sales Org ID,Quote owner,POES,LOW,Expired"
+					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Contract Valid From,Contract Valid To,Revision status,Sales Org ID,Quote owner,Transaction Type,POES,LOW,Expired"
 				else:
 					field_lables = ",".join(labels)
 				##A055S000P01-9370, A055S000P01-4191 code ends..
