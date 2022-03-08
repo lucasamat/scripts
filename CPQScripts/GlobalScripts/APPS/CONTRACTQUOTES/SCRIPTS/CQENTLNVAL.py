@@ -456,6 +456,12 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 								{
 								"field":["SPQTEV","Split Quote","AGS_{}_PQB_SPLQTE".format(partnumber)]
 								},
+								{
+								"field":["SVSPCT","Service Split %","AGS_Z0105_PQB_SVSPPC".format(partnumber)]
+								},
+								{
+								"field":["SPSPCT","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								},
 						]
 			
 	if get_equipment:
