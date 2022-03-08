@@ -177,7 +177,7 @@ class ConfigUpdateScript:
 			columns = (record_obj.COLUMNS).replace("'", "").replace(" ", "").split(",")
 			table_name = ""
 			##A055S000P01-9370 ,A055S000P01-4191 code starts..
-			Trace.Write("columns_chk_j "+str(columns))
+			
 			if self.current_tab_name == "Quote":
 				objd_records_obj = Sql.GetList(
 					"""
@@ -246,6 +246,7 @@ class ConfigUpdateScript:
 				record_id = getQuote.MASTER_TABLE_QUOTE_RECORD_ID
 				key_column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID"
 			##A055S000P01-9370, A055S000P01-4191  code ends..
+			Trace.Write("columns_chk_j "+str(columns))
 			if key_column and record_id:
 				query_string = self.build_query(
 					column=",".join(columns),
