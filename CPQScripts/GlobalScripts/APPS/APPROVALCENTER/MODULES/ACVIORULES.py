@@ -531,6 +531,7 @@ class ViolationConditions:
             if str(ObjectName).strip() == "SAQTRV":
                 GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
                 QuoteId = GetQuoteId.QUOTE_ID
+            
             Log.Info("Quote ID = "+str(QuoteId))
             Vio_Select_Query = Vio_where_conditon = ""
             CHSqlObjs = Sql.GetList(
@@ -1075,8 +1076,10 @@ class ViolationConditions:
     def NSDREnt(self,RecordId,service):
         Trace.Write("NSDR ENTITLEMENT")
         BDHead = {}
+        where_str = ''
         if "Z0114" in service:
             BDHead.update({"SW Maintenance Fee":"Excluded"})
+            where_str = " AND API_NAME = 'Excluded'"
         if "Z0091" in service or "Z0091W" in service:       
             BDHead.update({"95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
         if "Z0092" in service or "Z0092W" in service:       
@@ -1094,20 +1097,24 @@ class ViolationConditions:
             BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
         if "Z0004-Subfab" in service:
             BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
-        listofAPI = []
-        line = []
-        GetAPI = Sql.GetList("SELECT API_NAME,FIELD_LABEL FROM SYOBJD (NOLOCK) WHERE LEN(API_NAME) = 6 AND OBJECT_NAME = 'SAQICO'")
-        for x in GetAPI:
-            GetSAQICOValue = Sql.GetFirst("SELECT {} FROM SAQICO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(x.API_NAME,RecordId))
-            ApiName = x.API_NAME
-            listofAPI.append(str(x.FIELD_LABEL)+"_"+str(x.API_NAME)+"_"+str(eval("GetSAQICOValue."+ApiName)))
-        for x in listofAPI:
-            for y in BDHead:
-                if y in x and x.split("_")[2] == BDHead[y]:
+        lines = []
+        annualized_items_obj = Sql.GetList("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUORE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' {}".format(QuoteId,RecordId, where_str))
+        if annualized_items_obj:
+           lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
+        # listofAPI = []
+        # line = []
+        # GetAPI = Sql.GetList("SELECT API_NAME,FIELD_LABEL FROM SYOBJD (NOLOCK) WHERE LEN(API_NAME) = 6 AND OBJECT_NAME = 'SAQICO'")
+        # for x in GetAPI:
+        #     GetSAQICOValue = Sql.GetFirst("SELECT {} FROM SAQICO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(x.API_NAME,RecordId))
+        #     ApiName = x.API_NAME
+        #     listofAPI.append(str(x.FIELD_LABEL)+"_"+str(x.API_NAME)+"_"+str(eval("GetSAQICOValue."+ApiName)))
+        # for x in listofAPI:
+        #     for y in BDHead:
+        #         if y in x and x.split("_")[2] == BDHead[y]:
 
-                    GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
-                    line.append(GetSAQICO.LINE)
-                    Trace.Write("NSDR ENT X = "+str(x))
+        #             GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
+        #             line.append(GetSAQICO.LINE)
+        #             Trace.Write("NSDR ENT X = "+str(x))
         
         if len(line) != 0:
             if len(line) == 1:
