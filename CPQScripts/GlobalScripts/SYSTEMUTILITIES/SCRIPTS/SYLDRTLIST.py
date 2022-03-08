@@ -4606,13 +4606,13 @@ class SYLDRTLIST:
 					+ str(table_ids)
 					+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { if(localStorage.getItem("InlineEdit")=="YES"){ return ;}var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'
 					+ str(cls)
-					+ '").text());  data1 = $element.closest("tr").find("td:'
+					+ '").text().trim());  data1 = $element.closest("tr").find("td:'
 					+ str(cls)
 					+ '").text(); localStorage.setItem("multiedit_save_date", data1);localStorage.setItem("PartsSelectedId",data1); reco_id = removeDuplicates(reco); }else{reco_id=$element.closest("tr").find("td:'
 					+ str(cls)
-					+ '").text(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);localStorage.setItem("PartsSelectedId",reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
+					+ '").text().trim(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);localStorage.setItem("PartsSelectedId",reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
 					+ str(table_id)
-					+ '"); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
+					+ '"); value = value.replace(/<\/?[^>]+(>|$)/g,""); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
 					+ str(table_id)
 					+ '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1;localStorage.setItem("'+str(local_variable)+'","yes");localStorage.setItem("EDIT_OBJ","'+str(ObjectName)+'");  document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }TreeParentParam = localStorage.getItem("CommonTreeParentParam");TreeParam = localStorage.getItem("CommonTreeParam");var sparePartsBulkSAVEBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-save-btn");var sparePartsBulkEDITBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-edit-btn");var sparePartsBulkAddBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-add-modal-btn");if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'
 					+ str(table_ids)
