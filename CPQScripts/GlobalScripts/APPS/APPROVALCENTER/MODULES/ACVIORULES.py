@@ -529,7 +529,7 @@ class ViolationConditions:
         if 1==1:
             QuoteId = ""
             if str(ObjectName).strip() == "SAQTRV":
-                GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
+                GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(RecordId))
                 QuoteId = GetQuoteId.QUOTE_ID
             
             #Log.Info("Quote ID = "+str(QuoteId))
@@ -1043,7 +1043,7 @@ class ViolationConditions:
                 where_str += " OR ((CNSMBL_ENT = 'Some Exclusions'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0004-Subfab')"
         
         lines = []
-        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
            lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
         
@@ -1119,7 +1119,7 @@ class ViolationConditions:
             BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded","Repair Cust Owned Parts":"Yes"})
         
         lines = []
-        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
            lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
         
@@ -1194,7 +1194,7 @@ class ViolationConditions:
             else:
                 where_str += " OR ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
         lines = []
-        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
            lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
         
