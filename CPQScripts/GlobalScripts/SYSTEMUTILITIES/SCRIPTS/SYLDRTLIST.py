@@ -6852,9 +6852,9 @@ class SYLDRTLIST:
 						Qustr = " where " + str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 						if Qustr:
 							if str(TreeParentParam)== "Billing":
-								Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
+								Qustr += " AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(quote_revision_record_id,TreeParam,billing_date_column[0], billing_date_column[-1])
 							else:
-								Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
+								Qustr += " AND QTEREV_RECORD_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(quote_revision_record_id,billing_date_column[0], billing_date_column[-1])
 						pivot_query_str = """
 									SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
 									AS ROW, *
@@ -9536,10 +9536,13 @@ class SYLDRTLIST:
 				table_list.append(new_dict)
 				
 				footer_str, footer = "", ""
-				footer_tot = ""
+				footer_tot = gettotaldateamt = ""
 				if ObjectName == "SAQIBP" and TreeParam != 'Quote Items':
 					ContractRecordId = Product.GetGlobal("contract_quote_record_id")
-					gettotaldateamt = Sql.GetList("SELECT BILLING_VALUE=SUM(BILLING_VALUE),ESTVAL_INGL_CURR = SUM(ESTVAL_INGL_CURR),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
+					if TreeParam == "Z0117":
+						gettotaldateamt = Sql.GetList("SELECT BILLING_VALUE=SUM(BILLING_VALUE),ESTVAL_INGL_CURR = SUM(ESTVAL_INGL_CURR),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE = '{billing_date_column}' and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' GROUP BY BILLING_DATE".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=billing_date_column[0],service_id = TreeParam))
+					else:
+						gettotaldateamt = Sql.GetList("SELECT BILLING_VALUE=SUM(BILLING_VALUE),ESTVAL_INGL_CURR = SUM(ESTVAL_INGL_CURR),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
 					if gettotaldateamt:
 						my_format = "{:,." + str(decimal_place) + "f}"
 						for val in gettotaldateamt: 
