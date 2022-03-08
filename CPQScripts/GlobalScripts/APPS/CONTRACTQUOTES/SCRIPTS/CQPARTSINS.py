@@ -438,8 +438,8 @@ class SyncFPMQuoteAndHanaDatabase:
                         if re.search(r'6000-',childvalue):
                             child_temp_value +=','+"''"
                             child_temp_flag=1
-                        else:
-                            child_temp_value +=','+ele.group(2) if ele.group(2) !='' else None
+                    else:
+                        child_temp_value +=','+ele.group(2) if ele.group(2) !='' else None
                                    
                 if child_temp_flag == 1:
                     child_temp_value += ')'
