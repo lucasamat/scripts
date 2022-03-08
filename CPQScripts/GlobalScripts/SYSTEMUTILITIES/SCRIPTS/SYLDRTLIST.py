@@ -5623,7 +5623,7 @@ class SYLDRTLIST:
 				column_before_delivery_pivot_change = col
 				col += ","+ ",".join(delivery_date_column)
 			select_obj_str = col
-			Trace.Write('@5221, Select obj str-->'+str(select_obj_str))
+			Trace.Write('@5221, Select obj str-->'+str(select_obj_str)+'-'+str(SubTab))
 			if RECORD_ID == "SYOBJR-00029" and SubTab.upper() =='INCLUSIONS':
 				select_obj_str = select_obj_str.replace('NEW_PART','UNIT_PRICE,EXTENDED_PRICE')
 			edit_field = []
