@@ -4386,7 +4386,7 @@ class SYLDRTLIST:
 									+ str(invs)
 									+ '" data-filter-control="input" data-title-tooltip="'
 									+ str(qstring)
-									+ '" data-formatter="empty" data-sortable="true" '
+									+ '" data-formatter=" " data-sortable="true" '
 									+ rowspan
 									+'>'
 									+ str(qstring)
