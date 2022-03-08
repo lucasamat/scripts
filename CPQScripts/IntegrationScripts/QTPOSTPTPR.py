@@ -204,11 +204,10 @@ try:
 				if cust_participate:
 					if cust_participate.ODCC_FLAG != 'ZZZ':
 						for condition in i['conditions']:
-							#Log.Info("zerulog-->"+str(condition))
 							if condition['conditionType'] == "ZERU":
 								core_credit_amount = condition['conditionValue']
 								break
-				Log.Info("core_credit_amount--->"+str(core_credit_amount))
+				#Log.Info("core_credit_amount--->"+str(core_credit_amount))
 				#insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"]))
 				insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"],i["grossValue"]))
 				
@@ -482,6 +481,9 @@ try:
 				GetSum = Sql.GetFirst("SELECT SUM(UNIT_PRICE) AS TOTAL_UNIT, SUM(EXTENDED_UNIT_PRICE) AS TOTAL_EXT, SUM(TAX_AMOUNT_INGL_CURR)AS TOTAL_TAX  FROM SAQSPT (NOLOCK) WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID IN('Z0108','Z0110') AND (CUSTOMER_ANNUAL_QUANTITY IS NOT NULL AND CUSTOMER_ANNUAL_QUANTITY > 0)".format( quote_record_id,revision_record_id))
 						
 				Sql.RunQuery("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = {total_net} - {total_tax}, SALES_PRICE_INGL_CURR = '{total_unit}', TOTAL_AMOUNT_INGL_CURR ='{total_net}', TAX_AMOUNT_INGL_CURR ='{total_tax}' FROM SAQTRV (NOLOCK) 
+									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=quote_record_id,rev =revision_record_id))
+
+				Sql.RunQuery("""UPDATE SAQRIS SET NET_VALUE_INGL_CURR = {total_net} - {total_tax}, NET_PRICE_INGL_CURR = '{total_unit}', TOTAL_AMOUNT_INGL_CURR ='{total_net}', TAX_AMOUNT_INGL_CURR ='{total_tax}' FROM SAQRIS (NOLOCK) 
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=quote_record_id,rev =revision_record_id))
 								
 			
