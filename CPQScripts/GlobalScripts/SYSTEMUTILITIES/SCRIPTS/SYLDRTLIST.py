@@ -1906,7 +1906,7 @@ class SYLDRTLIST:
 												
 							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 							Trace.Write('pivot_columns-Qustr---'+str(Qustr))
-							get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}'".format(TreeParam,RecAttValue))
+							get_billing_type = Sql.GetFirst("SELECT BILLING_TYPE from SAQRIT where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(TreeParam,RecAttValue,quote_revision_record_id))
 							column_before_pivot_changes = "SERVICE_ID,EQUIPMENT_ID,SERIAL_NUMBER,GREENBOOK,BILLING_VALUE,ANNUAL_BILLING_AMOUNT,QUOTE_RECORD_ID,GREENBOOK_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE],CONVERT(VARCHAR(10),FORMAT(BILLING_DATE,'MM-dd-yyyy'),101) AS [BILLING_DATE],ESTVAL_INGL_CURR"
 							if get_billing_type:
 								get_billing_types = get_billing_type.BILLING_TYPE
