@@ -2245,6 +2245,26 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						+ str(current_obj_api_name)
 						+ '" > <i class="glyphicon glyphicon-triangle-bottom"></i> </button> </div></div></div></td>'
 					)
+				elif str(current_obj_api_name) in ("WARRANTY_START_DATE","WARRANTY_END_DATE"):
+					try:
+						current_obj_value = datetime.strptime(str(current_obj_value), '%Y-%m-%d').strftime('%m-%d-%Y')
+					except:
+						pass
+					sec_str += (
+						'<td><input id="'
+						+ str(current_obj_api_name)
+						+ '" type="text" value="'
+						+ current_obj_value
+						+ '" title="'
+						+ current_obj_value
+						+ '" class="form-control related_popup_css" style="'
+						+ str(left_float)
+						+ ' " '
+						+ disable
+						+ " maxlength = '"+str(max_length)+"'>"
+						+ str(edit_warn_icon)
+						+ "</td>"
+					)
 				elif str(current_obj_api_name) in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified"):
 					try:
 						current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
