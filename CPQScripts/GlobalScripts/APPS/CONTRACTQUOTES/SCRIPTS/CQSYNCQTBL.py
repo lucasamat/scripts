@@ -647,6 +647,7 @@ class SyncQuoteAndCustomTables:
 							"COMPANY_ID":salesorg_obj.COMPANY_ID,
 							"COMPANY_NAME":salesorg_obj.COMPANY_NAME,
 							"COMPANY_RECORD_ID":salesorg_obj.COMPANY_RECORD_ID,
+							"INCOTERM_LOCATION":custom_fields_detail.get("IncotermsLocation"),
 							"HLV_ORG_BUN":"AGS - SSC"
 						}
 						
