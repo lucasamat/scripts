@@ -433,7 +433,7 @@ class SyncFPMQuoteAndHanaDatabase:
                     if ele.group(1) == '"PARENT_PART_NUMBER"':
                         self.part_numbers.append(str(ele.group(2)))
                     temp_value +=','+ele.group(2) if ele.group(2) !='' else None
-                    if ele.group(1) == '"CHILD_PART_NUMBER"' and (ele.group(2) != '""' or ele.group(2) != '') :
+                    if ele.group(1) == '"CHILD_PART_NUMBER"' and (str(ele.group(2)) != '""' or str(ele.group(2)) != "''''") :
                         Log.Info("CPN:::->"+str(ele.group(2)))
                         child_temp_value +=','+'null'
                         child_temp_flag=1
