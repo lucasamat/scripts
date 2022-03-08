@@ -4196,8 +4196,7 @@ class SYLDRTLIST:
 						visible = ""
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_VALUE':                            
 							visible = 'data-visible="false"' 
-						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'ESTVAL_INGL_CURR':                            
-							visible = 'data-visible="false"'  
+						
 						if RECORD_ID == 'SYOBJR-34575' and str(invs) == 'QTEREVSPT_RECORD_ID':
 							visible = 'data-visible="false"'
 						
