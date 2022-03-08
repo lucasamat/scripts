@@ -1665,12 +1665,12 @@ class SyncQuoteAndCustomTables:
 								Sql.Upsert(quote_involved_party_contact_table_info)
 						
 						if contract_quote_obj and payload_json.get('TransactionType') and payload_json.get('OpportunityType'):
-							SalesType = {"Z14":"NEW","Z15":"CONTRACT RENEWAL","Z16":"CONTRACT EXTENSION","Z17":"CONTRACT AMENDMENT","Z18":"CONVERSION","Z19":"TOOL RELOCATION"}
+							# SalesType = {"Z14":"NEW","Z15":"CONTRACT RENEWAL","Z16":"CONTRACT EXTENSION","Z17":"CONTRACT AMENDMENT","Z18":"CONVERSION","Z19":"TOOL RELOCATION"}
 							OpportunityType = {"23":"PROSPECT FOR PRODUCT SALES","24":"PROSPECT FOR SERVICE","25":"PROSPECT FOR TRAINING","26":"PROSPECT FOR CONSULTING","Z27":"FPM/EXE","Z28":"TKM","Z29":"POES","Z30":"LOW","Z31":"AGS"}
-							Contract_child = "UPDATE SAQTMT SET SALE_TYPE = '{SalesType}' WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' ".format(SalesType = SalesType.get(payload_json.get("TransactionType")),QuoteRecordId = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID)
+							# Contract_child = "UPDATE SAQTMT SET SALE_TYPE = '{SalesType}' WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' ".format(SalesType = SalesType.get(payload_json.get("TransactionType")),QuoteRecordId = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID)
 							Sql.RunQuery(Contract_child)
 							if custom_fields_detail.get("OpportunityId"):
-								Opportunity_obj = "UPDATE SAOPPR SET SALE_TYPE = '{SalesType}',OPPORTUNITY_TYPE = '{OpportunityType}' where OPPORTUNITY_ID = '{OpportunityId}'".format(SalesType = SalesType.get(payload_json.get("TransactionType")), OpportunityType = OpportunityType.get(payload_json.get("OpportunityType")),OpportunityId = custom_fields_detail.get("OpportunityId"))
+								Opportunity_obj = "UPDATE SAOPPR SET OPPORTUNITY_TYPE = '{OpportunityType}' where OPPORTUNITY_ID = '{OpportunityId}'".format(OpportunityType = OpportunityType.get(payload_json.get("OpportunityType")),OpportunityId = custom_fields_detail.get("OpportunityId"))
 								Sql.RunQuery(Opportunity_obj)
 						#Log.Info("fab_location_ids ===> "+str(fab_location_ids))
 						#Log.Info("service_ids ===> "+str(service_ids)+"QUOTE ID----->"+str(contract_quote_data.get("QUOTE_ID")))	
