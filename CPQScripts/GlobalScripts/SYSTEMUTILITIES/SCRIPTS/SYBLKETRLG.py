@@ -956,10 +956,11 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				Sql.RunQuery("""UPDATE SAQRSP SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}' """.format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParentParam,greenbook=TreeParam,qury_str=qury_str))
 				return ""
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQSPT"):
+				Trace.Write('@959')
 				Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}'""".format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParam,qury_str=qury_str))
 				return ""
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQSPT" and TITLE == "CUSTOMER_ANNUAL_QUANTITY"):
-				Trace.Write('CUSTOMER_ANNUAL_QUANTITY')
+				Trace.Write('@963')
 
 				Sql.RunQuery("""UPDATE SAQSPT SET {column} = {value} ,SCHEDULE_MODE = {mode} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value = 'NULL' if int(ALLVALUES)==0 else ALLVALUES,mode = "'SCHEDULED'" if int(ALLVALUES) >= 10 else "'UNSCHEDULED'",QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParam,qury_str=qury_str))
 				count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_RECORD_ID= '"+str(Qt_rec_id)+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")
