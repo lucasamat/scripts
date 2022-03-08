@@ -1919,9 +1919,9 @@ class SYLDRTLIST:
 									get_ttl_amt = 'BILLING_VALUE'
 							if Qustr:
 								if str(TreeParentParam)== "Billing":
-									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
+									Qustr += " AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(quote_revision_record_id,TreeParam,billing_date_column[0], billing_date_column[-1])
 								else:
-									Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
+									Qustr += " AND QTEREV_RECORD_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(quote_revision_record_id,billing_date_column[0], billing_date_column[-1])
 							Trace.Write('Qustr---1925--'+str(Qustr))
 							pivot_query_str = """
 										SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
