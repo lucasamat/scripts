@@ -979,6 +979,10 @@ class ViolationConditions:
             BDHead.update({"SW Maintenance Fee":"Excluded"})
         if "Z0091" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+        if "Z0092" in service:
+            BDHead.update({"Additional target KPI":"Excursion Detection","Additional target KPI":"Max wafer Output ≤ 4%","Additional target KPI":"Max Wafer Output >4%","Additional target KPI":"Throughput","Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Contract Coverage":"7x16","Contract Coverage":"7x24","Non-Consumable":"Some Exclusions","Quote Type":"Usage based"})
+        if "Z0092W" in service:
+            BDHead.update({"Additional target KPI":"Excursion Detection","Additional target KPI":"Max wafer Output ≤ 4%","Additional target KPI":"Max Wafer Output >4%","Additional target KPI":"Throughput","Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Contract Coverage":"7x16","Contract Coverage":"7x24"})
         if "Z0009" in service:
             BDHead.update({"PM Quantity Credit %":"0.3","Quote Type":"Event Based","Quote Type":"Flex Event Based","Additional Target KPI":"Mean TIme Between Clean","Additional Target KPI":"Green to Green","Contract Coverage":"7x16","Contract Coverage":"7x24","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Process Parts/Kits clean, recy":"Shared"})
         if "Z0091W" in service:
@@ -1023,6 +1027,10 @@ class ViolationConditions:
         Trace.Write("BD ENTITLEMENT")
         BDHead = {}
         if "Z0091" in service or "Z0035" in service or "Z0091W" in service:
+            BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
+        if "Z0092" in service:
+            BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included","Quote Type":"Tool Based"})
+        if "Z0092W" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
         if "Z0010" in service:
             BDHead.update({"CoO Reduction Guarantees":"Included"})
@@ -1071,6 +1079,8 @@ class ViolationConditions:
             BDHead.update({"SW Maintenance Fee":"Excluded"})
         if "Z0091" in service or "Z0091W" in service:       
             BDHead.update({"95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+        if "Z0092" in service or "Z0092W" in service:       
+            BDHead.update({"Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
         
         if "Z0010" in service or "Z0128" in service:
             BDHead.update({"Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
