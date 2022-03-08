@@ -56,7 +56,7 @@ try:
         if STPObj:
             stp_account_id = str(STPObj.ACCOUNT_ID)		
         tax_classification = None
-        quote_item_obj =Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=contract_quote_record_id, RevisionRecordId=quote_revision_record_id, ServiceId=service_id))
+        quote_item_obj =Sql.GetFirst("SELECT TAXCLASSIFICATION_ID FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=contract_quote_record_id, RevisionRecordId=quote_revision_record_id, ServiceId=service_id))
         if quote_item_obj:
             tax_classification = quote_item_obj.TAXCLASSIFICATION_ID
         itemid = 1  
