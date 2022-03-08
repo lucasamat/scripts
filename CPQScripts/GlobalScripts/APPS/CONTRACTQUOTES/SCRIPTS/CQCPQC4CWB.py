@@ -201,6 +201,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
             webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
             webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
             if requestdata != " ":
-                response = webclient.UploadString(URL, requestdata)
+                #response = webclient.UploadString(URL, requestdata)
+                Trace.Write("inside If condition")
             else:
                 Log.Info("request data empty --->Not able to fetch the records from revision object")
