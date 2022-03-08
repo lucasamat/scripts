@@ -976,103 +976,162 @@ class ViolationConditions:
     def BDHeadEnt(self,RecordId,service,QuoteId):
         Trace.Write("BD HEAD ENTITLEMENT")
         BDHead = {}
+        where_str = ""
         if "Z0114" in service:
             BDHead.update({"SW Maintenance Fee":"Excluded"})
         if "Z0091" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            if where_str == "":
+                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NCNSMB_ENT = 'Some Exclusions' OR CNSMBL_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0091')"
+            else:
+                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NCNSMB_ENT = 'Some Exclusions' OR CNSMBL_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0091')"
         if "Z0092" in service:
             BDHead.update({"Additional target KPI":"Excursion Detection","Additional target KPI":"Max wafer Output ≤ 4%","Additional target KPI":"Max Wafer Output >4%","Additional target KPI":"Throughput","Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Contract Coverage":"7x16","Contract Coverage":"7x24","Non-Consumable":"Some Exclusions","Quote Type":"Usage based"})
+            if where_str == "":
+                where_str += " ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Usage based') AND SERVICE_ID = 'Z0092')"
+            else:
+                where_str += " OR ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Usage based') AND SERVICE_ID = 'Z0092')"
         if "Z0092W" in service:
             BDHead.update({"Additional target KPI":"Excursion Detection","Additional target KPI":"Max wafer Output ≤ 4%","Additional target KPI":"Max Wafer Output >4%","Additional target KPI":"Throughput","Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Contract Coverage":"7x16","Contract Coverage":"7x24"})
+            if where_str == "":
+                where_str += " ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' ) AND SERVICE_ID = 'Z0092W')"
+            else:
+                where_str += " OR ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' ) AND SERVICE_ID = 'Z0092W')"
         if "Z0009" in service:
             BDHead.update({"PM Quantity Credit %":"0.3","Quote Type":"Event Based","Quote Type":"Flex Event Based","Additional Target KPI":"Mean TIme Between Clean","Additional Target KPI":"Green to Green","Contract Coverage":"7x16","Contract Coverage":"7x24","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Process Parts/Kits clean, recy":"Shared"})
+            if where_str == "":
+                where_str += " ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Mean TIme Between Clean' OR  ATGKEY = 'Green to Green'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Event Based' OR QTETYP = 'Event Based' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0009')"
+            else:
+                where_str += " OR ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Mean TIme Between Clean' OR  ATGKEY = 'Green to Green'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Event Based' OR QTETYP = 'Event Based' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0009')"
         if "Z0091W" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes"})
+            if where_str == "":
+                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NWPTON = 'Yes' OR CNSMBL_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0091W')"
+            else:
+                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NWPTON = 'Yes' OR CNSMBL_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0091W')"
         if "Z0035" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","On Wafer Specs Input":"Manual Input(Free text)"})
+            if where_str == "":
+                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR NCNSMB_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0035')"
+            else:
+                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR NCNSMB_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0035')"
         if "Z0010" in service:
             BDHead.update({"Billing Type":"Fixed","Billing Cycle":"Quarterly","Billing Condition":"Shipment based","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
+            if where_str == "":
+                where_str += " ((BILTYP = 'Fixed' ) AND SERVICE_ID = 'Z0010')"
+            else:
+                where_str += " OR ((BILTYP = 'Fixed' ) AND SERVICE_ID = 'Z0010')"
         if "Z0128" in service:
             BDHead.update({"Billing Cycle":"Quarterly","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
         if "Z0100" in service:
             BDHead.update({"Quote Type":"Usage based"})
+            if where_str == "":
+                where_str += " ((QTETYP = 'Usage based' ) AND SERVICE_ID = 'Z0100')"
+            else:
+                where_str += " OR ((QTETYP = 'Usage based' ) AND SERVICE_ID = 'Z0100')"
         if "Z0004W" in service:
             BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Consumable":"Some Exclusions"})
+            if where_str == "":
+                where_str += " ((CNSMBL_ENT = 'Some Exclusions' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004W')"
+            else:
+                where_str += " OR ((CNSMBL_ENT = 'Some Exclusions'  OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004W')"
         if "Z0004-Subfab" in service:
             BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Consumable":"Some Exclusions","Non-Consumable":"Some Exclusions"})
-        
-        listofAPI = []
-        line = []
-        GetAPI = Sql.GetList("SELECT API_NAME,FIELD_LABEL FROM SYOBJD (NOLOCK) WHERE LEN(API_NAME) = 6 AND OBJECT_NAME = 'SAQICO'")
-        for x in GetAPI:
-            GetSAQICOValue = Sql.GetFirst("SELECT {} FROM SAQICO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(x.API_NAME,RecordId))
-            ApiName = x.API_NAME
-            listofAPI.append(str(x.FIELD_LABEL)+"_"+str(x.API_NAME)+"_"+str(eval("GetSAQICOValue."+ApiName)))
-        for x in listofAPI:
-            for y in BDHead:
-                if y in x and x.split("_")[2] == BDHead[y]:
-
-                    GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
-                    line.append(GetSAQICO.LINE)
-                    Trace.Write("BD HEAD ENT X = "+str(x))
-        
-        if len(line) != 0:
-            if len(line) == 1:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}'".format(line[0],RecordId))
+            if where_str == "":
+                where_str += " ((CNSMBL_ENT = 'Some Exclusions' OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0004-Subfab')"
             else:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+                where_str += " OR ((CNSMBL_ENT = 'Some Exclusions'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0004-Subfab')"
+        
+        lines = []
+        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        if annualized_items_obj:
+           lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
+        
+        if len(lines) != 0:
+            if len(lines) == 1:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
+
+            else:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
-            return 2   
+            return 2
     def BDEnt(self,RecordId,service,QuoteId):
         Trace.Write("BD ENTITLEMENT")
         BDHead = {}
+        where_str = ""
         if "Z0091" in service or "Z0035" in service or "Z0091W" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
+            if "Z0091" in service:
+                if where_str == "":
+                    where_str += " ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0091')"
+                else:
+                    where_str += " OR ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0091')"
+            elif "Z0035" in service:
+                if where_str == "":
+                    where_str += " ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0035')"
+                else:
+                    where_str += " OR ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0035')"
+            elif "Z0091W" in service:
+                if where_str == "":
+                    where_str += " ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0091W')"
+                else:
+                    where_str += " OR ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0091W')"
         if "Z0092" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included","Quote Type":"Tool Based"})
+            if where_str == "":
+                    where_str += " ((NWPTON = 'Yes' OR QTETYP = 'Tool Based') AND SERVICE_ID = 'Z0092')"
+            else:
+                where_str += " OR ((NWPTON = 'Yes' OR QTETYP = 'Tool Based') AND SERVICE_ID = 'Z0092')"
         if "Z0092W" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
+            if where_str == "":
+                    where_str += " ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0092W')"
+            else:
+                where_str += " OR ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0092W')"
         if "Z0010" in service:
             BDHead.update({"CoO Reduction Guarantees":"Included"})
         if "Z0110" in service:
             BDHead.update({"On-site Consigned Parts":"9","On-site Consigned Parts":"8","On-site Consigned Parts":"7","On-site Consigned Parts":"6"})
         if "Z0123" in service:
             BDHead.update({"Billing Type":"Fixed"})
+            if where_str == "":
+                    where_str += " ((BILTYP = 'Fixed') AND SERVICE_ID = 'Z0123')"
+            else:
+                where_str += " OR ((BILTYP = 'Fixed') AND SERVICE_ID = 'Z0123')"
         if "Z0128" in service:
             BDHead.update({"CoO Reduction Guarantees":"Included"})
         if "Z0009" in service:
             BDHead.update({"CoO Reduction Guarantees":"Included","Primary KPI. Perf Guarantee":"First Time Right"})
+            if where_str == "":
+                    where_str += " ((PRMKPI_ENT = 'First Time Right') AND SERVICE_ID = 'Z0009')"
+            else:
+                where_str += " OR ((PRMKPI_ENT = 'First Time Right') AND SERVICE_ID = 'Z0009')"
         if "Z0007" in service:
             BDHead.update({"Decontamination":"Included","New Parts Only":"Yes"})
+            if where_str == "":
+                    where_str += " ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0007')"
+            else:
+                where_str += " OR ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0007')"
         if "Z0004W" in service:
             BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded"})
-        if "Z0004-Subfav" in service:
+        if "Z0004-Subfab" in service:
             BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded","Repair Cust Owned Parts":"Yes"})
         
-        listofAPI = []
-        line = []
-        GetAPI = Sql.GetList("SELECT API_NAME,FIELD_LABEL FROM SYOBJD (NOLOCK) WHERE LEN(API_NAME) = 6 AND OBJECT_NAME = 'SAQICO'")
-        for x in GetAPI:
-            GetSAQICOValue = Sql.GetFirst("SELECT {} FROM SAQICO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(x.API_NAME,RecordId))
-            ApiName = x.API_NAME
-            listofAPI.append(str(x.FIELD_LABEL)+"_"+str(x.API_NAME)+"_"+str(eval("GetSAQICOValue."+ApiName)))
-        for x in listofAPI:
-            for y in BDHead:
-                if y in x and x.split("_")[2] == BDHead[y]:
-
-                    GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
-                    line.append(GetSAQICO.LINE)
-                    Trace.Write("BD ENT X = "+str(x))
+        lines = []
+        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        if annualized_items_obj:
+           lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
         
-        if len(line) != 0:
-            if len(line) == 1:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}'".format(line[0],RecordId))
+        if len(lines) != 0:
+            if len(lines) == 1:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
+
             else:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
-            return 2   
+            return 2
     def NSDREnt(self,RecordId,service,QuoteId):
         Trace.Write("NSDR ENTITLEMENT")
         BDHead = {}
@@ -1135,15 +1194,16 @@ class ViolationConditions:
             else:
                 where_str += " OR ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
         lines = []
-        annualized_items_obj = Sql.GetList("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
            lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
         
         if len(lines) != 0:
             if len(lines) == 1:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}'".format(lines[0],RecordId))
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
+
             else:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(lines),RecordId))
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
             return 2
@@ -1165,7 +1225,7 @@ class ViolationConditions:
             for y in BDHead:
                 if y in x and x.split("_")[2] == BDHead[y]:
 
-                    GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
+                    GetSAQICO = Sql.GetFirst("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
                     Trace.Write("REGIONAL ENT X = "+str(x))
         
@@ -1196,7 +1256,7 @@ class ViolationConditions:
             for y in BDHead:
                 if y in x and x.split("_")[2] == BDHead[y]:
 
-                    GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
+                    GetSAQICO = Sql.GetFirst("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
                     line.append(GetSAQICO.LINE)
                     Trace.Write("GLOBAL ENT X = "+str(x))
         
