@@ -1922,7 +1922,7 @@ class SYLDRTLIST:
 									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
 								else:
 									Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
-							
+							Trace.Write('Qustr---1925--'+str(Qustr))
 							pivot_query_str = """
 										SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
 										AS ROW, *
