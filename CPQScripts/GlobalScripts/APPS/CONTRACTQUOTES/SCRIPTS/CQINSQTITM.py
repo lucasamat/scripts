@@ -1126,7 +1126,7 @@ class ContractQuoteItem:
 						) OQ
 						LEFT JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID AND ISNULL(SAQICO.FABLOCATION_RECORD_ID,'') = ISNULL(OQ.FABLOCATION_RECORD_ID,'') AND SAQICO.GREENBOOK_RECORD_ID = OQ.GREENBOOK_RECORD_ID 
 						WHERE ISNULL(SAQICO.FABLOCATION_RECORD_ID,'') = '' AND ISNULL(SAQICO.GREENBOOK_RECORD_ID,'') = ''
-						""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id)
+						""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, ancillary_where = ancillary_where, ancillary_join = ancillary_join)
 				)
 		basic_insert_end = time.time()
 		Trace.Write("Basic Insert Time-----"+str(basic_insert_end-basic_insert_start))
