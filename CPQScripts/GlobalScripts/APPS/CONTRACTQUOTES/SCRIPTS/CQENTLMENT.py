@@ -1607,36 +1607,6 @@ class Entitlements:
 						Sql.RunQuery(Updatecps)
 				##to update match id at all level while saving ends
 				Sql.RunQuery(UpdateEntitlement)
-				#Trace.Write("TEST COMMIT")
-				#15007 START
-
-				if Quote.GetGlobal("SplitQuote") == "Yes" or Quote.GetGlobal("EntApprovals") == "Yes":
-					Quote.SetGlobal("EntApprovals","No")
-					Quote.SetGlobal("SplitQuote","No")
-					GetSelf = Sql.GetFirst("SELECT CpqTableEntryId,APRTRXOBJ_ID FROM ACAPMA (NOLOCK) WHERE APRCHN_ID = 'SELFAPPR' AND APRTRXOBJ_RECORD_ID = '{}'".format(self.revision_recordid))
-					if GetSelf is not None:
-						Sql.RunQuery("DELETE FROM ACAPMA WHERE APRTRXOBJ_RECORD_ID = '{}' AND APRCHN_ID = 'SELFAPPR'".format(self.revision_recordid))
-						Sql.RunQuery("DELETE FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND APRCHN_ID = 'SELFAPPR'".format(GetSelf.APRTRXOBJ_ID))
-						Sql.RunQuery("DELETE FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' AND APRCHN_ID = 'SELFAPPR'".format(GetSelf.APRTRXOBJ_ID))
-					else:
-						Sql.RunQuery("DELETE FROM ACAPMA WHERE APRTRXOBJ_RECORD_ID = '{}'".format(self.revision_recordid))
-						Sql.RunQuery("DELETE FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' ".format(self.quote_id))
-						Sql.RunQuery("DELETE FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%'".format(self.quote_id))
-					# Approval Trigger - Start								
-					#import ACVIORULES
-					try:
-						violationruleInsert = ACVIORULES.ViolationConditions()
-						header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-						if header_obj:
-							Trace.Write("Inside Approval Trigger")
-							violationruleInsert.InsertAction(
-															header_obj.RECORD_ID, self.revision_recordid, "SAQTRV"
-															)
-					except:
-						Trace.Write("violation error")
-					
-					# Approval Trigger - End
-				#15007 END
 				parts_value = 0
 				Service_Id = 'Z0108'
 				entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.ContractRecordId,RevisionRecordId=self.revision_recordid))
