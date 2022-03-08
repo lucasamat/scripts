@@ -41,8 +41,8 @@ class SyncFPMQuoteAndHanaDatabase:
         spare_parts_temp_table_name = re.sub(r'-','_',spare_parts_temp_table_name)
         self.columns = re.sub(r'\"|\{','',self.columns)
         self.columns = re.sub(r',,',',',self.columns)
-        #Log.Info("Columns--->"+str(self.columns))
-        #Log.Info("Values---->"+str(self.records))
+        Log.Info("Columns--->"+str(self.columns))
+        Log.Info("Values---->"+str(self.records))
         Log.Info("TempTableName--->"+str(spare_parts_temp_table_name))
         Trace.Write("Spare_part_insert")
         try:
