@@ -6382,14 +6382,14 @@ def UpdateBreadcrumb():
 		else:
 			eq_id = "Chain Step" 
 
-	elif TreeParam == "Customer Information" and TABLENAME == 'SAQTIP':
-		qry = Sql.GetFirst(
-		"SELECT PARTY_ID,PARTY_NAME FROM SAQTIP (NOLOCK) WHERE QUOTE_INVOLVED_PARTY_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
-		)
-		if qry:
-			eq_id = str(qry.PARTY_ID)
-		else:
-			eq_id = "Involved Parties"
+	# elif TreeParam == "Customer Information" and TABLENAME == 'SAQTIP':
+	# 	qry = Sql.GetFirst(
+	# 	"SELECT PARTY_ID,PARTY_NAME FROM SAQTIP (NOLOCK) WHERE QUOTE_INVOLVED_PARTY_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
+	# 	)
+	# 	if qry:
+	# 		eq_id = str(qry.PARTY_ID)
+	# 	else:
+	# 		eq_id = "Involved Parties"
 	elif TreeParam == "Customer Information" and TABLENAME == 'SAQSAF':
 		qry = Sql.GetFirst(
 		"SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
