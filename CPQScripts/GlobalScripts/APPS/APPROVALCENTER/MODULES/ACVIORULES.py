@@ -532,7 +532,7 @@ class ViolationConditions:
                 GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
                 QuoteId = GetQuoteId.QUOTE_ID
             
-            Log.Info("Quote ID = "+str(QuoteId))
+            #Log.Info("Quote ID = "+str(QuoteId))
             Vio_Select_Query = Vio_where_conditon = ""
             CHSqlObjs = Sql.GetList(
                 "SELECT APPROVAL_CHAIN_RECORD_ID,APRCHN_ID FROM ACAPCH (NOLOCK) WHERE APROBJ_RECORD_ID = '"
@@ -572,7 +572,7 @@ class ViolationConditions:
                                 
                                 if "PRENVL" in s and count == 0:
                                     Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
-                                    res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service)
+                                    res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service,QuoteId)
                                     #res = 1
                                     count += 1
                                     if res == 1:
@@ -766,7 +766,7 @@ class ViolationConditions:
                                             
                                             if "PRENVL" in s and count == 0:
                                                 Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
-                                                res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service)
+                                                res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service,QuoteId)
                                                 #res = 1
                                                 count += 1
                                                 if res == 1:
@@ -973,7 +973,7 @@ class ViolationConditions:
             b = Sql.RunQuery(updateAutoApproval)
         return True
 
-    def BDHeadEnt(self,RecordId,service):
+    def BDHeadEnt(self,RecordId,service,QuoteId):
         Trace.Write("BD HEAD ENTITLEMENT")
         BDHead = {}
         if "Z0114" in service:
@@ -1024,7 +1024,7 @@ class ViolationConditions:
             return 1
         else:
             return 2   
-    def BDEnt(self,RecordId,service):
+    def BDEnt(self,RecordId,service,QuoteId):
         Trace.Write("BD ENTITLEMENT")
         BDHead = {}
         if "Z0091" in service or "Z0035" in service or "Z0091W" in service:
@@ -1073,58 +1073,81 @@ class ViolationConditions:
             return 1
         else:
             return 2   
-    def NSDREnt(self,RecordId,service):
+    def NSDREnt(self,RecordId,service,QuoteId):
         Trace.Write("NSDR ENTITLEMENT")
         BDHead = {}
         where_str = ''
         if "Z0114" in service:
-            BDHead.update({"SW Maintenance Fee":"Excluded"})
-            where_str = " AND API_NAME = 'Excluded'"
-        if "Z0091" in service or "Z0091W" in service:       
-            BDHead.update({"95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            #BDHead.update({"SW Maintenance Fee":"Excluded"})
+            where_str += ""
+        if "Z0091" in service or "Z0091W" in service:
+            #BDHead.update({"95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            if "Z0091" in service:
+                if where_str == "":
+                    where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0091')"
+                else:
+                    where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0091')"
+            else:
+                if where_str == "":
+                    where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0091W')"
+                else:
+                    where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0091W')"
+
         if "Z0092" in service or "Z0092W" in service:       
-            BDHead.update({"Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
-        
+            #BDHead.update({"Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            if "Z0092" in service:
+                if where_str == "":
+                    where_str += " ((ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0092')"
+                else:
+                    where_str += " OR ((ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0092')"
+            else:
+                if where_str == "":
+                    where_str += " ((ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0092W')"
+                else:
+                    where_str += " OR ((ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0092W')"
         if "Z0010" in service or "Z0128" in service:
-            BDHead.update({"Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
+            #BDHead.update({"Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
+            where_str += ""
         
         if "Z0110" in service:
             
-            BDHead.update({"KPI - Monthly Consigned":"Exception %","KPI - ≥90% On Request":"Exception days","Perf. Credit NTE - Consigned":"Exception %","Perf. Credit NTE - On Request":"Exception %","Perf. Credit - Consigned Parts":"Exception %","Perf. Credit-On Request Parts":"Exception %","Consignment Fee-Low Qty Parts":"Exception %","Cust. Commit-Consigned Parts":"Per contract value","Cust. Commit-On Request Parts":"Exception %","Cust. Commit-On Request Parts":"Per contract value","Fcst Redistribution-Frequency":"Exception times/year"})
+            #BDHead.update({"KPI - Monthly Consigned":"Exception %","KPI - ≥90% On Request":"Exception days","Perf. Credit NTE - Consigned":"Exception %","Perf. Credit NTE - On Request":"Exception %","Perf. Credit - Consigned Parts":"Exception %","Perf. Credit-On Request Parts":"Exception %","Consignment Fee-Low Qty Parts":"Exception %","Cust. Commit-Consigned Parts":"Per contract value","Cust. Commit-On Request Parts":"Exception %","Cust. Commit-On Request Parts":"Per contract value","Fcst Redistribution-Frequency":"Exception times/year"})
+            if where_str == "":
+                where_str += ""
+            else:
+                where_str += ""
         if "Z0009" in service:
-            BDHead.update({"Swap Kits (Applied provided)":"Excluded","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            #BDHead.update({"Swap Kits (Applied provided)":"Excluded","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            if where_str == "":
+                where_str += " ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0009')"
+            else:
+                where_str += " OR ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0009')"
         if "Z0004W" in service:
-            BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            #BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            if where_str == "":
+                where_str += " ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004W')"
+            else:
+                where_str += " OR ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004W')"
         if "Z0004-Subfab" in service:
-            BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            #BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
+            if where_str == "":
+                where_str += " ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
+            else:
+                where_str += " OR ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
         lines = []
-        annualized_items_obj = Sql.GetList("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUORE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' {}".format(QuoteId,RecordId, where_str))
+        annualized_items_obj = Sql.GetList("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
            lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
-        # listofAPI = []
-        # line = []
-        # GetAPI = Sql.GetList("SELECT API_NAME,FIELD_LABEL FROM SYOBJD (NOLOCK) WHERE LEN(API_NAME) = 6 AND OBJECT_NAME = 'SAQICO'")
-        # for x in GetAPI:
-        #     GetSAQICOValue = Sql.GetFirst("SELECT {} FROM SAQICO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(x.API_NAME,RecordId))
-        #     ApiName = x.API_NAME
-        #     listofAPI.append(str(x.FIELD_LABEL)+"_"+str(x.API_NAME)+"_"+str(eval("GetSAQICOValue."+ApiName)))
-        # for x in listofAPI:
-        #     for y in BDHead:
-        #         if y in x and x.split("_")[2] == BDHead[y]:
-
-        #             GetSAQICO = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE {} = '{}' AND QTEREV_RECORD_ID = '{}'".format(x.split("_")[1],BDHead[y],RecordId))
-        #             line.append(GetSAQICO.LINE)
-        #             Trace.Write("NSDR ENT X = "+str(x))
         
-        if len(line) != 0:
-            if len(line) == 1:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}'".format(line[0],RecordId))
+        if len(lines) != 0:
+            if len(lines) == 1:
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}'".format(lines[0],RecordId))
             else:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(line),RecordId))
+                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}'".format(tuple(lines),RecordId))
             return 1
         else:
             return 2
-    def RegionalBDHead(self,RecordId,service):
+    def RegionalBDHead(self,RecordId,service,QuoteId):
         Trace.Write("REGIONAL BD HEAD ENTITLEMENT")
         BDHead = {}
         if "Z0110" in service:
@@ -1155,7 +1178,7 @@ class ViolationConditions:
         else:
             return 2
     
-    def GlobalBDHead(self,RecordId,service):
+    def GlobalBDHead(self,RecordId,service,QuoteId):
         Trace.Write("GLOBAL BD HEAD ENTITLEMENT")
         BDHead = {}
         if "Z0110" in service:
@@ -1185,18 +1208,18 @@ class ViolationConditions:
             return 1
         else:
             return 2
-    def ItemApproval(self,RecordId,aprchName,service):
+    def ItemApproval(self,RecordId,aprchName,service,QuoteId):
         Trace.Write("APRCHSTP NAME = "+str(aprchName))
         if aprchName == "NSDR":
-            res = self.NSDREnt(RecordId,service)
+            res = self.NSDREnt(RecordId,service,QuoteId)
         elif aprchName == "BD":
-            res = self.BDEnt(RecordId,service)
+            res = self.BDEnt(RecordId,service,QuoteId)
         elif aprchName == "BD Head":
-            res = self.BDHeadEnt(RecordId,service)
+            res = self.BDHeadEnt(RecordId,service,QuoteId)
         elif aprchName == "Regional BD":
-            res = self.RegionalBDHead(RecordId,service)
+            res = self.RegionalBDHead(RecordId,service,QuoteId)
         elif aprchName == "Global BD Head":
-            res = self.GlobalBDHead(RecordId,service)
+            res = self.GlobalBDHead(RecordId,service,QuoteId)
         
         Trace.Write("ITEM APPROVAL RETURN VALUE = "+str(res))
         return res
