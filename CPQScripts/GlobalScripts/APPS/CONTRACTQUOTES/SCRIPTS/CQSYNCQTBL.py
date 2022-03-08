@@ -42,7 +42,7 @@ class SyncQuoteAndCustomTables:
 			'STPAccountName':self.quote.GetCustomField('STPAccountName').Content,
 			'STPAccountType':self.quote.GetCustomField('STPAccountType').Content,
 			'Region':self.quote.GetCustomField('Region').Content,
-			'SalesType':self.quote.GetCustomField('SalesType').Content,
+			'TransactionType':self.quote.GetCustomField('TransactionType').Content,
 			'OpportunityId':self.quote.GetCustomField('OpportunityId').Content,
 			'OpportunityType':self.quote.GetCustomField('OpportunityType').Content,
 			'QuoteLevel':self.quote.GetCustomField('QuoteLevel').Content,
@@ -526,7 +526,7 @@ class SyncQuoteAndCustomTables:
 							"MASTER_TABLE_QUOTE_RECORD_ID": str(Guid.NewGuid()).upper(),
 							"REGION": salesorg_obj.REGION,
 							#"SALESORG_ID": custom_fields_detail.get("SalesOrgID"),
-							"SALE_TYPE": custom_fields_detail.get("SalesType"),
+							"SALE_TYPE": custom_fields_detail.get("TransactionType"),
 							#"CANCELLATION_PERIOD":"90 DAYS",
 							#"DOCUMENT_TYPE": document_type.get(self.quote.DocumentTypeCode),
 							#"DOCUMENT_TYPE": "",
@@ -1664,19 +1664,19 @@ class SyncQuoteAndCustomTables:
 								Log.Info("SAQICT Insert")	
 								Sql.Upsert(quote_involved_party_contact_table_info)
 						
-						if contract_quote_obj and payload_json.get('SalesType') and payload_json.get('OpportunityType'):
+						if contract_quote_obj and payload_json.get('TransactionType') and payload_json.get('OpportunityType'):
 							SalesType = {"Z14":"NEW","Z15":"CONTRACT RENEWAL","Z16":"CONTRACT EXTENSION","Z17":"CONTRACT AMENDMENT","Z18":"CONVERSION","Z19":"TOOL RELOCATION"}
 							OpportunityType = {"23":"PROSPECT FOR PRODUCT SALES","24":"PROSPECT FOR SERVICE","25":"PROSPECT FOR TRAINING","26":"PROSPECT FOR CONSULTING","Z27":"FPM/EXE","Z28":"TKM","Z29":"POES","Z30":"LOW","Z31":"AGS"}
-							Contract_child = "UPDATE SAQTMT SET SALE_TYPE = '{SalesType}' WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' ".format(SalesType = SalesType.get(payload_json.get("SalesType")),QuoteRecordId = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID)
+							Contract_child = "UPDATE SAQTMT SET SALE_TYPE = '{SalesType}' WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' ".format(SalesType = SalesType.get(payload_json.get("TransactionType")),QuoteRecordId = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID)
 							Sql.RunQuery(Contract_child)
 							if custom_fields_detail.get("OpportunityId"):
-								Opportunity_obj = "UPDATE SAOPPR SET SALE_TYPE = '{SalesType}',OPPORTUNITY_TYPE = '{OpportunityType}' where OPPORTUNITY_ID = '{OpportunityId}'".format(SalesType = SalesType.get(payload_json.get("SalesType")), OpportunityType = OpportunityType.get(payload_json.get("OpportunityType")),OpportunityId = custom_fields_detail.get("OpportunityId"))
+								Opportunity_obj = "UPDATE SAOPPR SET SALE_TYPE = '{SalesType}',OPPORTUNITY_TYPE = '{OpportunityType}' where OPPORTUNITY_ID = '{OpportunityId}'".format(SalesType = SalesType.get(payload_json.get("TransactionType")), OpportunityType = OpportunityType.get(payload_json.get("OpportunityType")),OpportunityId = custom_fields_detail.get("OpportunityId"))
 								Sql.RunQuery(Opportunity_obj)
 						#Log.Info("fab_location_ids ===> "+str(fab_location_ids))
 						#Log.Info("service_ids ===> "+str(service_ids)+"QUOTE ID----->"+str(contract_quote_data.get("QUOTE_ID")))	
-						Log.Info("CHECKING_TOOL_CONDTN_J "+str(contract_quote_obj)+" | "+str(payload_json.get('SalesType'))+" | "+str(payload_json.get('OpportunityType')))
+						Log.Info("CHECKING_TOOL_CONDTN_J "+str(contract_quote_obj)+" | "+str(payload_json.get('TransactionType'))+" | "+str(payload_json.get('OpportunityType')))
 
-						if  str(payload_json.get('SalesType')) == 'Z19':
+						if  str(payload_json.get('TransactionType')) == 'Z19':
 							# Log.Info("CHKNG_J "+str(billtocustomer_quote_data))
 							# quote_involved_party_sending_account = Sql.GetTable("SAQTIP")
 							# sending_account_quote_data = {
