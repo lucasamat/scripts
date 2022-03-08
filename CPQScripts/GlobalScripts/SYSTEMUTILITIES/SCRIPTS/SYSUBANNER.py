@@ -2103,12 +2103,14 @@ def Related_Sub_Banner(
         get_rounding_place = Sql.GetFirst("SELECT * FROM PRCURR WHERE CURRENCY_RECORD_ID = '{}' ".format(get_quote_details.GLOBAL_CURRENCY_RECORD_ID))
         decimal_format = "{:,." + str(get_rounding_place.DISPLAY_DECIMAL_PLACES) + "f}"
         if subTabName == "Summary":
-            PrimaryLable = "Total Est Net Val"
-            PrimaryValue = decimal_format.format(float(get_quote_details.NET_VALUE_INGL_CURR))+" "+ curr if str(get_quote_details.NET_VALUE_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
-            SecondLable = "Total Tax/VAT/GST"
-            SecondValue = decimal_format.format(float(get_quote_details.TAX_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
-            ThirdLable = "Total Net Val"
-            ThirdValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
+            PrimaryLable = "Total Excluding Tax/VAT/GST"
+            PrimaryValue = decimal_format.format(float("0.00"))+" "+curr
+            SecondLable = "Total Est Net Val"
+            SecondValue = decimal_format.format(float(get_quote_details.NET_VALUE_INGL_CURR))+" "+ curr if str(get_quote_details.NET_VALUE_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
+            ThirdLable = "Total Tax/VAT/GST"
+            ThirdValue = decimal_format.format(float(get_quote_details.TAX_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
+            # ThirdLable = "Total Net Val"
+            # ThirdValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
             FourthLable = "Total Amt"
             FourthValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
             FifthLable = "Total Margin Pct"
