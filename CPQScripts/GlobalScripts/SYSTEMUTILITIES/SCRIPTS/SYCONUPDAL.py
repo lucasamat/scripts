@@ -177,6 +177,7 @@ class ConfigUpdateScript:
 			columns = (record_obj.COLUMNS).replace("'", "").replace(" ", "").split(",")
 			table_name = ""
 			##A055S000P01-9370 ,A055S000P01-4191 code starts..
+			Trace.Write("columns_chk_j "+str(columns))
 			if self.current_tab_name == "Quote":
 				objd_records_obj = Sql.GetList(
 					"""
