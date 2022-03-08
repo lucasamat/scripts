@@ -3890,7 +3890,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)
 						else:							
-							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP") and RECORD_ID not in ("SYOBJR-98875","SYOBJR-98873","SYOBJR-00010","SYOBJR-98881","SYOBJR-00005","SYOBJR-98882"):
+							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP") and RECORD_ID not in ("SYOBJR-98875","SYOBJR-98873","SYOBJR-00010","SYOBJR-98881","SYOBJR-00005","SYOBJR-98882","SYOBJR-98877"):
 								Trace.Write("CHKNG_J_05 "+str(qstring))
 								table_header += (
 									'<th  data-field="'
@@ -3916,7 +3916,7 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)
-							elif RECORD_ID in ("SYOBJR-00010"):
+							elif RECORD_ID in ("SYOBJR-00010","SYOBJR-98877"):
 								Trace.Write("CHKNG_EMPTY HYPERLINK")
 								table_header += (
 									'<th  data-field="'
