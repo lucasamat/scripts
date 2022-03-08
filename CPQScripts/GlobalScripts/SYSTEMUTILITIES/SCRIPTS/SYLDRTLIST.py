@@ -1393,7 +1393,7 @@ class SYLDRTLIST:
 							error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
 							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-							on_hold_costing = '<img title="ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
+							on_hold_costing = '<img title="ON HOLD COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
 							TreeParentParam = Product.GetGlobal("TreeParentLevel1")							
 							try:
 								if str(TreeParentParam.split("-")[4]):
@@ -1406,7 +1406,7 @@ class SYLDRTLIST:
 							Qury_str = (
 									"SELECT DISTINCT TOP "
 									+ str(PerPage)
-									+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,EQUIPMENT_ID,SERVICE_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE,NET_PRICE,"+col_year+",EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,MNT_PLANT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by LINE,"+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+									+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,EQUIPMENT_ID,SERVICE_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE,NET_PRICE,"+col_year+",EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,MNT_PLANT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by LINE,"+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
 									+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"') m where m.ROW BETWEEN "
 									+ str(Page_start)
 									+ " AND "
@@ -1428,7 +1428,7 @@ class SYLDRTLIST:
 							error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
 							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-							on_hold_costing = '<img title="ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
+							on_hold_costing = '<img title="ON HOLD COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
 							qt_rec_id = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
 							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
 							if TreeParentParam == "Quote Items": 
@@ -1452,7 +1452,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_ID,SERVICE_ID,"+col_year+",SERIAL_NO, GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, SALES_DISCOUNT_PRICE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select * from SAQICO (NOLOCK) where QUOTE_ID = '"
+										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_ID,SERVICE_ID,"+col_year+",SERIAL_NO, GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, SALES_DISCOUNT_PRICE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select * from SAQICO (NOLOCK) where QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "' AND SERVICE_ID = '"
 										+ str(LineAndEquipIDList)
@@ -1470,7 +1470,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,SERVICE_ID,OBJECT_ID,ASSEMBLY_ID,GOT_CODE,EQNODE,PROCES,PM_ID,KIT_NUMBER,MNTEVT_LEVEL,SAPMMP,CNTDAY,FABLOCATION_ID,GREENBOOK,QUANTITY,TOLCFG,KPU,SPQTEV,SPSPCT,SVSPCT,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,CONSCP,CONSPI,NONCCI,NONCPI,AMNCCI,AMNPPI,TNTVGC,TENVGC,ADDCOF,TRGPRC,SLSPRC,BDVPRC,CELPRC,TGADJP,YOYPCT,USRPRC,BCHPGC,BCHDPT,CNTPRC,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY LINE) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,SERVICE_ID,OBJECT_ID,ASSEMBLY_ID,GOT_CODE,EQNODE,PROCES,PM_ID,KIT_NUMBER,MNTEVT_LEVEL,SAPMMP,CNTDAY,FABLOCATION_ID,GREENBOOK,QUANTITY,TOLCFG,KPU,SPQTEV,SPSPCT,SVSPCT,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,CONSCP,CONSPI,NONCCI,NONCPI,AMNCCI,AMNPPI,TNTVGC,TENVGC,ADDCOF,TRGPRC,SLSPRC,BDVPRC,CELPRC,TGADJP,YOYPCT,USRPRC,BCHPGC,BCHDPT,CNTPRC,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY LINE) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
 										+ str(Page_start)
@@ -1493,7 +1493,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"SELECT DISTINCT TOP "
 									+ str(PerPage)
-									+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,"+col_year+",EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,TECHNOLOGY,KPU,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+									+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,"+col_year+",EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,TECHNOLOGY,KPU,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
 									+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and FABLOCATION_ID = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and LINE_ITEM_ID = '"+str(TreeParentParam.split(' -')[0])+"') m where m.ROW BETWEEN "
 									+ str(Page_start)
 									+ " AND "
@@ -3174,12 +3174,12 @@ class SYLDRTLIST:
 							
 						if value1234 == "ASSEMBLY IS MISSING":
 							value1234 = value1234.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
-						if value1234 == "ON HOLD - COSTING":
+						if value1234 == "ON HOLD COSTING":
 							Trace.Write("cmng_inside_on_hold_1 "+str(value1234))
-							value1234 = value1234.replace("ON HOLD - COSTING","<img title='ON HOLD - COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
+							value1234 = value1234.replace("ON HOLD COSTING","<img title='ON HOLD COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
 						if value1234 == "PARTIALLY PRICED":
 							value1234 = value1234.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-						if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "ON HOLD - COSTING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
+						if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "ON HOLD COSTING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
 							value1234 = value1234
 						if value123 == objRecName:
 							current_rec_id = value1234
@@ -4945,12 +4945,12 @@ class SYLDRTLIST:
 						string_value = string.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg> ERROR")
 					if string == "ASSEMBLY IS MISSING":
 						string_value = string.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
-					if string == "ON HOLD - COSTING":
+					if string == "ON HOLD COSTING":
 						Trace.Write("cmng_inside_on_hold_1 "+str(value1234))
-						string_value = string.replace("ON HOLD - COSTING","<img title='ON HOLD - COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg> ON HOLD - COSTING")
+						string_value = string.replace("ON HOLD COSTING","<img title='ON HOLD COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg> ON HOLD COSTING")
 					if string == "PARTIALLY PRICED":
 						string_value = string.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-					if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "ON HOLD - COSTING" and string != "PARTIALLY PRICED" and string != "ACQUIRING" and string != "PRICED":                        
+					if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "ON HOLD COSTING" and string != "PARTIALLY PRICED" and string != "ACQUIRING" and string != "PRICED":                        
 						string_value = string
 					StringValue_lists.append(string_value)
 				DropDownList.append(StringValue_lists)
@@ -6581,7 +6581,7 @@ class SYLDRTLIST:
 							error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
 							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-							on_hold_costing = '<img title="ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
+							on_hold_costing = '<img title="ON HOLD COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
 							if getyears == 1:
 								col_year =  'YEAR_1'
 							elif getyears == 2:
@@ -6605,7 +6605,7 @@ class SYLDRTLIST:
 							Qury_str = (
 									"SELECT DISTINCT TOP "
 									+ str(PerPage)
-									+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TARGET_PRICE,NET_VALUE,EQUIPMENT_RECORD_ID,"+col_year+",SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,TECHNOLOGY,KPU,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
+									+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TARGET_PRICE,NET_VALUE,EQUIPMENT_RECORD_ID,"+col_year+",SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,TECHNOLOGY,KPU,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
 									+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"') m where m.ROW BETWEEN "
 									+ str(Page_start)
 									+ " AND "
@@ -6634,7 +6634,7 @@ class SYLDRTLIST:
 							error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
 							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-							on_hold_costing = '<img title="ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
+							on_hold_costing = '<img title="ON HOLD COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
 							qt_rec_id = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
 							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")                            
 							
@@ -6645,7 +6645,7 @@ class SYLDRTLIST:
 									
 									"select top "
 										+ str(PerPage)
-										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,SERVICE_ID,OBJECT_ID,ASSEMBLY_ID,GOT_CODE,EQNODE,PROCES,PM_ID,KIT_NUMBER,MNTEVT_LEVEL,SAPMMP,CNTDAY,FABLOCATION_ID,GREENBOOK,QUANTITY,TOLCFG,KPU,SPQTEV,SPSPCT,SVSPCT,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,CONSCP,CONSPI,NONCCI,NONCPI,AMNCCI,AMNPPI,TNTVGC,TENVGC,ADDCOF,TRGPRC,SLSPRC,BDVPRC,CELPRC,TGADJP,YOYPCT,USRPRC,BCHPGC,BCHDPT,CNTPRC,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY LINE) AS ROW, * from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,SERVICE_ID,OBJECT_ID,ASSEMBLY_ID,GOT_CODE,EQNODE,PROCES,PM_ID,KIT_NUMBER,MNTEVT_LEVEL,SAPMMP,CNTDAY,FABLOCATION_ID,GREENBOOK,QUANTITY,TOLCFG,KPU,SPQTEV,SPSPCT,SVSPCT,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,CONSCP,CONSPI,NONCCI,NONCPI,AMNCCI,AMNPPI,TNTVGC,TENVGC,ADDCOF,TRGPRC,SLSPRC,BDVPRC,CELPRC,TGADJP,YOYPCT,USRPRC,BCHPGC,BCHDPT,CNTPRC,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY LINE) AS ROW, * from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "') m where m.ROW BETWEEN "
 										+ str(Page_start)
@@ -6669,7 +6669,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"'  WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, SERVICE_ID, EQUIPMENT_ID,LINE_ITEM_ID,YEAR_1, SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,SALES_DISCOUNT_PRICE,NET_VALUE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"'  WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, SERVICE_ID, EQUIPMENT_ID,LINE_ITEM_ID,YEAR_1, SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,SALES_DISCOUNT_PRICE,NET_VALUE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 										+") AS ROW, * from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "' AND SERVICE_ID = '"
@@ -6691,7 +6691,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, SERVICE_ID, EQUIPMENT_ID,LINE_ITEM_ID,YEAR_1, SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE, SALES_DISCOUNT_PRICE,NET_VALUE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, SERVICE_ID, EQUIPMENT_ID,LINE_ITEM_ID,YEAR_1, SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE, SALES_DISCOUNT_PRICE,NET_VALUE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 										+") AS ROW, * from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "' AND SERVICE_ID = '"
@@ -6725,7 +6725,7 @@ class SYLDRTLIST:
 							error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
 							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-							on_hold_costing = '<img title="ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
+							on_hold_costing = '<img title="ON HOLD COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
 							TreeParentParam = Product.GetGlobal("TreeParentLevel1")
 							
 							try:
@@ -6733,7 +6733,7 @@ class SYLDRTLIST:
 									ServiceId = TreeParentParam.split("-")[-3].strip()
 							except:
 								ServiceId = TreeParentParam.split("-")[1].strip()                            
-							Qury_str = ("SELECT DISTINCT TOP " + str(PerPage) + " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE,NET_VALUE,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,LINE_ITEM_ID,YEAR_1,YEAR_2,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALESORG_RECORD_ID,SALES_DISCOUNT_PRICE,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],LINE,TENVGC,TNTVGC,TNTMGC, BILTYP,PRINT_FLAG,MNTEVT_LEVEL,TOLCFG,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,AMNCCI,AMNPPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,USRPRC,TGADJP,YOYPCT,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue) +"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"') m where m.ROW BETWEEN " + str(Page_start) + " AND " + str(Page_End) )
+							Qury_str = ("SELECT DISTINCT TOP " + str(PerPage) + " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE,NET_VALUE,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,LINE_ITEM_ID,YEAR_1,YEAR_2,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALESORG_RECORD_ID,SALES_DISCOUNT_PRICE,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],LINE,TENVGC,TNTVGC,TNTMGC, BILTYP,PRINT_FLAG,MNTEVT_LEVEL,TOLCFG,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,AMNCCI,AMNPPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,USRPRC,TGADJP,YOYPCT,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue) +"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"') m where m.ROW BETWEEN " + str(Page_start) + " AND " + str(Page_End) )
 							
 							QuryCount_str = (
 								"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQICO (nolock) WHERE QUOTE_RECORD_ID = '"
@@ -6747,7 +6747,7 @@ class SYLDRTLIST:
 							error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
 							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-							on_hold_costing = '<img title="ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
+							on_hold_costing = '<img title="ON HOLD COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
 							qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(
 							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 							if TreeParam == "Quote Items":
@@ -6756,7 +6756,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,SERVICE_ID,OBJECT_ID,ASSEMBLY_ID,GOT_CODE,EQNODE,PROCES,PM_ID,KIT_NUMBER,MNTEVT_LEVEL,SAPMMP,CNTDAY,FABLOCATION_ID,GREENBOOK,QUANTITY,TOLCFG,KPU,SPQTEV,SPSPCT,SVSPCT,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,CONSCP,CONSPI,NONCCI,NONCPI,AMNCCI,AMNPPI,TNTVGC,TENVGC,ADDCOF,TRGPRC,SLSPRC,BDVPRC,CELPRC,TGADJP,YOYPCT,USRPRC,BCHPGC,BCHDPT,CNTPRC,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,SERVICE_ID,OBJECT_ID,ASSEMBLY_ID,GOT_CODE,EQNODE,PROCES,PM_ID,KIT_NUMBER,MNTEVT_LEVEL,SAPMMP,CNTDAY,FABLOCATION_ID,GREENBOOK,QUANTITY,TOLCFG,KPU,SPQTEV,SPSPCT,SVSPCT,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,CONSCP,CONSPI,NONCCI,NONCPI,AMNCCI,AMNPPI,TNTVGC,TENVGC,ADDCOF,TRGPRC,SLSPRC,BDVPRC,CELPRC,TGADJP,YOYPCT,USRPRC,BCHPGC,BCHDPT,CNTPRC,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 										+") AS ROW, * from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
@@ -6778,7 +6778,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, SERVICE_ID, EQUIPMENT_ID,LINE_ITEM_ID,YEAR_1, SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,MODEL_PRICE, SALES_DISCOUNT_PRICE, NET_VALUE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, SERVICE_ID, EQUIPMENT_ID,LINE_ITEM_ID,YEAR_1, SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,MODEL_PRICE, SALES_DISCOUNT_PRICE, NET_VALUE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 										+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "' AND SERVICE_ID = '"
@@ -6796,7 +6796,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, SERVICE_ID, EQUIPMENT_ID,LINE_ITEM_ID,YEAR_1, SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, TARGET_PRICE, SALES_DISCOUNT_PRICE, CEILING_PRICE,NET_VALUE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+										+ " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, SERVICE_ID, EQUIPMENT_ID,LINE_ITEM_ID,YEAR_1, SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, TARGET_PRICE, SALES_DISCOUNT_PRICE, CEILING_PRICE,NET_VALUE,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 										+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "' AND SERVICE_ID = '"
@@ -8256,7 +8256,7 @@ class SYLDRTLIST:
 								error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
 								partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 								assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-								on_hold_costing = '<img title="ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
+								on_hold_costing = '<img title="ON HOLD COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
 								TreeParentParam = Product.GetGlobal("TreeParentLevel1")
 								
 								try:
@@ -8264,7 +8264,7 @@ class SYLDRTLIST:
 										ServiceId = TreeParentParam.split("-")[-3].strip()
 								except:
 									ServiceId = TreeParentParam.split("-")[1].strip()                            
-								Qury_str = ("SELECT DISTINCT TOP " + str(PerPage) + " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE,NET_VALUE,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,LINE_ITEM_ID,YEAR_1,YEAR_2,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALESORG_RECORD_ID,SALES_DISCOUNT_PRICE,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],LINE,TENVGC,TNTVGC,TNTMGC, BILTYP,PRINT_FLAG,MNTEVT_LEVEL,TOLCFG,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,AMNCCI,AMNPPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,USRPRC,TGADJP,YOYPCT,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue) +"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"') m where m.ROW BETWEEN " + str(Page_start) + " AND " + str(Page_End) )
+								Qury_str = ("SELECT DISTINCT TOP " + str(PerPage) + " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,TARGET_PRICE,NET_VALUE,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,LINE_ITEM_ID,YEAR_1,YEAR_2,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALESORG_RECORD_ID,SALES_DISCOUNT_PRICE,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],LINE,TENVGC,TNTVGC,TNTMGC, BILTYP,PRINT_FLAG,MNTEVT_LEVEL,TOLCFG,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,AMNCCI,AMNPPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,USRPRC,TGADJP,YOYPCT,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue) +"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"') m where m.ROW BETWEEN " + str(Page_start) + " AND " + str(Page_End) )
 								
 								QuryCount_str = (
 									"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQICO (nolock) WHERE QUOTE_RECORD_ID = '"
@@ -8278,7 +8278,7 @@ class SYLDRTLIST:
 								error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
 								partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 								assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-								on_hold_costing = '<img title="ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
+								on_hold_costing = '<img title="ON HOLD COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
 								qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(
 								contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 								if TreeParam == "Quote Items":
@@ -8289,7 +8289,7 @@ class SYLDRTLIST:
 									Qury_str = (
 										"select top "
 											+ str(PerPage)
-											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,SERVICE_ID,OBJECT_ID,ASSEMBLY_ID,GOT_CODE,EQNODE,PROCES,PM_ID,KIT_NUMBER,MNTEVT_LEVEL,SAPMMP,CNTDAY,FABLOCATION_ID,GREENBOOK,QUANTITY,TOLCFG,KPU,SPQTEV,SPSPCT,SVSPCT,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,CONSCP,CONSPI,NONCCI,NONCPI,AMNCCI,AMNPPI,TNTVGC,TENVGC,ADDCOF,TRGPRC,SLSPRC,BDVPRC,CELPRC,TGADJP,YOYPCT,USRPRC,BCHPGC,BCHDPT,CNTPRC,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD COSTING' THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,SERVICE_ID,OBJECT_ID,ASSEMBLY_ID,GOT_CODE,EQNODE,PROCES,PM_ID,KIT_NUMBER,MNTEVT_LEVEL,SAPMMP,CNTDAY,FABLOCATION_ID,GREENBOOK,QUANTITY,TOLCFG,KPU,SPQTEV,SPSPCT,SVSPCT,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,NWPTOC,NWPTOP,CONSCP,CONSPI,NONCCI,NONCPI,AMNCCI,AMNPPI,TNTVGC,TENVGC,ADDCOF,TRGPRC,SLSPRC,BDVPRC,CELPRC,TGADJP,YOYPCT,USRPRC,BCHPGC,BCHDPT,CNTPRC,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 											+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
 											+ str(qt_rec_id.QUOTE_ID)
 											+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
@@ -9185,12 +9185,12 @@ class SYLDRTLIST:
 						value1234 = value1234.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg> ERROR")
 					if value1234 == "ASSEMBLY IS MISSING":
 						value1234 = value1234.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
-					if value1234 == "ON HOLD - COSTING":
+					if value1234 == "ON HOLD COSTING":
 						Trace.Write("cmng_inside_on_hold_2 "+str(value1234))
-						value1234 = value1234.replace("ON HOLD - COSTING","<img title='ON HOLD - COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
+						value1234 = value1234.replace("ON HOLD COSTING","<img title='ON HOLD COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
 					if value1234 == "PARTIALLY PRICED":
 						value1234 = value1234.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-					if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "ON HOLD - COSTING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
+					if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "ON HOLD COSTING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED":                        
 						value1234 = value1234
 					if value123 == objRecName:
 						current_rec_id = value1234
