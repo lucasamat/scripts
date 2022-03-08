@@ -4271,6 +4271,7 @@ class SYLDRTLIST:
 									+ "</th>"
 								)    
 							else:
+								Trace.Write('4274----')
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
