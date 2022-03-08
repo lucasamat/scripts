@@ -648,7 +648,8 @@ class SyncQuoteAndCustomTables:
 							"COMPANY_NAME":salesorg_obj.COMPANY_NAME,
 							"COMPANY_RECORD_ID":salesorg_obj.COMPANY_RECORD_ID,
 							"INCOTERM_LOCATION":custom_fields_detail.get("IncotermsLocation"),
-							"HLV_ORG_BUN":"AGS - SSC"
+							"HLV_ORG_BUN":"AGS - SSC",
+							"TRANSACTION_TYPE":"O-QUOTE"
 						}
 						
 						if custom_fields_detail.get('AccountAssignmentGroup'):
