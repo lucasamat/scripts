@@ -3080,8 +3080,17 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 		if self.values:
 			record_ids = []
 			if self.all_values and auto_equp_insert is None:	     
+				qury_str=""
+				if A_Keys!="" and A_Values!="":
+					for key,val in zip(A_Keys,A_Values):
+						if(val!=""):
+							if key=="EQUIPMENT_RECORD_ID":
+								key="CpqTableEntryId"
+								val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
+							qury_str+=" "+key+" LIKE '%"+val+"%' AND "
 				if self.tool_type=="TEMP_TOOL": 
-					query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE  ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' ".format(
+					query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE {Query_str} ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' ".format(
+							Query_str= qury_str,
 							fab=self.tree_param,
 							QuoteRecordId=self.contract_quote_record_id,
 							RevisionRecordId=self.quote_revision_record_id
