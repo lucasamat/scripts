@@ -1495,11 +1495,11 @@ class ContractQuoteItem:
 			quote_items_list = []
 			for line in get_line_items_values:
 				line_dict = {}
-				line_dict[line.LINE] = {'TCWISS': line.EXTENDED_POSS_COST,
-										'CNTCST': line.EXTENDED_POSS_COST,
-										'CNTPRC': line.EXTENDED_POSS_PRICE, 
-										'TRGPRC': line.EXTENDED_POSS_PRICE,
-										'USRPRC': line.EXTENDED_POSS_PRICE  }
+				line_dict[str(line.LINE)] = {'TCWISS': str(line.EXTENDED_POSS_COST),
+										'CNTCST': str(line.EXTENDED_POSS_COST),
+										'CNTPRC': str(line.EXTENDED_POSS_PRICE), 
+										'TRGPRC': str(line.EXTENDED_POSS_PRICE),
+										'USRPRC': str(line.EXTENDED_POSS_PRICE)  }
 				quote_items_list.append(line_dict)
 			if quote_items_list:
 				Trace.Write("quote_items_list-"+str(quote_items_list))
