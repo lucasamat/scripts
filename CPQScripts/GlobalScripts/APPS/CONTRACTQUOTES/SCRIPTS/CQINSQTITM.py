@@ -1502,7 +1502,7 @@ class ContractQuoteItem:
 										'USRPRC': line.EXTENDED_POSS_PRICE  }
 				quote_items_list.append(line_dict)
 			if quote_items_list:
-				Trace.write("quote_items_list-"+str(quote_items_list))
+				Trace.Write("quote_items_list-"+str(quote_items_list))
 				calling_waterfall = ScriptExecutor.ExecuteGlobal("CQUPPRWLFD",{"Records":str(quote_items_list)})
 			# Sql.RunQuery("""UPDATE SAQICO 
 			# 	SET TCWISS = EXTENDED_POSS_COST,
