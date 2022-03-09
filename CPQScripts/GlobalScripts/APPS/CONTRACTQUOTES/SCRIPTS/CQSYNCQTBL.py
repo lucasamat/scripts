@@ -632,7 +632,7 @@ class SyncQuoteAndCustomTables:
 							"ACTIVE":get_rev_details.ACTIVE_REV,
 							"REV_CREATE_DATE":revision_start_date,
 							"REV_EXPIRE_DATE":'',
-							"REVISION_STATUS":"CPG_CONFIGURATION",
+							"REVISION_STATUS":"PREPARING REVISION",
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID,
 							"CONTRACT_VALID_FROM":start_date,
