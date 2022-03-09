@@ -2156,12 +2156,12 @@ class Entitlements:
 				response=response.replace("null",'""')
 				response=eval(response)	
 				auth="Bearer"+' '+str(response['access_token'])
-				get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
+				get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
 				account_info = {}
 				for keyobj in get_party_role:
 					account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
 				
-				get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SHIP TO')")
+				get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"' and CPQ_PARTNER_FUNCTION in ('SHIP TO')")
 				shipto_list=[]
 				for keyobj in get_party_role:
 					shipto_list.append('00'+str(keyobj.PARTY_ID))
