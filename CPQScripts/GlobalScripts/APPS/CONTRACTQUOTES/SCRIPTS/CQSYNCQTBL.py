@@ -2035,7 +2035,7 @@ class SyncQuoteAndCustomTables:
 										#Trace.Write("service_id"+str(service_id))
 										#Trace.Write("value"+str(value))
 										Log.Info("_totalequip"+str(len(value)))
-										if len(value) == 1000:
+										if len(value) >= 1000:
 											Log.Info("value_equipmentsinsidif"+str(len(value)))
 											previous_index = 0
 											for index in range(0, len(value), 1000):
