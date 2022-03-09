@@ -43,19 +43,6 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 		annual_dict[line_values.LINE] = record_list
 	Trace.Write("dictdictdict"+str(annual_dict)) 
 	return str(annual_dict)
-	
-	
-	# record_dict={}
-	# for inlines in values:
-	# 	get_annual_values =Sql.GetFirst("Select * from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' and QTEREV_RECORD_ID = '{}' AND LINE = '{}' and NWPTON ='yes'".format(contract_quote_rec_id,quote_revision_rec_id,inlines))
-	# 	record_list=[]
-	# 	if get_annual_values:
-	# 		for editapi in get_annual_values:
-	# 			if(editapi == 'NWPTON'):
-	# 				record_list+= ['NWPTOP','NWPTOC']	
-	# 		record_dict[inlines] = record_list	
-		
-	return True
 
 
 ACTION = Param.ACTION
