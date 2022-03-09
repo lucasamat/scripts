@@ -202,6 +202,7 @@ try:
 				#if cust_participate and str(cust_participate.CUSTOMER_PARTICIPATE).upper() == "TRUE" and str(cust_participate.ODCC_FLAG).upper() == "TRUE":
 				#conditions = response1['Entries'][0]['items'][0]['conditions']
 				if cust_participate:
+					Log.Info("CUST:::->"+str(cust_participate.ODCC_FLAG)+"<-->")
 					if cust_participate.ODCC_FLAG != '':
 						for condition in i['conditions']:
 							if condition['conditionType'] == "ZEEB":
