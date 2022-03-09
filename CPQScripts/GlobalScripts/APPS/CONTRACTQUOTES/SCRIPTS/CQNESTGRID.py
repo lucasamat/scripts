@@ -786,6 +786,8 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 				if where_string:
 					where_string += " AND "
 				where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
+	Trace.Write('TreeTopSuperParentParam->'+str(TreeTopSuperParentParam))
+	Trace.Write('TreeSuperParentParam->'+str(TreeSuperParentParam))
 	if TreeTopSuperParentParam == "Product Offerings":
 		if str(where_string):
 			where_string = " AND "+str(where_string)
