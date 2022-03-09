@@ -100,6 +100,15 @@ def CommonTreeViewHTMLDetail(
 	quote_record_id = None
 	if ObjectName == 'SAQRIB':
 		quote_record_id = Product.GetGlobal("contract_quote_record_id")
+	elif ObjectName == 'SAQSAF':
+		sending_fab_object = Sql.GetFirst("SELECT SNDFBL_ID FROM SAQSAF (NOLOCK) WHERE QUOTE_REV_SENDING_ACC_FAB_LOCATION_RECORD_ID = '"+str(primary_value)+"'")
+		if sending_fab_object:
+			Product.SetGlobal("sending_fab_id", str(sending_fab_object.SNDFBL_ID))
+	elif ObjectName == 'SAQFBL':
+		receiving_fab_object = Sql.GetFirst("SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_FABLOCATION_RECORD_ID = '"+str(primary_value)+"'")
+		if receiving_fab_object:
+			Product.SetGlobal("receiving_fab_id", str(receiving_fab_object.FABLOCATION_ID))
+			
 	# Billing Matrix Details Load - End
 	
 	#getyear calculatin start
@@ -956,7 +965,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
 				if current_prod == "Sales" and ObjectName != "ACAPMA" and ObjectName != "ACAPTX" and ObjectName != "ACACHR":
 					if ObjectName == "SAQDOC":
-    						script = (
+						script = (
 							"SELECT "
 							+ str(API_NAMES)
 							+ " FROM "
@@ -1431,6 +1440,8 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					Trace.Write("else 1404"+str(current_obj_api_name)) 
 					Coeff_values =""
 					symbol = " %"
+					if str(ObjectName) == "SAQICO":
+						symbol =""
 					Decimal_Value = 2 if str(ObjectName) == 'SAQIGB' else 3  ## decimal precision for SAQIGB
 					Decimal_Values = 2										
 					if current_obj_value and str(ObjectName) == "SAQICO" and str(current_obj_api_name) =="FAB_VALUEDRIVER_COEFFICIENT" or str(current_obj_api_name) == "TOOL_VALUEDRIVER_COEFFICIENT":					
@@ -2234,6 +2245,26 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						+ str(current_obj_api_name)
 						+ '" > <i class="glyphicon glyphicon-triangle-bottom"></i> </button> </div></div></div></td>'
 					)
+				elif str(current_obj_api_name) in ("WARRANTY_START_DATE","WARRANTY_END_DATE"):
+					try:
+						current_obj_value = datetime.strptime(str(current_obj_value), '%Y-%m-%d').strftime('%m/%d/%Y')
+					except:
+						pass
+					sec_str += (
+						'<td><input id="'
+						+ str(current_obj_api_name)
+						+ '" type="text" value="'
+						+ current_obj_value
+						+ '" title="'
+						+ current_obj_value
+						+ '" class="form-control related_popup_css" style="'
+						+ str(left_float)
+						+ ' " '
+						+ disable
+						+ " maxlength = '"+str(max_length)+"'>"
+						+ str(edit_warn_icon)
+						+ "</td>"
+					)
 				elif str(current_obj_api_name) in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified"):
 					try:
 						current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
@@ -2390,7 +2421,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 		Ad_on_prd = ""
 	if	Product.GetGlobal("TreeParentLevel0") == "Complementary Products" and TreeSuperParentParam == "Product Offerings":
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
-		entitlement_obj=Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE SERVICE_ID='Z0092' AND QUOTE_RECORD_ID ={} AND QTEREV_RECORD_ID = {}".format(quoteid,quote_revision_record_id))
+		entitlement_obj=Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE SERVICE_ID='Z0092' AND QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(quoteid,quote_revision_record_id))
 		spare_parts_visibility = 'False'
 		if entitlement_obj:
 			entitlement_xml = entitlement_obj.ENTITLEMENT_XML

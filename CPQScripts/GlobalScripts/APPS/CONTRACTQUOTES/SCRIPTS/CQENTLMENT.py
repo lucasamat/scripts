@@ -127,9 +127,14 @@ class Entitlements:
 						webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 						#webclient.Headers.Add("If-Match", "111")
 						#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
-						webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')								
-						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
-							#Trace.Write('row--'+str(row.ENTITLEMENT_ID))
+						webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
+						get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(row.ENTITLEMENT_ID)+"' and SERVICE_ID = '"+str(serviceId)+"'")							
+						ent_type = 'Entitlement'
+						if get_ent_type:
+							if get_ent_type.ENTITLEMENT_TYPE:
+								ent_type = get_ent_type.ENTITLEMENT_TYPE
+						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and ent_type.upper() not in ('VALUE DRIVER','VALUE DRIVER COEFFICIENT'):
+							Trace.Write('row--'+str(row.ENTITLEMENT_ID)+str(row.IS_DEFAULT))
 							try:
 								requestdata = '{"characteristics":['								
 								requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
@@ -1021,6 +1026,12 @@ class Entitlements:
 			getvalue = ""
 			Fullresponse = Product.GetGlobal('Fullresponse')
 			configuration_status = ""
+			if not Fullresponse:
+				if Gettabledata:
+					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(Gettabledata.CPS_CONFIGURATION_ID)
+					Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':serviceId,'request_url':Request_URL,'request_type':"Existing"})
+					Fullresponse = str(Fullresponse)
+
 			if Fullresponse:
 				Fullresponse = eval(Fullresponse)
 				##getting configuration_status status
@@ -1064,12 +1075,12 @@ class Entitlements:
 								for prdvalue in Productvalue:
 									if prdvalue['id'].startswith('AGS_Z0046_'):
 										attributes_service_sublist.append(prdvalue['id'])
-									for attribute in prdvalue["values"]:									
-										if attribute["author"] in ("Default","System"):
-											#Trace.Write('524---658---'+str(prdvalue["id"]))
-											attributedefaultvalue.append(prdvalue["id"])
-										elif attribute["author"] == "User":
-											attribute_non_defaultvalue.append(prdvalue["id"])
+									# for attribute in prdvalue["values"]:									
+									# 	if attribute["author"] in ("Default","System"):
+									# 		#Trace.Write('524---658---'+str(prdvalue["id"]))
+									# 		attributedefaultvalue.append(prdvalue["id"])
+									# 	elif attribute["author"] == "User":
+									# 		attribute_non_defaultvalue.append(prdvalue["id"])
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
 										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
@@ -1081,9 +1092,9 @@ class Entitlements:
 											attribute_non_defaultvalue.append(prdvalue["id"])
 			else:
 				#get_status = Sql.GetFirst("SELECT * FROM {} WHERE {}".format(tableName,whereReq))
-				if Gettabledata:
+				
 					if Gettabledata.CONFIGURATION_STATUS:
-						configuration_status =  Gettabledata.CONFIGURATION_STATUS
+						configuration_status = Gettabledata.CONFIGURATION_STATUS
 			Trace.Write('524--787-whereReq--configuration_status--'+str(configuration_status))
 			#get
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
@@ -1132,14 +1143,17 @@ class Entitlements:
 							if tableName == "SAQSGE":
 								Quote.SetGlobal("Greenbook_Entitlement","Yes")
 							#Trace.Write("entitlement_value -----"+str(entitlement_value))
-							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included")):
+							#or (serviceId == 'Z0009' and entitlement_value == "Some Inclusions" and key == "AGS_{}_TSC_NONCNS".format(serviceId))
+							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes") and not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included") ) :
+								#Trace.Write("111")
 								ancillary_object_dict['Z0101'] = "INSERT"								
-							elif not (serviceId == 'Z0092' and entitlement_value == "Some Inclusions"):
-								#Trace.Write("z0101 else")
+							elif not (serviceId == 'Z0092' and entitlement_value in ("Some Inclusions","Included") ) :
+								#Trace.Write("222")
 								count_temp_z0101 += 1
 								if  count_temp_z0101 == 3:
 									ancillary_object_dict['Z0101'] = "DELETE"
 							if  serviceId == 'Z0092'  and key == "AGS_{}_TSC_CONSUM".format(serviceId):
+								#Trace.Write("333")
 								if entitlement_value in ("Some Inclusions","Included"):
 									#Trace.Write("z0092--if--"+str(entitlement_value))
 									ancillary_object_dict['Z0100'] = "INSERT"
@@ -1152,10 +1166,30 @@ class Entitlements:
 									ancillary_object_dict['Z0100'] = "DELETE"
 									if entitlement_value != "Some Inclusions":
 										ancillary_object_dict['Z0101'] = "DELETE"
+							# if serviceId == 'Z0009' and key == "AGS_{}_TSC_NONCNS".format(serviceId):
+							# 	Trace.Write("444")
+							# 	if entitlement_value == "Some Inclusions":
+							# 		ancillary_object_dict['Z0100'] = "INSERT"
+							# 	else:
+							# 		ancillary_object_dict['Z0100'] = "DELETE"
+						if str(serviceId) == 'Z0092' and key == 'AGS_{}_TSC_CONADD'.format(serviceId):
+							Trace.Write("333")
+							if entitlement_value in ("Some Inclusions","Included"):
+								#Trace.Write("z0092--if--"+str(entitlement_value))
+								ancillary_object_dict['Z0100'] = "INSERT"
+								if entitlement_value == "Some Inclusions":
+									ancillary_object_dict['Z0101'] = "INSERT"
+								
+								#Trace.Write("z0092--if11--"+str(ancillary_object_dict))
+							else:
+								#Trace.Write("z0092---else--"+str(entitlement_value))
+								ancillary_object_dict['Z0100'] = "DELETE"
+								if entitlement_value != "Some Inclusions":
+									ancillary_object_dict['Z0101'] = "DELETE"
+
+						
 						if str(serviceId) in ("Z0009") and key in ( "AGS_{}_PQB_QTETYP".format(serviceId)) and str(tableName) in ('SAQTSE'):
-							Trace.Write("condition satisfied")
 							if entitlement_value in ("Event Based","Flex Event Based"):
-								Trace.Write("if condition satisfied")
 								try:
 									ScriptExecutor.ExecuteGlobal(
 											"CQCRUDOPTN",
@@ -1169,8 +1203,6 @@ class Entitlements:
 									)
 								except Exception as e:
 									Trace.Write("Exception While running CQCRUDOPTN "+str(e))
-							Trace.Write("script called")
-
 						Trace.Write("PMevents changes started "+str(key)+" - "+str(tableName))
 						if key in ( "AGS_{}_NET_PRMALB".format(serviceId)) and str(tableName) in ('SAQTSE'):
 							Trace.Write("entitlement_value_chk "+str(entitlement_value))
@@ -1287,15 +1319,17 @@ class Entitlements:
 									Sql.RunQuery(update_uom_recs)
 									Quote.SetGlobal("ConsignedQty",str(entitlement_value))
 								except:
-									Log.Info("EXCEPT IF UPDATE SAQSPT---------")
+									#Log.Info("EXCEPT IF UPDATE SAQSPT---------")
+									pass
 							else:
 								try:
 									update_uom_recs = """UPDATE SAQSPT SET SAQSPT.DELIVERY_MODE ='OFFSITE', SAQSPT.SCHEDULE_MODE = 'ON REQUEST'  WHERE SAQSPT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQSPT.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.ContractRecordId ,quote_revision_rec_id =self.revision_recordid)
-									Log.Info("---"+str(update_uom_recs))
+									#Log.Info("---"+str(update_uom_recs))
 									Sql.RunQuery(update_uom_recs)
 									Quote.SetGlobal("ConsignedQty",str(entitlement_value))
 								except:
-									Log.Info("EXCEPT ELSE UPDATE SAQSPT-----")
+									#Log.Info("EXCEPT ELSE UPDATE SAQSPT-----")
+									pass
 						elif key == "AGS_Z0091_PQB_PPCPRM" and entitlement_value == "Yes":							
 							total_price = 0.00
 							for i in range(1,11):
@@ -1516,6 +1550,7 @@ class Entitlements:
 
 						# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
 						Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key)+str(ent_val_code))
+						Trace.Write("attributedefaultvalue--"+str(attributedefaultvalue))
 						if ent_disp_val in ('select','0'):
 							ent_disp_val =''
 						if ent_val_code in ('0'):
@@ -1572,33 +1607,6 @@ class Entitlements:
 						Sql.RunQuery(Updatecps)
 				##to update match id at all level while saving ends
 				Sql.RunQuery(UpdateEntitlement)
-				#Trace.Write("TEST COMMIT")
-				#15007 START
-
-				if Quote.GetGlobal("SplitQuote") == "Yes" or Quote.GetGlobal("EntApprovals") == "Yes":
-					Quote.SetGlobal("EntApprovals","No")
-					Quote.SetGlobal("SplitQuote","No")
-					GetSelf = Sql.GetFirst("SELECT CpqTableEntryId,APRTRXOBJ_ID FROM ACAPMA (NOLOCK) WHERE APRCHN_ID = 'SELFAPPR' AND APRTRXOBJ_RECORD_ID = '{}'".format(self.revision_recordid))
-					if GetSelf is not None:
-						Sql.RunQuery("DELETE FROM ACAPMA WHERE APRTRXOBJ_RECORD_ID = '{}' AND APRCHN_ID = 'SELFAPPR'".format(self.revision_recordid))
-						Sql.RunQuery("DELETE FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND APRCHN_ID = 'SELFAPPR'".format(GetSelf.APRTRXOBJ_ID))
-						Sql.RunQuery("DELETE FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' AND APRCHN_ID = 'SELFAPPR'".format(GetSelf.APRTRXOBJ_ID))
-					else:
-						Sql.RunQuery("DELETE FROM ACAPMA WHERE APRTRXOBJ_RECORD_ID = '{}'".format(self.revision_recordid))
-						Sql.RunQuery("DELETE FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' ".format(self.quote_id))
-						Sql.RunQuery("DELETE FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%'".format(self.quote_id))
-					# Approval Trigger - Start								
-					#import ACVIORULES
-					violationruleInsert = ACVIORULES.ViolationConditions()
-					header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-					if header_obj:
-						Trace.Write("Inside Approval Trigger")
-						violationruleInsert.InsertAction(
-														header_obj.RECORD_ID, self.revision_recordid, "SAQTRV"
-														)
-					
-					# Approval Trigger - End
-				#15007 END
 				parts_value = 0
 				Service_Id = 'Z0108'
 				entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.ContractRecordId,RevisionRecordId=self.revision_recordid))
@@ -2132,11 +2140,12 @@ class Entitlements:
 					customer_wants_participate = get_ent_val[0]
 					break
 			if customer_wants_participate == 'No':
-				Log.Info("CWP=====>"+str(customer_wants_participate))
+				#Log.Info("CWP=====>"+str(customer_wants_participate))
 				Trace.Write('2066----------'+str(saqtse_obj.QUOTE_ID))
 
 				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtse_obj.QUOTE_ID}})
 			elif customer_wants_participate == 'Yes':
+				Sql.RunQuery("UPDATE SAQSPT SET CUSTOMER_ACCEPT_PART='True' WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"'")
 				Trace.Write('2118----------'+str(saqtse_obj.QUOTE_ID))
 				#iflow for spare parts...
 				webclient = System.Net.WebClient()
@@ -2147,11 +2156,18 @@ class Entitlements:
 				response=response.replace("null",'""')
 				response=eval(response)	
 				auth="Bearer"+' '+str(response['access_token'])
-				get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
+				get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
 				account_info = {}
 				for keyobj in get_party_role:
 					account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
- 
+				
+				get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"' and CPQ_PARTNER_FUNCTION in ('SHIP TO')")
+				shipto_list=[]
+				for keyobj in get_party_role:
+					shipto_list.append('00'+str(keyobj.PARTY_ID))
+				shiptostr=str(shipto_list)
+				shiptostr=re.sub(r"'",'"',shiptostr)
+				account_info['SHIP TO']=shiptostr
 				get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.revision_recordid)+"'")
 				
 				if get_sales_ifo:
@@ -2174,7 +2190,8 @@ class Entitlements:
 
 
 		except:
-			Log.Info("Customer Wants to Participate--> 'NO' Failed to delete!!!")
+			#Log.Info("Customer Wants to Participate--> 'NO' Failed to delete!!!")
+			pass
 		# Trace.Write('get_conflict_message--2043----'+str(get_conflict_message))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
@@ -2619,7 +2636,7 @@ class Entitlements:
 			#Trace.Write("objName-ent"+str(objName))
 			# Trace.Write("attributemy"+str(AttributeList))
 			# Trace.Write("attributemywhere"+str(responsive_where))
-			Trace.Write("tableName---"+str(tableName))
+			Trace.Write("tableName before roll down call---"+str(tableName))
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")			
 			try:			
 				CQENTIFLOW.iflow_entitlement(tableName,where,ancillary_dict)

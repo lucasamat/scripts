@@ -21,12 +21,12 @@ g_total = 0
 
 get_ohold_pricing_status =get_delivery_nodes =  ''
 #suppress delivery node for other quote
-try:
-	get_delivery_nodes = Sql.GetFirst("SELECT SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_ID ='{}' and SERVICE_ID='Z0108'" .format(Quote.CompositeNumber))
-	if get_delivery_nodes:
-		get_delivery_nodes = get_delivery_nodes.SERVICE_ID
-except:
-	pass
+# try:
+# 	get_delivery_nodes = Sql.GetFirst("SELECT SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_ID ='{}' and SERVICE_ID='Z0108'" .format(Quote.CompositeNumber))
+# 	if get_delivery_nodes:
+# 		get_delivery_nodes = get_delivery_nodes.SERVICE_ID
+# except:
+# 	pass
 #suppress delivery node - end
 #node visibility query based on sales employee
 login_user= User.Id
@@ -556,8 +556,8 @@ class TreeView:
 					#12096 start-quote item visibility start
 					if get_node_visibility and str(get_ohold_pricing_status).upper() == "ON HOLD - COSTING" and str(getParentObj.NODE_NAME) == "Quote Items":
 						continue
-					elif not get_delivery_nodes and str(getParentObj.NODE_NAME) == "Delivery Schedule":
-						continue
+					# elif not get_delivery_nodes and str(getParentObj.NODE_NAME) == "Delivery Schedule":
+					# 	continue
 					#12096 start-quote item visibility end
 					if str(getParentObj.TREEIMAGE_URL):
 						image_url = str(getParentObj.TREEIMAGE_URL)
@@ -641,6 +641,7 @@ class TreeView:
 								for index in range(1, years+1):
 									type = "OBJECT RELATED LAYOUT"
 									subTabName = "Year {}".format(index)
+									Trace.Write('subTabName--'+str(subTabName))
 									if ObjRecId and RelatedId:
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
@@ -699,7 +700,7 @@ class TreeView:
 						if getZ0009 is not None:
 							getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 							#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-							Trace.Write("return value Z0009====---"+str(getZ0009))
+							Trace.Write("return1 value Z0009====---"+str(getZ0009))
 					except:
 						getZ0009 = ""
 					if getZ0009 is None or getZ0009 == 0:
@@ -712,12 +713,13 @@ class TreeView:
 					elif getZ0009 is not None:
 						#Trace.Write("elif getZ0009 is not None ")
 						if (RecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or RecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or RecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or RecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or RecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or RecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or RecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or RecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453' or RecId == 'B9E7FF3A-CD32-4414-8036-A4310FB4A80E') and getZ0009 == 1:
-							Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+							Trace.Write("if RecId11 == '1F47A350-4E38-41C9-A5C5-F5")
 							findChildOneObj = Sql.GetList(
 								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 								+ str(RecId)
 								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 							)
+							
 						else:
 							#Trace.Write("else Z0009")
 							findChildOneObj = Sql.GetList(
@@ -816,12 +818,15 @@ class TreeView:
 								ProductDict["nodes"] = list2
 						#NewList = []
 						returnList.append(ProductDict)
+		
+		
 		Product.SetGlobal("CommonTreeList", str(returnList))
 		#Trace.Write("returnList----------------> " + str(returnList))
+		cbc_subtab = ""
 		try:
 			Trace.Write("Clean Booking Checklist")
 			user_id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
-			saqdlt_query = Sql.GetFirst("SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER'".format(qte_rec_id = contract_quote_record_id,revision_rec_id = quote_revision_record_id,member_id = user_id))
+			saqdlt_query = Sql.GetFirst("SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER'".format(qte_rec_id = contract_quote_record_id,revision_rec_id = quote_revision_record_id))
 			if saqdlt_query:
 				if str(saqdlt_query.MEMBER_ID) == str(user_id):
 					Trace.Write("subtab_not empty")
@@ -833,7 +838,7 @@ class TreeView:
 				Trace.Write("subtab_empty")
 				cbc_subtab = "No"
 		except:
-			Trace.Write("CBC_subtab_Exception")
+			Trace.Write("CBC_Subtab_Exception")
 		return returnList, "",cbc_subtab
 	
 	
@@ -1933,7 +1938,8 @@ class TreeView:
 										ChildDict["objname"] = "ACAPTX"
 										
 										# ChildList.append(ChildDict)
-							elif NodeName.find(",") == -1 and NodeName.find("-") == -1:                               
+							elif NodeName.find(",") == -1 and NodeName.find("-") == -1:
+								Trace.Write("Node name--------1"+str(NodeName))
 								if str(NodeName) == "OBJECT_NAME" and TabName == 'Profile': 
 									NodeText = str(eval("childdata." + str(NodeName)))									
 								elif str(NodeName) == 'PARTY_ID':
@@ -1977,7 +1983,8 @@ class TreeView:
 								)				
 								if(str(NodeName)=="TREE_NAME"):
 									Product.SetGlobal('TreeName',str(NodeText))
-							elif NodeName.find(",") > 0:                                
+							elif NodeName.find(",") > 0:
+								Trace.Write("Node name--------2"+str(NodeName))
 								Nodesplit = NodeName.split(",")
 								if len(Nodesplit) > 1:
 									NodeName1 = Nodesplit[0]
@@ -2008,6 +2015,7 @@ class TreeView:
 										+ "'"
 									)
 							elif NodeName.find("-") > 0:
+								Trace.Write("Node name--------3"+str(NodeName))
 								Nodesplit = NodeName.split("-")                                
 								if len(Nodesplit) > 1:
 									NodeName1 = Nodesplit[0]
@@ -2177,6 +2185,7 @@ class TreeView:
 
 									# A055S000P01-14557 - New Parts, Inclusion , Exclusion Subtabs starts
 									elif subTabName in ("Events","Service New Parts","Service Parts List","Service Inclusions",'Greenbook Inclusions','Green Parts List','Green New Parts') :
+										Trace.Write("inside dynamic subtab- "+str(subTabName))
 										ent_table_list = ["SAQTSE"]
 										subtab_temp_variable = subTabName 
 										whr_str_greenbook =""
@@ -2212,7 +2221,7 @@ class TreeView:
 													# 	pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
 													# 	pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
 													# else:
-													pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(service_id)+'_TSC_NONCNS|AGS_'+str(service_id)+'_TSC_CONSUM|AGS_'+str(service_id)+'_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+													pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(service_id)+'_TSC_NONCNS|AGS_'+str(service_id)+'_TSC_CONADD|AGS_'+str(service_id)+'_TSC_CONSUM|AGS_'+str(service_id)+'_NON_CONSUMABLE)</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Inclusions</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="Inclusions"
 												elif subtab_temp_variable in ('Service New Parts','Green New Parts'):
@@ -2221,7 +2230,7 @@ class TreeView:
 													subtab_temp ="New Parts"
 												elif subtab_temp_variable in ('Service Parts List','Green Parts List')  :
 													#if service_id != 'Z0092' :
-													pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(service_id)+'_TSC_NONCNS|AGS_'+str(service_id)+'_TSC_CONSUM|AGS_'+str(service_id)+'_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+													pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_'+str(service_id)+'_TSC_NONCNS|AGS_'+str(service_id)+'_TSC_CONADD|AGS_'+str(service_id)+'_TSC_CONSUM|AGS_'+str(service_id)+'_NON_CONSUMABLE)</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Some Exclusions</ENTITLEMENT_DISPLAY_VALUE>')
 													# else:
 													# 	pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
@@ -2236,10 +2245,10 @@ class TreeView:
 														sub_string = m.group(1)
 														get_ent_id =re.findall(pattern_id,sub_string)
 														get_ent_name=re.findall(pattern_name,sub_string)
-														Trace.Write("get_ent_id_CHK "+str(get_ent_id)+"get_ent_name_CHK "+str(get_ent_name))
+														#Trace.Write("get_ent_id_CHK "+str(get_ent_id)+"get_ent_name_CHK "+str(get_ent_name))
 														if get_ent_id and get_ent_name:
 															#get_disp_val = re.findall(display_pattern_name,sub_string)
-															Trace.Write("get_ent_id-"+str(get_ent_id)+"--"+str(get_ent_name))
+															#Trace.Write("get_ent_id-"+str(get_ent_id)+"--"+str(get_ent_name))
 															# Z0099_pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_Z0099_NET_PRMALB</ENTITLEMENT_ID>')
 															# Z0099_pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included - All PM)</ENTITLEMENT_DISPLAY_VALUE>')
 															# if Z0099_pattern_id and Z0099_pattern_name:
@@ -2281,9 +2290,12 @@ class TreeView:
 									elif subTabName == 'Applied Events':
 										subTabName = "Events"
 									##A055S000P01-14790 code ends...
-									elif subTabName == 'Spare Parts' and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
+									elif (subTabName == 'Spare Parts') and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
 										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" else ""
+									elif (subTabName == 'Periods') and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
+										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" and Product.GetGlobal("SERVICE") == "Z0108" else ""
 									elif subTabName =='Equipment' and Product.GetGlobal("ParentNodeLevel")=="Complementary Products":
 										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 										subTabName = "" if str(doc_type.DOCTYP_ID) == "ZWK1" else str(getRightView.SUBTAB_NAME)
@@ -2320,12 +2332,18 @@ class TreeView:
 															RelatedId = 'SYOBJR-95556'
 															RelatedName = 'Events'
 															break
+														else:
+															ObjRecId = '271F55CA-C844-43C5-99AB-806A72152F25'
+															RelatedId = 'SYOBJR-00011'
+															RelatedName = 'Events'
+															break
+
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 										)
 										#Trace.Write("SubTabList --->"+str(SubTabList))
 									if str(ObjRecId) == "01C264E8-9B64-4F99-B05C-D61ECD2C4D27":
-										item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID".format(Product.GetGlobal("contract_quote_record_id"),str(NodeText),quote_revision_record_id))
+										item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID,LINE".format(Product.GetGlobal("contract_quote_record_id"),str(NodeText),quote_revision_record_id))
 										if item_billing_plan_obj is not None:
 											quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
 											years = quotient + (1 if remainder > 0 else 0)
@@ -2403,12 +2421,14 @@ class TreeView:
 									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 								)
 							try:
+								#Trace.Write("curr service---"+str(Quote.GetGlobal("SERVICE")))
 								getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 								if getZ0009 is not None:
 									getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
-									Trace.Write("return value Z0009====---"+str(getZ0009))
+									Trace.Write("return2 value Z0009====---"+str(getZ0009))
 							except:
 								getZ0009 = ""
+							Product.SetGlobal("PMSA_TREE",str(getZ0009))
 							if getZ0009 is None or getZ0009 == 0:
 								#Trace.Write("if getZ0009 is None")
 								findSubChildAvailable = Sql.GetList(
@@ -2419,11 +2439,11 @@ class TreeView:
 							elif getZ0009 is not None:
 								#Trace.Write("elif getZ0009 is not None")
 								if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
-									Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+									Trace.Write("if RecId 222== '1F47A350-4E38-41C9-A5C5-F5-"+str(NodeText))
 									findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC'  ORDER BY abs(DISPLAY_ORDER) "
 									)
 								else:
 									#Trace.Write("else Z0009")
@@ -2450,7 +2470,7 @@ class TreeView:
 							tab_list= [(tab.TAB_LABEL).upper() for tab in pages_tab]
 							object_list = [tab.PRIMARY_OBJECT_NAME for tab in pages_tab]
 							tab_obj_dict = {tab_list[i]: object_list[i] for i in range(len(tab_list))}
-							# Trace.Write("NodeText"+str(NodeText))
+							Trace.Write("NodeText--"+str(NodeText))
 							# Trace.Write("tab_list----"+str(tab_list))
 							if NodeText in tab_list:
 								Product.SetGlobal("page_tab",NodeText)
@@ -2484,6 +2504,7 @@ class TreeView:
 									DynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
 									PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)
 									ordersBy = str(findSubChildOne.ORDERS_BY)
+									Trace.Write("NodeApiName--"+str(NodeApiName))
 									if parobj == "True":
 										if NodeValue != "":
 											Node_name = NodeValue
@@ -2538,6 +2559,7 @@ class TreeView:
 											Subwhere_string += " AND SERVICE_ID = '{}' ".format(NodeText)
 											Quote.SetGlobal("SERVICE",NodeText)
 											#service_id_1 = str(NodeText)
+										
 										elif addon_obj:											
 											if 'SERVICE_ID' in Subwhere_string:
 												Subwhere_string = Subwhere_string.replace('SERVICE_ID','PAR_SERVICE_ID')
@@ -2608,12 +2630,20 @@ class TreeView:
 					+ str(ParRecId)
 					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
 					)
+			
+			if Product.GetGlobal("PMSA_TREE") == '1' and ParRecId in  ('4237BF62-7934-4CFF-811A-7A64282CE693','FE46CADE-B72F-46FF-9E01-1699D2955E6B'):
+				Trace.Write("addon pmsa")
+				findChildOneObj = Sql.GetList(
+					"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
+					+ str(ParRecId)
+					+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
+				)
 			try:
 				getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 				if getZ0009 is not None:
 					getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 					#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-					Trace.Write("return value Z0009====---"+str(getZ0009))
+					Trace.Write("return3 value Z0009====---"+str(getZ0009))
 			except:
 				getZ0009 = ""
 			if getZ0009 is None or getZ0009 == 0:
@@ -2626,12 +2656,13 @@ class TreeView:
 			elif getZ0009 is not None:
 				#Trace.Write("elif getZ0009 is not None")
 				if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
-					Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+					Trace.Write("if 3RecId == '1F47A350-4E38-41C9-A5C5-F5")
 					findSubChildAvailable = Sql.GetList(
 						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 						+ str(ParRecId)
 						+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 					)
+					
 				else:
 					#Trace.Write("else Z0009")
 					findSubChildAvailable = Sql.GetList(
@@ -2741,7 +2772,7 @@ class TreeView:
 						if getZ0009 is not None:
 							getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 							#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-							Trace.Write("return value Z0009====---"+str(getZ0009))
+							Trace.Write("return8 value Z0009====---"+str(getZ0009))
 					except:
 						getZ0009 = ""
 					if getZ0009 is None or getZ0009 == 0:
@@ -2754,12 +2785,13 @@ class TreeView:
 					elif getZ0009 is not None:
 						#Trace.Write("elif getZ0009 is not None")
 						if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
-							Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+							Trace.Write("if RecId44 == '1F47A350-4E38-41C9-A5C5-F5")
 							findSubChildAvailable = Sql.GetList(
 								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 								+ str(ParRecId)
 								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 							)
+							
 						else:
 							#Trace.Write("else Z0009")
 							findSubChildAvailable = Sql.GetList(
@@ -2987,7 +3019,7 @@ class TreeView:
 					if getZ0009 is not None:
 						getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 						#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-						Trace.Write("return value Z0009====---"+str(getZ0009))
+						Trace.Write("return5 value Z0009====---"+str(getZ0009))
 				except:
 					getZ0009 = ""
 				if getZ0009 is None or getZ0009 == 0:
@@ -3000,12 +3032,13 @@ class TreeView:
 				elif getZ0009 is not None:
 					#Trace.Write("elif getZ0009 is not None")
 					if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
-						Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+						Trace.Write("if55 RecId == '1F47A350-4E38-41C9-A5C5-F5")
 						findSubChildAvailable = Sql.GetList(
 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 							+ str(ParRecId)
 							+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 						)
+						
 					else:
 						#Trace.Write("else Z0009")
 						findSubChildAvailable = Sql.GetList(
@@ -3103,7 +3136,7 @@ class TreeView:
 										updateentXML = greenbook_entitlement_object.ENTITLEMENT_XML
 										flag_excluse=0
 										pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-										pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW)</ENTITLEMENT_ID>')
+										pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW|AGS_[^>]*?_TSC_CONADD)</ENTITLEMENT_ID>')
 										pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions|Yes)</ENTITLEMENT_DISPLAY_VALUE>')
 										for m in re.finditer(pattern_tag, updateentXML):
 											sub_string = m.group(1)
@@ -3156,7 +3189,7 @@ class TreeView:
 							if getZ0009 is not None:
 								getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 								#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-								Trace.Write("return value Z0009====---"+str(getZ0009))
+								Trace.Write("return6 value Z0009====---"+str(getZ0009))
 						except:
 							getZ0009 = ""
 						if getZ0009 is None or getZ0009 == 0:
@@ -3169,12 +3202,13 @@ class TreeView:
 						elif getZ0009 is not None:
 							#Trace.Write("elif getZ0009 is not None")
 							if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
-								Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+								Trace.Write("if RecId66 == '1F47A350-4E38-41C9-A5C5-F5")
 								findSubChildAvailable = Sql.GetList(
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 									+ str(ParRecId)
 									+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 								)
+								
 							else:
 								#Trace.Write("else Z0009")
 								findSubChildAvailable = Sql.GetList(
@@ -3215,7 +3249,7 @@ class TreeView:
 									if getZ0009 is not None:
 										getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 										#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-										Trace.Write("return value Z0009====---"+str(getZ0009))
+										Trace.Write("return7 value Z0009====---"+str(getZ0009))
 								except:
 									getZ0009 = ""
 								if getZ0009 is None or getZ0009 == 0:
@@ -3228,12 +3262,13 @@ class TreeView:
 								elif getZ0009 is not None:
 									#Trace.Write("elif getZ0009 is not None")
 									if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
-										Trace.Write("if RecId == '1F47A350-4E38-41C9-A5C5-F5")
+										Trace.Write("if RecId7 == '1F47A350-4E38-41C9-A5C5-F5")
 										findSubChildAvailable = Sql.GetList(
 											"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 											+ str(ParRecId)
 											+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 										)
+										
 									else:
 										#Trace.Write("else Z0009")
 										findSubChildAvailable = Sql.GetList(
@@ -3419,31 +3454,33 @@ class TreeView:
 			return True
 	#A055S000P01-4578 ends
 	def PMSATree(self,TreeParam):
+
 		flag = 0
-		TableName = 'SAQTSE'
-		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-		entitlement_obj = SqlHelper.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
-		
-		quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-		pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-		pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Flex Event Based</ENTITLEMENT_DISPLAY_VALUE>')
-		pattern_new_parts_only = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event Based</ENTITLEMENT_DISPLAY_VALUE>')
-		pattern_new_parts_Z0010 = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event based</ENTITLEMENT_DISPLAY_VALUE>')
-		#Trace.Write("PMSA----->"+str(pattern_new_parts_only_yes))
-		entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-		for m in re.finditer(quote_item_tag, entitlement_xml):
-			sub_string = m.group(1)
-			#Trace.Write("substring----->"+str(sub_string))
-			attribute_id =re.findall(pattern_consumable,sub_string)
-			attribute =re.findall(pattern_new_parts_only,sub_string)
-			attribute_value =re.findall(pattern_new_parts_only_yes,sub_string)
-			attribute_Z0010 =re.findall(pattern_new_parts_Z0010,sub_string)
-			#Trace.Write("attrvalue----->"+str(attribute_value))
-			if len(attribute_id) != 0 and (len(attribute_value) != 0 or len(attribute) != 0 or len(attribute_Z0010) != 0):
-				Trace.Write("YES 3440")
-				flag = 1
-				break
+		if str(Quote.GetGlobal("SERVICE")) == "Z0009" or str(Quote.GetGlobal("SERVICE")) == "Z0010":
+			TableName = 'SAQTSE'
+			contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+			entitlement_obj = SqlHelper.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
+			
+			quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+			pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Flex Event Based</ENTITLEMENT_DISPLAY_VALUE>')
+			pattern_new_parts_only = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event Based</ENTITLEMENT_DISPLAY_VALUE>')
+			pattern_new_parts_Z0010 = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Event based</ENTITLEMENT_DISPLAY_VALUE>')
+			#Trace.Write("PMSA----->"+str(pattern_new_parts_only_yes))
+			entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+			for m in re.finditer(quote_item_tag, entitlement_xml):
+				sub_string = m.group(1)
+				#Trace.Write("substring----->"+str(sub_string))
+				attribute_id =re.findall(pattern_consumable,sub_string)
+				attribute =re.findall(pattern_new_parts_only,sub_string)
+				attribute_value =re.findall(pattern_new_parts_only_yes,sub_string)
+				attribute_Z0010 =re.findall(pattern_new_parts_Z0010,sub_string)
+				#Trace.Write("attrvalue----->"+str(attribute_value))
+				if len(attribute_id) != 0 and (len(attribute_value) != 0 or len(attribute) != 0 or len(attribute_Z0010) != 0):
+					Trace.Write("YES 3440")
+					flag = 1
+					break
 		if flag == 1:
 			return 1
 		else:

@@ -17,28 +17,43 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 get_total_qty =0
 def remove_list(t):
 	return t[3:]
-
+get_billig_date_list = []
 def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 	Trace.Write(str(totalyear)+'---BULK EDIT SAVE BILLING MATRIX--inside function---GET_DICT----'+str(GET_DICT))
+	count = 0
 	for val in GET_DICT:
+		count += 1
 		value = val.split('-')
 		getmonthavl = value[1].replace("/",'-').strip()		
 		getamtval = re.findall(r"\d",str(totalyear))
 		SubTab = getamtval[0]
 		getannual_amt = value[3]
-		Trace.Write('gettotalamount-----'+str(type(getannual_amt)))
+		get_billig_date_list.append(value[1])
+		Trace.Write('-count---'+str(count))
 		#Trace.Write('edited value-----'+str(BT= value[2].replace(",","")))
 		getannual_amt = getannual_amt.replace(',','')
 		Trace.Write('getannual_amt---32----'+str(getannual_amt))
-		gettotalamt_beforeupdate = Sql.GetFirst("SELECT ANNUAL_BILLING_AMOUNT FROM SAQIBP WHERE  QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and EQUIPMENT_ID = '{EID}'".format(cq=str(ContractRecordId),EID=value[0], revision_rec_id = quote_revision_record_id ))
+		gettotalamt_beforeupdate = Sql.GetFirst("SELECT SUM(BILLING_VALUE) as ANNUAL_BILLING_AMOUNT,SUM(ESTVAL_INGL_CURR) as ESTVAL_INGL_CURR,SERVICE_ID,BILLING_TYPE FROM SAQIBP WHERE  QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and EQUIPMENT_ID = '{EID}' and BILLING_DATE NOT IN {BD} GROUP BY SERVICE_ID,BILLING_TYPE".format(cq=str(ContractRecordId),EID=value[0], revision_rec_id = quote_revision_record_id ,BD=str(tuple(get_billig_date_list)).replace(',)',')') ))
 		gettotalamt =0
 		gettotalamt_update =0
-		gettotalamt = gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT
-		if gettotalamt_beforeupdate:
-			gettotalamt_update = int(gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT)+int(value[2].replace(",",""))
-		Trace.Write('gettotalamt_update---'+str((gettotalamt_update))
-		if float(gettotalamt_update) > float(gettotalamt):
-			sqlforupdatePT = "UPDATE SAQIBP SET BILLING_VALUE = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
+		if str(gettotalamt_beforeupdate.BILLING_TYPE).upper() == "FIXED":
+			Trace.Write('40--ANNUAL_BILLING_AMOUNT---'+str(gettotalamt_beforeupdate.BILLING_TYPE))
+			gettotalamt = gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT
+			if gettotalamt_beforeupdate:
+				gettotalamt_update = float(gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT)+float(value[2].replace(",",""))
+		else:
+			Trace.Write('45--EST_VAL_GLOBAL----'+str(gettotalamt_beforeupdate.ANNUAL_BILLING_AMOUNT))
+			gettotalamt = gettotalamt_beforeupdate.ESTVAL_INGL_CURR
+			if gettotalamt_beforeupdate:
+				gettotalamt_update = float(gettotalamt_beforeupdate.ESTVAL_INGL_CURR)+float(value[2].replace(",",""))
+		Trace.Write('gettotalamt_update-BILLING_TYPE-----'+str(gettotalamt_beforeupdate.BILLING_TYPE))
+		if float(gettotalamt_update) < float(getannual_amt):
+			if str(gettotalamt_beforeupdate.BILLING_TYPE).upper() == "FIXED":
+				edit_billmatrix = "UPDATE SAQIBP SET BILLING_VALUE = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
+				Sql.RunQuery(edit_billmatrix)
+			else:
+				edit_billmatrix = "UPDATE SAQIBP SET ESTVAL_INGL_CURR = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
+				Sql.RunQuery(edit_billmatrix)
 			# getmonthvalue = Sql.GetFirst("select * from QT__Billing_Matrix_Header where QUOTE_RECORD_ID ='{CT}' and YEAR  = {BL}".format(BL =int(SubTab),CT = str(ContractRecordId)))
 			# if getmonthvalue:
 			# 	if getmonthvalue.MONTH_1 == getmonthavl:
@@ -66,7 +81,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 			# 	else:
 			# 		getmonthavle = "MONTH_12"
 			#sqlforupdate = "UPDATE QT__BM_YEAR_1 SET {gmon} = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_YEAR = {BL}".format(BL =int(SubTab) ,gmon = getmonthavle,BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
-			Sql.RunQuery(sqlforupdatePT)
+			#Sql.RunQuery(sqlforupdatePT)
 			#Sql.RunQuery(sqlforupdate)
 			
 			#to update total amount
@@ -83,14 +98,21 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 				Trace.Write(str(tuple(billing_date_column))+'billing_date_column---'+str(billing_date_column))
 			pivot_columns = ",".join(['{}'.format(billing_date) for billing_date in billing_date_column])
 			Trace.Write(str(tuple(billing_date_column))+'billing_date_column---'+str(pivot_columns))
-			gettotalamt = Sql.GetFirst("SELECT BILLING_VALUE=SUM(BILLING_VALUE) FROM SAQIBP WHERE CONVERT(VARCHAR(11),BILLING_DATE,121) in {pn} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and EQUIPMENT_ID = '{EID}'".format(pn=tuple(billing_date_column),cq=str(ContractRecordId),EID=value[0], revision_rec_id = quote_revision_record_id ))
+			gettotalannualamt =''
+			gettotalamt = Sql.GetFirst("SELECT BILLING_VALUE=SUM(BILLING_VALUE),SUM(ESTVAL_INGL_CURR) as ESTVAL_INGL_CURR FROM SAQIBP WHERE CONVERT(VARCHAR(11),BILLING_DATE,121) in {pn} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and EQUIPMENT_ID = '{EID}'".format(pn=tuple(billing_date_column),cq=str(ContractRecordId),EID=value[0], revision_rec_id = quote_revision_record_id ))
+			
 			if gettotalamt:
-				gettotalannualamt = gettotalamt.BILLING_VALUE
+				if str(gettotalamt_beforeupdate.BILLING_TYPE).upper() == "FIXED":
+					gettotalannualamt = gettotalamt.BILLING_VALUE
+				else:
+					gettotalannualamt = gettotalamt.ESTVAL_INGL_CURR
 			Trace.Write('gettotalannualamt---'+str(gettotalannualamt))
-			sqlforupdatePTA = "UPDATE SAQIBP SET ANNUAL_BILLING_AMOUNT = {BTN} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE in {BD}".format(BTN= gettotalannualamt,CT = str(ContractRecordId),EID=value[0],BD = tuple(billing_date_column), revision_rec_id = quote_revision_record_id)
-			sqlforupdate = "UPDATE QT__BM_YEAR_1 SET ANNUAL_BILLING_AMOUNT = {BTN} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_YEAR = {BL}".format(BL=int(SubTab),BTN= gettotalannualamt,CT = str(ContractRecordId),EID=value[0], revision_rec_id = quote_revision_record_id)
-			Sql.RunQuery(sqlforupdatePTA)
-			Sql.RunQuery(sqlforupdate)
+			
+			annual_sqlforupdatePTA = "UPDATE SAQIBP SET ANNUAL_BILLING_AMOUNT = {BTN} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE in {BD}".format(BTN= gettotalannualamt,CT = str(ContractRecordId),EID=value[0],BD = tuple(billing_date_column), revision_rec_id = quote_revision_record_id)
+			#Sql.RunQuery(annual_sqlforupdatePTA)
+			#sqlforupdate = "UPDATE QT__BM_YEAR_1 SET ANNUAL_BILLING_AMOUNT = {BTN} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_YEAR = {BL}".format(BL=int(SubTab),BTN= gettotalannualamt,CT = str(ContractRecordId),EID=value[0], revision_rec_id = quote_revision_record_id)
+			
+			#Sql.RunQuery(sqlforupdate)
 			savebill =''
 			#return 'save',savebill
 		else:

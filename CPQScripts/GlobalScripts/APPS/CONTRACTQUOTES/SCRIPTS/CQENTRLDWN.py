@@ -29,7 +29,7 @@ except:
 	objectName = Param.objectName
 	wherecon = Param.where
 	ancillary_dict = Param.ancillary_dict
-Log.Info("ancillary_dict1-"+str(ancillary_dict))
+#Log.Info("ancillary_dict1-"+str(ancillary_dict))
 wherecon = wherecon.replace("&#39;","'")
 objItems = objs.split('=')
 where = wherecon.split(",")[0]
@@ -38,7 +38,7 @@ sectionid = wherecon.split(",")[2]
 objectName = objItems[0]
 quote = objItems[2].split(",")[1]
 revision =  objItems[2].split(",")[2]
-Log.Info("QUOTE--------->"+str(quote)+'---'+str(revision))
+#Log.Info("QUOTE--------->"+str(quote)+'---'+str(revision))
 userid = objItems[2].split(",")[0]
 get_serviceid = SAQITMWhere.split('SERVICE_ID = ')
 get_serviceid = get_serviceid[len(get_serviceid)-1].replace("'","")
@@ -58,10 +58,10 @@ Log.Info("ancillary_dict--"+str(ancillary_dict))
 #Log.Info("attributeList--"+str(attributeList))
 
 def sendEmail(level):
-	Log.Info('284-----entitlement email started-----')
+	#Log.Info('284-----entitlement email started-----')
 	getQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(quote))
 	getEmail = Sql.GetFirst("SELECT email from users where id={}".format(userid))
-	Log.Info("SELECT email from users where id='{}'".format(userid))
+	#Log.Info("SELECT email from users where id='{}'".format(userid))
 	userEmail = ""
 	userEmail = str(getEmail.email)
 	Header = "<!DOCTYPE html><html><head><style>h4{font-weight:normal; font-family:sans-serif;} table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black';}</style> </head> <body><h4>Hi, <br> <br>The Entitlement settings have been applied to the equipment in the following quote:</br></h4>"
@@ -237,6 +237,7 @@ def ChildEntRequest(config_id,tableName,where):
 		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
 	ent_child_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_child_temp)+"'' ) BEGIN DROP TABLE "+str(ent_child_temp)+" END  ' ")
 	return cpsmatchID
+
 def get_response(cpsConfigID):
 	Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 	Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':get_serviceid,'request_url':Request_URL,'request_type':"Existing"})
@@ -607,8 +608,6 @@ def ancillary_service_call():
 		ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":"INSERT_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : get_serviceid , "tablename":objectName,"attributeList":attributeList})
 	except:
 		Log.Info("ancillary entitlement error")
-	# elif get_par_equp_ent.cnt != 0:
-	# 	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":"DELETE_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : get_serviceid , "tablename":objectName})
 
 def dividend_critical_price_sumup(ent_temp):
 	get_val = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = 'AGS_Z0091_PQB_PPCPRM'".format(ent_temp))
@@ -647,26 +646,13 @@ def dividend_critical_price_sumup(ent_temp):
 			d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
 			days = (d2 - d1).days
 			total = (total_price/365)*int(days)
-			#UPDATE TOTAL PRICE IN SAQTRV
-			#Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = {} WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,revision))
-			#objects = ["SAQSFE","SAQSGE","SAQSCE"]
-			# getCount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(revision))
-			# eqcount = getCount.cnt
-			# getfab = Sql.GetList("SELECT FABLOCATION_ID, GREENBOOK FROM SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(revision))
-			# fab = []
-			# gbk = []
-			# for x in getfab:
-			# 	getfabcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(revision,x.FABLOCATION_ID))
-			# 	fab.append(str(x.FABLOCATION_ID)+"_"+str(getfabcount.cnt))
-			# 	getgbkcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND GREEBOOK = '{}'".format(revision,x.FABLOCATION_ID,x.GREENBOOK))
-			# 	gbk.append(str(x.GREENBOOK)+"_"+str(getgbkcount.cnt))
 
 def _equp_predefined_value_driver_update(previous_xml):	
 	##value driver
 	val_list = []
 	val_coeff = []
 	##getting value driver attributes
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID NOT IN {} AND ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK TOOL LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING LEVEL')) ".format(get_serviceid, ('AGS_{}_VAL_UPIMPV'.format(get_serviceid) , 'AGS_{}_VAL_CSTSEG'.format(get_serviceid), 'AGS_{}_VAL_SVCCMP'.format(get_serviceid), 'AGS_{}_VAL_QLYREQ'.format(get_serviceid) ) ) )
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID NOT IN {}  ".format(get_serviceid, ('AGS_{}_VAL_UPIMPV'.format(get_serviceid) , 'AGS_{}_VAL_CSTSEG'.format(get_serviceid), 'AGS_{}_VAL_SVCCMP'.format(get_serviceid), 'AGS_{}_VAL_QLYREQ'.format(get_serviceid),'AGS_{}_VAL_CCRTME'.format(get_serviceid) ) ) )
 	val_list = [i.ENTITLEMENT_ID for i in get_valuedriver_ids]
 	##constructing the list with all value driver and its coefficient
 	if get_valuedriver_ids:
@@ -702,15 +688,12 @@ def _equp_predefined_value_driver_update(previous_xml):
 					input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(attr)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', prev_xml_dict[attr], input_xml )
 			Sql.RunQuery("UPDATE SAQSCE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}'".format(input_xml,quote,revision,get_serviceid,val.EQUIPMENT_ID,val.GREENBOOK))
 
-
-
-
-
+						
 ## Entitlement rolldown fn
 def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	is_changed = False
-	Log.Info('604--objectName----'+str(objectName))
-	# if 'Z0007' in get_serviceid:
+	#Log.Info('604--objectName----'+str(objectName))
+	# if 'Z00068' in get_serviceid:
 	# 	objectName = 'SAQSCE'
 	# 	obj_list = ['SAQTSE','SAQSGE','SAQSAE']
 	obj_list = []
@@ -722,9 +705,9 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	elif objectName == 'SAQSGE':
 		obj_list = ['SAQSCE','SAQSAE']
 		is_changed = True
-	if objectName in ('SAQTSE','SAQSGE') and get_serviceid == 'Z0009':
-		obj_list.append('SAQGPE')
-	#and 'Z0007' not in get_serviceid
+	if objectName in ('SAQTSE','SAQSGE') and get_serviceid in ('Z0009','Z0010'):
+		obj_list = ['SAQSCE','SAQSGE','SAQSAE','SAQGPE']
+	#and 'Z00068' not in get_serviceid
 	elif objectName == 'SAQSCE' :
 		obj_list = ['SAQSAE']
 		is_changed = True
@@ -754,7 +737,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			
 			###roll down for all levels starts
 			
-			if obj == 'SAQTSE'  and GetXMLsecField and 'Z0007' in get_serviceid:
+			if obj == 'SAQTSE'  and GetXMLsecField and 'Z00068' in get_serviceid:
 				where_condition = SAQITMWhere.replace('A.','')
 				updateentXML = ""
 				for value in GetXMLsecField:
@@ -797,7 +780,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 				#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
 					
 			# elif obj == 'SAQSFE' and GetXMLsecField:
-			# 	if 'Z0007' in get_serviceid and objectName == 'SAQSCE': 
+			# 	if 'Z00068' in get_serviceid and objectName == 'SAQSCE': 
 			# 		where_condition = SAQITMWhere.replace('A.','')					
 			# 		get_value_query = Sql.GetList("select QUOTE_RECORD_ID,QTEREV_RECORD_ID ,FABLOCATION_RECORD_ID, FABLOCATION_ID from SAQSFB {} ".format(where_condition) )
 					
@@ -903,7 +886,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			# 			Sql.RunQuery(UpdateEntitlement)
 								
 			elif obj == 'SAQSGE' and GetXMLsecField:
-				if 'Z0007' in get_serviceid and objectName == 'SAQSCE':
+				if 'Z00068' in get_serviceid and objectName == 'SAQSCE':
 					where_condition = SAQITMWhere.replace('A.','')
 					#fab_val = where_cond.split('AND ')
 					#where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
@@ -954,7 +937,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					##value driver
 					val_list = []
 					val_coeff = []
-					get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID NOT IN {} AND ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING LEVEL')) ".format(get_serviceid, ('AGS_{}_VAL_UPIMPV'.format(get_serviceid) , 'AGS_{}_VAL_CSTSEG'.format(get_serviceid), 'AGS_{}_VAL_SVCCMP'.format(get_serviceid), 'AGS_{}_VAL_QLYREQ'.format(get_serviceid) ) ) )
+					get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK)  WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID NOT IN {}  ".format(get_serviceid, ('AGS_{}_VAL_UPIMPV'.format(get_serviceid) , 'AGS_{}_VAL_CSTSEG'.format(get_serviceid), 'AGS_{}_VAL_SVCCMP'.format(get_serviceid), 'AGS_{}_VAL_QLYREQ'.format(get_serviceid),'AGS_{}_VAL_CCRTME'.format(get_serviceid) ) ) )
 					val_list = [i.ENTITLEMENT_ID for i in get_valuedriver_ids]
 					if get_valuedriver_ids:
 						lst = str(tuple([i.ENTITLEMENT_ID for i in get_valuedriver_ids])).replace(",)",')')
@@ -1085,12 +1068,11 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 					Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><FABLOCATION_ID>''+FABLOCATION_ID+''</FABLOCATION_ID><GREENBOOK>''+GREENBOOK+''</GREENBOOK><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(replace(replace(replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; '' ),'' > '','' &gt; '' ),''_>'',''_&gt;''),''_<'',''_&lt;''),''&'','';#38''),''<10%'',''&lt;10%''),''<='',''&lt;='')  as entitlement_xml from SAQSCE(nolock) "+str(where_condition)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_PRICE_IMPACT,IS_DEFAULT,ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CALCULATION_FACTOR INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',FABLOCATION_ID VARCHAR(100) ''FABLOCATION_ID'',GREENBOOK VARCHAR(100) ''GREENBOOK'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',PRICE_METHOD VARCHAR(100) ''PRICE_METHOD'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'') ; exec sys.sp_xml_removedocument @H; '")
 
-
 					#Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val = FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''<QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><FABLOCATION_ID>''+FABLOCATION_ID+''</FABLOCATION_ID><GREENBOOK>''+GREENBOOK+''</GREENBOOK><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; '' ),'' > '','' &gt; '' ),''_>'',''_&gt;''),''_<'',''_&lt;''),''&'','';#38'')   as entitlement_xml from SAQSCE (nolock)  "+str(where_condition)+"  )A )a SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_PRICE_IMPACT,IS_DEFAULT,ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CALCULATION_FACTOR INTO  "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',FABLOCATION_ID VARCHAR(100) ''FABLOCATION_ID'',GREENBOOK VARCHAR(100) ''GREENBOOK'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',PRICE_METHOD VARCHAR(100) ''PRICE_METHOD'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'') ; exec sys.sp_xml_removedocument @H; '")
 
 			else:
 				where = wherecon.split(",")[0]
-				Log.Info('else part roll down'+str(objectName)+'--'+str(obj)+'--'+str(join)+'--'+str(where))
+				#Log.Info('else part roll down'+str(objectName)+'--'+str(obj)+'--'+str(join)+'--'+str(where))
 				update_field_str = ""
 				if obj == 'SAQSAE':
 					update_query = """ UPDATE TGT 
@@ -1102,6 +1084,18 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					TGT.CONFIGURATION_STATUS = '{}'
 					FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
 					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID {} """.format(userid,datetimenow,getinnercon.CONFIGURATION_STATUS,'SAQSCE',obj,where)
+					#Log.Info('update_query--863----'+str(update_query))
+					Sql.RunQuery(update_query)
+				elif obj == 'SAQGPE':
+					update_query = """ UPDATE TGT 
+					SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
+					TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
+					TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
+					TGT.CpqTableEntryModifiedBy = {},
+					TGT.CpqTableEntryDateModified = '{}',
+					TGT.CONFIGURATION_STATUS = '{}'
+					FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
+					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} """.format(userid,datetimenow,getinnercon.CONFIGURATION_STATUS,'SAQSGE',obj,where)
 					Log.Info('update_query--863----'+str(update_query))
 					Sql.RunQuery(update_query)
 				else:
@@ -1116,8 +1110,6 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userid,datetimenow,getinnercon.CONFIGURATION_STATUS,objectName,obj,join,where)
 					Log.Info('update_query--863----'+str(update_query))
 					Sql.RunQuery(update_query)
-
-					
 
 			##roll down and up for all levels ends
 
@@ -1196,6 +1188,14 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		#if 'Z0091' in get_serviceid :
 		ancillary_service_call()
 		#split_service_insert()
+		#ent columns update
+		for rec_table in ['SAQSCE','SAQGPE','SAQSGE']:
+			ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_COLUMN_UPDATE',
+																				'partnumber':get_serviceid,
+																				'where_cond' :where.replace('SRC.',''), 
+																				'ent_level_table': rec_table
+																				})
+		
 		try:
 			dividend_critical_price_sumup(ent_temp)
 		except Exception as e:
@@ -1296,7 +1296,7 @@ getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_ID,CP
 get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID,getinnercon.QTEREV_RECORD_ID))
 ###SAQSCE temp table
 ent_temp = ""
-if 'Z0007' in get_serviceid or (('Z0091' in get_serviceid or 'Z0016' in get_serviceid) and objectName == 'SAQSCE'):
+if 'Z00068' in get_serviceid or (('Z0091' in get_serviceid or 'Z0016' in get_serviceid) and objectName == 'SAQSCE'):
 	where_condition = SAQITMWhere.replace('A.','').replace("'","''")
 
 	ent_temp = "SAQSCE_ENT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)

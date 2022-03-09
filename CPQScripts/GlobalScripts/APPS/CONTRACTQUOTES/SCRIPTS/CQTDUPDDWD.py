@@ -11,6 +11,7 @@ import datetime
 from SYDATABASE import SQL
 import time
 from datetime import timedelta , date
+import CQPARTIFLW
 Sql = SQL()
 
 class ContractQuoteSpareOpertion:
@@ -70,7 +71,8 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 
 			if table_data is not None:				
 				for row_data in table_data:
-					data = [row_obj.Value for row_obj in row_data]					
+					data = [row_obj.Value for row_obj in row_data]
+					Trace.Write("DATA++"+str(data))
 					yield data
 			start += 1000		
 			end += 1000			
@@ -88,7 +90,8 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 				""".format(	AttributeName=self.related_list_attr_name)
 		)
 		if related_list_obj:			
-			table_columns = eval(related_list_obj.COLUMNS)[1:]
+			table_columns = eval(related_list_obj.COLUMNS)
+			Trace.Write("table_columns"+str(table_columns))
 			columns = ",".join(table_columns)		
 			self.object_name = related_list_obj.OBJECT_NAME
 			total_count_obj = Sql.GetFirst("""
@@ -96,6 +99,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 											FROM {TableName} (NOLOCK)
 											WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'""".format(TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.tree_param))
 			if total_count_obj:
+				Trace.Write("inside"+str(total_count_obj))
 				table_total_rows = total_count_obj.count
 				if table_total_rows:
 					table_records = [data for data in self.get_results(table_total_rows, columns)]
@@ -184,7 +188,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' ' ")
 
 			Sql.RunQuery("""
-							INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID,DELIVERY_MODE, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,RETURN_TYPE, ODCC_FLAG, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,STPACCOUNT_ID, SHPACCOUNT_ID,CORE_CREDIT_PRICE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
+							INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID,DELIVERY_MODE, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,RETURN_TYPE, ODCC_FLAG, PAR_PART_NUMBER,EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,STPACCOUNT_ID, SHPACCOUNT_ID,CORE_CREDIT_PRICE,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,ODCC_FLAG_DESCRIPTION, PROD_INSP_MEMO, SHELF_LIFE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 							SELECT DISTINCT
 								CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID,
 								BASEUOM_ID,
@@ -231,6 +235,12 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
                                 STPACCOUNT_ID,
                                 SHPACCOUNT_ID,
 								CORE_CREDIT_PRICE,
+								YEAR_1_DEMAND,
+								YEAR_2_DEMAND,
+								YEAR_3_DEMAND,
+								ODCC_FLAG_DESCRIPTION,
+        						PROD_INSP_MEMO,
+								SHELF_LIFE,	
 								{UserId} as CPQTABLEENTRYADDEDBY, 
 								GETDATE() as CPQTABLEENTRYDATEADDED
 							FROM (
@@ -238,9 +248,9 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								DISTINCT
 								MAMTRL.UNIT_OF_MEASURE as BASEUOM_ID,
 								MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
-								MAMTRL.SAP_PART_NUMBER as CUSTOMER_PART_NUMBER,
+								TEMP_TABLE.CUSTOMER_PART_NUMBER as CUSTOMER_PART_NUMBER,
 								MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
-								0.00 as EXTENDED_UNIT_PRICE,
+								TEMP_TABLE.EXTENDED_UNIT_PRICE AS EXTENDED_UNIT_PRICE,
 								MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
 								MAMTRL.SAP_PART_NUMBER as PART_NUMBER,
 								MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
@@ -257,11 +267,11 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								MAMTRL.UNIT_OF_MEASURE as SALESUOM_ID,
 								MAMTRL.UOM_RECORD_ID as SALESUOM_RECORD_ID, 
 								CASE WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY < 10 THEN 'OFFSITE' WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY > 10 THEN 'ONSITE' ELSE 'OFFSITE' END AS DELIVERY_MODE,
-								CASE WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY < 10 THEN 'ON REQUEST' WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY > 10 THEN 'LOW QUANTITY ONSITE' WHEN SAQTSV.SERVICE_ID='Z0108' AND  TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY <=10 THEN 'UNSCHEDULED' ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
+								CASE WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY < 10 THEN 'ON REQUEST' WHEN SAQTSV.SERVICE_ID='Z0110' AND TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY > 10 THEN 'LOW QUANTITY ONSITE' WHEN SAQTSV.SERVICE_ID='Z0108' AND  TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY <=9 THEN 'UNSCHEDULED' ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
 								SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
 								SAQTSV.SERVICE_ID as SERVICE_ID,
 								SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
-								0.00 as UNIT_PRICE,
+								TEMP_TABLE.UNIT_PRICE AS UNIT_PRICE,
 								MAMSOP.MATPRIGRP_ID as MATPRIGRP_ID,
 								MAMSOP.MATPRIGRP_RECORD_ID as MATPRIGRP_RECORD_ID,
 								'MONTHLY' as DELIVERY_INTERVAL,
@@ -279,7 +289,13 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
                                 TEMP_TABLE.CUSTOMER_ACCEPT_PART as CUSTOMER_ACCEPT_PART,
                                 TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
                                 TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
-								TEMP_TABLE.CORE_CREDIT_PRICE AS CORE_CREDIT_PRICE
+								TEMP_TABLE.CORE_CREDIT_PRICE AS CORE_CREDIT_PRICE,
+								TEMP_TABLE.YEAR_1_DEMAND AS YEAR_1_DEMAND,
+								TEMP_TABLE.YEAR_2_DEMAND AS YEAR_2_DEMAND,
+								TEMP_TABLE.YEAR_3_DEMAND AS YEAR_3_DEMAND,
+								TEMP_TABLE.ODCC_FLAG_DESCRIPTION AS ODCC_FLAG_DESCRIPTION,
+        						TEMP_TABLE.PROD_INSP_MEMO AS PROD_INSP_MEMO,
+								TEMP_TABLE.SHELF_LIFE AS SHELF_LIFE
 							FROM {TempTable} TEMP_TABLE(NOLOCK)
 							JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PART_NUMBER
 							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
@@ -294,11 +310,22 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 										UserId=self.user_id
 									)
 			)
-			# spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
 		except Exception as e:
 			Trace.Write("Exception Occured "+str(e))
-			# spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")		
-	
+			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")		
+		##calling the iflow for pricing..
+		try:
+			contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id")))
+			if contract_quote_obj:
+				contract_quote_id = contract_quote_obj.QUOTE_ID
+			count=Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT WHERE QUOTE_ID= '"+str(contract_quote_id)+"' and CUSTOMER_ANNUAL_QUANTITY IS NOT NULL ")      
+			if count.CNT > 0:
+				Log.Info("PART PRICING IFLOW STARTED !")
+				CQPARTIFLW.iflow_pricing_call(str(self.user_name),str(contract_quote_id),str(self.contract_quote_revision_record_id))
+				
+		except:
+			Log.Info("PART PRICING IFLOW ERROR!")
 
 	def _do_opertion(self):
 		for sheet_data in self.upload_data:	

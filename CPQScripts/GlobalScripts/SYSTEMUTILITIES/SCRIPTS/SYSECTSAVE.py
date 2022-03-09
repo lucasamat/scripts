@@ -1782,8 +1782,8 @@ elif TreeParentParam == "Actions" and TopSuperParentParam == "Sections":
 	TableId = "SYOBJR-93188"
 elif TreeParentParam == "Questions" and TopSuperParentParam == "Sections" and TableId == "SYOBJR-93159":
 	ObjectName = "SYPRTB"
-elif TreeParam == "Quote Information" and TableId == "SYOBJR-98798":
-	ObjectName = "SAQTIP"    
+# elif TreeParam == "Quote Information" and TableId == "SYOBJR-98798":
+# 	ObjectName = "SAQTIP"    
 elif TreeParam == "Quote Information":
 	ObjectName = "SAQTRV"
 	

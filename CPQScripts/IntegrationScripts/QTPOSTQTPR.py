@@ -785,8 +785,8 @@ try:
 						
 						result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= quote_revision_object.QUOTE_RECORD_ID,Rev_Id = quote_revision_object.QTEREV_RECORD_ID)
 						
-						LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
-						Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
+						#LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
+						#Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 
 						level = "QT_QTQICO LEVEL"
 						try:

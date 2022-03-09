@@ -445,6 +445,12 @@ class approvalCenter:
 							if getQuote.QUOTE_STATUS == "APPROVED":
 								
 								result = ScriptExecutor.ExecuteGlobal("QTPOSTACRM", {"QUOTE_ID": getQuote.QUOTE_ID, 'Fun_type':'cpq_to_crm'})
+			try:
+				##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+				CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			except Exception as e:
+				Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
 		elif str(ACTION) == "REJECT":
 			if ApproveDesc == '':                    
 				ApproveDesc = str(self.datetime_value)
@@ -519,15 +525,7 @@ class approvalCenter:
 			except Exception as e:
 				Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
 			#iflow for approver insert
-			contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-			if contract_quote_id:
-				approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
-				if approver_insert:
-					Trace.Write("Approver_insert")
-					CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-				else:
-					Trace.Write("delete_approver")
-					CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			
 			rejecttresponse = self.sendmailNotification("Reject", CurrentTransId)
 			Notificationresponse = self.sendmailNotification("Notification",CurrentTransId)
 			UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.COMPLETED_BY = '{UserName}',ACACHR.COMPLETEDBY_RECORD_ID='{UserId}', COMPLETED_DATE = '{datetime_value}' WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
@@ -1234,15 +1232,7 @@ class approvalCenter:
 				except Exception as e:
 					Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
 				#iflow for approver insert
-				contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-				if contract_quote_id:
-					approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
-					if approver_insert:
-						Trace.Write("Approver_insert")
-						CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-					else:
-						Trace.Write("delete_approver")
-						CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				
 				if submit.APPROVAL_METHOD == "PARALLEL STEP APPROVAL":
 					requestresponse = self.sendmailNotification("ParallelRequest")
 				else:
@@ -1392,15 +1382,7 @@ class approvalCenter:
 			except Exception as e:
 				Trace.Write("EXCEPTION: QUOTE WRITE BACK " +str(e))
 			#iflow for approver insert
-			contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-			if contract_quote_id:
-				approver_insert = Sql.GetFirst("Select * FROM ACAPTX(NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND ISNULL(OWNER_ID,'') = '' ".format(contract_quote_id.QUOTE_ID))
-				if approver_insert:
-					Trace.Write("Approver_insert")
-					CQCPQC4CWB.writeback_to_c4c("approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-				else:
-					Trace.Write("delete_approver")
-					CQCPQC4CWB.writeback_to_c4c("delete_approver_list",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			
 			if parallel == "True":
 				requestresponse = self.sendmailNotification("ParallelRequest")
 			else:
@@ -2831,6 +2813,7 @@ class approvalCenter:
 					QuoteNumber=approval_record_id
 				)
 			)
+			###iflow calling for APPROVERS
 		if notifiType == "ParallelRequest":
 			GetNotificationData = Sql.GetList(
 				""" SELECT USERS.EMAIL,USERS.NAME,ACEMTP.SUBJECT,ACEMTP.MESSAGE_BODY,ACEMTP.MESSAGE_BODY_2,
@@ -2845,6 +2828,7 @@ class approvalCenter:
 					QuoteNumber=approval_record_id
 				)
 			)
+			###iflow calling for APPROVERS
 		elif notifiType == "Recall":
 			Getchintype = Sql.GetFirst(
 				"""SELECT APPROVAL_METHOD FROM ACAPCH (NOLOCK) INNER JOIN ACAPMA (NOLOCK)
@@ -2902,6 +2886,7 @@ class approvalCenter:
 					templaterecordId=str(actiondict.get(notifiType)),
 				)
 			)
+			###iflow calling for APPROVERS
 		elif notifiType == "Notification":
 			GETTEMPRECID =  Sql.GetFirst("Select EMAIL_TEMPLATE_RECORD_ID from ACEMTP (NOLOCK) WHERE EMAILTEMPLATE_ID ='Notification'")
 			#templaterecordId = "FC95AE41-4045-4799-9CD4-17DEB1B3B904"
@@ -3000,11 +2985,11 @@ class approvalCenter:
 				values = ""
 				eachsplit = eachkey.split(".")
 				if str(eachsplit[1]) == "OWNER_NAME":
-					getaccountid = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					getaccountid = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getaccountid:
-						acct_id=str(getaccountid.ACCOUNT_ID)
-						acct_name=str(getaccountid.ACCOUNT_NAME)
-						values =str(acct_name)+"-"+str(acct_id)
+						acct_id=str(getaccountid.QUOTE_ID)
+						acct_name=str(getaccountid.QTEREV_ID)
+						values =str(acct_id)+"-"+str(acct_name)
 				elif str(eachsplit[1]) == "MEMBER_ID":
 					getcontractmanager = Sql.GetFirst("SELECT MEMBER_NAME FROM SAQDLT (NOLOCK) WHERE C4C_PARTNERFUNCTION_ID = 'Sales Employee' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getcontractmanager:
@@ -3025,8 +3010,8 @@ class approvalCenter:
 					GETFPM = Sql.GetFirst("SELECT SUM(QUANTITY) AS QUANTITY FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if GETFPM:
 						values=str(GETFPM.QUANTITY)
-				elif str(eachsplit[1]) == "TOTAL_AMOUNT_INGL_CURR":
-					getnetprice = Sql.GetFirst("SELECT TOTAL_AMOUNT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getnetprice.NET_PRICE_INGL_CURR:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
@@ -3120,7 +3105,7 @@ class approvalCenter:
 					+ str(splitformailbodyappend[0])
 					+ " "
 					+ str(bodystr) 
-					+ "<tr><td colspan='12'>By Approving the Quote, you are agreeing to the terms and pricing contained within this revision of the Quote. <br> Any subsequent revisions of the quote may require additional approvals. The content of this message is Applied Material Confidential. If you are not the intended recipient and have received this message in error, any use or distribution is prohibited. Please notify us immediately by replying to this email and delete this message from your computer system.</td></tr></tbody></table></body></html>"
+					+ "</tbody></table></body></html>"
 				)
 			# ApproveLink = """https://sandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&ACTION=APPROVEBTN&ApproveDesc=Approved&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
 			#     transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),

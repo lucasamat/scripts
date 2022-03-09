@@ -394,7 +394,7 @@ class DeleteConfirmPopup:
             quote_obj = Sql.GetFirst("select QUOTE_TYPE from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
             if quote_obj:
                 #getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()
-                Log.Info("SYDELCNMSG - SAQSGB")
+                #Log.Info("SYDELCNMSG - SAQSGB")
                 if quote_obj.QUOTE_TYPE == "ZTBC - TOOL BASED":
                     TOOLDELETELIST = ["SAQTSV","SAQSCA","SAQICO","SAQSCE","SAQSGE","SAQICO","SAQIEN","SAQSFB","SAQSGB","SAQSCO","SAQTSE","SAQSFE","SAQSGE"]
                     for Table in TOOLDELETELIST:
@@ -405,6 +405,35 @@ class DeleteConfirmPopup:
                     for Table in TOOLDELETELIST:
                         QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' and SERVICE_ID = '{Service_id}' and SERVICE_DESCRIPTION = '{Service_Description}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(ObjectName = Table,Service_id = Serviceobject.SERVICE_ID,Service_Description = Serviceobject.SERVICE_DESCRIPTION,quote_revision_record_id=quote_revision_record_id)
                         Sql.RunQuery(QueryStatement)
+        elif ObjName == "SAQFBL":
+            Trace.Write("SAQFBL======")
+            fab_location = Sql.GetFirst("SELECT * FROM SAQFBL (NOLOCK) WHERE QUOTE_FABLOCATION_RECORD_ID = '"+str(RecordId)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
+
+            fab_rec_id = fab_location.FABLOCATION_RECORD_ID
+            
+            if fab_location:                
+                TOOLDELETELIST = ["SAQFBL","SAQFEQ","SAQSAP","SAQSCA","SAQSKP","SAQSCO"]
+                for Table in TOOLDELETELIST:
+                    
+                    if Table == "SAQFBL":
+                        QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' and FABLOCATION_ID = '{fab_id}' and QUOTE_FABLOCATION_RECORD_ID = '{fab_location_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(ObjectName = Table,fab_id = fab_location.FABLOCATION_ID,fab_location_rec_id = fab_location.QUOTE_FABLOCATION_RECORD_ID,quote_revision_record_id=quote_revision_record_id)
+                        Sql.RunQuery(QueryStatement)
+                    
+                    if Table in ("SAQSAP","SAQSKP"):                        
+                        Trace.Write("delete_saqsap====") 
+                        saqsco_equ_details = Sql.GetList("SELECT * FROM SAQSCO (NOLOCK) WHERE FABLOCATION_RECORD_ID = '"+str(fab_rec_id)+"' AND QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
+                        for equp in saqsco_equ_details:
+                            equp_rec_id = equp.EQUIPMENT_RECORD_ID
+                            Trace.Write("Table===="+str(equp_rec_id))                                                    
+                            QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"'  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND EQUIPMENT_RECORD_ID = '{equp_rec_id}'".format(ObjectName = Table,quote_revision_record_id=quote_revision_record_id,equp_rec_id = equp_rec_id)
+                            Sql.RunQuery(QueryStatement)
+                
+                    else:
+                        QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' and FABLOCATION_ID = '{fab_id}' and FABLOCATION_RECORD_ID = '{fab_location_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(ObjectName = Table,fab_id = fab_location.FABLOCATION_ID,fab_location_rec_id = fab_location.FABLOCATION_RECORD_ID,quote_revision_record_id=quote_revision_record_id)
+                        Sql.RunQuery(QueryStatement)
+                    
+                    update_saqtrv = ("UPDATE SAQTRV SET PRICING_DIRTY_FLAG = 'TRUE', REVISION_STATUS = 'PREPARING REVISION', WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
+                    Sql.RunQuery(update_saqtrv)
         else:
             tableInfo = Sql.GetTable(ObjName)
             ColumnName = Sql.GetFirst(

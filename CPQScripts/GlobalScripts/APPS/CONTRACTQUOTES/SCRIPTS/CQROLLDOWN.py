@@ -19,7 +19,7 @@ userName = str(User.UserName)
 import CQADDONPRD
 
 gettodaydate = datetime.datetime.now().strftime("%Y-%m-%d")
-Log.Info('ROLL DWON STARTS-CQROLLDWON---')
+#Log.Info('ROLL DWON STARTS-CQROLLDWON---')
 def cloneEntitlement(ProductPartnumber):
 	webclient = System.Net.WebClient()
 	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
@@ -34,7 +34,7 @@ def cloneEntitlement(ProductPartnumber):
 	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 	requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
 	
-	Log.Info("requestdata--" + str(requestdata))
+	#Log.Info("requestdata--" + str(requestdata))
 	response1 = webclient.UploadString(Request_URL, str(requestdata))
 	response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
 	return eval(response1)
@@ -106,6 +106,7 @@ def cloneEntitlement(ProductPartnumber):
 # 			Sql.RunQuery(SAQSAE_ent_anc_renewal)
 # 			Log.Info('SAQSAE_ent_anc_renewal--393--renewal-1881-----'+str(SAQSAE_ent_anc_renewal))
 #not using this function end	#####################
+	
 def CoveredObjEntitlement():
 	#ENTITLEMENT SV TO FE
 	
@@ -155,7 +156,7 @@ def CoveredObjEntitlement():
 	# 	SAQTSE (NOLOCK)
 	# 	JOIN SAQSCO  (NOLOCK) ON SAQSCO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID  AND SAQSCO.QTEREV_RECORD_ID = SAQTSE.QTEREV_RECORD_ID  
 	# 	WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}'  AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ )OQ""".format(UserId=userId, QuoteRecordId=Qt_rec_id, ServiceId=TreeParam, revision_rec_id = rev_rec_id)
-	Log.Info("SAQSGE_query---163--156--saqsgeinsert----"+str(qtqtse_query))
+	#Log.Info("SAQSGE_query---163--156--saqsgeinsert----"+str(qtqtse_query))
 	Sql.RunQuery(qtqtse_query)
 	#ENTITLEMENT SV TO CE
 	qtqsce_query="""
@@ -172,7 +173,7 @@ def CoveredObjEntitlement():
 		QuoteRecordId=Qt_rec_id, 
 		ServiceId=TreeParam, 
 		revision_rec_id = rev_rec_id)
-	Log.Info('@182qtqsce_query-renewal----179=---Qt_rec_id--'+str(qtqsce_query))
+	#Log.Info('@182qtqsce_query-renewal----179=---Qt_rec_id--'+str(qtqsce_query))
 	Sql.RunQuery(qtqsce_query)
 	
 	# get_SAQSCO = Sql.GetFirst("""SELECT count(*) as cnt FROM SAQSCO (NOLOCK) WHERE SAQSCO.QUOTE_RECORD_ID = '{ContractId}' AND QTEREV_RECORD_ID = '{revision_rec_id}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id))
@@ -187,6 +188,81 @@ def CoveredObjEntitlement():
 	SAQSAE_ent_renewal = """INSERT SAQSAE (KB_VERSION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,QTESRVCOA_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_XML,CONFIGURATION_STATUS,QTESRVCOE_RECORD_ID,QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID, '{username}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT IQ.*,M.ENTITLEMENT_XML,M.CONFIGURATION_STATUS,M.QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID as QTESRVCOE_RECORD_ID FROM ( SELECT DISTINCT SAQTSE.KB_VERSION,SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQTSE.QTEREV_RECORD_ID,SAQTSE.QTEREV_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQTSE.CPS_MATCH_ID,SAQSCA.GREENBOOK,SAQSCA.GREENBOOK_RECORD_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_DESCRIPTION,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID as QTESRVCOA_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID FROM SAQTSE (NOLOCK) JOIN (SELECT * FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_RECORD_ID = '{ContractId}' AND SAQSCA.QTEREV_RECORD_ID = '{revision_rec_id}' ) SAQSCA ON SAQTSE.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTSE.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID AND SAQTSE.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID WHERE SAQTSE.QUOTE_RECORD_ID = '{ContractId}' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.SERVICE_ID = '{serviceId}') IQ JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID )IQ""".format(username = userName ,  ContractId=Qt_rec_id, serviceId=TreeParam, revision_rec_id = rev_rec_id)
 	Sql.RunQuery(SAQSAE_ent_renewal)
 	Log.Info('SAQSAE_ent_renewal--393--renewal-1881-----'+str(SAQSAE_ent_renewal))
+	
+	##Added the below code to insert SAQGPE table insert after the insertion of SAQGPE table insert...
+	Sql.RunQuery("""INSERT SAQGPE (
+					CPS_CONFIGURATION_ID,
+					CPS_MATCH_ID,
+					--ENTITLEMENT_XML,
+					SERVICE_ID,
+					SERVICE_RECORD_ID,
+					GOT_CODE,
+					GOTCODE_RECORD_ID,
+					GREENBOOK,
+					GREENBOOK_RECORD_ID,
+					KB_VERSION,
+					PM_ID,
+					KIT_ID,
+					KIT_NUMBER,
+					KITNUMBER_RECORD_ID,
+					KIT_RECORD_ID,
+					PM_RECORD_ID,
+					QUOTE_ID,
+					QUOTE_RECORD_ID,
+					QTEREV_ID,
+					QTEREV_RECORD_ID,
+					QTEGBKENT_RECORD_ID,
+					QTEGGTPME_RECORD_ID,
+					QUOTE_REV_GOT_CD_PM_EVNT_ENTITLEMENTS_RECORD_ID,
+					CPQTABLEENTRYADDEDBY,
+					CPQTABLEENTRYDATEADDED
+					) 
+					SELECT pm_entitlement.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_GOT_CD_PM_EVNT_ENTITLEMENTS_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT DISTINCT 
+					SAQSGE.CPS_CONFIGURATION_ID,
+					SAQSGE.CPS_MATCH_ID,
+					--SAQSGE.ENTITLEMENT_XML,
+					SAQGPM.SERVICE_ID,
+					SAQGPM.SERVICE_RECORD_ID,
+					SAQGPM.GOT_CODE,
+					SAQGPM.GOTCODE_RECORD_ID,
+					SAQGPM.GREENBOOK,
+					SAQGPM.GREENBOOK_RECORD_ID,
+					SAQSGE.KB_VERSION,
+					SAQGPM.PM_ID,
+					SAQGPM.KIT_ID,
+					SAQGPM.KIT_NUMBER,
+					SAQGPM.KITNUMBER_RECORD_ID,
+					SAQGPM.KIT_RECORD_ID,
+					SAQGPM.PM_RECORD_ID,
+					SAQGPM.QUOTE_ID,
+					SAQGPM.QUOTE_RECORD_ID,
+					SAQGPM.QTEREV_ID,
+					SAQGPM.QTEREV_RECORD_ID,
+					SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID as QTEGBKENT_RECORD_ID,
+					SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEGGTPME_RECORD_ID
+					FROM SAQSGE (NOLOCK)
+					JOIN SAQGPM(NOLOCK) ON SAQGPM.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID 
+					AND SAQGPM.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQGPM.GREENBOOK_RECORD_ID = SAQSGE.GREENBOOK_RECORD_ID
+					WHERE SAQSGE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSGE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.SERVICE_ID = '{TreeParam}' )pm_entitlement LEFT JOIN SAQGPE (NOLOCK) AS EVENT_ENTITLEMENT ON pm_entitlement.QUOTE_RECORD_ID = EVENT_ENTITLEMENT.QUOTE_RECORD_ID  AND pm_entitlement.QTEREV_RECORD_ID = EVENT_ENTITLEMENT.QTEREV_RECORD_ID AND pm_entitlement.GREENBOOK_RECORD_ID = EVENT_ENTITLEMENT.GREENBOOK_RECORD_ID AND pm_entitlement.GOTCODE_RECORD_ID = EVENT_ENTITLEMENT.GOTCODE_RECORD_ID AND pm_entitlement.PM_RECORD_ID = EVENT_ENTITLEMENT.PM_RECORD_ID AND pm_entitlement.QTEGGTPME_RECORD_ID = EVENT_ENTITLEMENT.QTEGGTPME_RECORD_ID AND ISNULL(EVENT_ENTITLEMENT.QTEGGTPME_RECORD_ID,'') = '' """.format(
+					UserName=userName,
+					TreeParam = TreeParam,
+					QuoteRecordId=Qt_rec_id,
+					RevisionRecordId=rev_rec_id)
+					)
+	#creating backup table for saqgpe table insert...
+	getQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
+	saqsge_backup_table = "saqsge_backup_table_{}".format(getQuoteId.QUOTE_ID) 
+
+	drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
+
+
+	saqsge_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSGE.GREENBOOK,SAQSGE.GREENBOOK_RECORD_ID,SAQSGE.SERVICE_RECORD_ID,SAQSGE.QUOTE_RECORD_ID,SAQSGE.QTEREV_RECORD_ID,SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,SAQSGE.ENTITLEMENT_XML,SAQSGE.CONFIGURATION_STATUS INTO "+str(saqsge_backup_table)+" FROM SAQSGE (NOLOCK) WHERE SAQSGE.QUOTE_RECORD_ID = ''{}'' AND SAQSGE.QTEREV_RECORD_ID = ''{}'' AND SAQSGE.SERVICE_ID = ''{}'' '".format(Qt_rec_id,rev_rec_id,TreeParam))
+
+	Sql.RunQuery("""UPDATE SAQGPE SET ENTITLEMENT_XML = saqsge_backup_table.ENTITLEMENT_XML,CONFIGURATION_STATUS = saqsge_backup_table.CONFIGURATION_STATUS FROM  {saqsge_backup_table} (NOLOCK)  saqsge_backup_table JOIN SAQGPE ON saqsge_backup_table.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND saqsge_backup_table.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND saqsge_backup_table.SERVICE_RECORD_ID = SAQGPE.SERVICE_RECORD_ID AND saqsge_backup_table.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPE.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQGPE.ENTITLEMENT_XML,'') = '' """.format(saqsge_backup_table = str(saqsge_backup_table),QuoteRecordId=Qt_rec_id,RevisionRecordId=rev_rec_id,TreeParam=TreeParam))
+
+	drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
+
+	
 	# get_cnt_SAQSAE = Sql.GetFirst("""SELECT count(*) as cnt 
 	# 				FROM SAQTSE (NOLOCK) JOIN (SELECT * FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_RECORD_ID = '{ContractId}' ) SAQSCA ON SAQTSE.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTSE.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID WHERE SAQTSE.QUOTE_RECORD_ID = '{ContractId}' AND SAQTSE.SERVICE_ID = '{serviceId}') IQ JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID """.format(UserId=User.Id,  ContractId=Qt_rec_id, serviceId=TreeParam))
 	# Log.Info("get_cnt_SAQSAE---> "+ str(get_cnt_SAQSAE.cnt))
@@ -200,15 +276,25 @@ def CoveredObjEntitlement():
 	##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 Start
 	
 	level = "Offering Entitlement "
-	
+	where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
 	try:
 		Log.Info("PREDEFINED WAFER DRIVER IFLOW")
-		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
+		#where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
 		
 		predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": Qt_rec_id ,"level":"EQUIPMENT_LEVEL", "treeparam": TreeParam,"user_id": userId, "quote_rev_id":rev_rec_id})
 
 	except:
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW")
+	try:
+		##saqgpe ent columns update
+		for rec_table in ['SAQSGE','SAQSCE','SAQGPE']:
+			ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_COLUMN_UPDATE',
+														'partnumber':TreeParam,
+														'where_cond' :where_condition, 
+														'ent_level_table': rec_table
+														})
+	except:
+		Log.Info("EXCEPT----entitlement view update error IFLOW")
 	#ancillary_service_Z0046()
 	if not ancillary_dict:
 		get_ancillary = Sql.GetList("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID ='{service_id}' AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{rev_rec_id}')".format(Qt_rec_id = Qt_rec_id,rev_rec_id = rev_rec_id,service_id = TreeParam ))
@@ -217,16 +303,16 @@ def CoveredObjEntitlement():
 				ancillary_dict[rec.SERVICE_ID] = 'INSERT'
 
 	if ancillary_dict:
-		Log.Info("inside ancillary1111"+str(ancillary_dict)+'--'+str(Qt_rec_id))
+		#Log.Info("inside ancillary1111"+str(ancillary_dict)+'--'+str(Qt_rec_id))
 		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
 		for anc_key,anc_val in ancillary_dict.items():
-			Log.Info("vall--"+str(anc_key)  )
+			#Log.Info("vall--"+str(anc_key)  )
 			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{anc_key}' AND QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID = '{service_id}' AND SERVICE_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{rev_rec_id}')".format(anc_key =anc_key,Qt_rec_id = Qt_rec_id,rev_rec_id = rev_rec_id,service_id = TreeParam ))
 			
 			if anc_val == "INSERT" :
 				
 				ActionType = "{}_SERVICE".format(anc_val)
-				Log.Info("inside ancillary")
+				#Log.Info("inside ancillary")
 				ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where_condition, "quote_record_id": Qt_rec_id, "revision_rec_id": rev_rec_id, "ActionType":ActionType, "ancillary_obj": anc_key, "service_id" : TreeParam , "tablename":"SAQTSE"})
 	
 	##ancillary entitlement insert
@@ -241,7 +327,7 @@ def CoveredObjEntitlement():
 			CQADDONPRD.addon_operations(OfferingRow_detail,OfferingRow_detail.GREENBOOK)
 	except:
 		Log.Info("error in add on product")
-	 
+	
 	# try:
 	# 	Log.Info("Called CQINSQTITM ==>cqroll "+str(Qt_rec_id))
 	# 	# data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
@@ -279,7 +365,7 @@ def CoveredObjItemEntitlement():
 					JOIN SAQICO (NOLOCK) ON SAQICO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQICO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ
 				""".format(UserId=User.Id, QuoteRecordId=Qt_rec_id, ServiceId=TreeParam)
-	Log.Info("SAQIEN_query--235-----"+str(SAQIEN_query))
+	#Log.Info("SAQIEN_query--235-----"+str(SAQIEN_query))
 	Sql.RunQuery(SAQIEN_query)
 	#insert to SAQSPT
 	SAQSPEaddon_query = """
@@ -295,7 +381,7 @@ def CoveredObjItemEntitlement():
 					JOIN SAQSPT (NOLOCK) ON SAQSPT.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSPT.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ
 				""".format(UserId=User.Id, QuoteRecordId=Qt_rec_id, ServiceId=TreeParam)
-	Log.Info("SAQSPEaddon_query--251---------"+str(SAQSPEaddon_query))
+	#Log.Info("SAQSPEaddon_query--251---------"+str(SAQSPEaddon_query))
 	Sql.RunQuery(SAQSPEaddon_query)
 	#insert to SAQSPT
 	# SAQIPE_query = """
@@ -914,7 +1000,7 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 		Log.Info('2655--inside iff--qery-----'+str("""INSERT QT__SAQICO (
 						QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,
 						FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, ITEM_LINE_ID, 
-						 QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALE_PRICE, SERIAL_NO,
+						QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALE_PRICE, SERIAL_NO,
 						SERVICE_DESCRIPTION, SERVICE_ID,EXTENDED_PRICE, SERVICE_RECORD_ID, TECHNOLOGY, 
 						BD_MARGIN,	
 						BD_MARGIN_RECORD_ID, CUSTOMER_TOOL_ID,	EQUIPMENTCATEGORY_ID,	
@@ -1198,7 +1284,7 @@ try:
 except Exception as e:
 	Log.Info("ancillary_dict-1269---"+str(e))
 	ancillary_dict = {}
-Log.Info("ancillary_dict--1271--"+str(ancillary_dict))
+#Log.Info("ancillary_dict--1271--"+str(ancillary_dict))
 
 
 if 'COV OBJ ENTITLEMENT' in LEVEL:
@@ -1210,7 +1296,7 @@ if 'COV OBJ ENTITLEMENT' in LEVEL:
 	except:
 		pass
 	rev_rec_id = a[4]
-	Log.Info("tree----"+str(TreeParam))
+	#Log.Info("tree----"+str(TreeParam))
 	ApiResponse = ApiResponseFactory.JsonResponse(CoveredObjEntitlement())
 elif 'COV OBJ ITEM' in LEVEL:
 	a = LEVEL.split(",")

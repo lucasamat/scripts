@@ -18,7 +18,6 @@ UserId = str(User.Id)
 UserName = str(User.UserName)
 
 def englishdoc():
-	Log.Info("enlgish doc RECID------")
 	quoteid = SqlHelper.GetFirst("SELECT QUOTE_ID, MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 	Quote=QuoteHelper.Edit(quoteid.C4C_QUOTE_ID)
 	qtqdoc="""INSERT SAQDOC (
@@ -909,7 +908,12 @@ def submit_to_customer(doc_rec_id):
 	Trace.Write("cm to this function=====")		
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 	update_submitted_date = Sql.RunQuery("""UPDATE SAQDOC SET DATE_SUBMITTED = '{submitted_date}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id,submitted_date = date.today().strftime("%m/%d/%Y")))
-	Sql.RunQuery(update_submitted_date)	
+	Sql.RunQuery(update_submitted_date)
+	output_doc_query = Sql.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
+	if output_doc_query:
+		if str(output_doc_query.DATE_SUBMITTED) != "":			
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'SUBMITTED TO CUSTOMER' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+			Sql.RunQuery(update_revision_status)	
 	return True
 
 def customer_accepted(doc_rec_id):

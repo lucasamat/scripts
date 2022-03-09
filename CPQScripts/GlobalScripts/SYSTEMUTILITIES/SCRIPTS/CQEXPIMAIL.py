@@ -23,12 +23,13 @@ class qt_expiration_mail_trigger:
     def mailtrigger(self,expired_quotes):
         Trace.Write("Mail Sending Function"+str(expired_quotes))
         
+        
         for quotes in expired_quotes:
             getting_quotes = Sql.GetFirst("SELECT OWNER_NAME,OWNER_ID,QUOTE_ID,CONTRACT_VALID_TO,QUOTE_EXPIRE_DATE FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '"+str(quotes)+"'")
             # for quote in getting_quotes:
             employee_table = Sql.GetFirst("SELECT EMAIL FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '"+str(getting_quotes.OWNER_ID)+"'")
             expiration_date = str(getting_quotes.QUOTE_EXPIRE_DATE).split(" ")[0].strip()
-            Subject = "Your Quote is going to Expire in 7 Days"
+            Subject = "Your Quote is going to Expire in 14 Days"
             mailBody = """
                         Dear """+str(getting_quotes.OWNER_NAME)+""",<br><br>
                             This is to notify that the Quote Number """+str(getting_quotes.QUOTE_ID)+""" will be expired on """+str(expiration_date)+"""
@@ -72,7 +73,7 @@ today_current_date = now.strftime('%m/%d/%Y')
 current_date_obj = str(now).split(" ")[0].strip()
 today_date_obj = datetime.datetime.strptime(str(current_date_obj),"%Y-%m-%d")
 today_date_string = str(today_date_obj).split(" ")[0].strip()
-target_mail_date_obj = today_date_obj + timedelta(days=7)
+target_mail_date_obj = today_date_obj + timedelta(days=14)
 target_mail_date_obj= target_mail_date_obj
 target_mail_date = str(target_mail_date_obj).split(" ")[0].strip()
 #target_mail_date = target_mail_date.replace("-","/")
