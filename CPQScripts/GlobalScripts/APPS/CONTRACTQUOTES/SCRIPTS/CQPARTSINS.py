@@ -365,7 +365,8 @@ class SyncFPMQuoteAndHanaDatabase:
             self.quote_record_id = saqtrv_obj.QUOTE_RECORD_ID
             self.global_curr = saqtrv_obj.GLOBAL_CURRENCY
             self.global_curr_recid = saqtrv_obj.GLOBALCURRENCY_RECORD_ID
-            
+        Log.Info("QRC-->"+str(self.quote_record_id))
+        Log.Info("QRevC-->"+str(self.quote_revision_id))  
         get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
         for keyobj in get_party_role:
             self.account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
