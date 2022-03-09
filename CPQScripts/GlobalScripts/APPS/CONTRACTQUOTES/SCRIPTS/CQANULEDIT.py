@@ -22,7 +22,14 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 	for line_values in get_all_lines:
 		record_list=[]
 		if line_values:
-			
+			allvalue_edit1='CAVVCI'
+			allvalue_edit2='CAVVPI'
+			allvalue_edit3='AMNCCI'
+			allvalue_edit4='AMNPPI'
+			record_list.append(allvalue_edit1)
+			record_list.append(allvalue_edit2)
+			record_list.append(allvalue_edit3)
+			record_list.append(allvalue_edit4)	
 			if(line_values.NWPTON == 'Yes'):
 				editvalue1 ='NWPTOP'
 				editvalue2 ='NWPTOC'
