@@ -16,9 +16,25 @@ quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 user_id = str(User.Id)
 user_name = str(User.UserName) 
 def constructcat4editablity(Quote_rec_id,MODE,values):
-	Trace.Write("Quote_rec_id"+str(Quote_rec_id))
+	#Trace.Write("Quote_rec_id"+str(Quote_rec_id))
 	get_all_lines =Sql.GetList("Select * from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND LINE IN ({values})".format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,values=",".join(values)))
-	
+	annaul_dict={}
+	for line_values in get_all_lines:
+		record_list=[]
+		if line_values:
+			if(line_values.NWPTON == 'Yes'):
+				editvalue1 ='NWPTOP'
+				editvalue2 ='NWPTOC'
+				record_list.append(editvalue1)
+				record_list.append(editvalue2)
+			if(line_values.DEVICE_NODE == 'YES'):
+				editvalue3 = 'CONSCP'
+				editvalue4 = 'CONSPI'
+				record_list.append(editvalue3)
+				record_list.append(editvalue4)
+		annaul_dict[line_values.LINE] = record_list
+
+	return annaul_dict
 	
 	
 	# record_dict={}
