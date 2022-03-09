@@ -38,7 +38,10 @@ class ContractQuoteItemAnnualizedPricing:
 					else:
 						self._rolldown_from_total_price_level(line_id)
 					##roll up script call
-					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id,"manual_pricing":"True"})
+					try:
+						CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id,"manual_pricing":"True"})
+					except:
+						Trace.Write("error in pricing roll up")
 
 	def _rolldown_from_coeff_level(self, line_id = None):
 		#SUMCOF - Sum of All Coefficient
