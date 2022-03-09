@@ -703,6 +703,7 @@ def _insert_subtotal_by_offerring_quote_table():
             newRow['MNTEVT_LEVEL'] = val.MNTEVT_LEVEL if val.MNTEVT_LEVEL else ""
             newRow['PEREVTCST_INGL_CURR'] = val.PEREVTCST_INGL_CURR if val.PEREVTCST_INGL_CURR else ""
             newRow['PEREVTPRC_INGL_CURR'] = val.PEREVTPRC_INGL_CURR if val.PEREVTPRC_INGL_CURR else ""
+            newRow['EQUIPMENT_ID'] = val.EQUIPMENT_ID if val.EQUIPMENT_ID else ""
             if val.FABLOCATION_ID:
                 newRow['FABLOCATION_ID'] = val.FABLOCATION_ID
             else:
