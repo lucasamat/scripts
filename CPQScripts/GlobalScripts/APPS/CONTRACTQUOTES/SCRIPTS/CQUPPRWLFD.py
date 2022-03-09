@@ -18,6 +18,7 @@ class ContractQuoteItemAnnualizedPricing:
 		self.datetime_value = datetime.datetime.now()
 		self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 		self.contract_quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+		self.contract_quote_id = Quote.CompositeNumber
 		self.records = kwargs.get('records')		
 	
 	def _do_opertion(self):
@@ -36,6 +37,8 @@ class ContractQuoteItemAnnualizedPricing:
 						self._rolldown_from_total_price_level(line_id)
 					else:
 						self._rolldown_from_total_price_level(line_id)
+					##roll up script call
+					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id,"manual_pricing":"True"})
 
 	def _rolldown_from_coeff_level(self, line_id = None):
 		#SUMCOF - Sum of All Coefficient
