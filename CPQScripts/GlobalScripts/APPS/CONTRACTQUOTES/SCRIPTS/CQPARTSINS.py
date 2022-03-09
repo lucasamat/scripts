@@ -495,7 +495,7 @@ class SyncFPMQuoteAndHanaDatabase:
         Trace.Write('Delete Child called!!!')
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
         
-        Sql.RunQuery("UPDATE SAQSPT SET CUSTOMER_ACCEPT_PART='False' WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
+        Sql.RunQuery("UPDATE SAQSPT SET CUSTOMER_ACCEPT_PART='False',CUSTOMER_PARTICIPATE='False' WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
     def delete_child_records_6kw_partlist(self,Part_Numbers):
         part_list=tuple(Part_Numbers)
