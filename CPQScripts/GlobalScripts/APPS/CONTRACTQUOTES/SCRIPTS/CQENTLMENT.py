@@ -2156,10 +2156,11 @@ class Entitlements:
 				response=response.replace("null",'""')
 				response=eval(response)	
 				auth="Bearer"+' '+str(response['access_token'])
-				get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
+				get_party_role = Sql.GetList("SELECT * FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
 				account_info = {}
 				for keyobj in get_party_role:
-					account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
+					if keyobj.PRIMARY==1:
+						account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
  
 				get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.revision_recordid)+"'")
 				

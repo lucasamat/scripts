@@ -1809,10 +1809,11 @@ class SyncQuoteAndCustomTables:
 								
 								contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")						
-								get_party_role = Sql.GetList("SELECT PARTY_ID,CPQ_PARTNER_FUNCTION FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
+								get_party_role = Sql.GetList("SELECT * FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO','SHIP TO')")
 								account_info = {}
 								for keyobj in get_party_role:
-									account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
+									if keyobj.PRIMARY==1:
+										account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
 								#get info from revision table start
 								sales_id = sales_rec =qt_rev_id = qt_id=''
 								get_rev_sales_ifo = Sql.GetFirst("select QUOTE_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_record_id)+"'")
