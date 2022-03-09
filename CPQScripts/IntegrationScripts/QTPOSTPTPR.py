@@ -204,7 +204,13 @@ try:
 				if cust_participate:
 					if cust_participate.ODCC_FLAG != '':
 						for condition in i['conditions']:
-							if condition['conditionType'] == "ZERU":
+							if condition['conditionType'] == "ZEEB":
+								core_credit_amount = condition['conditionValue']
+								break
+							elif condition['conditionType'] == "ZEEC":
+								core_credit_amount = condition['conditionValue']
+								break
+							elif condition['conditionType'] == "ZERU":
 								core_credit_amount = condition['conditionValue']
 								break
 				#Log.Info("core_credit_amount--->"+str(core_credit_amount))
