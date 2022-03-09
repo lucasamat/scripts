@@ -77,11 +77,11 @@ def equipment_predefined():
 			if 'WAFER NODE' in val.ENTITLEMENT_DESCRIPTION.upper():
 				get_val = Sql.GetFirst(""" SELECT M.VALDRV_WAFERNODE as VALDRV_WAFERNODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
 				if get_val:
-					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_WAFERNODE)
+					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_WAFERNODE,TreeParam)
 			elif 'DEVICE TYPE' in val.ENTITLEMENT_DESCRIPTION.upper():
 				get_val = Sql.GetFirst(""" SELECT M.VALDRV_DEVICETYPE as VALDRV_DEVICETYPE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
 				if get_val:
-					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_DEVICETYPE)
+					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_DEVICETYPE,TreeParam)
 			elif  val.ENTITLEMENT_DESCRIPTION.upper() in ('CONTRACT COVERAGE & RESPONSE TIME','CONTRACT COVERAGE & RESP TIME'):		
 				response_time = ""
 				coverage_time = ""
@@ -94,7 +94,7 @@ def equipment_predefined():
 					ent_value = "COVERAGE {} / RESPONSE {}".format(coverage_time.replace("X","x"),response_time.split(' ')[0] )
 					if ent_value:
 						Trace.Write("inside11")
-						updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
+						updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value,TreeParam)
 					Trace.Write("contract cov-"+str(coverage_time)+'---'+str(response_time)+'--'+str(ent_value))
 			elif 'CSA TOOLS PER FAB' in val.ENTITLEMENT_DESCRIPTION.upper():
 				try:
@@ -118,7 +118,7 @@ def equipment_predefined():
 						elif tools_count_query.COUNT < 3:
 							ent_value = '# CSA tools in Fab_<3'
 					if ent_value:
-						updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
+						updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value,TreeParam)
 				except:
 					pass
 		##total seed coefficent update
@@ -133,7 +133,7 @@ def equipment_predefined():
 				if get_value_qry:
 					if get_value_qry.ENTITLEMENT_DISPLAY_VALUE:
 						ent_value = get_value_qry.ENTITLEMENT_DISPLAY_VALUE
-						updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
+						updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value,TreeParam)
 		except Exception as e:
 			Trace.Write("exceptt"+str(e))
 			pass
@@ -155,7 +155,7 @@ def greenbook_predefined():
 		#for val in get_valuedriver_ids:
 		#if 'GREENBOOK' in val.ENTITLEMENT_DESCRIPTION.upper():
 		ent_value = rec.GREENBOOK
-		updateentXML = updating_xml(entxmldict,updateentXML,"AGS_{}_VAL_GRNBKV".format(TreeParam),ent_value)
+		updateentXML = updating_xml(entxmldict,updateentXML,"AGS_{}_VAL_GRNBKV".format(TreeParam),ent_value,TreeParam)
 		
 		##total seed coefficent update
 		try:
@@ -169,7 +169,7 @@ def greenbook_predefined():
 				if get_value_qry:
 					if get_value_qry.ENTITLEMENT_DISPLAY_VALUE:
 						ent_value = get_value_qry.ENTITLEMENT_DISPLAY_VALUE
-						updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
+						updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value,TreeParam)
 		except Exception as e:
 			Trace.Write("exceptt"+str(e))
 			pass		
@@ -243,17 +243,17 @@ def service_level_predefined():
 	for val in get_valuedriver_ids:
 		if 'PRODUCT OFFERING' in val.ENTITLEMENT_DESCRIPTION.upper() or 'INTERCEPT' in val.ENTITLEMENT_DESCRIPTION.upper():
 			ent_value = ""
-			updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value )
+			updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value,TreeParam )
 	#Product.SetGlobal("updateentXML",updateentXML)
 	Sql.RunQuery( "UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(updateentXML.replace("'","''") , quote_record_id,TreeParam, quote_revision_record_id) )
 	##rolldown
 	# for roll_obj in ['SAQSFE','SAQSGE','SAQSCE','SAQSAE']:
 	# 	Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} ".format(roll_obj, updateentXML.replace("'","''") ,where_condition   ) )
 		
-def updating_xml(entxmldict, input_xml, ent_id, ent_value):	
+def updating_xml(entxmldict, input_xml, ent_id, ent_value,service_id):	
 	where =""
 	if ent_value:
-		get_value_code = Sql.GetFirst("SELECT ENTITLEMENT_VALUE_CODE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(ent_id, TreeParam, ent_value) )
+		get_value_code = Sql.GetFirst("SELECT ENTITLEMENT_VALUE_CODE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(ent_id, service_id, ent_value) )
 		entitlement_string = entxmldict[ent_id]
 		entitlement_string = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(ent_value)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string)
 		entitlement_string = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_value_code.ENTITLEMENT_VALUE_CODE)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string)
@@ -262,7 +262,7 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 		# re.sub(r'<ENTITLEMENT_ID>'+str(ent_id)+'<[\w\W]*?</CALCULATION_FACTOR>', entitlement_string, input_xml )
 		#Log.Info("EID11->{}, {} ".format(str(ent_id),str(entitlement_string)) )
 
-	get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' {}".format(ent_id, TreeParam, where))
+	get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' {}".format(ent_id, service_id, where))
 	if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
 		entitlement_string2 = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
 		entitlement_string2 = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string2)
@@ -273,12 +273,13 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 	return input_xml
 
 def valuedriver_onchage():
+	Trace.Write("onchange")
 	entxmldict = {}	
 	querystring =''
 	uptime=''	
 	entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 	display_val_dict = {}
-	getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM {objname} {where}""".format(objname=TreeParam,where=str(where_condition)))
+	getxml_query = Sql.GetFirst(""" SELECT ENTITLEMENT_XML FROM {objname} {where}""".format(objname=TreeParam,where=str(where_condition)))
 	updateentXML =''
 	#for rec in getxml_query:
 	if getxml_query:
@@ -347,12 +348,12 @@ def valuedriver_onchage():
 				#COVERAGE 7X12 / RESPONSE 8
 				ent_value = "COVERAGE {} / RESPONSE {}".format(coverage_time.replace("X","x"),response_time.split(' ')[0] )
 				if ent_value:
-					updateentXML = updating_xml(entxmldict,updateentXML,ent_id,ent_value)
+					updateentXML = updating_xml(entxmldict,updateentXML,ent_id,ent_value,dynamic_service)
 				
 					Update_xml_cov = ("UPDATE {TreeParam} SET ENTITLEMENT_XML = '{querystring}' {where_condition}".format(TreeParam=TreeParam,querystring=updateentXML,where_condition=where_condition))
 					Sql.RunQuery(Update_xml_cov)
-	except:
-		Trace.Write("cov onchange error")
+	except Exception as e:
+		Trace.Write("cov onchange error-"+str(e))
 
 	##coefficient
 	for key,val in get_selected_value.items():
