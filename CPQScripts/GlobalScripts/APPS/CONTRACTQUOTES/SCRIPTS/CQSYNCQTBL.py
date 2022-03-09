@@ -1809,7 +1809,7 @@ class SyncQuoteAndCustomTables:
 								
 								contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")						
-								get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
+								get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and CPQ_PARTNER_FUNCTION in ('SOLD TO')".format(self.contract_quote_record_id,self.quote_revision_record_id))
 								account_info = {}
 								for keyobj in get_party_role:
 									account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
