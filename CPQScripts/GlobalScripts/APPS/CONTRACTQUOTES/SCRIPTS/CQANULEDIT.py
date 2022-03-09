@@ -33,7 +33,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				record_list.append(editvalue3)
 				record_list.append(editvalue4)
 		annaul_dict[line_values.LINE] = record_list
-
+	Trace.Write("dictdictdict"+str(annaul_dict))
 	return annaul_dict
 	
 	
