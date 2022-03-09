@@ -695,6 +695,10 @@ def _insert_subtotal_by_offerring_quote_table():
             newRow['GOT_CODE'] = val.GOT_CODE if val.GOT_CODE else ""
             newRow['KIT_NAME'] = val.KIT_NAME if val.KIT_NAME else ""
             newRow['KIT_ID'] = val.KIT_ID if val.KIT_ID else ""
+            newRow['MODULE_ID'] = val.MODULE_ID if val.MODULE_ID else ""
+            newRow['MODULE_NAME'] = val.MODULE_NAME if val.MODULE_NAME else ""
+            newRow['CONTRACT_VALID_FROM'] = val.CONTRACT_VALID_FROM if val.CONTRACT_VALID_FROM else ""
+            newRow['CONTRACT_VALID_TO'] = val.CONTRACT_VALID_TO if val.CONTRACT_VALID_TO else ""
             if val.FABLOCATION_ID:
                 newRow['FABLOCATION_ID'] = val.FABLOCATION_ID
             else:
