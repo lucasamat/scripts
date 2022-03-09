@@ -277,8 +277,8 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.PROD_INSP_MEMO='' THEN null ELSE TEMP_TABLE.PROD_INSP_MEMO END AS PROD_INSP_MEMO,
                                 CASE WHEN TEMP_TABLE.SHELF_LIFE='' THEN null ELSE TEMP_TABLE.SHELF_LIFE END AS SHELF_LIFE,
                                 'ACQUIRING' AS PRICING_STATUS,
-		                        '{sold_to}' as STPACCOUNT_ID,
-                                '{ship_to}' as SHPACCOUNT_ID
+		                        TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
+                                TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
                             JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
@@ -290,15 +290,13 @@ class SyncFPMQuoteAndHanaDatabase:
                                         ServiceId=self.service_id,									
                                         QuoteRecordId=self.quote_record_id,
                                         RevisionRecordId=self.quote_revision_id,
-                                        UserId=User.Id,
-                                        sold_to=self.account_info['SOLD TO'],
-                                        ship_to=self.account_info['SHIP TO']
+                                        UserId=User.Id
                                     )
             )
-            #spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+            spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
             #self.validation_for_arp_carp()
         except Exception:
-            #spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+            spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
             Log.Info("Exception in Query insertion in SAQSPT")
         
     def update_records_saqspt(self):
