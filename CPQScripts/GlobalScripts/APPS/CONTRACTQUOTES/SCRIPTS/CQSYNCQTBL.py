@@ -1809,12 +1809,12 @@ class SyncQuoteAndCustomTables:
 								
 								contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")						
-								get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and CPQ_PARTNER_FUNCTION in ('SOLD TO')".format(self.contract_quote_record_id,self.quote_revision_record_id))
+								get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
 								account_info = {}
 								for keyobj in get_party_role:
 									account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
 								
-								get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SHIP TO')")
+								get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_id)+"' and CPQ_PARTNER_FUNCTION in ('SHIP TO')")
 								shipto_list=[]
 								for keyobj in get_party_role:
 									shipto_list.append('00'+str(keyobj.PARTY_ID))
@@ -1823,7 +1823,7 @@ class SyncQuoteAndCustomTables:
 								account_info['SHIP TO']=shiptostr
         						#get info from revision table start
 								sales_id = sales_rec =qt_rev_id = qt_id=''
-								get_rev_sales_ifo = Sql.GetFirst("select QUOTE_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+								get_rev_sales_ifo = Sql.GetFirst("select QUOTE_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"'")
 								if get_rev_sales_ifo:
 									sales_id = get_rev_sales_ifo.SALESORG_ID
 									sales_rec = get_rev_sales_ifo.SALESORG_RECORD_ID
