@@ -20,7 +20,7 @@ webclient = System.Net.WebClient()
 
 class SyncFPMQuoteAndHanaDatabase:
     def __init__(self):
-        self.response = self.arp_carp_response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = ''
+        self.response = self.arp_carp_response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = self.global_curr = self.global_curr_recid=''
         self.datetime_value = datetime.datetime.now()
         self.account_info = {}
         self.part_numbers = []
@@ -52,7 +52,7 @@ class SyncFPMQuoteAndHanaDatabase:
             temp_table_count = SqlHelper.GetFirst("SELECT count(*) as CNT FROM {}".format(str(spare_parts_temp_table_name)))
             Log.Info("TempTablecount--->"+str(temp_table_count.CNT))
             Log.Info("saqspt+++"+str("""
-                            INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,STPACCOUNT_ID, SHPACCOUNT_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
+                            INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,STPACCOUNT_ID, SHPACCOUNT_ID,GLOBAL_CURRENCY,GLOBALCURRENCY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
                                 CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID,
                                 BASEUOM_ID,
@@ -102,6 +102,8 @@ class SyncFPMQuoteAndHanaDatabase:
                                 YEAR_3_DEMAND,
                                 STPACCOUNT_ID,
                                 SHPACCOUNT_ID,
+                                GLOBAL_CURRENCY,
+                                GLOBALCURRENCY_RECORD_ID,
                                 {UserId} as CPQTABLEENTRYADDEDBY, 
                                 GETDATE() as CPQTABLEENTRYDATEADDED
                             FROM (
@@ -153,7 +155,9 @@ class SyncFPMQuoteAndHanaDatabase:
 		                        CASE WHEN TEMP_TABLE.YEAR_2_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_2_DEMAND END AS YEAR_2_DEMAND,
 		                        CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
 		                        TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
-                                TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID
+                                TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
+                                {GLOBALCURR} as GLOBAL_CURRENCY,
+                                {GLOBALCURR_REC} as GLOBALCURRENCY_RECORD_ID,
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
                             JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
@@ -165,7 +169,9 @@ class SyncFPMQuoteAndHanaDatabase:
                                         ServiceId=self.service_id,									
                                         QuoteRecordId=self.quote_record_id,
                                         RevisionRecordId=self.quote_revision_id,
-                                        UserId=User.Id
+                                        UserId=User.Id,
+                                        GLOBALCURR=self.global_curr,
+                                        GLOBALCURR_REC=self.global_curr_recid
                                     )
             ))
             Sql.RunQuery("""
@@ -343,13 +349,15 @@ class SyncFPMQuoteAndHanaDatabase:
             self.contract_valid_from = saqtmt_obj.CONTRACT_VALID_FROM
             self.contract_valid_to = saqtmt_obj.CONTRACT_VALID_TO
                 
-        saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID from SAQTRV where QUOTE_ID = '"+str(self.quote_id)+"'")
+        saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,GLOBAL_CURRENCY,GLOBALCURRENCY_RECORD_ID from SAQTRV where QUOTE_ID = '"+str(self.quote_id)+"'")
         if saqtrv_obj:
             self.sales_org_id = saqtrv_obj.SALESORG_ID
             self.sales_recd_id = saqtrv_obj.SALESORG_RECORD_ID
             self.qt_rev_id = saqtrv_obj.QTEREV_ID
             self.quote_revision_id = saqtrv_obj.QUOTE_REVISION_RECORD_ID
             self.quote_record_id = saqtrv_obj.QUOTE_RECORD_ID
+            self.global_curr = saqtrv_obj.GLOBAL_CURRENCY
+            self.global_curr_recid = saqtrv_obj.GLOBALCURRENCY_RECORD_ID
             
         get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
         for keyobj in get_party_role:
