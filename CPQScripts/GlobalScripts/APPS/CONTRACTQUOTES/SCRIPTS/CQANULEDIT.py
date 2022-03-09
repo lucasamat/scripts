@@ -30,16 +30,32 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 			record_list.append(allvalue_edit2)
 			record_list.append(allvalue_edit3)
 			record_list.append(allvalue_edit4)	
-			if(line_values.NWPTON == 'Yes'):
-				editvalue1 ='NWPTOP'
-				editvalue2 ='NWPTOC'
+			if(line_values.BPTTKP == 'Yes'):
+				editvalue1 ='BPTKCI'
+				editvalue2 ='BPTKPI'
 				record_list.append(editvalue1)
 				record_list.append(editvalue2)
-			if(line_values.DEVICE_NODE == 'YES'):
-				editvalue3 = 'CONSCP'
-				editvalue4 = 'CONSPI'
+			if(line_values.ATGKEY != 'Excluded'):
+				editvalue3 = 'ATGKEC'
+				editvalue4 = 'ATGKEP'
 				record_list.append(editvalue3)
 				record_list.append(editvalue4)
+			if(line_values.NWPTON == 'Yes'):
+				editvalue5 = 'NWPTOC'
+				editvalue6 = 'NWPTOP'
+				record_list.append(editvalue5)
+				record_list.append(editvalue6)
+			if(line_values.NCNSMBL_ENTWPTON == 'Some Inclusions'):
+				editvalue7 = 'CONSCP'
+				editvalue8 = 'CONSPI'
+				record_list.append(editvalue7)
+				record_list.append(editvalue8)
+			if(line_values.NCNSMB_ENT == 'Included'):
+				editvalue9 = 'CONSCP'
+				editvalue10 = 'CONSPI'
+				record_list.append(editvalue9)
+				record_list.append(editvalue10)
+
 		annual_dict[line_values.LINE] = record_list
 	Trace.Write("dictdictdict"+str(annual_dict)) 
 	return str(annual_dict)
