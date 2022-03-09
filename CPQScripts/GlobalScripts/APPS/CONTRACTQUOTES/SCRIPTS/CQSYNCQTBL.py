@@ -1965,7 +1965,7 @@ class SyncQuoteAndCustomTables:
 								#Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
 
 							if equipment_data:
-								#Log.Info(""""EQUIPMENTS INSERT"""+str(equipment_data))
+								Log.Info(""""EQUIPMENTS INSERT"""+str(equipment_data))
 								for fab_location_id, value in equipment_data.items():			
 									#Log.Info("fab_location_id"+str(fab_location_id))
 									#Log.Info("value--"+str(value))
