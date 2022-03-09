@@ -23,7 +23,7 @@ from System.Text.Encoding import UTF8
 def quote_items_pricing(Qt_id):
 	#quote_number = Qt_id[2:12]
 	Log.Info('quote_id---'+str(Qt_id)) 
-	pricing_offering = ('Z0046','Z0100','Z0116','Z0117','Z0123')
+	pricing_offering = ('Z0046','Z0100','Z0116','Z0117')
 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
 	contract_quote_record_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
 	contract_quote_revision_record_id = get_rev_rec_id.QTEREV_RECORD_ID
@@ -87,6 +87,7 @@ def quote_items_pricing(Qt_id):
 		WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'			
 		""".format(QuoteRecordId=contract_quote_record_id,QuoteRevisionRecordId=contract_quote_revision_record_id))
 	# Price Bench Marking - End
+	pricing_offering = pricing_offering + ('Z0123',)
 	Sql.RunQuery("""UPDATE SAQRIT 
 					SET NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
 					NET_VALUE = IQ.NET_VALUE,
