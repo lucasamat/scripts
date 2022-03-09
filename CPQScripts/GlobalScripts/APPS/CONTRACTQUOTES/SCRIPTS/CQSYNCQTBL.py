@@ -2,7 +2,7 @@
 #   __script_name : CQSYNCQTBL.PY
 #   __script_description : THIS SCRIPT IS USED TO SYNC THE QUOTE TABLES AND CONTRACT QUOTE CUSTOM TABLES WHEN WE CREATE A QUOTE FROM C4C
 #   __primary_author__ : AYYAPPAN SUBRAMANIYAN
-#   __create_date :01-10-2020
+#   __create_date :01-10-2020 
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import Webcom.Configurator.Scripting.Test.TestProduct
