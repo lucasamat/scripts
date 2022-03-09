@@ -17,7 +17,7 @@ user_id = str(User.Id)
 user_name = str(User.UserName) 
 def constructcat4editablity(Quote_rec_id,MODE,values):
 	Trace.Write("Quote_rec_id"+str(Quote_rec_id))
-	get_all_lines =Sql.GetList("Select * from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' and QTEREV_RECORD_ID = '{}' AND LINE IN ({values})".format(contract_quote_rec_id,quote_revision_rec_id,values))
+	get_all_lines =Sql.GetList("Select * from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' and QTEREV_RECORD_ID = '{}' AND LINE IN ({})".format(contract_quote_rec_id,quote_revision_rec_id,values))
 	
 	
 	
