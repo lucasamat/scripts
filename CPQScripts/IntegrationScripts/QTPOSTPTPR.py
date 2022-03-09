@@ -371,7 +371,10 @@ try:
 									JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQRSP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID
 									WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.SERVICE_ID = 'Z0100' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{rev}'
 								""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id,rev = revision_rec_id))
-
+							Log.Info("""UPDATE SAQRSP SET UNIT_PRICE_INGL_CURR = SYSPBT.UNIT_PRICE ,EXTENDED_PRICE_INGL_CURR = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY FROM SAQRSP 				
+									JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQRSP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID
+									WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.SERVICE_ID = 'Z0100' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{rev}'
+								""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id,rev = revision_rec_id))
 							##net price update
 							GetEquipment_count = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) AS CNT FROM SAQRIT WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev}' AND SERVICE_ID = 'Z0100'".format(QuoteRecordId = contract_quote_record_id,rev =revision_rec_id))
 							if GetEquipment_count:
@@ -415,11 +418,11 @@ try:
 					Sql.RunQuery("""UPDATE SAQTRV SET SALES_PRICE_INGL_CURR = {total_unit}, TOTAL_AMOUNT_INGL_CURR ={total_net}, TAX_AMOUNT_INGL_CURR ={total_tax} FROM SAQTRV WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID IN('Z0108','Z0110')""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
 								
 					'''	
-					Sql.RunQuery(
-								"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-									BatchGroupRecordId=batch_group_record_id
-								)
-							)
+					# Sql.RunQuery(
+					# 			"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+					# 				BatchGroupRecordId=batch_group_record_id
+					# 			)
+					# 		)
 					end_time = time.time() 
 					Log.Info("CPS PRICING end==> "+str(end_time - start_time) +" QUOTE REC ID----"+str(contract_quote_record_id))
 					'''
