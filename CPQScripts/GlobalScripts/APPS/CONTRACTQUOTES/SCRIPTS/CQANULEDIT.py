@@ -18,10 +18,11 @@ user_name = str(User.UserName)
 def constructcat4editablity(Quote_rec_id,MODE,values):
 	#Trace.Write("Quote_rec_id"+str(Quote_rec_id))
 	get_all_lines =Sql.GetList("Select * from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND LINE IN ({values})".format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,values=",".join(values)))
-	annaul_dict={}
+	annual_dict={}
 	for line_values in get_all_lines:
 		record_list=[]
 		if line_values:
+			
 			if(line_values.NWPTON == 'Yes'):
 				editvalue1 ='NWPTOP'
 				editvalue2 ='NWPTOC'
@@ -32,9 +33,9 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue4 = 'CONSPI'
 				record_list.append(editvalue3)
 				record_list.append(editvalue4)
-		annaul_dict[line_values.LINE] = record_list
-	Trace.Write("dictdictdict"+str(annaul_dict)) 
-	return str(annaul_dict)
+		annual_dict[line_values.LINE] = record_list
+	Trace.Write("dictdictdict"+str(annual_dict)) 
+	return str(annual_dict)
 	
 	
 	# record_dict={}
