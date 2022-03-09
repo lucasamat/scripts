@@ -23,7 +23,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 		record_list=[]
 		if get_annual_values:
 			for editapi in get_annual_values:
-				if(editapi.NWPTON == 'yes'):
+				if(editapi == 'NWPTON'):
 					record_list+= ['NWPTOP','NWPTOC']	
 			record_dict[inlines] = record_list	
 		
