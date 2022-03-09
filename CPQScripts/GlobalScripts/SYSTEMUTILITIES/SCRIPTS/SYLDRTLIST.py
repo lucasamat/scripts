@@ -4554,7 +4554,9 @@ class SYLDRTLIST:
 		
 		cls = "eq(2)"
 		CHL_STS_OBJ = None
-
+		if table_ids.startswith('SYOBJR_9882'):
+			table_ids = "#"+str(table_ids)
+		Trace.Write("table_ids_chk_j "+str(table_ids))
 		if CHL_STS_OBJ is not None: # Not Needed
 			Trace.Write('4512---4439------')
 			dbl_clk_function += (
@@ -4594,6 +4596,7 @@ class SYLDRTLIST:
 
 					local_variable = "PartsListBulkedit"
 				Trace.Write('@4578'+str(local_variable)+''+str(RECORD_ID))
+
 				dbl_clk_function += (
 					'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
 					+ str(table_ids)
