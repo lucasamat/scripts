@@ -20,7 +20,7 @@ webclient = System.Net.WebClient()
 
 class SyncFPMQuoteAndHanaDatabase:
     def __init__(self):
-        self.response = self.arp_carp_response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = self.global_curr = self.global_curr_recid=''
+        self.response = self.arp_carp_response = self.sales_org_id = self.sales_recd_id = self.qt_rev_id = self.quote_id = self.contract_valid_from = self.contract_valid_to = self.columns= self.records= self.cvf = self.cvt = self.service_id = self.service_desc = self.service_record_id = self.global_curr = self.global_curr_recid=self.quote_record_id=self.quote_revision_id=''
         self.datetime_value = datetime.datetime.now()
         self.account_info = {}
         self.part_numbers = []
