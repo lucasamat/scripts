@@ -127,6 +127,7 @@ elif 'SYOBJR_98882' in table_id:
         checkedrows = tuple(checkedrows)
         rows = []
         parts = []
+        Trace.Write("checkedrows_chk_j "+str(checkedrows))
         for x in checkedrows:
             rows.append(x.split("-")[1])
         Sql.RunQuery("DELETE FROM SAQSCN WHERE CpqTableEntryId IN {}".format(tuple(rows)))
