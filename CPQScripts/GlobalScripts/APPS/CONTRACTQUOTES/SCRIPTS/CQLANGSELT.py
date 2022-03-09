@@ -682,7 +682,7 @@ def _insert_subtotal_by_offerring_quote_table():
 
     get_items_details_obj_insert = Quote.QuoteTables["QT_SAQRIT"]
     get_items_details_obj_insert.Rows.Clear()
-    get_items_details_obj = Sql.GetList("""select SAQRIT.LINE,SAQRIT.FABLOCATION_ID,SAQRIT.ASSEMBLY_ID,SAQRIT.GOT_CODE,SAQRIT.KIT_NAME,SAQRIT.OBJECT_ID,SAQRIT.EQUIPMENT_ID,SAQRIT.CONTRACT_VALID_FROM,SAQRIT.MODULE_ID,SAQRIT.MODULE_NAME,SAQRIT.CONTRACT_VALID_TO,SAQRIT.KIT_ID,SAQRIT.POSS_NSO_PART_ID,SAQRIT.MNTEVT_LEVEL,SAQRIT.GREENBOOK,SAQRIT.OFFERING_DESCRIPTION,SAQRIT.SERVICE_DESCRIPTION,SAQRIT.SERVICE_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.QUOTE_ID,SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_ID,SAQRIT.QTEREV_RECORD_ID,SAQRIT.TAX_AMOUNT_INGL_CURR,SAQRIT.ESTVAL_INGL_CURR,SAQRIT.NET_VALUE_INGL_CURR,{UserId} as ownerId,{CartId} as cartId from SAQRIT (NOLOCK)  where SAQRIT.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIT.QTEREV_RECORD_ID= '{rev_rec_id}'""".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
+    get_items_details_obj = Sql.GetList("""select SAQRIT.LINE,SAQRIT.FABLOCATION_ID,SAQRIT.ASSEMBLY_ID,SAQRIT.GOT_CODE,SAQRIT.KIT_NAME,SAQRIT.OBJECT_ID,SAQRIT.EQUIPMENT_ID,SAQRIT.CONTRACT_VALID_FROM,SAQRIT.MODULE_ID,SAQRIT.MODULE_NAME,SAQRIT.CONTRACT_VALID_TO,SAQRIT.KIT_ID,SAQRIT.POSS_NSO_PART_ID,SAQRIT.MNTEVT_LEVEL,SAQRIT.GREENBOOK,SAQRIT.OFFERING_DESCRIPTION,SAQRIT.SERVICE_DESCRIPTION,SAQRIT.SERVICE_RECORD_ID,SAQRIT.PEREVTCST_INGL_CURR,SAQRIT.SERVICE_ID,SAQRIT.QUOTE_ID,SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_ID,SAQRIT.QTEREV_RECORD_ID,SAQRIT.TAX_AMOUNT_INGL_CURR,SAQRIT.ESTVAL_INGL_CURR,SAQRIT.NET_VALUE_INGL_CURR,{UserId} as ownerId,{CartId} as cartId from SAQRIT (NOLOCK)  where SAQRIT.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIT.QTEREV_RECORD_ID= '{rev_rec_id}'""".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
     if get_items_details_obj:
         for val in get_items_details_obj:
             newRow = get_items_details_obj_insert.AddNewRow()
@@ -701,6 +701,7 @@ def _insert_subtotal_by_offerring_quote_table():
             newRow['CONTRACT_VALID_TO'] = val.CONTRACT_VALID_TO if val.CONTRACT_VALID_TO else ""
             newRow['POSS_NSO_PART_ID'] = val.POSS_NSO_PART_ID if val.POSS_NSO_PART_ID else ""
             newRow['MNTEVT_LEVEL'] = val.MNTEVT_LEVEL if val.MNTEVT_LEVEL else ""
+            newRow['PEREVTCST_INGL_CURR'] = val.PEREVTCST_INGL_CURR if val.PEREVTCST_INGL_CURR else ""
             if val.FABLOCATION_ID:
                 newRow['FABLOCATION_ID'] = val.FABLOCATION_ID
             else:
