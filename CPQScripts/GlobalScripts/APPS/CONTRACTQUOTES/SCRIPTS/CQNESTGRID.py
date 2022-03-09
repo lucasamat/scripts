@@ -6399,7 +6399,7 @@ def UpdateBreadcrumb():
 		else:
 			eq_id = "Sending fab"
 	elif TreeParam == "Customer Information" and TABLENAME == 'SAQFBL':
-    	qry = Sql.GetFirst(
+		qry = Sql.GetFirst(
 		"SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_FABLOCATION_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
 		)
 		if qry:
