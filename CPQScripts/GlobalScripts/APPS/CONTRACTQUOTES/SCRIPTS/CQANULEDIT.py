@@ -13,7 +13,8 @@ import SYCNGEGUID as CPQID
 
 def constructcat4editablity(Quote_rec_id,MODE,values):
 	Trace.Write("Quote_rec_id"+str(Quote_rec_id))
-	
+	for x in values:
+		Trace.Write(x)
 	return True
 
 
