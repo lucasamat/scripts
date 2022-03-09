@@ -150,6 +150,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 		
 		partids = quantity = li = []
 		s = ""
+		shipto_details= ""
 		if get_part_query:      
 			partids = [p.PART_NUMBER for p in get_part_query]
 			quantity = [q.ANNUAL_QUANTITY for q in get_part_query]
