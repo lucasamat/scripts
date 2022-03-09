@@ -7,7 +7,7 @@ import sys
 
 
 Sql = SQL()
-Param = Param 
+
 
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
 input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
@@ -677,7 +677,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 								INNER JOIN PRCURR ON CURRENCY_RECORD_ID = GLOBALCURRENCY_RECORD_ID AND CURRENCY = GLOBAL_CURRENCY
 								WHERE SAQIBP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQIBP.QTEREV_RECORD_ID = '{rev}'
 							) IQ ON SAQIBP.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQIBP.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQIBP.SERVICE_ID = IQ.SERVICE_ID
-						WHERE SAQIBP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQIBP.QTEREV_RECORD_ID='{rev}' """.format( QuoteRecordId= contract_quote_rec_id ,rev =quote_revision_rec_id))
+						WHERE SAQIBP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQIBP.QTEREV_RECORD_ID='{rev}' AND SAQIBP.BILLING_YEAR = '{amount_column_split}'""".format( QuoteRecordId= contract_quote_rec_id ,rev =quote_revision_rec_id,amount_column_split=amount_column_split))
 	if service_id == 'Z0116':
 		update_annual_bill_amt  = Sql.GetFirst("SELECT SUM(NET_VALUE_INGL_CURR) as YEAR1 from SAQRIT (NOLOCK) where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'  and SERVICE_ID = 'Z0116' GROUP BY SERVICE_ID,GREENBOOK".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id))
 		if update_annual_bill_amt:
