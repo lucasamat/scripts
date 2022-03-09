@@ -4606,7 +4606,7 @@ class SYLDRTLIST:
 					+ str(table_ids)
 					+ '").on("check-all.bs.table", function (e) { var table = $("'
 					+ str(table_ids)
-					+ '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(4)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+					+ '").closest("table"); table.find("tbody tr").each(function() { if (localStorage.getItem("CommonTreeParam") == "Add-On Products"){checkedRows.push($(this).find("td:nth-child(4)").text()}else{checkedRows.push($(this).find("td:nth-child(4)").text()}); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
 					+ str(table_ids)
 					+ '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
 					+ str(table_ids)
