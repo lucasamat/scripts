@@ -4554,7 +4554,7 @@ class SYLDRTLIST:
 		
 		cls = "eq(2)"
 		CHL_STS_OBJ = None
-		if table_ids.startswith('SYOBJR_9882'):
+		if table_ids.startswith('SYOBJR_98882'):
 			table_ids = "#"+str(table_ids)
 		Trace.Write("table_ids_chk_j "+str(table_ids))
 		if CHL_STS_OBJ is not None: # Not Needed
