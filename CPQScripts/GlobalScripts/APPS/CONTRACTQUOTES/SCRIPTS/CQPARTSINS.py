@@ -356,7 +356,7 @@ class SyncFPMQuoteAndHanaDatabase:
             self.contract_valid_from = saqtmt_obj.CONTRACT_VALID_FROM
             self.contract_valid_to = saqtmt_obj.CONTRACT_VALID_TO
                 
-        saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,GLOBAL_CURRENCY,GLOBALCURRENCY_RECORD_ID from SAQTRV where QUOTE_ID = '"+str(self.quote_id)+"'")
+        saqtrv_obj = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_REVISION_RECORD_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID from SAQTRV where QUOTE_ID = '"+str(self.quote_id)+"'")
         if saqtrv_obj:
             self.sales_org_id = saqtrv_obj.SALESORG_ID
             self.sales_recd_id = saqtrv_obj.SALESORG_RECORD_ID
@@ -364,9 +364,8 @@ class SyncFPMQuoteAndHanaDatabase:
             self.quote_revision_id = saqtrv_obj.QUOTE_REVISION_RECORD_ID
             self.quote_record_id = saqtrv_obj.QUOTE_RECORD_ID
             self.global_curr = saqtrv_obj.GLOBAL_CURRENCY
-            self.global_curr_recid = saqtrv_obj.GLOBALCURRENCY_RECORD_ID
-        Log.Info("QRC-->"+str(self.quote_record_id))
-        Log.Info("QRevC-->"+str(self.quote_revision_id))  
+            self.global_curr_recid = saqtrv_obj.GLOBAL_CURRENCY_RECORD_ID
+        
         get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
         for keyobj in get_party_role:
             self.account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
