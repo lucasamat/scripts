@@ -1015,6 +1015,12 @@ class ViolationConditions:
                 where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR NCNSMB_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0035')"
             else:
                 where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR NCNSMB_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0035')"
+        if "Z0035W" in service:
+            
+            if where_str == "":
+                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0035W')"
+            else:
+                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions') AND SERVICE_ID = 'Z0035W')"
         if "Z0010" in service:
             BDHead.update({"Billing Type":"Fixed","Billing Cycle":"Quarterly","Billing Condition":"Shipment based","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
             if where_str == "":
@@ -1079,6 +1085,11 @@ class ViolationConditions:
                     where_str += " ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0091W')"
                 else:
                     where_str += " OR ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0091W')"
+        if "Z0035W" in service:
+                if where_str == "":
+                    where_str += " ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0035W')"
+                else:
+                    where_str += " OR ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0035W')"
         if "Z0092" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included","Quote Type":"Tool Based"})
             if where_str == "":
@@ -1197,6 +1208,12 @@ class ViolationConditions:
                 where_str += " ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
             else:
                 where_str += " OR ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
+        
+        if "Z0035W" in service:
+            if where_str == "":
+                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0035W')"
+            else:
+                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0035W')"
         lines = []
         annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
