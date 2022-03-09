@@ -225,16 +225,16 @@ class ContractQuoteItem:
 		basic_insert_start = time.time()
 		ancillary_join =""
 		ancillary_where =""
-		if self.is_ancillary == True or self.addon_product == True:
-			ancillary_join = """JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON PAR_SAQRIT.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID 
-														AND PAR_SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID 
-														AND PAR_SAQRIT.SERVICE_ID =SAQRIT.PAR_SERVICE_ID 
-														AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}' 
-														AND ISNULL(PAR_SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') 
-														AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID """.format(par_service_id = self.parent_service_id)	
-			if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + EQUIPMENT + NSO'):
-				ancillary_join += " AND PAR_SAQRIT.FABLOCATION_RECORD_ID = SAQRIT.FABLOCATION_RECORD_ID AND ISNULL(PAR_SAQRIT.EQUIPMENT_ID,'') = SAQRIT.EQUIPMENT_ID"
-			ancillary_where =  " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
+		# if self.is_ancillary == True or self.addon_product == True:
+		# 	ancillary_join = """JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON PAR_SAQRIT.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID 
+		# 												AND PAR_SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID 
+		# 												AND PAR_SAQRIT.SERVICE_ID =SAQRIT.PAR_SERVICE_ID 
+		# 												AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}' 
+		# 												AND ISNULL(PAR_SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') 
+		# 												AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID """.format(par_service_id = self.parent_service_id)	
+		# 	if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + EQUIPMENT + NSO'):
+		# 		ancillary_join += " AND PAR_SAQRIT.FABLOCATION_RECORD_ID = SAQRIT.FABLOCATION_RECORD_ID AND ISNULL(PAR_SAQRIT.EQUIPMENT_ID,'') = SAQRIT.EQUIPMENT_ID"
+		# 	ancillary_where =  " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
 		if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + EQUIPMENT + NSO'):
 			Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY, CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, TAXVTP,TAXGRP,DCCRFX,DCCRXD,DOCCUR, INTCPV, INTCPC, OSSVDV, LTCOSS, POFVDV, POFVDC, GBKVDV, GBKVDC, UIMVDV, UIMVDC, CAVVDV, CAVVDC, WNDVDV, WNDVDC, CCRTMV, CCRTMC, SCMVDV, SCMVDC, CCDFFV, CCDFFC, NPIVDV, NPIVDC, DTPVDV, DTPVDC, CSTVDV, CSTVDC, CSGVDV, CSGVDC, QRQVDV, QRQVDC, SVCVDV, SVCVDC, RKFVDV, RKFVDC, PBPVDV, PBPVDC, CMLAB_ENT, CNSMBL_ENT, CNTCVG_ENT, NCNSMB_ENT, PMEVNT_ENT, PMLAB_ENT, PRMKPI_ENT, OFRING, QTETYP, BILTYP, BPTKPI, ATGKEY, ATNKEY, NWPTON, HEDBIN, WETCLN_ENT, SPQTEV, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 					SELECT DISTINCT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
@@ -1665,16 +1665,16 @@ class ContractQuoteItem:
 		#if update:
 		item_object_where_string = "AND ISNULL(SAQRIO.EQUIPMENT_RECORD_ID,'') = '' "
 		item_object_join_string = "LEFT JOIN SAQRIO (NOLOCK) ON SAQRIO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQRIO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQRIO.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID AND SAQRIO.GREENBOOK_RECORD_ID = SAQSCE.GREENBOOK_RECORD_ID AND SAQRIO.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID"
-		if self.is_ancillary == True or self.addon_product == True:
-			ancillary_join = """JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON PAR_SAQRIT.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID 
-														AND PAR_SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID 
-														AND PAR_SAQRIT.SERVICE_ID =SAQRIT.PAR_SERVICE_ID 
-														AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}' 
-														AND ISNULL(PAR_SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') 
-														AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID """.format(par_service_id = self.parent_service_id)	
-			if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + EQUIPMENT + NSO'):
-				ancillary_join += " AND PAR_SAQRIT.FABLOCATION_RECORD_ID = SAQRIT.FABLOCATION_RECORD_ID AND ISNULL(PAR_SAQRIT.EQUIPMENT_ID,'') = SAQRIT.EQUIPMENT_ID"
-			ancillary_where =  " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
+		# if self.is_ancillary == True or self.addon_product == True:
+		# 	ancillary_join = """JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON PAR_SAQRIT.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID 
+		# 												AND PAR_SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID 
+		# 												AND PAR_SAQRIT.SERVICE_ID =SAQRIT.PAR_SERVICE_ID 
+		# 												AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}' 
+		# 												AND ISNULL(PAR_SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') 
+		# 												AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID """.format(par_service_id = self.parent_service_id)	
+		# 	if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + EQUIPMENT + NSO'):
+		# 		ancillary_join += " AND PAR_SAQRIT.FABLOCATION_RECORD_ID = SAQRIT.FABLOCATION_RECORD_ID AND ISNULL(PAR_SAQRIT.EQUIPMENT_ID,'') = SAQRIT.EQUIPMENT_ID"
+		# 	ancillary_where =  " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
 		
 		if self.quote_service_entitlement_type == "OFFERING + PM EVENT":
 			Sql.RunQuery("""INSERT SAQRIO (CUSTOMER_TOOL_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, KPU, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, SERIAL_NUMBER, TECHNOLOGY, TOOL_CONFIGURATION, WAFER_SIZE, QUOTE_REVISION_ITEM_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
@@ -1991,16 +1991,16 @@ class ContractQuoteItem:
 			dynamic_is_changed_value = '{ObjectName}.IS_CHANGED'.format(ObjectName=self.source_object_name)
 		elif self.quote_service_entitlement_type == 'OFFERING +EQUIPMENT + ASSEMBLY':
 			join_condition_string = ' AND SAQRIT.FABLOCATION_RECORD_ID = {ObjectName}.FABLOCATION_RECORD_ID AND SAQRIT.ASSEMBLY_ID = {ObjectName}.ASSEMBLY_ID AND SAQRIT.EQUIPMENT_ID = {ObjectName}.EQUIPMENT_ID'.format(ObjectName=self.source_object_name)
-		if self.is_ancillary == True or self.addon_product == True:
-			ancillary_join = """JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON PAR_SAQRIT.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID 
-														AND PAR_SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID 
-														AND PAR_SAQRIT.SERVICE_ID =SAQRIT.PAR_SERVICE_ID 
-														AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}' 
-														AND ISNULL(PAR_SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') 
-														AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID """.format(par_service_id = self.parent_service_id)	
-			if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + EQUIPMENT + NSO'):
-				ancillary_join += " AND PAR_SAQRIT.FABLOCATION_RECORD_ID = SAQRIT.FABLOCATION_RECORD_ID AND ISNULL(PAR_SAQRIT.EQUIPMENT_ID,'') = SAQRIT.EQUIPMENT_ID"
-			ancillary_where =  " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
+		# if self.is_ancillary == True or self.addon_product == True:
+		# 	ancillary_join = """JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON PAR_SAQRIT.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID 
+		# 												AND PAR_SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID 
+		# 												AND PAR_SAQRIT.SERVICE_ID =SAQRIT.PAR_SERVICE_ID 
+		# 												AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}' 
+		# 												AND ISNULL(PAR_SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') 
+		# 												AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID """.format(par_service_id = self.parent_service_id)	
+		# 	if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + EQUIPMENT + NSO'):
+		# 		ancillary_join += " AND PAR_SAQRIT.FABLOCATION_RECORD_ID = SAQRIT.FABLOCATION_RECORD_ID AND ISNULL(PAR_SAQRIT.EQUIPMENT_ID,'') = SAQRIT.EQUIPMENT_ID"
+		# 	ancillary_where =  " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
 		
 		#if update: # need to verify one more time
 		Sql.RunQuery("DELETE SAQITE FROM SAQITE WHERE SAQITE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQITE.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
@@ -2172,8 +2172,8 @@ class ContractQuoteItem:
 			Sql.RunQuery("""UPDATE SAQRIT SET LINE  = IQ.line_order from SAQRIT (NOLOCK) INNER JOIN (SELECT CpqTableEntryId,ROW_NUMBER()OVER(ORDER BY(CpqTableEntryId)) * {itemnumberinc} as line_order FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ) IQ on IQ.CpqTableEntryId = SAQRIT.CpqTableEntryId  WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,itemnumberinc=item_number_inc))
 			for obj in ['SAQICO','SAQRIO','SAQITE','SAQRIP','SAQIFP','SAQIBP']:
 				Sql.RunQuery("""UPDATE {obj} SET LINE  = SAQRIT.LINE from {obj} (NOLOCK) INNER JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = {obj}.QUOTE_RECORD_ID AND {obj}.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND QTEITM_RECORD_ID = QUOTE_REVISION_CONTRACT_ITEM_ID WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, obj=obj))
-			if self.is_ancillary == True or self.addon_product == True:
-				Sql.RunQuery("""UPDATE SAQRIT SET SAQRIT.PARQTEITM_LINE  = PAR_SAQRIT.LINE from SAQRIT (NOLOCK) INNER JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON SAQRIT.QUOTE_RECORD_ID = PAR_SAQRIT.QUOTE_RECORD_ID AND PAR_SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, obj=obj))
+			# if self.is_ancillary == True or self.addon_product == True:
+			# 	Sql.RunQuery("""UPDATE SAQRIT SET SAQRIT.PARQTEITM_LINE  = PAR_SAQRIT.LINE from SAQRIT (NOLOCK) INNER JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON SAQRIT.QUOTE_RECORD_ID = PAR_SAQRIT.QUOTE_RECORD_ID AND PAR_SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, obj=obj))
 
 
 	def _set_quote_service_entitlement_type(self):
@@ -2478,16 +2478,18 @@ class ContractQuoteItem:
 		ancillary_join = ''
 		ancillary_whr_cond =''
 		if self.is_ancillary == True or self.addon_product == True:
-			dynamic_ancillary_columns = " '0' AS NET_VALUE_INGL_CURR, '0' AS NET_PRICE_INGL_CURR, PAR_SAQRIT.LINE AS PARQTEITM_LINE, PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID AS PARQTEITM_LINE_RECORD_ID,"
-			dynamic_columns = "NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR,PARQTEITM_LINE, PARQTEITM_LINE_RECORD_ID,"
+			dynamic_ancillary_columns = " '0' AS NET_VALUE_INGL_CURR, '0' AS NET_PRICE_INGL_CURR,"
+			#PAR_SAQRIT.LINE AS PARQTEITM_LINE, PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID AS PARQTEITM_LINE_RECORD_ID,
+			dynamic_columns = "NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR,"
+			#PARQTEITM_LINE, PARQTEITM_LINE_RECORD_ID,
 			if self.service_id == 'Z0046' and self.get_billing_type_val.upper() == 'VARIABLE':
 				dynamic_ancillary_columns += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR,"
 				dynamic_columns += "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
 			##condition for getting parent line 
-			ancillary_whr_cond = " AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}'".format(par_service_id = self.parent_service_id)
-			ancillary_join = "JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON PAR_SAQRIT.QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID AND PAR_SAQRIT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID AND PAR_SAQRIT.SERVICE_ID = {ObjectName}.PAR_SERVICE_ID AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}' AND ISNULL(PAR_SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL({ObjectName}.GREENBOOK_RECORD_ID,'')  ".format(ObjectName = self.source_object_name, par_service_id = self.parent_service_id)	
-			if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP'):
-				ancillary_join +=" AND PAR_SAQRIT.FABLOCATION_RECORD_ID = {ObjectName}. FABLOCATION_RECORD_ID AND ISNULL(PAR_SAQRIT.EQUIPMENT_ID,'') = {ObjectName}.EQUIPMENT_ID".format(ObjectName = self.source_object_name)
+			# ancillary_whr_cond = " AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}'".format(par_service_id = self.parent_service_id)
+			# ancillary_join = "JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON PAR_SAQRIT.QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID AND PAR_SAQRIT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID AND PAR_SAQRIT.SERVICE_ID = {ObjectName}.PAR_SERVICE_ID AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}' AND ISNULL(PAR_SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL({ObjectName}.GREENBOOK_RECORD_ID,'')  ".format(ObjectName = self.source_object_name, par_service_id = self.parent_service_id)	
+			# if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP'):
+			# 	ancillary_join +=" AND PAR_SAQRIT.FABLOCATION_RECORD_ID = {ObjectName}. FABLOCATION_RECORD_ID AND ISNULL(PAR_SAQRIT.EQUIPMENT_ID,'') = {ObjectName}.EQUIPMENT_ID".format(ObjectName = self.source_object_name)
 		
 		if self.source_object_name:		
 			equipments_count = 0
@@ -3239,14 +3241,14 @@ class ContractQuoteItem:
 	def _simple_items_object_insert(self):
 		ancillary_where = ""
 		ancillary_join = ""
-		if self.is_ancillary == True or self.addon_product == True:
-			ancillary_join = """ JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID
-											AND SAQRIT.SERVICE_RECORD_ID = SAQSCO.SERVICE_RECORD_ID
-											AND SAQRIT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
-											AND SAQRIT.GREENBOOK_RECORD_ID = SAQSCO.GREENBOOK_RECORD_ID
-											AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'
-											AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID""".format(parent_service_id = self.parent_service_id)
-			ancillary_where= " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
+		# if self.is_ancillary == True or self.addon_product == True:
+		# 	ancillary_join = """ JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID
+		# 									AND SAQRIT.SERVICE_RECORD_ID = SAQSCO.SERVICE_RECORD_ID
+		# 									AND SAQRIT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
+		# 									AND SAQRIT.GREENBOOK_RECORD_ID = SAQSCO.GREENBOOK_RECORD_ID
+		# 									AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'
+		# 									AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID""".format(parent_service_id = self.parent_service_id)
+		# 	ancillary_where= " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
 		Sql.RunQuery("""INSERT SAQRIO (CUSTOMER_TOOL_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, KPU, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, SERIAL_NUMBER, TECHNOLOGY, TOOL_CONFIGURATION, WAFER_SIZE, QUOTE_REVISION_ITEM_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 				SELECT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 				SELECT DISTINCT
@@ -3300,16 +3302,16 @@ class ContractQuoteItem:
 	def _simple_quote_annualized_items_insert(self):
 		ancillary_join =""
 		ancillary_where =""
-		if self.is_ancillary == True or self.addon_product == True:
-			ancillary_join = """JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON PAR_SAQRIT.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID 
-														AND PAR_SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID 
-														AND PAR_SAQRIT.SERVICE_ID =SAQRIT.PAR_SERVICE_ID 
-														AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}' 
-														AND ISNULL(PAR_SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') 
-														AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID """.format(par_service_id = self.parent_service_id)	
-			if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + EQUIPMENT + NSO'):
-				ancillary_join += " AND PAR_SAQRIT.FABLOCATION_RECORD_ID = SAQRIT.FABLOCATION_RECORD_ID AND ISNULL(PAR_SAQRIT.EQUIPMENT_ID,'') = SAQRIT.EQUIPMENT_ID"
-			ancillary_where =  " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
+		# if self.is_ancillary == True or self.addon_product == True:
+		# 	ancillary_join = """JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON PAR_SAQRIT.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID 
+		# 												AND PAR_SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID 
+		# 												AND PAR_SAQRIT.SERVICE_ID =SAQRIT.PAR_SERVICE_ID 
+		# 												AND PAR_SAQRIT.SERVICE_ID = '{par_service_id}' 
+		# 												AND ISNULL(PAR_SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') 
+		# 												AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID """.format(par_service_id = self.parent_service_id)	
+		# 	if self.quote_service_entitlement_type in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + EQUIPMENT + NSO'):
+		# 		ancillary_join += " AND PAR_SAQRIT.FABLOCATION_RECORD_ID = SAQRIT.FABLOCATION_RECORD_ID AND ISNULL(PAR_SAQRIT.EQUIPMENT_ID,'') = SAQRIT.EQUIPMENT_ID"
+		# 	ancillary_where =  " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
 		Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID,QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY,CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID,  FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, SPQTEV, TAXVTP,TAXGRP,DCCRFX,DCCRXD,DOCCUR, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 						SELECT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 						SELECT IQ.*, CONTRACT_TEMP.YEAR_WISE, CONTRACT_TEMP.VALID_FROM as STADTE, CONTRACT_TEMP.VALID_FROM as CONTRACT_VALID_FROM, CONTRACT_TEMP.VALID_TO as ENDDTE, CONTRACT_TEMP.VALID_TO as CONTRACT_VALID_TO, Abs(DATEDIFF(day,CONTRACT_TEMP.VALID_TO, CONTRACT_TEMP.VALID_FROM)) as CNTDAY FROM (
@@ -3678,13 +3680,13 @@ class ContractQuoteItem:
 		#if update: # need to verify one more time
 		ancillary_join = ""
 		ancillary_where = ""
-		if self.is_ancillary == True or self.addon_product == True:
-			ancillary_join = """JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON 	SAQRIT.QUOTE_RECORD_ID = PAR_SAQRIT.QUOTE_RECORD_ID
-												AND SAQRIT.SERVICE_RECORD_ID = PAR_SAQRIT.SERVICE_RECORD_ID
-												AND SAQRIT.QTEREV_RECORD_ID = PAR_SAQRIT.QTEREV_RECORD_ID
-												AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID	
-												AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'""".format(parent_service_id = self.parent_service_id)
-			ancillary_where = " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
+		# if self.is_ancillary == True or self.addon_product == True:
+		# 	ancillary_join = """JOIN SAQRIT (NOLOCK) PAR_SAQRIT ON 	SAQRIT.QUOTE_RECORD_ID = PAR_SAQRIT.QUOTE_RECORD_ID
+		# 										AND SAQRIT.SERVICE_RECORD_ID = PAR_SAQRIT.SERVICE_RECORD_ID
+		# 										AND SAQRIT.QTEREV_RECORD_ID = PAR_SAQRIT.QTEREV_RECORD_ID
+		# 										AND PAR_SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID	
+		# 										AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'""".format(parent_service_id = self.parent_service_id)
+		# 	ancillary_where = " AND PAR_SAQRIT.SERVICE_ID = '{parent_service_id}'".format(parent_service_id = self.parent_service_id)
 		Sql.RunQuery("DELETE SAQITE FROM SAQITE WHERE SAQITE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQITE.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		Sql.RunQuery("""INSERT SAQITE (QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CPS_CONFIGURATION_ID, CPS_MATCH_ID, ENTITLEMENT_COST_IMPACT, ENTITLEMENT_GROUP_ID, ENTITLEMENT_GROUP_XML, ENTITLEMENT_PRICE_IMPACT, ENTITLEMENT_XML, IS_CHANGED, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID)
 					SELECT
