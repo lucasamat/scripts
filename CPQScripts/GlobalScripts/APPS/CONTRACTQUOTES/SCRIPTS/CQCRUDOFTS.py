@@ -328,7 +328,7 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
     if values:
         record_ids = []
         if all_values:
-            query_string = "select  FAB_LOCATION_RECORD_ID, FAB_LOCATION_ID, FAB_LOCATION_NAME from MAFBLC (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID AND MAFBLC.SALESORG_ID = '{salesorg_id}' AND MAFBLC.ACCOUNT_ID = '{acc}' WHERE  SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')".format(
+            query_string = "select  FAB_LOCATION_RECORD_ID, FAB_LOCATION_ID, FAB_LOCATION_NAME from MAFBLC (NOLOCK) WHERE MAFBLC.SALESORG_ID = '{salesorg_id}' AND MAFBLC.ACCOUNT_ID = '{acc}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')".format(
                     salesorg_id = salesorg_id,
                     acc=Product.GetGlobal("stp_account_id"),
                     QuoteRecordId=contract_quote_record_id,
