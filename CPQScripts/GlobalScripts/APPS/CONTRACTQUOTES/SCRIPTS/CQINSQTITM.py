@@ -1513,7 +1513,7 @@ class ContractQuoteItem:
 				quote_items_list.append(line_dict)
 			if quote_items_list:
 				Trace.Write("quote_items_list-"+str(quote_items_list))
-				calling_waterfall = ScriptExecutor.ExecuteGlobal("CQUPPRWLFD",{"Records":str(quote_items_list)})
+				calling_waterfall = ScriptExecutor.ExecuteGlobal("CQUPPRWLFD",{"Records":str(quote_items_list),"auto_update_flag":"True"})
 			# Sql.RunQuery("""UPDATE SAQICO 
 			# 	SET TCWISS = EXTENDED_POSS_COST,
 			# 		CNTCST = EXTENDED_POSS_COST,
