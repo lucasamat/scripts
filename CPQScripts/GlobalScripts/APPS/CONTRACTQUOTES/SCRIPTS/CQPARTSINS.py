@@ -285,8 +285,8 @@ class SyncFPMQuoteAndHanaDatabase:
                                 'ACQUIRING' AS PRICING_STATUS,
 		                        TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
                                 TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
-                                {GLOBALCURR} as GLOBAL_CURRENCY,
-                                {GLOBALCURR_REC} as GLOBALCURRENCY_RECORD_ID
+                                '{GLOBALCURR}' as GLOBAL_CURRENCY,
+                                '{GLOBALCURR_REC}' as GLOBALCURRENCY_RECORD_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
                             JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
