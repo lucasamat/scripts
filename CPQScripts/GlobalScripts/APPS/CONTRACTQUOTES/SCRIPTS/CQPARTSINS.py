@@ -152,8 +152,8 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.YEAR_1_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_1_DEMAND END AS YEAR_1_DEMAND,
 		                        CASE WHEN TEMP_TABLE.YEAR_2_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_2_DEMAND END AS YEAR_2_DEMAND,
 		                        CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
-		                        '{sold_to}' as STPACCOUNT_ID,
-                                '{ship_to}' as SHPACCOUNT_ID
+		                        TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
+                                TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
                             JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
@@ -165,9 +165,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                         ServiceId=self.service_id,									
                                         QuoteRecordId=self.quote_record_id,
                                         RevisionRecordId=self.quote_revision_id,
-                                        UserId=User.Id,
-                                        sold_to=self.account_info['SOLD TO'],
-                                        ship_to=self.account_info['SHIP TO']
+                                        UserId=User.Id
                                     )
             ))
             Sql.RunQuery("""
@@ -354,9 +352,8 @@ class SyncFPMQuoteAndHanaDatabase:
             self.quote_record_id = saqtrv_obj.QUOTE_RECORD_ID
             
         get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
-        account_info = {}
         for keyobj in get_party_role:
-            account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
+            self.account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
         
         get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and CPQ_PARTNER_FUNCTION in ('SHIP TO')")
         shipto_list=[]
@@ -364,7 +361,7 @@ class SyncFPMQuoteAndHanaDatabase:
             shipto_list.append('00'+str(keyobj.PARTY_ID))
         shiptostr=str(shipto_list)
         shiptostr=re.sub(r"'",'"',shiptostr)
-        account_info['SHIP TO']=shiptostr
+        self.account_info['SHIP TO']=shiptostr
         
         saqtsv_obj = Sql.GetFirst("SELECT SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQTSV where QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"'")
         if saqtsv_obj:
