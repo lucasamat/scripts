@@ -11,8 +11,9 @@ from datetime import datetime
 Sql = SQL()
 import SYCNGEGUID as CPQID
 
-def constructcat4editablity(Quote_rec_id,MODE):
+def constructcat4editablity(Quote_rec_id,MODE,values):
 	Trace.Write("Quote_rec_id"+str(Quote_rec_id))
+	
 	return True
 
 
@@ -26,4 +27,4 @@ except:
 if ACTION == 'CAT4_ENTITLMENT':
     MODE="EDIT"
     Quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
-    ApiResponse = ApiResponseFactory.JsonResponse(constructcat4editablity(Quote_rec_id,MODE))
+    ApiResponse = ApiResponseFactory.JsonResponse(constructcat4editablity(Quote_rec_id,MODE,values))
