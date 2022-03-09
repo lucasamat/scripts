@@ -11,11 +11,23 @@ from datetime import datetime
 Sql = SQL()
 import SYCNGEGUID as CPQID
 
+contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+user_id = str(User.Id)
+user_name = str(User.UserName) 
 def constructcat4editablity(Quote_rec_id,MODE,values):
 	Trace.Write("Quote_rec_id"+str(Quote_rec_id))
-	for x in values:
-		Trace.Write(x)
-	return True
+	record_dict={}
+	for inlines in values:
+		get_annual_values =Sql.GetFirst("Select * from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' and QTEREV_RECORD_ID = '{}' AND LINE = '{}' and NWPTON ='yes'".format(contract_quote_rec_id,quote_revision_rec_id,inlines))
+		record_list=[]
+		if get_annual_values:
+			for editapi in get_annual_values:
+				if(editapi.NWPTON == 'yes'):
+					record_list+= ['NWPTOP','NWPTOC']	
+			record_dict[inlines] = record_list	
+		
+	return record_dict
 
 
 ACTION = Param.ACTION
