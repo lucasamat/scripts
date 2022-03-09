@@ -276,18 +276,27 @@ def valuedriver_onchage():
 	entxmldict = {}	
 	querystring =''
 	uptime=''	
+	entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+	display_val_dict = {}
 	getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM {objname} {where}""".format(objname=TreeParam,where=str(where_condition)))
 	updateentXML =''
-	for rec in getxml_query:
-		updateentXML = rec.ENTITLEMENT_XML
-		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
-		for m in re.finditer(pattern_tag, updateentXML):
-			sub_string = m.group(1)
-			x=re.findall(pattern_name,sub_string)
-			entxmldict[x[0]]=sub_string
+	#for rec in getxml_query:
+	if getxml_query:
+		if getxml_query.ENTITLEMENT_XML:
+			updateentXML = getxml_query.ENTITLEMENT_XML
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+			for m in re.finditer(pattern_tag, updateentXML):
+				sub_string = m.group(1)
+				x=re.findall(pattern_name,sub_string)
+				if x:
+					entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
+					if entitlement_display_value_tag_match:
+						display_val_dict[x[0]] = entitlement_display_value_tag_match[0].upper()
+				entxmldict[x[0]]=sub_string
 	#if str(get_ent_type_val).upper() in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-	
+	obj =re.match(r".*SERVICE_ID\s*\=\s*\'([^>]*?)\'",where_condition)
+	dynamic_service = obj.group(1)
 	try:
 		if uptime_list:
 			base_percent = uptime_list[0]
@@ -323,7 +332,29 @@ def valuedriver_onchage():
 				Sql.RunQuery(Update_xml_uptime)
 	except:
 		Trace.Write('323--error--')
-	
+	##contract & covergae onchange update
+	try:
+		if updateentXML:
+			ent_id = "AGS_"+str(dynamic_service)+"_VAL_CCRTME"
+			response_time = ""
+			coverage_time = ""
+			
+			if "AGS_"+str(dynamic_service)+"_CVR_CNTCOV" in display_val_dict.keys():
+				coverage_time = display_val_dict["AGS_"+str(dynamic_service)+"_CVR_CNTCOV"]
+			if "AGS_"+str(dynamic_service)+"_CVR_RSPTIM" in display_val_dict.keys():
+				response_time = display_val_dict["AGS_"+str(dynamic_service)+"_CVR_RSPTIM"]
+			if coverage_time and response_time:
+				#COVERAGE 7X12 / RESPONSE 8
+				ent_value = "COVERAGE {} / RESPONSE {}".format(coverage_time.replace("X","x"),response_time.split(' ')[0] )
+				if ent_value:
+					updateentXML = updating_xml(entxmldict,updateentXML,ent_id,ent_value)
+				
+					Update_xml_cov = ("UPDATE {TreeParam} SET ENTITLEMENT_XML = '{querystring}' {where_condition}".format(TreeParam=TreeParam,querystring=updateentXML,where_condition=where_condition))
+					Sql.RunQuery(Update_xml_cov)
+	except:
+		Trace.Write("cov onchange error")
+
+	##coefficient
 	for key,val in get_selected_value.items():
 		get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' and PRENVL.ENTITLEMENT_DISPLAY_VALUE='{}'".format(str(key), serviceId,val))
 		if get_coefficient_val:
