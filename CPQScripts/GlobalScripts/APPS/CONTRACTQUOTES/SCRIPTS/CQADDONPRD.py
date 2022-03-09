@@ -343,6 +343,13 @@ def _addon_rolldown_entitlement(OfferingRow_detail,greenbook):
 					) IQ
 				""".format(UserId=User_Id, QuoteRecordId=OfferingRow_detail.QUOTE_RECORD_ID, ServiceId=OfferingRow_detail.SERVICE_ID, revision_rec_id = OfferingRow_detail.QTEREV_RECORD_ID,Addon_ServiceId = OfferingRow_detail.ADNPRD_ID,greenbook = greenbook))
 
+	for rec_table in ['SAQSCE','SAQSGE']:
+		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(OfferingRow_detail.QUOTE_RECORD_ID, OfferingRow_detail.QTEREV_RECORD_ID, OfferingRow_detail.ADNPRD_ID)
+		ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_COLUMN_UPDATE',
+													'partnumber':OfferingRow_detail.ADNPRD_ID,
+													'where_cond' :where_condition, 
+													'ent_level_table': rec_table
+													})
 def addon_operations(OfferingRow_detail,greenbook):
 	Trace.Write("CQADDONPRD entitlement insert")
 	_addon_service_level_entitlement(OfferingRow_detail)
