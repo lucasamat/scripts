@@ -1056,11 +1056,11 @@ class ViolationConditions:
         if len(lines) != 0:
             if len(lines) == 1:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-                Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
+                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
 
             else:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-                Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
+                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
             return 2
@@ -1136,14 +1136,19 @@ class ViolationConditions:
         if annualized_items_obj:
            lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
         
+        # saqite_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQITE (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        # if saqite_items_obj:
+        #    for saqite_item_obj in saqite_items_obj:
+        #        lines.append(saqite_item_obj.LINE)
+
         if len(lines) != 0:
             if len(lines) == 1:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-                Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
+                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
 
             else:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-                Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
+                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
             return 2
@@ -1222,11 +1227,11 @@ class ViolationConditions:
         if len(lines) != 0:
             if len(lines) == 1:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-                Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
+                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
 
             else:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-                Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
+                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
             return 2
@@ -1246,11 +1251,11 @@ class ViolationConditions:
         if len(lines) != 0:
             if len(lines) == 1:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-                Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
+                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
 
             else:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-                Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
+                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
             return 2
@@ -1271,11 +1276,11 @@ class ViolationConditions:
         if len(lines) != 0:
             if len(lines) == 1:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-                Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
+                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
 
             else:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-                Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
+                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
             return 2
