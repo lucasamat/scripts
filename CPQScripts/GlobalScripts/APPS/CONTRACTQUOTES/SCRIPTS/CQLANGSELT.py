@@ -699,6 +699,8 @@ def _insert_subtotal_by_offerring_quote_table():
             newRow['MODULE_NAME'] = val.MODULE_NAME if val.MODULE_NAME else ""
             newRow['CONTRACT_VALID_FROM'] = val.CONTRACT_VALID_FROM if val.CONTRACT_VALID_FROM else ""
             newRow['CONTRACT_VALID_TO'] = val.CONTRACT_VALID_TO if val.CONTRACT_VALID_TO else ""
+            newRow['POSS_NSO_PART_ID'] = val.POSS_NSO_PART_ID if val.POSS_NSO_PART_ID else ""
+            newRow['MNTEVT_LEVEL'] = val.MNTEVT_LEVEL if val.MNTEVT_LEVEL else ""
             if val.FABLOCATION_ID:
                 newRow['FABLOCATION_ID'] = val.FABLOCATION_ID
             else:
