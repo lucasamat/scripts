@@ -125,7 +125,7 @@ class ContractQuoteItem:
 		if check_addon:
 			if check_addon.SERVICE_ID :
 				self.addon_product = True
-				self.parent_service_id = check_ancillary.SERVICE_ID
+				self.parent_service_id = check_addon.SERVICE_ID
 		return True
 
 	def _quote_items_assembly_insert(self, update=True):		
@@ -1488,7 +1488,7 @@ class ContractQuoteItem:
 						Sql.RunQuery("UPDATE SAQICO SET {pricing_field_gl} = '{voucher_amt}', {pricing_field_doc} = '{doc_curr}'  FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND GRNBOK = '{grnbok}' ".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id ,voucher_amt = get_voucher_value, grnbok = record.GREENBOOK, pricing_field_doc = pricing_field_doc, pricing_field_gl =pricing_field_gl, doc_curr = float(get_voucher_value) * float(self.exchange_rate)  ))
 		elif self.service_id == 'Z0123':
 			quote_items_list = [] 
-			get_line_items_values = Sql.GetList("""SELECT QUOTE_RECORD_ID, QTEREV_RECORD_ID, SERVICE_ID, GREENBOOK, FABLOCATION_ID, EQUIPMENT_ID, POSS_NSO_PART_ID, EXTENDED_POSS_PRICE, EXTENDED_POSS_COST  
+			get_line_items_values = Sql.GetList("""SELECT QUOTE_RECORD_ID, QTEREV_RECORD_ID, SERVICE_ID, GREENBOOK, FABLOCATION_ID, EQUIPMENT_ID, POSS_NSO_PART_ID, EXTENDED_POSS_PRICE, EXTENDED_POSS_COST,SAQRIT.LINE  
 							FROM SAQSCN (NOLOCK) 
 							INNER JOIN SAQRIT ON SAQRIT.QUOTE_RECORD_ID = SAQSCN.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQSCN.QTEREV_RECORD_ID AND SAQRIT.SERVICE_ID = SAQSCN.SERVICE_ID AND SAQRIT.GREENBOOK  = SAQSCN.GREENBOOK AND SAQRIT.EQUIPMENT_ID = SAQRIT.EQUIPMENT_ID AND SAQSCN.POSS_NSO_PART_ID = SAQRIT.POSS_NSO_PART_ID
 			WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' """.format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id, pricing_field_doc= pricing_field_doc,pricing_field_gl = pricing_field_gl, exch_rate = float(self.exchange_rate) ))
