@@ -186,7 +186,10 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
 			
 			spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' ' ")
-
+			account_id=""
+			get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
+			for keyobj in get_party_role:
+				account_id = keyobj.PARTY_ID
 			Sql.RunQuery("""
 							INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID,DELIVERY_MODE, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,RETURN_TYPE, ODCC_FLAG, PAR_PART_NUMBER,EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,STPACCOUNT_ID, SHPACCOUNT_ID,CORE_CREDIT_PRICE,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,ODCC_FLAG_DESCRIPTION, PROD_INSP_MEMO, SHELF_LIFE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 							SELECT DISTINCT
@@ -225,21 +228,21 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								PAR_SERVICE_DESCRIPTION,
 								PAR_SERVICE_ID,
 								PAR_SERVICE_RECORD_ID,
-                                RETURN_TYPE,
-                                ODCC_FLAG,
-                                PAR_PART_NUMBER,
-                                EXCHANGE_ELIGIBLE,
-                                CUSTOMER_ELIGIBLE,
-                                CUSTOMER_PARTICIPATE,
-                                CUSTOMER_ACCEPT_PART,
-                                STPACCOUNT_ID,
-                                SHPACCOUNT_ID,
+								RETURN_TYPE,
+								ODCC_FLAG,
+								PAR_PART_NUMBER,
+								EXCHANGE_ELIGIBLE,
+								CUSTOMER_ELIGIBLE,
+								CUSTOMER_PARTICIPATE,
+								CUSTOMER_ACCEPT_PART,
+								STPACCOUNT_ID,
+								SHPACCOUNT_ID,
 								CORE_CREDIT_PRICE,
 								YEAR_1_DEMAND,
 								YEAR_2_DEMAND,
 								YEAR_3_DEMAND,
 								ODCC_FLAG_DESCRIPTION,
-        						PROD_INSP_MEMO,
+								PROD_INSP_MEMO,
 								SHELF_LIFE,	
 								{UserId} as CPQTABLEENTRYADDEDBY, 
 								GETDATE() as CPQTABLEENTRYDATEADDED
@@ -280,21 +283,21 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								SAQTSV.PAR_SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,
 								SAQTSV.PAR_SERVICE_ID as PAR_SERVICE_ID,
 								SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,
-                                TEMP_TABLE.RETURN_TYPE AS RETURN_TYPE,
-                                TEMP_TABLE.ODCC_FLAG AS ODCC_FLAG,
-                                TEMP_TABLE.PAR_PART_NUMBER AS PAR_PART_NUMBER,
-                                TEMP_TABLE.EXCHANGE_ELIGIBLE AS EXCHANGE_ELIGIBLE,
-                                TEMP_TABLE.CUSTOMER_ELIGIBLE AS CUSTOMER_ELIGIBLE,
-                                TEMP_TABLE.CUSTOMER_PARTICIPATE as CUSTOMER_PARTICIPATE,
-                                TEMP_TABLE.CUSTOMER_ACCEPT_PART as CUSTOMER_ACCEPT_PART,
-                                TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
-                                TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
+								TEMP_TABLE.RETURN_TYPE AS RETURN_TYPE,
+								TEMP_TABLE.ODCC_FLAG AS ODCC_FLAG,
+								TEMP_TABLE.PAR_PART_NUMBER AS PAR_PART_NUMBER,
+								TEMP_TABLE.EXCHANGE_ELIGIBLE AS EXCHANGE_ELIGIBLE,
+								TEMP_TABLE.CUSTOMER_ELIGIBLE AS CUSTOMER_ELIGIBLE,
+								TEMP_TABLE.CUSTOMER_PARTICIPATE as CUSTOMER_PARTICIPATE,
+								TEMP_TABLE.CUSTOMER_ACCEPT_PART as CUSTOMER_ACCEPT_PART,
+								'{account_id}' as STPACCOUNT_ID,
+								TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
 								TEMP_TABLE.CORE_CREDIT_PRICE AS CORE_CREDIT_PRICE,
 								TEMP_TABLE.YEAR_1_DEMAND AS YEAR_1_DEMAND,
 								TEMP_TABLE.YEAR_2_DEMAND AS YEAR_2_DEMAND,
 								TEMP_TABLE.YEAR_3_DEMAND AS YEAR_3_DEMAND,
 								TEMP_TABLE.ODCC_FLAG_DESCRIPTION AS ODCC_FLAG_DESCRIPTION,
-        						TEMP_TABLE.PROD_INSP_MEMO AS PROD_INSP_MEMO,
+								TEMP_TABLE.PROD_INSP_MEMO AS PROD_INSP_MEMO,
 								TEMP_TABLE.SHELF_LIFE AS SHELF_LIFE
 							FROM {TempTable} TEMP_TABLE(NOLOCK)
 							JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PART_NUMBER
@@ -307,7 +310,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 										ServiceId=self.tree_param,									
 										QuoteRecordId=self.contract_quote_record_id,
 										RevisionRecordId=self.contract_quote_revision_record_id,
-										UserId=self.user_id
+										UserId=self.user_id,account_id = account_id
 									)
 			)
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
