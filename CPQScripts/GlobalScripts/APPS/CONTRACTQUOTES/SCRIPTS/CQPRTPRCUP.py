@@ -192,7 +192,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 						q=1
 					q=int(q)
 					curr_attr2 = currency_attribute
-					if r != '':
+					if r in ('CCM','CCO','CUM','CUO'):
 						Log.Info("RRR->"+str(r)+"<-->")
 						curr_attr2 += ','+'{"name":"KOMP-ZZ_ODCC_ELIGIBILITY_FLAG","values":["'+str(r)+'"]}'
 					Log.Info("CATTR->"+str(curr_attr2))
