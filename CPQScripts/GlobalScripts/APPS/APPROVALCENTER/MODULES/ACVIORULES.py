@@ -963,8 +963,8 @@ class ViolationConditions:
 
         if sqlObjs and int(sqlObjs.cnt) > 0:
             updateAutoApproval = """update QH set
-                            REVISION_STATUS = 'APPROVED FOR PUBLISHING',
-                            APPROVED = 'True'
+                            REVISION_STATUS = 'APR-APPROVED FOR PUBLISHING',
+                            APR-APPROVED = 'True'
                             from PASGRV (nolock) QH
                             where QH.AGMREV_ID = '{revisionId}' AND QH.PRICEAGREEMENT_ID = '{segmentId}'
                             """.format(
