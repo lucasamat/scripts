@@ -26,10 +26,12 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 			allvalue_edit2="CAVVPI"
 			allvalue_edit3="AMNCCI"
 			allvalue_edit4="AMNPPI"
+			allvalue_edit5="ADDCOF"
 			record_list.append(allvalue_edit1)
 			record_list.append(allvalue_edit2)
 			record_list.append(allvalue_edit3)
-			record_list.append(allvalue_edit4)	
+			record_list.append(allvalue_edit4)
+			record_list.append(allvalue_edit5)	
 			#nonstandard consuamble logic is pending
 			if(line_values.BPTTKP == 'Yes'):
 				editvalue1 ="BPTKCI"
