@@ -85,7 +85,7 @@ try:
 
 			response1 = rebuilt_data
 			#Log.Info("response1 5858---->")
-			Log.Info("response1 5858---->"+str(response1))
+			#Log.Info("response1 5858---->"+str(response1))
 
 			price = []
 			QUOTE = ''
@@ -103,8 +103,8 @@ try:
 			batch_group_record_id = str(Guid.NewGuid()).upper()
 			contract_quote_record_id = None				
 
-			for ele in price:
-				Log.Info("456 type(price) --->"+str(ele))
+			#for ele in price:
+			#	Log.Info("456 type(price) --->"+str(ele))
 			if str(type(price)) == "<type 'Dictionary[str, object]'>":
 				#Log.Info("type condition--->")
 				price = [price]
@@ -137,7 +137,7 @@ try:
 			for i in price:	
 				insert_data = []	
 				Itemidinfo = str(i["itemId"]).split(";")
-				Log.Info("456 Itemidinfo --->"+str(i))
+				#Log.Info("456 Itemidinfo --->"+str(i))
 				QUOTE = str(Itemidinfo[1])
 				currencyType = str(Itemidinfo[3])
 				contract_quote_record_id = None		
@@ -202,7 +202,7 @@ try:
 				#if cust_participate and str(cust_participate.CUSTOMER_PARTICIPATE).upper() == "TRUE" and str(cust_participate.ODCC_FLAG).upper() == "TRUE":
 				#conditions = response1['Entries'][0]['items'][0]['conditions']
 				if cust_participate:
-					Log.Info("CUST:::->"+str(cust_participate.ODCC_FLAG)+"<-->")
+					#Log.Info("CUST:::->"+str(cust_participate.ODCC_FLAG)+"<-->")
 					if cust_participate.ODCC_FLAG != '':
 						for condition in i['conditions']:
 							if condition['conditionType'] == "ZEEB":
@@ -313,8 +313,8 @@ try:
 								Log.Info("QTPOSTPTPR TOTAL_TAX ===> "+str(GetSum.TOTAL_TAX))
 								Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = '{total_unit}', NET_PRICE_INGL_CURR ='{total_net}', YEAR_1_INGL_CURR='{total_net}'  FROM SAQRIT
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = '{SERVICE_ID}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id,SERVICE_ID=getpartsdata.SERVICE_ID))
-								Log.Info("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = '{total_net} - {total_tax}', SALES_PRICE_INGL_CURR = {total_unit}, TOTAL_AMOUNT_INGL_CURR ={total_net}, TAX_AMOUNT_INGL_CURR ={total_tax} FROM SAQTRV
-									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID IN('Z0108','Z0110')""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
+								#Log.Info("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = '{total_net} - {total_tax}', SALES_PRICE_INGL_CURR = {total_unit}, TOTAL_AMOUNT_INGL_CURR ={total_net}, TAX_AMOUNT_INGL_CURR ={total_tax} FROM SAQTRV
+								#	WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID IN('Z0108','Z0110')""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
 								if getpartsdata.SERVICE_ID in('Z0108','Z0110'):
 									fpm_flag=1
 									Sql.RunQuery("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = {total_net} - {total_tax}, SALES_PRICE_INGL_CURR = '{total_unit}', TOTAL_AMOUNT_INGL_CURR ='{total_net}', TAX_AMOUNT_INGL_CURR ='{total_tax}' FROM SAQTRV
