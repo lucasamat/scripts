@@ -2345,10 +2345,13 @@ class TreeView:
 									if str(ObjRecId) == "01C264E8-9B64-4F99-B05C-D61ECD2C4D27":
 										item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID,LINE".format(Product.GetGlobal("contract_quote_record_id"),str(NodeText),quote_revision_record_id))
 										if item_billing_plan_obj is not None:
-											quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
-											years = quotient + (1 if remainder > 0 else 0)
-											if not years:
-												years = 1
+											if str(NodeText) == "Z0117":
+												years = item_billing_plan_obj.cnt
+											else:
+												quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
+												years = quotient + (1 if remainder > 0 else 0)
+												if not years:
+													years = 1
 											ObjRecId = RelatedId = None
 											related_obj = Sql.GetFirst("""SELECT SYOBJR.OBJ_REC_ID, SYOBJR.SAPCPQ_ATTRIBUTE_NAME, SYOBJR.NAME FROM SYOBJH (NOLOCK)
 															JOIN SYOBJR (NOLOCK) ON SYOBJR.OBJ_REC_ID = SYOBJH.RECORD_ID
