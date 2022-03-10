@@ -245,7 +245,7 @@ class approvalCenter:
 					if GetCurStatus:
 						
 						MainObjUpdateQuery = """UPDATE SAQTRV SET
-							REVISION_STATUS = 'APPROVED'
+							REVISION_STATUS = 'APR-APPROVED'
 							WHERE {primaryKey} = '{Primaryvalue}' """.format(
 							statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 							ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -416,7 +416,7 @@ class approvalCenter:
 							
 							if statusupdate == True:
 								MainObjUpdateQuery = """UPDATE SAQTRV SET
-									REVISION_STATUS = 'APPROVED' 
+									REVISION_STATUS = 'APR-APPROVED' 
 									WHERE {primaryKey} = '{Primaryvalue}' """.format(
 									statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 									ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -1371,7 +1371,7 @@ class approvalCenter:
 					+str(self.quote_revision_record_id)
 					+"'"
 				)
-				if getQuote.REVISION_STATUS == "APPROVED":
+				if getQuote.REVISION_STATUS == "APR-APPROVED":
 					
 					result = ScriptExecutor.ExecuteGlobal("QTPOSTACRM", {"QUOTE_ID": getQuote.QUOTE_ID, 'Fun_type':'cpq_to_crm'})
 			
@@ -3141,7 +3141,7 @@ class approvalCenter:
 	
 	def cbcmailtrigger(self):
 		revision_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-		if revision_status.REVISION_STATUS=="APPROVED":
+		if revision_status.REVISION_STATUS=="APR-APPROVED":
 			try:
 				LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
 				MANAGER_DETAILS=Sql.GetFirst("SELECT EMAIL,MEMBER_NAME,QUOTE_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' ")
