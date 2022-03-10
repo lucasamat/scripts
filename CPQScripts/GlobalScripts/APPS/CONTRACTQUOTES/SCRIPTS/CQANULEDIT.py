@@ -30,6 +30,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 			record_list.append(allvalue_edit2)
 			record_list.append(allvalue_edit3)
 			record_list.append(allvalue_edit4)	
+			#nonstandard consuamble logic is pending
 			if(line_values.BPTTKP == 'Yes'):
 				editvalue1 ='BPTKCI'
 				editvalue2 ='BPTKPI'
@@ -45,14 +46,14 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue6 = 'NWPTOP'
 				record_list.append(editvalue5)
 				record_list.append(editvalue6)
-			if(line_values.NCNSMBL_ENTWPTON == 'Some Inclusions'):
+			if(line_values.CNSMBL_ENT == 'Some Inclusions'):
 				editvalue7 = 'CONSCP'
 				editvalue8 = 'CONSPI'
 				record_list.append(editvalue7)
 				record_list.append(editvalue8)
 			if(line_values.NCNSMB_ENT == 'Included'):
-				editvalue9 = 'CONSCP'
-				editvalue10 = 'CONSPI'
+				editvalue9 = 'NONCCI'
+				editvalue10 = 'NONCPI'
 				record_list.append(editvalue9)
 				record_list.append(editvalue10)
 
