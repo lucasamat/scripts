@@ -691,7 +691,7 @@ class ContractQuoteItem:
 						SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQSGE.CONFIGURATION_STATUS,'') = 'COMPLETE' AND SAQICO.MNTEVT_LEVEL = 'Scheduled Maintenance'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id) )		
 			##saqrit quantity update
 			self._quote_item_qty_update()
-		elif self.quote_service_entitlement_type in ("OFFERING + KIT","Offering + Fab + Greenbook + Kit + Got Code + Process + Node"):
+		elif self.quote_service_entitlement_type in ("OFFERING + KIT","Offering + Fab + Greenbook + Kit + Got Code + Process + Node","OFFERING +FAB +GREENBOOK +KIT"):
 			Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION, STATUS, QUANTITY, OBJECT_ID, EQUPID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, LINE, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, KPU, SERNUM, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, TECHNOLOGY, CUSTOMER_TOOL_ID, EQUCAT, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOC, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GRNBOK, GREENBOOK, GREENBOOK_RECORD_ID, GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, OBJECT_TYPE, BLUBOK, WTYSTE, WTYEND, WTYDAY, PLTFRM, SUBSIZ, REGION, ISPOES, CSTSRC, PRCSRC, TAXVTP,TAXGRP,DCCRFX,DCCRXD,DOCCUR, PM_ID, MNTEVT_LEVEL, PM_RECORD_ID, ASSEMBLY_ID, ASSEMBLY_RECORD_ID, GOT_CODE, EQNODE, PROCES, KIT_ID, KIT_NUMBER, TKM_RECORD_ID, INTCPV, INTCPC, OSSVDV, LTCOSS, POFVDV, POFVDC, GBKVDV, GBKVDC, UIMVDV, UIMVDC, CAVVDV, CAVVDC, WNDVDV, WNDVDC, CCRTMV, CCRTMC, SCMVDV, SCMVDC, CCDFFV, CCDFFC, NPIVDV, NPIVDC, DTPVDV, DTPVDC, CSTVDV, CSTVDC, CSGVDV, CSGVDC, QRQVDV, QRQVDC, SVCVDV, SVCVDC, RKFVDV, RKFVDC, PBPVDV, PBPVDC, CMLAB_ENT, CNSMBL_ENT, CNTCVG_ENT, NCNSMB_ENT, PMEVNT_ENT, PMLAB_ENT, PRMKPI_ENT, OFRING, QTETYP, BILTYP, BPTKPI, ATGKEY, ATNKEY, NWPTON, HEDBIN, WETCLN_ENT, SPQTEV, SVSPCT, SPSPCT, CNTYER, STADTE, CONTRACT_VALID_FROM, ENDDTE, CONTRACT_VALID_TO, CNTDAY, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 					SELECT DISTINCT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 					SELECT DISTINCT IQ.*, CONTRACT_TEMP.YEAR_WISE as CNTYER, CONTRACT_TEMP.VALID_FROM as STADTE, CONTRACT_TEMP.VALID_FROM as CONTRACT_VALID_FROM, CONTRACT_TEMP.VALID_TO as ENDDTE, CONTRACT_TEMP.VALID_TO as CONTRACT_VALID_TO, Abs(DATEDIFF(day,CONTRACT_TEMP.VALID_TO, CONTRACT_TEMP.VALID_FROM)) as CNTDAY FROM (
@@ -1663,7 +1663,7 @@ class ContractQuoteItem:
 					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id,
 					JoinString=item_object_join_string, JoinConditionString=join_condition_string, WhereConditionString=item_object_where_string)
 				)
-		elif self.quote_service_entitlement_type == 'OFFERING + KIT':
+		elif self.quote_service_entitlement_type in ('OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT'):
 			Sql.RunQuery("""INSERT SAQRIO (CUSTOMER_TOOL_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, KPU, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, SERIAL_NUMBER, TECHNOLOGY, TOOL_CONFIGURATION, WAFER_SIZE, QUOTE_REVISION_ITEM_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 					SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 					SELECT DISTINCT
@@ -2084,7 +2084,7 @@ class ContractQuoteItem:
 							self.source_object_name = 'SAQSGE'
 						elif self.quote_service_entitlement_type in ('OFFERING+CONSIGNED+ON REQUEST','OFFERING'):
 							self.source_object_name = 'SAQTSE'
-						elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING + SCH. MAIN. EVENT','OFFERING + KIT'):
+						elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING + SCH. MAIN. EVENT','OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT'):
 							self.source_object_name = 'SAQGPE'
 						elif self.quote_service_entitlement_type == 'OFFERING +EQUIPMENT + ASSEMBLY':
 							self.source_object_name = 'SAQSAE'
@@ -2168,7 +2168,7 @@ class ContractQuoteItem:
 	def _pmsa_quote_items_entitlement_insert(self,update=False):
 		#if update: # need to verify one more time
 		Sql.RunQuery("DELETE SAQITE FROM SAQITE WHERE SAQITE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQITE.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-		if self.quote_service_entitlement_type == 'OFFERING + KIT':
+		if self.quote_service_entitlement_type in ('OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT'):
 			Sql.RunQuery("""INSERT SAQITE (QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CPS_CONFIGURATION_ID, CPS_MATCH_ID, ENTITLEMENT_COST_IMPACT, ENTITLEMENT_GROUP_ID, ENTITLEMENT_GROUP_XML, ENTITLEMENT_PRICE_IMPACT, ENTITLEMENT_XML, IS_CHANGED, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID)
 					SELECT
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID,
@@ -2656,7 +2656,7 @@ class ContractQuoteItem:
 					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID  AND SAQRIT.FABLOCATION_ID = OQ.FABLOCATION_ID AND SAQRIT.GREENBOOK = OQ.GREENBOOK AND SAQRIT.GOT_CODE = OQ.GOT_CODE AND ISNULL(OQ.OBJECT_ID,'') = ISNULL(SAQRIT.OBJECT_ID,'')
 					WHERE ISNULL(SAQRIT.OBJECT_ID,'') = ''
 				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val, DynamicValues=dynamic_ancillary_columns,DynamicColumnNames=dynamic_columns))			
-			elif self.quote_service_entitlement_type == 'OFFERING + KIT':
+			elif self.quote_service_entitlement_type in ('OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT'):
 				Sql.RunQuery("""INSERT SAQRIT (QUOTE_REVISION_CONTRACT_ITEM_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE,PM_ID,PM_RECORD_ID,GOTCODE_RECORD_ID,GOT_CODE,MNTEVT_LEVEL, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,TAX_PERCENTAGE,{DynamicColumnNames} GREENBOOK,BILLING_TYPE,GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID,DEVICE_NODE,PROCESS_TYPE,KIT_ID,KIT_NAME,KIT_NUMBER,KITNUMBER_RECORD_ID,KIT_RECORD_ID)
 					SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_CONTRACT_ITEM_ID,
 						'{UserName}' AS CPQTABLEENTRYADDEDBY,
@@ -2960,7 +2960,7 @@ class ContractQuoteItem:
 			# Item Level entitlement Insert
 			if self.quote_service_entitlement_type in ('OFFERING+CONSIGNED+ON REQUEST','OFFERING'):
 				self._service_based_quote_items_entitlement_insert(update=update)  
-			elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING + SCH. MAIN. EVENT','OFFERING + KIT'):
+			elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING + SCH. MAIN. EVENT','OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT'):
 				self._pmsa_quote_items_entitlement_insert(update=update)  
 			else:
 				self._quote_items_entitlement_insert(update=update)
@@ -3643,7 +3643,7 @@ class ContractQuoteItem:
 		# 	QTEREV_RECORD_ID,ISNULL(PROCESS_TYPE,'') , ISNULL(DEVICE_NODE,'') ) IQ ON IQ.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND IQ.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND IQ.SERVICE_ID = SAQRIT.SERVICE_ID AND SAQRIT.OBJECT_ID = IQ.PM_ID AND SAQRIT.FABLOCATION_ID = IQ.FABLOCATION_ID AND SAQRIT.GREENBOOK = IQ.GREENBOOK AND SAQRIT.GOT_CODE = IQ.GOT_CODE
 		# 	WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		
-		elif self.quote_service_entitlement_type == 'OFFERING + KIT':
+		elif self.quote_service_entitlement_type in ('OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT'):
 			Sql.RunQuery(""" UPDATE SAQRIT SET QUANTITY = IQ.QUANTITY FROM SAQRIT (NOLOCK) INNER JOIN (SELECT SERVICE_ID,SAQGPA.GREENBOOK,SAQGPA.FABLOCATION_ID,SAQGPA.GOT_CODE,SAQGPA.KIT_ID,SAQGPA.PROCESS_TYPE,SAQGPA.DEVICE_NODE,SAQGPA.QUOTE_RECORD_ID,SAQGPA.QTEREV_RECORD_ID,COUNT(DISTINCT SAQGPA.EQUIPMENT_ID) AS QUANTITY
 								FROM SAQGPA (NOLOCK) 
 								WHERE SAQGPA.QUOTE_RECORD_ID= '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQGPA.SERVICE_ID = '{ServiceId}' AND SAQGPA.KIT_ID != '' OR SAQGPA.KIT_ID != NULL
@@ -3655,7 +3655,7 @@ class ContractQuoteItem:
 					SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 
 	def _simple_quote_items_summary_insert(self):	
-		if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT","OFFERING + KIT"):
+		if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT","OFFERING + KIT","OFFERING +FAB +GREENBOOK +KIT"):
 			condition_str = ' AND SAQTSE.SERVICE_ID = SAQTSV.SERVICE_ID '
 		else:
 			condition_str = ' AND SAQTSE.SERVICE_ID = SAQTSV.PAR_SERVICE_ID '	
@@ -3727,7 +3727,7 @@ class ContractQuoteItem:
 				self._simple_items_object_insert()
 				self._simple_quote_annualized_items_insert()
 			else:	
-				if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT",'OFFERING + KIT'):
+				if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT",'OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT'):
 					self._simple_quote_items_summary_insert()
 				else:
 					self._quote_items_summary_insert()
