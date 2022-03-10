@@ -703,10 +703,10 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
         Sql.RunQuery("""UPDATE SAQFEA SET FABLOCATION_ID = '{fab_id}',FABLOCATION_NAME = '{fab_name}',FABLOCATION_RECORD_ID = '{fab_record_id}',MNT_PLANT_ID = '{plant_id}',MNT_PLANT_RECORD_ID = '{plant_record_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID IS NULL AND MNT_PLANT_ID IS NULL""".format(fab_id = fab_object.FAB_LOCATION_ID ,fab_name = fab_object.FAB_LOCATION_NAME,fab_record_id = fab_object.FAB_LOCATION_RECORD_ID,plant_id = fab_object.MNT_PLANT_ID,plant_record_id = fab_object.MNT_PLANT_RECORD_ID,QuoteRecId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id))
         
         
-        Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-                                    BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id
-                                )
-                            )
+        # Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+        #                             BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id
+        #                         )
+        #                     )
 
 
 
