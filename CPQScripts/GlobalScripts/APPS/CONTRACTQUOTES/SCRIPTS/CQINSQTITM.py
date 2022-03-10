@@ -1140,7 +1140,7 @@ class ContractQuoteItem:
 				)
 		basic_insert_end = time.time()
 		Trace.Write("Basic Insert Time-----"+str(basic_insert_end-basic_insert_start))
-		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
+		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
 		
 		# Target (Sales) Price Discount %
 		Sql.RunQuery("""UPDATE SAQICO
@@ -3272,7 +3272,7 @@ class ContractQuoteItem:
 						""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, ancillary_join = ancillary_join, ancillary_where =ancillary_where)
 				)
 		
-		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
+		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
 
 	def _simple_fpm_quote_annualized_items_insert(self):
 		Trace.Write('FPM_ANNUALIZED_ITEM_INSERT')
@@ -3407,7 +3407,7 @@ class ContractQuoteItem:
 			""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id)
 		)
 
-		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
+		Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
 		##Calling the iflow for quote header writeback to cpq to c4c code starts..
 		# CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 		# CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
