@@ -435,12 +435,13 @@ class SYLDRTLIST:
 														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
 															contract_quote_record_id, quote_revision_record_id, start, end))
 				else:
-					Trace.Write('TreeParam----'+str(TreeParam))
+					Trace.Write('TreeParam----'+str(TreeParam)+'--SubTab---'+str(SubTab))
 					item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
 									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
 														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'
 														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
 															contract_quote_record_id,TreeParam, quote_revision_record_id, start, end))
+					Trace.Write(''+str())
 					try:
 						if TreeParam != "Z0009":
 							get_year_max = Sql.GetFirst("SELECT max(CpqTableEntryId) as cpqid,SUM("+get_ttl_amt+") as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' GROUP BY GREENBOOK,SERVICE_ID,EQUIPMENT_ID")
