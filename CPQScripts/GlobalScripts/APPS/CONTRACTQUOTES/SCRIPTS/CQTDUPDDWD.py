@@ -55,6 +55,9 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		start = 1
 		end = 1000
 		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))
+		Trace.Write(str(self.tree_param))
+		if (self.tree_param)== 'z0108':
+			Trace.Write(str(colums))
 				
 		while start < table_total_rows:
 			query_string_with_pagination = """
