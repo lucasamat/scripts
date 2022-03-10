@@ -3813,6 +3813,134 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
 
 	return data_list,QueryCount,page 
 
+def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
+    	
+	if str(PerPage) == "" and str(PageInform) == "":
+		Page_start = 1
+		Page_End = 10
+		PerPage = 10
+		PageInform = "1___10___10"
+	else:
+		Page_start = int(PageInform.split("___")[0])
+		Page_End = int(PageInform.split("___")[1])
+		PerPage = PerPage
+	QueryCount = ""
+	TreeParam = Product.GetGlobal("TreeParam")
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+	TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+	ATTRIBUTE_VALUE_STR = ""
+	Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
+	for quer_key, quer_value in enumerate(Dict_formation):
+		x_picklistcheckobj = Sql.GetFirst(
+			"SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQFEQ' AND API_NAME = '" + str(quer_value) + "'"
+		)
+		x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
+		if Dict_formation.get(quer_value) != "":
+			quer_values = str(Dict_formation.get(quer_value)).strip()
+			if str(quer_values).upper() == "TRUE":
+				quer_values = "TRUE"
+			elif str(quer_values).upper() == "FALSE":
+				quer_values = "FALSE"
+			if str(quer_values).find(",") == -1:
+				if x_picklistcheck == "TRUE":
+					ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
+				else:
+					ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
+			else:
+				quer_values = quer_values.split(",")
+				quer_values = tuple(list(quer_values))
+				ATTRIBUTE_VALUE_STR += str(quer_value) + " in " + str(quer_values) + " and "
+			if str(quer_value) == 'QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID':                
+				if str(str(quer_values)).find("-") == -1:                            
+					ATTRIBUTE_VALUE_STR = (" CpqTableEntryId = '"+ str(quer_values)+ "' and ")                            
+				else:
+					xa_str = str(quer_values).split("-")[1]                            
+					ATTRIBUTE_VALUE_STR = (" CpqTableEntryId = '"+ str(xa_str)+ "' and ")    
+
+	data_list = []
+	rec_id = "SYOBJ_1177055"
+	obj_id = "SYOBJ-1177055"
+	objh_getid = Sql.GetFirst(
+		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
+	)
+	if objh_getid:
+		obj_id = objh_getid.RECORD_ID
+	objs_obj = Sql.GetFirst(
+		"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id) + "' "
+	)
+	can_edit = str(objs_obj.CAN_EDIT)
+	can_clone = str(objs_obj.CAN_ADD)
+	can_delete = str(objs_obj.CAN_DELETE)
+
+	orderby = ""
+	if SortColumn != '' and SortColumnOrder !='':
+		orderby = SortColumn + " " + SortColumnOrder
+	else:
+		orderby = "CpqTableEntryId"
+	if TreeTopSuperParentParam == "Product Offerings":
+		parent_obj = Sql.GetList(
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' ORDER BY "+str(orderby)+" "
+		)
+		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' "
+		)
+		if Count:
+			QueryCount = Count.cnt
+	
+	for par in parent_obj:
+		
+		data_dict = {}
+		data_id = str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)        
+		Action_str = (
+			'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+			+ str(data_id)
+			+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+		)
+		if can_edit.upper() == "TRUE":
+			Action_str += (
+				'<li ><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Commonteree_view_RL(this)">EDIT</a></li>'
+			)
+		if can_delete.upper() == "TRUE":
+			Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+		if can_clone.upper() == "TRUE":
+			Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+
+		Action_str += "</ul></div></div>"
+		data_dict["ids"] = str(data_id)
+		data_dict["ACTIONS"] = str(Action_str)
+		data_dict["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+			"SAQGPA", str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+		)
+		data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
+		data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
+		data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
+		data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
+		data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>")
+		data_dict["DEVICE_NODE"] = ('<abbr id ="" title="' + str(par.DEVICE_NODE) + '">' + str(par.DEVICE_NODE) + "</abbr>")
+		data_dict["PROCESS_TYPE"] = ('<abbr id ="" title="' + str(par.PROCESS_TYPE) + '">' + str(par.PROCESS_TYPE) + "</abbr>")
+		data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
+		data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
+		data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+		data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
+		data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
+		data_list.append(data_dict)
+
+	page = ""
+	if QueryCount == 0:
+		page = str(QueryCount) + " - " + str(QueryCount) + " of "
+	elif QueryCount < int(PerPage):
+		page = str(Page_start) + " - " + str(QueryCount) + " of "
+	else:
+		page = str(Page_start) + " - " + str(Page_End)+ " of "
+	
+	return data_list,QueryCount,page 
+
 def GetContractEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 
 	if str(PerPage) == "" and str(PageInform) == "":
@@ -11153,6 +11281,8 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
 	elif TABNAME == "Equipment Parent":
 		Trace.Write("EDITWORK")
 		ApiResponse = ApiResponseFactory.JsonResponse(GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))
+	elif TABNAME == "Events Parent":
+		ApiResponse = ApiResponseFactory.JsonResponse(GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))
 	elif TABNAME == "Contract Equipment Parent":
 		ApiResponse = ApiResponseFactory.JsonResponse(GetContractEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))
 	elif TABNAME == "Preventive Maintainence Parent":
