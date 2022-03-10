@@ -56,7 +56,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		end = 1000
 		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))
 		Trace.Write(str(self.tree_param))
-		if (self.tree_param)== 'z0108':
+		if (self.tree_param)== 'Z0108':
 			Trace.Write(str(colums))
 				
 		while start < table_total_rows:
