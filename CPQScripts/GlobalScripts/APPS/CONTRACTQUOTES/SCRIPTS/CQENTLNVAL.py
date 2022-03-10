@@ -480,6 +480,8 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 				if entitlement_id in dict_val.keys():
 					entitlement_disp_val = dict_val[entitlement_id]
 					if entitlement_disp_val:
+						if entitlement_table_col in ('SPSPCT','SVSPCT') and "%" in entitlement_disp_val:
+							entitlement_disp_val = entitlement_disp_val.replace("%","")
 						update_values += ", {} = '{}' ".format(entitlement_table_col, entitlement_disp_val  ) 
 					else:
 						update_values += ", {} = NULL ".format(entitlement_table_col, entitlement_disp_val  )
