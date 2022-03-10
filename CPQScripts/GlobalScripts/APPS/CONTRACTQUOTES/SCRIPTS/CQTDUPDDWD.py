@@ -195,6 +195,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		except:
 			Log.Info("error!")
 			Trace.Write("consigned_parts_value_CHK "+str(consigned_parts_value))
+   
 		try:
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
 			
@@ -203,7 +204,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' ' ")
 			account_id=""
 			get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.contract_quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
-		except:
+		
 			Log.Info("error2!")
 			for keyobj in get_party_role:
 				account_id = keyobj.PARTY_ID
