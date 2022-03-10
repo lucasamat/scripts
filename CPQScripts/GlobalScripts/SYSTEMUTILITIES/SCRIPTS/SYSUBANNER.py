@@ -1407,7 +1407,7 @@ def Related_Sub_Banner(
                     entitlement_xml = entitlement_obj.ENTITLEMENT_XML
                     import re
                     quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-                    quote_type_id = re.compile(r'<ENTITLEMENT_ID>?:AGS_'+str(Service_Id)+'[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+                    quote_type_id = re.compile(r'<ENTITLEMENT_ID>?:AGS_'+str(TreeParam)+'[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
                     quote_type_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
                     for m in re.finditer(quote_item_tag, entitlement_xml):
                         sub_string = m.group(1)
