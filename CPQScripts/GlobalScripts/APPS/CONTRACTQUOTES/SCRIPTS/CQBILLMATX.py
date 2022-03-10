@@ -924,7 +924,7 @@ def billingmatrix_create():
 					for index in range(0, total_months+1):
 						Trace.Write('index--'+str(index))
 						billing_month_end += 1
-						if str(index) in ['0','12','23','36','48']:
+						if str(index) in ['0','12','24','36','48']:
 							insert_item_per_billing(total_months=total_months, 
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
