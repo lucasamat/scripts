@@ -59,7 +59,8 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 
 		annual_dict[str(line_values.LINE)] = record_list
 	Trace.Write("dictdictdict"+str(annual_dict)) 
-	return str(annual_dict)
+	annual = annual_dict.replace("'",'"')
+	return str(annual)
 
 
 ACTION = Param.ACTION
