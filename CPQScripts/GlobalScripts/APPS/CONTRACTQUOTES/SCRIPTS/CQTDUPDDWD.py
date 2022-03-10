@@ -106,7 +106,18 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		if related_list_obj:			
 			table_columns = eval(related_list_obj.COLUMNS)
 			Trace.Write("table_columns"+str(table_columns))
-			columns = ",".join(table_columns)		
+			if (self.tree_param) == 'Z0108' or (self.tree_param) == 'Z0110':
+				if (self.tree_param) == 'Z0108':
+					col[0:2]=[]
+					Trace.Write("@Z0108_columns"+str(colums))
+				else:
+					col[0:2]=[]
+					col=[x for x in col if "DELIVERY" not in x]
+					Trace.Write("@Z0110_columns"+str(colums))
+				table_columns=col
+
+			columns = ",".join(table_columns)
+			Trace.Write(str(columns))		
 			self.object_name = related_list_obj.OBJECT_NAME
 			total_count_obj = Sql.GetFirst("""
 											SELECT COUNT(*) as count
