@@ -111,11 +111,11 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 									
 					Sql.RunQuery(update_workflow_status)
 					ScriptExecutor.ExecuteGlobal('CQSDELPGPN',{'QUOTE_ID':Quote.GetGlobal("contract_quote_record_id"),'QTEREV_ID':Quote.GetGlobal("quote_revision_record_id"),'ACTION':'EMAIL'})
-				if getsalesorg_ifo.REVISION_STATUS == "APPROVED" and Text == "COMPLETE STAGE":
+				if getsalesorg_ifo.REVISION_STATUS == "APR-APPROVED" and Text == "COMPLETE STAGE":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
-					status = "APPROVED"
+					status = "APR-APPROVED"
 				if (getsalesorg_ifo.REVISION_STATUS == "CUSTOMER ACCEPTED" or getsalesorg_ifo.REVISION_STATUS == "CUSTOMER REJECTED") and Text == "COMPLETE STAGE":
 					#if str(get_documents_date_validation_accepted.DATE_ACCEPTED) != "":
 					Trace.Write("accepted===")
@@ -136,8 +136,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			
 			get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 						
-			if get_workflow_status.REVISION_STATUS == "APPROVED" and get_workflow_status.WORKFLOW_STATUS == "APPROVALS":				
-				status = "APPROVED"
+			if get_workflow_status.REVISION_STATUS == "APR-APPROVED" and get_workflow_status.WORKFLOW_STATUS == "APPROVALS":				
+				status = "APR-APPROVED"
 			elif get_workflow_status.REVISION_STATUS == "CUSTOMER ACCEPTED" or get_workflow_status.REVISION_STATUS == "CUSTOMER REJECTED":										
 				status = "QUOTE DOCUMENTS"		
 			
@@ -153,10 +153,10 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				Trace.Write('No button--1')
 				status = "IN-COMPLETE"
 				
-			# Set Quote Item Insert --> No, If Revision Status Equal to Approved - Start
-			if getsalesorg_ifo.REVISION_STATUS == 'APPROVED':
+			# Set Quote Item Insert --> No, If Revision Status Equal to APR-APPROVED - Start
+			if getsalesorg_ifo.REVISION_STATUS == 'APR-APPROVED':
 				quote_item_insert = "No"
-			# Set Quote Item Insert --> No, If Revision Status Equal to Approved - End
+			# Set Quote Item Insert --> No, If Revision Status Equal to APR-APPROVED - End
 		else:
 			Trace.Write('No button--2')
 			status = "IN-COMPLETE"
