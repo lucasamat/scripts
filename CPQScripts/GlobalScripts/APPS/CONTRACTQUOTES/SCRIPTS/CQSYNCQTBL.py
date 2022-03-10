@@ -2045,7 +2045,7 @@ class SyncQuoteAndCustomTables:
 										if len(value) >= 1000:
 											Log.Info("value_equipmentsinsidif"+str(len(value)))
 											previous_index = 0
-											for index in range(0, len(value), 1000):
+											for index in range(0, len(value), 700):
 												records = ','.join(value[previous_index:index])
 												Log.Info("records"+str(records))
 												previous_index = index
