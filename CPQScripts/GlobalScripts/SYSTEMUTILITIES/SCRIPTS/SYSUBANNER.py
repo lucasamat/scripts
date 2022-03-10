@@ -1403,7 +1403,7 @@ def Related_Sub_Banner(
                     SixthValue = get_val.SERIAL_NO
                 if (str(ObjName) == 'SAQTSV'or str(ObjName) == 'SAQSCO' or str(ObjName) == 'SAQSPT') and TreeSuperParentParam == 'Product Offerings'and TabName == "Quotes":
                     ##Added the sixth label value....
-                    entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
+                    entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
                     entitlement_xml = entitlement_obj.ENTITLEMENT_XML
                     import re
                     quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
