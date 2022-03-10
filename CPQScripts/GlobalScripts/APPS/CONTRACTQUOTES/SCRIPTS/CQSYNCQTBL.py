@@ -1821,7 +1821,7 @@ class SyncQuoteAndCustomTables:
 								shiptostr=str(shipto_list)
 								shiptostr=re.sub(r"'",'"',shiptostr)
 								account_info['SHIP TO']=shiptostr
-        						#get info from revision table start
+								#get info from revision table start
 								sales_id = sales_rec =qt_rev_id = qt_id=''
 								get_rev_sales_ifo = Sql.GetFirst("select QUOTE_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"'")
 								if get_rev_sales_ifo:
