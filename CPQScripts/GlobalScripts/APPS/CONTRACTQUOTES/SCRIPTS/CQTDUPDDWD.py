@@ -178,7 +178,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
 		spare_parts_temp_table_name = "SAQSPT_BKP_{}_{}".format(self.contract_quote_id, datetime_string)		
 		Trace.Write("Temp Table ===> "+str(spare_parts_temp_table_name))
-		Trace.Write("@col"+str(self.columns))
+		try:
 			'''product_offering_entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}'".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,service_id = self.tree_param))
 			entitlement_xml = product_offering_entitlement_obj.ENTITLEMENT_XML
 			quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
