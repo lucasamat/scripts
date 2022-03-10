@@ -478,7 +478,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			# 	self.records.append(tuple(data))
 			# 	Trace.Write("data ====>>> "+str(list(data)))
 		self._insert_spare_parts()
-		self.insert_delivery_schedule()
+		#self.insert_delivery_schedule()
 		return "Import Success"
 
 
