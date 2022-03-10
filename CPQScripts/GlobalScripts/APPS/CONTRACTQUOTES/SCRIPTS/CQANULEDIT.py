@@ -62,6 +62,37 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 	return str(annual_dict)
 
 
+
+def constructpricingsummary(Quote_rec_id,MODE,values):
+	get_all_lines =Sql.GetList("Select * from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND LINE IN ({values})".format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,values=",".join(values)))
+	annual_dict_pricing={}
+	for line_values in get_all_lines:
+		record_list=[]
+		if line_values:
+			allvalue_edit1="TRGPRC"
+			allvalue_edit2="SLSPRC"
+			allvalue_edit3="BDVPRC"
+			allvalue_edit4="CELPRC"
+			allvalue_edit5="TGADJP"
+			allvalue_edit6="YOYPCT"
+			allvalue_edit7="USRPRC"
+			allvalue_edit8="BCHPGC"
+			allvalue_edit9="BCHDPT"
+			allvalue_edit10="CNTPRC"
+			record_list.append(allvalue_edit1)
+			record_list.append(allvalue_edit2)
+			record_list.append(allvalue_edit3)
+			record_list.append(allvalue_edit4)
+			record_list.append(allvalue_edit5)
+			record_list.append(allvalue_edit6)
+			record_list.append(allvalue_edit7)
+			record_list.append(allvalue_edit8)
+			record_list.append(allvalue_edit9)
+			record_list.append(allvalue_edit10)
+		annual_dict_pricing[str(line_values.LINE)] = record_list
+	Trace.Write("dictdictdict"+str(annual_dict_pricing)) 
+	return str(annual_dict_pricing)
+
 ACTION = Param.ACTION
 try:
 	values = Param.values
@@ -73,3 +104,7 @@ if ACTION == 'CAT4_ENTITLMENT':
     MODE="EDIT"
     Quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
     ApiResponse = ApiResponseFactory.JsonResponse(constructcat4editablity(Quote_rec_id,MODE,values))
+elif ACTION == 'PRICING_SUMMARY':
+    MODE="EDIT"
+    Quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+    ApiResponse = ApiResponseFactory.JsonResponse(constructpricingsummary(Quote_rec_id,MODE,values))
