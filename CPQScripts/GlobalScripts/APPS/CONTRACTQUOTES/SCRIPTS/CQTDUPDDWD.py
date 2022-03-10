@@ -107,13 +107,14 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 			table_columns = eval(related_list_obj.COLUMNS)
 			Trace.Write("table_columns"+str(table_columns))
 			if (self.tree_param) == 'Z0108' or (self.tree_param) == 'Z0110':
+				col=table_columns
 				if (self.tree_param) == 'Z0108':
 					col[0:2]=[]
-					Trace.Write("@Z0108_columns"+str(colums))
+					Trace.Write("@Z0108_columns"+str(col))
 				else:
 					col[0:2]=[]
 					col=[x for x in col if "DELIVERY" not in x]
-					Trace.Write("@Z0110_columns"+str(colums))
+					Trace.Write("@Z0110_columns"+str(col))
 				table_columns=col
 
 			columns = ",".join(table_columns)
