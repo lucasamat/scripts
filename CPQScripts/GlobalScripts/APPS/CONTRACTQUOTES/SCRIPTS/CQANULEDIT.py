@@ -22,42 +22,42 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 	for line_values in get_all_lines:
 		record_list=[]
 		if line_values:
-			allvalue_edit1='CAVVCI'
-			allvalue_edit2='CAVVPI'
-			allvalue_edit3='AMNCCI'
-			allvalue_edit4='AMNPPI'
+			allvalue_edit1="CAVVCI"
+			allvalue_edit2="CAVVPI"
+			allvalue_edit3="AMNCCI"
+			allvalue_edit4="AMNPPI"
 			record_list.append(allvalue_edit1)
 			record_list.append(allvalue_edit2)
 			record_list.append(allvalue_edit3)
 			record_list.append(allvalue_edit4)	
 			#nonstandard consuamble logic is pending
 			if(line_values.BPTTKP == 'Yes'):
-				editvalue1 ='BPTKCI'
-				editvalue2 ='BPTKPI'
+				editvalue1 ="BPTKCI"
+				editvalue2 ="BPTKPI"
 				record_list.append(editvalue1)
 				record_list.append(editvalue2)
 			if(line_values.ATGKEY != 'Excluded'):
-				editvalue3 = 'ATGKEC'
-				editvalue4 = 'ATGKEP'
+				editvalue3 = "ATGKEC"
+				editvalue4 = "ATGKEP"
 				record_list.append(editvalue3)
 				record_list.append(editvalue4)
 			if(line_values.NWPTON == 'Yes'):
-				editvalue5 = 'NWPTOC'
-				editvalue6 = 'NWPTOP'
+				editvalue5 = "NWPTOC"
+				editvalue6 = "NWPTOP"
 				record_list.append(editvalue5)
 				record_list.append(editvalue6)
 			if(line_values.CNSMBL_ENT == 'Some Inclusions'):
-				editvalue7 = 'CONSCP'
-				editvalue8 = 'CONSPI'
+				editvalue7 = "CONSCP"
+				editvalue8 = "CONSPI"
 				record_list.append(editvalue7)
 				record_list.append(editvalue8)
 			if(line_values.NCNSMB_ENT == 'Included'):
-				editvalue9 = 'NONCCI'
-				editvalue10 = 'NONCPI'
+				editvalue9 = "NONCCI"
+				editvalue10 = "NONCPI"
 				record_list.append(editvalue9)
 				record_list.append(editvalue10)
 
-		annual_dict[line_values.LINE] = record_list
+		annual_dict[str(line_values.LINE)] = record_list
 	Trace.Write("dictdictdict"+str(annual_dict)) 
 	return str(annual_dict)
 
