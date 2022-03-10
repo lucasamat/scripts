@@ -36,7 +36,7 @@ class ContractQuoteItemAnnualizedPricing:
 						self._rolldown_from_coeff_level(line_id)
 						self._rolldown_from_total_price_level(line_id)
 					else:
-						self._rolldown_from_total_price_level(line_id)
+						self._rolldown_from_total_price_level(line_id, update_fields_str)
 					##roll up script call
 				try:
 					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id,"manual_pricing":"True"})
@@ -72,7 +72,7 @@ class ContractQuoteItemAnnualizedPricing:
 		#MCLPRC - Ceiling Model Price
 		Sql.RunQuery("UPDATE SAQICO SET MCLPRC = MTGPRC * (1 + ISNULL(CEPRUP/100,0)) FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE = '{LineId}' AND SERVICE_ID NOT IN ('Z0100','Z0101')".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id))		
 		
-	def _rolldown_from_total_price_level(self, line_id=None):
+	def _rolldown_from_total_price_level(self, line_id=None, updated_fields=''):
 		where_condition = ""
 		if auto_update_flag == 'True':
 			where_condition = " AND SERVICE_ID != 'Z0123'"
@@ -95,6 +95,7 @@ class ContractQuoteItemAnnualizedPricing:
 		Sql.RunQuery("UPDATE SAQICO SET TRGPRC = ISNULL(MTGPRC,0) + ISNULL(TOTLPI,0)  FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE = '{LineId}' {WhereCondition}".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id, WhereCondition =  where_condition))
 		
 		#USRPRC / TGADJP - User Price / Target User Price Adjustment
+		if 'USRPRC' not in updated_fields:
 		Sql.RunQuery("UPDATE SAQICO SET USRPRC = TRGPRC,TGADJP = '0.00' FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE = '{LineId}' {WhereCondition}".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id, WhereCondition =  where_condition))
 		
 		#CNTPRC - Contractual Price
