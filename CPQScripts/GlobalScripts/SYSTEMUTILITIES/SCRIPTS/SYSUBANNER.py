@@ -2934,7 +2934,7 @@ def Related_Sub_Banner(
         else:
             Submit_approval = "False"
         get_quote_status = Sql.GetList("SELECT CpqTableEntryId FROM ACAPTX (NOLOCK) WHERE APPROVAL_ID LIKE '%{}%'".format(quote_status.QUOTE_ID))
-        if not get_quote_status and str(quote_status.REVISION_STATUS) != 'APPROVED':
+        if not get_quote_status and str(quote_status.REVISION_STATUS) != 'APR-APPROVED':
             sec_rel_sub_bnr += (
                     '<button class="btnconfig cust_def_btn" id="APPROVE" onclick="quote_approval(this.id)">APPROVE</button>'
                 )
@@ -3172,9 +3172,9 @@ def Related_Sub_Banner(
         elif  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions" and str(subTabName)!= "New Parts Only":     
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig hidebtn">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig hidebtn">CANCEL</button>'  )    
             Trace.Write('### _ Multi_buttons'+str(type(multi_buttons)))
-            if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APPROVED':
+            if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APR-APPROVED':
                 sec_rel_sub_bnr += str(add_button)
-            elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APPROVED':
+            elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APR-APPROVED':
                 if str(multi_buttons) != "":
                     Trace.Write('### _ 3094----Multi_buttons'+str(type(multi_buttons)))
                     for btn in multi_buttons:
@@ -3191,7 +3191,7 @@ def Related_Sub_Banner(
                 sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
-            if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APPROVED':
+            if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APR-APPROVED':
                 sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and (subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
             if str(subTabName)=="Events" and str(TreeSuperParentParam)!="Z0009":
