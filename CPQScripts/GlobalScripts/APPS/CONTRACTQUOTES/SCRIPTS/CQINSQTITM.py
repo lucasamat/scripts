@@ -3702,10 +3702,8 @@ class ContractQuoteItem:
 		return True		
 
 	def _do_opertion(self):		
-		self._set_quote_service_entitlement_type()
-		Log.Info("===> _do_opertion 0000")
-		if self.action_type == "INSERT_LINE_ITEMS":		
-			Log.Info("===> _do_opertion 1111")	
+		self._set_quote_service_entitlement_type()		
+		if self.action_type == "INSERT_LINE_ITEMS":
 			if self.is_spare_service == True and self.service_id in ('Z0101','Z0100'):				
 				# Spare Parts Insert/Update
 				self._quote_items_summary_insert()
@@ -3714,9 +3712,7 @@ class ContractQuoteItem:
 				self._quote_annualized_items_insert()
 				self._insert_quote_item_forecast_parts()
 			elif self.is_fpm_spare_service == True:				
-				# Spare Parts Insert/Update (Z0108)...
-				Log.Info("===> _do_opertion z0108 z0110 for testing")
-				Log.Info("QID ==>"+str(self.contract_quote_id))
+				# Spare Parts Insert/Update (Z0108)...				
 				saqspt_have_qty = Sql.GetFirst("SELECT COUNT(*) AS CNT FROM SAQSPT (NOLOCK) WHERE QUOTE_ID = '{}' AND CUSTOMER_ANNUAL_QUANTITY IS NOT NULL".format(self.contract_quote_id))
 				if saqspt_have_qty.CNT>0:              
 					self._quote_items_summary_insert()
