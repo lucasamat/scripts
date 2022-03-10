@@ -772,7 +772,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						get_rev_val =  newdict.get("QTEREV_ID")
 						get_approved_date = newdict.get("REV_APPROVE_DATE")
 						get_status = newdict.get("REVISION_STATUS")
-						if sql_cpq.REVISION_STATUS !="APPROVED" and get_status == "APPROVED":
+						if sql_cpq.REVISION_STATUS !="APR-APPROVED" and get_status == "APR-APPROVED":
 							Trace.Write('Mail Triggering for Contract Manager')
 							result = ScriptExecutor.ExecuteGlobal("ACSECTACTN", {"ACTION": "CBC_MAIL_TRIGGER"})
 						if getactive == 'false':

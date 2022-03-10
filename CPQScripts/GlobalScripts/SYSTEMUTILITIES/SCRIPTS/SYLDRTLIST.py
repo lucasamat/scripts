@@ -4226,7 +4226,7 @@ class SYLDRTLIST:
 							visible = 'data-visible="false"'
 						
 						if((str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" and str(Product.GetGlobal("TreeParentLevel2"))=="Product Offerings") or (str(RECORD_ID)=="SYOBJR-00005" and str(TreeParentParam)=="Complementary Products" and str(invs) == "CUSTOMER_ANNUAL_QUANTITY")):
-							data_formatter = "partsListEditLink" if getRevision.REVISION_STATUS!='APPROVED' else ''
+							data_formatter = "partsListEditLink" if getRevision.REVISION_STATUS!='APR-APPROVED' else ''
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
@@ -4239,7 +4239,7 @@ class SYLDRTLIST:
 								+ "</th>"
 								)
 						elif (str(RECORD_ID)=="SYOBJR-00005" and str(TreeParentParam)=="Complementary Products" and invs.split('_')[0]=="DELIVERY" and len(invs.split('_'))>1 ):
-							if invs.split('_')[1].isdigit() and getRevision.REVISION_STATUS!='APPROVED':
+							if invs.split('_')[1].isdigit() and getRevision.REVISION_STATUS!='APR-APPROVED':
 								data_formatter = "partsListEditLink"
 							else:
 								data_formatter = ""
@@ -4255,7 +4255,7 @@ class SYLDRTLIST:
 								+ "</th>"
 								)
 						elif (str(RECORD_ID) == "SYOBJR-95556" and str(invs)=="PM_FREQUENCY"):
-							data_formatter = "PMFrequencyBulkEditHyperLink" if getRevision.REVISION_STATUS!="APPROVED" else ""
+							data_formatter = "PMFrequencyBulkEditHyperLink" if getRevision.REVISION_STATUS!="APR-APPROVED" else ""
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
@@ -4337,7 +4337,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)
 						elif str(RECORD_ID) == "SYOBJR-98881" and str(invs) == "DELIVERY_DATE":
-							data_formatter = "deliveryDateLink" if getRevision.REVISION_STATUS!="APPROVED" else ""
+							data_formatter = "deliveryDateLink" if getRevision.REVISION_STATUS!="APR-APPROVED" else ""
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)

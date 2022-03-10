@@ -94,7 +94,7 @@ def Related_Sub_Banner(
     except:
         revision_status = ''
 
-    #if revision_status.REVISION_STATUS == 'APPROVED':
+    #if revision_status.REVISION_STATUS == 'APR-APPROVED':
     
     #elif quote_status.QUOTE_STATUS != 'APPROVED':
     #else:     
