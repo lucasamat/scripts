@@ -1402,6 +1402,21 @@ def Related_Sub_Banner(
                     SixthLable = "Serial No"
                     SixthValue = get_val.SERIAL_NO
                 if (str(ObjName) == 'SAQTSV'or str(ObjName) == 'SAQSCO' or str(ObjName) == 'SAQSPT') and TreeSuperParentParam == 'Product Offerings'and TabName == "Quotes":
+                    ##Added the sixth label value....
+                    entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
+                    entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+                    import re
+                    quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                    quote_type_id = re.compile(r'<ENTITLEMENT_ID>?:AGS_'+str(Service_Id)+'[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+                    quote_type_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+                    for m in re.finditer(quote_item_tag, entitlement_xml):
+                        sub_string = m.group(1)
+                        type_id = re.findall(quote_type,sub_string)
+                        type_value = re.findall(quote_type_value,sub_string)
+                        if type_id and type_value:
+                            SixthLable = "Quote Type"
+                            SixthValue = type_value
+                    
                     Trace.Write('*subb--')					
                     TreeParam = Quote.GetGlobal("TreeParam")
                     TreeParentParam = Quote.GetGlobal("TreeParentLevel0")
