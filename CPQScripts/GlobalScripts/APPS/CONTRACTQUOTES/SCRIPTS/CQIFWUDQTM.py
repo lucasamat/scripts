@@ -280,7 +280,7 @@ def quote_items_pricing(Qt_id):
 	'''update_revision_status = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQIFP WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND PRICING_STATUS = 'ERROR'""".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id))
 	rev_status =""
 	if update_revision_status:
-		rev_status ="ON HOLD - COSTING"
+		rev_status ="CFG-ON HOLD - COSTING"
 	else:
 		rev_status ="PRICED"'''
 	
