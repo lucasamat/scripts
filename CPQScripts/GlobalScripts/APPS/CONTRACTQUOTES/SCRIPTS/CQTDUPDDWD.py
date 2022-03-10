@@ -180,7 +180,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 		Trace.Write("Temp Table ===> "+str(spare_parts_temp_table_name))
 		Trace.Write("@col"+str(self.columns))
 		try:
-			'''product_offering_entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}'".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,service_id = self.tree_param))
+			product_offering_entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}'".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,service_id = self.tree_param))
 			entitlement_xml = product_offering_entitlement_obj.ENTITLEMENT_XML
 			quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 			consigned_parts_match_id = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.tree_param)+'[^>]*?_TSC_ONSTCP</ENTITLEMENT_ID>')
@@ -192,8 +192,10 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				if consigned_parts_id and consigned_parts_value:
 					consigned_parts_value = consigned_parts_value[0]
 					break
-			Trace.Write("consigned_parts_value_CHK "+str(consigned_parts_value))'''
-
+		except:
+			Log.Info("error!")
+			Trace.Write("consigned_parts_value_CHK "+str(consigned_parts_value))
+		try:
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
 			
 			spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
@@ -201,7 +203,8 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' ' ")
 			account_id=""
 			get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.contract_quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
-
+		except:
+			Log.Info("error2!")
 			for keyobj in get_party_role:
 				account_id = keyobj.PARTY_ID
 			Sql.RunQuery("""
