@@ -3911,7 +3911,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		parent_obj = Sql.GetList(
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' ORDER BY "+str(orderby)+" "
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' ) m "
 		)
 		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' "
 		)
@@ -3921,7 +3921,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		parent_obj = Sql.GetList(
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' ORDER BY "+str(orderby)+" "
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True')m "
 		)
 		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' "
 		)
