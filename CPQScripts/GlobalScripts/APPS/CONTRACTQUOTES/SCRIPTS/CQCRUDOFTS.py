@@ -432,7 +432,8 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
     if values:
         record_ids = []
         if all_values:
-            query_string = "select QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID, SND_EQUIPMENT_ID, SND_EQUIPMENT_DESCRIPTION, GREENBOOK, PLATFORM from SAQASE (NOLOCK) WHERE  ISNULL(GREENBOOK, '') <> '' AND  QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND  SND_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' )".format(
+            query_string = "select QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID, SND_EQUIPMENT_ID, SND_EQUIPMENT_DESCRIPTION, GREENBOOK, PLATFORM from SAQASE (NOLOCK) WHERE  ISNULL(GREENBOOK, '') <> '' AND  QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND  SND_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND  FABLOCATION_ID = '{receiving_fab_id}')".format(
+                    receiving_fab_id = Product.GetGlobal("receiving_fab_id"),
                     QuoteRecordId=contract_quote_record_id,
                     RevisionRecordId=quote_revision_record_id
                 )			
