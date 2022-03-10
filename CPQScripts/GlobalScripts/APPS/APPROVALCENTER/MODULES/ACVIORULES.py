@@ -545,7 +545,7 @@ class ViolationConditions:
                     + str(val.APPROVAL_CHAIN_RECORD_ID)
                     + "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER"
                 )
-                Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND (WHERE_CONDITION_01) <> '' ORDER BY APRCHNSTP_NUMBER")
+                #Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND (WHERE_CONDITION_01) <> '' ORDER BY APRCHNSTP_NUMBER")
                 for result in CSSqlObjs:
                     GetObjName = Sql.GetFirst(
                         "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_RECORD_ID) + "'"
@@ -566,12 +566,12 @@ class ViolationConditions:
                         service = [x.SERVICE_ID for x in getService]
                         if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
                             splitval = str(result.WHERE_CONDITION_01).split("OR")
-                            Trace.Write("SPLITVAL--->"+str(splitval))
+                            #Trace.Write("SPLITVAL--->"+str(splitval))
                             count = 0
                             for s in splitval:
                                 
                                 if "PRENVL" in s and count == 0:
-                                    Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
+                                    #Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
                                     res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service,QuoteId)
                                     #res = 1
                                     count += 1
@@ -586,10 +586,10 @@ class ViolationConditions:
                                             Select_Query = Sql.GetFirst(
                                             "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
                                             )
-                                            Trace.Write("585 SELECT QUERY--->"+str(Select_Query))
+                                            #Trace.Write("585 SELECT QUERY--->"+str(Select_Query))
                                         except:
                                             Select_Query = None
-                                            Trace.Write("Exception Else 587")
+                                            #Trace.Write("Exception Else 587")
                                         if Select_Query is not None:
                                             fflag = 1
                                         elif Select_Query is None and fflag != 1:
@@ -609,7 +609,7 @@ class ViolationConditions:
                         Select_Query = (
                             "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE (" + str(result.WHERE_CONDITION_01) + ")"
                         )
-                        Trace.Write("611 ELSE SELECT QUERY --->"+str(Select_Query))
+                        #Trace.Write("611 ELSE SELECT QUERY --->"+str(Select_Query))
                         
                     TargeobjRelation = Sql.GetFirst(
                         "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
@@ -630,30 +630,30 @@ class ViolationConditions:
                     """ else:
                         if str(ObjectName) == 'SAQTMT':
                             rec_name = 'QUOTE_ID' """
-                    Trace.Write("===>flag "+str(fflag))
+                    #Trace.Write("===>flag "+str(fflag))
                     if fflag == 1:
                         #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
                         #Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                         SqlQuery = "Val"
-                        Log.Info("if flag")
-                        Trace.Write("if flag")
+                        #Log.Info("if flag")
+                        #Trace.Write("if flag")
                     elif fflag == 2:
                         #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
                         #Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                         SqlQuery = None
-                        Log.Info("elif flag")
-                        Trace.Write("elif flag")
+                        #Log.Info("elif flag")
+                        #Trace.Write("elif flag")
                     else:
                         try:
                             Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                            Log.Info("648 ELSE SELECT QUERY--->" + str(Select_Query))
+                            #Log.Info("648 ELSE SELECT QUERY--->" + str(Select_Query))
                             SqlQuery = Sql.GetFirst(Select_Query)
                             #Log.Info("else flag")
-                            Trace.Write("else flag")
+                            #Trace.Write("else flag")
                         except:
                             SqlQuery = Select_Query
                     if SqlQuery is not None:
-                        Trace.Write("Inside the approval heaeder ")
+                        #Trace.Write("Inside the approval heaeder ")
                         where_conditon = (
                             " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
                             + str(val.APPROVAL_CHAIN_RECORD_ID)
@@ -663,7 +663,7 @@ class ViolationConditions:
                         )
                         if method is None:
                             if index == 0:
-                                Log.Info(" ACVIORULES Inside the delete cal")
+                                #Log.Info(" ACVIORULES Inside the delete cal")
                                 Rundelete = self.DeleteforApprovalHeaderTable(
                                     str(RecordId),
                                     str(val.APPROVAL_CHAIN_RECORD_ID),
@@ -672,13 +672,13 @@ class ViolationConditions:
                                 )
                             where_conditon += "AND ACACSS.APPROVALSTATUS = 'APPROVAL REQUIRED' "
                         else:
-                            Trace.Write("method@@111")
+                            #Trace.Write("method@@111")
                             where_conditon += "AND ACACSS.APPROVALSTATUS = 'REQUESTED' "
 
                         where_conditon += " ORDER BY ACACST.APRCHNSTP_NUMBER"
                         rulebody = self.ViolationRuleForApprovals(str(RecordId), str(ObjectName), str(val.APRCHN_ID))
                         Rulebodywithcondition = rulebody + where_conditon
-                        Log.Info("ACAPMA=====>>>>>>>>Rulebodywithcondition "+str(Rulebodywithcondition))
+                        #Log.Info("ACAPMA=====>>>>>>>>Rulebodywithcondition "+str(Rulebodywithcondition))
                         a = Sql.RunQuery(Rulebodywithcondition)
 
                         # Approval Rounding - Start
@@ -686,11 +686,11 @@ class ViolationConditions:
                         roundd = 1
                         if QuoteId!= '':
                             round_obj = Sql.GetFirst("SELECT TOP 1 APPROVAL_ROUND FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' AND APRCHN_RECORD_ID = '{}' ORDER BY CpqTableEntryId DESC".format(QuoteId,val.APPROVAL_CHAIN_RECORD_ID))
-                            Log.Info("SELECT TOP 1 APPROVAL_ROUND FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' ORDER BY CpqTableEntryId DESC".format(QuoteId))
+                            #Log.Info("SELECT TOP 1 APPROVAL_ROUND FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' ORDER BY CpqTableEntryId DESC".format(QuoteId))
                             if round_obj:
                                 roundd = int(round_obj.APPROVAL_ROUND) + 1
                         QueryStatement = """INSERT INTO ACACHR (APPROVAL_CHAIN_ROUND_RECORD_ID,TOTAL_CHNSTP,TOTAL_APRTRX,COMPLETED_DATE,COMPLETEDBY_RECORD_ID,COMPLETED_BY,APPROVAL_ROUND,APPROVAL_RECORD_ID,APPROVAL_ID,APRCHN_RECORD_ID,APRCHN_NAME,APRCHN_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES ('{primarykey}',0,0,null,'','',{Round},'','','','','','{UserName}','{datetime_value}','{UserId}','{datetime_value}')""".format(primarykey = primarykey,UserId=self.Get_UserID, UserName=self.Get_UserNAME,Round=roundd,datetime_value=self.datetime_value, Name=self.Get_NAME)
-                        Log.Info("INSERT ACACHR---"+str(QueryStatement))  
+                        #Log.Info("INSERT ACACHR---"+str(QueryStatement))  
                         Sql.RunQuery(QueryStatement)
                         # Approval Rounding - End
 
@@ -704,14 +704,14 @@ class ViolationConditions:
                             + str(val.APPROVAL_CHAIN_RECORD_ID)
                             + "' "
                         )
-                        Log.Info("CheckviolationRule2-----SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
-                            + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
-                            + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
-                            + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
-                            + str(Objh_Id)
-                            + "' AND WHERE_CONDITION_01 <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
-                            + str(val.APPROVAL_CHAIN_RECORD_ID)
-                            + "' ")
+                        # Log.Info("CheckviolationRule2-----SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
+                        #     + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
+                        #     + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
+                        #     + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
+                        #     + str(Objh_Id)
+                        #     + "' AND WHERE_CONDITION_01 <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
+                        #     + str(val.APPROVAL_CHAIN_RECORD_ID)
+                        #     + "' ")
                         if CheckViolaionRule2:
                             for result in CheckViolaionRule2:
                                 GetObjName = Sql.GetFirst(
@@ -760,12 +760,12 @@ class ViolationConditions:
                                     service = [x.SERVICE_ID for x in getService]
                                     if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
                                         splitval = str(result.WHERE_CONDITION_01).split("OR")
-                                        Trace.Write("SPLITVAL--->"+str(splitval))
+                                        #Trace.Write("SPLITVAL--->"+str(splitval))
                                         count = 0
                                         for s in splitval:
                                             
                                             if "PRENVL" in s and count == 0:
-                                                Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
+                                                #Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
                                                 res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service,QuoteId)
                                                 #res = 1
                                                 count += 1
@@ -781,27 +781,27 @@ class ViolationConditions:
                                                         Select_Query = Sql.GetFirst(
                                                         "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
                                                         )
-                                                        Trace.Write("585 SELECT QUERY--->"+str(Select_Query))
+                                                        #Trace.Write("585 SELECT QUERY--->"+str(Select_Query))
                                                     except:
                                                         Select_Query = None
-                                                        Trace.Write("Exception Else 587")
+                                                        #Trace.Write("Exception Else 587")
 
                                 if fflag == 1:
                                     SqlQuery = "val"
                                 else:
                                     try:
                                         Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                                        Log.Info("795 ELSE SELECT QUERY--->" + str(Select_Query))
+                                        #Log.Info("795 ELSE SELECT QUERY--->" + str(Select_Query))
                                         SqlQuery = Sql.GetFirst(Select_Query)
                                         #Log.Info("else flag")
-                                        Trace.Write("else flag")
+                                        #Trace.Write("else flag")
                                     except:
                                         SqlQuery = Select_Query
                                     #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
                                     #Trace.Write("===============" + str(Select_Query))
                                     #SqlQuery = Sql.GetFirst(Select_Query)
                                 if SqlQuery:
-                                    Trace.Write("@626Inside the approval Transcation")
+                                    #Trace.Write("@626Inside the approval Transcation")
 
                                     where_conditon = (
                                         " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
@@ -839,7 +839,7 @@ class ViolationConditions:
                                         where_conditon = where_conditon.replace("WHERE", "AND")
                                         Transcationrulebody = self.CustomApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=primarykey,Round=roundd,CustomQuery=CustomQuery)
                                         Rulebodywithcondition = Transcationrulebody + where_conditon
-                                        Trace.Write("777777 ACAPTX--------->"+str(Rulebodywithcondition))
+                                        #Trace.Write("777777 ACAPTX--------->"+str(Rulebodywithcondition))
                                         b = Sql.RunQuery(Rulebodywithcondition)
 
                                         if getCustomQuery.APRCHN_ID == 'SELFAPPR':
@@ -906,7 +906,7 @@ class ViolationConditions:
                                             Trackedobject=Trackedobject,
                                         )
                                         trackedbodywithcondition = TackedRuleBody + Tracked_where_conditon
-                                        Trace.Write("trackedbodywithcondition-----> " + str(trackedbodywithcondition))
+                                        #Trace.Write("trackedbodywithcondition-----> " + str(trackedbodywithcondition))
                                         b = Sql.RunQuery(trackedbodywithcondition)
 
                                     """GettingSnapshot = self.SnapshotDataInsert(
@@ -933,11 +933,11 @@ class ViolationConditions:
                                         Rulebodywithcondition = Transcationrulebody +where_conditon
                                         b= Sql.RunQuery(Rulebodywithcondition)"""
                         if QuoteId != "":
-                            Log.Info("Entering Round")
+                            #Log.Info("Entering Round")
                             transaction_count_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
                             chnstp_count_obj = Sql.GetFirst("SELECT count(distinct APRCHNSTP_ID) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
                             UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.TOTAL_APRTRX = {total},ACACHR.TOTAL_CHNSTP={totalchnstp},ACACHR.APRCHN_NAME=ACAPCH.APRCHN_NAME,ACACHR.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID,ACACHR.APPROVAL_ID = ACAPTX.APPROVAL_ID,ACACHR.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID,ACACHR.APRCHN_ID = ACAPTX.APRCHN_ID FROM ACAPTX INNER JOIN ACAPCH (NOLOCK) ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID INNER JOIN ACACHR ON ACAPTX.APRCHNRND_RECORD_ID = ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID WHERE ACAPTX.APRTRXOBJ_ID ='{quoteId}' AND ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID='{primarykey}'""".format(quoteId=QuoteId,primarykey=primarykey,total=transaction_count_obj.cnt,totalchnstp=chnstp_count_obj.cnt)
-                            Log.Info(UPDATE_ACACHR)
+                            #Log.Info(UPDATE_ACACHR)
                             Sql.RunQuery(UPDATE_ACACHR)               
                     else:
                         Log.Info("else @758")
@@ -1075,80 +1075,80 @@ class ViolationConditions:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
             if "Z0091" in service:
                 if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' ) AND SERVICE_ID = 'Z0091')"
+                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0091')"
                 else:
-                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' ) AND SERVICE_ID = 'Z0091')"
+                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0091')"
             elif "Z0035" in service:
                 if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0035')"
+                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0035')"
                 else:
-                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0035')"
+                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0035')"
             elif "Z0091W" in service:
                 if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0091W')"
+                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0091W')"
                 else:
-                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0091W')"
+                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0091W')"
         if "Z0035W" in service:
                 if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0035W')"
+                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0035W')"
                 else:
-                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0035W')"
+                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0035W')"
         if "Z0092" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included","Quote Type":"Tool Based"})
             if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR QTETYP = 'Tool Based' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0092')"
+                    where_str += " ((NWPTON = 'Yes' OR QTETYP = 'Tool Based' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0092')"
             else:
-                where_str += " OR ((NWPTON = 'Yes' OR QTETYP = 'Tool Based' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0092')"
+                where_str += " OR ((NWPTON = 'Yes' OR QTETYP = 'Tool Based' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0092')"
         if "Z0092W" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
             if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0092W')"
+                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0092W')"
             else:
-                where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0092W')"
+                where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0092W')"
         if "Z0010" in service:
             #BDHead.update({"CoO Reduction Guarantees":"Included"})
             if where_str == "":
-                    where_str += " (( COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0010')"
+                    where_str += " (( COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0010')"
             else:
-                where_str += " OR (( COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0010')"
+                where_str += " OR (( COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0010')"
         if "Z0110" in service:
             BDHead.update({"On-site Consigned Parts":"9","On-site Consigned Parts":"8","On-site Consigned Parts":"7","On-site Consigned Parts":"6"})
             if where_str == "":
-                    where_str += " ((ONSITE_CONSPRT = '9' OR ONSITE_CONSPRT = '8' OR ONSITE_CONSPRT = '7' OR ONSITE_CONSPRT = '6') AND SERVICE_ID = 'Z0110')"
+                    where_str += " ((ONSITE_CONSPRT = '9' OR ONSITE_CONSPRT = '8' OR ONSITE_CONSPRT = '7' OR ONSITE_CONSPRT = '6' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0110')"
             else:
-                where_str += " OR ((ONSITE_CONSPRT = '9' OR ONSITE_CONSPRT = '8' OR ONSITE_CONSPRT = '7' OR ONSITE_CONSPRT = '6') AND SERVICE_ID = 'Z0110')"
+                where_str += " OR ((ONSITE_CONSPRT = '9' OR ONSITE_CONSPRT = '8' OR ONSITE_CONSPRT = '7' OR ONSITE_CONSPRT = '6' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0110')"
         if "Z0123" in service:
             BDHead.update({"Billing Type":"Fixed"})
             if where_str == "":
-                    where_str += " ((BILTYP = 'Fixed') AND SERVICE_ID = 'Z0123')"
+                    where_str += " ((BILTYP = 'Fixed' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0123')"
             else:
-                where_str += " OR ((BILTYP = 'Fixed') AND SERVICE_ID = 'Z0123')"
+                where_str += " OR ((BILTYP = 'Fixed' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0123')"
         if "Z0128" in service:
             BDHead.update({"CoO Reduction Guarantees":"Included"})
             if where_str == "":
-                    where_str += " (( COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0128')"
+                    where_str += " (( COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0128')"
             else:
-                where_str += " OR (( COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0128')"
+                where_str += " OR (( COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0128')"
         if "Z0009" in service:
             BDHead.update({"CoO Reduction Guarantees":"Included","Primary KPI. Perf Guarantee":"First Time Right"})
             if where_str == "":
-                    where_str += " ((PRMKPI_ENT = 'First Time Right' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0009')"
+                    where_str += " ((PRMKPI_ENT = 'First Time Right' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0009')"
             else:
-                where_str += " OR ((PRMKPI_ENT = 'First Time Right' OR COO_RED_GUAR = 'Included') AND SERVICE_ID = 'Z0009')"
+                where_str += " OR ((PRMKPI_ENT = 'First Time Right' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0009')"
         if "Z0007" in service:
             BDHead.update({"Decontamination":"Included","New Parts Only":"Yes"})
             if where_str == "":
-                    where_str += " ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0007')"
+                    where_str += " ((NWPTON = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0007')"
             else:
-                where_str += " OR ((NWPTON = 'Yes') AND SERVICE_ID = 'Z0007')"
+                where_str += " OR ((NWPTON = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0007')"
         if "Z0004W" in service:
             BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded"})
         if "Z0004-Subfab" in service:
             BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded","Repair Cust Owned Parts":"Yes"})
             if where_str == "":
-                    where_str += " ((RPRCUS_OWNPRT = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
+                    where_str += " ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0004-Subfab')"
             else:
-                where_str += " OR ((RPRCUS_OWNPRT = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
+                where_str += " OR ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0004-Subfab')"
         lines = []
         annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
