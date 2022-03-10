@@ -54,23 +54,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 	def get_results(self, table_total_rows=0, colums='*'):		
 		start = 1
 		end = 1000
-		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))
-	'''	Trace.Write(str(self.tree_param))
-		if (self.tree_param) == 'Z0108' or (self.tree_param) == 'Z0110':
-			Trace.Write(str(colums))
-			col=colums.split(",")
-			if (self.tree_param) == 'Z0108':
-				col[0:2]=[]
-				colums=','.join(col)
-				Trace.Write("@Z0108"+str(colums))
-			else:
-				col[0:2]=[]
-				col=[x for x in col if "DELIVERY" not in x]
-				colums=','.join(col)
-				Trace.Write("@Z0110"+str(colums))'''
-
-			Trace.Write(str(colums))
-				
+		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))				
 		while start < table_total_rows:
 			query_string_with_pagination = """
 							SELECT DISTINCT {Columns} FROM (
