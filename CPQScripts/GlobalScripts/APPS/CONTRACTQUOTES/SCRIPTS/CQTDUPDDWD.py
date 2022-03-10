@@ -55,8 +55,9 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		start = 1
 		end = 1000
 		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))
-		Trace.Write(str(self.tree_param))
+	'''	Trace.Write(str(self.tree_param))
 		if (self.tree_param) == 'Z0108' or (self.tree_param) == 'Z0110':
+			Trace.Write(str(colums))
 			col=colums.split(",")
 			if (self.tree_param) == 'Z0108':
 				col[0:2]=[]
@@ -66,7 +67,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 				col[0:2]=[]
 				col=[x for x in col if "DELIVERY" not in x]
 				colums=','.join(col)
-				Trace.Write("@Z0110"+str(colums))
+				Trace.Write("@Z0110"+str(colums))'''
 
 			Trace.Write(str(colums))
 				
