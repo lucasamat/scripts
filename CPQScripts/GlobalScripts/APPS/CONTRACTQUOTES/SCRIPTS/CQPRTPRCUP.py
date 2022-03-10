@@ -190,7 +190,8 @@ if part_query or ancillary_part_query or fpm_part_query:
 					if q<=0 or q=='':
 						q=1
 					q=int(q)
-					if len(r)>1:
+					Log.Info("RRR->"+str(r)+"<--")
+					if r != '':
 						curr_attr = currency_attribute
 						curr_attr += ','+'{"name":"KOMP-ZZ_ODCC_ELIGIBILITY_FLAG","values":["'+str(r)+'"]}'
 					itemid = str(p)+";"+str(QUOTE)+";"+str(q)+";"+str(currencies)
