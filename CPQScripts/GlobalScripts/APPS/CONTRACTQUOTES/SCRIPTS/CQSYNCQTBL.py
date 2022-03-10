@@ -1737,12 +1737,8 @@ class SyncQuoteAndCustomTables:
 																INSERT
 																SAQFBL (FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOCATION_STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID, QUOTE_FABLOCATION_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 																SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FABLOCATION_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-																	SELECT DISTINCT MAFBLC.FAB_LOCATION_ID, MAFBLC.FAB_LOCATION_NAME, MAFBLC.FAB_LOCATION_RECORD_ID,'{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID, '{QuoteId}' as QUOTE_ID, '{QuoteRecordId}' as QUOTE_RECORD_ID, MAFBLC.COUNTRY, MAFBLC.COUNTRY_RECORD_ID, MAFBLC.MNT_PLANT_ID, '' as MNT_PLANT_NAME, MAFBLC.MNT_PLANT_RECORD_ID, MAFBLC.SALESORG_ID, MAFBLC.SALESORG_NAME, MAFBLC.SALESORG_RECORD_ID, MAFBLC.STATUS, MAFBLC.ADDRESS_1, MAFBLC.ADDRESS_2, MAFBLC.CITY, MAFBLC.STATE, MAFBLC.STATE_RECORD_ID 
-																	FROM MAFBLC (NOLOCK)
-																	JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_ID = SAQTMT.ACCOUNT_ID AND SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTMT.QTEREV_RECORD_ID ='{quote_revision_id}'
-																	JOIN SAQTRV (NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND MAFBLC.SALESORG_ID = SAQTRV.SALESORG_ID
-																	
-																	WHERE MAFBLC.FAB_LOCATION_ID IN ('{FabLocationIds}') AND SAQTRV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTMT.QTEREV_RECORD_ID ='{quote_revision_id}'
+																	SELECT DISTINCT FAB_LOCATION_ID, FAB_LOCATION_NAME, FAB_LOCATION_RECORD_ID,'{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID, '{QuoteId}' as QUOTE_ID, '{QuoteRecordId}' as QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID FROM MAFBLC (NOLOCK)
+																	WHERE FAB_LOCATION_ID IN ('{FabLocationIds}')
 																	) A
 																""".format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 								SAQFBL_end = time.time()
@@ -1825,7 +1821,7 @@ class SyncQuoteAndCustomTables:
 								shiptostr=str(shipto_list)
 								shiptostr=re.sub(r"'",'"',shiptostr)
 								account_info['SHIP TO']=shiptostr
-								#get info from revision table start
+        						#get info from revision table start
 								sales_id = sales_rec =qt_rev_id = qt_id=''
 								get_rev_sales_ifo = Sql.GetFirst("select QUOTE_ID,SALESORG_ID,SALESORG_RECORD_ID,QTEREV_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"'")
 								if get_rev_sales_ifo:
