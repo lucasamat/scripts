@@ -11250,6 +11250,16 @@ if ACTION == "LOAD":
 		Trace.Write("PerPage" + str(PerPage))
 		Trace.Write("PageInform" + str(PageInform))
 		ApiResponse = ApiResponseFactory.JsonResponse(GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values))
+	elif TABNAME == "Event Master Pagination":
+		A_Keys = list(Param.ATTRIBUTE_NAME)
+		A_Values = list(Param.ATTRIBUTE_VALUE)
+		PerPage = Param.PerPage
+		PageInform = Param.PageInform
+		Trace.Write("Keys" + str(list(A_Keys)))
+		Trace.Write("Values" + str(list(A_Values)))
+		Trace.Write("PerPage" + str(PerPage))
+		Trace.Write("PageInform" + str(PageInform))
+		ApiResponse = ApiResponseFactory.JsonResponse(GetEventsMaster(PerPage, PageInform, A_Keys, A_Values))
 	elif TABNAME == "Preventive Maintainence Parent Pagination":
 		A_Keys = list(Param.ATTRIBUTE_NAME)
 		A_Values = list(Param.ATTRIBUTE_VALUE)
