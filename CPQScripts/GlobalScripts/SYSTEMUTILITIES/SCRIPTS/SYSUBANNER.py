@@ -116,7 +116,7 @@ def Related_Sub_Banner(
         if ObjName =="SAQDOC":
             get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
             Trace.Write("get_quote_status--> "+str(get_quote_status.REVISION_STATUS))
-            if str(get_quote_status.REVISION_STATUS).upper() == "APPROVED":
+            if str(get_quote_status.REVISION_STATUS).upper() == "APR-APPROVED":
                 dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER  FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND SUBTAB_NAME = '"+str(subTabName)+"' ORDER BY DISPLAY_ORDER ")
                 if not dynamic_Button:
                     dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND ISNULL(SUBTAB_NAME,'')='' ORDER BY DISPLAY_ORDER")
@@ -716,7 +716,7 @@ def Related_Sub_Banner(
                 
                 # else:
                 #     Trace.Write("Inside Else"+str(sec_rel_sub_bnr))
-                if quote_status.QUOTE_STATUS != 'APPROVED':
+                if quote_status.QUOTE_STATUS != 'APR-APPROVED':
                     Trace.Write("Inside addbut")  
                     if len(multi_buttons)>0:
                         Trace.Write("lenmulti---")
@@ -2688,7 +2688,7 @@ def Related_Sub_Banner(
                             # if sale_type.SALE_TYPE == "NEW":
                         for btn in multi_buttons:
                             if "ADD FAB" in btn:
-                                if quote_status.QUOTE_STATUS != 'APPROVED':
+                                if quote_status.QUOTE_STATUS != 'APR-APPROVED':
                                     sec_rel_sub_bnr += (str(btn))
                         else:
                             sec_rel_sub_bnr += ""
@@ -2726,7 +2726,7 @@ def Related_Sub_Banner(
                         # )
                 
                 elif CurrentRecordId == "SYOBJR-98788":
-                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                    if quote_status.QUOTE_STATUS != 'APR-APPROVED':
                         Trace.Write('add======')
                         if "ADD OFFERINGS" in str(add_button):
                             if str(TreeParam) == "Product Offerings":
