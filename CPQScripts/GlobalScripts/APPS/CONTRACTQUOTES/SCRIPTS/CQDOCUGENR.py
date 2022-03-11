@@ -912,7 +912,7 @@ def submit_to_customer(doc_rec_id):
 	output_doc_query = Sql.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 	if output_doc_query:
 		if str(output_doc_query.DATE_SUBMITTED) != "":			
-			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'SUBMITTED TO CUSTOMER' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'APR-SUBMITTED TO CUSTOMER' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 			Sql.RunQuery(update_revision_status)	
 	return True
 
