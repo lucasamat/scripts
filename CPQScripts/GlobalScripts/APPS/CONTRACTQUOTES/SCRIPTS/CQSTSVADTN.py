@@ -151,18 +151,18 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			else:
 				Addon_check.append('T')				
 			
-		if str(getsalesorg_info).upper() != "NONE" and (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and getsalesorg_info  and get_vc_offerring_info.COUNT > 0:
-			Trace.Write('stage--1')
-			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-			Sql.RunQuery(update_workflow_status)
+		# if str(getsalesorg_info).upper() != "NONE" and (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and getsalesorg_info  and get_vc_offerring_info.COUNT > 0:
+		# 	Trace.Write('stage--1')
+		# 	update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+		# 	Sql.RunQuery(update_workflow_status)
 			
 			
-		if str(getsalesorg_info).upper() != "NONE" and (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID)  and get_vc_offerring_info.COUNT > 0 and price_bar == 'not_acquired_status':
-			Trace.Write('stage--2')
-			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING REVIEW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+		# if str(getsalesorg_info).upper() != "NONE" and (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID)  and get_vc_offerring_info.COUNT > 0 and price_bar == 'not_acquired_status':
+		# 	Trace.Write('stage--2')
+		# 	update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING REVIEW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 							
-			Sql.RunQuery(update_workflow_status)
-			ScriptExecutor.ExecuteGlobal('CQSDELPGPN',{'QUOTE_ID':Quote.GetGlobal("contract_quote_record_id"),'QTEREV_ID':Quote.GetGlobal("quote_revision_record_id"),'ACTION':'EMAIL'})
+		# 	Sql.RunQuery(update_workflow_status)
+		# 	ScriptExecutor.ExecuteGlobal('CQSDELPGPN',{'QUOTE_ID':Quote.GetGlobal("contract_quote_record_id"),'QTEREV_ID':Quote.GetGlobal("quote_revision_record_id"),'ACTION':'EMAIL'})
 
 		if str(getsalesorg_info).upper() != "NONE" and get_service_info.COUNT > 0 and get_fab_info.COUNT > 0  and get_involved_parties_info.COUNT > 0  and get_sales_team_info.COUNT > 0  and get_vc_offerring_info.COUNT > 0  and 'F' not in tool_check and 'F' not in Z0110_check and 'F' not in Addon_check:
 			update_workflow_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
