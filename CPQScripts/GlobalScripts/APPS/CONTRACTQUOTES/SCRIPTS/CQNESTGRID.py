@@ -2821,7 +2821,7 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			table_header += (
 				'<th data-field="'
 				+ str(invs)
-				+ '" data-filter-control="input" data-formatter="primaryListHyperLink" data-sortable="true"><abbr title="'
+				+ '" data-filter-control="input" data-formatter="eventChildHyperLink" data-sortable="true"><abbr title="'
 				+ str(qstring)
 				+ '">'
 				+ str(qstring)
