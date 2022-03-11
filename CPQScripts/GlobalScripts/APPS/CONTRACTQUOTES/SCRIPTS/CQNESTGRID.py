@@ -717,6 +717,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+	parentlevel4 = Product.GetGlobal("TreeParentLevel4")
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	data_list = []
@@ -842,7 +843,33 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(TreeParam)
 			+ "' and PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
 		)
+	elif parentlevel4 == "Product Offerings":
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeParam)
+			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)+") m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
 
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeParam)
+			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
+		)
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
 		#Trace.Write("count---->" + str(QueryCount))
@@ -2682,6 +2709,7 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+	parentlevel4 = Product.GetGlobal("TreeParentLevel4")
 	if str(PerPage) == "" and str(PageInform) == "":
 		Page_start = 1
 		Page_End = 10
@@ -4226,6 +4254,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+	parentlevel4 =  Product.GetGlobal("TreeParentLevel4")
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	ATTRIBUTE_VALUE_STR = ""
@@ -4297,7 +4326,31 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		)
 		if Count:
 			QueryCount = Count.cnt
-	
+	elif parentlevel4 == "Product Offerings":
+    	parent_obj = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeParam)
+			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' ) m "
+		)
+
+		Count = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeParam)
+			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
+		)
+
+		if Count:
+    		QueryCount = Count.cnt
 	for par in parent_obj:
 		
 		data_dict = {}
