@@ -2783,13 +2783,14 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				Action_str1 += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
 			Action_str1 += "</ul></div></div>"
 
+			chld_dict["ids"] = str(data_id)
 			chld_dict["ACTIONS"] = str(Action_str1)
 			chld_dict["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
-				"SAQFEA", str(child.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID)
+				"SAQSKP", str(child.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID)
 			)
 			chld_dict["KIT_ID"] =str(child.KIT_ID)
 			chld_dict["KIT_NAME"] = ('<abbr id ="" title="' + str(child.KIT_NAME) + '">' + str(child.KIT_NAME) + "</abbr>") 
-			chld_dict["TKM_FLAG"] = ('<abbr id ="" title="' + str(child.TKM_FLAG) + '">' + str(child.TKM_FLAG) + "</abbr>") 
+			chld_dict["TKM_FLAG"] = child.TKM_FLAG
 			chld_list.append(chld_dict)
 
 	# Table formation.
