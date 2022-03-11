@@ -3022,6 +3022,7 @@ class SYLDRTLIST:
 						if related_list_edit_permission:							
 							if primary_view != "":								
 								if other_tab == "1":
+									Trace.Write("EDIT_BTN_1 ")
 									Action_str += (
 										'<li><a class="dropdown-item curptr"  href="../Configurator.aspx?pid='
 										+ str(product_id_val)
@@ -3030,6 +3031,7 @@ class SYLDRTLIST:
 										+ '"   onclick="Move_to_parent_obj_edit(this)">EDIT</a></li>'
 									)
 								elif other_tab != "0":
+									Trace.Write("EDIT_BTN_2 ")
 									Action_str += (
 										'<li><a class="dropdown-item curptr" href="#" id = "'
 										+ primary_view
@@ -3046,6 +3048,7 @@ class SYLDRTLIST:
 									elif str(current_tab).upper() == "SYPROF":
 										Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#viewProfileRelatedList" onclick="profileObjSetEdit(this)">EDIT</a></li>'
 									else:
+										Trace.Write("EDIT_BTN_2 ")
 										Action_str += '<li><a class="dropdown-item" href="#" onclick="cont_openedit(this)" data-target="#cont_viewModalSection" data-toggle="modal">EDIT</a></li>'
 
 							elif (
@@ -3103,6 +3106,7 @@ class SYLDRTLIST:
 									elif str(ObjectName) =='SAQSPT':
 										pass
 									else:
+										Trace.Write("EDIT_BTN_3 ")
 										Action_str += ('<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>')
 								elif str(current_tab).upper() == "PROFILE":
 									Action_str += (
@@ -3111,6 +3115,7 @@ class SYLDRTLIST:
 								elif str(current_tab).upper() == "SYPROF":
 									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#viewProfileRelatedList" onclick="profileObjSetEdit(this)">EDIT</a></li>'
 								else:
+									Trace.Write("EDIT_BTN_4 ")
 									Action_str += '<li><a class="dropdown-item" href="#" onclick="cont_openedit(this)" data-target="#cont_viewModalSection" data-toggle="modal">EDIT</a></li>'
 					Trace.Write("checkng_delete_btn_2 "+str(Action_permission.get("Delete")))
 					if str(Action_permission.get("Delete")).upper() == "TRUE":
@@ -9154,6 +9159,7 @@ class SYLDRTLIST:
 							'<li><a class="dropdown-item" href="#" onclick="replace_cont_manager(this)">REPLACE</a></li>'
 						) 
 					else:
+						Trace.Write("EDIT_BTN_5 ")
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'    
 				if str(Action_permission.get("Delete")).upper() == "TRUE":
 					onclick = "CommonDelete(this, '" + str(ObjectName) + "', 'WARNING')"
