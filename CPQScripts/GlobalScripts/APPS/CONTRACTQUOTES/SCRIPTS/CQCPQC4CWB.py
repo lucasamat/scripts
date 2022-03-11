@@ -76,7 +76,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
             net_value = revision_obj.NET_VALUE_INGL_CURR
             opportunity_object = Sql.GetFirst("select ISNULL(SAOPPR.C4C_OPPOBJ_ID,0) AS C4C_OPPOBJ_ID FROM SAOPPR(NOLOCK) INNER JOIN SAOPQT (NOLOCK) ON  SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID AND SAOPPR.ACCOUNT_ID = SAOPQT.ACCOUNT_ID WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
             opportunity_object_id = opportunity_object.C4C_OPPOBJ_ID
-            
+            Log.Info("opportunity_object_id --->"+str(opportunity_object.C4C_OPPOBJ_ID))
             ##Fetch the code according to the revision status..code starts...
             revision_status_code = {"PRI-APPROVAL PENDING":"111", "APR-RECALLED":"121", "APR-REJECTED":"131", "APR-APPROVED":"141","OPD-CUSTOMER ACCEPTED":"161","CBC-SUBMITTED FOR BOOKING":"181","BOK-CONTRACT BOOKED":"191","CFG-ON HOLD - COSTING":"221","CUSTOMER REJECTED":"171","CPG-CONFIGURATION":"211","OPPORTUNITY CANCELLED":"231","OPPORTUNITY LOST":"241","PRR-PRICING":"101","CFG-ACQUIRING":"261","ON HOLD PRICING":"251"}
             ##Fetch the code according to the revision status..code ends...
