@@ -217,13 +217,13 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
             Log.Info("PART PRICING IFLOW ERROR!")
         ##calling the iflow for pricing end
 try:
-    quote_item_insert = Param.quote_item_insert
+	quote_item_insert = Param.quote_item_insert
 except:
-    quote_item_insert = ''
+	quote_item_insert = ''
 
 try:
-    Text = Param.Text
+	Text = Param.Text
 except:
-    Text = ""
-
-ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar(quote_item_insert,Text))
+	Text = ""
+Trace.Write("quote_item_insert_J "+str(quote_item_insert))
+ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar(quote_item_insert,Text))  
