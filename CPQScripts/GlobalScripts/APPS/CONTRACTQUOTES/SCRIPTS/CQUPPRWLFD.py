@@ -24,7 +24,8 @@ class ContractQuoteItemAnnualizedPricing:
 	
 	def _do_opertion(self):
 		if self.records:
-			self.records = eval(self.records)			
+			self.records = eval(self.records)		
+			Trace.Write("-------------+++ "+str(self.records))	
 			for data in self.records:
 				for line_id, value in data.items():					
 					update_fields_str = ' ,'.join(["{} = {}".format(field_name,float(field_value) if field_value else 0) for field_name, field_value in value.items()])					
@@ -38,7 +39,20 @@ class ContractQuoteItemAnnualizedPricing:
 						self._rolldown_from_total_price_level(line_id)
 					else:
 						self._rolldown_from_total_price_level(line_id, update_fields_str)
-					##roll up script call
+					# Approval Trigger Field Update 
+					Sql.RunQuery("""UPDATE SAQICO
+							SET SAQICO.UACBDA = 'True'	
+							FROM SAQICO (NOLOCK)							
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.LINE = '{LineId}' AND (SAQICO.USRPRC > SAQICO.CELPRC)""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id))
+					Sql.RunQuery("""UPDATE SAQICO
+							SET SAQICO.UBSBDA = 'True'	
+							FROM SAQICO (NOLOCK)							
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.LINE = '{LineId}' AND (SAQICO.BDVPRC < SAQICO.SLSPRC) AND (SAQICO.USRPRC < SAQICO.SLSPRC)""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id))
+					Sql.RunQuery("""UPDATE SAQICO
+							SET SAQICO.UBSNSA = 'True'	
+							FROM SAQICO (NOLOCK)							
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.LINE = '{LineId}' AND (SAQICO.USRPRC < SAQICO.SLSPRC) AND (SAQICO.SLSPRC < SAQICO.BDVPRC)""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id))
+				##roll up script call
 				try:
 					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id,"manual_pricing":"True"})
 				except:
@@ -96,6 +110,7 @@ class ContractQuoteItemAnnualizedPricing:
 		Sql.RunQuery("UPDATE SAQICO SET TRGPRC = ISNULL(MTGPRC,0) + ISNULL(TOTLPI,0)  FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE = '{LineId}' {WhereCondition}".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id, WhereCondition =  where_condition))
 		
 		#USRPRC / TGADJP - User Price / Target User Price Adjustment
+		Trace.Write("=================>>>> "+str(updated_fields))
 		if 'USRPRC' not in updated_fields:
 			Sql.RunQuery("UPDATE SAQICO SET USRPRC = TRGPRC,TGADJP = '0.00' FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE = '{LineId}' {WhereCondition}".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id, WhereCondition =  where_condition))
 		
