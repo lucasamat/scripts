@@ -3105,6 +3105,8 @@ class SYLDRTLIST:
 										#Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')" id ="ADDNEW__SYOBJR_98871_SYOBJ_002649">MARK PRIMARY</a></li>')
 									elif str(ObjectName) =='SAQSPT':
 										pass
+									elif str(ObjectName) == 'SAQRIS':
+										Action_str += ('<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>')
 									else:
 										Trace.Write("EDIT_BTN_3 ")
 										Action_str += ('<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>')
