@@ -123,11 +123,11 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					Sql.RunQuery(update_workflow_status)
 					status = "QUOTE DOCUMENTS"			
 				
-				if getsalesorg_ifo.REVISION_STATUS == "SUBMITTED FOR BOOKING" and Text == "COMPLETE STAGE":
+				if getsalesorg_ifo.REVISION_STATUS == "CBC-SUBMITTED FOR BOOKING" and Text == "COMPLETE STAGE":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
-					status = "SUBMITTED FOR BOOKING"
+					status = "CBC-SUBMITTED FOR BOOKING"
 				if getsalesorg_ifo.REVISION_STATUS == "CONTRACT BOOKED" and Text == "COMPLETE STAGE":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
@@ -141,8 +141,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			elif get_workflow_status.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED" or get_workflow_status.REVISION_STATUS == "CUSTOMER REJECTED":										
 				status = "QUOTE DOCUMENTS"		
 			
-			elif get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING" and get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":					
-				status = "SUBMITTED FOR BOOKING"
+			elif get_workflow_status.REVISION_STATUS == "CBC-SUBMITTED FOR BOOKING" and get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":					
+				status = "CBC-SUBMITTED FOR BOOKING"
 			elif get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED" and get_workflow_status.WORKFLOW_STATUS == "BOOKED":					
 				status = "CONTRACT BOOKED"
 
