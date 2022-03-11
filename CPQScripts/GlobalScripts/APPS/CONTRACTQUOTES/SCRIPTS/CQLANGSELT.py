@@ -702,7 +702,7 @@ def _insert_subtotal_by_offerring_quote_table():
             newRow['POSS_NSO_PART_ID'] = val.POSS_NSO_PART_ID if val.POSS_NSO_PART_ID else ""
             newRow['MNTEVT_LEVEL'] = val.MNTEVT_LEVEL if val.MNTEVT_LEVEL else ""
             #newRow['PEREVTCST_INGL_CURR'] = val.PEREVTCST_INGL_CURR if val.PEREVTCST_INGL_CURR else ""
-            newRow['PEREVTPRC_INGL_CURR'] = val.PEREVTPRC_INGL_CURR if val.PEREVTPRC_INGL_CURR else ""
+            #newRow['PEREVTPRC_INGL_CURR'] = val.PEREVTPRC_INGL_CURR if val.PEREVTPRC_INGL_CURR else ""
             newRow['EQUIPMENT_ID'] = val.EQUIPMENT_ID if val.EQUIPMENT_ID else ""
             newRow['PM_ID'] = val.PM_ID if val.PM_ID else ""
             if val.FABLOCATION_ID:
