@@ -62,7 +62,7 @@ SAQTIP_INFO = SqlHelper.GetList(""" SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM S
 for keyobj in SAQTIP_INFO:
 	account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
 
-GetPricingProcedure = Sql.GetFirst("SELECT DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID,DOCTYP_ID, DOC_CURRENCY,COUNTRY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID,EXCHANGE_RATE_TYPE, GLOBAL_CURRENCY, ACCTAXCLA_ID, PAYMENTTERM_ID, INCOTERM_ID, COMPANY_ID, CONTRACT_VALID_FROM FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}' ".format(QUOTE,revision))
+GetPricingProcedure = Sql.GetFirst("SELECT DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY,COUNTRY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID,EXCHANGE_RATE_TYPE, GLOBAL_CURRENCY, ACCTAXCLA_ID, PAYMENTTERM_ID, INCOTERM_ID, COMPANY_ID, CONTRACT_VALID_FROM FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}' ".format(QUOTE,revision))
 if GetPricingProcedure is not None:
 	Trace.Write('inside----'+str(GetPricingProcedure))
 	PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
@@ -71,7 +71,6 @@ if GetPricingProcedure is not None:
 	dis = GetPricingProcedure.DISTRIBUTIONCHANNEL_ID
 	salesorg = GetPricingProcedure.SALESORG_ID
 	div = GetPricingProcedure.DIVISION_ID
-	doctype_id=GetPricingProcedure.DOCTYP_ID
 	exch = GetPricingProcedure.EXCHANGE_RATE_TYPE
 	contract_quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
 	country=GetPricingProcedure.COUNTRY
@@ -95,8 +94,7 @@ account_info['globalCurrency']= '{"name":"KOMK-HWAER","values":["'+str(glb_curr)
 #curr = 'USD'
 #dis = '01'
 #salesorg = '2034'
-if doctype_id:
-	div = '56'
+div = '56'
 
 #UPDATE PRICING PROCEDURE TO SAQITM
 getPricingProc=SqlHelper.GetFirst("""SELECT PRICINGPROCEDURE_ID FROM SASAPP (NOLOCK) WHERE DISTRIBUTIONCHANNEL_ID='{}' AND DIVISION_ID='56' AND SALESORG_ID='{}'""".format(dis,salesorg))
@@ -160,7 +158,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 			try:
 				odcc_flag = [r.ODCC_FLAG for r in get_part_query]
 				shipto = [s.SHPACCOUNT_ID for s in get_part_query]
-				shipto_details=shipto[0] 
+				shipto_details=shipto[0]
 				str_odcc_flag = odcc_flag[0]
 			except:
 				odcc_flag = ['' for r in get_part_query] 
