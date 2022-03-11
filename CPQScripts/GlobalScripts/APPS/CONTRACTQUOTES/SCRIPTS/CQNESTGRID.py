@@ -11949,7 +11949,7 @@ elif ACTION == "CHILDLOAD":
 			GetEquipmentChild(ATTRIBUTE_NAME, PerPage, PageInform, A_Keys, A_Values)
 		)
 	elif TABNAME == "Events child":
-    	ApiResponse = ApiResponseFactory.JsonResponse(
+		ApiResponse = ApiResponseFactory.JsonResponse(
 			GetEventsChild(ATTRIBUTE_NAME, PerPage, PageInform, A_Keys, A_Values)
 		)
 	elif TABNAME == "Sending Equipment child":
