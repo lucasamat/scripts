@@ -98,6 +98,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		#if getsalesorg_ifo and getfab_info:
 		Trace.Write('not_acquired_status--'+str(price_bar))
 		Trace.Write('COMPLETE STAGE---'+str(Text))
+		if getsalesorg_ifo.REVISION_STATUS == "APPROVAL PENDING":
+			Text = "COMPLETE STAGE"
 		if getsalesorg_ifo:
 			if Text == "COMPLETE STAGE":		
 				Trace.Write('salesorg--present---')
