@@ -1213,7 +1213,7 @@ class approvalCenter:
 				if GetCurStatus:
 					
 					MainObjUpdateQuery = """UPDATE SAQTRV SET
-						REVISION_STATUS = 'APPROVAL PENDING'
+						REVISION_STATUS = 'PRI-APPROVAL PENDING'
 						WHERE {primaryKey} = '{Primaryvalue}' """.format(
 						statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 						ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -1352,7 +1352,7 @@ class approvalCenter:
 			if GetCurStatus:
 				
 				MainObjUpdateQuery = """UPDATE SAQTRV SET
-					REVISION_STATUS = 'APPROVAL PENDING'
+					REVISION_STATUS = 'PRI-APPROVAL PENDING'
 					WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}' """.format(
 					statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 					ObjName=str(GetCurStatus.OBJECT_NAME),

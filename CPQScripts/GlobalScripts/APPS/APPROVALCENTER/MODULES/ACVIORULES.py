@@ -845,7 +845,7 @@ class ViolationConditions:
                                         if getCustomQuery.APRCHN_ID == 'SELFAPPR':
                                             Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'REQUESTED' WHERE APPROVAL_RECORD_ID = '{}'".format(GetLatestApproval.APPROVAL_RECORD_ID))
 
-                                            Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'APPROVAL PENDING' WHERE QUOTE_REVISION_RECORD_ID ='{}'".format(RecordId))
+                                            Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'PRI-APPROVAL PENDING' WHERE QUOTE_REVISION_RECORD_ID ='{}'".format(RecordId))
                                     else:
                                         where_conditon += """GROUP BY APPRO.USER_RECORD_ID,ACAPCH.APRCHN_ID,
                                     ACAPCH.APPROVAL_CHAIN_RECORD_ID ,APPRO.APRCHNSTP_APPROVER_ID ,
