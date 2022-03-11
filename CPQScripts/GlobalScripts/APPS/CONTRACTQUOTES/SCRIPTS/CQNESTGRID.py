@@ -852,7 +852,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
-			+ str(TreeParam)
+			+ str(TreeTopSuperParentParam)
 			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)+") m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
@@ -867,7 +867,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
-			+ str(TreeParam)
+			+ str(TreeTopSuperParentParam)
 			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
 		)
 	if QueryCountObj is not None:
@@ -4335,7 +4335,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
-			+ str(TreeParam)
+			+ str(TreeTopSuperParentParam)
 			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' ) m "
 		)
 
@@ -4345,7 +4345,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
-			+ str(TreeParam)
+			+ str(TreeTopSuperParentParam)
 			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
 		)
 
