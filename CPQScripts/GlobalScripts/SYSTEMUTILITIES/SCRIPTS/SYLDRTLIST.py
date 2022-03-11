@@ -3708,8 +3708,7 @@ class SYLDRTLIST:
 			#Trace.Write('Colcount--ObjectName-----'+str(ObjectName))			
 			if ObjectName == 'SAQIBP':
 				Colcount += len(billing_date_column)
-			#if ObjectName == 'SAQSPD':
-				#Colcount += len(delivery_date_column)
+		
 			# Billing Matrix - Pivot - End
 			Colcount = len(CountCol) + 2
 			
