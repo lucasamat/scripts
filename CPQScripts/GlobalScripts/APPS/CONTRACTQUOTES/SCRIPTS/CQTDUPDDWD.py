@@ -686,6 +686,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				Trace.Write("Records111 ===> "+str(self.records))
 				self.records = re.sub(r"<?[a-zA-Z0-9_.\[ \]]+>", "0.00", self.records)
 				Trace.Write("Records222 ===> "+str(self.records))
+				self.records = self.records.replace("?","")
 			# for index, data in enumerate(list(sheet_data.Value)):
 			# 	if index == 0:
 			# 		self.columns = ",".join(data)
