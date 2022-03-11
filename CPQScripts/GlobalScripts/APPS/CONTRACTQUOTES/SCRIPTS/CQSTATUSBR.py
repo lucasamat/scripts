@@ -132,7 +132,14 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
-					status = "BOK-CONTRACT BOOKED"
+					status = "CONTRACT BOOKED"
+				#AO55S000P01-17018 Starts
+				if getsalesorg_ifo.REVISION_STATUS == "APPROVAL PENDING" and Text == "COMPLETE STAGE":
+					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+									
+					Sql.RunQuery(update_workflow_status)
+					status = "APPROVAL PENDING"
+				#AO55S000P01-17018 ends
 			
 			get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 						
@@ -141,10 +148,12 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			elif get_workflow_status.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED" or get_workflow_status.REVISION_STATUS == "CUSTOMER REJECTED":										
 				status = "QUOTE DOCUMENTS"		
 			
-			elif get_workflow_status.REVISION_STATUS == "CBC-SUBMITTED FOR BOOKING" and get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":					
-				status = "CBC-SUBMITTED FOR BOOKING"
-			elif get_workflow_status.REVISION_STATUS == "BOK-CONTRACT BOOKED" and get_workflow_status.WORKFLOW_STATUS == "BOOKED":					
-				status = "BOK-CONTRACT BOOKED"
+			elif get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING" and get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":					
+				status = "SUBMITTED FOR BOOKING"
+			elif get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED" and get_workflow_status.WORKFLOW_STATUS == "BOOKED":					
+				status = "CONTRACT BOOKED"
+			elif get_workflow_status.REVISION_STATUS == "APPROVAL PENDING" and get_workflow_status.WORKFLOW_STATUS == "PRICING":					
+				status = "APPROVAL PENDING"
 
 			elif get_workflow_status.WORKFLOW_STATUS:			
 				Trace.Write('No button-2454-')
