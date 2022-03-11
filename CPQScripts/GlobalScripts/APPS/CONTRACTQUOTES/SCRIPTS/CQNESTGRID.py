@@ -721,9 +721,44 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	data_list = []
-	obj_idval = "SYOBJ_1177055_SYOBJ_1177055"
-	rec_id = "SYOBJ_1177055"
-	obj_id = "SYOBJ-1177055"
+	if str(TreeSuperParentParam)=="Z0009":
+		obj_idval = "SYOBJ_1177076_SYOBJ_1177076"
+		rec_id = "SYOBJ_1177076"
+		obj_id = "SYOBJ-1177076"
+		ObjectName = "SAQGPM"
+		key_column = "QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID"
+		Columns = [
+		"QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID",
+		"PM_ID",
+		"GREENBOOK",
+		"DEVICE_NODE",
+		"PROCESS_TYPE",
+		"GOT_CODE",
+		"PM_NAME",
+		"SSCM_PM_FREQUENCY",
+		"PM_FREQUENCY"
+	]
+	else:
+		key_column = "QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"
+		obj_idval = "SYOBJ_1177055_SYOBJ_1177055"
+		rec_id = "SYOBJ_1177055"
+		obj_id = "SYOBJ-1177055"
+		ObjectName = "SAQGPA"
+		Columns = [
+		"QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID",
+		"PM_ID",
+		"EQUIPMENT_DESCRIPTION",
+		"EQUIPMENT_ID",
+		"ASSEMBLY_ID",
+		"GREENBOOK",
+		"FABLOCATION_ID",
+		"DEVICE_NODE",
+		"PROCESS_TYPE",
+		"GOT_CODE",
+		"PM_NAME",
+		"SSCM_PM_FREQUENCY",
+		"PM_FREQUENCY"
+	]
 	objh_getid = Sql.GetFirst(
 		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
 	)
@@ -741,23 +776,8 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		+ str(table_id)
 		+ '"  data-pagination="false" data-sortable="true" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
 	)
-	Columns = [
-		"QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID",
-		"PM_ID",
-		"EQUIPMENT_DESCRIPTION",
-		"EQUIPMENT_ID",
-		"ASSEMBLY_ID",
-		"GREENBOOK",
-		"FABLOCATION_ID",
-		"DEVICE_NODE",
-		"PROCESS_TYPE",
-		"GOT_CODE",
-		"PM_NAME",
-		"SSCM_PM_FREQUENCY",
-		"PM_FREQUENCY"
-	]
 	Objd_Obj = Sql.GetList(
-		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = 'SAQGPA'"
+		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = '"+str(ObjectName)+"' "
 	)
 	attr_list = []
 	attrs_datatype_dict = {}
@@ -870,17 +890,43 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(TreeTopSuperParentParam)
 			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
 		)
+	elif ObjectName == "SAQGPM" and TreeSuperParentParam == "Z0009":
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,GREENBOOK,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from "+str(ObjectName)+" (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeSuperParentParam)
+			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)+") m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeSuperParentParam)
+			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
+		)
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
-		#Trace.Write("count---->" + str(QueryCount))
 	parent_obj = Sql.GetList(Qstr)
 	for par in parent_obj:
-		data_id = str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)        
+		data_id = eval("par."+str(key_column))
 		Action_str = (
 			'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
 			+ str(data_id)
 			+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
-			'<li><a class="dropdown-item" id="deletebtn" data-target="#cont_CommonModalDelete" data-toggle="modal" onclick="CommonDelete(this, \'SAQGPA#'+ data_id +'\', \'WARNING\')" href="#">DELETE</a></li>'
+			'<li><a class="dropdown-item" id="deletebtn" data-target="#cont_CommonModalDelete" data-toggle="modal" onclick="CommonDelete(this, \''+str(ObjectName)+'#'+ data_id +'\', \'WARNING\')" href="#">DELETE</a></li>'
 		)
 		if can_edit.upper() == "TRUE":
 			Action_str += (
@@ -894,14 +940,15 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		data_dict = {}
 		data_dict["ids"] = str(data_id)
 		data_dict["ACTIONS"] = str(Action_str)
-		data_dict["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
-			"SAQGPA", str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+		data_dict[key_column] = CPQID.KeyCPQId.GetCPQId(
+			ObjectName, data_id
 		)
-		data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
-		data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
-		data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
+		if str(ObjectName) == "SAQGPA":
+			data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
+			data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
+			data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
+			data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>")
 		data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
-		data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>")
 		data_dict["DEVICE_NODE"] = ('<abbr id ="" title="' + str(par.DEVICE_NODE) + '">' + str(par.DEVICE_NODE) + "</abbr>")
 		data_dict["PROCESS_TYPE"] = ('<abbr id ="" title="' + str(par.PROCESS_TYPE) + '">' + str(par.PROCESS_TYPE) + "</abbr>")
 		data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
@@ -912,7 +959,8 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		
 		data_list.append(data_dict)
 	
-	hyper_link = ["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"]
+	hyper_link = []
+	hyper_link.append(key_column)
 	table_header += "<tr>"
 	table_header += (
 		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
@@ -999,7 +1047,6 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 	if len(data_list) == 0:
 		NORECORDS = "NORECORDS"
 
-	ObjectName = "SAQGPA"
 	DropDownList = []
 	filter_level_list = []
 	filter_clas_name = ""
