@@ -1061,6 +1061,7 @@ class ViolationConditions:
            for saqite_item_obj in saqite_items_obj:
                lines.append(saqite_item_obj.LINE)
         if len(lines) != 0:
+            Trace.Write(" BD HEAD LINE = "+str(lines))
             if len(lines) == 1:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
                 #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
@@ -1168,6 +1169,7 @@ class ViolationConditions:
                lines.append(saqite_item_obj.LINE)
 
         if len(lines) != 0:
+            Trace.Write(" BD LINE = "+str(lines))
             if len(lines) == 1:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
                 #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
@@ -1264,6 +1266,7 @@ class ViolationConditions:
                lines.append(saqite_item_obj.LINE)
         
         if len(lines) != 0:
+            Trace.Write(" NSDR LINE = "+str(lines))
             if len(lines) == 1:
                 Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
                 #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
