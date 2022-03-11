@@ -982,53 +982,57 @@ class ViolationConditions:
         if "Z0091" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
             if where_str == "":
-                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NCNSMB_ENT = 'Some Exclusions' OR CNSMBL_ENT = 'Some Exclusions' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0091')"
+                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NCNSMB_ENT = 'Some Exclusions' OR CNSMBL_ENT = 'Some Exclusions' OR USRPRC > CELPRC OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' OR PROPRT_CLEAN_ENT = 'Shared') AND SERVICE_ID = 'Z0091')"
             else:
-                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NCNSMB_ENT = 'Some Exclusions' OR CNSMBL_ENT = 'Some Exclusions' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0091')"
+                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NCNSMB_ENT = 'Some Exclusions' OR CNSMBL_ENT = 'Some Exclusions' OR USRPRC > CELPRC OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' OR PROPRT_CLEAN_ENT = 'Shared') AND SERVICE_ID = 'Z0091')"
         if "Z0092" in service:
             BDHead.update({"Additional target KPI":"Excursion Detection","Additional target KPI":"Max wafer Output ≤ 4%","Additional target KPI":"Max Wafer Output >4%","Additional target KPI":"Throughput","Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Contract Coverage":"7x16","Contract Coverage":"7x24","Non-Consumable":"Some Exclusions","Quote Type":"Usage based"})
             if where_str == "":
-                where_str += " ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Usage based' OR CONCOV = '7x16' OR CONCOV = '7x24' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0092')"
+                where_str += " ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Usage based' OR CONCOV = '7x16' OR CONCOV = '7x24' OR USRPRC > CELPRC OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' ) AND SERVICE_ID = 'Z0092')"
             else:
-                where_str += " OR ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Usage based'  OR CONCOV = '7x16' OR CONCOV = '7x24' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0092')"
+                where_str += " OR ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Usage based'  OR CONCOV = '7x16' OR CONCOV = '7x24' OR USRPRC > CELPRC OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092')"
         if "Z0092W" in service:
             BDHead.update({"Additional target KPI":"Excursion Detection","Additional target KPI":"Max wafer Output ≤ 4%","Additional target KPI":"Max Wafer Output >4%","Additional target KPI":"Throughput","Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Contract Coverage":"7x16","Contract Coverage":"7x24"})
             if where_str == "":
-                where_str += " ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' OR CONCOV = '7x16' OR CONCOV = '7x24'  OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0092W')"
+                where_str += " ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' OR CONCOV = '7x16' OR CONCOV = '7x24'  OR USRPRC > CELPRC OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092W')"
             else:
-                where_str += " OR ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' OR CONCOV = '7x16' OR CONCOV = '7x24'  OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0092W')"
+                where_str += " OR ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Throughput' OR ATGKEY = 'Exception'  OR SPQTEV = 'Yes' OR CONCOV = '7x16' OR CONCOV = '7x24'  OR USRPRC > CELPRC OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092W')"
         if "Z0009" in service:
             BDHead.update({"PM Quantity Credit %":"0.3","Quote Type":"Event Based","Quote Type":"Flex Event Based","Additional Target KPI":"Mean TIme Between Clean","Additional Target KPI":"Green to Green","Contract Coverage":"7x16","Contract Coverage":"7x24","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Process Parts/Kits clean, recy":"Shared"})
             if where_str == "":
-                where_str += " ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Mean TIme Between Clean' OR  ATGKEY = 'Green to Green'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Event Based' OR QTETYP = 'Event Based' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR CONCOV = '7x16' OR CONCOV = '7x24' OR PM_QTY_CRD = '0.3' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0009')"
+                where_str += " ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Mean TIme Between Clean' OR  ATGKEY = 'Green to Green'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Event Based' OR QTETYP = 'Event Based' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR CONCOV = '7x16' OR CONCOV = '7x24' OR PM_QTY_CRD = '0.3' OR USRPRC > CELPRC   OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' OR PROPRT_CLEAN_ENT = 'Shared') AND SERVICE_ID = 'Z0009')"
             else:
-                where_str += " OR ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Mean TIme Between Clean' OR  ATGKEY = 'Green to Green'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Event Based' OR QTETYP = 'Event Based' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR CONCOV = '7x16' OR CONCOV = '7x24' OR PM_QTY_CRD = '0.3' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0009')"
+                where_str += " OR ((ATGKEY = 'Excursion Detection' OR ATGKEY = 'Max wafer Output ≤ 4%' OR ATGKEY = 'Max Wafer Output >4%'  OR  ATGKEY = 'Mean TIme Between Clean' OR  ATGKEY = 'Green to Green'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR QTETYP = 'Event Based' OR QTETYP = 'Event Based' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR CONCOV = '7x16' OR CONCOV = '7x24' OR PM_QTY_CRD = '0.3' OR USRPRC > CELPRC  OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' OR PROPRT_CLEAN_ENT = 'Shared') AND SERVICE_ID = 'Z0009')"
         if "Z0091W" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes"})
             if where_str == "":
-                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NWPTON = 'Yes' OR CNSMBL_ENT = 'Some Exclusions' OR  RPRCUS_OWNPRT = 'Yes' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0091W')"
+                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NWPTON = 'Yes' OR CNSMBL_ENT = 'Some Exclusions' OR  RPRCUS_OWNPRT = 'Yes' OR USRPRC > CELPRC OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' OR PROPRT_CLEAN_ENT = 'Shared') AND SERVICE_ID = 'Z0091W')"
             else:
-                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NWPTON = 'Yes' OR CNSMBL_ENT = 'Some Exclusions' OR  RPRCUS_OWNPRT = 'Yes' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0091W')"
+                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR NWPTON = 'Yes' OR CNSMBL_ENT = 'Some Exclusions' OR  RPRCUS_OWNPRT = 'Yes' OR USRPRC > CELPRC OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' OR PROPRT_CLEAN_ENT = 'Shared') AND SERVICE_ID = 'Z0091W')"
         if "Z0035" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","On Wafer Specs Input":"Manual Input(Free text)"})
             if where_str == "":
-                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR NCNSMB_ENT = 'Some Exclusions' OR WAF_SPEC_INP = 'Manual Input(Free text)' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0035')"
+                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR NCNSMB_ENT = 'Some Exclusions' OR WAF_SPEC_INP = 'Manual Input(Free text)' OR USRPRC > CELPRC OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' OR PROPRT_CLEAN_ENT = 'Shared') AND SERVICE_ID = 'Z0035')"
             else:
-                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR NCNSMB_ENT = 'Some Exclusions'  OR WAF_SPEC_INP = 'Manual Input(Free text)' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0035')"
+                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRMKPI_ENT LIKE '%Std Srvc + All%' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR NCNSMB_ENT = 'Some Exclusions'  OR WAF_SPEC_INP = 'Manual Input(Free text)' OR USRPRC > CELPRC OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' OR PROPRT_CLEAN_ENT = 'Shared') AND SERVICE_ID = 'Z0035')"
         if "Z0035W" in service:
             
             if where_str == "":
-                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR WARM_HOT_IDLE < '0.3' OR MAX_OF_TOOLS > '0.3' OR IDLE_DURATION < '28' OR IDLE_NOTICE < '30' OR MISC_TERM = 'Included' OR IDLING_EXCEP = 'Yes' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0035W')"
+                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR WARM_HOT_IDLE < '0.3' OR MAX_OF_TOOLS > '0.3' OR IDLE_DURATION < '28' OR IDLE_NOTICE < '30' OR MISC_TERM = 'Included' OR IDLING_EXCEP = 'Yes' OR USRPRC > CELPRC OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' OR PROPRT_CLEAN_ENT = 'Shared') AND SERVICE_ID = 'Z0035W')"
             else:
-                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR WARM_HOT_IDLE < '0.3' OR MAX_OF_TOOLS > '0.3' OR IDLE_DURATION < '28' OR IDLE_NOTICE < '30' OR MISC_TERM = 'Included' OR IDLING_EXCEP = 'Yes' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0035W')"
+                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR WETCLN_ENT = 'Shared' OR CNSMBL_ENT = 'Some Exclusions' OR WARM_HOT_IDLE < '0.3' OR MAX_OF_TOOLS > '0.3' OR IDLE_DURATION < '28' OR IDLE_NOTICE < '30' OR MISC_TERM = 'Included' OR IDLING_EXCEP = 'Yes' OR USRPRC > CELPRC OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes' OR PROPRT_CLEAN_ENT = 'Shared') AND SERVICE_ID = 'Z0035W')"
         if "Z0010" in service:
             BDHead.update({"Billing Type":"Fixed","Billing Cycle":"Quarterly","Billing Condition":"Shipment based","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
             if where_str == "":
-                where_str += " ((BILTYP = 'Fixed' OR BILLING_CYCLE = 'Quarterly' OR BILLING_CONDITION = 'Shipment based' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0010')"
+                where_str += " ((BILTYP = 'Fixed' OR BILLING_CYCLE = 'Quarterly' OR BILLING_CONDITION = 'Shipment based' OR USRPRC > CELPRC  OR SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes' ) AND SERVICE_ID = 'Z0010')"
             else:
-                where_str += " OR ((BILTYP = 'Fixed' OR BILLING_CYCLE = 'Quarterly' OR BILLING_CONDITION = 'Shipment based' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0010')"
+                where_str += " OR ((BILTYP = 'Fixed' OR BILLING_CYCLE = 'Quarterly' OR BILLING_CONDITION = 'Shipment based' OR USRPRC > CELPRC OR SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0010')"
         if "Z0128" in service:
             BDHead.update({"Billing Cycle":"Quarterly","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
+            if where_str == "":
+                where_str += " (( USRPRC > CELPRC  OR SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes' ) AND SERVICE_ID = 'Z0128')"
+            else:
+                where_str += " OR (( USRPRC > CELPRC OR SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0128')"
         if "Z0100" in service:
             BDHead.update({"Quote Type":"Usage based"})
             if where_str == "":
@@ -1038,15 +1042,15 @@ class ViolationConditions:
         if "Z0004W" in service:
             BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Consumable":"Some Exclusions"})
             if where_str == "":
-                where_str += " ((CNSMBL_ENT = 'Some Exclusions' OR SPQTEV = 'Yes' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0004W')"
+                where_str += " ((CNSMBL_ENT = 'Some Exclusions' OR SPQTEV = 'Yes' OR USRPRC > CELPRC OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004W')"
             else:
-                where_str += " OR ((CNSMBL_ENT = 'Some Exclusions'  OR SPQTEV = 'Yes' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0004W')"
+                where_str += " OR ((CNSMBL_ENT = 'Some Exclusions'  OR SPQTEV = 'Yes' OR USRPRC > CELPRC OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004W')"
         if "Z0004-Subfab" in service:
             BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Consumable":"Some Exclusions","Non-Consumable":"Some Exclusions"})
             if where_str == "":
-                where_str += " ((CNSMBL_ENT = 'Some Exclusions' OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0004-Subfab')"
+                where_str += " ((CNSMBL_ENT = 'Some Exclusions' OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR USRPRC > CELPRC OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
             else:
-                where_str += " OR ((CNSMBL_ENT = 'Some Exclusions'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR USRPRC > CELPRC) AND SERVICE_ID = 'Z0004-Subfab')"
+                where_str += " OR ((CNSMBL_ENT = 'Some Exclusions'  OR SPQTEV = 'Yes' OR NCNSMB_ENT = 'Some Exclusions' OR USRPRC > CELPRC OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
         
         lines = []
         annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
@@ -1143,12 +1147,16 @@ class ViolationConditions:
                 where_str += " OR ((NWPTON = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0007')"
         if "Z0004W" in service:
             BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded"})
+            if where_str == "":
+                where_str += " ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC ) OR PROPRT_CLEAN_ENT = 'Excluded' OR SWPKTA = 'Excluded') AND SERVICE_ID = 'Z0004W')"
+            else:
+                where_str += " OR ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC) OR PROPRT_CLEAN_ENT = 'Excluded' OR SWPKTA = 'Excluded') AND SERVICE_ID = 'Z0004W')"
         if "Z0004-Subfab" in service:
             BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded","Repair Cust Owned Parts":"Yes"})
             if where_str == "":
-                    where_str += " ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0004-Subfab')"
+                    where_str += " ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC) OR PROPRT_CLEAN_ENT = 'Excluded' OR SWPKTA = 'Excluded') AND SERVICE_ID = 'Z0004-Subfab')"
             else:
-                where_str += " OR ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0004-Subfab')"
+                where_str += " OR ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC) OR PROPRT_CLEAN_ENT = 'Excluded' OR SWPKTA = 'Excluded') AND SERVICE_ID = 'Z0004-Subfab')"
         lines = []
         annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
@@ -1181,30 +1189,39 @@ class ViolationConditions:
             #BDHead.update({"95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
             if "Z0091" in service:
                 if where_str == "":
-                    where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0091')"
+                    where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0091')"
                 else:
-                    where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0091')"
+                    where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0091')"
             else:
                 if where_str == "":
-                    where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0091W')"
+                    where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0091W')"
                 else:
-                    where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0091W')"
+                    where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0091W')"
 
         if "Z0092" in service or "Z0092W" in service:       
             #BDHead.update({"Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
             if "Z0092" in service:
                 if where_str == "":
-                    where_str += " ((ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0092')"
+                    where_str += " ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092')"
                 else:
-                    where_str += " OR ((ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0092')"
+                    where_str += " OR ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092')"
             else:
                 if where_str == "":
-                    where_str += " ((ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0092W')"
+                    where_str += " ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092W')"
                 else:
-                    where_str += " OR ((ATGKEY = 'Exception' OR SPQTEV = 'Yes') AND SERVICE_ID = 'Z0092W')"
+                    where_str += " OR ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092W')"
         if "Z0010" in service or "Z0128" in service:
             #BDHead.update({"Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
-            where_str += ""
+            if "Z0010" in service:
+                if where_str == "":
+                    where_str += " ((SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0010')"
+                else:
+                    where_str += " OR ((SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0010')"
+            else:
+                if where_str == "":
+                    where_str += " ((SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0128')"
+                else:
+                    where_str += " OR ((SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0128')"
         
         if "Z0110" in service:
             
@@ -1216,27 +1233,27 @@ class ViolationConditions:
         if "Z0009" in service:
             #BDHead.update({"Swap Kits (Applied provided)":"Excluded","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
             if where_str == "":
-                where_str += " ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0009')"
+                where_str += " ((SPQTEV = 'Yes' OR SWPKTA = 'Excluded'  OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0009')"
             else:
-                where_str += " OR ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0009')"
+                where_str += " OR ((SPQTEV = 'Yes' OR SWPKTA = 'Excluded'  OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0009')"
         if "Z0004W" in service:
             #BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
             if where_str == "":
-                where_str += " ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004W')"
+                where_str += " ((SPQTEV = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004W')"
             else:
-                where_str += " OR ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004W')"
+                where_str += " OR ((SPQTEV = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004W')"
         if "Z0004-Subfab" in service:
             #BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
             if where_str == "":
-                where_str += " ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
+                where_str += " ((SPQTEV = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
             else:
-                where_str += " OR ((SPQTEV = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
+                where_str += " OR ((SPQTEV = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
         
         if "Z0035W" in service:
             if where_str == "":
-                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR MAX_OF_TOOLS > '0.3' OR IDLING_EXCEP = 'Yes') AND SERVICE_ID = 'Z0035W')"
+                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR MAX_OF_TOOLS > '0.3' OR IDLING_EXCEP = 'Yes' OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0035W')"
             else:
-                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR MAX_OF_TOOLS > '0.3' OR IDLING_EXCEP = 'Yes') AND SERVICE_ID = 'Z0035W')"
+                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR MAX_OF_TOOLS > '0.3' OR IDLING_EXCEP = 'Yes' OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0035W')"
         lines = []
         annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
