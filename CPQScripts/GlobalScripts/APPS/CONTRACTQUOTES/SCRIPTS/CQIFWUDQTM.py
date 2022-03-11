@@ -282,7 +282,7 @@ def quote_items_pricing(Qt_id):
 	if update_revision_status:
 		rev_status ="CFG-ON HOLD - COSTING"
 	else:
-		rev_status ="PRICED"'''
+		rev_status ="PRR-PRICING"'''
 	
 	#,SAQTRV.REVISION_STATUS	= '"""+str(rev_status)+"""'
 	##updating saqtrv
