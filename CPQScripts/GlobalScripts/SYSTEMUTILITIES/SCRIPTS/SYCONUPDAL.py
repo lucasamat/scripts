@@ -578,4 +578,3 @@ if hasattr(Param, "keyData_val"):
 	# Changes for sales app primary banner load - End
 	ApiResponse = ApiResponseFactory.JsonResponse(configobj.ConfiguratorCall(keyData_val))
 
-
