@@ -7206,7 +7206,7 @@ def GetAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 
 
 def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
-    	TreeParam = Product.GetGlobal("TreeParam")
+	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
@@ -7570,6 +7570,107 @@ def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		Test,
 		Action_Str,
 	)
+
+
+def GetFtsAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID):
+	TreeParam = Product.GetGlobal("TreeParam")
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+	# FablocationId = Product.GetGlobal("TreeParam")
+	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+	ATTRIBUTE_VALUE_STR = ""
+	Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
+	for quer_key, quer_value in enumerate(Dict_formation):
+		x_picklistcheckobj = Sql.GetFirst(
+			"SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQGPA' AND API_NAME = '" + str(quer_value) + "'"
+		)
+		x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
+		if Dict_formation.get(quer_value) != "":
+			quer_values = str(Dict_formation.get(quer_value)).strip()
+			if str(quer_values).upper() == "TRUE":
+				quer_values = "TRUE"
+			elif str(quer_values).upper() == "FALSE":
+				quer_values = "FALSE"
+			if str(quer_values).find(",") == -1:
+				if x_picklistcheck == "TRUE":
+					ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
+				else:
+					ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
+			else:
+				quer_values = quer_values.split(",")
+				quer_values = tuple(list(quer_values))
+				ATTRIBUTE_VALUE_STR += str(quer_value) + " in " + str(quer_values) + " and "
+
+	data_list = []
+	rec_id = "SYOBJ-1177055"
+	obj_id = "SYOBJ-1177055"
+	objh_getid = Sql.GetFirst(
+		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
+	)
+	if objh_getid:
+		obj_id = objh_getid.RECORD_ID
+	objs_obj = Sql.GetFirst(
+		"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id) + "' "
+	)
+	can_edit = str(objs_obj.CAN_EDIT)
+	can_clone = str(objs_obj.CAN_ADD)
+	can_delete = str(objs_obj.CAN_DELETE)
+	if ATTRIBUTE_VALUE is None or ATTRIBUTE_VALUE == "" or ATTRIBUTE_VALUE_STR is None or ATTRIBUTE_VALUE_STR == "":
+		parent_obj = Sql.GetList(
+			"select QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeSuperParentParam}' and FABLOCATION_ID ='{TreeParentParam}'".format(
+				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, TreeParentParam=TreeParentParam,TreeSuperParentParam=TreeSuperParentParam
+			)
+		)
+	else:
+		parent_obj = Sql.GetList(
+			"select QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where  "
+			+ str(ATTRIBUTE_VALUE_STR)
+			+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{TreeSuperParentParam}' and FABLOCATION_ID ='{TreeParentParam}'".format(
+				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, TreeParentParam=TreeParentParam,TreeSuperParentParam=TreeSuperParentParam
+			)
+		)
+
+	for par in parent_obj:
+		data_dict = {}
+		data_id = str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+
+		Action_str = (
+			'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+			+ str(data_id)
+			+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+		)
+		if can_edit.upper() == "TRUE":
+			Action_str += (
+				'<li style="display:none" ><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Move_to_parent_obj_edit(this)">EDIT</a></li>'
+			)
+		if can_delete.upper() == "TRUE":
+			Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+		if can_clone.upper() == "TRUE":
+			Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+
+		Action_str += "</ul></div></div>"
+		data_dict = {}
+		data_dict["ids"] = str(data_id)
+		data_dict["ACTIONS"] = str(Action_str)
+		data_dict["INCLUDED"] = str(par.INCLUDED)
+		data_dict["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+			"SAQGPA", str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+		)
+		data_dict["EQUIPMENT_ID"] = str(par.EQUIPMENT_ID)
+		data_dict["ASSEMBLY_ID"] = str(par.ASSEMBLY_ID)
+		data_dict["ASSEMBLY_DESCRIPTION"] = str(par.ASSEMBLY_DESCRIPTION)
+		data_dict["EQUIPMENT_DESCRIPTION"] = str(par.EQUIPMENT_DESCRIPTION)
+		data_dict["GOT_CODE"] = str(par.GOT_CODE)
+		#data_dict["MODULE_ID"] = str(par.MODULE_ID)
+		#data_dict["MODULE_NAME"] = str(par.MODULE_NAME)
+		data_list.append(data_dict)
+
+	return data_list
+
 
 
 def GetAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID):
@@ -12188,6 +12289,9 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
 		Trace.Write("inside assembly child filter")
 		RECID = Param.RECID
 		ApiResponse = ApiResponseFactory.JsonResponse(GetAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID))
+	elif TABNAME == "Fts Assemblies Child":
+		RECID = Param.RECID
+		ApiResponse = ApiResponseFactory.JsonResponse(GetFtsAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID))
 	elif TABNAME == "Covered Object Parent":
 		Trace.Write("trace for tabname during search----" + str(TABNAME))
 		ApiResponse = ApiResponseFactory.JsonResponse(GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))
