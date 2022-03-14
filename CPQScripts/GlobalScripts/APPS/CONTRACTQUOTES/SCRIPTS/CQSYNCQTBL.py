@@ -272,8 +272,8 @@ class SyncQuoteAndCustomTables:
 							elif str(ent_disp_val) == 'Complementary':
 								val = "COMPLEMENTARY PRODUCTS"
 							Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(val),quote_record_id,OfferingRow_detail.SERVICE_ID,Quote.GetGlobal("quote_revision_record_id")))
-							Log.Info("ENTERED POA----------->"+str(val))
-							Log.Info("ENTERED POA--service--------->"+str(OfferingRow_detail.SERVICE_ID))
+							#Log.Info("ENTERED POA----------->"+str(val))
+							#Log.Info("ENTERED POA--service--------->"+str(OfferingRow_detail.SERVICE_ID))
 						#A055S000P01-7401 END                    
 						DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 						#Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
@@ -421,7 +421,7 @@ class SyncQuoteAndCustomTables:
 				#quote_contact_master_table_info = Sql.GetTable("SACONT")
 				#quote_fab_table_info = Sql.GetTable("SAQFBL")
 				custom_fields_detail = self._get_custom_fields_detail()
-				Log.Info("custom_fields_detail =====>>>>>> " + str(custom_fields_detail))              
+				#Log.Info("custom_fields_detail =====>>>>>> " + str(custom_fields_detail))              
 				start_date = self.get_formatted_date(
 					custom_fields_detail.get("QuoteStartDate").year,
 					custom_fields_detail.get("QuoteStartDate").month,
@@ -507,7 +507,7 @@ class SyncQuoteAndCustomTables:
 							# 	}
 							# )
 					# self.quote.OrderStatus.Name
-					Log.Info("expired"+str(start_date)+"sdate---"+str(end_date))
+					#Log.Info("expired"+str(start_date)+"sdate---"+str(end_date))
 					created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 					# Please set native custom field CTX tag days calculation also:
 					# Quote Expiration Date - https://sandbox.webcomcpq.com/admin/QuotePropertyEdit.aspx?Id=27
@@ -785,7 +785,7 @@ class SyncQuoteAndCustomTables:
 						##Commented the condition to update the pricing procedure for both spare and tool based quote
 						#if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
 						# Get Pricing Procedure
-						Log.Info( "SELECT DISTINCT SASAPP.PRICINGPROCEDURE_ID, SASAPP.PRICINGPROCEDURE_NAME, SASAPP.PRICINGPROCEDURE_RECORD_ID, SASAPP.DOCUMENT_PRICING_PROCEDURE,SASAPP.CUSTOMER_PRICING_PROCEDURE FROM SASAPP (NOLOCK) JOIN SASAAC (NOLOCK) ON SASAPP.SALESORG_ID = SASAAC.SALESORG_ID AND SASAPP.DIVISION_ID = SASAAC.DIVISION_ID AND SASAPP.DISTRIBUTIONCHANNEL_ID = SASAAC.DISTRIBUTIONCHANNEL_ID JOIN SAQTRV (NOLOCK) ON SAQTRV.DIVISION_ID = SASAPP.DIVISION_ID AND SAQTRV.DISTRIBUTIONCHANNEL_ID = SASAPP.DISTRIBUTIONCHANNEL_ID AND SAQTRV.SALESORG_ID = SASAPP.SALESORG_ID WHERE SASAPP.DOCUMENT_PRICING_PROCEDURE = 'A' AND SAQTRV.QUOTE_ID = '{}' AND SAQTRV.QTEREV_RECORD_ID = '{}'".format(quote_id,quote_revision_id) )
+						#Log.Info( "SELECT DISTINCT SASAPP.PRICINGPROCEDURE_ID, SASAPP.PRICINGPROCEDURE_NAME, SASAPP.PRICINGPROCEDURE_RECORD_ID, SASAPP.DOCUMENT_PRICING_PROCEDURE,SASAPP.CUSTOMER_PRICING_PROCEDURE FROM SASAPP (NOLOCK) JOIN SASAAC (NOLOCK) ON SASAPP.SALESORG_ID = SASAAC.SALESORG_ID AND SASAPP.DIVISION_ID = SASAAC.DIVISION_ID AND SASAPP.DISTRIBUTIONCHANNEL_ID = SASAAC.DISTRIBUTIONCHANNEL_ID JOIN SAQTRV (NOLOCK) ON SAQTRV.DIVISION_ID = SASAPP.DIVISION_ID AND SAQTRV.DISTRIBUTIONCHANNEL_ID = SASAPP.DISTRIBUTIONCHANNEL_ID AND SAQTRV.SALESORG_ID = SASAPP.SALESORG_ID WHERE SASAPP.DOCUMENT_PRICING_PROCEDURE = 'A' AND SAQTRV.QUOTE_ID = '{}' AND SAQTRV.QTEREV_RECORD_ID = '{}'".format(quote_id,quote_revision_id) )
 
 
 						GetPricingProcedure = Sql.GetFirst("SELECT DISTINCT SASAPP.PRICINGPROCEDURE_ID, SASAPP.PRICINGPROCEDURE_NAME, SASAPP.PRICINGPROCEDURE_RECORD_ID, SASAPP.DOCUMENT_PRICING_PROCEDURE,SASAPP.CUSTOMER_PRICING_PROCEDURE FROM SASAPP (NOLOCK) JOIN SASAAC (NOLOCK) ON SASAPP.SALESORG_ID = SASAAC.SALESORG_ID AND SASAPP.DIVISION_ID = SASAAC.DIVISION_ID AND SASAPP.DISTRIBUTIONCHANNEL_ID = SASAAC.DISTRIBUTIONCHANNEL_ID JOIN SAQTRV (NOLOCK) ON SAQTRV.DIVISION_ID = SASAPP.DIVISION_ID AND SAQTRV.DISTRIBUTIONCHANNEL_ID = SASAPP.DISTRIBUTIONCHANNEL_ID AND SAQTRV.SALESORG_ID = SASAPP.SALESORG_ID WHERE SASAPP.DOCUMENT_PRICING_PROCEDURE = 'A' AND SAQTRV.QUOTE_ID = '{}' AND SAQTRV.QTEREV_RECORD_ID = '{}'".format(quote_id,quote_revision_id))
@@ -798,14 +798,14 @@ class SyncQuoteAndCustomTables:
 						#Log.Info("FindProcedureID")
 						#Log.Info("valueeeeeeeeeee"+str(GetPricingProcedure.PRICINGPROCEDURE_ID)+"CustPricing"+str(CustPricing))
 						if GetPricingProcedure:
-							Log.Info("PRICING PROCEDURE VALUE"+str(GetPricingProcedure.PRICINGPROCEDURE_ID))
+							#Log.Info("PRICING PROCEDURE VALUE"+str(GetPricingProcedure.PRICINGPROCEDURE_ID))
 							# UpdateSAQTSO = """UPDATE SAQTSO SET SAQTSO.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTSO.PRICINGPROCEDURE_NAME = '{prcname}',SAQTSO.PRICINGPROCEDURE_RECORD_ID = '{prcrec}',SAQTSO.CUSTOMER_PRICING_PROCEDURE = '{customer_pricing_procedure}', SAQTSO.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTSO.QUOTE_ID = '{quote_id}' AND SAQTSO.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
 							# prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
 							# prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
 							# customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,					
 							# docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
 							# quote_id=quote_id,quote_revision_id=quote_revision_id)
-							Log.Info("""UPDATE SAQTRV SET SAQTRV.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTRV.PRICINGPROCEDURE_NAME = '{prcname}',SAQTRV.PRICINGPROCEDURE_RECORD_ID = '{prcrec}', SAQTRV.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTRV.QUOTE_ID = '{quote_id}' AND SAQTRV.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
+							#Log.Info("""UPDATE SAQTRV SET SAQTRV.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTRV.PRICINGPROCEDURE_NAME = '{prcname}',SAQTRV.PRICINGPROCEDURE_RECORD_ID = '{prcrec}', SAQTRV.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTRV.QUOTE_ID = '{quote_id}' AND SAQTRV.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
 							prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
 							prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
 							customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,					
@@ -1355,7 +1355,7 @@ class SyncQuoteAndCustomTables:
 												
 						
 					if GetPricingProcedure:
-						Log.Info("@1309")
+						#Log.Info("@1309")
 						UpdateSAQTRV = """UPDATE SAQTRV SET SAQTRV.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTRV.PRICINGPROCEDURE_NAME = '{prcname}',SAQTRV.PRICINGPROCEDURE_RECORD_ID = '{prcrec}', SAQTRV.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTRV.QUOTE_ID = '{quote_id}' AND SAQTRV.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
 							prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
 							prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
@@ -1477,7 +1477,7 @@ class SyncQuoteAndCustomTables:
 							employee = payload_json.get('SAEMPL')
 							quote_object = Sql.GetFirst("select QUOTE_ID from SAQDLT(NOLOCK) where QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
 							if not quote_object:
-								Log.Info("no new revision")
+								#Log.Info("no new revision")
 								if type(employee) is dict:
 									employee_obj = Sql.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
 									if employee_obj is None:
@@ -1559,9 +1559,9 @@ class SyncQuoteAndCustomTables:
 							employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = N'{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 							if payload_json.get('SAQICT'):
-								Log.Info("SAQICT is available")	
+								#Log.Info("SAQICT is available")	
 								if employee_obj is None:
-									Log.Info("Employee none")	
+									#Log.Info("Employee none")	
 									for employee in payload_json.get('SAQICT'):
 										country_obj = Sql.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
 										salesorg_obj = Sql.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
@@ -1589,14 +1589,14 @@ class SyncQuoteAndCustomTables:
 										tableInfo = Sql.GetTable("SAEMPL")
 										tablerow = employee_dict
 										tableInfo.AddRow(tablerow)
-										Log.Info("Employee insert")											
+										#Log.Info("Employee insert")											
 										Sql.Upsert(tableInfo)
 
 							employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = N'{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
 							if contact_master_table is None:	
-								Log.Info("Contact Master")								
+								#Log.Info("Contact Master")								
 								for employee in payload_json.get('SAQICT'):									
 									contact_master_table_update = {
 										"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1621,11 +1621,11 @@ class SyncQuoteAndCustomTables:
 										"FIRST_NAME": employee.get("FIRST_NAME"),
 										"LAST_NAME": employee.get("LAST_NAME"),
 									}
-									Log.Info("contact_master_table_update---"+str(contact_master_table_update))
+									#Log.Info("contact_master_table_update---"+str(contact_master_table_update))
 									tableInfo = Sql.GetTable("SACONT")
 									tablerow = contact_master_table_update
 									tableInfo.AddRow(tablerow)	
-									Log.Info("Contact Master Update")									
+									#Log.Info("Contact Master Update")									
 									Sql.Upsert(tableInfo)
 							else:
 								for employee in payload_json.get('SAQICT'):
@@ -1662,7 +1662,7 @@ class SyncQuoteAndCustomTables:
 									"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
 								}
 								quote_involved_party_contact_table_info.AddRow(contact_info_update)
-								Log.Info("SAQICT Insert")	
+								#.Info("SAQICT Insert")	
 								Sql.Upsert(quote_involved_party_contact_table_info)
 						
 						if contract_quote_obj and payload_json.get('TransactionType') and payload_json.get('OpportunityType'):
@@ -1675,7 +1675,7 @@ class SyncQuoteAndCustomTables:
 								Sql.RunQuery(Opportunity_obj)
 						#Log.Info("fab_location_ids ===> "+str(fab_location_ids))
 						#Log.Info("service_ids ===> "+str(service_ids)+"QUOTE ID----->"+str(contract_quote_data.get("QUOTE_ID")))	
-						Log.Info("CHECKING_TOOL_CONDTN_J "+str(contract_quote_obj)+" | "+str(payload_json.get('TransactionType'))+" | "+str(payload_json.get('OpportunityType')))
+						#Log.Info("CHECKING_TOOL_CONDTN_J "+str(contract_quote_obj)+" | "+str(payload_json.get('TransactionType'))+" | "+str(payload_json.get('OpportunityType')))
 
 						if  str(payload_json.get('TransactionType')) == 'Z19':
 							# Log.Info("CHKNG_J "+str(billtocustomer_quote_data))
@@ -1966,7 +1966,7 @@ class SyncQuoteAndCustomTables:
 
 							if equipment_data:
 								get_sales_org_data = Sql.GetFirst("Select SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID ='{quote_revision_id}'".format(QuoteRecordId =quote_record_id,quote_revision_id=quote_revision_id))
-								Log.Info(""""EQUIPMENTS INSERT"""+str(equipment_data))
+								#Log.Info(""""EQUIPMENTS INSERT"""+str(equipment_data))
 								for fab_location_id, value in equipment_data.items():			
 									#Log.Info("fab_location_id"+str(fab_location_id))
 									#Log.Info("value--"+str(value))
