@@ -2381,7 +2381,6 @@ def POPUPLISTVALUEADDNEW(
 			new_value_dict = {}
 			ObjectName = "PRLPBE"
 			table_id = "nso_addnew"            
-
 			Header_details = {
 				"PRICEBOOK_ENTRIES_RECORD_ID": "KEY",
 				"GREENBOOK": "GREENBOOK",
