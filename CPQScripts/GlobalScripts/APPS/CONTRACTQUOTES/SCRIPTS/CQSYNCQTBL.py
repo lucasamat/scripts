@@ -4,7 +4,7 @@
 #   __primary_author__ : AYYAPPAN SUBRAMANIYAN
 #   __create_date :01-10-2020 
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
-# ==========================================================================================================================================
+# =========================================================================================================================================
 import Webcom.Configurator.Scripting.Test.TestProduct
 import datetime
 import time
@@ -2041,36 +2041,36 @@ class SyncQuoteAndCustomTables:
 									for service_id, value in covered_object_data.items():
 										#Trace.Write("service_id"+str(service_id))
 										#Trace.Write("value"+str(value))
-										Log.Info("_totalequip"+str(len(value)))
 										if len(value) >= 1000:
-											Log.Info("value_equipmentsinsidif"+str(len(value)))
+											Trace.Write("===========>>> "+str(len(value)))
 											previous_index = 0
-											for index in range(0, len(value), 700):
-												records = ','.join(value[previous_index:index])
-												Log.Info("records"+str(records))
-												previous_index = index
-												if records:
-													quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-													quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_id,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-													quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
-													#Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
-													service_id = service_id
-													service_type = quote_service_obj.SERVICE_TYPE
-													quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
-													Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
-													ScriptExecutor.ExecuteGlobal(
-																			"CQCRUDOPTN",
-																		{
-																			"NodeType"   : "COVERED OBJ MODEL",
-																			"ActionType" : "ADD_COVERED_OBJ",
-																			"Opertion"    : "ADD",
-																			"AllValues"  : False,
-																			"TriggerFrom"   : "python_script",
-																			"Values"	  : quote_fab_equipments_record_id,
-																			"ServiceId"  : service_id,
-																			"ServiceType" : service_type,
-																		},
-																	)
+											count=0
+											while count<=len(value):
+												records = value[previous_index:count+1000]
+												previous_index = count+1000
+												Trace.Write("records"+str(records))
+												count = count + 1000
+												quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+												quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_id,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+												quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
+												#Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
+												service_id = service_id
+												service_type = quote_service_obj.SERVICE_TYPE
+												quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+												Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
+												ScriptExecutor.ExecuteGlobal(
+																		"CQCRUDOPTN",
+																	{
+																		"NodeType"   : "COVERED OBJ MODEL",
+																		"ActionType" : "ADD_COVERED_OBJ",
+																		"Opertion"    : "ADD",
+																		"AllValues"  : False,
+																		"TriggerFrom"   : "python_script",
+																		"Values"	  : quote_fab_equipments_record_id,
+																		"ServiceId"  : service_id,
+																		"ServiceType" : service_type,
+																	},
+																)
 										else:
 											Log.Info("value_equipmentsinsideelse"+str(len(value)))
 											elements = (','.join(value))
