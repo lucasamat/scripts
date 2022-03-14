@@ -303,6 +303,16 @@ def quote_items_pricing(Qt_id):
 									SUM(ISNULL(SAQRIS.TOTAL_AMOUNT_INGL_CURR, 0)) as TOTAL_AMOUNT_INGL_CURR
 									FROM SAQRIS (NOLOCK) WHERE SAQRIS.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIS.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID !='Z0117' GROUP BY SAQRIS.QTEREV_RECORD_ID, SAQRIS.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
 						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id ) )
+	Sql.RunQuery("""UPDATE SAQTRV
+						SET 
+						SAQTRV.CNTMRG_INGL_CURR = IQ. CNTMRG_INGL_CURR,						
+						SAQTRV.TOTAL_MARGIN_PERCENT = IQ. TOTAL_MARGIN_PERCENT
+						FROM SAQTRV (NOLOCK)
+						INNER JOIN (SELECT SAQICO.QUOTE_RECORD_ID, SAQICO.QTEREV_RECORD_ID,
+									SUM(ISNULL(SAQICO.TNTVGC, 0)) - SUM(ISNULL(SAQICO.CNTCST, 0)) as CNTMRG_INGL_CURR,
+									(SUM(ISNULL(SAQICO.CNTMGN, 0)) / SUM(ISNULL(SAQICO.TNTVGC, 0))) /100 as TOTAL_MARGIN_PERCENT
+									FROM SAQICO (NOLOCK) WHERE SAQICO.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQICO.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SERVICE_ID !='Z0117' GROUP BY SAQICO.QTEREV_RECORD_ID, SAQICO.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
+						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id ) )
 
 	#updating value to quote summary ends
 	if manual_pricing != 'True':
