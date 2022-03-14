@@ -2968,7 +2968,7 @@ def Related_Sub_Banner(
                     '<button class="btnconfig cust_def_btn submitbutton" data-target="#SUBMIT_MODAL_SECTION" data-toggle="modal" id="submit_for_approval" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
                     )
         #AO55S000P01-17018 Starts
-        if str(quote_status.REVISION_STATUS) == "APPROVAL PENDING" and Submit_approval == "True":
+        if str(quote_status.REVISION_STATUS) == 'APPROVAL PENDING' and Submit_approval == "True":
             sec_rel_sub_bnr += (
                 '<button class="btnconfig cust_def_btn submitbutton" data-target="#SUBMIT_MODAL_SECTION" data-toggle="modal" id="submit_for_approval" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
                 )
