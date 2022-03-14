@@ -2958,7 +2958,7 @@ def Related_Sub_Banner(
         Trace.Write("Submit_approval"+str(Submit_approval))
         # Trace.Write("Quote_item_obj"+str(Quote_item_obj))
         
-        if get_quote_status and (str(quote_status.REVISION_STATUS) == 'CPG-CONFIGURATION' or str(quote_status.REVISION_STATUS) == 'NEW REVISION' or str(quote_status.REVISION_STATUS) == 'APR-RECALLED' or str(quote_status.REVISION_STATUS) == 'APPROVAL PENDING' or str(quote_status.REVISION_STATUS) == 'CFG-ACQUIRING') and Submit_approval == "True":
+        if get_quote_status and (str(quote_status.REVISION_STATUS) == 'CPG-CONFIGURATION' or str(quote_status.REVISION_STATUS) == 'NEW REVISION' or str(quote_status.REVISION_STATUS) == 'APR-RECALLED'  or str(quote_status.REVISION_STATUS) == 'CFG-ACQUIRING') and Submit_approval == "True":
             Trace.Write("submit for approval")
             GetSelfAppr = Sql.GetFirst("SELECT CpqTableEntryId FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{}' AND APRCHN_ID = 'SELFAPPR'".format(quote_status.QUOTE_ID))
             if GetSelfAppr is not None:
@@ -2967,6 +2967,12 @@ def Related_Sub_Banner(
                 sec_rel_sub_bnr += (
                     '<button class="btnconfig cust_def_btn submitbutton" data-target="#SUBMIT_MODAL_SECTION" data-toggle="modal" id="submit_for_approval" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
                     )
+        #AO55S000P01-17018 Starts
+        if str(quote_status.REVISION_STATUS) == "APPROVAL PENDING" and Submit_approval == "True":
+            sec_rel_sub_bnr += (
+                '<button class="btnconfig cust_def_btn submitbutton" data-target="#SUBMIT_MODAL_SECTION" data-toggle="modal" id="submit_for_approval" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
+                )
+        #AO55S000P01-17018 ends
         # else:
         # 	Trace.Write("elseeee")
     elif TreeParam == "Quote Documents":
