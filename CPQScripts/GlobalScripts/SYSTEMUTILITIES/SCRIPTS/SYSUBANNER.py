@@ -1416,7 +1416,7 @@ def Related_Sub_Banner(
                         if type_id and type_value:
                             SeventhLable = "Quote Type"
                             SeventhValue = type_value
-                    
+                            break
                     Trace.Write('*subb--')					
                     TreeParam = Quote.GetGlobal("TreeParam")
                     TreeParentParam = Quote.GetGlobal("TreeParentLevel0")
