@@ -7204,6 +7204,374 @@ def GetAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	)
 
 
+
+def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
+    	TreeParam = Product.GetGlobal("TreeParam")
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+	
+	if str(PerPage) == "" and str(PageInform) == "":
+		Page_start = 1
+		Page_End = 10
+		PerPage = 10
+		PageInform = "1___10___10"
+	else:
+		Page_start = int(PageInform.split("___")[0])
+		Page_End = int(PageInform.split("___")[1])
+		PerPage = PerPage
+	chld_list = []
+	Parent_Equipmentid = ""
+	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+	obj_idval = "SYOBJ-1177055_SYOBJ-1177055"
+	obj_id1 = "SYOBJ-1177055"
+	objh_getid = Sql.GetFirst(
+		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id1) + "'"
+	)
+	if objh_getid:
+		obj_id1 = objh_getid.RECORD_ID
+	objs_obj1 = Sql.GetFirst(
+		"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id1) + "' "
+	)
+	can_edit1 = str(objs_obj1.CAN_EDIT)
+	can_add1 = str(objs_obj1.CAN_ADD)
+	can_delete1 = str(objs_obj1.CAN_DELETE)
+	table_id = "covered_obj_child_" +str(recid)
+	table_header = (
+		'<table id="'
+		+ str(table_id)
+		+ '" data-pagination="false" data-sortable="true" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
+	)
+	Columns = ["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID","ASSEMBLY_ID", "ASSEMBLY_DESCRIPTION", "EQUIPMENT_DESCRIPTION", "GOT_CODE"]
+	Objd_Obj = Sql.GetList(
+		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = 'SAQGPA'"
+	)
+	attr_list = []
+	attrs_datatype_dict = {}
+	lookup_disply_list = []
+	lookup_str = ""
+	if Objd_Obj is not None:
+		attr_list = {}
+		for attr in Objd_Obj:
+			attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
+			attrs_datatype_dict[str(attr.API_NAME)] = str(attr.DATA_TYPE)
+			if attr.LOOKUP_API_NAME != "" and attr.LOOKUP_API_NAME is not None:
+				lookup_disply_list.append(str(attr.API_NAME))
+		checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX"]
+		lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+	lookup_str = ",".join(list(lookup_disply_list))
+	Parent_Equipmentid = Sql.GetFirst(
+		"""select EQUIPMENT_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{CurrRecId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'
+		""".format(
+			ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), CurrRecId=CURR_REC_ID
+		)
+	)
+	if Parent_Equipmentid:
+		EquipmentID = Parent_Equipmentid.EQUIPMENT_ID
+		if TreeSuperParentParam == 'Product Offerings':
+			child_obj_recid = Sql.GetList(
+				"select top 10 QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeParam}' and FABLOCATION_ID = '{TreeParentParam}'".format(
+					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),Parent_Equipmentid=recid, TreeParam=TreeParam,TreeParentParam = TreeParentParam
+				)
+			)
+
+			QueryCountObj = Sql.GetFirst(
+				"select count(QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID) as cnt from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' and EQUIPMENT_ID ='"
+				+ str(recid)
+				+ "'and SERVICE_ID ='"
+				+ str(TreeParam)
+				+ "'"
+			)    
+		if QueryCountObj is not None:
+			QueryCount = QueryCountObj.cnt
+		# Data construction for table.
+		for child in child_obj_recid:
+			
+			data_id = str(child.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+			chld_dict = {}
+			Action_str1 = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a  data-toggle="modal" data-target="#cont_viewModalSection" id="'
+				+ str(data_id)
+				+ '" class="" href="#"  onclick="cont_relatedlist_openview(this) ">VIEW</a></li>'
+			)
+			if can_edit1.upper() == "TRUE":
+				Action_str1 += (
+					'<li style="display:none" ><a data-toggle="modal" data-target="#cont_viewModalSection" id="'
+					+ str(data_id)
+					+ '"  class="dropdown-item cur_sty" href="#"  onclick="cont_relatedlist_openedit(this)">EDIT</a></li>'
+				)
+			if can_delete1.upper() == "TRUE":
+				Action_str1 += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+			if can_add1.upper() == "TRUE":
+				Action_str1 += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+			Action_str1 += "</ul></div></div>"
+
+			# data formation in Dictonary format.
+			chld_dict["ids"] = str(data_id)
+			chld_dict["ACTIONS"] = str(Action_str1)
+			chld_dict["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+				"SAQGPA", str(child.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+			)
+			chld_dict["EQUIPMENT_ID"] = str(child.EQUIPMENT_ID)
+			chld_dict["ASSEMBLY_ID"] = str(child.ASSEMBLY_ID)
+			chld_dict["ASSEMBLY_DESCRIPTION"] = str(child.ASSEMBLY_DESCRIPTION)
+			chld_dict["EQUIPMENT_DESCRIPTION"] = str(child.EQUIPMENT_DESCRIPTION)
+			chld_dict["GOT_CODE"] = str(child.GOT_CODE)
+			#chld_dict["MODULE_ID"] = str(child.MODULE_ID)
+			#chld_dict["MODULE_NAME"] = str(child.MODULE_NAME)
+			chld_list.append(chld_dict)
+
+	# Table formation.
+	hyper_link = ["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"]    
+	table_header += "<tr>"
+	table_header += (
+		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
+		+ str(table_id)
+		+ '">Search</button></th>'
+	)
+	table_header += '<th data-field="SELECT" class="wid45" data-checkbox="true"></th>'
+	for key, invs in enumerate(list(Columns)):
+		invs = str(invs).strip()
+		qstring = attr_list.get(str(invs)) or ""
+		if qstring == "":
+			qstring = invs.replace("_", " ")
+		if checkbox_list is not None and invs in checkbox_list:
+			table_header += (
+				'<th data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-align="center" data-formatter="CheckboxFieldRelatedList" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+		elif hyper_link is not None and invs in hyper_link:
+			table_header += (
+				'<th data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-align="left" data-formatter="coveredobjectchildHyperLink" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+		else:
+			table_header += (
+				'<th data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+	table_header += "</tr>"
+	table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
+	table_ids = "#" + str(table_id)
+	filter_control_function = ""
+	values_list = ""
+	for key, invs in enumerate(list(Columns)):
+		table_ids = "#" + str(table_id)
+		filter_clas = "#" + str(table_id) + " .bootstrap-table-filter-control-" + str(invs)
+		values_list += "var " + str(invs) + ' = $("' + str(filter_clas) + '").val(); '
+		values_list += "ATTRIBUTE_VALUEList.push(" + str(invs) + "); "
+	filter_class = "#Act_" + str(table_id)
+	filter_control_function += (
+		'$("'
+		+ filter_class
+		+ '").click( function(){ var table_id = $(this).closest("table").attr("id"); ATTRIBUTE_VALUEList = []; '
+		+ str(values_list)
+		+ ' var attribute_value = $(this).val(); cpq.server.executeScript("CQNESTGRID", {"TABNAME":"Assemblies Child", "ACTION":"PRODUCT_ONLOAD_FILTER", "ATTRIBUTE_NAME": '
+		+ str(list(Columns))
+		+ ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList, "RECID":"'
+		+ str(recid)
+		+ '" }, function(data) { $("'
+		+ str(table_ids)
+		+ '").bootstrapTable("load", data ); }); filter_search_click();$(".JColResizer").mousedown(function(){ $("thead.fullHeadFirst").css("cssText","z-index: 2;border-top: 1px solid rgb(220, 220, 220);top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","none"); });$(".JColResizer").mouseup(function(){ var th_width_resize = [];$("#table_fts_assemblies_child thead.fullHeadFirst tr th").each(function(index){var wid = $(this).css("width"); if(index ==0 || index ==1){th_width_resize.push("60px");}else{th_width_resize.push(wid);}}); $("thead.fullHeadFirst").css("cssText","position: fixed;z-index: 2;border-top: 1px solid rgb(220, 220, 220); top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","table-header-group");$("#table_fts_assemblies_child thead.fullHeadFirst tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);});$("#table_fts_assemblies_child thead.fullHeadSecond tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);}); });});'
+	)
+	dbl_clk_function = (
+		'$("'
+		+ str(table_ids)
+		+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+		+ str(table_ids)
+		+ '\ th.bs-checkbox div.th-inner").before("<div style=\'padding:0; border-bottom: 1px solid #dcdcdc;\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom");$(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
+		)
+
+	NORECORDS = ""
+	if len(chld_list) == 0:
+		NORECORDS = "NORECORDS"
+
+	ObjectName = "SAQGPA"
+	DropDownList = []
+	filter_level_list = []
+	filter_clas_name = ""
+	cv_list = []
+	TableclassName = "form-control" + table_id
+	for key, col_name in enumerate(list(Columns)):
+		StringValue_list = []
+		objss_obj = Sql.GetFirst(
+			"SELECT API_NAME, DATA_TYPE, FORMULA_LOGIC FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
+			+ str(ObjectName)
+			+ "' and API_NAME = '"
+			+ str(col_name)
+			+ "'"
+		)
+		try:
+			FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
+			FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
+			FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
+			ins_obj = Sql.GetFirst(
+				"SELECT API_NAME, DATA_TYPE,PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
+				+ str(FORMULA_table)
+				+ "' and API_NAME = '"
+				+ str(FORMULA_col)
+				+ "'"
+			)
+			if str(objss_obj.PICKLIST).upper() == "TRUE":
+				filter_level_data = "select"
+				filter_clas_name = (
+					'<div id = "'
+					+ str(table_id)
+					+ "_RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ '" class="form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ " RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ ' "></div>'
+				)
+				filter_level_list.append(filter_level_data)
+			else:
+				filter_level_data = "input"
+				filter_clas_name = (
+					'<input type="text" class="width100_vis form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ '">'
+				)
+				filter_level_list.append(filter_level_data)
+		except:
+			"""if str(objss_obj.PICKLIST).upper() == "TRUE":
+				filter_level_data = "select"
+				filter_clas_name = (
+					'<div id = "'
+					+ str(table_id)
+					+ "_RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ '" class="form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ " RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ ' "></div>'
+				)
+				filter_level_list.append(filter_level_data)"""
+
+			filter_level_data = "input"
+			filter_clas_name = (
+				'<input type="text" class="width100_vis form-control bootstrap-table-filter-control-' + str(col_name) + '">'
+			)
+			filter_level_list.append(filter_level_data)
+		cv_list.append(filter_clas_name)
+		if filter_level_data == "select":
+			try:
+				xcd = Sql.GetFirst(
+					"SELECT (STUFF((SELECT DISTINCT ', ' + CAST("
+					+ str(col_name)
+					+ " AS CHAR(100)) FROM "
+					+ str(ObjectName)
+					+ " (NOLOCK) where QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID = '"
+					+ str(recid)
+					+ "' FOR XML PATH('') ), 1, 2, '')  ) AS StringValue"
+				)
+			except:
+				xcd = Sql.GetFirst(
+					"SELECT (STUFF((SELECT DISTINCT ', ' + CAST("
+					+ str(col_name)
+					+ " AS CHAR(100)) FROM "
+					+ str(ObjectName)
+					+ " (NOLOCK) FOR XML PATH('') ), 1, 2, '')  ) AS StringValue"
+				)
+			if str(xcd.StringValue) is not None and str(xcd.StringValue) != "":
+				if str(xcd.StringValue).find(",") != -1:
+					StringValue_list = [ins.strip() for ins in str(xcd.StringValue).split(",") if ins.strip() != ""]
+				else:
+					StringValue_list.append(str(xcd.StringValue))
+			else:
+				StringValue_list = [""]
+			StringValue_list = list(set(StringValue_list))
+			DropDownList.append(StringValue_list)
+		elif filter_level_data == "checkbox":
+			DropDownList.append(["True", "False"])
+		else:
+			DropDownList.append("")
+	RelatedDrop_str = (
+		"try { if( document.getElementById('"
+		+ str(table_id)
+		+ "') ) { var listws = document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control')[i].innerHTML = datachld6[i];  } for (j = 0; j < listws.length; j++) { if (datachld7[j] == 'select') { if (data8[j]) { var dataAdapter = new $.jqx.dataAdapter(datachld8[j]); $('#"
+		+ str(table_id)
+		+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, autoDropDownHeight: true }); } } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control')[i].innerHTML = datachld6[i];  } for (j = 0; j < listws.length; j++) { if (datachld7[j] == 'select') { if (data8[j]) { var dataAdapter = new $.jqx.dataAdapter(datachld8[j]); $('#"
+		+ str(table_id)
+		+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, autoDropDownHeight: true }); } } } }, 5000); } try { setTimeout(function(){ $('#"
+		+ str(table_id)
+		+ "').colResizable({ resizeMode:'overflow'}); }, 3000); } catch(err){}"
+	)
+	page = ""
+	if QueryCount < int(PerPage):
+		page = str(Page_start) + " - " + str(QueryCount)
+	else:
+		page = str(Page_start) + " - " + str(Page_End)
+	Test = (
+		'<div class="col-md-12 brdr listContStyle pad2height30" ><div class="col-md-4 pager-numberofitem clear-padding"><span class="pager-number-of-items-item noofitem" id="'
+		+ str(table_id)
+		+ '___NumberofItem" >'
+		+ str(page)
+		+ ' of </span><span class="pager-number-of-items-item fltltpad2mrg0" id="'
+		+ str(table_id)
+		+ '___totalItemCount" >'
+		+ str(QueryCount)
+		+ '</span><div class="clear-padding fltltmrgtp3" ><div  class="pull-right vertmidtxtrht"><select onchange="PageFunctestChild(this,\'Quotes\')" id="'+str(table_id)+'___PageCountValue"  class="form-control wid65vermiddisinbmarl5"><option value="10" selected>10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option><option value="200">200</option></select> </div></div></div><div class="col-xs-8 col-md-4  clear-padding disinpad10txtcen"  data-bind="visible: totalItemCount"><div class="clear-padding col-xs-12 col-sm-6 col-md-12 bor0" ><ul class="pagination pagination"><li class="disabled"><a href="#" onclick="FirstPageLoad_paginationChild(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')"><i class="fa fa-caret-left font14whtbld" ></i><i class="fa fa-caret-left font14" ></i></a></li><li class="disabled"><a href="#" onclick="Previous12334Child(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')"><i class="fa fa-caret-left font14" ></i>PREVIOUS</a></li><li class="disabled"><a href="#" class="disabledPage" onclick="Next12334Child(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')">NEXT<i class="fa fa-caret-right font14" ></i></a></li><li class="disabled"><a href="#" onclick="LastPageLoad_paginationChild(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')" class="disabledPage"><i class="fa fa-caret-right font14"></i><i class="fa fa-caret-right font14whtbld"></i></a></li></ul></div> </div> <div class="col-md-4 pr_page_pad"> <span id="'+str(table_id)+'___page_count" class="currentPage page_right_content">1</span><span class="page_right_content pad_rt_2">Page </span></div></div>'
+	)
+	Action_Str = ""
+	Action_Str = "1 - "
+	Action_Str += str(PerPage)
+	Action_Str += " of"
+
+	return (
+		table_header,
+		chld_list,
+		table_id,
+		filter_control_function,
+		NORECORDS,
+		dbl_clk_function,
+		cv_list,
+		filter_level_list,
+		DropDownList,
+		RelatedDrop_str,
+		Test,
+		Action_Str,
+	)
+
+
 def GetAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID):
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -11886,6 +12254,10 @@ elif ACTION == "CHILDLOAD":
 	elif TABNAME == "Assemblies Child":
 		ApiResponse = ApiResponseFactory.JsonResponse(
 			GetAssembliesChild(ATTRIBUTE_NAME, PerPage, PageInform, A_Keys, A_Values)
+		)
+	elif TABNAME == "Fts Assemblies Child":
+		ApiResponse = ApiResponseFactory.JsonResponse(
+		GetFtsAssembliesChild(ATTRIBUTE_NAME, PerPage, PageInform, A_Keys, A_Values)
 		)
 	elif TABNAME == "Preventive Maintainence child":
 		ApiResponse = ApiResponseFactory.JsonResponse(
