@@ -343,6 +343,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 	elif str(get_billing_type).upper() == "MILESTONE" and service_id != 'Z0007':
+
+		
 		Trace.Write(str(service_id)+'------billing_type_value-----'+str(get_ent_billing_type_value))
 		Sql.RunQuery(""" INSERT SAQIBP (
 
@@ -446,6 +448,36 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 	elif str(get_billing_type).upper() == "MILESTONE" and service_id == 'Z0007':
 		Trace.Write(str(service_id)+'------billing_type_value-----'+str(get_ent_billing_type_value))
+
+		get_milestones_data_dict = {}
+		get_total_milestons= ''
+		Sql = SQL()
+		get_service_val = service_id
+		quote_revision_rec_id= Quote.GetGlobal("contract_quote_record_id")
+		contract_quote_rec_id = Quote.GetGlobal("quote_revision_record_id")
+		get_milestone_details = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE where QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'  and SERVICE_ID = '{get_service}'".format(QuoteRecordId=contract_quote_rec_iRevisionRecordId=quote_revision_rec_idget_service = str(service_id).strip()))
+		if get_milestone_details:
+			updateentXML = get_milestone_details.ENTITLEMENT_XML
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_Z0007_PQB_MILEST|AGS_'+str(get_service_val)+'_PQB_MILST1|AGS_'+str(get_service_val)+'_PQB_MILST2|AGS_'+str(get_service_val)+'_PQB_MILST3|AGS_'+str(get_service_val)+'_PQB_MIL3DS|AGS_'+str(get_service_val)+'_PQB_MIL1DS|AGS_'+str(get_service_val)+'_PQB_MIL2DS|AGS_'+str(get_service_val)+'_PQB_MIL3BD|AGS_'+str(get_service_val)+'_PQB_MIL2BD|AGS_'+str(get_service_val)+'_PQB_MIL1BD)</ENTITLEMENT_ID>')
+			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			for m in re.finditer(pattern_tag, updateentXML):
+				sub_string = m.group(1)
+				get_ent_id = re.findall(pattern_id,sub_string)
+				get_ent_val= re.findall(pattern_name,sub_string)
+				if get_ent_id:
+					get_ent_val = str(get_ent_val[0])
+					get_milestones_data_dict[get_ent_id[0]] = str(get_ent_val)
+					
+		for data,val in get_milestones_data_dict.items():
+			if 'AGS_Z0007_PQB_MILST1' in data:
+				get_total_milestons += val
+			elif 'AGS_Z0007_PQB_MILST2' in data:
+				get_total_milestons += val
+			elif 'AGS_Z0007_PQB_MILST3' in data:
+				get_total_milestons += val
+		amount_column =amount_column*get_total_milestons/100
+		Trace.Write('amount_column--'+str(amount_column))
 		Sql.RunQuery(""" INSERT SAQIBP (
 
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
