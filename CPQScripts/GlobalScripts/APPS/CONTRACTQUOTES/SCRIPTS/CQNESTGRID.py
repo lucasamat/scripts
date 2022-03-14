@@ -7619,16 +7619,16 @@ def GetFtsAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID):
 	can_delete = str(objs_obj.CAN_DELETE)
 	if ATTRIBUTE_VALUE is None or ATTRIBUTE_VALUE == "" or ATTRIBUTE_VALUE_STR is None or ATTRIBUTE_VALUE_STR == "":
 		parent_obj = Sql.GetList(
-			"select QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeSuperParentParam}' and FABLOCATION_ID ='{TreeParentParam}'".format(
-				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, TreeParentParam=TreeParentParam,TreeSuperParentParam=TreeSuperParentParam
+			"select QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeParam}'".format(
+				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, TreeParam=TreeParam
 			)
 		)
 	else:
 		parent_obj = Sql.GetList(
 			"select QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where  "
 			+ str(ATTRIBUTE_VALUE_STR)
-			+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{TreeSuperParentParam}' and FABLOCATION_ID ='{TreeParentParam}'".format(
-				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, TreeParentParam=TreeParentParam,TreeSuperParentParam=TreeSuperParentParam
+			+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{TreeSuperParentParam}' ".format(
+				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, TreeParam=TreeParam
 			)
 		)
 
