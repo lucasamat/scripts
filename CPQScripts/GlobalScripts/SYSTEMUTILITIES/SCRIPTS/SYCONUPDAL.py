@@ -559,7 +559,7 @@ class ConfigUpdateScript:
 		Trace.Write('At line 476')
 		# This function call only add recall button if Quote Owner & User are same.
 		recall_button_flag = self.recall_button_validate()
-  
+
 		return BannerContent, EditLockIcon, CpqIdConvertion, RequiredFieldSymbol, CurrencySymbol,restrict_section_edit, recall_button_flag
 
 configobj = ConfigUpdateScript()
