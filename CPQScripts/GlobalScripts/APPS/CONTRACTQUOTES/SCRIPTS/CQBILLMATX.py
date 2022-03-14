@@ -451,11 +451,10 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 
 		get_milestones_data_dict = {}
 		get_total_milestons= ''
-		Sql = SQL()
+		
 		get_service_val = service_id
-		quote_revision_rec_id= Quote.GetGlobal("contract_quote_record_id")
-		contract_quote_rec_id = Quote.GetGlobal("quote_revision_record_id")
-		get_milestone_details = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE where QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'  and SERVICE_ID = '{get_service}'".format(QuoteRecordId=contract_quote_rec_iRevisionRecordId=quote_revision_rec_idget_service = str(service_id).strip()))
+		
+		get_milestone_details = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE where QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'  and SERVICE_ID = '{get_service}'".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_idget_service = str(service_id).strip()))
 		if get_milestone_details:
 			updateentXML = get_milestone_details.ENTITLEMENT_XML
 			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
