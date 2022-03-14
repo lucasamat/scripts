@@ -2337,7 +2337,11 @@ class TreeView:
 															RelatedId = 'SYOBJR-00011'
 															RelatedName = 'Events'
 															break
-
+										else:
+											ObjRecId = '271F55CA-C844-43C5-99AB-806A72152F25'
+											RelatedId = 'SYOBJR-00011'
+											RelatedName = 'Events'
+											
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 										)
