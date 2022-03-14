@@ -7271,8 +7271,8 @@ def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		EquipmentID = Parent_Equipmentid.EQUIPMENT_ID
 		if TreeSuperParentParam == 'Product Offerings':
 			child_obj_recid = Sql.GetList(
-				"select top 10 QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeParam}' and FABLOCATION_ID = '{TreeParentParam}'".format(
-					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),Parent_Equipmentid=recid, TreeParam=TreeParam,TreeParentParam = TreeParentParam
+				"select top 10 QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeParam}' ".format(
+					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),Parent_Equipmentid=recid, TreeParam=TreeParam
 				)
 			)
 
