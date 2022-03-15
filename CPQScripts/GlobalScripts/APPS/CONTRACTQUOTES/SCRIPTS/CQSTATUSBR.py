@@ -142,7 +142,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					Sql.RunQuery(update_workflow_status)
 					status = "APPROVAL PENDING"
 				#AO55S000P01-17018 ends
-			#workflow status bar update status
+			#workflow status bar update status -- A055S000P01-17166
 			get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 						
 			if get_workflow_status.REVISION_STATUS == "APR-APPROVED" and get_workflow_status.WORKFLOW_STATUS == "APPROVALS":				
@@ -177,7 +177,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		else:
 			Trace.Write('No button--2')
 			status = "IN-COMPLETE"
-	#Trace.Write("buttonvisibility=="+str(buttonvisibility))
+	#Trace.Write("buttonvisibility=="+str(buttonvisibility))--A055S000P01-17166--end
 	
 	# Quote Item Inserts - Starts
 	if quote_item_insert == 'yes' and Text == "COMPLETE STAGE":
