@@ -2,7 +2,7 @@
 #   __script_name : CQPARTSINS.py
 #   __script_description : THIS SCRIPT IS USED TO CONNECT WITH HANA TABLES TO PULL PARTS AND LOADED INTO CPQ.
 #   __primary_author__ : Suriyanarayanan Pazhani
-#   __create_date :09-01-2022
+#   __create_date :09-01-2022 
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import Webcom.Configurator.Scripting.Test.TestProduct
