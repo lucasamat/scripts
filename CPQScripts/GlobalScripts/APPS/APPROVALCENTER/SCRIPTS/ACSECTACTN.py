@@ -245,7 +245,7 @@ class approvalCenter:
 					if GetCurStatus:
 						
 						MainObjUpdateQuery = """UPDATE SAQTRV SET
-							REVISION_STATUS = 'APR-APPROVED'
+							REVISION_STATUS = 'APR-APPROVED' AND WORKFLOW_STATUS = 'APPROVALS'
 							WHERE {primaryKey} = '{Primaryvalue}' """.format(
 							statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 							ObjName=str(GetCurStatus.OBJECT_NAME),
