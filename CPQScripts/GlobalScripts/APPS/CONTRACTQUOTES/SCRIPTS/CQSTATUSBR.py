@@ -147,8 +147,6 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 						
 			if get_workflow_status.REVISION_STATUS == "APR-APPROVED" and get_workflow_status.WORKFLOW_STATUS == "APPROVALS":				
 				status = "APR-APPROVED"
-			# elif get_workflow_status.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED" or get_workflow_status.REVISION_STATUS == "CUSTOMER REJECTED":										
-			# 	status = "QUOTE DOCUMENTS"		
 			
 			elif get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING" and get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":					
 				status = "SUBMITTED FOR BOOKING"
@@ -159,6 +157,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			elif get_workflow_status.REVISION_STATUS == "LGL-CLEAN BOOKING CHECKLIST":
 
 				status = "LGL-CLEAN BOOKING CHECKLIST"
+
 			elif get_workflow_status.REVISION_STATUS == "OPD-LEGAL SOW CREATED":
 
 				status = "QUOTE DOCUMENTS"
