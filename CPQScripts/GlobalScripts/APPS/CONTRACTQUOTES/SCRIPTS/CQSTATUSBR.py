@@ -161,6 +161,9 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			elif get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS":
 
 				status = "QUOTE DOCUMENTS"
+			elif get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":
+
+				status = "CLEAN BOOKING CHECKLIST"
 
 			elif get_workflow_status.WORKFLOW_STATUS:			
 				Trace.Write('No button-2454-')
