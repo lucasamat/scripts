@@ -254,9 +254,9 @@ def DownloadAttachments():
 
 		responseJson = {"ErrorMsg":None, "File":fileContent, "FileName":fileName}
 
-		ApiResponse = ApiResponseFactory.JsonResponse(responseJson)
+		#ApiResponse = ApiResponseFactory.JsonResponse(responseJson)
 
-	return True
+	return responseJson
 try:
 	RECORD_ID=Param.RECORD_ID
 except:
