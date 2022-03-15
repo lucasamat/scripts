@@ -158,7 +158,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 
 				status = "LGL-CLEAN BOOKING CHECKLIST"
 
-			elif get_workflow_status.REVISION_STATUS == "OPD-LEGAL SOW CREATED":
+			elif get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS":
 
 				status = "QUOTE DOCUMENTS"
 
