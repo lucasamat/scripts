@@ -154,9 +154,9 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				status = "CONTRACT BOOKED"
 			elif get_workflow_status.REVISION_STATUS == "APPROVAL PENDING" and get_workflow_status.WORKFLOW_STATUS == "PRICING":					
 				status = "APPROVAL PENDING"
-			elif get_workflow_status.REVISION_STATUS == "LGL-CLEAN BOOKING CHECKLIST":
+			elif get_workflow_status.REVISION_STATUS == "LEGAL SOW":
 
-				status = "LGL-CLEAN BOOKING CHECKLIST"
+				status = "LEGAL SOW"
 
 			elif get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS":
 
