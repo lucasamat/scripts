@@ -924,7 +924,7 @@ def customer_accepted(doc_rec_id):
 	output_doc_query = Sql.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 	if output_doc_query:
 		if str(output_doc_query.DATE_ACCEPTED) != "":			
-			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER ACCEPTED' AND WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER ACCEPTED' , WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 			Sql.RunQuery(update_revision_status)	
 	return True
 #A055S000P01-17166 end
@@ -939,7 +939,7 @@ def customer_rejected(doc_rec_id,REJECT_COMMENT):
 	if output_doc_query:
 		if str(output_doc_query.DATE_REJECTED) != "":
 			Trace.Write("DATE_REJ"+str(output_doc_query.DATE_REJECTED))
-			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CUSTOMER REJECTED',MEMO = '{memo}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),memo=REJECT_COMMENT)
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CUSTOMER REJECTED',WORKFLOW_STATUS = 'QUOTE DOCUMENTS',MEMO = '{memo}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),memo=REJECT_COMMENT)
 			Sql.RunQuery(update_revision_status)	
 	return True
 
