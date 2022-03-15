@@ -1020,15 +1020,15 @@ def billingmatrix_create():
 							count =0
 							if ('AGS_Z0007_PQB_MIL3BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL1BD') in data:
 								billing_month_end += 1
-								
-								fts_zoo7_insert(total_months=total_months, 
-													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
-														Month=count, BillingDate=val.strftime('%m/%d/%Y')
-														),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
-														Month_add=billing_month_end, BillingDate=val.strftime('%m/%d/%Y')
-														), amount_column="YEAR_"+str((count/12) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict,get_milestones_data_dict=get_milestones_data_dict)
-								count += 1
+								if val:
+									fts_zoo7_insert(total_months=total_months, 
+														billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+															Month=count, BillingDate=val.strftime('%m/%d/%Y')
+															),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+															Month_add=billing_month_end, BillingDate=val.strftime('%m/%d/%Y')
+															), amount_column="YEAR_"+str((count/12) + 1),
+															entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict,get_milestones_data_dict=get_milestones_data_dict)
+									count += 1
 				elif str(get_ent_bill_cycle).upper() == "QUARTELY":
 					ct_start_date =contract_start_date
 					ct_end_date =contract_end_date
