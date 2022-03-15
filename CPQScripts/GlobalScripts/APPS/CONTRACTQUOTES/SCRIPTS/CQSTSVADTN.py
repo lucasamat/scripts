@@ -248,10 +248,11 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
 		##calling the iflow for pricing end
-
+#A055S000P01-17166 start
 def rev_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):
 	Trace.Write('253---')
 	return True
+#A055S000P01-17166 end
 try:
 	quote_item_insert = Param.quote_item_insert
 except:
