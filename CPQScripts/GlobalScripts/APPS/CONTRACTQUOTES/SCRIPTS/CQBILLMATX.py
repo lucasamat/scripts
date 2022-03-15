@@ -234,7 +234,7 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 		get_val =12
 	amount_column_split = amount_column.replace('_',' ')
 	
-				
+	get_total_milestons =''			
 	for data,val in get_milestones_data_dict.items():
 		if 'AGS_Z0007_PQB_MILST1' in data:
 			get_total_milestons += val
