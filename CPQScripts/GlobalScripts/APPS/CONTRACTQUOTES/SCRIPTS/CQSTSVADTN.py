@@ -248,10 +248,11 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
 		##calling the iflow for pricing end
+
 #A055S000P01-17166 start
 def complete_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):
 	Trace.Write('253---')
-	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW' and REVISION_STATUS = 'LEGAL SOW ACCEPTED' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_record_id)
+	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW' and REVISION_STATUS = 'LGL-LEGAL SOW ACCEPTED' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_record_id)
 	Sql.RunQuery(update_rev_status)
 	return True
 #A055S000P01-17166 end
