@@ -633,6 +633,7 @@ class SyncQuoteAndCustomTables:
 							"REV_CREATE_DATE":revision_start_date,
 							"REV_EXPIRE_DATE":'',
 							"REVISION_STATUS":"CPG-CONFIGURATION",
+							"WORKFLOW_STATUS":"CONFIGURE",
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID,
 							"CONTRACT_VALID_FROM":start_date,
