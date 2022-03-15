@@ -132,12 +132,15 @@ try:
 
 		if 'CorrelationID' in rebuilt_data:
 			Qt_Id = rebuilt_data['CorrelationID']
-			
+			#A055S000P01-17166 start-UPDATE OPD-LEGAL SOW CREATED
 			primaryQueryItems = SqlHelper.GetFirst(
 				""
 				+ str(Parameter1.QUERY_CRITERIA_1)
-				+ "  SAQTRV SET CLM_AGREEMENT_NUM=''"+ str(rebuilt_data['AgreementNumber'])+"'',CLM_AGREEMENT_ID = ''"+ str(rebuilt_data['AgreementID'])+"'',CLM_AGREEMENT_STATUS = ''"+ str(rebuilt_data['AgreementStatus'])+"'',CLM_AGREEMENT_URL = ''"+ str(rebuilt_data['AgreementURL'])+"'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +'-'+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"''  ' "
+				+ "  SAQTRV SET CLM_AGREEMENT_NUM=''"+ str(rebuilt_data['AgreementNumber'])+"'',CLM_AGREEMENT_ID = ''"+ str(rebuilt_data['AgreementID'])+"'',CLM_AGREEMENT_STATUS = ''"+ str(rebuilt_data['AgreementStatus'])+"'',REVISION_STATUS ='OPD-LEGAL SOW CREATED',CLM_AGREEMENT_URL = ''"+ str(rebuilt_data['AgreementURL'])+"'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +'-'+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"''  ' "
 			)
+			
+			
+			#A055S000P01-17166 end
 
 except:
 	Log.Info("SAGETCLMUP ERROR---->:" + str(sys.exc_info()[1]))
