@@ -58,7 +58,11 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue10 = "NONCPI"
 				record_list.append(editvalue9)
 				record_list.append(editvalue10)
-
+			if(line_values.TGKPNS != 'Excluded'):
+				editvalue11 = "ATKNCI"
+				editvalue12 = "ATKNPI"
+				record_list.append(editvalue11)
+				record_list.append(editvalue12)
 		annual_dict[str(line_values.LINE)] = record_list
 	Trace.Write("dictdictdict"+str(annual_dict)) 
 	return str(annual_dict)
