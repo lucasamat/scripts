@@ -1413,9 +1413,11 @@ def Related_Sub_Banner(
                         sub_string = m.group(1)
                         type_id = re.findall(quote_type_id,sub_string)
                         type_value = re.findall(quote_type_value,sub_string)
+                        Trace.Write("type_id ---"+str(type_id)+"type_value--"+str(type_value))
                         if type_id and type_value:
                             SeventhLable = "Quote Type"
                             SeventhValue = type_value
+                            Trace.Write("seventh fields-------"+str(SeventhLable)+"sevent values"+str(SeventhLable))
                             break
                     Trace.Write('*subb--')					
                     TreeParam = Quote.GetGlobal("TreeParam")
