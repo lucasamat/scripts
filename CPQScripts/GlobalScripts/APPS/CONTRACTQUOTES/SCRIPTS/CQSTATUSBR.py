@@ -137,7 +137,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					status = "CONTRACT BOOKED"
 				#AO55S000P01-17018 Starts
 				if getsalesorg_ifo.REVISION_STATUS == "APPROVAL PENDING" and Text == "COMPLETE STAGE":
-					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
 					status = "APPROVAL PENDING"
@@ -152,8 +152,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				status = "SUBMITTED FOR BOOKING"
 			elif get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED" and get_workflow_status.WORKFLOW_STATUS == "BOOKED":					
 				status = "CONTRACT BOOKED"
-			elif get_workflow_status.REVISION_STATUS == "APPROVAL PENDING" and get_workflow_status.WORKFLOW_STATUS == "PRICING":					
-				status = "APPROVAL PENDING"
+			elif get_workflow_status.REVISION_STATUS == "APPROVAL PENDING" and get_workflow_status.WORKFLOW_STATUS == "APPROVALS":					
+				status = "APPROVALS"
 			elif get_workflow_status.REVISION_STATUS == "LEGAL SOW":
 
 				status = "LEGAL SOW"
