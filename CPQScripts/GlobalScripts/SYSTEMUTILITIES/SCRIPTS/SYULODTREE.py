@@ -2214,7 +2214,7 @@ class TreeView:
 												pattern_id =""
 												pattern_name =""
 												subtab_temp =""
-												if subtab_temp_variable == 'Events' and ent_table == 'SAQTSE':
+												if subtab_temp_variable == 'Events' and ent_table == 'SAQTSE' and service_id != 'Z0010':
 													pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_NET_PRMALB</ENTITLEMENT_ID>')
 													pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Included - All PM|Included - Monthly and Above|Included - Quarterly and Above|Included - All PM (PDC/MPS)|Included - Qtrly and Above|Included - &lt; Quarterly)</ENTITLEMENT_DISPLAY_VALUE>')
 													subtab_temp ="Events"
@@ -2270,7 +2270,7 @@ class TreeView:
 														#subTabName = subtab_temp
 										
 										#if ent_value_dict:
-										if subtab_temp_variable in ("Events","Service Parts List","Service New Parts") :
+										if subtab_temp_variable in ("Events","Service Parts List","Service New Parts") and service_id != 'Z0010':
 											subTabName = ent_value_dict["SAQTSE"]
 										if entitlement_level_flag and (subtab_temp_variable in ('Green Parts List','Green New Parts','Greenbook Inclusions')  ):
 											if entitlement_level_flag == 'SAQTSE':
