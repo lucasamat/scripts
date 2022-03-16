@@ -188,7 +188,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			Sql.RunQuery(update_workflow_status)
 		#AO55S000P01-17018 Ends
 		#workflow status bar update status -- A055S000P01-17166
-		
+		get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS,CLM_AGREEMENT_NUM FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+		error_msg = ""
 		if get_workflow_status:
 			if get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
 				status = "CONFIGURE"
@@ -206,6 +207,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				status = "CLEAN BOOKING CHECKLIST"
 			else:
 				status = "BOOKED"
+		if str(get_workflow_status.REVISION_STATUS) == "LGL-PREPARING LEGAL SOW" and str(get_workflow_status.CLM_AGREEMENT_NUM) == "":
+			error_msg = "You will not be able to complete the stage until the Legal SoW in CLM is executed"
 	if quote_item_insert == 'yes' and Text == "COMPLETE STAGE":
 		service_id_query = Sql.GetList("SELECT SAQTSV.*,MAMTRL.MATERIALCONFIG_TYPE FROM SAQTSV INNER JOIN MAMTRL ON SAP_PART_NUMBER = SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'  ".format(contract_quote_rec_id,quote_revision_record_id))
 		if service_id_query:
@@ -281,8 +284,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
 		##calling the iflow for pricing end
-	Trace.Write('status--282---'+str(status))
-	return status
+	return status,error_msg
 	
 #A055S000P01-17166 start
 def complete_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):
