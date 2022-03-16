@@ -182,6 +182,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")	
 
 			Log.Info("***sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")		
+
 			
 			spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
 
@@ -576,7 +577,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 					
 					modified_records.append(str(tuple([float(spare_val) if type(spare_val) == "<type 'Decimal'>" else spare_val for spare_val in spare_record])))
 
-					modified_records.append(str(tuple([str(spare_val) if type(spare_val) == "<type 'Integer'>" else spare_val for spare_val in spare_record])))
+					modified_records.append(str(tuple([str(spare_val) if type(spare_val) == "<type 'Int'>" else spare_val for spare_val in spare_record])))
 
 				#self.records = ', '.join(map(str, modified_records)).replace("None","null").replace("'","''")
 				self.records = ', '.join(map(str, [str(tuple(list(spare_record)+[self.contract_quote_record_id, self.contract_quote_revision_record_id])) for spare_record in xls_spare_records[1:]])).replace("None","null").replace("'","''")
