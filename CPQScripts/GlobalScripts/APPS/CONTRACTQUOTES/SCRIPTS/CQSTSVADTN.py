@@ -65,7 +65,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		get_complete_list = []
 		get_vc_offerring_info = Sql.GetList(" SELECT  CONFIGURATION_STATUS,SERVICE_ID  FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and CONFIGURATION_STATUS = 'COMPLETE' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		for val in get_vc_offerring_info:
-			status = configure.CONFIGURATION_STATUS
+			status = get_vc_offerring_info.CONFIGURATION_STATUS
 			if status == "COMPLETE" and status != "":				
 				get_complete_list.append('T')
 			else:
