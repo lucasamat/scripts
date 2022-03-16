@@ -24,14 +24,10 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 		if line_values:
 			allvalue_edit1="CAVVCI"
 			allvalue_edit2="CAVVPI"
-			allvalue_edit3="AMNCCI"
-			allvalue_edit4="AMNPPI"
-			allvalue_edit5="ADDCOF"
+			allvalue_edit3="ADDCOF"
 			record_list.append(allvalue_edit1)
 			record_list.append(allvalue_edit2)
-			record_list.append(allvalue_edit3)
-			record_list.append(allvalue_edit4)
-			record_list.append(allvalue_edit5)	
+			record_list.append(allvalue_edit3)	
 			#nonstandard consuamble logic is pending
 			if(line_values.BPTTKP == 'Yes'):
 				editvalue1 ="BPTKCI"
@@ -63,6 +59,11 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue12 = "ATKNPI"
 				record_list.append(editvalue11)
 				record_list.append(editvalue12)
+			if(line_values.AMNCPE == 'ACTIVE'):
+				editvalue13="AMNCCI"
+				editvalue14="AMNPPI"
+				record_list.append(editvalue13)
+				record_list.append(editvalue14)
 		annual_dict[str(line_values.LINE)] = record_list
 	Trace.Write("dictdictdict"+str(annual_dict)) 
 	return str(annual_dict)
