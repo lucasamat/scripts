@@ -976,7 +976,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				service_id = row_detail.get("SERVICE_ID")
 				if service_id != "Z0108" and service_id != "Z0110":
 					MainObjUpdateQuery = """UPDATE SAQTRV SET
-						INCOTERM_ID = 'NA',INCOTERM_NAME = 'Not Applicable'
+						INCOTERM_ID = 'NA',INCOTERM_NAME = 'Not Applicable',INCOTERM_LOCATION = 'Not Applicable',INCOTERM_RECORD_ID = ''
 						WHERE QUOTE_REVISION_RECORD_ID = '{}' """.format(Quote.GetGlobal("quote_revision_record_id"))
 					Sql.RunQuery(MainObjUpdateQuery)
 				#A055S000P01-9650 ENDS
