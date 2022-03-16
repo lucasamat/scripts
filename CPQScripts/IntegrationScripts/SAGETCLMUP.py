@@ -165,7 +165,7 @@ try:
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
 						+ str(Parameter1.QUERY_CRITERIA_1)
-						+ "  SAQTRV SET REVISION_STATUS=''OPD-LEGAL SOW CREATED'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +''-''+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"'' AND ISNULL(CLM_AGREEMENT_STATUS,'''')=''DRAFT'' ' "
+						+ "  SAQTRV SET REVISION_STATUS=''LGL-PREPARING LEGAL SOW'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +''-''+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"'' AND ISNULL(CLM_AGREEMENT_STATUS,'''')=''DRAFT'' ' "
 					)
 
 					primaryQueryItems = SqlHelper.GetFirst(
