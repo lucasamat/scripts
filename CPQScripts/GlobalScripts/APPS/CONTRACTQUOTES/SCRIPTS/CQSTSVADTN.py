@@ -300,7 +300,7 @@ try:
 except:
 	STATUS_SOW = ""
 
-if STATUS_SOW == "":
+if STATUS_SOW == "SOW_ACCEPT":
 	ApiResponse = ApiResponseFactory.JsonResponse(complete_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW))
 else:
 	Trace.Write("quote_item_insert_J "+str(quote_item_insert))
