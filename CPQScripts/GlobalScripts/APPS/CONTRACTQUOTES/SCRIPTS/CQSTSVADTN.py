@@ -67,7 +67,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		if get_vc_offerring_info:
 			for val in get_vc_offerring_info:
 				if  val.CONFIGURATION_STATUS:
-					status = get_vc_offerring_info.CONFIGURATION_STATUS
+					status = val.CONFIGURATION_STATUS
 					if status == "COMPLETE" and status != "":				
 						get_complete_list.append('T')
 					else:
