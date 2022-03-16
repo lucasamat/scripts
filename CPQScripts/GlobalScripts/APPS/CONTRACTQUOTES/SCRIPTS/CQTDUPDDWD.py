@@ -177,7 +177,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 					break
 		except:
 			Log.Info("error!")
-			Trace.Write("consigned_parts_value_CHK "+str(consigned_parts_value))
+			#Trace.Write("consigned_parts_value_CHK "+str(consigned_parts_value))
    
 		try:
 			spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
