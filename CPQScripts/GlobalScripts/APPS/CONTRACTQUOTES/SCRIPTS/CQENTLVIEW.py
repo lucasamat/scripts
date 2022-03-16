@@ -1724,7 +1724,7 @@ if SectionList is not None and (
 	sectObj = Sql.GetFirst("SELECT PRIMARY_OBJECT_NAME FROM SYSECT (NOLOCK) WHERE RECORD_ID IN " + str(sectionId) + "")
 	if sectObj is not None:
 		Trace.Write("Treeparam_chk "+str(TreeSuperParentParam))
-		if "343C544E-8A39-49CE-AAB2-6FA6384DC503" in sectionId and "68855FCB-F4D7-4641-93AB-B515A41F29E2" in sectionId:
+		if "343C544E-8A39-49CE-AAB2-6FA6384DC503" in sectionId and "68855FCB-F4D7-4641-93AB-B515A41F29E2" in sectionId and TreeSuperParentParam != "Product Offerings":
 			SectionObjectName = "SAQTSE"
 		else:
 			SectionObjectName = sectObj.PRIMARY_OBJECT_NAME	
