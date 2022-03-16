@@ -2272,7 +2272,9 @@ class TreeView:
 										
 										#if ent_value_dict:
 										if subtab_temp_variable in ("Events","Service Parts List","Service New Parts") and service_id != 'Z0010':
-											subTabName = ent_value_dict["SAQTSE"]
+											subTabName = ent_value_dict["SAQTSE"] 
+										if	subtab_temp_variable in ("Events") and service_id == 'Z0010':
+											subTabName = "Events"
 										if entitlement_level_flag and (subtab_temp_variable in ('Green Parts List','Green New Parts','Greenbook Inclusions')  ):
 											if entitlement_level_flag == 'SAQTSE':
 												subTabName = ent_value_dict["SAQTSE"] 
