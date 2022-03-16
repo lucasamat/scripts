@@ -76,9 +76,11 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			
 				#Tools service[SAQSCO]
 				get_tools_info = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as COUNT from SAQSCO(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id),str(tserv.SERVICE_ID))
-				
-				if get_tools_info.COUNT > 0:				
-					tool_check.append('T')				
+				if get_tools_info:
+					if get_tools_info.COUNT > 0:				
+						tool_check.append('T')				
+					else:
+						tool_check.append('F')
 				else:
 					tool_check.append('F')
 				
