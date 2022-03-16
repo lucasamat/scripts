@@ -137,7 +137,7 @@ def LoadSummary():
     QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
     QuoteRevisionId = getQuoteDetails.QTEREV_ID
     QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
-   # return sec_str,str(TotalSalesPrice) + " " +curr,str(TotalDiscount)+ " %",str(total_excluding)+ " " +curr,str(tax_amt)+ " " +curr,str(total_amount)+ " " +curr,str(NetValue)+ " " +curr,str(Credit)+ " " +curr,str(DiscountAmount)+ " " +curr
+    # return sec_str,str(TotalSalesPrice) + " " +curr,str(TotalDiscount)+ " %",str(total_excluding)+ " " +curr,str(tax_amt)+ " " +curr,str(total_amount)+ " " +curr,str(NetValue)+ " " +curr,str(Credit)+ " " +curr,str(DiscountAmount)+ " " +curr
 
     return sec_str,str(total_excluding) + " " +curr, str(tax_amt)+ " " +curr, str(total_est)+ " " +curr, str(total_amount)+ " " +curr, str(total_margin)+ " " +curr, str(total_margin_percent)+ " " +curr
 
