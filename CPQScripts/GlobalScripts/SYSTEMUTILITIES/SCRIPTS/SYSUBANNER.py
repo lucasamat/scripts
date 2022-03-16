@@ -3256,6 +3256,7 @@ def Related_Sub_Banner(
                             if get_entitlement_xml:
                                 for get_service in get_entitlement_xml:
                                     entitlement_service = get_service.ENTITLEMENT_XML
+                                    import re
                                     quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
                                     split_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
                                     split_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
