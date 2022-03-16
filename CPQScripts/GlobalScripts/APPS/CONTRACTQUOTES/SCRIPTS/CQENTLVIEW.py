@@ -1720,7 +1720,10 @@ if SectionList is not None and (
 	or "484F3029-7844-4DE7-BBB4-535A7BAE476E" in SectionList
 ) and ObjectName != 'SAQGPM':
 	sectionId = tuple(SectionList)
-	sectObj = Sql.GetFirst("SELECT PRIMARY_OBJECT_NAME FROM SYSECT (NOLOCK) WHERE RECORD_ID IN " + str(sectionId) + "")
+	if "343C544E-8A39-49CE-AAB2-6FA6384DC503" in sectionId and "68855FCB-F4D7-4641-93AB-B515A41F29E2":
+		SectionObjectName = "SAQTSE"
+	else:
+		sectObj = Sql.GetFirst("SELECT PRIMARY_OBJECT_NAME FROM SYSECT (NOLOCK) WHERE RECORD_ID IN " + str(sectionId) + "")
 	if sectObj is not None:
 		SectionObjectName = sectObj.PRIMARY_OBJECT_NAME	
 		##service level	
