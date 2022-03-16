@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO EXTRACT KIT BOM  AND PM BOM DATA FROM SYINPL TABLE TO STAGING TABLES
 #   __primary_author__ : BAJI
 #   __create_date : 2020-12-28
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import sys
 import datetime
@@ -15,6 +15,9 @@ from SYDATABASE import SQL
 clr.AddReference("System.Net")
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
+
+sscm_kitbom = ScriptExecutor.ExecuteGlobal("MAPOSTSCKT")
+sscm_pmkit = ScriptExecutor.ExecuteGlobal("MAPOSTSCPM")
 
 
 Parameter=SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME='SELECT' ")
@@ -38,13 +41,16 @@ try :
 			
 			for json_data in Jsonquery:
 				if "Param" in json_data.INTEGRATION_PAYLOAD:
-					splited_list = json_data.INTEGRATION_PAYLOAD.split("%%")
-					rebuilt_data = splited_list[1].replace('false','"false"')
+					splited_list = (json_data.INTEGRATION_PAYLOAD)
+					l =  splited_list.rindex("%%")
+					f = splited_list.index("%%")+2						
+					rebuilt_data = splited_list[f:l].replace('false','"false"')
 					rebuilt_data = rebuilt_data.replace('true','"true"')
+					rebuilt_data = rebuilt_data.replace('null','"NALL"')
 					rebuilt_data = eval(rebuilt_data)
 				else:
 					splited_list = json_data.INTEGRATION_PAYLOAD
-					rebuilt_data = eval(splited_list.replace('false','"false"').replace('true','"true"'))       
+					rebuilt_data = eval(splited_list.replace('false','"false"').replace('true','"true"').replace('null','"NALL"'))       
 
 				if len(rebuilt_data) != 0:      
 
@@ -62,7 +68,10 @@ try :
 									Tbl_data = rebuilt_data[tn]
 									
 								for record_dict in Tbl_data:
-									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAEAPM_INBOUND (SESSION_ID,EQUIPMENT_ID,ASSEMBLY_ID,PM_NAME,PM_FREQUENCY,KIT_ID,KIT_NUMBER,SEEDSTOCK_COST,LOGISTICS_COST,TKM_COST_PER_EVENT,cpqtableentrydatemodified,KIT_MASTER_ID,APPLICATION,REGION,CUSTOMER_MARKETING_NAME,DEVICE,PROCESS_TYPE,SERVICE_COMPLEXITY,TECHNOLOGY_NODE,HW_TYPE,ARCM_MODULE_ID,RFP_EDIT,UPDATED_DATE,CPQ_PROCESSED,PM_LEVEL,CLEAN_COATING)  select  ''"+ str(primaryQuerysession.A)+ "'',''"+record_dict['TOOL_ID']+ "'',''"+record_dict['Assembly_ID']+ "'',''"+record_dict['PM_Event']+ "'',''"+str(record_dict['PM_Freq'])+ "'',''"+record_dict['KIT_ID']+ "'',''"+record_dict['KIT_Number']+ "'',''"+str(record_dict['Seedstock_Cost'])+ "'',''"+str(record_dict['Logistics_Cost'])+ "'',''"+str(record_dict['TKM_Cost_Per_Event'])+ "'',''"+ str(Modi_date)+ "'',''"+str(record_dict['KIT_MASTER_ID'])+ "'',''"+record_dict['APPLICATION']+ "'',''"+record_dict['CLEANING_REGION']+ "'',''"+record_dict['CUSTOMER_MARKETING_NAME']+ "'',''"+record_dict['DEVICE']+ "'',''"+record_dict['PROCESS_TYPE']+ "'',''"+record_dict['SERVICE_COMPLEXITY']+ "'',''"+record_dict['TECH_NODE']+ "'',''"+record_dict['HW_TYPE']+ "'',N''"+str(record_dict['ARCM_Module_ID'])+ "'',N''"+str(record_dict['RFP_Edit'])+ "'',N''"+str(record_dict['Updated_Date'])+ "'',N''"+str(record_dict['CPQ_Processed'])+ "'',N''"+str(record_dict['Maintenance_Event_Level'])+ "'',N''"+str(record_dict['KIT_CleaningCoating_Differentiation'])+ "'' ' ")
+								
+									splt_info = """ ''{TOOL_ID}'',''{Assembly_ID}'',''{PM_Event}'',''{PM_Freq}'',''{KIT_ID}'',''{KIT_Number}'',''{Seedstock_Cost}'',''{Logistics_Cost}'',''{TKM_Cost_Per_Event}'',''{Modi_date}'',''{KIT_MASTER_ID}'',''{APPLICATION}'',''{CLEANING_REGION}'',''{CUSTOMER_MARKETING_NAME}'',''{DEVICE}'',''{PROCESS_TYPE}'',''{SERVICE_COMPLEXITY}'',''{TECH_NODE}'',''{HW_TYPE}'',''{ARCM_Module_ID}'',''{RFP_Edit}'',''{Updated_Date}'',''{CPQ_Processed}'',''{Maintenance_Event_Level}'',''{KIT_CleaningCoating_Differentiation}'' """.format(TOOL_ID = record_dict['TOOL_ID'],Assembly_ID = str(record_dict['Assembly_ID']),PM_Event = str(record_dict['PM_Event']),PM_Freq = record_dict['PM_Freq'],KIT_ID= str(record_dict['KIT_ID']),KIT_Number = str(record_dict['KIT_Number']),Seedstock_Cost = str(record_dict['Seedstock_Cost']),Logistics_Cost = str(record_dict['Logistics_Cost']),TKM_Cost_Per_Event = str(record_dict['TKM_Cost_Per_Event']),Modi_date = str(record_dict['Modi_date']),KIT_MASTER_ID= record_dict['KIT_MASTER_ID'],APPLICATION = record_dict['APPLICATION'],CLEANING_REGION = str(record_dict['CLEANING_REGION']),CUSTOMER_MARKETING_NAME = str(record_dict['CUSTOMER_MARKETING_NAME']),DEVICE = str(record_dict['DEVICE']),PROCESS_TYPE= str(record_dict['PROCESS_TYPE']),SERVICE_COMPLEXITY = str(record_dict['SERVICE_COMPLEXITY']),TECH_NODE = str(record_dict['TECH_NODE']),HW_TYPE = str(record_dict['HW_TYPE']),ARCM_Module_ID = str(record_dict['ARCM_Module_ID']),RFP_Edit = str(record_dict['RFP_Edit']), Updated_Date= str(record_dict['Updated_Date']),CPQ_Processed = str(record_dict['CPQ_Processed']),Maintenance_Event_Level = str(record_dict['Maintenance_Event_Level']),KIT_CleaningCoating_Differentiation = str(record_dict['KIT_CleaningCoating_Differentiation']) )
+									
+									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAEAPM_INBOUND (SESSION_ID,EQUIPMENT_ID,ASSEMBLY_ID,PM_NAME,PM_FREQUENCY,KIT_ID,KIT_NUMBER,SEEDSTOCK_COST,LOGISTICS_COST,TKM_COST_PER_EVENT,cpqtableentrydatemodified,KIT_MASTER_ID,APPLICATION,REGION,CUSTOMER_MARKETING_NAME,DEVICE,PROCESS_TYPE,SERVICE_COMPLEXITY,TECHNOLOGY_NODE,HW_TYPE,ARCM_MODULE_ID,RFP_EDIT,UPDATED_DATE,CPQ_PROCESSED,PM_LEVEL,CLEAN_COATING)  select  ''"+ str(primaryQuerysession.A)+ "'',,"+str(splt_info)+ " ' ")
 									
 							elif str(tn).upper() == "MAKTPT":
 								if str(type(rebuilt_data[tn])) == "<type 'dict'>":
@@ -179,9 +188,9 @@ try :
 	primaryQueryItems = SqlHelper.GetFirst(
 	""
 	+ str(Parameter.QUERY_CRITERIA_1)
-	+ " MAPMEV(ACTIVE,PM_NAME,PM_ID,PM_LEVEL,CPQTABLEENTRYADDEDBY,ADDUSR_RECORD_ID,CPQTABLEENTRYDATEADDED,PM_RECORD_ID) SELECT  SUB_SGPMNT.* ,''"+ str(User.UserName)
+	+ " MAPMEV(ACTIVE,PM_NAME,PM_ID,MNTEVT_LEVEL,CPQTABLEENTRYADDEDBY,ADDUSR_RECORD_ID,CPQTABLEENTRYDATEADDED,PM_RECORD_ID) SELECT  SUB_SGPMNT.* ,''"+ str(User.UserName)
 	+ "'',''"+ str(User.Id)
-	+ "'',GETDATE(),CONVERT(VARCHAR(1000),NEWID()) FROM (SELECT DISTINCT ''TRUE'' AS ACTIVE,PM_NAME,PM_NAME AS PM_ID,CASE WHEN PM_LEVEL =''Sched Maint'' THEN ''Scheduled Maintenance'' ELSE PM_LEVEL END AS PM_LEVEL FROM MAEAPM_INBOUND(NOLOCK) WHERE ISNULL(PROCESS_STATUS,'''')=''READY FOR UPLOAD'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"')SUB_SGPMNT LEFT JOIN MAPMEV (NOLOCK) ON SUB_SGPMNT.PM_NAME = MAPMEV.PM_NAME WHERE MAPMEV.PM_NAME IS NULL  '")
+	+ "'',GETDATE(),CONVERT(VARCHAR(1000),NEWID()) FROM (SELECT DISTINCT ''TRUE'' AS ACTIVE,PM_NAME,PM_NAME AS PM_ID,CASE WHEN PM_LEVEL =''Sched Maint'' THEN ''Scheduled Maintenance'' ELSE PM_LEVEL END AS MNTEVT_LEVEL FROM MAEAPM_INBOUND(NOLOCK) WHERE ISNULL(PROCESS_STATUS,'''')=''READY FOR UPLOAD'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"')SUB_SGPMNT LEFT JOIN MAPMEV (NOLOCK) ON SUB_SGPMNT.PM_NAME = MAPMEV.PM_NAME WHERE MAPMEV.PM_NAME IS NULL  '")
 	
 	#Kit Upload
 	primaryQueryItems = SqlHelper.GetFirst(
@@ -252,7 +261,7 @@ try :
 	msg = MailMessage(fromEmail, toEmail)
 
 	# Set message subject and body
-	msg.Subject = "SC KIT DATA - Notification"
+	msg.Subject = "SC KIT DATA - Notification(X-Tenant)"
 	msg.IsBodyHtml = True
 	msg.Body = Error_Info
 
@@ -301,8 +310,8 @@ except:
 	msg = MailMessage(fromEmail, toEmail)
 
 	# Set message subject and body
-	msg.Subject = "KIT BOM - Error Notification"
-	msg.IsBodyHtml = True
+	msg.Subject = "KIT BOM - Error Notification(X-Tenant)"
+	msg.IsBodyHtml = Truea
 	msg.Body = Error_Info
 
 	# CC Emails 	
