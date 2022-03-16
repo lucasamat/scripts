@@ -2123,15 +2123,15 @@ def Related_Sub_Banner(
             PrimaryLable = "Total Excluding Tax/VAT/GST"
             PrimaryValue = decimal_format.format(float(get_quote_details.NET_VALUE_INGL_CURR))+" "+ curr if str(get_quote_details.NET_VALUE_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
             SecondLable = "Total Est Net Val"
-            SecondValue = decimal_format.format(float("0.00"))+" "+curr
+            SecondValue = decimal_format.format(float(get_quote_details.ESTVAL_INGL_CURR))+" "+ curr if str(get_quote_details.ESTVAL_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
             ThirdLable = "Total Tax/VAT/GST"
             ThirdValue = decimal_format.format(float(get_quote_details.TAX_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
             # ThirdLable = "Total Net Val"
             # ThirdValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
             FourthLable = "Total Amt"
-            FourthValue = decimal_format.format(float(Total))+" "+ curr if str(Total) != '' else decimal_format.format(float("0.00"))+" "+curr
+            FourthValue = decimal_format.format(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
             FifthLable = "Total Margin Pct"
-            FifthValue = decimal_format.format(float("0.00"))+" "+"%"
+            FifthValue = decimal_format.format(float(get_quote_details.TOTAL_MARGIN_PERCENT))+" "+ curr if str(get_quote_details.TOTAL_MARGIN_PERCENT) != '' else decimal_format.format(float("0.00"))+" %"
         elif get_quote_details:
             Trace.Write("subTabName_CHK "+str(subTabName))
             if subTabName == "Items":
