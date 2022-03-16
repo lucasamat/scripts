@@ -3413,7 +3413,34 @@ class ContractQuoteItem:
 		# CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 		##Calling the iflow for quote header writeback to cpq to c4c code ends...
 	def _insert_quote_item_forecast_parts(self):		
-		if not (self.service_id == 'Z0100' and self.parent_service_id == 'Z0092'):
+		if self.quote_service_entitlement_type == 'OFFERING + KIT':
+			Sql.RunQuery("""INSERT SAQRIP (QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, NEW_PART ) 
+			SELECT 
+				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,
+				'{UserName}' AS CPQTABLEENTRYADDEDBY,
+				GETDATE() as CPQTABLEENTRYDATEADDED,
+				{UserId} as CpqTableEntryModifiedBy,
+				GETDATE() as CpqTableEntryDateModified,
+				NULL AS PART_DESCRIPTION,
+				SAQRIT.KIT_NUMBER AS PART_NUMBER,
+				SAQRIT.KITNUMBER_RECORD_ID AS PART_RECORD_ID,
+				SAQRIT.SERVICE_DESCRIPTION,
+				SAQRIT.SERVICE_ID,
+				SAQRIT.SERVICE_RECORD_ID,
+				NULL as QUANTITY,
+				SAQRIT.QUOTE_ID,
+				SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,
+				SAQRIT.QUOTE_RECORD_ID,
+				SAQRIT.QTEREV_ID,
+				SAQRIT.QTEREV_RECORD_ID,
+				SAQRIT.LINE,
+				NULL AS NEW_PART
+				FROM SAQRIT (NOLOCK) 
+				LEFT JOIN SAQRIP (NOLOCK) ON SAQRIP.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND SAQRIP.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND SAQRIP.SERVICE_RECORD_ID = SAQRIT.SERVICE_RECORD_ID AND SAQRIP.PART_RECORD_ID = SAQRIT.PART_RECORD_ID 
+
+				WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQRIT.KIT_NUMBER,'') = '' AND ISNULL(SAQRIP.PART_RECORD_ID,'') = '' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+
+		elif not (self.service_id == 'Z0100' and self.parent_service_id == 'Z0092'):
 			Sql.RunQuery("""INSERT SAQRIP (QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, NEW_PART ) 
 				SELECT 
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,
@@ -3441,6 +3468,7 @@ class ContractQuoteItem:
 
 				WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRSP.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQRIP.PART_RECORD_ID,'') = '' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 
+		##calling cps pricing
 		if self.service_id == 'Z0100' : 	
 			##calling the iflow for pricing..
 			try:
@@ -3734,6 +3762,8 @@ class ContractQuoteItem:
 				self._quote_items_insert()		
 				self._quote_items_object_insert()	
 				self._quote_annualized_items_insert()	
+				if self.quote_service_entitlement_type == 'OFFERING + KIT':
+					self._insert_quote_item_forecast_parts()
 				#self._quote_item_line_entitlement_insert()
 				self._quote_items_assembly_insert()
 				self._quote_items_assembly_entitlement_insert()
