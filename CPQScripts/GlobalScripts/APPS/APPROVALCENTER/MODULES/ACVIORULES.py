@@ -1089,79 +1089,79 @@ class ViolationConditions:
                     where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0091')"
             elif "Z0035" in service:
                 if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0035')"
+                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0035')"
                 else:
-                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0035')"
+                    where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0035')"
             elif "Z0091W" in service:
                 if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0091W')"
+                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0091W')"
                 else:
-                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0091W')"
+                    where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0091W'))"
         if "Z0035W" in service:
                 if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0035W')"
+                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0035W')"
                 else:
-                    where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0035W')"
+                    where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0035W')"
         if "Z0092" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included","Quote Type":"Tool Based"})
             if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR QTETYP = 'Tool Based' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0092')"
+                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQICO.QTETYP = 'Tool Based' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0092')"
             else:
-                where_str += " OR ((NWPTON = 'Yes' OR QTETYP = 'Tool Based' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0092')"
+                where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQICO.QTETYP = 'Tool Based' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0092')"
         if "Z0092W" in service:
             BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
             if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0092W')"
+                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0092W')"
             else:
-                where_str += " OR ((NWPTON = 'Yes' OR REPONSE_TIME = '16 Covered Hours' OR REPONSE_TIME = '24 Covered Hours' OR RPRCUS_OWNPRT = 'Yes' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0092W')"
+                where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0092W')"
         if "Z0010" in service:
             #BDHead.update({"CoO Reduction Guarantees":"Included"})
             if where_str == "":
-                    where_str += " (( COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0010')"
+                    where_str += " (( SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0010')"
             else:
-                where_str += " OR (( COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0010')"
+                where_str += " OR (( SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0010')"
         if "Z0110" in service:
             BDHead.update({"On-site Consigned Parts":"9","On-site Consigned Parts":"8","On-site Consigned Parts":"7","On-site Consigned Parts":"6"})
             if where_str == "":
-                    where_str += " ((ONSITE_CONSPRT = '9' OR ONSITE_CONSPRT = '8' OR ONSITE_CONSPRT = '7' OR ONSITE_CONSPRT = '6' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0110')"
+                    where_str += " ((SAQITE.ONSITE_CONSPRT = '9' OR SAQITE.ONSITE_CONSPRT = '8' OR SAQITE.ONSITE_CONSPRT = '7' OR SAQITE.ONSITE_CONSPRT = '6' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0110')"
             else:
-                where_str += " OR ((ONSITE_CONSPRT = '9' OR ONSITE_CONSPRT = '8' OR ONSITE_CONSPRT = '7' OR ONSITE_CONSPRT = '6' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0110')"
+                where_str += " OR ((SAQITE.ONSITE_CONSPRT = '9' OR SAQITE.ONSITE_CONSPRT = '8' OR SAQITE.ONSITE_CONSPRT = '7' OR SAQITE.ONSITE_CONSPRT = '6' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0110')"
         if "Z0123" in service:
             BDHead.update({"Billing Type":"Fixed"})
             if where_str == "":
-                    where_str += " ((BILTYP = 'Fixed' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0123')"
+                    where_str += " ((SAQICO.BILTYP = 'Fixed' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0123')"
             else:
-                where_str += " OR ((BILTYP = 'Fixed' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0123')"
+                where_str += " OR ((SAQICO.BILTYP = 'Fixed' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0123')"
         if "Z0128" in service:
             BDHead.update({"CoO Reduction Guarantees":"Included"})
             if where_str == "":
-                    where_str += " (( COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0128')"
+                    where_str += " (( SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0128')"
             else:
-                where_str += " OR (( COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0128')"
+                where_str += " OR (( SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0128')"
         if "Z0009" in service:
             BDHead.update({"CoO Reduction Guarantees":"Included","Primary KPI. Perf Guarantee":"First Time Right"})
             if where_str == "":
-                    where_str += " ((PRMKPI_ENT = 'First Time Right' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0009')"
+                    where_str += " ((SAQICO.PRMKPI_ENT = 'First Time Right' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0009')"
             else:
-                where_str += " OR ((PRMKPI_ENT = 'First Time Right' OR COO_RED_GUAR = 'Included' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0009')"
+                where_str += " OR ((SAQICO.PRMKPI_ENT = 'First Time Right' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0009')"
         if "Z0007" in service:
             BDHead.update({"Decontamination":"Included","New Parts Only":"Yes"})
             if where_str == "":
-                    where_str += " ((NWPTON = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0007')"
+                    where_str += " ((SAQICO.NWPTON = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0007')"
             else:
-                where_str += " OR ((NWPTON = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC)) AND SERVICE_ID = 'Z0007')"
+                where_str += " OR ((SAQICO.NWPTON = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0007')"
         if "Z0004W" in service:
             BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded"})
             if where_str == "":
-                where_str += " ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC ) OR PROPRT_CLEAN_ENT = 'Excluded' OR SWPKTA = 'Excluded') AND SERVICE_ID = 'Z0004W')"
+                where_str += " ((SAQITE.RPRCUS_OWNPRT = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC ) OR SAQICO.PROPRT_CLEAN_ENT = 'Excluded' OR SAQICO.SWPKTA = 'Excluded') AND SAQICO.SERVICE_ID = 'Z0004W')"
             else:
-                where_str += " OR ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC) OR PROPRT_CLEAN_ENT = 'Excluded' OR SWPKTA = 'Excluded') AND SERVICE_ID = 'Z0004W')"
+                where_str += " OR ((SAQITE.RPRCUS_OWNPRT = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC ) OR SAQICO.PROPRT_CLEAN_ENT = 'Excluded' OR SAQICO.SWPKTA = 'Excluded') AND SAQICO.SERVICE_ID = 'Z0004W')"
         if "Z0004-Subfab" in service:
             BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded","Repair Cust Owned Parts":"Yes"})
             if where_str == "":
-                    where_str += " ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC) OR PROPRT_CLEAN_ENT = 'Excluded' OR SWPKTA = 'Excluded') AND SERVICE_ID = 'Z0004-Subfab')"
+                    where_str += " ((SAQITE.RPRCUS_OWNPRT = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC) OR SAQICO.PROPRT_CLEAN_ENT = 'Excluded' OR SAQICO.SWPKTA = 'Excluded') AND SAQICO.SERVICE_ID = 'Z0004-Subfab')"
             else:
-                where_str += " OR ((RPRCUS_OWNPRT = 'Yes' OR (USRPRC < SLSPRC AND USRPRC > BDVPRC) OR PROPRT_CLEAN_ENT = 'Excluded' OR SWPKTA = 'Excluded') AND SERVICE_ID = 'Z0004-Subfab')"
+                where_str += " OR ((SAQITE.RPRCUS_OWNPRT = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC) OR SAQICO.PROPRT_CLEAN_ENT = 'Excluded' OR SAQICO.SWPKTA = 'Excluded') AND SAQICO.SERVICE_ID = 'Z0004-Subfab')"
         lines = []
         annualized_items_obj = Sql.GetList("SELECT DISTINCT SAQICO.LINE FROM SAQICO (NOLOCK) JOIN SAQITE (NOLOCK) ON SAQICO.LINE = SAQITE.LINE WHERE SAQICO.QUOTE_ID = '{}' AND SAQICO.QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
@@ -1182,8 +1182,8 @@ class ViolationConditions:
                 #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
-            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QuoteId,RecordId))
-            if getDeviation and getDeviation.BCHDPT > 10:
+            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND BCHDPT > 10".format(QuoteId,RecordId))
+            if getDeviation is not None:
                 return 1
             else:
                 return 2
@@ -1203,9 +1203,9 @@ class ViolationConditions:
                     where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0091')"
             else:
                 if where_str == "":
-                    where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0091W')"
+                    where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0091W')"
                 else:
-                    where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0091W')"
+                    where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0091W')"
 
         if "Z0092" in service or "Z0092W" in service:       
             #BDHead.update({"Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
@@ -1223,20 +1223,20 @@ class ViolationConditions:
             #BDHead.update({"Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
             if "Z0010" in service:
                 if where_str == "":
-                    where_str += " ((SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0010')"
+                    where_str += " ((SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0010')"
                 else:
-                    where_str += " OR ((SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0010')"
+                    where_str += " OR ((SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0010')"
             else:
                 if where_str == "":
-                    where_str += " ((SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0128')"
+                    where_str += " ((SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0128')"
                 else:
-                    where_str += " OR ((SWPKTA = 'Excluded' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0128')"
+                    where_str += " OR ((SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0128')"
         
         if "Z0110" in service:
             
             #BDHead.update({"KPI - Monthly Consigned":"Exception %","KPI - ≥90% On Request":"Exception days","Perf. Credit NTE - Consigned":"Exception %","Perf. Credit NTE - On Request":"Exception %","Perf. Credit - Consigned Parts":"Exception %","Perf. Credit-On Request Parts":"Exception %","Consignment Fee-Low Qty Parts":"Exception %","Cust. Commit-Consigned Parts":"Per contract value","Cust. Commit-On Request Parts":"Exception %","Cust. Commit-On Request Parts":"Per contract value","Fcst Redistribution-Frequency":"Exception times/year"})
             if where_str == "":
-                where_str += " ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR KPI_MONTHLY_CON = 'Exception %' OR KPI_ON_REQUEST = 'Exception days' OR CREDIT_NTE_CON = 'Exception %' OR CREDIT_NTE_REQ = 'Exception %' OR CREDIT_CONSIGNED_PART = 'Exception %' OR CREDIT_REQUEST_PART = 'Exception %' OR LOW_QTY_PART = 'Exception %' OR COMMIT_CONSIGNED_PART = 'Per contract value' OR COMMIT_REQUEST_PART = 'Exception %' OR COMMIT_REQUEST_PART = 'Per contract value' OR FORECAST_REDIS_FREQ = 'Exception times/year') AND SERVICE_ID = 'Z0110')"
+                where_str += " ((SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.KPI_MONTHLY_CON = 'Exception %' OR SAQICO.KPI_ON_REQUEST = 'Exception days' OR SAQICO.CREDIT_NTE_CON = 'Exception %' OR SAQICO.CREDIT_NTE_REQ = 'Exception %' OR SAQICO.CREDIT_CONSIGNED_PART = 'Exception %' OR SAQICO.CREDIT_REQUEST_PART = 'Exception %' OR SAQICO.LOW_QTY_PART = 'Exception %' OR SAQICO.COMMIT_CONSIGNED_PART = 'Per contract value' OR SAQICO.COMMIT_REQUEST_PART = 'Exception %' OR SAQICO.COMMIT_REQUEST_PART = 'Per contract value' OR SAQICO.FORECAST_REDIS_FREQ = 'Exception times/year') AND SAQICO.SERVICE_ID = 'Z0110')"
             else:
                 where_str += " OR ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR KPI_MONTHLY_CON = 'Exception %' OR KPI_ON_REQUEST = 'Exception days' OR CREDIT_NTE_CON = 'Exception %' OR CREDIT_NTE_REQ = 'Exception %' OR CREDIT_CONSIGNED_PART = 'Exception %' OR CREDIT_REQUEST_PART = 'Exception %' OR LOW_QTY_PART = 'Exception %' OR COMMIT_CONSIGNED_PART = 'Per contract value' OR COMMIT_REQUEST_PART = 'Exception %' OR COMMIT_REQUEST_PART = 'Per contract value' OR FORECAST_REDIS_FREQ = 'Exception times/year') AND SERVICE_ID = 'Z0110')"
         if "Z0009" in service:
