@@ -43,7 +43,8 @@ user_id = str(User.Id)
 user_name = str(User.UserName) 
 
 def Dynamic_Status_Bar(quote_item_insert,Text):
-	error_msg = status =''
+	status =''
+	error_msg = ""
 	if str(Text) == 'COMPLETE STAGE' and (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
 
 		#Salesorg[SAQTRV]
