@@ -43,7 +43,7 @@ user_id = str(User.Id)
 user_name = str(User.UserName) 
 
 def Dynamic_Status_Bar(quote_item_insert,Text):
-	status =''
+	error_msg = status =''
 	if str(Text) == 'COMPLETE STAGE' and (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
 
 		#Salesorg[SAQTRV]
@@ -189,7 +189,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		#AO55S000P01-17018 Ends
 		#workflow status bar update status -- A055S000P01-17166
 		get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS,CLM_AGREEMENT_NUM FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-		error_msg = ""
+		
 		if get_workflow_status:
 			if get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
 				status = "CONFIGURE"
