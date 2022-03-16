@@ -52,11 +52,11 @@ class ContractQuoteItemAnnualizedPricing:
 							SET SAQICO.UBSNSA = 'True'	
 							FROM SAQICO (NOLOCK)							
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.LINE = '{LineId}' AND (SAQICO.USRPRC < SAQICO.SLSPRC) AND (SAQICO.SLSPRC < SAQICO.BDVPRC)""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id))
-				##roll up script call
-				try:
-					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id,"manual_pricing":"True"})
-				except:
-					Trace.Write("error in pricing roll up")
+			##roll up script call
+			try:
+				CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id,"manual_pricing":"True"})
+			except:
+				Trace.Write("error in pricing roll up")
 
 	def _rolldown_from_coeff_level(self, line_id = None):
 		#SUMCOF - Sum of All Coefficient
