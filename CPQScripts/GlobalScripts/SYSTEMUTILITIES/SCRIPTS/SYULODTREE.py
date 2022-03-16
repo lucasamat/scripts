@@ -2345,7 +2345,7 @@ class TreeView:
 															RelatedId = 'SYOBJR-00011'
 															RelatedName = 'Events'
 															break
-										else:
+										elif subTabName=="Events" and Product.GetGlobal("SERVICE")=="Z0010":
 											ObjRecId = '271F55CA-C844-43C5-99AB-806A72152F25'
 											RelatedId = 'SYOBJR-00011'
 											RelatedName = 'Events'
