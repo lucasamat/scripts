@@ -726,7 +726,7 @@ def countcbc(Qt_rec_id, Quote, MODE):
 	popupquery=Sql.GetFirst("SELECT COUNT(*) as cnt FROM SAQCBC WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND SERVICE_CONTRACT='False' AND SPECIALIST_REVIEW='FALSE' AND CHECKLIST_ID NOT IN('4.1','4.2','4.3','4.4','12.1','12.2','12.3','28.1','28.2','28.3')".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	popupquery_value = popupquery.cnt
 	#A055S000P01-17166 start
-	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW' and REVISION_STATUS = 'LGL-CLEAN BOOKING CHECKLIST' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=Quote,quote_revision_rec_id=quote_revision_record_id)
+	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-PREPARING CBC' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=Quote,quote_revision_rec_id=quote_revision_record_id)
 	Sql.RunQuery(update_rev_status)
 	#A055S000P01-17166 end
 	return popupquery_value
