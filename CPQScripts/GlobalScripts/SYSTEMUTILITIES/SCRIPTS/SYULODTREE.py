@@ -2115,7 +2115,7 @@ class TreeView:
 								for getRightView in getParentObjRightView:
 									type = str(getRightView.SUBTAB_TYPE)
 									subTabName = str(getRightView.SUBTAB_NAME)
-									#Trace.Write("subTabName--------"+str(subTabName))
+									Trace.Write("subTabName--------------------------------------->"+str(subTabName))
 									ObjRecId = getRightView.OBJECT_RECORD_ID
 									if (str(ObjRecId) == '354C16C4-BDCA-4045-BC4A-40F1A6600AFD' and  str(getRightView.SUBTAB_TYPE) == 'OBJECT SECTION LAYOUT'):
 										subTabName = str(NodeText) + " : " + str(subTabName)
@@ -2346,8 +2346,8 @@ class TreeView:
 															RelatedName = 'Events'
 															break
 										elif subTabName=="Events" and Product.GetGlobal("SERVICE")=="Z0010":
-											ObjRecId = '271F55CA-C844-43C5-99AB-806A72152F25'
-											RelatedId = 'SYOBJR-00011'
+											ObjRecId = '0975E1E2-9D30-4928-AB0A-4DA54537A67A'
+											RelatedId = 'SYOBJR-95556'
 											RelatedName = 'Events'
 											
 										SubTabList.append(
