@@ -37,7 +37,7 @@ try:
 except:
 	TabName = "Quotes"
 
-
+status =''
 quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 user_id = str(User.Id)
 user_name = str(User.UserName) 
