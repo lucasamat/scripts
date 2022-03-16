@@ -577,9 +577,12 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 					
 					modified_records.append(str(tuple([float(spare_val) if type(spare_val) == "<type 'Decimal'>" else spare_val for spare_val in spare_record])))
 
-
+				
+				for spare_record in xls_spare_records:
+					spare_record[1]=str(spare_record[1])
+					Trace.Write(spare_record[1])
 				#self.records = ', '.join(map(str, modified_records)).replace("None","null").replace("'","''")
-				self.records = ', '.join(map(str, [str(tuple(list(map(str,spare_record))+[self.contract_quote_record_id, self.contract_quote_revision_record_id])) for spare_record in xls_spare_records[1:]])).replace("None","null").replace("'","''")
+				self.records = ', '.join(map(str, [str(tuple(list(spare_record)+[self.contract_quote_record_id, self.contract_quote_revision_record_id])) for spare_record in xls_spare_records[1:]])).replace("None","null").replace("'","''")
 				Trace.Write("Records000 ===> "+str(self.records))
 				self.records = self.records.replace("True","1").replace("False","0")
 				Trace.Write("Records111 ===> "+str(self.records))
