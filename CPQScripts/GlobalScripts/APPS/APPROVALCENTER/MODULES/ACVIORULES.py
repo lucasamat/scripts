@@ -988,51 +988,51 @@ class ViolationConditions:
         if "Z0092" in service:
             BDHead.update({"Additional target KPI":"Excursion Detection","Additional target KPI":"Max wafer Output ≤ 4%","Additional target KPI":"Max Wafer Output >4%","Additional target KPI":"Throughput","Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Contract Coverage":"7x16","Contract Coverage":"7x24","Non-Consumable":"Some Exclusions","Quote Type":"Usage based"})
             if where_str == "":
-                where_str += " ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Usage based' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0092')"
+                where_str += " ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Usage based' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0092')"
             else:
-                where_str += " OR ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Usage based' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0092')"
+                where_str += " OR ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Usage based' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0092')"
         if "Z0092W" in service:
             BDHead.update({"Additional target KPI":"Excursion Detection","Additional target KPI":"Max wafer Output ≤ 4%","Additional target KPI":"Max Wafer Output >4%","Additional target KPI":"Throughput","Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Contract Coverage":"7x16","Contract Coverage":"7x24"})
             if where_str == "":
-                where_str += " ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24'  OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0092W')"
+                where_str += " ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24'  OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0092W')"
             else:
-                where_str += " OR ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24'  OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0092W')"
+                where_str += " OR ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24'  OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0092W')"
         if "Z0009" in service:
             BDHead.update({"PM Quantity Credit %":"0.3","Quote Type":"Event Based","Quote Type":"Flex Event Based","Additional Target KPI":"Mean TIme Between Clean","Additional Target KPI":"Green to Green","Contract Coverage":"7x16","Contract Coverage":"7x24","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Process Parts/Kits clean, recy":"Shared"})
             if where_str == "":
-                where_str += " ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Mean TIme Between Clean' OR  SAQICO.ATGKEY = 'Green to Green'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQITE.PM_QTY_CRD = '0.3' OR SAQICO.USRPRC > SAQICO.CELPRC   OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes' OR SAQITE.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0009')"
+                where_str += " ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Mean TIme Between Clean' OR  SAQICO.ATGKEY = 'Green to Green'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQITE.PM_QTY_CRD = '0.3' OR SAQICO.USRPRC > SAQICO.CELPRC   OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0009')"
             else:
-                where_str += " OR ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Mean TIme Between Clean' OR  SAQICO.ATGKEY = 'Green to Green'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQITE.PM_QTY_CRD = '0.3' OR SAQICO.USRPRC > SAQICO.CELPRC   OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes' OR SAQITE.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0009')"
+                where_str += " OR ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Mean TIme Between Clean' OR  SAQICO.ATGKEY = 'Green to Green'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQITE.PM_QTY_CRD = '0.3' OR SAQICO.USRPRC > SAQICO.CELPRC   OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0009')"
         if "Z0091W" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes"})
             if where_str == "":
-                where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.NWPTON = 'Yes' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR  SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.PRIPER_CRCPRM_ENT = 'Yes' OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes' OR SAQITE.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0091W')"
+                where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.NWPTON = 'Yes' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR  SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0091W')"
             else:
-                where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.NWPTON = 'Yes' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR  SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.PRIPER_CRCPRM_ENT = 'Yes' OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes' OR SAQITE.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0091W')"
+                where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.NWPTON = 'Yes' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR  SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0091W')"
         if "Z0035" in service:
             BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","On Wafer Specs Input":"Manual Input(Free text)"})
             if where_str == "":
-                where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQITE.WAF_SPEC_INP = 'Manual Input(Free text)' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.PRIPER_CRCPRM_ENT = 'Yes' OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes' OR SAQITE.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035')"
+                where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQITE.WAF_SPEC_INP = 'Manual Input(Free text)' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035')"
             else:
-                where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQITE.WAF_SPEC_INP = 'Manual Input(Free text)' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.PRIPER_CRCPRM_ENT = 'Yes' OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes' OR SAQITE.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035')"
+                where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQITE.WAF_SPEC_INP = 'Manual Input(Free text)' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035')"
         if "Z0035W" in service:
             
             if where_str == "":
-                where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.WARM_HOT_IDLE < '0.3' OR SAQITE.MAX_OF_TOOLS > '0.3' OR SAQITE.IDLE_DURATION < '28' OR SAQITE.IDLE_NOTICE < '30' OR SAQITE.MISC_TERM = 'Included' OR SAQITE.IDLING_EXCEP = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.PRIPER_CRCPRM_ENT = 'Yes' OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes' OR SAQITE.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035W')"
+                where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.WARM_HOT_IDLE < '0.3' OR SAQITE.MAX_OF_TOOLS > '0.3' OR SAQITE.IDLE_DURATION < '28' OR SAQITE.IDLE_NOTICE < '30' OR SAQITE.MISC_TERM = 'Included' OR SAQITE.IDLING_EXCEP = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035W')"
             else:
-                where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.WARM_HOT_IDLE < '0.3' OR SAQITE.MAX_OF_TOOLS > '0.3' OR SAQITE.IDLE_DURATION < '28' OR SAQITE.IDLE_NOTICE < '30' OR SAQITE.MISC_TERM = 'Included' OR SAQITE.IDLING_EXCEP = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.PRIPER_CRCPRM_ENT = 'Yes' OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.LIMITED_PART_ENT = 'Yes' OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes' OR SAQITE.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035W')"
+                where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.WARM_HOT_IDLE < '0.3' OR SAQITE.MAX_OF_TOOLS > '0.3' OR SAQITE.IDLE_DURATION < '28' OR SAQITE.IDLE_NOTICE < '30' OR SAQITE.MISC_TERM = 'Included' OR SAQITE.IDLING_EXCEP = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035W')"
         if "Z0010" in service:
             BDHead.update({"Billing Type":"Fixed","Billing Cycle":"Quarterly","Billing Condition":"Shipment based","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
             if where_str == "":
-                where_str += " ((SAQICO.BILTYP = 'Fixed' OR SAQITE.BILLING_CYCLE = 'Quarterly' OR SAQITE.BILLING_CONDITION = 'Shipment based' OR SAQICO.USRPRC > SAQICO.CELPRC  OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0010')"
+                where_str += " ((SAQICO.BILTYP = 'Fixed' OR SAQITE.BILLING_CYCLE = 'Quarterly' OR SAQITE.BILLING_CONDITION = 'Shipment based' OR SAQICO.USRPRC > SAQICO.CELPRC  OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0010')"
             else:
-                where_str += " OR ((SAQICO.BILTYP = 'Fixed' OR SAQITE.BILLING_CYCLE = 'Quarterly' OR SAQITE.BILLING_CONDITION = 'Shipment based' OR SAQICO.USRPRC > SAQICO.CELPRC  OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0010')"
+                where_str += " OR ((SAQICO.BILTYP = 'Fixed' OR SAQITE.BILLING_CYCLE = 'Quarterly' OR SAQITE.BILLING_CONDITION = 'Shipment based' OR SAQICO.USRPRC > SAQICO.CELPRC  OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0010')"
         if "Z0128" in service:
             BDHead.update({"Billing Cycle":"Quarterly","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
             if where_str == "":
-                where_str += " (( SAQICO.USRPRC > SAQICO.CELPRC  OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0128')"
+                where_str += " (( SAQICO.USRPRC > SAQICO.CELPRC  OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0128')"
             else:
-                where_str += " OR (( SAQICO.USRPRC > SAQICO.CELPRC  OR SAQITE.SWPKTA = 'Excluded' OR SAQITE.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0128')"
+                where_str += " OR (( SAQICO.USRPRC > SAQICO.CELPRC  OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0128')"
         if "Z0100" in service:
             BDHead.update({"Quote Type":"Usage based"})
             if where_str == "":
@@ -1042,15 +1042,15 @@ class ViolationConditions:
         if "Z0004W" in service:
             BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Consumable":"Some Exclusions"})
             if where_str == "":
-                where_str += " ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004W')"
+                where_str += " ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004W')"
             else:
-                where_str += " OR ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004W')"
+                where_str += " OR ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004W')"
         if "Z0004-Subfab" in service:
             BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Consumable":"Some Exclusions","Non-Consumable":"Some Exclusions"})
             if where_str == "":
-                where_str += " ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004-Subfab')"
+                where_str += " ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004-Subfab')"
             else:
-                where_str += " OR ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQITE.PART_BRNDWN_ENT = 'Included' OR SAQITE.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004-Subfab')"
+                where_str += " OR ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004-Subfab')"
         
         lines = []
         annualized_items_obj = Sql.GetList("SELECT DISTINCT SAQICO.LINE FROM SAQICO (NOLOCK) JOIN SAQITE (NOLOCK) ON SAQICO.LINE = SAQITE.LINE WHERE SAQICO.QUOTE_ID = '{}' AND SAQICO.QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
@@ -1071,7 +1071,11 @@ class ViolationConditions:
                 #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
-            return 2
+            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QuoteId,RecordId))
+            if getDeviation and getDeviation.BCHDPT > 10:
+                return 1
+            else:
+                return 2
     def BDEnt(self,RecordId,service,QuoteId):
         Trace.Write("BD ENTITLEMENT")
         BDHead = {}
@@ -1178,7 +1182,11 @@ class ViolationConditions:
                 #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
-            return 2
+            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QuoteId,RecordId))
+            if getDeviation and getDeviation.BCHDPT > 10:
+                return 1
+            else:
+                return 2
     def NSDREnt(self,RecordId,service,QuoteId):
         Trace.Write("NSDR ENTITLEMENT")
         BDHead = {}
@@ -1275,7 +1283,11 @@ class ViolationConditions:
                 #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
-            return 2
+            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QuoteId,RecordId))
+            if getDeviation and getDeviation.BCHDPT > 10:
+                return 1
+            else:
+                return 2
     def RegionalBDHead(self,RecordId,service,QuoteId):
         Trace.Write("REGIONAL BD HEAD ENTITLEMENT")
         BDHead = {}
@@ -1293,13 +1305,13 @@ class ViolationConditions:
             else:
                 where_str += " OR ((SCHEDULE_PART = '98%' OR FORE CAST_REDIS_FREQ = '2 times/year') AND SERVICE_ID = 'Z0108')"
         lines = []
-        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        annualized_items_obj = Sql.GetList("SELECT DISTINCT SAQICO.LINE FROM SAQICO (NOLOCK) JOIN SAQITE (NOLOCK) ON SAQICO.LINE = SAQITE.LINE WHERE SAQICO.QUOTE_ID = '{}' AND SAQICO.QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
            lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
-        saqite_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQITE (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        if saqite_items_obj:
-           for saqite_item_obj in saqite_items_obj:
-               lines.append(saqite_item_obj.LINE)
+        # saqite_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQITE (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        # if saqite_items_obj:
+        #    for saqite_item_obj in saqite_items_obj:
+        #        lines.append(saqite_item_obj.LINE)
         
         if len(lines) != 0:
             if len(lines) == 1:
@@ -1311,7 +1323,11 @@ class ViolationConditions:
                 #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
-            return 2
+            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QuoteId,RecordId))
+            if getDeviation and getDeviation.BCHDPT > 10:
+                return 1
+            else:
+                return 2
     
     def GlobalBDHead(self,RecordId,service,QuoteId):
         Trace.Write("GLOBAL BD HEAD ENTITLEMENT")
@@ -1322,13 +1338,13 @@ class ViolationConditions:
         if "Z0108" in service:
             BDHead.update({"Unscheduled Parts 7 Day Commit":"93%","Customer Purchase Commit":"90% per part number","Customer Purchase Commit":"85% per part number"})
         lines = []
-        annualized_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        annualized_items_obj = Sql.GetList("SELECT DISTINCT SAQICO.LINE FROM SAQICO (NOLOCK) JOIN SAQITE (NOLOCK) ON SAQICO.LINE = SAQITE.LINE WHERE SAQICO.QUOTE_ID = '{}' AND SAQICO.QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
         if annualized_items_obj:
            lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
-        saqite_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQITE (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        if saqite_items_obj:
-           for saqite_item_obj in saqite_items_obj:
-               lines.append(saqite_item_obj.LINE)
+        # saqite_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQITE (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
+        # if saqite_items_obj:
+        #    for saqite_item_obj in saqite_items_obj:
+        #        lines.append(saqite_item_obj.LINE)
         
         if len(lines) != 0:
             if len(lines) == 1:
@@ -1340,7 +1356,11 @@ class ViolationConditions:
                 #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
             return 1
         else:
-            return 2
+            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QuoteId,RecordId))
+            if getDeviation and getDeviation.BCHDPT > 10:
+                return 1
+            else:
+                return 2
     def ItemApproval(self,RecordId,aprchName,service,QuoteId):
         Trace.Write("APRCHSTP NAME = "+str(aprchName))
         if aprchName == "NSDR":
