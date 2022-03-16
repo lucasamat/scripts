@@ -735,6 +735,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		"PROCESS_TYPE",
 		"GOT_CODE",
 		"PM_NAME",
+		"KIT_NUMBER",
 		"SSCM_PM_FREQUENCY",
 		"PM_FREQUENCY"
 	]
@@ -750,6 +751,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		"EQUIPMENT_DESCRIPTION",
 		"EQUIPMENT_ID",
 		"ASSEMBLY_ID",
+		"KIT_NUMBER",
 		"GREENBOOK",
 		"FABLOCATION_ID",
 		"DEVICE_NODE",
@@ -813,7 +815,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,KIT_NUMBER,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -840,7 +842,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,KIT_NUMBER,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -867,7 +869,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,KIT_NUMBER,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -894,7 +896,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,GREENBOOK,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from "+str(ObjectName)+" (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,GREENBOOK,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,KIT_NUMBER,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from "+str(ObjectName)+" (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -954,6 +956,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
 		data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
 		data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+		data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
 		data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
 		data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
 		
@@ -4359,7 +4362,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		parent_obj = Sql.GetList(
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' ) m "
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,KIT_NUMBER,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' ) m "
 		)
 		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' "
 		)
@@ -4369,7 +4372,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		parent_obj = Sql.GetList(
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True')m "
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,KIT_NUMBER,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True')m "
 		)
 		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' "
 		)
@@ -4379,7 +4382,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		parent_obj = Sql.GetList(
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,KIT_NUMBER,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -4436,6 +4439,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
 		data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
 		data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+		data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
 		data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
 		data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
 		data_list.append(data_dict)
