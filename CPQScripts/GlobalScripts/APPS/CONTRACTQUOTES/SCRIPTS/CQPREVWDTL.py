@@ -242,7 +242,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					curr_symbol = ""
 					current_obj_value = eval("col_name." + sefl_api)
 					decimal_val = 3
-					#try:
+					try:
 					Trace.Write("current_obj_value--"+str(current_obj_value))
 					curr_symbol_obj = Sql.GetFirst("select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 " + curr_index + " from "+ str(primary_objname)+ " where QUOTE_RECORD_ID = '"+ str(Quote)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'  ) ")
 					if curr_symbol_obj is not None:
@@ -255,8 +255,8 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					if current_obj_value is not None:
 						if current_obj_value != "":
 							current_obj_value = str(current_obj_value) + " " + str(curr_symbol)
-					# except:
-					# 	Trace.Write('Unable to bind Currency price')
+					except:
+						Trace.Write('Unable to bind Currency price')
 					
 					try:
 						sec_str += (
