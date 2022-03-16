@@ -65,15 +65,15 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		get_complete_list = []
 		get_vc_offerring_info = Sql.GetList(" SELECT  CONFIGURATION_STATUS,SERVICE_ID  FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and CONFIGURATION_STATUS = 'COMPLETE' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		if get_vc_offerring_info:
-		for val in get_vc_offerring_info:
-			if  get_vc_offerring_info.CONFIGURATION_STATUS:
-				status = get_vc_offerring_info.CONFIGURATION_STATUS
-				if status == "COMPLETE" and status != "":				
-					get_complete_list.append('T')
+			for val in get_vc_offerring_info:
+				if  get_vc_offerring_info.CONFIGURATION_STATUS:
+					status = get_vc_offerring_info.CONFIGURATION_STATUS
+					if status == "COMPLETE" and status != "":				
+						get_complete_list.append('T')
+					else:
+						get_complete_list.append('F')
 				else:
 					get_complete_list.append('F')
-			else:
-				get_complete_list.append('F')
 		get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		#For Tool Based Quotes[SAQTSV]		
 		get_tool_service_info = Sql.GetList("SELECT DISTINCT SERVICE_ID as SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
