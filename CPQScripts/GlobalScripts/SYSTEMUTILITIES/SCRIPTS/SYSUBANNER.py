@@ -1414,6 +1414,7 @@ def Related_Sub_Banner(
                         type_id = re.findall(quote_type_id,sub_string)
                         if type_id:
                             type_value = re.findall(quote_type_value,sub_string)
+                            type_value = type_value[0]
                             Trace.Write("type_id ---"+str(type_id)+"type_value--"+str(type_value))
                             SeventhLable = "Quote Type"
                             SeventhValue = str(type_value)
