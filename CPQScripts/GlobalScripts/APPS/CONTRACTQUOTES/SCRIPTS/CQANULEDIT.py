@@ -54,7 +54,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue10 = "NONCPI"
 				record_list.append(editvalue9)
 				record_list.append(editvalue10)
-			if(line_values.TGKPNS != 'Excluded' and line_values.TGKPNS != ''):
+			if(line_values.TGKPNS != 'Excluded' and str(line_values.TGKPNS) != ''):
 				Trace.Write("iffffff")
 				editvalue11 = "ATKNCI"
 				editvalue12 = "ATKNPI"
