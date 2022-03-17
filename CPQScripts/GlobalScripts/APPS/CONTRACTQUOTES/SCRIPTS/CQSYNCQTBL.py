@@ -1392,19 +1392,19 @@ class SyncQuoteAndCustomTables:
                         #Log.Info("""INSERT INTO SAQCBC (QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CHECKLIST_DESCRIPTION,CHECKLIST_ID,COMMENT,SERVICE_CONTRACT,SPECIALIST_REVIEW,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES('{AccountRecordId}','{UserName}',GETDATE(),'{description}','{chek_id}','','False','False','{quote_id}','{quote_rec_id}','{quote_rev_id}','{quote_rev_rec_id}')""".format(AccountRecordId=str(Guid.NewGuid()).upper(),UserName=User.UserName,quote_id = salesorg_data.get("QUOTE_ID"),quote_rec_id = salesorg_data.get("QUOTE_RECORD_ID"), quote_rev_id = salesorg_data.get("QTEREV_ID"), quote_rev_rec_id = salesorg_data.get("QTEREV_RECORD_ID"),description = field_desc,chek_id = checklist_id))
                     # Insert SAQCBC while creating quote in c4c - end A055S000P01-11413	
 
-                    cart_obj = Sql.GetFirst("SELECT CART_ID, USERID FROM CART WHERE ExternalId = '{}'".format(self.quote.CompositeNumber))
-                    if cart_obj:
-                        Sql.RunQuery("""INSERT INTO QT__QTQTMT (QUOTE_ID, QUOTE_NAME, MASTER_TABLE_QUOTE_RECORD_ID, ownerId, cartId) 
-                                VALUES 	(							
-                                    '{QuoteId}',								
-                                    '{QuoteName}',
-                                    '{QuoteRecordId}',								
-                                    {UserId},
-                                    {CartId})""".format(
-                                    CartId=cart_obj.CART_ID, UserId=cart_obj.USERID, 
-                                    QuoteRecordId=contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-                                    QuoteId=contract_quote_data.get("QUOTE_ID"),
-                                    QuoteName=contract_quote_data.get("QUOTE_NAME")))
+                    #cart_obj = Sql.GetFirst("SELECT CART_ID, USERID FROM CART WHERE ExternalId = '{}'".format(self.quote.CompositeNumber))
+                    # if cart_obj:
+                    #     Sql.RunQuery("""INSERT INTO QT__QTQTMT (QUOTE_ID, QUOTE_NAME, MASTER_TABLE_QUOTE_RECORD_ID, ownerId, cartId) 
+                    #             VALUES 	(							
+                    #                 '{QuoteId}',								
+                    #                 '{QuoteName}',
+                    #                 '{QuoteRecordId}',								
+                    #                 {UserId},
+                    #                 {CartId})""".format(
+                    #                 CartId=cart_obj.CART_ID, UserId=cart_obj.USERID, 
+                    #                 QuoteRecordId=contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+                    #                 QuoteId=contract_quote_data.get("QUOTE_ID"),
+                    #                 QuoteName=contract_quote_data.get("QUOTE_NAME")))
                     
                     # CALLING IFLOW C4C_TO_CPQ_TOOLS
                     LOGIN_CREDENTIALS = Sql.GetFirst("SELECT USER_NAME AS Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
@@ -1425,16 +1425,16 @@ class SyncQuoteAndCustomTables:
                         QuoteId_info = contract_quote_data.get('C4C_QUOTE_ID')
                         OpportunityId_info = custom_fields_detail.get("OpportunityId")
                         
-                        Log.Info("11111 QuoteId_info----> "+str(QuoteId_info))
-                        Log.Info("2222 OpportunityId_info ---->"+str(OpportunityId_info))
+                        #Log.Info("11111 QuoteId_info----> "+str(QuoteId_info))
+                        #Log.Info("2222 OpportunityId_info ---->"+str(OpportunityId_info))
                         
                         requestdata = '{\n  \"OpportunityId\": \"'+str(OpportunityId_info)+'\",\n  \"QuoteId\": \"'+str(QuoteId_info)+'\"\n,\n  \"PrimaryContactId\": \"'+str(custom_fields_detail.get("PrimaryContactId"))+'\"\n}'
-                        Trace.Write("REQUEST DATA----> "+str(requestdata))
+                        #Trace.Write("REQUEST DATA----> "+str(requestdata))
                         
                         response_SAQTMT = webclient.UploadString(str(LOGIN_CRE.URL), str(requestdata))
                         
                     payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(contract_quote_data.get('C4C_QUOTE_ID')))
-                    Log.Info("J_PrimaryContactName_CHK_J"+str(custom_fields_detail.get("PrimaryContactName")))
+                    #Log.Info("J_PrimaryContactName_CHK_J"+str(custom_fields_detail.get("PrimaryContactName")))
                     
                     if payload_json_obj:
                         contract_quote_obj = None
@@ -1444,10 +1444,10 @@ class SyncQuoteAndCustomTables:
                         payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
                         payload_json = eval(payload_json.get('Param'))
                         payload_json = payload_json.get('CPQ_Columns')
-                        Log.Info("payload_json----->"+str(payload_json))
+                        #Log.Info("payload_json----->"+str(payload_json))
                         if payload_json.get('OPPORTUNITY_ID'):
                             contract_quote_obj = Sql.GetFirst("SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID, SAQTMT.CONTRACT_VALID_FROM, SAQTMT.CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
-                            Log.Info("SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID, SAQTMT.CONTRACT_VALID_FROM, SAQTMT.CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))							
+                            #Log.Info("SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID, SAQTMT.CONTRACT_VALID_FROM, SAQTMT.CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))							
                         if payload_json.get('C4C_Opportunity_Object_ID'):
                             c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')
                             #Log.Info("c4c_opppbj_id====="+str(c4c_opppbj_id))
