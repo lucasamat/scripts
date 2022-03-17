@@ -821,11 +821,11 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							edt_str = "NO"
 						elif obj_obj in('SAQSAP','SAQGPA','SAQGPM'):
 							if obj_obj=="SAQGPA":
-								recid = QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID
+								recid = "QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"
 							elif obj_obj=="SAQGPM":
-								recid = QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID
+								recid = "QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID"
 							else:
-								recid = QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID
+								recid = "QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"
 							k = Sql.GetFirst("SELECT {} AS REC_ID FROM {} WHERE CpqTableEntryId = {}".format(recid,obj_obj,str(RECORDID[0]).split("-")[1]))
 							Trace.Write("query---->"+str(k))
 							apply_all = ''
