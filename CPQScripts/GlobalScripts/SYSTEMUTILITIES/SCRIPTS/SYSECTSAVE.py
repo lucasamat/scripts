@@ -1497,11 +1497,11 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 						update_contract_date_cov_obj_level = "UPDATE SAQSCO SET CONTRACT_VALID_FROM = '{}', CONTRACT_VALID_TO = '{}'  WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, Product.GetGlobal('contract_quote_record_id'),quote_revision_record_id)
 						Sql.RunQuery(update_contract_date_cov_obj_level)
-					import ACVIORULES
-					violationruleInsert = ACVIORULES.ViolationConditions()
-					header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTMT'")
-					if header_obj:
-						violationruleInsert.InsertAction(header_obj.RECORD_ID, Product.GetGlobal("contract_quote_record_id"), "SAQTMT")
+					# import ACVIORULES
+					# violationruleInsert = ACVIORULES.ViolationConditions()
+					# header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTMT'")
+					# if header_obj:
+					# 	violationruleInsert.InsertAction(header_obj.RECORD_ID, Product.GetGlobal("contract_quote_record_id"), "SAQTMT")
 					# import ACVIORULES
 					# violationruleInsert = ACVIORULES.ViolationConditions()
 					# header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTMT'")
