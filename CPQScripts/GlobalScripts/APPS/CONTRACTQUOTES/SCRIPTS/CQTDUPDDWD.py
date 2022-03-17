@@ -586,14 +586,17 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				header = list(xls_spare_records[0]) + ['QUOTE_RECORD_ID','QTEREV_RECORD_ID']
 				
 				self.columns = ",".join(header)
+
 				Trace.Write("colums"+str(self.columns))
 				col=self.columns
 				table_columns = col.split(",")
 				replace_col ={'CONSUMABLE/NON CONSUMABALE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY'}
 				xls_col=replace_col.get
 				table_columns = [xls_col(val,val) for val in table_columns]
+
 				self.columns = ",".join(table_columns)
-				Trace.Write("table_columns---"+str(table_columns))
+
+				Trace.Write("table_columns---"+str(self.columns))
 				modified_records = []
 				for spare_record in xls_spare_records[1:]:
 					
