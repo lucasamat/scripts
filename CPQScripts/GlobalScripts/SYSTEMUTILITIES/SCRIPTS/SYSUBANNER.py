@@ -2613,7 +2613,7 @@ def Related_Sub_Banner(
                 + "</abbr></div></div>"
             )  
     #if str(SeventhLable) != "" and str(SeventhValue) != "" and (str(TreeParam) != "Quote Information" and str(TreeParam) != "Quote Preview"):
-    if str(SeventhLable) != "" and (str(TreeParam) != "Quote Information" and str(TreeParam) != "Quote Preview"):    		
+    if str(SeventhLable) != "" and (str(TreeParam) != "Quote Information" and str(TreeParam) != "Quote Preview" and str(TreeSuperParentParam) != "Product Offerings"):    		
         sec_rel_sub_bnr += (
                 '<div class="segment_part_description_child secondary_highlight" style="display: block;"><div class="segment_part_heading_child"><abbr title="'
                 + str(SeventhLable)
@@ -2625,6 +2625,18 @@ def Related_Sub_Banner(
                 + str(SeventhValue)
                 + "</abbr></div></div>"
             ) 
+    if str(SeventhLable) != "" and str(TreeSuperParentParam) == "Product Offerings":    		
+        sec_rel_sub_bnr += (
+                '<div class="segment_part_description_child secondary_highlight" style="display: block;"><div class="quote_type_heading"><abbr title="'
+                + str(SeventhLable)
+                + '">'
+                + str(SeventhLable)
+                + "</abbr></div><div class='quote_type_value'><abbr title='"
+                + str(SeventhValue)
+                + "'>"
+                + str(SeventhValue)
+                + "</abbr></div></div>"
+            )
     if str(EightLable) != "" and str(EightValue) != "" and (str(TreeParam) != "Quote Information" and str(TreeParam) != "Quote Preview"):		
         sec_rel_sub_bnr += (
                 '<div class="segment_part_description_child secondary_highlight" style="display: block;"><div class="segment_part_heading_child"><abbr title="'
