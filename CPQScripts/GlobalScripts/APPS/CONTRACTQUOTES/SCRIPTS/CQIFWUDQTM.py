@@ -92,7 +92,7 @@ def quote_items_pricing(Qt_id):
 	if pricing_offering:
 		pricing_offering = pricing_offering + ('Z0123',)
 	if manual_pricing != 'True':
-		where_condition = " AND SAQRIT.SERVICE_ID IN {pricing_offering}".format(pricing_offering)
+		where_condition = " AND SAQRIT.SERVICE_ID IN {pricing_offering}".format(pricing_offering =pricing_offering)
 	##updating saqrit
 	Sql.RunQuery("""UPDATE SAQRIT 
 					SET NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
