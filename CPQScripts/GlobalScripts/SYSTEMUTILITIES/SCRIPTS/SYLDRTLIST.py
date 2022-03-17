@@ -1951,7 +1951,7 @@ class SYLDRTLIST:
 											)AS PVT
 										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_changes, ObjectName=ObjectName,
 													WhereString=Qustr, PivotColumns=pivot_columns,get_ttl_amt=get_ttl_amt)
-							if TreeParam == "Z0009":                        
+							if TreeParam in ("Z0009","Z0123"):                        
 								Qury_str = """
 											SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ
 											""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
