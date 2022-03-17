@@ -128,22 +128,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		#All Addon Products which require parts to be added
 		get_addon_service_info = Sql.GetList("SELECT DISTINCT SERVICE_ID as SERVICE_ID from SAQSAO(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		
-		#get pricing status from saqico
-		price_preview_status = []
-		item_covered_obj = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-		if item_covered_obj:
-			for status in item_covered_obj:
-				price_preview_status.append(status.STATUS)
-			Trace.Write("price_preview_status_CHK"+str(price_preview_status))
-			if len(price_preview_status) > 1:
-				price_bar = "acquired_status"
-			if 'ACQUIRED' in price_preview_status:
-				price_bar = "not_acquired_status"
-			else:
-				price_bar = "acquired_status"
-		else:
-			Trace.Write("NO Quote Items")
-			price_bar = "no_quote_items"
+		
 
 
 		#addon check    
@@ -183,6 +168,27 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			
 			Sql.RunQuery(update_workflow_status)
 		#AO55S000P01-17018 Starts	
+
+		#get pricing status from saqico-A055S000P01-17164 start
+		price_preview_status = []
+		item_covered_obj = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+		if item_covered_obj:
+			for status in item_covered_obj:
+				if status.STATUS:
+					price_status = status.STATUS
+					if str(price_status).upper() == "ACQUIRED":
+						price_preview_status.append('T')
+					else:
+						price_preview_status.append('F')
+				else:
+					price_preview_status.append('F')
+		else:
+			Trace.Write("NO Quote Items")
+			price_bar = "no_quote_items"
+
+		#get pricing status from saqico-A055S000P01-17164 end
+
+		
 		get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		if get_workflow_status.REVISION_STATUS == "APR-APPROVAL PENDING" and Text == "COMPLETE STAGE":
 			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)
