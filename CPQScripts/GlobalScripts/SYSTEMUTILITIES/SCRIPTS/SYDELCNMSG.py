@@ -27,9 +27,9 @@ def nativeProfileDelete(RecordId):
         Login_Password = str(LOGIN_CREDENTIALS.Password)
         Login_Domain = str(LOGIN_CREDENTIALS.Domain)
     #Trace.Write("29---------" + str(Login_Username))
-    sandboxBaseURL = "https://sandbox.webcomcpq.com"
+    rssandboxBaseURL = "https://rssandbox.webcomcpq.com"
     authenticationUrl = (
-        sandboxBaseURL
+        rssandboxBaseURL
         + "/api/rd/v1/Core/Login?username="
         + Login_Username
         + "&password="
@@ -54,11 +54,11 @@ def nativeProfileDelete(RecordId):
 
     data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""
     # authentication api token creation start
-    authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
+    authenticationapitokenUrl = "https://rssandbox.webcomcpq.com/basic/api/token"
     authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
     authRequesttoken.Method = "DELETE"
     webclienttoken = System.Net.WebClient()
-    webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+    webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
     webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
     webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
     webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
@@ -72,9 +72,9 @@ def nativeProfileDelete(RecordId):
         RecordId
     )
     #Trace.Write("188-------------datasave----" + str(datasave))
-    setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups/" + str(int(RecordId))
+    setPermissionURL = rssandboxBaseURL + "/setup/api/v1/admin/permissionGroups/" + str(int(RecordId))
     webclient = System.Net.WebClient()
-    webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+    webclient.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
     webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
     webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
     webclient.Headers.Add("X-CSRF-Token", xcrf)

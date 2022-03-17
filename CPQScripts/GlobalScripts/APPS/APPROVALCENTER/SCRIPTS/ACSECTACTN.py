@@ -3107,17 +3107,17 @@ class approvalCenter:
 					+ str(bodystr) 
 					+ "</tbody></table></body></html>"
 				)
-			# ApproveLink = """https://sandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&ACTION=APPROVEBTN&ApproveDesc=Approved&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
+			# ApproveLink = """https://rssandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&ACTION=APPROVEBTN&ApproveDesc=Approved&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
 			#     transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),
 			#     approvalid=str(getnotify.APPROVAL_RECORD_ID),
 			#     priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),
 			# )
-			# RejectLink = """https://sandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&ACTION=REJECTBTN&ApproveDesc=Rejected&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
+			# RejectLink = """https://rssandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&ACTION=REJECTBTN&ApproveDesc=Rejected&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
 			#     transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),
 			#     approvalid=str(getnotify.APPROVAL_RECORD_ID),
 			#     priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),
 			# )
-			#ViewLink = """https://sandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&#ACTION=VIEWBTN&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
+			#ViewLink = """https://rssandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&#ACTION=VIEWBTN&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
 			#    transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),
 			#    approvalid=str(getnotify.APPROVAL_RECORD_ID),
 			#    priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),

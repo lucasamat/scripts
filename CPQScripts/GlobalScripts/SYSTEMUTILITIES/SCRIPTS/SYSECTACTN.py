@@ -64,7 +64,7 @@ def nativeProfileUpdate(newdict):
 	#Login_Password = 'Welcome@123'
 	#Login_Domain = 'appliedmaterials_tst'
 
-	#URL = 'https://sandbox.webcomcpq.com'
+	#URL = 'https://rssandbox.webcomcpq.com'
 	#LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT Username,Password,Domain,URL FROM SYCONF (nolock)")
 	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0117669'")
 	if LOGIN_CREDENTIALS is not None:
@@ -73,9 +73,9 @@ def nativeProfileUpdate(newdict):
 		Login_Domain = str(LOGIN_CREDENTIALS.DOMAIN)
 		URL = str(LOGIN_CREDENTIALS.URL)
 
-		sandboxBaseURL = URL
+		rssandboxBaseURL = URL
 		authenticationUrl = (
-			sandboxBaseURL
+			rssandboxBaseURL
 			+ "/api/rd/v1/Core/Login?username="
 			+ Login_Username
 			+ "&password="
@@ -104,11 +104,11 @@ def nativeProfileUpdate(newdict):
 		data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""
 		Trace.Write("53--data-----" + str(data))
 		# authentication api token creation start
-		authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
+		authenticationapitokenUrl = "https://rssandbox.webcomcpq.com/basic/api/token"
 		authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
 		authRequesttoken.Method = "POST"
 		webclienttoken = System.Net.WebClient()
-		webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+		webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
 		webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
 		webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
 		webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
@@ -118,7 +118,7 @@ def nativeProfileUpdate(newdict):
 		Trace.Write("ACCESS TOKEN : " + accessToken)
 		
 
-		# setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
+		# setPermissionURL = rssandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
 		# Trace.Write('156-------------------------'+str(setPermissionURL))
 
 		prfname = profile_id_gen = prfid = ""
@@ -137,7 +137,7 @@ def nativeProfileUpdate(newdict):
 		
 
 
-		# setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+ str(int(prf_ID))
+		# setPermissionURL = rssandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+ str(int(prf_ID))
 		# Trace.Write('156-------------------------'+str(setPermissionURL))
 
 		datasave = """{
@@ -164,10 +164,10 @@ def nativeProfileUpdate(newdict):
 			prfdesc,
 		)
 		Trace.Write("188-------------datasave----" + str(datasave))
-		setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"
+		setPermissionURL = rssandboxBaseURL + "/setup/api/v1/admin/permissionGroups"
 		Trace.Write("261----setPermissionURL----" + str(setPermissionURL))
 		webclient = System.Net.WebClient()
-		webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+		webclient.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
 		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
 		webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
 		webclient.Headers.Add("X-CSRF-Token", xcrf)

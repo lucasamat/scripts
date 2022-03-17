@@ -311,7 +311,7 @@ def englishdoc():
 		Login_Password = str(login.PASSWORD)
 		Login_Domain = str(login.DOMAIN)
 	#example of url service
-		url = 'https://sandbox.webcomcpq.com/customapi/executescript?scriptName=CQGNRTDOCS_ENGLISH&username='+str(Login_Username)+'&password='+str(Login_Password)+'&domain='+str(Login_Domain)+''
+		url = 'https://rssandbox.webcomcpq.com/customapi/executescript?scriptName=CQGNRTDOCS_ENGLISH&username='+str(Login_Username)+'&password='+str(Login_Password)+'&domain='+str(Login_Domain)+''
 		#quoterecid=Product.Attributes.GetByName('QSTN_SYSEFL_QT_00001').GetValue()
 		#example of user autorization header
 		headers = { 'authorization': RestClient.GetBasicAuthenticationHeader(Login_Username, Login_Password+"#"+Login_Domain) }
@@ -672,7 +672,7 @@ def chinesedoc():
 		Login_Password = str(LOGIN_CREDENTIALS.PASSWORD)
 		Login_Domain = str(LOGIN_CREDENTIALS.DOMAIN)
 	#example of url service
-		url = 'https://sandbox.webcomcpq.com/customapi/executescript?scriptName=CQGNRTDOCS_CHINESE&username='+str(Login_Username)+'&password='+str(Login_Password)+'&domain='+str(Login_Domain)+''
+		url = 'https://rssandbox.webcomcpq.com/customapi/executescript?scriptName=CQGNRTDOCS_CHINESE&username='+str(Login_Username)+'&password='+str(Login_Password)+'&domain='+str(Login_Domain)+''
 		quoterecid=Product.Attributes.GetByName('QSTN_SYSEFL_QT_00001').GetValue()
 		#example of user autorization header
 		headers = { 'authorization': RestClient.GetBasicAuthenticationHeader(Login_Username, Login_Password+"#"+Login_Domain) }

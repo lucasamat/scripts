@@ -41,9 +41,9 @@ if nativeProfileUpdate == "Yes":
         Login_Username = str(LOGIN_CREDENTIALS.USER_NAME)
         Login_Password = str(LOGIN_CREDENTIALS.PASSWORD)
         Login_Domain = str(LOGIN_CREDENTIALS.DOMAIN)
-        sandboxBaseURL = str(LOGIN_CREDENTIALS.URL)
+        rssandboxBaseURL = str(LOGIN_CREDENTIALS.URL)
         authenticationUrl = (
-            sandboxBaseURL
+            rssandboxBaseURL
             + "/api/rd/v1/Core/Login?username="
             + Login_Username
             + "&password="
@@ -68,18 +68,18 @@ if nativeProfileUpdate == "Yes":
         
         data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""
         # authentication api token creation start
-        authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
+        authenticationapitokenUrl = "https://rssandbox.webcomcpq.com/basic/api/token"
         authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
         authRequesttoken.Method = "POST"
         webclienttoken = System.Net.WebClient()
-        webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+        webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
         webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
         webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
         webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
         response = webclienttoken.UploadString(str(authenticationapitokenUrl), data)
         accessToken = "Bearer " + str(response).split(":")[1].split(",")[0].replace('"', "")    
 
-        # setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
+        # setPermissionURL = rssandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
         
         prf_ID = ""            
         prfid = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
@@ -93,7 +93,7 @@ if nativeProfileUpdate == "Yes":
             prf_ID = permissionQuery.permission_id    
         
         prf_ID = newdict.get("permission_id")    
-        # setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+ str(int(prf_ID))
+        # setPermissionURL = rssandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+ str(int(prf_ID))
         
         datasave = """{
             "Id":%s,
@@ -117,9 +117,9 @@ if nativeProfileUpdate == "Yes":
             prfid,
             prfdesc,
         )    
-        setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"    
+        setPermissionURL = rssandboxBaseURL + "/setup/api/v1/admin/permissionGroups"    
         webclient = System.Net.WebClient()
-        webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+        webclient.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
         webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
         webclient.Headers.Add("X-CSRF-Token", xcrf)
@@ -133,10 +133,10 @@ elif  nativeProfileSave == "Yes":
         Login_Username = str(LOGIN_CREDENTIALS.USER_NAME)
         Login_Password = str(LOGIN_CREDENTIALS.PASSWORD)
         Login_Domain = str(LOGIN_CREDENTIALS.DOMAIN)
-        sandboxBaseURL = str(LOGIN_CREDENTIALS.URL)
+        rssandboxBaseURL = str(LOGIN_CREDENTIALS.URL)
     
         authenticationUrl = (
-            sandboxBaseURL
+            rssandboxBaseURL
             + "/api/rd/v1/Core/Login?username="
             + Login_Username
             + "&password="
@@ -165,17 +165,17 @@ elif  nativeProfileSave == "Yes":
         
         data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""    
         # authentication api token creation start
-        authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
+        authenticationapitokenUrl = "https://rssandbox.webcomcpq.com/basic/api/token"
         authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
         authRequesttoken.Method = "POST"
         webclienttoken = System.Net.WebClient()
-        webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+        webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
         webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
         webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
         webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
         response = webclienttoken.UploadString(str(authenticationapitokenUrl), data)
         accessToken = "Bearer " + str(response).split(":")[1].split(",")[0].replace('"', "")    
-        setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"    
+        setPermissionURL = rssandboxBaseURL + "/setup/api/v1/admin/permissionGroups"    
         
         datasave = """{
             
@@ -199,9 +199,9 @@ elif  nativeProfileSave == "Yes":
             profile_id_gen,
             prfid,
         )    
-        setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"    
+        setPermissionURL = rssandboxBaseURL + "/setup/api/v1/admin/permissionGroups"    
         webclient = System.Net.WebClient()
-        webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+        webclient.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
         webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
         webclient.Headers.Add("X-CSRF-Token", xcrf)

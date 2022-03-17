@@ -510,7 +510,7 @@ class SyncQuoteAndCustomTables:
                     #Log.Info("expired"+str(start_date)+"sdate---"+str(end_date))
                     created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
                     # Please set native custom field CTX tag days calculation also:
-                    # Quote Expiration Date - https://sandbox.webcomcpq.com/admin/QuotePropertyEdit.aspx?Id=27
+                    # Quote Expiration Date - https://rssandbox.webcomcpq.com/admin/QuotePropertyEdit.aspx?Id=27
                     expired_date = date.today()+ timedelta(days=365)
 
                     #A055S000P01-7866
