@@ -1514,6 +1514,9 @@ class ContractQuoteItem:
 			if quote_items_list:
 				Trace.Write("quote_items_list-"+str(quote_items_list))
 				calling_waterfall = ScriptExecutor.ExecuteGlobal("CQUPPRWLFD",{"Records":str(quote_items_list),"auto_update_flag":"True"})
+				Sql.RunQuery("""UPDATE SAQICO SET STATUS = 'ACQUIRED'
+					FROM SAQICO (NOLOCK) 
+					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId= self.contract_quote_record_id ,QuoteRevisionRecordId =self.contract_quote_revision_record_id, ServiceId= self.service_id))
 			# Sql.RunQuery("""UPDATE SAQICO 
 			# 	SET TCWISS = EXTENDED_POSS_COST,
 			# 		CNTCST = EXTENDED_POSS_COST,
