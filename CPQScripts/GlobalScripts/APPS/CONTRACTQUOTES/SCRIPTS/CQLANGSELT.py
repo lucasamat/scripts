@@ -229,7 +229,7 @@ def insert_quote_billing_plan():
 							
 							for val in get_bill_details_obj:
 								newRow = quote_get_bill_details.AddNewRow()
-								Trace.Write('BILLING_YEAR--242----'+str(val.BILLING_YEAR))
+								
 								if val.ANNUAL_BILLING_AMOUNT:
 									newRow['ANNUAL_BILLING_AMOUNT'] = val.ANNUAL_BILLING_AMOUNT
 								else:
