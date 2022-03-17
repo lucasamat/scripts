@@ -7645,22 +7645,23 @@ def GetFtsAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID):
 		x_picklistcheckobj = Sql.GetFirst(
 			"SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQGPA' AND API_NAME = '" + str(quer_value) + "'"
 		)
-		x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
-		if Dict_formation.get(quer_value) != "":
-			quer_values = str(Dict_formation.get(quer_value)).strip()
-			if str(quer_values).upper() == "TRUE":
-				quer_values = "TRUE"
-			elif str(quer_values).upper() == "FALSE":
-				quer_values = "FALSE"
-			if str(quer_values).find(",") == -1:
-				if x_picklistcheck == "TRUE":
-					ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
+		if x_picklistcheckobj:
+			x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
+			if Dict_formation.get(quer_value) != "":
+				quer_values = str(Dict_formation.get(quer_value)).strip()
+				if str(quer_values).upper() == "TRUE":
+					quer_values = "TRUE"
+				elif str(quer_values).upper() == "FALSE":
+					quer_values = "FALSE"
+				if str(quer_values).find(",") == -1:
+					if x_picklistcheck == "TRUE":
+						ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
+					else:
+						ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
 				else:
-					ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
-			else:
-				quer_values = quer_values.split(",")
-				quer_values = tuple(list(quer_values))
-				ATTRIBUTE_VALUE_STR += str(quer_value) + " in " + str(quer_values) + " and "
+					quer_values = quer_values.split(",")
+					quer_values = tuple(list(quer_values))
+					ATTRIBUTE_VALUE_STR += str(quer_value) + " in " + str(quer_values) + " and "
 
 	data_list = []
 	rec_id = "SYOBJ-1177055"
