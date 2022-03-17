@@ -7212,7 +7212,7 @@ def GetAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 
 
 def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
-    Trace.Write("recid---"+str(recid))
+	Trace.Write("recid---"+str(recid))
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
