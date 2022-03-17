@@ -898,7 +898,7 @@ def insert_spare_doc(parts_list):
 		#Trace.Write('93------')
 		Log.Info('SAQDOC---documents-')
 		#A055S000P01-17165 start
-		update_workflow_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD PREPARING QUOTE DOCUMENTS',WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=contract_quote_record_id,RevisionRecordId = quote_revision_record_id)			
+		update_workflow_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-PREPARING QUOTE DOCUMENTS',WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=contract_quote_record_id,RevisionRecordId = quote_revision_record_id)			
 					
 		Sql.RunQuery(update_workflow_status)
 
