@@ -29,27 +29,27 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 			record_list.append(allvalue_edit2)
 			record_list.append(allvalue_edit3)	
 			#nonstandard consuamble logic is pending
-			if(line_values.BPTTKP == 'Yes' and str(line_values.TGKPNS) != ''):
+			if(line_values.BPTTKP == 'Yes' and str(line_values.BPTTKP) != ''):
 				editvalue1 ="BPTKCI"
 				editvalue2 ="BPTKPI"
 				record_list.append(editvalue1)
 				record_list.append(editvalue2)
-			if(line_values.ATGKEY != 'Excluded' and str(line_values.TGKPNS) != ''):
+			if(line_values.ATGKEY != 'Excluded' and str(line_values.ATGKEY) != ''):
 				editvalue3 = "ATGKEC"
 				editvalue4 = "ATGKEP"
 				record_list.append(editvalue3)
 				record_list.append(editvalue4)
-			if(line_values.NWPTON == 'Yes' and str(line_values.TGKPNS) != ''):
+			if(line_values.NWPTON == 'Yes' and str(line_values.NWPTON) != ''):
 				editvalue5 = "NWPTOC"
 				editvalue6 = "NWPTOP"
 				record_list.append(editvalue5)
 				record_list.append(editvalue6)
-			if(line_values.CNSMBL_ENT == 'Some Inclusions' and str(line_values.TGKPNS) != ''):
+			if(line_values.CNSMBL_ENT == 'Some Inclusions' and str(line_values.CNSMBL_ENT) != ''):
 				editvalue7 = "CONSCP"
 				editvalue8 = "CONSPI"
 				record_list.append(editvalue7)
 				record_list.append(editvalue8)
-			if(line_values.NCNSMB_ENT == 'Included' and str(line_values.TGKPNS) != ''):
+			if(line_values.NCNSMB_ENT == 'Included' and str(line_values.NCNSMB_ENT) != ''):
 				editvalue9 = "NONCCI"
 				editvalue10 = "NONCPI"
 				record_list.append(editvalue9)
@@ -60,7 +60,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue12 = "ATKNPI"
 				record_list.append(editvalue11)
 				record_list.append(editvalue12)
-			if(line_values.AMNCPE == 'ACTIVE' and str(line_values.TGKPNS) != ''):
+			if(line_values.AMNCPE == 'ACTIVE' and str(line_values.AMNCPE) != ''):
 				editvalue13="AMNCCI"
 				editvalue14="AMNPPI"
 				record_list.append(editvalue13)
