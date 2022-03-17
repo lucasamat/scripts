@@ -1074,9 +1074,13 @@ class SyncQuoteAndCustomTables:
                     ##Updating the Document currency into the SAQTRV TABLE....
                     ##A055S000P01-12754 code starts...
                     if custom_fields_detail.get('SalesOrgID') and custom_fields_detail.get('Division') and custom_fields_detail.get("STPAccountID") and custom_fields_detail.get('DistributionChannel') :
+                        Log.Info("salesorg_1"+str(custom_fields_detail.get('SalesOrgID')))
+                        Log.Info("salesorg_2"+str(custom_fields_detail.get('Division')))
+                        Log.Info("salesorg_3"+str(custom_fields_detail.get('STPAccountID')))
+                        Log.Info("salesorg_4"+str(custom_fields_detail.get('DistributionChannel')))
                         salesorg_account_obj = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM SASAAC (NOLOCK) WHERE SALESORG_ID = '{}' AND DIVISION_ID = '{}' AND ACCOUNT_ID = '{}' AND DISTRIBUTIONCHANNEL_ID = '{}' ".format(custom_fields_detail.get('SalesOrgID'),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
                         Log.Info("SELECT CURRENCY,CURRENCY_RECORD_ID FROM SASAAC (NOLOCK) WHERE SALESORG_ID = '{}' AND DIVISION_ID = '{}' AND ACCOUNT_ID = '{}' AND DISTRIBUTIONCHANNEL_ID = '{}' ".format(custom_fields_detail.get('SalesOrgID'),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
-						if salesorg_account_obj:
+                        if salesorg_account_obj:
                             Log.Info("salesorg_account_obj"+str(salesorg_account_obj.CURRENCY))
                             salesorg_data.update({"DOC_CURRENCY":salesorg_account_obj.CURRENCY , 
                                                 "DOCCURR_RECORD_ID":salesorg_account_obj.CURRENCY_RECORD_ID,
