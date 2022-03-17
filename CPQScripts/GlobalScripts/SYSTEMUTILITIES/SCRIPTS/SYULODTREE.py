@@ -7,19 +7,19 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 # from CPQScripts.GlobalScripts.SYSTEMUTILITIES.SCRIPTS.SYULODTRND import Product
-import SYCNGEGUID as CPQID
+#import SYCNGEGUID as CPQID
 import Webcom.Configurator.Scripting.Test.TestProduct
 
 from SYDATABASE import SQL
-from datetime import date
+#from datetime import date
 import re
 
 Sql = SQL()
 
-c_total = 0
-g_total = 0
+#c_total = 0
+#g_total = 0
 
-get_ohold_pricing_status =get_delivery_nodes =  ''
+get_ohold_pricing_status = ''
 #suppress delivery node for other quote
 # try:
 # 	get_delivery_nodes = Sql.GetFirst("SELECT SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_ID ='{}' and SERVICE_ID='Z0108'" .format(Quote.CompositeNumber))
@@ -29,8 +29,7 @@ get_ohold_pricing_status =get_delivery_nodes =  ''
 # 	pass
 #suppress delivery node - end
 #node visibility query based on sales employee
-login_user= User.Id
-get_node_visibility = Sql.GetFirst("SELECT CP.permission_id from  CPQ_PERMISSIONS (NOLOCK) CP  INNER JOIN USERS_PERMISSIONS (NOLOCK) UP ON CP.PERMISSION_ID = UP.PERMISSION_ID  where user_id ='{login_user}' and CP.permission_id = '319'".format(login_user=login_user))
+get_node_visibility = Sql.GetFirst("SELECT CP.permission_id from  CPQ_PERMISSIONS (NOLOCK) CP  INNER JOIN USERS_PERMISSIONS (NOLOCK) UP ON CP.PERMISSION_ID = UP.PERMISSION_ID  where user_id ='{login_user}' and CP.permission_id = '319'".format(login_user=User.Id))
 try:
 	get_pricing_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
 	if get_pricing_status:	
@@ -54,8 +53,7 @@ class TreeView:
 		"""Use for initialization"""
 		self.exceptMessage = ""
 
-	def CommonLeftTreeView(self):		
-		objR_obj = []
+	def CommonLeftTreeView(self):
 		Wh_API_NAME = ""
 		try:
 			current_prod = Product.Name
@@ -469,7 +467,7 @@ class TreeView:
 				TabName = "Quote"
 				#Trace.Write("elseee"+str(tab_name))
 			crnt_prd_val = "QT"
-		quote_record_id = quote_no = ""
+		#quote_record_id = quote_no = ""
 		if tab_name == "Quote" and current_prod == "Sales":
 			#Trace.Write("SET GLOBAL----")
 			try:
@@ -1594,14 +1592,14 @@ class TreeView:
 					#where_string = " ACAPMA.APRTRXOBJ_RECORD_ID = '{contract_quote_record_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{quote_id}%' ".format(contract_quote_record_id  = Quote.GetGlobal("contract_quote_record_id"),quote_id = quote_id)
 					#A055S000P01-3618 code starts..
 					elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' and str(ProductName).upper() == "SALES":
-						quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+						#quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						temp = ""
 						#temp = where_string.split("AND")[1]
 						where_string += temp + " AND ACACHR.APPROVAL_ID LIKE '%{quote_id}%' ORDER BY ACACHR.APPROVAL_ROUND DESC,ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID, ACACHR.APPROVAL_ID""".format(quote_id  = quote_id)
 					#A055S000P01-3618 code ends..
 					if str(ObjName).strip() == "SAQSAO":             
 						where_string = where_string
-						quote_record_id = Quote.GetGlobal("contract_quote_record_id")                        
+						#quote_record_id = Quote.GetGlobal("contract_quote_record_id")                        
 						where_string += """ AND QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(contract_quote_record_id  = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id)
 					elif str(ObjName).strip() == "SYPRTB":
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
