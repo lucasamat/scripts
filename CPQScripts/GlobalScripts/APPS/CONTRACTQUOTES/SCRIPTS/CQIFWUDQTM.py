@@ -11,7 +11,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import sys
 import re
 import System.Net
-import SYCNGEGUID as CPQID
+#import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 from System import Convert
 import re
