@@ -1787,7 +1787,7 @@ class SyncQuoteAndCustomTables:
                                     sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = '"+str(mamtrl_record.CLM_CONTRACT_TYPE)+"', CLM_TEMPLATE_NAME = '"+str(mamtrl_record.CLM_TEMPLATE_NAME)+"' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
                                     Sql.RunQuery(sow_update_query)							
                             if not service_ids:
-                                Log.Info("non_service_docutype"+str(quote_revision_id)+"====="+str(quote_record_id))
+                                #Log.Info("non_service_docutype"+str(quote_revision_id)+"====="+str(quote_record_id))
                                 ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':""})
                             if service_ids:								
                                 SAQTSV_start = time.time()								
