@@ -380,7 +380,6 @@ class ContractQuoteItem:
 					WHERE ISNULL(SAQICO.EQUIPMENT_RECORD_ID,'') = ''
 					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, ancillary_join = ancillary_join, ancillary_where = ancillary_where)
 			)			
-
 			# Update Tool Config
 			Sql.RunQuery("""UPDATE SAQICO
 						SET SAQICO.TOLCFG = MAEQUP.TOOL_CONFIGURATION		
@@ -1497,10 +1496,26 @@ class ContractQuoteItem:
 					if get_voucher_value:
 						Sql.RunQuery("UPDATE SAQICO SET {pricing_field_gl} = '{voucher_amt}', {pricing_field_doc} = '{doc_curr}'  FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND GRNBOK = '{grnbok}' ".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id ,voucher_amt = get_voucher_value, grnbok = record.GREENBOOK, pricing_field_doc = pricing_field_doc, pricing_field_gl =pricing_field_gl, doc_curr = float(get_voucher_value) * float(self.exchange_rate)  ))
 		elif self.service_id == 'Z0123':
+			Sql.RunQuery("""UPDATE SAQICO 
+							SET QUANTITY = SAQSCN.QUANTITY 
+							FROM SAQICO (NOLOCK) 
+								INNER JOIN SAQRIT (NOLOCK) SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK  = SAQICO.GREENBOOK AND SAQRIT.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID AND SAQICO.LINE = SAQRIT.LINE
+								INNER JOIN SAQSCN (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCN.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQSCN.QTEREV_RECORD_ID AND SAQRIT.SERVICE_ID = SAQSCN.SERVICE_ID AND SAQRIT.GREENBOOK  = SAQSCN.GREENBOOK AND SAQRIT.EQUIPMENT_ID = SAQSCN.EQUIPMENT_ID AND SAQSCN.POSS_NSO_PART_ID = SAQRIT.POSS_NSO_PART_ID
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId= self.contract_quote_record_id ,QuoteRevisionRecordId =self.contract_quote_revision_record_id, ServiceId= self.service_id))
+			
+			Sql.RunQuery("""UPDATE SAQRIT 
+							SET QUANTITY = SAQRIT.QUANTITY 
+							FROM SAQRIT (NOLOCK) 
+								INNER JOIN (SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID,LINE, SUM(ISNULL(SAQICO.QUANTITY,1)) AS QTY
+								FROM SAQICO (NOLOCK)
+								WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' 
+								GROUP BY QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID,LINE) SAQICO
+								ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK  = SAQICO.GREENBOOK AND SAQICO.LINE = SAQRIT.LINE
+							WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId= self.contract_quote_record_id ,QuoteRevisionRecordId =self.contract_quote_revision_record_id, ServiceId= self.service_id))
 			quote_items_list = [] 
 			get_line_items_values = Sql.GetList("""SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID, SAQRIT.SERVICE_ID, SAQRIT.GREENBOOK, SAQRIT.FABLOCATION_ID, SAQRIT.EQUIPMENT_ID, SAQSCN.POSS_NSO_PART_ID, SAQSCN.EXTENDED_POSS_PRICE, SAQSCN.EXTENDED_POSS_COST,SAQRIT.LINE  
 							FROM SAQSCN (NOLOCK) 
-							INNER JOIN SAQRIT ON SAQRIT.QUOTE_RECORD_ID = SAQSCN.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQSCN.QTEREV_RECORD_ID AND SAQRIT.SERVICE_ID = SAQSCN.SERVICE_ID AND SAQRIT.GREENBOOK  = SAQSCN.GREENBOOK AND SAQRIT.EQUIPMENT_ID = SAQRIT.EQUIPMENT_ID AND SAQSCN.POSS_NSO_PART_ID = SAQRIT.POSS_NSO_PART_ID
+							INNER JOIN SAQRIT ON SAQRIT.QUOTE_RECORD_ID = SAQSCN.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQSCN.QTEREV_RECORD_ID AND SAQRIT.SERVICE_ID = SAQSCN.SERVICE_ID AND SAQRIT.GREENBOOK  = SAQSCN.GREENBOOK AND SAQRIT.EQUIPMENT_ID = SAQSCN.EQUIPMENT_ID AND SAQSCN.POSS_NSO_PART_ID = SAQRIT.POSS_NSO_PART_ID
 			WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}' """.format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id, pricing_field_doc= pricing_field_doc,pricing_field_gl = pricing_field_gl, exch_rate = float(self.exchange_rate) ))
 			quote_items_list = []
 			for line in get_line_items_values:
@@ -2913,7 +2928,7 @@ class ContractQuoteItem:
 							{ObjectName}.SERVICE_ID,
 							{ObjectName}.SERVICE_RECORD_ID,
 							null as PROFIT_CENTER,
-							IQ.QUANTITY,
+							null as QUANTITY,
 							SAQTRV.QUOTE_ID,
 							SAQTRV.QUOTE_RECORD_ID,
 							SAQTMT.QTEREV_ID,
@@ -2940,7 +2955,7 @@ class ContractQuoteItem:
 							IQ.BUSINESS_UNIT
 						FROM (
 							SELECT 
-								QUOTE_RECORD_ID, QTEREV_RECORD_ID, SERVICE_ID, GREENBOOK, FABLOCATION_ID, EQUIPMENT_ID, QUANTITY, POSS_NSO_PART_ID, BUSINESS_UNIT
+								QUOTE_RECORD_ID, QTEREV_RECORD_ID, SERVICE_ID, GREENBOOK, FABLOCATION_ID, EQUIPMENT_ID, POSS_NSO_PART_ID, BUSINESS_UNIT
 							FROM SAQSCN (NOLOCK)
 							WHERE SAQSCN.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCN.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSCN.SERVICE_ID = '{ServiceId}' 
 							GROUP BY QUOTE_RECORD_ID, QTEREV_RECORD_ID, SERVICE_ID, GREENBOOK, FABLOCATION_ID, EQUIPMENT_ID, QUANTITY, POSS_NSO_PART_ID, BUSINESS_UNIT
