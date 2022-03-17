@@ -3734,6 +3734,7 @@ class SYLDRTLIST:
 			Colcount = len(CountCol) + 2
 			
 			remove_localstorage = " localStorage.removeItem('"+str(table_id)+"_SortColumn'); localStorage.removeItem('"+str(table_id)+"_SortColumnOrder'); " if str(RECORD_ID)=="SYOBJR-00005" else ""
+			sendKitId = "equipment_id:localStorage.getItem('openedKit')," if RECORD_ID == "SYOBJR-95557" else ""
 			filter_class = "#Act_" + str(table_id)
 			filter_control_function += (
 				'$("'
@@ -3748,7 +3749,7 @@ class SYLDRTLIST:
 				+ str(table_id)
 				+ '_PageCountValue").val(); PageInform = "1___" + PerPage + "___" + PerPage; cpq.server.executeScript("SYLDRTLIST", {"REC_ID":table_id, "ATTRIBUTE_NAME": '
 				+ str(list(eval(Columns)))
-				+ ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList, "ACTION" : "PRODUCT_ONLOAD_FILTER",  "SortColumn":SortColumn, "SortColumnOrder": SortColumnOrder, "PerPage": PerPage, "PageInform": PageInform, "PR_CURR": PR_CURR, "TP": TP ,"SUBTAB":"'
+				+ ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList,'+str(sendKitId)+' "ACTION" : "PRODUCT_ONLOAD_FILTER",  "SortColumn":SortColumn, "SortColumnOrder": SortColumnOrder, "PerPage": PerPage, "PageInform": PageInform, "PR_CURR": PR_CURR, "TP": TP ,"SUBTAB":"'
 				+ str(SubTab)
 				+'"}, function(data) { debugger; console.log(data);$("'
 				+ str(table_ids)
