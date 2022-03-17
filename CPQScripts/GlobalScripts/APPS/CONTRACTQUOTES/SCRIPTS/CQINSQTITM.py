@@ -1872,7 +1872,7 @@ class ContractQuoteItem:
 				)
 		
 		##update quantity in SAQRIT
-		if self.quote_service_entitlement_type not in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + SCH. MAIN. EVENT','OFFERING + PM EVENT'):
+		if self.quote_service_entitlement_type not in ('OFFERING + EQUIPMENT','OFFERING+EQUIPMENT','OFRNG+EQUIP','OFFERING + SCH. MAIN. EVENT','OFFERING + PM EVENT','OFFERING + EQUIPMENT + NSO'):
 			self._quote_item_qty_update()
 
 	def _quote_items_entitlement_insert(self, update=False):		
