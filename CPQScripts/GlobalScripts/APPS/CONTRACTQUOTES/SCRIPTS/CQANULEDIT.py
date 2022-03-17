@@ -39,7 +39,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue4 = "ATGKEP"
 				record_list.append(editvalue3)
 				record_list.append(editvalue4)
-			if(line_values.NWPTON == 'Yes' and str(line_values.NWPTON) != ''):
+			if(line_values.NWPTON == 'Yes'):
 				editvalue5 = "NWPTOC"
 				editvalue6 = "NWPTOP"
 				record_list.append(editvalue5)
