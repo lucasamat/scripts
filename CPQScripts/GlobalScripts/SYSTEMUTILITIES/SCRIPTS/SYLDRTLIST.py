@@ -7741,6 +7741,10 @@ class SYLDRTLIST:
 							Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(TopTreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeSuperParentParam)+"' AND GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
 					elif str(RECORD_ID) == "SYOBJR-00031":
 						Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '"+str(TopTreeSuperParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' "
+					elif RECORD_ID == "SYOBJR-95557":
+						unique_id = str(equipment_id).split('-')[1].lstrip('0')
+						get_bom = Sql.GetFirst("SELECT ASSEMBLY_ID,EQUIPMENT_ID,KIT_ID,KIT_NUMBER,PM_ID,SERVICE_ID FROM SAQSKP where CpqTableEntryId = '"+str(unique_id)+"' ")
+						Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(get_bom.SERVICE_ID)+"' AND ASSEMBLY_ID = '"+str(get_bom.ASSEMBLY_ID)+"' AND EQUIPMENT_ID = '"+str(get_bom.EQUIPMENT_ID)+"' AND KIT_ID = '"+str(get_bom.KIT_ID)+"' AND KIT_NUMBER = '"+str(get_bom.KIT_NUMBER)+"' AND PM_ID = '"+str(get_bom.PM_ID)+"' "
 					else:                                        
 						Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 
@@ -8950,6 +8954,10 @@ class SYLDRTLIST:
 								Qustr = " where "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(TopTreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeSuperParentParam)+"' AND GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
 						elif str(RECORD_ID) == "SYOBJR-00031":
 							Qustr = " where "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '"+str(TopTreeSuperParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' "
+						elif RECORD_ID == "SYOBJR-95557":
+							unique_id = str(equipment_id).split('-')[1].lstrip('0')
+							get_bom = Sql.GetFirst("SELECT ASSEMBLY_ID,EQUIPMENT_ID,KIT_ID,KIT_NUMBER,PM_ID,SERVICE_ID FROM SAQSKP where CpqTableEntryId = '"+str(unique_id)+"' ")
+							Qustr = " where "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(get_bom.SERVICE_ID)+"' AND ASSEMBLY_ID = '"+str(get_bom.ASSEMBLY_ID)+"' AND EQUIPMENT_ID = '"+str(get_bom.EQUIPMENT_ID)+"' AND KIT_ID = '"+str(get_bom.KIT_ID)+"' AND KIT_NUMBER = '"+str(get_bom.KIT_NUMBER)+"' AND PM_ID = '"+str(get_bom.PM_ID)+"' "
 						else:
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 				
