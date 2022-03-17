@@ -44,7 +44,7 @@ def periods_insert(contract_quote_record_id,quote_revision_record_id):
 			periods_insert = Sql.RunQuery(Query)
 
 def  insert_qty_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id,QTY):
-	delete_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id)
+	#delete_deliverydetails(rec_id,QuoteRecordId,rev_rec_id,Service_id)
 	#get_delivery_schedule_details = Sql.GetFirst("SELECT * from SAQSPD where QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and QTEREVSPT_RECORD_ID = '{rec_id}'".format(contract_rec_id= QuoteRecordId,qt_rev_id = rev_rec_id,rec_id=rec_id) )
 	#if get_delivery_schedule_details:
 		#delete_delivery_schedules = Sql.RunQuery("DELETE  FROM SAQSPD where QUOTE_RECORD_ID = '{contract_rec_id}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and QTEREVSPT_RECORD_ID = '{rec_id}'".format(contract_rec_id= QuoteRecordId,qt_rev_id = rev_rec_id,rec_id=rec_id))
