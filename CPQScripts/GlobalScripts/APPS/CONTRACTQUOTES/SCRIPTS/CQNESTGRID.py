@@ -2819,25 +2819,38 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 	lookup_str = ",".join(list(lookup_disply_list))
 	
+	if str(TreeTopSuperParentParam)=="Comprehensive Services":
+		columns = "PM_ID,SERVICE_ID,KIT_ID,KIT_NUMBER,QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID "
+		objname = "SAQGPM"
+	else:
+		columns = "ASSEMBLY_ID,EQUIPMENT_ID,PM_ID,SERVICE_ID,KIT_ID,KIT_NUMBER,QTEREVPME_RECORD_ID"
+		objname = "SAQGPA"
 	Parent_event = Sql.GetFirst(
-		"select ASSEMBLY_ID,EQUIPMENT_ID,PM_ID,SERVICE_ID,KIT_ID,KIT_NUMBER,QTEREVPME_RECORD_ID from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND CpqTableEntryId = '{CpqTableEntryId}' ".format(
+		"select "+str(columns)+" from "+str(objname)+" (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND CpqTableEntryId = '{CpqTableEntryId}' ".format(
 			ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
 			RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 			EquipmentId=recid,CpqTableEntryId=CpqTableEntryId
 		)
 	)
 	if Parent_event:
-		
-		child_obj_recid = Sql.GetList(
-			"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,KIT_NAME,KIT_NUMBER,TKM_FLAG from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND ASSEMBLY_ID = '"
-			+ str(Parent_event.ASSEMBLY_ID)
-			+ "' AND EQUIPMENT_ID = '"+str(Parent_event.EQUIPMENT_ID)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND KIT_ID = '"+str(Parent_event.KIT_ID)+"' AND KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QTEREVPME_RECORD_ID)+"' )m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)
-		)
-		QueryCountObj = Sql.GetFirst(
-		"select count(CpqTableEntryId) as cnt from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND ASSEMBLY_ID = '"
-			+ str(Parent_event.ASSEMBLY_ID)
-			+ "' AND EQUIPMENT_ID = '"+str(Parent_event.EQUIPMENT_ID)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND KIT_ID = '"+str(Parent_event.KIT_ID)+"' AND KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QTEREVPME_RECORD_ID)+"' "
-		)
+		if str(objname)=="SAQGPA":
+			child_obj_recid = Sql.GetList(
+				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,KIT_NAME,KIT_NUMBER,TKM_FLAG from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND ASSEMBLY_ID = '"
+				+ str(Parent_event.ASSEMBLY_ID)
+				+ "' AND EQUIPMENT_ID = '"+str(Parent_event.EQUIPMENT_ID)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND KIT_ID = '"+str(Parent_event.KIT_ID)+"' AND KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QTEREVPME_RECORD_ID)+"' )m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)
+			)
+			QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND ASSEMBLY_ID = '"
+				+ str(Parent_event.ASSEMBLY_ID)
+				+ "' AND EQUIPMENT_ID = '"+str(Parent_event.EQUIPMENT_ID)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND KIT_ID = '"+str(Parent_event.KIT_ID)+"' AND KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QTEREVPME_RECORD_ID)+"' "
+			)
+		else:
+			child_obj_recid = Sql.GetList(
+				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,KIT_NAME,KIT_NUMBER,TKM_FLAG from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND KIT_ID = '"+str(Parent_event.KIT_ID)+"' AND KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID)+"' )m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)
+			)
+			QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND KIT_ID = '"+str(Parent_event.KIT_ID)+"' AND KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID)+"' "
+			)
 		chld_list = []
 		QueryCount = ""
 		if QueryCountObj is not None:
