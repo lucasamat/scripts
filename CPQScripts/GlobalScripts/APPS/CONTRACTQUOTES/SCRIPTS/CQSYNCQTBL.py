@@ -2047,12 +2047,12 @@ class SyncQuoteAndCustomTables:
 											previous_index = 0
 											count=0
 											while count<=len(value):
-												records = value[previous_index:count+1000]
+												equipment_records = value[previous_index:count+1000]
 												previous_index = count+1000
-												Log.Info("records"+str(records))
+												Log.Info("equipment_records"+str(equipment_records))
 												count = count + 1000
-												quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-												Log.Info("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+												quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = equipment_records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+												Log.Info("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = equipment_records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 												quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_id,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 												quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
 												#Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
