@@ -187,31 +187,31 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)
 			Sql.RunQuery(update_workflow_status)
 		#AO55S000P01-17018 Ends
-		#workflow status bar update status -- A055S000P01-17166
-		get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS,CLM_AGREEMENT_NUM FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-		
-		if get_workflow_status:
-			if get_workflow_status.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED":
-				#A055S000P01-17165 started
-				update_legal_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS ='LGL-PREPARING LEGAL SOW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)
-				Sql.RunQuery(update_legal_status)
-				#A055S000P01-17165 end
-			elif get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
-				status = "CONFIGURE"
-			elif get_workflow_status.WORKFLOW_STATUS == "PRICING REVIEW":
-				status = "PRICING REVIEW"
-			elif get_workflow_status.WORKFLOW_STATUS == "PRICING":
-				status = "PRICING"
-			elif get_workflow_status.WORKFLOW_STATUS == "APPROVALS":
-				status = "APPROVALS"
-			elif get_workflow_status.WORKFLOW_STATUS == "LEGAL SOW":
-				status = "LEGAL SOW"
-			elif get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS":
-				status = "QUOTE DOCUMENTS"
-			elif get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":
-				status = "CLEAN BOOKING CHECKLIST"
-			else:
-				status = "BOOKED"
+	#workflow status bar update status -- A055S000P01-17166
+	get_workflow_status = Sql.GetFirst("SELECT WORKFLOW_STATUS,REVISION_STATUS,CLM_AGREEMENT_NUM FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+	
+	if get_workflow_status:
+		if get_workflow_status.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED":
+			#A055S000P01-17165 started
+			update_legal_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS ='LGL-PREPARING LEGAL SOW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)
+			Sql.RunQuery(update_legal_status)
+			#A055S000P01-17165 end
+		elif get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
+			status = "CONFIGURE"
+		elif get_workflow_status.WORKFLOW_STATUS == "PRICING REVIEW":
+			status = "PRICING REVIEW"
+		elif get_workflow_status.WORKFLOW_STATUS == "PRICING":
+			status = "PRICING"
+		elif get_workflow_status.WORKFLOW_STATUS == "APPROVALS":
+			status = "APPROVALS"
+		elif get_workflow_status.WORKFLOW_STATUS == "LEGAL SOW":
+			status = "LEGAL SOW"
+		elif get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS":
+			status = "QUOTE DOCUMENTS"
+		elif get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":
+			status = "CLEAN BOOKING CHECKLIST"
+		else:
+			status = "BOOKED"
 		if str(get_workflow_status.REVISION_STATUS) == "LGL-PREPARING LEGAL SOW" and str(get_workflow_status.CLM_AGREEMENT_NUM) == "":
 			error_msg = "You will not be able to complete the stage until the Legal SoW in CLM is executed"
 	if quote_item_insert == 'yes' and Text == "COMPLETE STAGE":
