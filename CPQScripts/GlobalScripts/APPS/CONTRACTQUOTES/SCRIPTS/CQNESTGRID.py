@@ -964,6 +964,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 	
 	hyper_link = []
 	hyper_link.append(key_column)
+	hyper_link.append('PM_FREQUENCY')
 	table_header += "<tr>"
 	table_header += (
 		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
@@ -987,10 +988,11 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 				+ "</abbr></th>"
 			)
 		elif hyper_link is not None and invs in hyper_link:            
+			data_formatter = "PMFrequencyBulkEditHyperLink" if invs=="PM_FREQUENCY" else "EquipHyperLinkTreeLink"
 			table_header += (
 				'<th data-field="'
 				+ str(invs)
-				+ '" data-filter-control="input" data-title-tooltip="'+str(qstring)+'" data-formatter="EquipHyperLinkTreeLink" data-sortable="true"'+ str(qstring)+'"><abbr title="'
+				+ '" data-filter-control="input" data-title-tooltip="'+str(qstring)+'" data-formatter="'+str(data_formatter)+'" data-sortable="true"'+ str(qstring)+'"><abbr title="'
 				+ str(qstring)
 				+ '">'
 				+ str(qstring)
