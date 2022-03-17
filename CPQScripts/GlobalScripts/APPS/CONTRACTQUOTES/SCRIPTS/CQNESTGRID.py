@@ -7212,6 +7212,7 @@ def GetAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 
 
 def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
+    Trace.Write("recid---"+str(recid))
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
@@ -7268,9 +7269,9 @@ def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 	lookup_str = ",".join(list(lookup_disply_list))
 	Parent_Equipmentid = Sql.GetFirst(
-		"""select EQUIPMENT_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{CurrRecId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'
+		"""select EQUIPMENT_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and EQUIPMENT_ID = '{recid}' and QTEREV_RECORD_ID = '{RevisionRecordId}'
 		""".format(
-			ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), CurrRecId=CURR_REC_ID
+			ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=recid
 		)
 	)
 	if Parent_Equipmentid:
