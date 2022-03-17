@@ -91,7 +91,7 @@ def quote_items_pricing(Qt_id):
 		# Price Bench Marking - End
 	if pricing_offering:
 		pricing_offering = pricing_offering + ('Z0123',)
-	if manual_pricing == 'True':
+	if manual_pricing != 'True':
 		where_condition = " AND SAQRIT.SERVICE_ID IN {pricing_offering}".format(pricing_offering)
 	##updating saqrit
 	Sql.RunQuery("""UPDATE SAQRIT 
