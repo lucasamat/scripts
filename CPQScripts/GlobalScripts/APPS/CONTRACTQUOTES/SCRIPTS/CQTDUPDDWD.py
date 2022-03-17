@@ -584,6 +584,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			xls_spare_records = list(sheet_data.Value)
 			if xls_spare_records:
 				header = list(xls_spare_records[0]) + ['QUOTE_RECORD_ID','QTEREV_RECORD_ID']
+				Trace.Write("colums"+str(self.columns))
 				self.columns = ",".join(header)
 				modified_records = []
 				for spare_record in xls_spare_records[1:]:
