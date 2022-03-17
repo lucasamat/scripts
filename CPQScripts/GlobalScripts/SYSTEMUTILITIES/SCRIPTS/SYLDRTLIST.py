@@ -456,7 +456,7 @@ class SYLDRTLIST:
 															contract_quote_record_id,SubTab,TreeParam, quote_revision_record_id, start, end))
 					
 					try:
-						if TreeParam not in ("Z0009","Z0123"):
+						if TreeParam not in ("Z0009"):
 							get_year_max = Sql.GetFirst("SELECT max(CpqTableEntryId) as cpqid,SUM("+get_ttl_amt+") as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' GROUP BY GREENBOOK,SERVICE_ID,EQUIPMENT_ID")
 							get_total_amt = Sql.GetFirst("SELECT  EQUIPMENT_ID,GREENBOOK,"+get_ttl_amt+" as billval,ANNUAL_BILLING_AMOUNT from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' and CpqTableEntryId = '"+str(get_year_max.cpqid)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' GROUP BY EQUIPMENT_ID,SERVICE_ID,ANNUAL_BILLING_AMOUNT,"+get_ttl_amt+",GREENBOOK")
 							get_diff = get_total_amt.ANNUAL_BILLING_AMOUNT-get_year_max.billval
