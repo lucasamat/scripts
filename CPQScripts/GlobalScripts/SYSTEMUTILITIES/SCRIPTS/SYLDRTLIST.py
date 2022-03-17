@@ -1941,11 +1941,12 @@ class SYLDRTLIST:
 								else:
 									Qustr += " AND QTEREV_RECORD_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(quote_revision_record_id,billing_date_column[0], billing_date_column[-1])
 							Trace.Write(str(TreeParam)+'--TreeParam---Qustr---1925--'+str(Qustr))
-							pivot_query_str = """
+							if TreeParam == "Z0123":
+								pivot_query_str = """
 										SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
 										AS ROW, *
 											FROM (
-												SELECT 
+												SELECT LINE,
 													{Columns}                                           
 												FROM {ObjectName}
 												{WhereString}
@@ -1957,6 +1958,23 @@ class SYLDRTLIST:
 											)AS PVT
 										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_changes, ObjectName=ObjectName,
 													WhereString=Qustr, PivotColumns=pivot_columns,get_ttl_amt=get_ttl_amt)
+							else:
+								pivot_query_str = """
+											SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
+											AS ROW, *
+												FROM (
+													SELECT 
+														{Columns}                                           
+													FROM {ObjectName}
+													{WhereString}
+												) AS IQ
+												PIVOT
+												(
+													SUM({get_ttl_amt})
+													FOR BILLING_DATE IN ({PivotColumns})
+												)AS PVT
+											""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_changes, ObjectName=ObjectName,
+														WhereString=Qustr, PivotColumns=pivot_columns,get_ttl_amt=get_ttl_amt)
 							if TreeParam == "Z0009":                        
 								Qury_str = """
 											SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ
