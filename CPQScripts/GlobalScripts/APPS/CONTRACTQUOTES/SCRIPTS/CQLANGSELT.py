@@ -975,7 +975,7 @@ def language_select():
 	sec_str =  ''
 	get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 	if get_quote_status:
-		if str(get_quote_status.REVISION_STATUS).upper() in ("APR-APPROVED","OPD PREPARING QUOTE DOCUMENTS"):
+		if str(get_quote_status.REVISION_STATUS).upper() in ("APR-APPROVED","OPD-PREPARING QUOTE DOCUMENTS"):
 			Trace.Write("If")
 			sec_str += ('<div id="container">')
 			sec_str += (
