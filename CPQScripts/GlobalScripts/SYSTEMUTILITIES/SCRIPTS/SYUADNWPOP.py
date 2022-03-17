@@ -2454,7 +2454,7 @@ def POPUPLISTVALUEADDNEW(
 						+ "</th>"
 					)
 			sec_str += '</tr></thead><tbody class ="user_id" ></tbody></table>'
-			sec_str += '<div id="nso_footer"></div>'
+			sec_str += '<div id="nso_addnew_footer"></div>'
 			values_list = ""
 			values_lists = ""
 			a_test = []
