@@ -2132,7 +2132,7 @@ def Related_Sub_Banner(
             FourthLable = "Total Amt"
             FourthValue = decimal_format.format(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR))+" "+ curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
             FifthLable = "Total Margin Pct"
-            FifthValue = decimal_format.format(float(get_quote_details.TOTAL_MARGIN_PERCENT))+" "+ curr if str(get_quote_details.TOTAL_MARGIN_PERCENT) != '' else decimal_format.format(float("0.00"))+" %"
+            FifthValue = decimal_format.format(float(get_quote_details.TOTAL_MARGIN_PERCENT))+" "+ curr if str(get_quote_details.TOTAL_MARGIN_PERCENT) != '' else decimal_format.format(float("0.00"))+"%"
         elif get_quote_details:
             Trace.Write("subTabName_CHK "+str(subTabName))
             if subTabName == "Items":
