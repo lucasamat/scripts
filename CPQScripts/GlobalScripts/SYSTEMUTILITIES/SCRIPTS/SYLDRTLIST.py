@@ -454,7 +454,7 @@ class SYLDRTLIST:
 														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND BILLING_YEAR= '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'
 														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
 															contract_quote_record_id,SubTab,TreeParam, quote_revision_record_id, start, end))
-					Trace.Write(''+str())
+					
 					try:
 						if TreeParam not in ("Z0009","Z0123"):
 							get_year_max = Sql.GetFirst("SELECT max(CpqTableEntryId) as cpqid,SUM("+get_ttl_amt+") as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' GROUP BY GREENBOOK,SERVICE_ID,EQUIPMENT_ID")
