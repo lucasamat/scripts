@@ -91,6 +91,11 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		if related_list_obj:			
 			table_columns = eval(related_list_obj.COLUMNS)
 			Trace.Write("table_columns"+str(table_columns))
+			replace_col ={'MATPRIGRP_ID':'Consumable/NonConsumable','CUSTOMER_ACCEPT_PART':'Customer will accept W/6K Part','CUSTOMER_ANNUAL_QUANTITY' :'Customer Annual Commit'}
+			xls_col=replace_col.get
+			table_columns = [xls_col(val,val) for val in replace_col]
+			Trace.Write("table_columns_after"+str(table_columns))
+
 			if (self.tree_param) == 'Z0108' or (self.tree_param) == 'Z0110':
 				col=table_columns
 				if (self.tree_param) == 'Z0108':
