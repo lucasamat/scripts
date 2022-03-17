@@ -6,6 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 
+from ntpath import join
 import re
 import datetime
 from SYDATABASE import SQL
@@ -54,6 +55,12 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 	def get_results(self, table_total_rows=0, colums='*'):		
 		start = 1
 		end = 1000
+		All_value=colums.split(",")
+		Trace.Wrtite(str(All_value))
+		replace_col ={'CONSUMABLE/NON CONSUMABALE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY'}
+		xls_col=replace_col.get
+		All_value = [xls_col(val,val) for val in All_value]
+		colums=','.join(All_value)
 		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))				
 		while start < table_total_rows:
 			query_string_with_pagination = """
@@ -92,10 +99,10 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 			table_columns = eval(related_list_obj.COLUMNS)
 			Trace.Write("table_columns"+str(table_columns))
 
-			#replace_col ={'MATPRIGRP_ID':'Consumable/NonConsumable','CUSTOMER_ACCEPT_PART':'Customer will accept W/6K Part','CUSTOMER_ANNUAL_QUANTITY' :'Customer Annual Commit'}
-			#xls_col=replace_col.get
-			#table_columns = [xls_col(val,val) for val in table_columns]
-			#Trace.Write("table_columns_after"+str(table_columns))
+			replace_col ={'MATPRIGRP_ID':'CONSUMABLE/NON CONSUMABALE','CUSTOMER_ACCEPT_PART':'CUSTOMER WILL ACCPET W/6K PART','CUSTOMER_ANNUAL_QUANTITY' :'CUSTOMER ANNUAL COMMIT'}
+			xls_col=replace_col.get
+			table_columns = [xls_col(val,val) for val in table_columns]
+			Trace.Write("table_columns_after"+str(table_columns))
 
 			if (self.tree_param) == 'Z0108' or (self.tree_param) == 'Z0110':
 				col=table_columns
