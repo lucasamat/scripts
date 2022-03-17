@@ -229,7 +229,7 @@ def insert_quote_billing_plan():
 							
 							for val in get_bill_details_obj:
 								newRow = quote_get_bill_details.AddNewRow()
-								newRow['ANNUAL_BILLING_AMOUNT'] =  val.ANNUAL_BILLING_AMOUNT if val.ANNUAL_BILLING_AMOUNT else ""
+								newRow['ANNUAL_BILLING_AMOUNT'] =  val.ANNUAL_BILLING_AMOUNT if val.ANNUAL_BILLING_AMOUNT else 0.00
 								newRow['BILLING_TYPE'] = get_billing_types
 								newRow['EQUIPMENT_ID'] =  val.EQUIPMENT_ID
 								newRow['GREENBOOK'] = val.GREENBOOK
