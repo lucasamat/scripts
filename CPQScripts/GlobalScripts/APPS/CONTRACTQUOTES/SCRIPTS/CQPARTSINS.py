@@ -43,7 +43,7 @@ class SyncFPMQuoteAndHanaDatabase:
         self.columns = re.sub(r',,',',',self.columns)
         Log.Info("Columns--->"+str(self.columns))
         Log.Info("Values---->"+str(self.records))
-        #Log.Info("TempTableName--->"+str(spare_parts_temp_table_name))
+        Log.Info("TempTableName--->"+str(spare_parts_temp_table_name))
         #Trace.Write("Spare_part_insert")
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
@@ -51,7 +51,7 @@ class SyncFPMQuoteAndHanaDatabase:
             #spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_id)+"'' ' ")
             temp_table_count = SqlHelper.GetFirst("SELECT count(*) as CNT FROM {}".format(str(spare_parts_temp_table_name)))
             Log.Info("TempTablecount--->"+str(temp_table_count.CNT))
-            '''Log.Info("saqspt+++"+str("""
+            Log.Info("saqspt+++"+str("""
                             INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,STPACCOUNT_ID, SHPACCOUNT_ID,GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
                                 CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID,
@@ -156,8 +156,8 @@ class SyncFPMQuoteAndHanaDatabase:
 		                        CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
 		                        TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
                                 TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
-                                {GLOBALCURR} as GLOBAL_CURRENCY,
-                                {GLOBALCURR_REC} as GLOBAL_CURRENCY_RECORD_ID,
+                                '{GLOBALCURR}' as GLOBAL_CURRENCY,
+                                '{GLOBALCURR_REC}' as GLOBAL_CURRENCY_RECORD_ID,
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
                             JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
@@ -173,7 +173,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                         GLOBALCURR=self.global_curr,
                                         GLOBALCURR_REC=self.global_curr_recid
                                     )
-            ))'''
+            ))
             Sql.RunQuery("""
                             INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,PROD_INSP_MEMO,SHELF_LIFE,PRICING_STATUS,STPACCOUNT_ID, SHPACCOUNT_ID,GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
