@@ -2849,7 +2849,26 @@ class SYLDRTLIST:
 						)
 						
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(TopTreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeSuperParentParam)+"' AND GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' "
-				
+				elif RECORD_ID == "SYOBJR-95557":
+					unique_id = str(equipment_id).split('-')[1].lstrip('0')
+					get_bom = Sql.GetFirst("SELECT ASSEMBLY_ID,EQUIPMENT_ID,KIT_ID,KIT_NUMBER,PM_ID,SERVICE_ID FROM SAQSKP where CpqTableEntryId = '"+str(unique_id)+"' ")
+					Qury_str = (
+						"select DISTINCT top "
+						+ str(PerPage)
+						+ " * from ( select ROW_NUMBER() OVER(order by CpqTableEntryId"
+						+ ") AS ROW, * from "
+						+ str(ObjectName)
+						+ " (nolock) "
+						+ str(Qustr)
+						+ " AND SERVICE_ID = '"+str(get_bom.SERVICE_ID)+"' AND ASSEMBLY_ID = '"+str(get_bom.ASSEMBLY_ID)+"' AND EQUIPMENT_ID = '"+str(get_bom.EQUIPMENT_ID)+"' AND KIT_ID = '"+str(get_bom.KIT_ID)+"' AND KIT_NUMBER = '"+str(get_bom.KIT_NUMBER)+"' AND PM_ID = '"+str(get_bom.PM_ID)+"') m where m.ROW BETWEEN "
+						+ str(Page_start)
+						+ " and "
+						+ str(Page_End)
+						+ ""
+					)
+					
+					QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(get_bom.SERVICE_ID)+"' AND ASSEMBLY_ID = '"+str(get_bom.ASSEMBLY_ID)+"' AND EQUIPMENT_ID = '"+str(get_bom.EQUIPMENT_ID)+"' AND KIT_ID = '"+str(get_bom.KIT_ID)+"' AND KIT_NUMBER = '"+str(get_bom.KIT_NUMBER)+"' AND PM_ID = '"+str(get_bom.PM_ID)+"' "
+					
 				try:
 					if str(RECORD_ID)!="SYOBJR-00005": # restricted Query_obj for SYOBJR-00005 since the values are modified in Scripting
 						Query_Obj = Sql.GetList(str(Qury_str))
@@ -5281,7 +5300,7 @@ class SYLDRTLIST:
 		)
 
 	def MDYNMICSQLOBJECTFILTER(
-		self, RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder,  PR_CURR, TP ,SubTab,line_item
+		self, RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder,  PR_CURR, TP ,SubTab,line_item,equipment_id
 	):
 		obj_obj1 = ""
 		price_status = []
@@ -9799,6 +9818,6 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
 		RECORD_ID = "-".join(RECORD_ID.split("_")[:2])
 		ApiResponse = ApiResponseFactory.JsonResponse(
 			ObjSYLDRTLIST.MDYNMICSQLOBJECTFILTER(
-				RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder, PR_CURR, TP,subTab,line_item
+				RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder, PR_CURR, TP,subTab,line_item,equipment_id
 			)
 		)
