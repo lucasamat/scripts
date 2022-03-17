@@ -229,11 +229,7 @@ def insert_quote_billing_plan():
 							
 							for val in get_bill_details_obj:
 								newRow = quote_get_bill_details.AddNewRow()
-								
-								if val.ANNUAL_BILLING_AMOUNT:
-									newRow['ANNUAL_BILLING_AMOUNT'] = val.ANNUAL_BILLING_AMOUNT
-								else:
-									newRow['ANNUAL_BILLING_AMOUNT'] = ''
+								newRow['ANNUAL_BILLING_AMOUNT'] =  val.ANNUAL_BILLING_AMOUNT if val.ANNUAL_BILLING_AMOUNT else ""
 								newRow['BILLING_TYPE'] = get_billing_types
 								newRow['EQUIPMENT_ID'] =  val.EQUIPMENT_ID
 								newRow['GREENBOOK'] = val.GREENBOOK
@@ -250,9 +246,6 @@ def insert_quote_billing_plan():
 									newRow['MONTH_2'] = val.MONTH_2
 								else:
 									val.MONTH_2 =''
-									
-									
-									
 								if val.MONTH_3:
 									newRow['MONTH_3'] = val.MONTH_3
 								else:
