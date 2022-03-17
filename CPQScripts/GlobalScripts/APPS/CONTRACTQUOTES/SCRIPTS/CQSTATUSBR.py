@@ -140,7 +140,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
-					status = "APPROVAL PENDING"
+					status = "APPROVALS"
 				#AO55S000P01-17018 ends
 			#workflow status bar update status -- A055S000P01-17166
 			get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
