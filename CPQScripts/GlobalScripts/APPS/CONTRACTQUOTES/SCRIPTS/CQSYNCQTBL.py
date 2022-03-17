@@ -2050,6 +2050,7 @@ class SyncQuoteAndCustomTables:
 												equipment_records = value[previous_index:count+1000]
 												previous_index = count+1000
 												Log.Info("equipment_records"+str(equipment_records))
+												equipment_records = (','.join(equipment_records))
 												count = count + 1000
 												quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = equipment_records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 												Log.Info("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = equipment_records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
