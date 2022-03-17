@@ -10565,7 +10565,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			"SAQSCO", str(par.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)
 		)
 		data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>") 
-		data_dict["EQUIPMENT_CATEGORY_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_CATEGORY_DESCRIPTION) + '">' + str(par.EQUIPMENT_CATEGORY_DESCRIPTION) + "</abbr>") 
+		data_dict["EQUIPMENTCATEGORY_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + '">' + str(par.EQUIPMENT_CATEGORY_DESCRIPTION) + "</abbr>") 
 		data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>")
 		data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>") 
 		data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>") 
