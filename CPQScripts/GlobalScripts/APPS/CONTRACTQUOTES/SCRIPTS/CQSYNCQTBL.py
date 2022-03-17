@@ -1985,15 +1985,7 @@ class SyncQuoteAndCustomTables:
                                                                     JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME WHERE ISNULL(SERIAL_NO, '') <> '' AND FABLOCATION_ID = '{FabLocationId}'
                                                                     ) A
                                                                 """.format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id,salesId=get_sales_org_data.SALESORG_ID,salesname=get_sales_org_data.SALESORG_NAME,salesrecordid=get_sales_org_data.SALESORG_RECORD_ID))
-                                    Log.Info("""
-                                                INSERT SAQFEQ
-                                                (QTEREV_RECORD_ID,QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID,TEMP_TOOL, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-                                            SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-                                                SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,'' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, '{salesId}'as SALESORG_ID, '{salesname}' as SALESORG_NAME, '{salesrecordid}' as SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,KPU, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID,'False' as TEMP_TOOL 
-                                                FROM MAEQUP (NOLOCK)
-                                                JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME WHERE ISNULL(SERIAL_NO, '') <> '' AND FABLOCATION_ID = '{FabLocationId}'
-                                                ) A
-                                            """.format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id,salesId=get_sales_org_data.SALESORG_ID,salesname=get_sales_org_data.SALESORG_NAME,salesrecordid=get_sales_org_data.SALESORG_RECORD_ID))
+                                    
                                     SAQFEQ_end = time.time()									
                                 fab_equip_assem_start_time = time.time()
                                 #Log.Info("fab_equip_assem_start_time start ==> "+str(fab_equip_assem_start_time))
@@ -2040,24 +2032,23 @@ class SyncQuoteAndCustomTables:
                                     #temp_tool =service_level_equipment_json_data.get('TEMP_TOOL')
                                     coverd_object_tool_dates.append([equipment_id,start_date,end_date,service_id,Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")])
                                 records = ', '.join(map(str, [str(tuple(equipment_record)) for equipment_record in coverd_object_tool_dates])).replace("None","null").replace("'","''")
-                                Log.Info("covered_object_data_log"+str(covered_object_data))
+                                #Log.Info("covered_object_data_log"+str(covered_object_data))
                                 #covered object insert
                                 if covered_object_data:
                                     for service_id, value in covered_object_data.items():
                                         #Trace.Write("service_id"+str(service_id))
                                         #Trace.Write("value"+str(value))
                                         if len(value) >= 1000:
-                                            Log.Info("===========>>> "+str(len(value)))
+                                            #Log.Info("===========>>> "+str(len(value)))
                                             previous_index = 0
                                             count=0
                                             while count<=len(value):
                                                 equipment_records = value[previous_index:count+1000]
                                                 previous_index = count+1000
-                                                Log.Info("equipment_records"+str(equipment_records))
+                                                #Log.Info("equipment_records"+str(equipment_records))
                                                 equipment_records = (','.join(equipment_records))
                                                 count = count + 1000
                                                 quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = equipment_records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
-                                                Log.Info("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = equipment_records,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
                                                 quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_id,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
                                                 quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
                                                 #Log.Info("quote_fab_equipments_record_id@@@@@@@"+str(len(quote_fab_equipments_record_id)))
@@ -2079,7 +2070,7 @@ class SyncQuoteAndCustomTables:
                                                                     },
                                                                 )
                                         else:
-                                            Log.Info("value_equipmentsinsideelse"+str(len(value)))
+                                           #Log.Info("value_equipmentsinsideelse"+str(len(value)))
                                             elements = (','.join(value))
                                             quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = elements,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
                                             quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_id,quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
