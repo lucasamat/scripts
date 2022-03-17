@@ -8106,7 +8106,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 	#     else: 
 	Columns = [
 		"QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID",
-		"EQUIPMENT_CATEGORY_DESCRIPTION",
+		"EQUIPMENTCATEGORY_DESCRIPTION",
 		"EQUIPMENT_ID",
 		"SERIAL_NO",
 		"CUSTOMER_TOOL_ID",
@@ -8524,7 +8524,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		data_dict["SNDFBL_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.SNDFBL_ID) + "</abbr>") 
 		data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>") 
 		data_dict["SERIAL_NO"] = ('<abbr id ="" title="' + str(par.SERIAL_NO) + '">' + str(par.SERIAL_NO) + "</abbr>") 
-		data_dict["EQUIPMENT_CATEGORY_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_CATEGORY_DESCRIPTION) + '">' + str(par.EQUIPMENT_CATEGORY_DESCRIPTION) + "</abbr>") 
+		data_dict["EQUIPMENTCATEGORY_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + '">' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + "</abbr>") 
 		data_dict["CUSTOMER_TOOL_ID"] = ('<abbr id ="" title="' + str(par.CUSTOMER_TOOL_ID) + '">' + str(par.CUSTOMER_TOOL_ID) + "</abbr>") 
 		data_dict["EQUIPMENT_STATUS"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_STATUS) + '">' + str(par.EQUIPMENT_STATUS) + "</abbr>") 
 		data_dict["MNT_PLANT_ID"] = ('<abbr id ="" title="' + str(par.MNT_PLANT_ID) + '">' + str(par.MNT_PLANT_ID) + "</abbr>") 
@@ -10191,7 +10191,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			if TreeTopSuperParentParam == "Product Offerings":
 				if TreeParam == "Receiving Equipment":
 					parent_obj = Sql.GetList(
-						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_CATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION,WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where  QUOTE_RECORD_ID = '"
+						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION,WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where  QUOTE_RECORD_ID = '"
 						+ str(ContractRecordId)
 						+ "' and QTEREV_RECORD_ID = '"
 						+ str(RevisionRecordId)
@@ -10222,7 +10222,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 					else:
 						equipment_column = " EQUIPMENTCATEGORY_ID "
 					parent_obj = Sql.GetList(
-						"SELECT TOP "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_CATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+						"SELECT TOP "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 						+ str(ContractRecordId)
 						+ "' and QTEREV_RECORD_ID = '"
 						+ str(RevisionRecordId)
@@ -10565,7 +10565,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			"SAQSCO", str(par.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)
 		)
 		data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>") 
-		data_dict["EQUIPMENTCATEGORY_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + '">' + str(par.EQUIPMENT_CATEGORY_DESCRIPTION) + "</abbr>") 
+		data_dict["EQUIPMENTCATEGORY_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + '">' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + "</abbr>") 
 		data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>")
 		data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>") 
 		data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>") 
