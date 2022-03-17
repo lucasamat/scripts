@@ -56,7 +56,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		start = 1
 		end = 1000
 		All_value=colums.split(",")
-		Trace.Wrtite(str(All_value))
+		Trace.Write(str(All_value))
 		replace_col ={'CONSUMABLE/NON CONSUMABALE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY'}
 		xls_col=replace_col.get
 		All_value = [xls_col(val,val) for val in All_value]
