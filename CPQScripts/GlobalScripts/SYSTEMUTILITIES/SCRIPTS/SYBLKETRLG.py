@@ -616,6 +616,8 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	TreeParam = Product.GetGlobal("TreeParam")
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
+	if "table_event_parent" in CLICKEDID:
+		CLICKEDID = "SYOBJR_95555_0975E1E2_9D30_4928_AB0A_4DA54537A67A"
 	clicked = CLICKEDID.split("_")
 	Trace.Write("clicked---"+str(clicked))
 	obj_id = clicked[2] + "-" + clicked[3] + "-" + clicked[4] + "-" + clicked[5] + "-" + clicked[6]
@@ -817,8 +819,14 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 					else:
 						if quote_status.REVISION_STATUS=='APR-APPROVED':
 							edt_str = "NO"
-						elif obj_obj in('SAQSAP','SAQGPA'):
-							k = Sql.GetFirst("SELECT {} AS REC_ID FROM {} WHERE CpqTableEntryId = {}".format('QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID' if obj_obj=="SAQGPA" else 'QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID',obj_obj,str(RECORDID[0]).split("-")[1]))
+						elif obj_obj in('SAQSAP','SAQGPA','SAQGPM'):
+							if obj_obj=="SAQGPA":
+								recid = QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID
+							elif obj_obj=="SAQGPM":
+								recid = QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID
+							else:
+								recid = QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID
+							k = Sql.GetFirst("SELECT {} AS REC_ID FROM {} WHERE CpqTableEntryId = {}".format(recid,obj_obj,str(RECORDID[0]).split("-")[1]))
 							Trace.Write("query---->"+str(k))
 							apply_all = ''
 							if len(list(RECORDID)) > 1:
