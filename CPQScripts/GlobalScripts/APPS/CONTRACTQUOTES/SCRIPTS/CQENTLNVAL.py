@@ -88,7 +88,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
 		if str(get_ent_val).upper() == "OFFERING + EQUIPMENT":
 			level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
-		elif str(get_ent_val).upper() == "OFFERING + GREENBOOK + GR EQUI":
+		elif str(get_ent_val).upper() in ("OFFERING + GREENBOOK + GR EQUI","OFFERING + KIT","OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT"):
 			level_name = 'OFFERING FAB GREENBOOK LEVEL'
 		else:
 			level_name = 'OFFERING LEVEL'
