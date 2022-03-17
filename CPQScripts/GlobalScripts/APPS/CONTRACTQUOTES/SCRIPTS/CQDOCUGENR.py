@@ -915,7 +915,7 @@ def submit_to_customer(doc_rec_id):
 			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'APR-SUBMITTED TO CUSTOMER' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 			Sql.RunQuery(update_revision_status)	
 	return True
-#A055S000P01-17166 start
+#A055S000P01-17165 start
 def customer_accepted(doc_rec_id):
 	Trace.Write("cm to this acceptedfunction=====")		
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
@@ -927,7 +927,7 @@ def customer_accepted(doc_rec_id):
 			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER ACCEPTED' , WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 			Sql.RunQuery(update_revision_status)	
 	return True
-#A055S000P01-17166 end
+
 def customer_rejected(doc_rec_id,REJECT_COMMENT):
 	Trace.Write("cm to this rejectedfunction=====")
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
@@ -939,10 +939,10 @@ def customer_rejected(doc_rec_id,REJECT_COMMENT):
 	if output_doc_query:
 		if str(output_doc_query.DATE_REJECTED) != "":
 			Trace.Write("DATE_REJ"+str(output_doc_query.DATE_REJECTED))
-			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CUSTOMER REJECTED',WORKFLOW_STATUS = 'QUOTE DOCUMENTS',MEMO = '{memo}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),memo=REJECT_COMMENT)
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER REJECTED',WORKFLOW_STATUS = 'QUOTE DOCUMENTS',MEMO = '{memo}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),memo=REJECT_COMMENT)
 			Sql.RunQuery(update_revision_status)	
 	return True
-
+#A055S000P01-17165 end
 def save_document_description(doc_desc_val,doc_rec_id):
 	Trace.Write("cm to this savefunction=====")	
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")	
