@@ -1945,7 +1945,7 @@ class SYLDRTLIST:
 										SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
 										AS ROW, *
 											FROM (
-												SELECT LINE,
+												SELECT 
 													{Columns}                                           
 												FROM {ObjectName}
 												{WhereString}
