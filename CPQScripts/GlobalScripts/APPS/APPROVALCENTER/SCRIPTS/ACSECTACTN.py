@@ -245,7 +245,7 @@ class approvalCenter:
 					if GetCurStatus:
 						
 						MainObjUpdateQuery = """UPDATE SAQTRV SET
-							REVISION_STATUS = 'APR-APPROVED' AND WORKFLOW_STATUS = 'APPROVALS'
+							REVISION_STATUS = 'APR-APPROVED',WORKFLOW_STATUS = 'APPROVALS'
 							WHERE {primaryKey} = '{Primaryvalue}' """.format(
 							statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 							ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -499,8 +499,8 @@ class approvalCenter:
 			if GetCurStatus:
 				
 				MainObjUpdateQuery = """UPDATE {ObjName} SET
-					{ApiName} = '{statusUpdate}'
-					WHERE {primaryKey} = '{Primaryvalue}' AND WORKFLOW_STATUS = 'APPROVALS'""".format(
+					{ApiName} = '{statusUpdate}',WORKFLOW_STATUS = 'APPROVALS'
+					WHERE {primaryKey} = '{Primaryvalue}'""".format(
 					statusUpdate = "REJECTED",
 					ObjName="SAQTRV",
 					ApiName="REVISION_STATUS",
@@ -1213,8 +1213,8 @@ class approvalCenter:
 				if GetCurStatus:
 					
 					MainObjUpdateQuery = """UPDATE SAQTRV SET
-						REVISION_STATUS = 'PRI-APPROVAL PENDING'
-						WHERE {primaryKey} = '{Primaryvalue}' AND WORKFLOW_STATUS = 'APPROVALS'""".format(
+						REVISION_STATUS = 'APR-APPROVAL PENDING',WORKFLOW_STATUS = 'APPROVALS'
+						WHERE {primaryKey} = '{Primaryvalue}' """.format(
 						statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 						ObjName=str(GetCurStatus.OBJECT_NAME),
 						ApiName=str(GetCurStatus.API_NAME),
@@ -1352,8 +1352,8 @@ class approvalCenter:
 			if GetCurStatus:
 				
 				MainObjUpdateQuery = """UPDATE SAQTRV SET
-					REVISION_STATUS = 'PRI-APPROVAL PENDING'
-					WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}' AND WORKFLOW_STATUS = 'APPROVALS'""".format(
+					REVISION_STATUS = 'PRI-APPROVAL PENDING',WORKFLOW_STATUS = 'APPROVALS'
+					WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}'""".format(
 					statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 					ObjName=str(GetCurStatus.OBJECT_NAME),
 					ApiName=str(GetCurStatus.API_NAME),
@@ -1486,8 +1486,8 @@ class approvalCenter:
 						)
 						if GetCurStatus:
 							MainObjUpdateQuery = """UPDATE SAQTRV SET
-							REVISION_STATUS = 'APR-RECALLED'
-							WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}' AND WORKFLOW_STATUS = 'APPROVALS' """.format(
+							REVISION_STATUS = 'APR-RECALLED',WORKFLOW_STATUS = 'APPROVALS'
+							WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}' """.format(
 									statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 									ObjName=str(GetCurStatus.OBJECT_NAME),
 									ApiName=str(GetCurStatus.API_NAME),
