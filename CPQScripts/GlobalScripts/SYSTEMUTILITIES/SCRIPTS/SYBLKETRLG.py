@@ -908,7 +908,6 @@ def remove_html_tags(text):
 
 
 def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,ALLVALUES1,ALLVALUES2,ALLVALUES3,DEL_PN,ADD_PN,SELECTALL,offering_description,delivery_schedules):
-	Trace.Write('@911 entering save function')
 	Sql = SQL()
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -937,6 +936,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
 		item_lines_record_ids = []
+		obj_name = "SAQGPM" if "table_event_parent" in CLICKEDID and str(TreeSuperParentParam) == "Z0009" else obj_name
 		if (obj_name in ('SAQSAP','SAQRSP','SAQSPT','SAQGPA','SAQGPM','SAQRIS','SAQRDS') and (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeSuperParentParam in ('Comprehensive Services','Complementary Products') or (TreeSuperTopParentParam == "Comprehensive Services") or (TreeParam == 'Quote Items') or (TreeTopSuperParentParam == "Comprehensive Services"))) and not (TITLE == 'QUANTITY' and obj_name == 'SAQRSP'):
 			selected_rows = selectPN if selectPN else selected_rows
 			qury_str = ""
@@ -1033,7 +1033,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			#Trace.Write("SELECT * FROM " + str(obj_name) + " (NOLOCK) WHERE " + str(objh_head) + " = '" + str(rec) + "'")
 			sql_obj = SqlHelper.GetFirst("SELECT * FROM  " + str(obj_name) + "  WHERE " + str(objh_head) + " = '" + str(rec) + "'")
 			
-			Trace.Write("1035====="+str(obj_name))
 			if obj_name == 'SAQICO':
 				quote_id = sql_obj.QUOTE_ID
 				item_lines_record_ids.append(sql_obj.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID)
@@ -1327,7 +1326,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				elif str(TreeSuperTopParentParam)=="Comprehensive Services":
 					Sql.RunQuery("""UPDATE SAQGPA SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}' AND GOT_CODE = '{got_code}' AND PM_ID = '{pm_id}' and {rec_name} = '{rec_id}' """.format(column=TITLE,value= ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeTopSuperParentParam,greenbook=TreeSuperParentParam,got_code=TreeParentParam,pm_id=TreeParam,qury_str=qury_str,rec_name=objh_head,rec_id=sql_obj.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID))
 			elif obj_name == "SAQGPM":
-				Trace.Write('@1329 SAQGPM'+str(TreeSuperParentParam))
 				if str(TreeSuperParentParam)=="Z0009":
 					Sql.RunQuery("""UPDATE SAQGPM SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' AND GREENBOOK = '{greenbook}' AND GOT_CODE = '{got_code}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value= ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id='Z0009',greenbook=TreeParentParam,got_code=TreeParam,qury_str=qury_str,rec_name=objh_head,rec_id=sql_obj.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID))
 			else:
