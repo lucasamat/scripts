@@ -3184,7 +3184,8 @@ class TreeView:
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 									+ str(ParRecId)
 									+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)								
+								)
+								
 							else:
 								#Trace.Write("else Z0009")
 								findSubChildAvailable = Sql.GetList(
@@ -3276,22 +3277,22 @@ class TreeView:
 												+ str(NodeText)
 												+ "'"
 											)
-											# SubChildData = self.getChildFromParentObj(
-											# 	NodeText,
-											# 	NodeType,
-											# 	NodeName,
-											# 	RecAttValue,
-											# 	nodeId,
-											# 	ParRecId,
-											# 	DynamicQuery,
-											# 	ObjectName,
-											# 	RecId,
-											# 	where_string,
-											# 	PageRecId,
-											# 	ObjectRecId,
-											# 	NodeApiName,
-											# 	ordersBy,
-											# )
+											SubChildData = self.getChildFromParentObj(
+												NodeText,
+												NodeType,
+												NodeName,
+												RecAttValue,
+												nodeId,
+												ParRecId,
+												DynamicQuery,
+												ObjectName,
+												RecId,
+												where_string,
+												PageRecId,
+												ObjectRecId,
+												NodeApiName,
+												ordersBy,
+											)
 										else:
 											if NodeNameValue != "":
 												Node_name = NodeNameValue
@@ -3317,22 +3318,21 @@ class TreeView:
 											Subwhere_string = str(where_string)
 											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)		
 											if ACTION != 'ADDNEW':
-												pass
-												# SubChildData = self.getChildOne(
-												# 	SubNodeType,
-												# 	SubNodeName,
-												# 	RecAttValue,
-												# 	nodeId,
-												# 	NodeText,
-												# 	SubParRecId,
-												# 	subDynamicQuery,
-												# 	ObjectName,
-												# 	RecId,
-												# 	Subwhere_string,
-												# 	PageRecId,
-												# 	ObjectRecId,
-												# 	ordersBy,
-												# )
+												SubChildData = self.getChildOne(
+													SubNodeType,
+													SubNodeName,
+													RecAttValue,
+													nodeId,
+													NodeText,
+													SubParRecId,
+													subDynamicQuery,
+													ObjectName,
+													RecId,
+													Subwhere_string,
+													PageRecId,
+													ObjectRecId,
+													ordersBy,
+												)
 										if len(SubChildData) > 0:
 											NewList.append(SubChildData)
 											list2 = []
