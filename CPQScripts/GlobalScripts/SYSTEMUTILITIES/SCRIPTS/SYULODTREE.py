@@ -581,29 +581,29 @@ class TreeView:
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 								)
 						# Billing Matrix Dynamic Tabs - Start
-						if ProductDict.get("objname") == 'SAQRIB' and ProductDict.get("text") == 'Billing':
-							item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-							if item_billing_plan_obj is not None:
-								quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
-								years = quotient + (1 if remainder > 0 else 0)
-								if not years:
-									years = 1
-								ObjRecId = RelatedId = None
-								related_obj = Sql.GetFirst("""SELECT SYOBJR.OBJ_REC_ID, SYOBJR.SAPCPQ_ATTRIBUTE_NAME, SYOBJR.NAME FROM SYOBJH (NOLOCK)
-												JOIN SYOBJR (NOLOCK) ON SYOBJR.OBJ_REC_ID = SYOBJH.RECORD_ID
-												WHERE SYOBJH.OBJECT_NAME = 'SAQIBP'""")
-								if related_obj:              
-									ObjRecId = related_obj.OBJ_REC_ID
-									RelatedId = related_obj.SAPCPQ_ATTRIBUTE_NAME
-									RelatedName = related_obj.NAME
-								for index in range(1, years+1):
-									type = "OBJECT RELATED LAYOUT"
-									subTabName = "Year {}".format(index)
-									Trace.Write('subTabName--'+str(subTabName))
-									if ObjRecId and RelatedId:
-										SubTabList.append(
-											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
-										)
+						# if ProductDict.get("objname") == 'SAQRIB' and ProductDict.get("text") == 'Billing':
+						# 	item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+						# 	if item_billing_plan_obj is not None:
+						# 		quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
+						# 		years = quotient + (1 if remainder > 0 else 0)
+						# 		if not years:
+						# 			years = 1
+						# 		ObjRecId = RelatedId = None
+						# 		related_obj = Sql.GetFirst("""SELECT SYOBJR.OBJ_REC_ID, SYOBJR.SAPCPQ_ATTRIBUTE_NAME, SYOBJR.NAME FROM SYOBJH (NOLOCK)
+						# 						JOIN SYOBJR (NOLOCK) ON SYOBJR.OBJ_REC_ID = SYOBJH.RECORD_ID
+						# 						WHERE SYOBJH.OBJECT_NAME = 'SAQIBP'""")
+						# 		if related_obj:              
+						# 			ObjRecId = related_obj.OBJ_REC_ID
+						# 			RelatedId = related_obj.SAPCPQ_ATTRIBUTE_NAME
+						# 			RelatedName = related_obj.NAME
+						# 		for index in range(1, years+1):
+						# 			type = "OBJECT RELATED LAYOUT"
+						# 			subTabName = "Year {}".format(index)
+						# 			Trace.Write('subTabName--'+str(subTabName))
+						# 			if ObjRecId and RelatedId:
+						# 				SubTabList.append(
+						# 					self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
+						# 				)
 						# Billing Matrix Dynamic Tabs - End
 					else:
 						if pageDetails is not None:
