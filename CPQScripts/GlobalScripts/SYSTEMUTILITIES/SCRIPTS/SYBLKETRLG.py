@@ -1429,6 +1429,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			part_numbers=re.sub(r"'",'"',part_numbers)
 			part_numbers=re.sub(r"\(",'[',part_numbers)
 			part_numbers=re.sub(r"\)",']',part_numbers)
+			part_numbers=re.sub(r',]',']',part_numbers)
 			Trace.Write('### Part Number for CQIFLSPARE-->'+str(part_numbers))
 			CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes',part_numbers,validfrom,validto,Quote.CompositeNumber,rev_rec_id,auth)
 
