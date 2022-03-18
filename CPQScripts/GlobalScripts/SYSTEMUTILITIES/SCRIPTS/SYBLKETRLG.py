@@ -1032,7 +1032,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			#Trace.Write("SELECT * FROM " + str(obj_name) + " (NOLOCK) WHERE " + str(objh_head) + " = '" + str(rec) + "'")
 			sql_obj = SqlHelper.GetFirst("SELECT * FROM  " + str(obj_name) + "  WHERE " + str(objh_head) + " = '" + str(rec) + "'")
 			
-			#Trace.Write("111====="+str(sql_obj.QUOTE_ID))
+			Trace.Write("1035====="+str(obj_name))
 			if obj_name == 'SAQICO':
 				quote_id = sql_obj.QUOTE_ID
 				item_lines_record_ids.append(sql_obj.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID)
