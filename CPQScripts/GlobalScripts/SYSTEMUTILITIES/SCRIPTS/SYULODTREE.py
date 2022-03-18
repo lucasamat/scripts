@@ -2932,7 +2932,7 @@ class TreeView:
 			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
 			getAccounts = ""
-		ChildList = []
+		
 		#NewList = []
 		NodeNameValue = ""
 		NodeTextValue = ""
@@ -3021,6 +3021,7 @@ class TreeView:
 						+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 					)	      
 				if childQuery is not None:
+					ChildList = []
 					for childdata in childQuery:
 						ChildDict = {}
 						SubChildData = []
