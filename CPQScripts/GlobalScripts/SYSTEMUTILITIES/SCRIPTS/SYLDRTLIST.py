@@ -3499,7 +3499,8 @@ class SYLDRTLIST:
 								#for appendign checkbox for checkbox type columns in annualized items grid- start
 								if RECORD_ID == "SYOBJR-00009":
 									if(value1234).upper() == "TRUE":
-										Trace.Write("cmto elseiff===")
+										Trace.Write("cmto elseiff==="+str(value123))
+										Trace.Write("cmto elseiff2222==="+str(value1234))
 										new_dict[value123] = (
 														'<input  type= "checkbox" id ="' + value123 + '" class= "custom" checked disabled  value="' + value1234 + '" style="text-align: center;" ><span class="lbl"></span>'
 													)
