@@ -721,7 +721,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	data_list = []
-	if str(TreeSuperParentParam)=="Z0009":
+	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010":
 		obj_idval = "SYOBJ_1177076_SYOBJ_1177076"
 		rec_id = "SYOBJ_1177076"
 		obj_id = "SYOBJ-1177076"
