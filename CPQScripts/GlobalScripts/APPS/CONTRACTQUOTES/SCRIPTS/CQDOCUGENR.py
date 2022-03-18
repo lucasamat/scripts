@@ -939,7 +939,7 @@ def customer_rejected(doc_rec_id,REJECT_COMMENT):
 	if output_doc_query:
 		if str(output_doc_query.DATE_REJECTED) != "":
 			Trace.Write("DATE_REJ"+str(output_doc_query.DATE_REJECTED))
-			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER REJECTED',WORKFLOW_STATUS = 'QUOTE DOCUMENTS',MEMO = '{memo}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),memo=REJECT_COMMENT)
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER REJECTED',WORKFLOW_STATUS = 'QUOTE DOCUMENTS',MEMO = '{memo}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),Internal Notes=REJECT_COMMENT)
 			Sql.RunQuery(update_revision_status)	
 	return True
 #A055S000P01-17165 end
