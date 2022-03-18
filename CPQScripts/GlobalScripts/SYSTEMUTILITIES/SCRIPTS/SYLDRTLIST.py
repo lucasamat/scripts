@@ -3316,7 +3316,7 @@ class SYLDRTLIST:
 								if value1234 != "":
 									if "-" in value1234:										
 										##A055S000P01-12021
-										if (str(value123) in ("NET_PRICE_INGL_CURR","NET_PRICE")) :
+										if (str(value123) in ("NET_PRICE_INGL_CURR","NET_PRICE","ESTIMATED_VALUE","ESTVAL_INGL_CURR")) :
 											my_format = "{:,." + str(decimal_place) + "f}"
 											value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
 											value1234 = value1234 + " " + curr_symbol
