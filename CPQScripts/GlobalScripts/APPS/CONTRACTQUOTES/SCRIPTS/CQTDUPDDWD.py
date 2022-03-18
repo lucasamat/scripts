@@ -57,7 +57,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		end = 1000
 		All_value=colums.split(",")
 		Trace.Write(str(All_value))
-		replace_col ={'CONSUMABLE/NON CONSUMABALE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY'}
+		replace_col ={'CONSUMABLE/NON CONSUMABLE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY'}
 		xls_col=replace_col.get
 		All_value = [xls_col(val,val) for val in All_value]
 		colums=','.join(All_value)
@@ -99,7 +99,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 			table_columns = eval(related_list_obj.COLUMNS)
 			Trace.Write("table_columns"+str(table_columns))
 
-			replace_col ={'MATPRIGRP_ID':'CONSUMABLE/NON CONSUMABALE','CUSTOMER_ACCEPT_PART':'CUSTOMER WILL ACCPET W/6K PART','CUSTOMER_ANNUAL_QUANTITY' :'CUSTOMER ANNUAL COMMIT'}
+			replace_col ={'MATPRIGRP_ID':'CONSUMABLE/NON CONSUMABLE','CUSTOMER_ACCEPT_PART':'CUSTOMER WILL ACCPET W/6K PART','CUSTOMER_ANNUAL_QUANTITY' :'CUSTOMER ANNUAL COMMIT'}
 			xls_col=replace_col.get
 			table_columns = [xls_col(val,val) for val in table_columns]
 			Trace.Write("table_columns_after"+str(table_columns))
