@@ -917,7 +917,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
 	if "table_event_parent" in CLICKEDID:
-		CLICKEDID = "SYOBJR_95555_0975E1E2_9D30_4928_AB0A_4DA54537A67A"
+		if str(TreeSuperParentParam)=="Z0009":
+			CLICKEDID = "SYOBJR_95555_986F0A8F-359E-4408-9AAC-6A3C9E264241"
+		else:
+			CLICKEDID = "SYOBJR_95555_0975E1E2_9D30_4928_AB0A_4DA54537A67A"
 	value_list = []
 	VALUE1 = []
 	VALUE2 =[]
@@ -936,7 +939,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
 		item_lines_record_ids = []
-		obj_name = "SAQGPM" if "table_event_parent" in CLICKEDID and str(TreeSuperParentParam) == "Z0009" else obj_name
 		if (obj_name in ('SAQSAP','SAQRSP','SAQSPT','SAQGPA','SAQGPM','SAQRIS','SAQRDS') and (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeSuperParentParam in ('Comprehensive Services','Complementary Products') or (TreeSuperTopParentParam == "Comprehensive Services") or (TreeParam == 'Quote Items') or (TreeTopSuperParentParam == "Comprehensive Services"))) and not (TITLE == 'QUANTITY' and obj_name == 'SAQRSP'):
 			selected_rows = selectPN if selectPN else selected_rows
 			qury_str = ""
