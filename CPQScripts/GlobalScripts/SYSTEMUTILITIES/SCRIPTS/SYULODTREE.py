@@ -3012,20 +3012,14 @@ class TreeView:
 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 							+ str(ParRecId)
 							+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)
-						
+						)						
 					else:
 						#Trace.Write("else Z0009")
 						findSubChildAvailable = Sql.GetList(
 						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 						+ str(ParRecId)
 						+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					)					
-				""" findSubChildAvailable = Sql.GetList(
-					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					+ str(ParRecId)
-					+ "' ORDER BY abs(DISPLAY_ORDER)"
-				)  """               
+					)	      
 				if childQuery is not None:
 					for childdata in childQuery:
 						ChildDict = {}
