@@ -462,6 +462,101 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 								{
 								"field":["SPSPCT","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
 								},
+								##saqite column
+								{
+								"field":["BASE_FEE","Base Fee","AGS_{}_PQB_BASFEE".format(partnumber)]
+								},
+								{
+								"field":["BILLING_CONDITION","Billing Condition","AGS_{}_PQB_BILCND".format(partnumber)]
+								},
+								{
+								"field":["BILLING_CYCLE","Billing Cycle","AGS_{}_PQB_BILCYC".format(partnumber)]
+								},
+								{
+								"field":["LOW_QTY_PART","Consignment Fee-Low Qty Parts","AGS_{}_TSC_OCFLQP".format(partnumber)]
+								},
+								{
+								"field":["CONCOV","Contract Coverage","AGS_{}_CVR_CNTCOV".format(partnumber)]
+								},
+								{
+								"field":["COO_RED_GUAR","Coo Reduction Guarantees","AGS_{}_GEN_CORDGU".format(partnumber)]
+								},
+								{
+								"field":["COMMIT_CONSIGNED_PART","Cust. Commit-Consigned Parts","AGS_{}_GEN_CUPCCP".format(partnumber)]
+								},
+								{
+								"field":["COMMIT_REQUEST_PART","Cust. Commit-On Request Parts","AGS_{}_GEN_CUPCRP".format(partnumber)]
+								},
+								{
+								"field":["CUST_PURCH_COMMIT","Customer Purchase Commit","AGS_{}_GEN_CUPRCM".format(partnumber)]
+								},
+								{
+								"field":["FORECAST_REDIS_FREQ","Fcst Redistribution-Frequency","AGS_{}_GEN_FRREFQ".format(partnumber)]
+								},
+								{
+								"field":["FORECAST_ADJ_FREQ","Fcst Adjustment - Frequency","AGS_{}_GEN_FRADFQ".format(partnumber)]
+								},
+								# {
+								# "field":["IDLE_DURATION","Idle Duration","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								# {
+								# "field":["IDLE_NOTICE","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								# {
+								# "field":["IDLING_EXCEP","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								{
+								"field":["KPI_ON_REQUEST","KPI - ≥90% On Request","AGS_{}_KPI_ONRPRT".format(partnumber)]
+								},
+								{
+								"field":["KPI_MONTHLY_CON","KPI - Monthly Consigned","AGS_{}_KPI_CONPRT".format(partnumber)]
+								},
+								# {
+								# "field":["MAX_OF_TOOLS","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								{
+								"field":["MISC_TERM","Miscellaneous terms","AGS_{}_GEN_MSCTRM".format(partnumber)]
+								},
+								{
+								"field":["ONSITE_CONSPRT","On-Site Consigned parts","AGS_{}_TSC_ONSTCP".format(partnumber)]
+								},
+								{
+								"field":["WAF_SPEC_INP","On Wafer Specs Input","AGS_{}_KPI_ONWFSP".format(partnumber)]
+								},
+								{
+								"field":["CREDIT_CONSIGNED_PART","Perf. Credit - Consigned Parts","AGS_{}_KPI_PCTKCP".format(partnumber)]
+								},
+								# {
+								# "field":["CREDIT_NTE_CON","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								{
+								"field":["CREDIT_NTE_REQ","Perf. Credit NTE - On Request","AGS_{}_KPI_PCTHOR".format(partnumber)]
+								},
+								{
+								"field":["CREDIT_REQUEST_PART","Perf. Credit-On Request Parts","AGS_{}_KPI_PCTKRP".format(partnumber)]
+								},
+								{
+								"field":["PM_QTY_CRD","PM Quantity Credit %","AGS_{}_PQB_PMQCPC".format(partnumber)]
+								},
+								{
+								"field":["RPRCUS_OWNPRT","Repair Cust Owned Parts","AGS_{}_TSC_CUOWPN".format(partnumber)]
+								},
+								{
+								"field":["REPONSE_TIME","Response Time","AGS_{}_CVR_RSPTIM".format(partnumber)]
+								},
+								{
+								"field":["SCHEDULE_PART","Sched Parts 24 hr Commitment","AGS_{}_KPI_KPSCPT".format(partnumber)]
+								},
+								# {
+								# "field":["SOFT_MNT_FEE","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								{
+								"field":["UNSCHEDULED_PART","Unscheduled Parts 7 day commit","AGS_{}_KPI_KPUSPT".format(partnumber)]
+								},
+								# {
+								# "field":["WARM_HOT_IDLE","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								
 						]
 			
 	if get_equipment:
