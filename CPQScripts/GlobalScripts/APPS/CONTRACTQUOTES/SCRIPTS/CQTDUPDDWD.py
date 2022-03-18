@@ -584,7 +584,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			xls_spare_records = list(sheet_data.Value)
 			if xls_spare_records:
 
-				for sub_list in xls_spare_records:
+				for sub_list in list(xls_spare_records):
 					Trace.Write(str(sub_list[3]))
 					del sub_list[3]
 				
