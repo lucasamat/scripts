@@ -12338,7 +12338,7 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
 	elif TABNAME == "Preventive Maintainence child Filter":
 		RECID = Param.REC_ID
 		ApiResponse = ApiResponseFactory.JsonResponse(QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,ASSEMBLYID,EQUIPMENTID,KITID,KITNUMBER,SortPerPage,SortPageInform))      
-	elif TABNAME == "Events child Filter":
+	elif TABNAME == "Events Child Filter":
 		ApiResponse = ApiResponseFactory.JsonResponse(
 			GetEventsChild(CHILDEQUIPMENT, PerPage, PageInform, A_Keys, A_Values)
 		)  
