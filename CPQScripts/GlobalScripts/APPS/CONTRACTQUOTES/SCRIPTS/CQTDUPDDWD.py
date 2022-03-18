@@ -585,8 +585,8 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			if xls_spare_records:
 
 				for sub_records in list(xls_spare_records):
-					Trace.Write(str(sub_records[3]))
-					del sub_records[3]
+					Trace.Write(str(sub_records[3])
+					sub_records[3] =''
 				
 				
 				#del_col=[val.pop(3)  for val in xls_spare_records]
