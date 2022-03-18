@@ -3502,7 +3502,7 @@ class SYLDRTLIST:
 										Trace.Write("cmto elseiff==="+str(value123))
 										Trace.Write("cmto elseiff2222==="+str(value1234))
 										new_dict[value123] = (
-														'<input  type= "checkbox" id ="' + value123 + '" class= "custom" checked disabled  value="' + value1234 + '" style="text-align: center;" ><span class="lbl"></span>'
+														'<input  type= "checkbox" id ="' + value123 + '" class= "custom" disabled checked value="' + value1234 + '" style="text-align: center;" ><span class="lbl"></span>'
 													)
 									else:
 										Trace.Write("cmto else==="+str(value123))
