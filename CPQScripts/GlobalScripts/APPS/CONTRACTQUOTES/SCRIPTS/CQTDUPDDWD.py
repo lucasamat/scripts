@@ -597,7 +597,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				Trace.Write("colums"+str(self.columns))
 				col=self.columns
 				table_columns = col.split(",")
-				replace_col ={'CONSUMABLE/NON CONSUMABALE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY'}
+				replace_col ={'CONSUMABLE/NON CONSUMABLE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY'}
 				xls_col=replace_col.get
 				table_columns = [xls_col(val,val) for val in table_columns]
 
