@@ -84,27 +84,20 @@ class ContractQuoteItem:
 
 	def _get_billing_type(self):
 		self.get_billing_type_val =''
-		if self.service_id == 'Z0117':
-			get_billing_cycle = Sql.GetFirst("select BILTYP from {table_name} where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{get_service}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,get_service = self.service_id,table_name = self.source_object_name))
-			if get_billing_cycle:
-				if get_billing_cycle.BILTYP:
-					self.get_billing_type_val = get_billing_cycle.BILTYP
-
-		else:
-			get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML,SERVICE_ID from SAQTSE where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{get_service}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,get_service = self.service_id))
-			if get_billing_cycle:
-				updateentXML = get_billing_cycle.ENTITLEMENT_XML
-				pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-				pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_billing_cycle.SERVICE_ID)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
-				
-				pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-				for m in re.finditer(pattern_tag, updateentXML):
-					sub_string = m.group(1)
-					get_ent_id = re.findall(pattern_id,sub_string)
-					get_ent_val= re.findall(pattern_name,sub_string)
-					if get_ent_id:
-						self.get_billing_type_val = str(get_ent_val[0])
-						break
+		get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML,SERVICE_ID from SAQTSE where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{get_service}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,get_service = self.service_id))
+		if get_billing_cycle:
+			updateentXML = get_billing_cycle.ENTITLEMENT_XML
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_billing_cycle.SERVICE_ID)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
+			
+			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			for m in re.finditer(pattern_tag, updateentXML):
+				sub_string = m.group(1)
+				get_ent_id = re.findall(pattern_id,sub_string)
+				get_ent_val= re.findall(pattern_name,sub_string)
+				if get_ent_id:
+					self.get_billing_type_val = str(get_ent_val[0])
+					break
 		return True
 
 	def _get_material_type(self):
