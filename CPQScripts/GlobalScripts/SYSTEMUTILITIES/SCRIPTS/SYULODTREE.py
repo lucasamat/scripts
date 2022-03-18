@@ -697,22 +697,23 @@ class TreeView:
 							
 
 							if parobj == "True" and ACTION != 'ADDNEW':
-								ChildListData = self.getChildFromParentObj(
-									NodeText,
-									NodeType,
-									NodeName,
-									RecAttValue,
-									nodeId,
-									ParRecId,
-									DynamicQuery,
-									ObjectName,
-									RecId,
-									where_string,
-									PageRecId,
-									ObjectRecId,
-									NodeApiName,
-									ordersBy,
-								)
+								pass
+								# ChildListData = self.getChildFromParentObj(
+								# 	NodeText,
+								# 	NodeType,
+								# 	NodeName,
+								# 	RecAttValue,
+								# 	nodeId,
+								# 	ParRecId,
+								# 	DynamicQuery,
+								# 	ObjectName,
+								# 	RecId,
+								# 	where_string,
+								# 	PageRecId,
+								# 	ObjectRecId,
+								# 	NodeApiName,
+								# 	ordersBy,
+								# )
 							else:
 								if ACTION != 'ADDNEW':
 									NodeName = str(findChildOne.NODE_DISPLAY_NAME)
@@ -751,21 +752,22 @@ class TreeView:
 									else:
 										#Trace.Write('700')
 										if ACTION != 'ADDNEW':
-											ChildListData = self.getChildOne(
-												NodeType,
-												NodeName,
-												RecAttValue,
-												nodeId,
-												NodeText,
-												ParRecId,
-												DynamicQuery,
-												ObjectName,
-												RecId,
-												where_string,
-												PageRecId,
-												ObjectRecId,
-												ordersBy,
-											)									
+											pass
+											# ChildListData = self.getChildOne(
+											# 	NodeType,
+											# 	NodeName,
+											# 	RecAttValue,
+											# 	nodeId,
+											# 	NodeText,
+											# 	ParRecId,
+											# 	DynamicQuery,
+											# 	ObjectName,
+											# 	RecId,
+											# 	where_string,
+											# 	PageRecId,
+											# 	ObjectRecId,
+											# 	ordersBy,
+											# )									
 							if len(ChildListData) > 0:
 								NewList.append(ChildListData)
 								list2 = []
