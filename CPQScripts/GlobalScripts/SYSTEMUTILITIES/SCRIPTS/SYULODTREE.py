@@ -424,52 +424,33 @@ class TreeView:
 		#Trace.Write("returnList-----> " + str(returnList))
 		return returnList, objrList
 	
-	def CommonDynamicLeftTreeView(self):
-		try:
-			TreeParam = Product.GetGlobal("TreeParam")
-			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-		except:
-			Trace.Write("Error in Treeparam GetGlobal")
-		objR_obj = list2 = []
-		try:
-			#crnt_prd_val = prod.APP_ID
+	def CommonDynamicLeftTreeView(self):		
+		#list2 = []
+		try:			
 			current_prod = Product.Name
 		except Exception:
-			current_prod = "Sales"
-		#Trace.Write("========TreeParentParam==========>>>>"+str(TreeParentParam))
-		CurrentModuleObj = Sql.GetFirst("select APP_ID from SYAPPS where APP_LABEL = '" + str(current_prod) + "'")
+			current_prod = "Sales"		
+		CurrentModuleObj = Sql.GetFirst("select APP_ID from SYAPPS (NOLOCK) where APP_LABEL = '" + str(current_prod) + "'")
 		try:
 			TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 			tab_name = TestProduct.CurrentTab
-			TabName = str(TestProduct.CurrentTab)
-			#Trace.Write("========TreeParentParam==========>>>>"+str(TreeParentParam))
-			#if tab_name == "Contract":
-			#  crnt_prd_val = "CT"
-			#else:
+			TabName = str(TestProduct.CurrentTab)			
 			crnt_prd_val = str(CurrentModuleObj.APP_ID)
 		except:
 			TestProduct = "Sales"
 			try:
-				tab_name = Param.sales_current_tab
-				#Trace.Write("try")
+				tab_name = Param.sales_current_tab				
 			except:
-				tab_name = "Quote"
-				#Trace.Write("except")
+				tab_name = "Quote"				
 
-			if tab_name == "Contracts":
-				#crnt_prd_val = "CT"
+			if tab_name == "Contracts":				
 				tab_name = "Contract"
-				TabName = "Contract"
-				#Trace.Write("ifff"+str(tab_name))
+				TabName = "Contract"				
 			else:
 				tab_name = "Quote"
-				TabName = "Quote"
-				#Trace.Write("elseee"+str(tab_name))
-			crnt_prd_val = "QT"
-		#quote_record_id = quote_no = ""
-		if tab_name == "Quote" and current_prod == "Sales":
-			#Trace.Write("SET GLOBAL----")
+				TabName = "Quote"				
+			crnt_prd_val = "QT"		
+		if tab_name == "Quote" and current_prod == "Sales":			
 			try:
 				GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
 			except:
@@ -491,7 +472,7 @@ class TreeView:
 			
 		returnList = []
 		nodeId = 0
-		objrList = []
+		
 		AllObj = Sql.GetFirst(
 			"SELECT SYSECT.PRIMARY_OBJECT_RECORD_ID, SYSEFL.SAPCPQ_ATTRIBUTE_NAME, SYSEFL.RECORD_ID, SYOBJD.OBJECT_NAME FROM SYTABS (nolock) INNER JOIN SYPAGE (nolock) on SYTABS.RECORD_ID = SYPAGE.TAB_RECORD_ID INNER JOIN SYSECT ON SYSECT.PAGE_RECORD_ID = SYPAGE.RECORD_ID INNER JOIN SYSEFL (nolock) on SYSEFL.SECTION_RECORD_ID = SYSECT.RECORD_ID INNER JOIN  SYOBJD (nolock) on  SYOBJD.API_NAME = SYSEFL.API_FIELD_NAME and  SYOBJD.OBJECT_NAME = SYSEFL.API_NAME WHERE SYTABS.SAPCPQ_ALTTAB_NAME='"
 			+ str(TabName).strip()
@@ -517,28 +498,7 @@ class TreeView:
 					RecAttValue = Quote.GetGlobal("contract_quote_record_id")
 				else:
 					RecAttValue = ""
-			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-			'''if getAccounts is not None:
-				
-				# INSERT NEW RECORD
-
-				new = str(Guid.NewGuid()).upper()
-				Sql.RunQuery("INSERT INTO SYTRND (TREE_NODE_RECORD_ID,DISPLAY_ORDER,DYNAMIC_NODEDATA_QUERY,NODE_DISPLAY_NAME,NODE_ID,NODE_NAME,NODE_PAGE_NAME,NODE_PAGE_RECORD_ID,NODE_TYPE,PARENT_NODE_ID,PARENT_NODE_RECORD_ID,TREE_NAME,TREE_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED)VALUES('{NewRecordId}','10','SELECT PARTY_ID FROM SAQTIP WHERE {{where_string}}','PARTY_ID','55','PARTY_ID','ACCOUNT_DETAILS','D335E4ED-3C68-4D57-A702-A0728A8B6D9D','DYNAMIC','1','86EFDE54-934F-46B4-8D45-EBE8BEB9DB85','Quote','F8C51AC6-5F12-41E1-B4DD-C6F8561176FD','{UserName}',GETDATE())".format(NewRecordId=new,UserName=User.UserName))
-				
-				# UPDATE EXISTING PARENT_NODE_ID
-
-				Sql.RunQuery("UPDATE SYTRND SET PARENT_NODE_ID = '55', PARENT_NODE_RECORD_ID = '{new}' WHERE TREE_NODE_RECORD_ID IN ('06B30980-285F-44AF-99C9-7916D75DE74A','6A9C4306-D43F-4F14-A842-AD5EFCFAFA41')".format(new=new))'''
-			'''if getAccounts is None:
-
-				#DELETE NODES
-
-				Sql.RunQuery("DELETE FROM SYTRND WHERE NODE_NAME = 'ACCOUNT_ID' AND PARENT_NODE_ID = '1'")
-
-				#UPDATE NODE ID
-
-				Sql.RunQuery("UPDATE SYTRND SET PARENT_NODE_ID = '1',PARENT_NODE_RECORD_ID = '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' WHERE TREE_NODE_RECORD_ID IN ('06B30980-285F-44AF-99C9-7916D75DE74A','6A9C4306-D43F-4F14-A842-AD5EFCFAFA41')")
-				
-				Sql.RunQuery("UPDATE SYTRND SET PARENT_NODE_ID = '1',PARENT_NODE_RECORD_ID = '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' WHERE TREE_NODE_RECORD_ID IN ('06B30980-285F-44AF-99C9-7916D75DE74A','6A9C4306-D43F-4F14-A842-AD5EFCFAFA41')")'''
+			
 			getParentObjQuery = Sql.GetList(
 				"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NAME = '"
 				+ str(TabName)
@@ -547,8 +507,7 @@ class TreeView:
 			#Trace.Write("SELECT top 1000 * FROM SYTRND (nolock) where TREE_NAME = '"
 			#    + str(TabName)
 			#    + "' AND NODE_TYPE = 'STATIC' AND PARENT_NODE_RECORD_ID ='' ORDER BY abs(DISPLAY_ORDER)")
-			if getParentObjQuery is not None:
-				
+			if getParentObjQuery is not None:				
 				for getParentObj in getParentObjQuery:
 					##adding image along with tree params
 					#12096 start-quote item visibility start
@@ -639,7 +598,7 @@ class TreeView:
 								for index in range(1, years+1):
 									type = "OBJECT RELATED LAYOUT"
 									subTabName = "Year {}".format(index)
-									Trace.Write('subTabName--'+str(subTabName))
+									#Trace.Write('subTabName--'+str(subTabName))
 									if ObjRecId and RelatedId:
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
