@@ -507,7 +507,8 @@ class TreeView:
 			#Trace.Write("SELECT top 1000 * FROM SYTRND (nolock) where TREE_NAME = '"
 			#    + str(TabName)
 			#    + "' AND NODE_TYPE = 'STATIC' AND PARENT_NODE_RECORD_ID ='' ORDER BY abs(DISPLAY_ORDER)")
-			if getParentObjQuery is not None:				
+			if getParentObjQuery is not None:
+				
 				for getParentObj in getParentObjQuery:
 					##adding image along with tree params
 					#12096 start-quote item visibility start
@@ -598,7 +599,7 @@ class TreeView:
 								for index in range(1, years+1):
 									type = "OBJECT RELATED LAYOUT"
 									subTabName = "Year {}".format(index)
-									#Trace.Write('subTabName--'+str(subTabName))
+									Trace.Write('subTabName--'+str(subTabName))
 									if ObjRecId and RelatedId:
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
@@ -697,23 +698,22 @@ class TreeView:
 							
 
 							if parobj == "True" and ACTION != 'ADDNEW':
-								pass
-								# ChildListData = self.getChildFromParentObj(
-								# 	NodeText,
-								# 	NodeType,
-								# 	NodeName,
-								# 	RecAttValue,
-								# 	nodeId,
-								# 	ParRecId,
-								# 	DynamicQuery,
-								# 	ObjectName,
-								# 	RecId,
-								# 	where_string,
-								# 	PageRecId,
-								# 	ObjectRecId,
-								# 	NodeApiName,
-								# 	ordersBy,
-								# )
+								ChildListData = self.getChildFromParentObj(
+									NodeText,
+									NodeType,
+									NodeName,
+									RecAttValue,
+									nodeId,
+									ParRecId,
+									DynamicQuery,
+									ObjectName,
+									RecId,
+									where_string,
+									PageRecId,
+									ObjectRecId,
+									NodeApiName,
+									ordersBy,
+								)
 							else:
 								if ACTION != 'ADDNEW':
 									NodeName = str(findChildOne.NODE_DISPLAY_NAME)
@@ -752,22 +752,21 @@ class TreeView:
 									else:
 										#Trace.Write('700')
 										if ACTION != 'ADDNEW':
-											pass
-											# ChildListData = self.getChildOne(
-											# 	NodeType,
-											# 	NodeName,
-											# 	RecAttValue,
-											# 	nodeId,
-											# 	NodeText,
-											# 	ParRecId,
-											# 	DynamicQuery,
-											# 	ObjectName,
-											# 	RecId,
-											# 	where_string,
-											# 	PageRecId,
-											# 	ObjectRecId,
-											# 	ordersBy,
-											# )									
+											ChildListData = self.getChildOne(
+												NodeType,
+												NodeName,
+												RecAttValue,
+												nodeId,
+												NodeText,
+												ParRecId,
+												DynamicQuery,
+												ObjectName,
+												RecId,
+												where_string,
+												PageRecId,
+												ObjectRecId,
+												ordersBy,
+											)									
 							if len(ChildListData) > 0:
 								NewList.append(ChildListData)
 								list2 = []
