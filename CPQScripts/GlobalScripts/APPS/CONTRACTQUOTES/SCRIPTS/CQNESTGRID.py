@@ -12337,7 +12337,11 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
 		ApiResponse = ApiResponseFactory.JsonResponse(QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,ASSEMBLYID,EQUIPMENTID,SortPerPage,SortPageInform))
 	elif TABNAME == "Preventive Maintainence child Filter":
 		RECID = Param.REC_ID
-		ApiResponse = ApiResponseFactory.JsonResponse(QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,ASSEMBLYID,EQUIPMENTID,KITID,KITNUMBER,SortPerPage,SortPageInform))        
+		ApiResponse = ApiResponseFactory.JsonResponse(QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,ASSEMBLYID,EQUIPMENTID,KITID,KITNUMBER,SortPerPage,SortPageInform))      
+	elif TABNAME == "Events child Filter":
+		ApiResponse = ApiResponseFactory.JsonResponse(
+			GetEventsChild(CHILDEQUIPMENT, PerPage, PageInform, A_Keys, A_Values)
+		)  
 	elif TABNAME == "Equipments child": 
 		Trace.Write("111111111")
 		try:
