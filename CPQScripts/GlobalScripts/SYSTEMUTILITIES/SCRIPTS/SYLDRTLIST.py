@@ -3501,7 +3501,7 @@ class SYLDRTLIST:
 									if(value1234).upper() == "TRUE":
 										Trace.Write("cmto elseiff===")
 										new_dict[value123] = (
-														'<input  type= "checkbox" id ="' + value123 + '" class= "custom"  value="' + value1234 + '" style="text-align: center;" checked   disabled><span class="lbl"></span>'
+														'<input  type= "checkbox" id ="' + value123 + '" class= "custom" checked disabled  value="' + value1234 + '" style="text-align: center;" ><span class="lbl"></span>'
 													)
 									else:
 										Trace.Write("cmto else==="+str(value123))
