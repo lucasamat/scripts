@@ -892,7 +892,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(TreeTopSuperParentParam)
 			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
 		)
-	elif ObjectName == "SAQGPM" and TreeSuperParentParam == "Z0009":
+	elif ObjectName == "SAQGPM" and (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
