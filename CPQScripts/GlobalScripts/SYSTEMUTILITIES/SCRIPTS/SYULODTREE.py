@@ -3022,304 +3022,304 @@ class TreeView:
 					)	      
 				if childQuery is not None:
 					ChildList = []
-					# for childdata in childQuery:
-					# 	ChildDict = {}
-					# 	SubChildData = []
-					# 	if NodeApiName.find(",") == -1 and NodeApiName.find("-") == -1:		
-					# 		NodeText = str(eval("childdata." + str(NodeApiName)))
-					# 	elif NodeApiName.find("-") > 0:
-					# 		Nodesplit = NodeApiName.split("-")
-					# 		if len(Nodesplit) > 1:
-					# 			NodeName1 = Nodesplit[0]
-					# 			NodeNameValue = Nodesplit[1]
-					# 			NodeTextValue = str(eval("childdata." + str(NodeNameValue))).title()
-					# 			NodeText = NodeName1 + "-" + NodeTextValue
-					# 	try:							
-					# 		NodeRecId = str(eval("childdata." + str(childRecName.API_NAME)))
-					# 	except Exception:
-					# 		if str(ObjName).strip() == 'SAQSGB':
-					# 			if NodeApiName == 'FABLOCATION_ID':
-					# 				NodeRecId = str(eval("childdata.FABLOCATION_ID"))
-					# 				nodeId = 32
-					# 			elif NodeApiName == 'GREENBOOK':
-					# 				try:
-					# 					NodeRecId = str(eval("childdata.GREENBOOK"))
-					# 				except:
-					# 					NodeRecId = "-"							
-					# 		elif str(ObjName).strip() == 'SAQFGB':
-					# 			NodeRecId = str(eval("childdata.GREENBOOK"))
-					# 		elif str(ObjName).strip() == 'ACAPTF':
-					# 			if NodeApiName == 'TRKOBJ_TRACKEDFIELD_LABEL':
-					# 				NodeRecId = str(eval("childdata.TRKOBJ_TRACKEDFIELD_LABEL"))   
-					# 		else:								
-					# 			NodeRecId = str(eval("childdata.REC_ID"))
+					for childdata in childQuery:
+						ChildDict = {}
+						SubChildData = []
+						if NodeApiName.find(",") == -1 and NodeApiName.find("-") == -1:		
+							NodeText = str(eval("childdata." + str(NodeApiName)))
+						elif NodeApiName.find("-") > 0:
+							Nodesplit = NodeApiName.split("-")
+							if len(Nodesplit) > 1:
+								NodeName1 = Nodesplit[0]
+								NodeNameValue = Nodesplit[1]
+								NodeTextValue = str(eval("childdata." + str(NodeNameValue))).title()
+								NodeText = NodeName1 + "-" + NodeTextValue
+						try:							
+							NodeRecId = str(eval("childdata." + str(childRecName.API_NAME)))
+						except Exception:
+							if str(ObjName).strip() == 'SAQSGB':
+								if NodeApiName == 'FABLOCATION_ID':
+									NodeRecId = str(eval("childdata.FABLOCATION_ID"))
+									nodeId = 32
+								elif NodeApiName == 'GREENBOOK':
+									try:
+										NodeRecId = str(eval("childdata.GREENBOOK"))
+									except:
+										NodeRecId = "-"							
+							elif str(ObjName).strip() == 'SAQFGB':
+								NodeRecId = str(eval("childdata.GREENBOOK"))
+							elif str(ObjName).strip() == 'ACAPTF':
+								if NodeApiName == 'TRKOBJ_TRACKEDFIELD_LABEL':
+									NodeRecId = str(eval("childdata.TRKOBJ_TRACKEDFIELD_LABEL"))   
+							else:								
+								NodeRecId = str(eval("childdata.REC_ID"))
 						
-					# 	ChildDict["text"] = str(NodeText)
-					# 	ChildDict["id"] = str(NodeRecId)
-					# 	ChildDict["nodeId"] = int(nodeId)
-					# 	ChildDict["id"] = str(NodeRecId)
-					# 	oldNodeApiName = NodeApiName
-					# 	objQuery = Sql.GetFirst(
-					# 		"SELECT OBJECT_NAME FROM SYOBJH(NOLOCK) WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
-					# 	)
-					# 	if objQuery is not None:
-					# 		ChildDict["objname"] = objQuery.OBJECT_NAME
-					# 		parObjName = objQuery.OBJECT_NAME
+						ChildDict["text"] = str(NodeText)
+						ChildDict["id"] = str(NodeRecId)
+						ChildDict["nodeId"] = int(nodeId)
+						ChildDict["id"] = str(NodeRecId)
+						oldNodeApiName = NodeApiName
+						objQuery = Sql.GetFirst(
+							"SELECT OBJECT_NAME FROM SYOBJH(NOLOCK) WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
+						)
+						if objQuery is not None:
+							ChildDict["objname"] = objQuery.OBJECT_NAME
+							parObjName = objQuery.OBJECT_NAME
 
-					# 	SubTabList = []						
-					# 	getParentObjRightView = Sql.GetList(
-					# 		"SELECT top 1000 * FROM SYSTAB (nolock) where TREE_NODE_RECORD_ID = '"
-					# 		+ str(ParRecId)
-					# 		+ "' ORDER BY abs(DISPLAY_ORDER) "
-					# 	)
-					# 	if getParentObjRightView is not None and len(getParentObjRightView) > 0:
-					# 		for getRightView in getParentObjRightView:						
-					# 			type = str(getRightView.SUBTAB_TYPE)
-					# 			subTabName = str(getRightView.SUBTAB_NAME)
-					# 			ObjRecId = getRightView.OBJECT_RECORD_ID
-					# 			RelatedId = getRightView.RELATED_RECORD_ID
-					# 			RelatedName = getRightView.RELATED_LIST_NAME
-					# 			# ChildDict["id"] = RelatedId
-					# 			if subTabName == 'Green Parts List':
-					# 				subTabName = ""
-					# 				#service_id = Product.GetGlobal("SERVICE")
-					# 				greenbook_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
-					# 				if greenbook_entitlement_object is not None:
-					# 					updateentXML = greenbook_entitlement_object.ENTITLEMENT_XML
-					# 					flag_excluse=0
-					# 					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-					# 					pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW|AGS_[^>]*?_TSC_CONADD)</ENTITLEMENT_ID>')
-					# 					pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions|Yes)</ENTITLEMENT_DISPLAY_VALUE>')
-					# 					for m in re.finditer(pattern_tag, updateentXML):
-					# 						sub_string = m.group(1)
-					# 						get_ent_id =re.findall(pattern_id,sub_string)
-					# 						get_ent_name=re.findall(pattern_name,sub_string)
-					# 						if get_ent_id and get_ent_name:
-					# 							flag_excluse=1
-					# 							break
-					# 					if flag_excluse==1:
-					# 						subTabName = "Parts List"
-					# 			if subTabName:
-					# 				if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
-					# 					subTabName = ""
-					# 				SubTabList.append(
-					# 					self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
-					# 				)
-					# 	else:
-					# 		if pageDetails is not None:
-					# 			pageType = pageDetails.PAGE_TYPE
-					# 			subTabName = "No SubTab"
-					# 			objRecId = pageDetails.OBJECT_RECORD_ID
-					# 			querystr = ""
-					# 			SubTabList.append(
-					# 				self.getPageRelatedDetails(subTabName, pageType, objRecId, ObjectRecId, querystr)
-					# 			)
+						SubTabList = []						
+						getParentObjRightView = Sql.GetList(
+							"SELECT top 1000 * FROM SYSTAB (nolock) where TREE_NODE_RECORD_ID = '"
+							+ str(ParRecId)
+							+ "' ORDER BY abs(DISPLAY_ORDER) "
+						)
+						if getParentObjRightView is not None and len(getParentObjRightView) > 0:
+							for getRightView in getParentObjRightView:						
+								type = str(getRightView.SUBTAB_TYPE)
+								subTabName = str(getRightView.SUBTAB_NAME)
+								ObjRecId = getRightView.OBJECT_RECORD_ID
+								RelatedId = getRightView.RELATED_RECORD_ID
+								RelatedName = getRightView.RELATED_LIST_NAME
+								# ChildDict["id"] = RelatedId
+								if subTabName == 'Green Parts List':
+									subTabName = ""
+									#service_id = Product.GetGlobal("SERVICE")
+									greenbook_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
+									if greenbook_entitlement_object is not None:
+										updateentXML = greenbook_entitlement_object.ENTITLEMENT_XML
+										flag_excluse=0
+										pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+										pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW|AGS_[^>]*?_TSC_CONADD)</ENTITLEMENT_ID>')
+										pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions|Yes)</ENTITLEMENT_DISPLAY_VALUE>')
+										for m in re.finditer(pattern_tag, updateentXML):
+											sub_string = m.group(1)
+											get_ent_id =re.findall(pattern_id,sub_string)
+											get_ent_name=re.findall(pattern_name,sub_string)
+											if get_ent_id and get_ent_name:
+												flag_excluse=1
+												break
+										if flag_excluse==1:
+											subTabName = "Parts List"
+								if subTabName:
+									if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
+										subTabName = ""
+									SubTabList.append(
+										self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
+									)
+						else:
+							if pageDetails is not None:
+								pageType = pageDetails.PAGE_TYPE
+								subTabName = "No SubTab"
+								objRecId = pageDetails.OBJECT_RECORD_ID
+								querystr = ""
+								SubTabList.append(
+									self.getPageRelatedDetails(subTabName, pageType, objRecId, ObjectRecId, querystr)
+								)
 
-					# 	ChildDict["SubTabs"] = SubTabList
-					# 	#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-					# 	if getAccounts is None:
-					# 		findSubChildAvailable = Sql.GetList(
-					# 					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 					+ str(ParRecId)
-					# 					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 				)		
-					# 	elif getAccounts is not None:
-					# 		if ParRecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or ParRecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7"  or ParRecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or ParRecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or ParRecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
-					# 			findSubChildAvailable = Sql.GetList(
-					# 					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 					+ str(ParRecId)
-					# 					+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 				)		
-					# 		else:
-					# 			findSubChildAvailable = Sql.GetList(
-					# 					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 					+ str(ParRecId)
-					# 					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 				)	
-					# 	try:
-					# 		getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id, quote_revision_record_id))
-					# 		if getZ0009 is not None:
-					# 			getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
-					# 			#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-					# 			#Trace.Write("return6 value Z0009====---"+str(getZ0009))
-					# 		else:
-					# 			getZ0009 = None
-					# 	except:
-					# 		getZ0009 = None
-					# 	if getZ0009 is None or getZ0009 == 0:
-					# 		#Trace.Write("if getZ0009 is None")
-					# 		findSubChildAvailable = Sql.GetList(
-					# 			"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 			+ str(ParRecId)
-					# 			+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 		)
-					# 	elif getZ0009 is not None:
-					# 		#Trace.Write("elif getZ0009 is not None")
-					# 		if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
-					# 			Trace.Write("if RecId66 == '1F47A350-4E38-41C9-A5C5-F5")
-					# 			findSubChildAvailable = Sql.GetList(
-					# 				"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 				+ str(ParRecId)
-					# 				+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 			)
+						ChildDict["SubTabs"] = SubTabList
+						#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+						if getAccounts is None:
+							findSubChildAvailable = Sql.GetList(
+										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+										+ str(ParRecId)
+										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+									)		
+						elif getAccounts is not None:
+							if ParRecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or ParRecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7"  or ParRecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or ParRecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or ParRecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
+								findSubChildAvailable = Sql.GetList(
+										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+										+ str(ParRecId)
+										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+									)		
+							else:
+								findSubChildAvailable = Sql.GetList(
+										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+										+ str(ParRecId)
+										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+									)	
+						try:
+							getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id, quote_revision_record_id))
+							if getZ0009 is not None:
+								getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
+								#Trace.Write("return value Z0009---"+str(self.PMSATree()))
+								#Trace.Write("return6 value Z0009====---"+str(getZ0009))
+							else:
+								getZ0009 = None
+						except:
+							getZ0009 = None
+						if getZ0009 is None or getZ0009 == 0:
+							#Trace.Write("if getZ0009 is None")
+							findSubChildAvailable = Sql.GetList(
+								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+								+ str(ParRecId)
+								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+							)
+						elif getZ0009 is not None:
+							#Trace.Write("elif getZ0009 is not None")
+							if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
+								Trace.Write("if RecId66 == '1F47A350-4E38-41C9-A5C5-F5")
+								findSubChildAvailable = Sql.GetList(
+									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+									+ str(ParRecId)
+									+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+								)
 								
-					# 		else:
-					# 			#Trace.Write("else Z0009")
-					# 			findSubChildAvailable = Sql.GetList(
-					# 			"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 			+ str(ParRecId)
-					# 			+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 		)				
-					# 	""" findSubChildAvailable = Sql.GetList(
-					# 		"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 		+ str(ParRecId)
-					# 		+ "' ORDER BY abs(DISPLAY_ORDER)"
-					# 	) """
-					# 	if findSubChildAvailable is not None:
-					# 		for findSubChildOne in findSubChildAvailable:
-					# 			NewList = []
-					# 			ParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
-					# 			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-					# 			if getAccounts is None:
-					# 				findSubChildAvailable1 = Sql.GetList(
-					# 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 							+ str(ParRecId)
-					# 							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 						)		
-					# 			elif getAccounts is not None:
-					# 				if ParRecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or ParRecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7"  or ParRecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or ParRecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or ParRecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
-					# 					findSubChildAvailable1 = Sql.GetList(
-					# 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 							+ str(ParRecId)
-					# 							+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 						)		
-					# 				else:
-					# 					findSubChildAvailable1 = Sql.GetList(
-					# 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 							+ str(ParRecId)
-					# 							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 						)	
-					# 			try:
-					# 				getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-					# 				if getZ0009 is not None:
-					# 					getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
-					# 					#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-					# 					Trace.Write("return7 value Z0009====---"+str(getZ0009))
-					# 			except:
-					# 				getZ0009 = ""
-					# 			if getZ0009 is None or getZ0009 == 0:
-					# 				#Trace.Write("if getZ0009 is None")
-					# 				findSubChildAvailable = Sql.GetList(
-					# 					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 					+ str(ParRecId)
-					# 					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 				)
-					# 			elif getZ0009 is not None:
-					# 				#Trace.Write("elif getZ0009 is not None")
-					# 				if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
-					# 					Trace.Write("if RecId7 == '1F47A350-4E38-41C9-A5C5-F5")
-					# 					findSubChildAvailable = Sql.GetList(
-					# 						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 						+ str(ParRecId)
-					# 						+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 					)
+							else:
+								#Trace.Write("else Z0009")
+								findSubChildAvailable = Sql.GetList(
+								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+								+ str(ParRecId)
+								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+							)				
+						""" findSubChildAvailable = Sql.GetList(
+							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+							+ str(ParRecId)
+							+ "' ORDER BY abs(DISPLAY_ORDER)"
+						) """
+						if findSubChildAvailable is not None:
+							for findSubChildOne in findSubChildAvailable:
+								NewList = []
+								ParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
+								#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+								if getAccounts is None:
+									findSubChildAvailable1 = Sql.GetList(
+												"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+												+ str(ParRecId)
+												+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+											)		
+								elif getAccounts is not None:
+									if ParRecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or ParRecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7"  or ParRecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or ParRecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or ParRecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
+										findSubChildAvailable1 = Sql.GetList(
+												"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+												+ str(ParRecId)
+												+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+											)		
+									else:
+										findSubChildAvailable1 = Sql.GetList(
+												"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+												+ str(ParRecId)
+												+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+											)	
+								try:
+									getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+									if getZ0009 is not None:
+										getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
+										#Trace.Write("return value Z0009---"+str(self.PMSATree()))
+										Trace.Write("return7 value Z0009====---"+str(getZ0009))
+								except:
+									getZ0009 = ""
+								if getZ0009 is None or getZ0009 == 0:
+									#Trace.Write("if getZ0009 is None")
+									findSubChildAvailable = Sql.GetList(
+										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+										+ str(ParRecId)
+										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+									)
+								elif getZ0009 is not None:
+									#Trace.Write("elif getZ0009 is not None")
+									if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
+										Trace.Write("if RecId7 == '1F47A350-4E38-41C9-A5C5-F5")
+										findSubChildAvailable = Sql.GetList(
+											"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+											+ str(ParRecId)
+											+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+										)
 										
-					# 				else:
-					# 					#Trace.Write("else Z0009")
-					# 					findSubChildAvailable = Sql.GetList(
-					# 					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 					+ str(ParRecId)
-					# 					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					# 				)				
-					# 			""" findSubChildAvailable = Sql.GetList(
-					# 				"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					# 				+ str(ParRecId)
-					# 				+ "' ORDER BY abs(DISPLAY_ORDER)"
-					# 			) """
-					# 			if findSubChildAvailable1 is not None:
-					# 				for findSubChildOne in findSubChildAvailable1:
-					# 					parobj = str(findSubChildOne.PARENTNODE_OBJECT)
-					# 					NodeType = str(findSubChildOne.NODE_TYPE)
-					# 					NodeApiName = str(findSubChildOne.NODE_DISPLAY_NAME)
-					# 					DynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
-					# 					PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)
-					# 					ordersBy = str(findSubChildOne.ORDERS_BY)
-					# 					ParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
-					# 					if parobj == "True":
-					# 						where_string = (
-					# 							" "
-					# 							+ str(where_string)
-					# 							+ " AND "
-					# 							+ str(oldNodeApiName)
-					# 							+ " = '"
-					# 							+ str(NodeText)
-					# 							+ "'"
-					# 						)
-					# 						SubChildData = self.getChildFromParentObj(
-					# 							NodeText,
-					# 							NodeType,
-					# 							NodeName,
-					# 							RecAttValue,
-					# 							nodeId,
-					# 							ParRecId,
-					# 							DynamicQuery,
-					# 							ObjectName,
-					# 							RecId,
-					# 							where_string,
-					# 							PageRecId,
-					# 							ObjectRecId,
-					# 							NodeApiName,
-					# 							ordersBy,
-					# 						)
-					# 					else:
-					# 						if NodeNameValue != "":
-					# 							Node_name = NodeNameValue
-					# 						else:
-					# 							Node_name = oldNodeApiName
-					# 						if NodeTextValue != "":
-					# 							NodeText = NodeTextValue					
-					# 						SubNodeName = str(findSubChildOne.NODE_DISPLAY_NAME)
-					# 						SubNodeName = str(findSubChildOne.NODE_DISPLAY_NAME)
-					# 						SubParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
-					# 						subDynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
-					# 						SubNodeType = str(findSubChildOne.NODE_TYPE)
-					# 						nodeId = str(findSubChildOne.NODE_ID)
-					# 						where_string = (
-					# 							" "
-					# 							+ str(where_string)
-					# 							+ " AND "
-					# 							+ str(Node_name)
-					# 							+ " = '"
-					# 							+ str(NodeText)
-					# 							+ "'"
-					# 						)											
-					# 						Subwhere_string = str(where_string)
-					# 						PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)		
-					# 						if ACTION != 'ADDNEW':
-					# 							SubChildData = self.getChildOne(
-					# 								SubNodeType,
-					# 								SubNodeName,
-					# 								RecAttValue,
-					# 								nodeId,
-					# 								NodeText,
-					# 								SubParRecId,
-					# 								subDynamicQuery,
-					# 								ObjectName,
-					# 								RecId,
-					# 								Subwhere_string,
-					# 								PageRecId,
-					# 								ObjectRecId,
-					# 								ordersBy,
-					# 							)
-					# 					if len(SubChildData) > 0:
-					# 						NewList.append(SubChildData)
-					# 						list2 = []
-					# 						for sublist in NewList:
-					# 							for item in sublist:
-					# 								list2.append(item)
-					# 						ChildDict["nodes"] = list2
+									else:
+										#Trace.Write("else Z0009")
+										findSubChildAvailable = Sql.GetList(
+										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+										+ str(ParRecId)
+										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+									)				
+								""" findSubChildAvailable = Sql.GetList(
+									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+									+ str(ParRecId)
+									+ "' ORDER BY abs(DISPLAY_ORDER)"
+								) """
+								if findSubChildAvailable1 is not None:
+									for findSubChildOne in findSubChildAvailable1:
+										parobj = str(findSubChildOne.PARENTNODE_OBJECT)
+										NodeType = str(findSubChildOne.NODE_TYPE)
+										NodeApiName = str(findSubChildOne.NODE_DISPLAY_NAME)
+										DynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
+										PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)
+										ordersBy = str(findSubChildOne.ORDERS_BY)
+										ParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
+										if parobj == "True":
+											where_string = (
+												" "
+												+ str(where_string)
+												+ " AND "
+												+ str(oldNodeApiName)
+												+ " = '"
+												+ str(NodeText)
+												+ "'"
+											)
+											SubChildData = self.getChildFromParentObj(
+												NodeText,
+												NodeType,
+												NodeName,
+												RecAttValue,
+												nodeId,
+												ParRecId,
+												DynamicQuery,
+												ObjectName,
+												RecId,
+												where_string,
+												PageRecId,
+												ObjectRecId,
+												NodeApiName,
+												ordersBy,
+											)
+										else:
+											if NodeNameValue != "":
+												Node_name = NodeNameValue
+											else:
+												Node_name = oldNodeApiName
+											if NodeTextValue != "":
+												NodeText = NodeTextValue					
+											SubNodeName = str(findSubChildOne.NODE_DISPLAY_NAME)
+											SubNodeName = str(findSubChildOne.NODE_DISPLAY_NAME)
+											SubParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
+											subDynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
+											SubNodeType = str(findSubChildOne.NODE_TYPE)
+											nodeId = str(findSubChildOne.NODE_ID)
+											where_string = (
+												" "
+												+ str(where_string)
+												+ " AND "
+												+ str(Node_name)
+												+ " = '"
+												+ str(NodeText)
+												+ "'"
+											)											
+											Subwhere_string = str(where_string)
+											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)		
+											if ACTION != 'ADDNEW':
+												SubChildData = self.getChildOne(
+													SubNodeType,
+													SubNodeName,
+													RecAttValue,
+													nodeId,
+													NodeText,
+													SubParRecId,
+													subDynamicQuery,
+													ObjectName,
+													RecId,
+													Subwhere_string,
+													PageRecId,
+													ObjectRecId,
+													ordersBy,
+												)
+										if len(SubChildData) > 0:
+											NewList.append(SubChildData)
+											list2 = []
+											for sublist in NewList:
+												for item in sublist:
+													list2.append(item)
+											ChildDict["nodes"] = list2
 															
-					# 		ChildList.append(ChildDict)
+							ChildList.append(ChildDict)
 					
 					return ChildList
 
