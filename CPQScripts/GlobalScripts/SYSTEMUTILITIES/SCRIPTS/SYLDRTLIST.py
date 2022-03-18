@@ -3314,23 +3314,23 @@ class SYLDRTLIST:
 								
 							if value1234 is not None:
 								if value1234 != "":
-									if "-" in value1234:										
-										##A055S000P01-12021
-										if (str(value123) in ("NET_PRICE_INGL_CURR","NET_PRICE","ESTIMATED_VALUE","ESTVAL_INGL_CURR")) :
-											my_format = "{:,." + str(decimal_place) + "f}"
-											value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
-											value1234 = value1234 + " " + curr_symbol
-										##A055S000P01-12021
-										else:
-											ccc = value1234.split("-")
-											value1234 = value1234[0] + "" + ccc[1] + curr_symbol
-									else:
-										my_format = "{:,." + str(decimal_place) + "f}"
-										value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
-										if str(value123) == "ANNUAL_BILLING_AMOUNT" and str(ObjectName) == "SAQIBP":
-											value1234 = value1234
-										else:											
-											value1234 = value1234 + " " + curr_symbol
+									# if "-" in value1234:										
+									# 	##A055S000P01-12021
+									# 	if (str(value123) in ("NET_PRICE_INGL_CURR","NET_PRICE","ESTIMATED_VALUE","ESTVAL_INGL_CURR")) :
+									# 		my_format = "{:,." + str(decimal_place) + "f}"
+									# 		value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
+									# 		value1234 = value1234 + " " + curr_symbol
+									# 	##A055S000P01-12021
+									# 	else:
+									# 		ccc = value1234.split("-")
+									# 		value1234 = value1234[0] + "" + ccc[1] + curr_symbol
+									#else:
+									my_format = "{:,." + str(decimal_place) + "f}"
+									value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
+									if str(value123) == "ANNUAL_BILLING_AMOUNT" and str(ObjectName) == "SAQIBP":
+										value1234 = value1234
+									else:											
+										value1234 = value1234 + " " + curr_symbol
 						if str(cur_api_name) is not None and (
 							str(data_type_val) == "PERCENT" or str(formu_data_type_val) == "PERCENT"
 						):
