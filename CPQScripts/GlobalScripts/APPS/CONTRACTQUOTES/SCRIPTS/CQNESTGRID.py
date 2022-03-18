@@ -1079,7 +1079,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		+ str(cls)
 		+ '").text(); localStorage.setItem("multiedit_save_date", data1);localStorage.setItem("PartsSelectedId",data1); reco_id = removeDuplicates(reco); }else{reco_id=$element.closest("tr").find("td:'
 		+ str(cls)
-		+ '").text().trim(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);localStorage.setItem("PartsSelectedId",reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
+		+ '").text().trim(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);localStorage.setItem("PM_selectedId",reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
 		+ str(table_id)
 		+ '"); value = value.replace(/<[^>]*>?/gm,""); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
 		+ str(table_id)
