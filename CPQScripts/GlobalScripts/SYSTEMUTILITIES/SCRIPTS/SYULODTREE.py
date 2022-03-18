@@ -2281,32 +2281,32 @@ class TreeView:
 										
 									if subTabName:
 										Trace.Write("Events subtab-----"+str(subTabName))
-										# if subTabName=="Events" and Product.GetGlobal("SERVICE")=="Z0009":
-										# 	service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE")))
-										# 	if service_entitlement_object is not None:
-										# 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-										# 		quote_type_attribute = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-										# 		quote_type_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-										# 		XML = service_entitlement_object.ENTITLEMENT_XML
-										# 		for values in re.finditer(pattern_tag, XML):
-										# 			sub_string = values.group(1)
-										# 			quotetype_id =re.findall(quote_type_attribute,sub_string)
-										# 			if quotetype_id:
-										# 				quotetype_value =re.findall(quote_type_attribute_value,sub_string)
-										# 				if quotetype_value != ["Tool based"]:
-										# 					ObjRecId = '0975E1E2-9D30-4928-AB0A-4DA54537A67A'
-										# 					RelatedId = 'SYOBJR-95556'
-										# 					RelatedName = 'Events'
-										# 					break
-										# 				else:
-										# 					ObjRecId = '271F55CA-C844-43C5-99AB-806A72152F25'
-										# 					RelatedId = 'SYOBJR-00011'
-										# 					RelatedName = 'Events'
-										# 					break
-										# elif subTabName=="Events" and Product.GetGlobal("SERVICE")=="Z0010":
-										# 	ObjRecId = '0975E1E2-9D30-4928-AB0A-4DA54537A67A'
-										# 	RelatedId = 'SYOBJR-95556'
-										# 	RelatedName = 'Events'
+										if subTabName=="Events" and Product.GetGlobal("SERVICE")=="Z0009":
+											service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE")))
+											if service_entitlement_object is not None:
+												pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+												quote_type_attribute = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+												quote_type_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+												XML = service_entitlement_object.ENTITLEMENT_XML
+												for values in re.finditer(pattern_tag, XML):
+													sub_string = values.group(1)
+													quotetype_id =re.findall(quote_type_attribute,sub_string)
+													if quotetype_id:
+														quotetype_value =re.findall(quote_type_attribute_value,sub_string)
+														if quotetype_value != ["Tool based"]:
+															ObjRecId = '0975E1E2-9D30-4928-AB0A-4DA54537A67A'
+															RelatedId = 'SYOBJR-95556'
+															RelatedName = 'Events'
+															break
+														else:
+															ObjRecId = '271F55CA-C844-43C5-99AB-806A72152F25'
+															RelatedId = 'SYOBJR-00011'
+															RelatedName = 'Events'
+															break
+										elif subTabName=="Events" and Product.GetGlobal("SERVICE")=="Z0010":
+											ObjRecId = '0975E1E2-9D30-4928-AB0A-4DA54537A67A'
+											RelatedId = 'SYOBJR-95556'
+											RelatedName = 'Events'
 											
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
