@@ -917,6 +917,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
 	if "table_event_parent" in CLICKEDID:
+		Trace.Write('TreeSuperParentParam-->'+str(TreeSuperParentParam))
 		if str(TreeSuperParentParam)=="Z0009":
 			CLICKEDID = "SYOBJR_95555_986F0A8F_359E_4408_9AAC_6A3C9E264241"
 		else:
