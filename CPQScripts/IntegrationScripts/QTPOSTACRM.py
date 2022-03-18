@@ -63,6 +63,7 @@ try:
 			#ApiResponse = ApiResponseFactory.JsonResponse({"Response":[{'Status':'200','Message':"Data Completely Uploaded"}]})
 
 	def cpq_to_clm(Qt_id,Rev_id):
+		Log.Info("====> QTPOSTACRM for---cpq_to_clm")
 		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
 		if LOGIN_CREDENTIALS is not None:
 			Login_Username = str(LOGIN_CREDENTIALS.Username)
