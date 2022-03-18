@@ -7445,7 +7445,7 @@ def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		+ filter_class
 		+ '").click( function(){ var table_id = $(this).closest("table").attr("id"); ATTRIBUTE_VALUEList = []; '
 		+ str(values_list)
-		+ ' var attribute_value = $(this).val(); cpq.server.executeScript("CQNESTGRID", {"TABNAME":"Assemblies Child", "ACTION":"PRODUCT_ONLOAD_FILTER", "ATTRIBUTE_NAME": '
+		+ ' var attribute_value = $(this).val(); cpq.server.executeScript("CQNESTGRID", {"TABNAME":"Fts Assemblies Child", "ACTION":"PRODUCT_ONLOAD_FILTER", "ATTRIBUTE_NAME": '
 		+ str(list(Columns))
 		+ ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList, "RECID":"'
 		+ str(recid)
