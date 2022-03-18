@@ -610,8 +610,8 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 					modified_records.append(str(tuple([float(spare_val) if type(spare_val) == "<type 'Decimal'>" else spare_val for spare_val in spare_record])))
 
 				
-				for spare_record in xls_spare_records:
-					spare_record[1]=str(spare_record[1])
+				#for spare_record in xls_spare_records:
+				#spare_record[1]=str(spare_record[1])
 
 
 				#self.records = ', '.join(map(str, modified_records)).replace("None","null").replace("'","''")
