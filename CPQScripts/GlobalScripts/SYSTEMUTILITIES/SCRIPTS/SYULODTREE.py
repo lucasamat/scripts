@@ -2933,7 +2933,7 @@ class TreeView:
 		except:
 			getAccounts = ""
 		ChildList = []
-		NewList = []
+		#NewList = []
 		NodeNameValue = ""
 		NodeTextValue = ""
 		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
@@ -3044,25 +3044,7 @@ class TreeView:
 									try:
 										NodeRecId = str(eval("childdata.GREENBOOK"))
 									except:
-										NodeRecId = "-"
-							# elif str(ObjName).strip() == 'CTCSGB':
-							# 	if NodeApiName == 'FABLOCATION_ID':
-							# 		NodeRecId = str(eval("childdata.FABLOCATION_ID"))
-							# 		nodeId = 32
-							# 	elif NodeApiName == 'GREENBOOK':
-							# 		try:
-							# 			NodeRecId = str(eval("childdata.GREENBOOK"))
-							# 		except:
-							# 			NodeRecId = "-"
-							# elif str(ObjName).strip() == 'SAQIGB':
-							# 	if NodeApiName == 'FABLOCATION_ID':
-							# 		NodeRecId = str(eval("childdata.FABLOCATION_ID"))
-							# 		nodeId = 38
-							# 	elif NodeApiName == 'GREENBOOK':
-							# 		try:
-							# 			NodeRecId = str(eval("childdata.GREENBOOK"))
-							# 		except:
-							# 			NodeRecId = "-"
+										NodeRecId = "-"							
 							elif str(ObjName).strip() == 'SAQFGB':
 								NodeRecId = str(eval("childdata.GREENBOOK"))
 							elif str(ObjName).strip() == 'ACAPTF':
@@ -3194,6 +3176,7 @@ class TreeView:
 						) """
 						if findSubChildAvailable is not None:
 							for findSubChildOne in findSubChildAvailable:
+								NewList = []
 								ParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
 								#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 								if getAccounts is None:
@@ -3334,7 +3317,7 @@ class TreeView:
 												for item in sublist:
 													list2.append(item)
 											ChildDict["nodes"] = list2
-								NewList = []								
+															
 							ChildList.append(ChildDict)
 					return ChildList
 
