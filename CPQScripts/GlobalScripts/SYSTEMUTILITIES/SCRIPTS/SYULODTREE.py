@@ -2280,7 +2280,7 @@ class TreeView:
 									#Trace.Write(str(ObjRecId)+"---SUBTAB_NAMEsss*"+str(subTabName)+'--1947---'+str(NodeText)+'---Node Name---'+str(NodeName)+'--Objname--'+str(ObjName))
 										
 									if subTabName:
-										Trace.Write("Events subtab-----"+str(subTabName))
+										Trace.Write("Events subtab-----"+str(subTabName)+"NodeText--->"+str(NodeText))
 										if subTabName=="Events" and Product.GetGlobal("SERVICE")=="Z0009":
 											service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE")))
 											if service_entitlement_object is not None:
