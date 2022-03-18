@@ -583,6 +583,12 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				break	
 			xls_spare_records = list(sheet_data.Value)
 			if xls_spare_records:
+
+				for sub_list in xls_spare_records:
+					Trace.Write(str(sub_list[3]))
+					del sub_list[3]
+				
+				
 				#del_col=[val.pop(3)  for val in xls_spare_records]
 				Trace.Write(str(xls_spare_records))
 				header = list(xls_spare_records[0]) + ['QUOTE_RECORD_ID','QTEREV_RECORD_ID']
