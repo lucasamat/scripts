@@ -5117,7 +5117,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		#Suresh Ended
 		
 		if self.pmevents_changes_insert == "Yes":
-			Log.Info("pmevents_changes_insert -----yes")
+			Log.Info("pmevents_changes_insert -----yes"+str(kwargs.get('additional_where')))
 			self._process_query("""INSERT SAQSAP (
 					ASSEMBLY_ID,
 					ASSEMBLY_DESCRIPTION,
@@ -5207,7 +5207,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					)
 				)
 		else:
-			Log.Info("pmevents_changes_insert -----Noo")
+			Log.Info("pmevents_changes_insert -----Noo"+str(kwargs.get('additional_where')))
 			self._process_query("""INSERT SAQSAP (
 					ASSEMBLY_ID,
 					ASSEMBLY_DESCRIPTION,
