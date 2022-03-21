@@ -612,6 +612,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				
 				for spare_record in xls_spare_records:
 					if spare_record[1] and spare_record[1].upper() != "NULL":
+						spare_record[1] = re.sub(r'Â','',spare_record[1])
 						spare_record[1]=str(spare_record[1])
 					else:
 						spare_record[1] =""
@@ -623,7 +624,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				self.records = self.records.replace("True","1").replace("False","0").replace ("Â" ," ").replace("?","")
 				Trace.Write("Records111 ===> "+str(self.records))
 				self.records = re.sub(r"<?[a-zA-Z0-9_.\[ \]]+>", "0.00", self.records)
-				self.records = re.sub(r'Â','',self.records)
+				
 				Trace.Write("Records222 ===> "+str(self.records))
 			# for index, data in enumerate(list(sheet_data.Value)):
 			# 	if index == 0:
