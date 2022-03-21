@@ -476,7 +476,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					BillingDate=billing_date,
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
-	elif str(get_billing_type).upper() == "MILESTONE" and service_id != 'Z0007':
+	elif str(get_billing_type).upper() == "MILESTONE" and service_id not in ('Z0007','Z0009'):
 
 		
 		Trace.Write(str(service_id)+'------billing_type_value-----'+str(get_ent_billing_type_value))
