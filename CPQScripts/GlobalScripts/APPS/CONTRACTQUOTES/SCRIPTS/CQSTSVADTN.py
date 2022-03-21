@@ -74,6 +74,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 						get_complete_list.append('F')
 				else:
 					get_complete_list.append('F')
+		else:
+			get_complete_list.append('F')
 		get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		#For Tool Based Quotes[SAQTSV]		
 		get_tool_service_info = Sql.GetList("SELECT DISTINCT SERVICE_ID as SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
