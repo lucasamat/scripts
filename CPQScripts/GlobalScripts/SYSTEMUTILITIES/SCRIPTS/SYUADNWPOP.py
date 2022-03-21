@@ -2484,7 +2484,7 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); $("#noRecDisp").remove();if (document.getElementById("RecordsStartAndEnd")){document.getElementById("RecordsStartAndEnd").innerHTML = data15;}; if (document.getElementById("TotalRecordsCount")) {document.getElementById("TotalRecordsCount").innerHTML = data16;} } else{ $("'
 					+ str(table_ids)
-					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $('+table_id+').after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>");$(".user_id").remove(); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field != "NORECORDS") { $("'
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("'+table_id+' > tbody")..html("<tr class="noRecDisp"><td colspan="7" class="txt_al_lt_imp">No Records to Display</td></tr>") $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field != "NORECORDS") { $("'
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); } else{ $("'
 					+ str(table_ids)
