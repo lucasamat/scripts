@@ -590,7 +590,8 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				
 				#del_col=[val.pop(3)  for val in xls_spare_records]
 				xls_spare_records = str(xls_spare_records)
-				xls_spare_records = ",".join(xls_spare_records).replace('Â','').split(",")
+				xls_spare_records = ",".join(xls_spare_records).replace('Â','')
+				xls_spare_records = xls_spare_records.split(",")
 				header = list(xls_spare_records[0]) + ['QUOTE_RECORD_ID','QTEREV_RECORD_ID']
 				
 				self.columns = ",".join(header)
@@ -612,7 +613,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 
 				
 				for spare_record in xls_spare_records:
-					if spare_record[1]:
+					if spare_record[1] and spare_record[1].upper() != "NULL":
 						spare_record[1]=str(spare_record[1])
 					else:
 						spare_record[1] =""
