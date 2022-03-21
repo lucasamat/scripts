@@ -601,8 +601,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 						ISNULL({amount_column}, 0) / {get_val} AS DOC_CURRENCY,
 						SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,	
 						SAQRIT.COMVAL_INGL_CURR	 as COMMITTED_VALUE_INGL_CURR,
-						SAQRIT.ESTVAL_INGL_CURR	as 	ESTVAL_INGL_CURR,
-						SAQRIT.ESTVAL_INDT_CURR as ESTVAL_INDT_CURR,		
+						SAQRIT.ESTVAL_INGL_CURR	as 	ESTVAL_INGL_CURR,	
 						SAQRIT.QUOTE_RECORD_ID,
 						SAQRIT.QTEREV_ID,
 						SAQRIT.QTEREV_RECORD_ID,
@@ -626,7 +625,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 						GETDATE() as CPQTABLEENTRYDATEADDED
 						FROM  SAQRIT (NOLOCK)  LEFT JOIN SAQIBP (NOLOCK) on SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID AND
 						EXISTS (SELECT * FROM  SAQIBP (NOLOCK) WHERE SAQIBP.ANNUAL_BILLING_AMOUNT <> SAQRIT.NET_VALUE AND SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID)
-						WHERE SAQRIT.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRIT.SERVICE_ID ='{service_id}'   and SAQRIT.ESTIMATED_VALUE  IS NOT NULL  AND SAQRIT.OBJECT_ID IS NOT NULL )A """.format(
+						WHERE SAQRIT.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRIT.SERVICE_ID ='{service_id}'   and SAQRIT.NET_VALUE  IS NOT NULL  AND SAQRIT.OBJECT_ID IS NOT NULL )A """.format(
 						UserId=user_id, QuoteRecordId=contract_quote_rec_id,
 						RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
 						BillingDate=billing_date,
@@ -677,7 +676,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 						{UserId} as CPQTABLEENTRYADDEDBY, 
 						GETDATE() as CPQTABLEENTRYDATEADDED
 					FROM  SAQRIT (NOLOCK) 
-					WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND  ESTIMATED_VALUE IS NOT NULL AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{service_id}' AND (OBJECT_ID  IS NULL OR OBJECT_ID = '')""".format(
+					WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND  NET_VALUE IS NOT NULL AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{service_id}' AND (OBJECT_ID  IS NULL OR OBJECT_ID = '')""".format(
 						UserId=user_id, QuoteRecordId=contract_quote_rec_id,
 						RevisionRecordId=quote_revision_rec_id,
 						BillingDate=billing_date,billing_end_date=billing_end_date,
