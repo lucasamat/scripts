@@ -273,7 +273,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								DISTINCT
 								MAMTRL.UNIT_OF_MEASURE as BASEUOM_ID,
 								MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
-								CASE WHEN TEMP_TABLE.CUSTOMER_PART_NUMBER ='null' THEN NULL ELSE TEMP_TABLE.CUSTOMER_PART_NUMBER AS CUSTOMER_PART_NUMBER,
+								TEMP_TABLE.CUSTOMER_PART_NUMBER  AS CUSTOMER_PART_NUMBER,
 								MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
 								TEMP_TABLE.EXTENDED_UNIT_PRICE AS EXTENDED_UNIT_PRICE,
 								MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
@@ -449,7 +449,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								DISTINCT
 								MAMTRL.UNIT_OF_MEASURE as BASEUOM_ID,
 								MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
-								CASE WHEN TEMP_TABLE.CUSTOMER_PART_NUMBER ='null' THEN NULL ELSE TEMP_TABLE.CUSTOMER_PART_NUMBER AS CUSTOMER_PART_NUMBER,
+								TEMP_TABLE.CUSTOMER_PART_NUMBER  AS CUSTOMER_PART_NUMBER,
 								MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
 								TEMP_TABLE.EXTENDED_UNIT_PRICE AS EXTENDED_UNIT_PRICE,
 								MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
@@ -611,7 +611,10 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 
 				
 				for spare_record in xls_spare_records:
-					spare_record[1]=str(spare_record[1])
+					if spare_record[1] and spare_record[1].upper() != "NULL":
+						spare_record[1]=str(spare_record[1])
+					else:
+						spare_record[1] =""
 
 
 				#self.records = ', '.join(map(str, modified_records)).replace("None","null").replace("'","''")
