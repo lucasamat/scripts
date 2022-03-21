@@ -586,7 +586,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			if xls_spare_records:
 				for sub_records in list(xls_spare_records):
 					if (sub_records[3]) != 'PART_DESCRIPTION':
-						add_parts=add_parts.append(sub_records[2])
+						add_parts.append(sub_records[2])
 						sub_records[3] =''				
 			
 				#del_col=[val.pop(3)  for val in xls_spare_records]
