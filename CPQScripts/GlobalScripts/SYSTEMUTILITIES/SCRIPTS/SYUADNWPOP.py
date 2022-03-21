@@ -2484,7 +2484,7 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); $("#noRecDisp").remove();if (document.getElementById("RecordsStartAndEnd")){document.getElementById("RecordsStartAndEnd").innerHTML = data15;}; if (document.getElementById("TotalRecordsCount")) {document.getElementById("TotalRecordsCount").innerHTML = data16;} } else{ $("'
 					+ str(table_ids)
-					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#'+str(table_ids)+'").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field != "NORECORDS") { $("'
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("'+str(table_ids)+'").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field != "NORECORDS") { $("'
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); } else{ $("'
 					+ str(table_ids)
