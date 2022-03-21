@@ -50,7 +50,7 @@ user_id = str(User.Id)
 user_name = str(User.UserName) 
 
 
-def Dynamic_Status_Bar(quote_item_insert,Text):
+def Dynamic_Status_Bar(quote_item_insert,Text,edit_config):
 	
 	if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
 		Trace.Write('SAQSPT delete=======')
@@ -257,5 +257,12 @@ try:
 	Text = Param.Text
 except:
 	Text = ""
+
+try:
+	edit_config = Param.edit_config
+except:
+	edit_config = ""
+
+Trace.Write("edit_config_status "+str(edit_config))
 Trace.Write("quote_item_insert_J "+str(quote_item_insert))
-ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar(quote_item_insert,Text))  
+ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar(quote_item_insert,Text,edit_config))  
