@@ -620,11 +620,10 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				#self.records = ', '.join(map(str, modified_records)).replace("None","null").replace("'","''")
 				self.records = ', '.join(map(str, [str(tuple(list(spare_record)+[self.contract_quote_record_id, self.contract_quote_revision_record_id])) for spare_record in xls_spare_records[1:]])).replace("None","null").replace("'","''")
 				Trace.Write("Records000 ===> "+str(self.records))
-				self.records = self.records.replace("True","1").replace("False","0")
+				self.records = self.records.replace("True","1").replace("False","0").replace ("Â" ," ").replace("?","")
 				Trace.Write("Records111 ===> "+str(self.records))
 				self.records = re.sub(r"<?[a-zA-Z0-9_.\[ \]]+>", "0.00", self.records)
 				Trace.Write("Records222 ===> "+str(self.records))
-				self.records = self.records.replace("?","")
 			# for index, data in enumerate(list(sheet_data.Value)):
 			# 	if index == 0:
 			# 		self.columns = ",".join(data)
