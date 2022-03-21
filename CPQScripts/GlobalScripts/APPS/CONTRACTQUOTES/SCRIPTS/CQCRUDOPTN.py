@@ -7278,7 +7278,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 			getStatus = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(get_quote_id.QUOTE_ID,self.quote_revision_record_id))
 			edit_config_notification_query = Sql.GetFirst("SELECT PRICING_DIRTY_FLAG FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(get_quote_id.QUOTE_ID,self.quote_revision_record_id))
 			if edit_config_notification_query:
-				if edit_config_notification_query.PRICING_DIRTY_FLAG == "True":
+				if str(edit_config_notification_query.PRICING_DIRTY_FLAG) == "True":
 					gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> The quote configuration has changed. Please click on the complete stage button to regenerate the quote items.</label></div></div>')
 			if getStatus.REVISION_STATUS == "APPROVED":
 				gettransactionmessage = ""
