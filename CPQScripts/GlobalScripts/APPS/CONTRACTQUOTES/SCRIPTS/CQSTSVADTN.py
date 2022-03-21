@@ -237,12 +237,12 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 						pass
 			# Approval Trigger - Start		
 			#import ACVIORULES
-			violationruleInsert = ACVIORULES.ViolationConditions()
-			header_obj = SqlHelper.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-			if header_obj:			
-				violationruleInsert.InsertAction(
-				header_obj.RECORD_ID, Quote.GetGlobal("quote_revision_record_id"), "SAQTRV"
-				)
+			# violationruleInsert = ACVIORULES.ViolationConditions()
+			# header_obj = SqlHelper.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+			# if header_obj:			
+			# 	violationruleInsert.InsertAction(
+			# 	header_obj.RECORD_ID, Quote.GetGlobal("quote_revision_record_id"), "SAQTRV"
+			# 	)
 			# Approval Trigger - End
 		
 
