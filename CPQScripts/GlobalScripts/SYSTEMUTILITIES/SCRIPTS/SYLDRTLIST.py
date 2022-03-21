@@ -1932,7 +1932,7 @@ class SYLDRTLIST:
                                 elif str(get_billing_types).upper() =='VARIABLE':
                                     get_ttl_amt = 'ESTVAL_INGL_CURR'
 								elif str(get_billing_types).upper() =='MILESTONE':
-                                    get_ttl_amt = 'ESTVAL_INGL_CURR'
+                                    get_ttl_amt = 'BILLING_VALUE'
                                 else:
                                     get_ttl_amt = 'BILLING_VALUE'
                             if Qustr:
