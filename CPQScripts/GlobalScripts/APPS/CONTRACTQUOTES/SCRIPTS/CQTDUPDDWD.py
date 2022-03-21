@@ -578,7 +578,8 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				
 
 	def _do_opertion(self):
-		add_parts=[]
+		add_part_numbers=[]
+		New_part_numbers=[]
 		for sheet_data in self.upload_data:	
 			if not sheet_data.Value:	
 				break	
@@ -586,7 +587,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			if xls_spare_records:
 				for sub_records in list(xls_spare_records):
 					if (sub_records[3]) != 'PART_DESCRIPTION':
-						add_parts.append(sub_records[2])
+						add_part_numbers.append(sub_records[2])
 						sub_records[3] =''				
 			
 				#del_col=[val.pop(3)  for val in xls_spare_records]
@@ -600,9 +601,13 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 
 				Trace.Write("colums"+str(self.columns))
 
-				old_parts=Sql.GetList("SELECT DISTINCT PART_NUMBER FROM SAQSPT WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(Columns=(self.columns), QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param))
+				old_part_numbers=Sql.GetList("SELECT DISTINCT PART_NUMBER FROM SAQSPT WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(Columns=(self.columns), QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param))
 
-				Trace.Write(old_parts.PART_NUMBER)
+				Trace.Write(old_part_numbers)
+				val=set(add_part_numbers)
+				New_part_numbers=[x for  x in old_part_numbers if x not in val]
+				
+				Trace.Write("new_parts"+str(New_part_numbers))
 
 				col=self.columns
 				table_columns = col.split(",")
