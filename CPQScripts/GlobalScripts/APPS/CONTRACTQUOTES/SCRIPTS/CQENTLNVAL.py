@@ -572,6 +572,8 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 			for entitlement_detail in entitlement_details:
 				entitlement_table_col = entitlement_detail['field'][0]
 				entitlement_id = entitlement_detail['field'][2]
+				if entitlement_id == 'AGS_Z0092_TSC_CONSUM':
+					entitlement_id = 'AGS_Z0092_TSC_CONADD' 
 				if entitlement_id in dict_val.keys():
 					entitlement_disp_val = dict_val[entitlement_id]
 					if entitlement_disp_val:
