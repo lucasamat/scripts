@@ -653,7 +653,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 						COMVAL_INGL_CURR as COMMITTED_VALUE_INGL_CURR,
 						SAQRIT.ESTVAL_INGL_CURR	as 	ESTVAL_INGL_CURR,
 						ISNULL({amount_column}, 0) / {get_val} AS DOC_CURRENCY,
-						SAQRIT.ESTVAL_INDT_CURR as ESTVAL_INDT_CURR,	
+						0 as ESTVAL_INDT_CURR,	
 						QUOTE_RECORD_ID,
 						QTEREV_ID,
 						QTEREV_RECORD_ID,
