@@ -1432,7 +1432,7 @@ class TreeView:
 		ChildList = []
 		NewList = []
 		try:
-			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
 			getAccounts = ""
 		#Trace.Write("=================>> ParRecId "+str(ParRecId))
@@ -1570,7 +1570,7 @@ class TreeView:
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
 						where_string = '1=1 AND'
 						gettabtext = Product.GetGlobal('settabname')						
-						getpagename  = Sql.GetFirst("select TAB_RECORD_ID from SYPRTB where TAB_ID = '"+str(gettabtext)+"'")
+						getpagename  = Sql.GetFirst("select TAB_RECORD_ID from SYPRTB (NOLOCK) where TAB_ID = '"+str(gettabtext)+"'")
 						if getpagename:
 							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and TAB_RECORD_ID = '"+str(getpagename.TAB_RECORD_ID)+"'"
 						else:
@@ -1603,7 +1603,7 @@ class TreeView:
 						where_string = where_string
 					elif str(ObjName).strip() == "SYPGAC" and CurrentTabName == 'App':
 						getnodetext = Product.GetGlobal('setnodetextname')
-						getpagename = Sql.GetFirst("select PAGE_NAME from SYPAGE where PAGE_LABEL = '"+str(getnodetext)+"'")
+						getpagename = Sql.GetFirst("select PAGE_NAME from SYPAGE (NOLOCK) where PAGE_LABEL = '"+str(getnodetext)+"'")
 						if getpagename:
 							where_string += " AND PAGE_NAME = '"+str(getpagename.PAGE_NAME)+"'"
 						else:
@@ -2044,7 +2044,7 @@ class TreeView:
 										NodeText = image_url+NodeText
 								##concatenate name with ID
 								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB') and str(NodeName) == 'FABLOCATION_ID': 
-									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND FABLOCATION_ID = '{}'".format(ObjName, where_string,NodeText))
+									get_fab_name = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} AND FABLOCATION_ID = '{}'".format(ObjName, where_string,NodeText))
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
 								elif str(ObjName).strip() == 'SAQRIB' and str(NodeName) == 'PRDOFR_ID':
@@ -2257,13 +2257,13 @@ class TreeView:
 										subTabName = "Events"
 									##A055S000P01-14790 code ends...
 									elif (subTabName == 'Spare Parts') and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
-										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCk) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" else ""
 									elif (subTabName == 'Periods') and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
-										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" and Product.GetGlobal("SERVICE") == "Z0108" else ""
 									elif subTabName =='Equipment' and Product.GetGlobal("ParentNodeLevel")=="Complementary Products":
-										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 										subTabName = "" if str(doc_type.DOCTYP_ID) == "ZWK1" else str(getRightView.SUBTAB_NAME)
 										Product.SetGlobal("ParentNodeLevel",'')
 									# elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
@@ -2712,7 +2712,7 @@ class TreeView:
 								self.getPageRelatedDetails(subTabName, pageType, objRecId, ObjectRecId, querystr)
 							)
 							RelatedObj = Sql.GetFirst(
-								"SELECT RECORD_ID, SAPCPQ_ATTRIBUTE_NAME, NAME FROM SYOBJR WHERE PARENT_LOOKUP_REC_ID = '"
+								"SELECT RECORD_ID, SAPCPQ_ATTRIBUTE_NAME, NAME FROM SYOBJR (NOLOCK) WHERE PARENT_LOOKUP_REC_ID = '"
 								+ str(ObjectRecId)
 								+ "' AND OBJ_REC_ID = '"
 								+ str(objRecId)
@@ -2848,7 +2848,7 @@ class TreeView:
 																		
 								elif NodeText in ("Tree Node"):
 									RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
-									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"' and TREE_NAME = '"+str(Product.GetGlobal('TreeName'))+"'") 
+									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE (NOLOCK) where PAGE_RECORD_ID = '"+str(RecAttValue) +"' and TREE_NAME = '"+str(Product.GetGlobal('TreeName'))+"'") 
 									if getpagename:
 										for tree in getpagename:                 
 											#where_string =  where_string 
@@ -2930,7 +2930,7 @@ class TreeView:
 		ordersBy,
 	):
 		try:
-			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
 			getAccounts = ""
 		
@@ -3361,7 +3361,7 @@ class TreeView:
 		DetailDict = {}
 		if pageType == "OBJECT PAGE LISTGRID":
 			RelatedObj = Sql.GetList(
-				"SELECT RECORD_ID, SAPCPQ_ATTRIBUTE_NAME, NAME FROM SYOBJR WHERE PARENT_LOOKUP_REC_ID = '"
+				"SELECT RECORD_ID, SAPCPQ_ATTRIBUTE_NAME, NAME FROM SYOBJR (NOLOCK) WHERE PARENT_LOOKUP_REC_ID = '"
 				+ str(ObjectRecId)
 				+ "' AND OBJ_REC_ID = '"
 				+ str(objRecId)
