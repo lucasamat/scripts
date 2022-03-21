@@ -7266,7 +7266,7 @@ def POPUPLISTVALUEADDNEW(
 												+ header
 												+ "</abbr></th>"
 											)
-										table_header += "</tr></thead><tbody>"
+										table_header += "</tr></thead><tbody class ='user_id'>"
 										for row, inx in enumerate(dep_list):
 											table_header += (
 												'<tr class="iconhvr" id = "' + str(ObjectName) + "__" + str(row) + '">'
