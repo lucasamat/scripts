@@ -709,7 +709,7 @@ class SyncQuoteAndCustomTables:
                             
                             salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
                             if salesorg_currency:
-                                Log.Info("salesorg_currency"+str(salesorg_currency.CURRENCY))
+                                #Log.Info("salesorg_currency"+str(salesorg_currency.CURRENCY))
                                 salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
                                                     "DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
                                                     })
@@ -1081,7 +1081,7 @@ class SyncQuoteAndCustomTables:
                         salesorg_account_obj = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM SASAAC (NOLOCK) WHERE SALESORG_ID = '{}' AND DIVISION_ID = '{}' AND ACCOUNT_ID = '{}' AND DISTRIBUTIONCHANNEL_ID = '{}' ".format(custom_fields_detail.get('SalesOrgID'),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
                         #Log.Info("SELECT CURRENCY,CURRENCY_RECORD_ID FROM SASAAC (NOLOCK) WHERE SALESORG_ID = '{}' AND DIVISION_ID = '{}' AND ACCOUNT_ID = '{}' AND DISTRIBUTIONCHANNEL_ID = '{}' ".format(custom_fields_detail.get('SalesOrgID'),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
                         if salesorg_account_obj:
-                            Log.Info("salesorg_account_obj"+str(salesorg_account_obj.CURRENCY))
+                            #Log.Info("salesorg_account_obj"+str(salesorg_account_obj.CURRENCY))
                             salesorg_data.update({"DOC_CURRENCY":salesorg_account_obj.CURRENCY , 
                                                 "DOCCURR_RECORD_ID":salesorg_account_obj.CURRENCY_RECORD_ID,
                                                 })
