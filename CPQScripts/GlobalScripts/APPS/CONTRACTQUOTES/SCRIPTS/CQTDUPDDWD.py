@@ -600,7 +600,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 
 				Trace.Write("colums"+str(self.columns))
 
-				old_parts=Sql.GetList("SELECT DISTINCT {Columns} FROM SAQSPT WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(Columns=(self.columns), QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param))
+				old_parts=Sql.GetList("SELECT DISTINCT PART_NUMBER FROM SAQSPT WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(Columns=(self.columns), QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param))
 
 				Trace.Write(old_parts.PART_NUMBER)
 
