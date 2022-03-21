@@ -1931,6 +1931,8 @@ class SYLDRTLIST:
                                     column_before_pivot_changes = column_before_pivot_change
                                 elif str(get_billing_types).upper() =='VARIABLE':
                                     get_ttl_amt = 'ESTVAL_INGL_CURR'
+								elif str(get_billing_types).upper() =='MILESTONE':
+                                    get_ttl_amt = 'ESTVAL_INGL_CURR'
                                 else:
                                     get_ttl_amt = 'BILLING_VALUE'
                             if Qustr:
