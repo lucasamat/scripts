@@ -3148,6 +3148,7 @@ class SYLDRTLIST:
                                     elif str(ObjectName) =='SAQSPT':
                                         pass
                                     elif str(ObjectName) == 'SAQRIS':
+                                        Trace.Write("SERV_DESC_CHK "+str(SERV_DESC))
                                         Action_str += ('<li><a class="dropdown-item" href="#" onclick="edit_configuration(this)">EDIT CONFIGURATION</a></li>')
                                     else:
                                         Action_str += ('<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>')
