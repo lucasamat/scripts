@@ -589,7 +589,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 						sub_records[3] =''				
 				
 				#del_col=[val.pop(3)  for val in xls_spare_records]
-				Trace.Write(str(xls_spare_records))
+				xls_spare_records = re.sub(r'Â','',xls_spare_records)
 				header = list(xls_spare_records[0]) + ['QUOTE_RECORD_ID','QTEREV_RECORD_ID']
 				
 				self.columns = ",".join(header)
@@ -611,7 +611,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 
 				
 				for spare_record in xls_spare_records:
-					if spare_record[1] and spare_record[1].upper() != "NULL" and ('Â' not in  spare_record[1]):
+					if spare_record[1] and spare_record[1].upper() != "NULL":
 						spare_record[1]=str(spare_record[1])
 					else:
 						spare_record[1] =""
