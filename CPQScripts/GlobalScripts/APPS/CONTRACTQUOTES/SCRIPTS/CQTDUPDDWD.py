@@ -589,9 +589,10 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 						sub_records[3] =''				
 				
 				#del_col=[val.pop(3)  for val in xls_spare_records]
-				xls_spare_records = ",".join(list(xls_spare_records)).replace('Â','')
+				xls_spare_records = str(xls_spare_records).replace('Â','')
+				#xls_spare_records = ",".join(list(xls_spare_records)).replace('Â','')
 				Trace.Write(xls_spare_records)
-				xls_spare_records = xls_spare_records.split(",")
+				#xls_spare_records = xls_spare_records.split(",")
 				header = list(xls_spare_records[0]) + ['QUOTE_RECORD_ID','QTEREV_RECORD_ID']
 				
 				self.columns = ",".join(header)
