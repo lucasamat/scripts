@@ -62,7 +62,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		All_value = [xls_col(val,val) for val in All_value]
 		colums=','.join(All_value)
 		colums=str(colums)
-		colums = re.sub(r'CUSTOMER_PART_NUMBER','STUFF( CUSTOMER_PART_NUMBER , PATINDEX("%Â%", CUSTOMER_PART_NUMBER) + 3 , 0 , "" ) ',colums)
+		colums = re.sub(r'CUSTOMER_PART_NUMBER','STUFF( CUSTOMER_PART_NUMBER , PATINDEX("%Â%", CUSTOMER_PART_NUMBER) + 3 , 0 , "" ) AS CUSTOMER_PART_NUMBER',colums)
 		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))				
 		while start < table_total_rows:
 			query_string_with_pagination = """
