@@ -411,7 +411,7 @@ class EntitlementView():
 			else:
 				Trace.Write("GETCPS VERSION EMPTY!")
 
-			sec_str += '<div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-info"><label title=" Information : The quote configuration has changed. Please click on the complete stage button to regenerate the quote items"><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> Information : The quote configuration has changed. Please click on the complete stage button to regenerate the quote items</label></div></div>'
+			# sec_str += '<div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-info"><label title=" Information : The quote configuration has changed. Please click on the complete stage button to regenerate the quote items"><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> Information : The quote configuration has changed. Please click on the complete stage button to regenerate the quote items</label></div></div>'
 		
 			desc_list = ["APPROVAL","ENTITLEMENT","DESCRIPTION","REQUIRED","VALUE","VALIDATION","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT"]
 			#attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}			
