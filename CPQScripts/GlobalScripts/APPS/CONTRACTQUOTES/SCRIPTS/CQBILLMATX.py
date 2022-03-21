@@ -476,7 +476,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					BillingDate=billing_date,
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
-	elif str(get_billing_type).upper() == "MILESTONE" and service_id not in ('Z0007','Z0009'):
+	elif str(get_billing_type).upper() == "MILESTONE" and service_id not in ('Z0007','Z0009','Z0123'):
 
 		
 		Trace.Write(str(service_id)+'------billing_type_value-----'+str(get_ent_billing_type_value))
@@ -580,7 +580,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					BillingDate=billing_date,
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
-	elif service_id == "Z0009":
+	elif service_id in  ("Z0009","Z0123"):
 			Sql.RunQuery("""INSERT SAQIBP (
 						
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID,DOC_CURRENCY, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
