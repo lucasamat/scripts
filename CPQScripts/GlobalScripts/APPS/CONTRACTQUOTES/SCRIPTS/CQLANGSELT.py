@@ -1290,7 +1290,7 @@ elif str(parts_list_include) == 'True' and str(parts_list) == 'True':
 	Trace.Write('881--1290---FPPM QUote--')
 	Quote.GetCustomField('INCLUDE_ITEMS').Content = 'YES'
 	Quote.GetCustomField('ITEM_DELIVERY_SCHEDULE').Content = 'YES'
-	
+	Quote.GetCustomField('PARTS_DELIVERY_SCHEDULE').Content = 'YES'
 	ApiResponse = ApiResponseFactory.JsonResponse(fpm_quote_doc())
 elif str(include_part_delivery) == 'True':
 	Trace.Write('881--1296---FPPM QUote--')
