@@ -34,7 +34,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue2 ="BPTKPI"
 				record_list.append(editvalue1)
 				record_list.append(editvalue2)
-			if((line_values.ATGKEY != 'Excluded' or line_values.ATGKEY != 'Exception') and str(line_values.ATGKEY) != ''):
+			if(line_values.ATGKEY != 'Excluded' and line_values.ATGKEY != 'Exception' and str(line_values.ATGKEY) != ''):
 				editvalue3 = "ATGKEC"
 				editvalue4 = "ATGKEP"
 				record_list.append(editvalue3)
@@ -55,7 +55,6 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				record_list.append(editvalue9)
 				record_list.append(editvalue10)
 			if(line_values.TGKPNS != 'Excluded' and str(line_values.TGKPNS) != ''):
-				Trace.Write("iffffff")
 				editvalue11 = "ATKNCI"
 				editvalue12 = "ATKNPI"
 				record_list.append(editvalue11)
