@@ -380,7 +380,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 		nCustomSPAUnits
 	) = nAdjSPAUnits = nSpotPriceGpa = nCustomGPAUnits = nAdjGPAUnits = Points_curr_ex_rate_date = Points_curr_ex_rate = ""
 	TableName = ObjectName
-	Trace.Write("TableName" + str(TableName))
+	Trace.Write("TableName=====>" + str(TableName))
 	CURRENCY_SYMBOL = Sql.GetFirst("SELECT CURRENCY_RECORD_ID FROM PRCURR(NOLOCK) WHERE CURRENCY = 'USD'")
 	#CURRENCY_SYMBOL_VALUE = CURRENCY_SYMBOL.CURRENCY_RECORD_ID
 
