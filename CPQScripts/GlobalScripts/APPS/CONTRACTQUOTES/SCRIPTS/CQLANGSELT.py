@@ -963,7 +963,13 @@ def language_select():
 	get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 	get_service_details = Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID =  '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 	if get_service_details:
-		get_fpm_service = get_service_details.SERVICE_ID
+		get_fpm_service_val = get_service_details.SERVICE_ID
+		if get_fpm_service_val == "Z0108":
+			get_fpm_service = "Z0108"
+		else:
+			get_fpm_service = ''
+	else:
+		get_fpm_service = ''
 	if get_quote_status:
 		if str(get_quote_status.REVISION_STATUS).upper() in ("APR-APPROVED","OPD-PREPARING QUOTE DOCUMENTS"):
 			Trace.Write("If")
