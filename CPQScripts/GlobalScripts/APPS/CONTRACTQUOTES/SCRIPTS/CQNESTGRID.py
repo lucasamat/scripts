@@ -4459,6 +4459,37 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 
 		if Count:
 			QueryCount = Count.cnt
+	elif (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
+		ObjectName == "SAQGPM"
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,GREENBOOK,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,KIT_NUMBER,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from "+str(ObjectName)+" (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeSuperParentParam)
+			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)+") m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeSuperParentParam)
+			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
+		)
+	if QueryCountObj is not None:
+		QueryCount = QueryCountObj.cnt
+	parent_obj = Sql.GetList(Qstr)
 	for par in parent_obj:
 		
 		data_dict = {}
