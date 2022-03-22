@@ -471,7 +471,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 		get_val =12
 	amount_column_split = amount_column.replace('_',' ')
 	#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5	
-	if str(get_billing_type).upper() == "FIXED" and get_billing_type != '':
+	if str(get_billing_type).upper() == "FIXED" and get_billing_type != '' and service_id not in ('Z0100'):
 		#join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK"
 		#object_name = 'SAQSCO'
 		#divide_amt = 'SAQRIT.NET_PRICE_INGL_CURR'
@@ -681,7 +681,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					BillingDate=billing_date,
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
-	elif service_id in  ("Z0009","Z0123"):
+	elif service_id in  ("Z0009","Z0123","Z0100"):
 			Sql.RunQuery("""INSERT SAQIBP (
 						
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID,DOC_CURRENCY, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
