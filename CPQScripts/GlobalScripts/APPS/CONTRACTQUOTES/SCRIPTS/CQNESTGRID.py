@@ -911,7 +911,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		QueryCount = ""
 
 		QueryCountObj = Sql.GetFirst(
-			"select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
