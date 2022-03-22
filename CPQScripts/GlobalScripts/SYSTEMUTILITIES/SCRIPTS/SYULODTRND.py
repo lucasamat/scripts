@@ -1783,7 +1783,8 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					# 		+ str(current_obj_api_name)
 					# 		+ "' "
 					# 	)
-					else:						
+					else:	
+						Trace.Write("current_obj_api_name_chk "+str(current_obj_api_name))					
 						sec_str += "<td>"
 						sec_str += (
 							'<select id="'
