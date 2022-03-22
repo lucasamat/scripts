@@ -34,7 +34,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue2 ="BPTKPI"
 				record_list.append(editvalue1)
 				record_list.append(editvalue2)
-			if(line_values.ATGKEY != 'Excluded' and str(line_values.ATGKEY) != '' ):
+			if((line_values.ATGKEY != 'Excluded' or line_values.ATGKEY != 'Exception') and str(line_values.ATGKEY) != ''):
 				editvalue3 = "ATGKEC"
 				editvalue4 = "ATGKEP"
 				record_list.append(editvalue3)
