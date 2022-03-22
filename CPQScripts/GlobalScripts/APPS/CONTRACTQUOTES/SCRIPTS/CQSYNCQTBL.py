@@ -1737,7 +1737,10 @@ class SyncQuoteAndCustomTables:
                             quote_id = contract_quote_obj.QUOTE_ID
                             #commented for customer sement from SAACNT
                             get_customer_segment =Sql.GetFirst("Select AGS_CUST_SGMT FROM SAACNT(NOLOCK) WHERE ACCOUNT_RECORD_ID ='{account_rec_id}'".format(account_rec_id=contract_quote_obj.ACCOUNT_RECORD_ID))
-                            #customer_level = get_customer_segment.AGS_CUST_SGMT
+                            if get_customer_segment:
+                                customer_level = str(get_customer_segment.AGS_CUST_SGMT).upper()
+                            else:
+                                customer_level =""
                             if fab_location_ids:
                                 SAQFBL_start = time.time()
                                 fab_insert = Sql.RunQuery("""
@@ -1747,7 +1750,7 @@ class SyncQuoteAndCustomTables:
                                                                     SELECT DISTINCT FAB_LOCATION_ID, FAB_LOCATION_NAME, FAB_LOCATION_RECORD_ID,'{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID, '{QuoteId}' as QUOTE_ID, '{QuoteRecordId}' as QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID,'{customer_level}' as CUSTOMER_SEGMENT FROM MAFBLC (NOLOCK)
                                                                     WHERE FAB_LOCATION_ID IN ('{FabLocationIds}')
                                                                     ) A
-                                                                """.format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id,customer_level = get_customer_segment.AGS_CUST_SGMT))
+                                                                """.format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id,customer_level = customer_level))
                                 SAQFBL_end = time.time()
                             if payload_json.get('SAQSCO'):
                                 equipment_fab_data = {} 
