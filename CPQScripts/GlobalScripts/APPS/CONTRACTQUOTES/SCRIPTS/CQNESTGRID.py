@@ -7722,7 +7722,7 @@ def GetFtsAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID):
 		parent_obj = Sql.GetList(
 			"select QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where  "
 			+ str(ATTRIBUTE_VALUE_STR)
-			+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{TreeSuperParentParam}' ".format(ATTRIBUTE_VALUE_STR = ATTRIBUTE_VALUE_STR,
+			+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{TreeParam}' ".format(ATTRIBUTE_VALUE_STR = ATTRIBUTE_VALUE_STR,
 				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, TreeParam=TreeParam,TreeSuperParentParam = TreeSuperParentParam
 			)
 		)
