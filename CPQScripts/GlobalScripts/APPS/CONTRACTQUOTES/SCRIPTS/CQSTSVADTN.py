@@ -218,8 +218,10 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			status = "QUOTE DOCUMENTS"
 		elif get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":
 			status = "CLEAN BOOKING CHECKLIST"
-		else:
+		elif get_workflow_status.WORKFLOW_STATUS == "BOOKED":
 			status = "BOOKED"
+		else:
+			status = "CONFIGURE"
 		if str(get_workflow_status.REVISION_STATUS) == "LGL-PREPARING LEGAL SOW" and str(get_workflow_status.CLM_AGREEMENT_NUM) == "":
 			error_msg = "You will not be able to complete the stage until the Legal SoW in CLM is executed"
 	if quote_item_insert == 'yes' and Text == "COMPLETE STAGE":
