@@ -1807,6 +1807,9 @@ elif TreeParam == "Approval Chain Information":
 	
 elif TreeSuperParentParam == "Constraints":
 	ObjectName = "SYOBJC"
+elif TreeParentParam == "Fab Locations":
+	ObjectName = "SAQFBL"
+
 	
 elif TableId is not None:
 	objr_obj = Sql.GetFirst("select * FROM SYOBJR where SAPCPQ_ATTRIBUTE_NAME = '" + str(TableId) + "' ")
