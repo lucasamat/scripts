@@ -1311,8 +1311,4 @@ elif str(parts_list_include) == 'True' and str(parts_list) == 'True' and include
 	ApiResponse = ApiResponseFactory.JsonResponse(fpm_quote_doc())
 if action_type == "DOCUMENT":
 	Trace.Write("inside"+str(action_type))
-	ApiResponse = ApiResponseFactory.JsonResponse(language_select())    
-
-
-
-
+	ApiResponse = ApiResponseFactory.JsonResponse(language_select())
