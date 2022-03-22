@@ -1120,7 +1120,7 @@ def _insert_parts_delivery():
 			if val.SERVICE_ID == "Z0108":
 				Quote.GetCustomField('QT_OD_DELIVERY_SERVICE').Content = 'YES'
 			else:
-				Quote.GetCustomField('QT_OD_DELIVERY_SERVICE').Content = "GENERATE_DELIVERY"
+				Quote.GetCustomField('QT_OD_DELIVERY_SERVICE').Content = "NO_GENERATE_DELIVERY"
 			newRow['CUSTOMER_PART_NUMBER'] = val.CUSTOMER_PART_NUMBER if val.CUSTOMER_PART_NUMBER else ""
 			newRow['QUOTE_RECORD_ID'] = val.QUOTE_RECORD_ID if val.QUOTE_RECORD_ID else ""
 			newRow['PART_NUMBER'] = val.PART_NUMBER if val.PART_NUMBER else ""
