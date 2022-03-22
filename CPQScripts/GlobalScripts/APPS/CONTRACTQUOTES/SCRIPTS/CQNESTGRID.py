@@ -4460,7 +4460,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		if Count:
 			QueryCount = Count.cnt
 	elif (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
-		ObjectName == "SAQGPM"
+		ObjectName = "SAQGPM"
 		Qstr = (
 			"select top "
 			+ str(PerPage)
