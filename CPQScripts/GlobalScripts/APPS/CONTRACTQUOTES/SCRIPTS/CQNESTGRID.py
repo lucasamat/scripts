@@ -7751,7 +7751,7 @@ def GetFtsAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID):
 		data_dict = {}
 		data_dict["ids"] = str(data_id)
 		data_dict["ACTIONS"] = str(Action_str)
-		data_dict["INCLUDED"] = str(par.INCLUDED)
+		#data_dict["INCLUDED"] = str(par.INCLUDED)
 		data_dict["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
 			"SAQGPA", str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
 		)
