@@ -416,10 +416,10 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					# 	)
 					# else:
 					#sefl_api = sefl_api.encode('ascii', 'ignore').decode('ascii')
-					# if sefl_api=='CANCELLATION_PERIOD_NOTPER':
-					# 	len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"'
-					# else :
-					# 	len_restrict=""
+					if sefl_api=='CANCELLATION_PERIOD_NOTPER':
+						len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"'
+					else :
+						len_restrict=""
 
 					try:
 						sec_str += (
