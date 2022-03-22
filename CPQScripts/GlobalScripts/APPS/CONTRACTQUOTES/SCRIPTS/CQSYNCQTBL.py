@@ -1736,7 +1736,7 @@ class SyncQuoteAndCustomTables:
                             quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
                             quote_id = contract_quote_obj.QUOTE_ID
                             #commented for customer sement from SAACNT
-                            #get_customer_segment =Sql.GetFirst("Select AGS_CUST_SGMT FROM SAACNT(NOLOCK) WHERE ACCOUNT_RECORD_ID ='{account_rec_id}'".format(account_rec_id=contract_quote_obj.ACCOUNT_RECORD_ID))
+                            get_customer_segment =Sql.GetFirst("Select AGS_CUST_SGMT FROM SAACNT(NOLOCK) WHERE ACCOUNT_RECORD_ID ='{account_rec_id}'".format(account_rec_id=contract_quote_obj.ACCOUNT_RECORD_ID))
                             #customer_level = get_customer_segment.AGS_CUST_SGMT
                             if fab_location_ids:
                                 SAQFBL_start = time.time()
@@ -1744,10 +1744,10 @@ class SyncQuoteAndCustomTables:
                                                                 INSERT
                                                                 SAQFBL (FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOCATION_STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID,CUSTOMER_SEGMENT, QUOTE_FABLOCATION_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
                                                                 SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FABLOCATION_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-                                                                    SELECT DISTINCT FAB_LOCATION_ID, FAB_LOCATION_NAME, FAB_LOCATION_RECORD_ID,'{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID, '{QuoteId}' as QUOTE_ID, '{QuoteRecordId}' as QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID,'' as CUSTOMER_SEGMENT FROM MAFBLC (NOLOCK)
+                                                                    SELECT DISTINCT FAB_LOCATION_ID, FAB_LOCATION_NAME, FAB_LOCATION_RECORD_ID,'{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID, '{QuoteId}' as QUOTE_ID, '{QuoteRecordId}' as QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID,'{customer_level}' as CUSTOMER_SEGMENT FROM MAFBLC (NOLOCK)
                                                                     WHERE FAB_LOCATION_ID IN ('{FabLocationIds}')
                                                                     ) A
-                                                                """.format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
+                                                                """.format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id,customer_level = get_customer_segment.AGS_CUST_SGMT))
                                 SAQFBL_end = time.time()
                             if payload_json.get('SAQSCO'):
                                 equipment_fab_data = {} 
