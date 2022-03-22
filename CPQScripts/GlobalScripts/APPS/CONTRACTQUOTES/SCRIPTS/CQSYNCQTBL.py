@@ -682,8 +682,10 @@ class SyncQuoteAndCustomTables:
                         # 		custom_fields_detail.get("STPAccountID"), custom_fields_detail.get('DistributionChannel'), custom_fields_detail.get('Division'), custom_fields_detail.get("SalesOrgID")
                         # 	)
                         # )
-                        # if bluebook_obj:
-                        # 	salesorg_data.update({"BLUEBOOK":bluebook_obj.BLUEBOOK,"BLUEBOOK_RECORD_ID":bluebook_obj.BLUEBOOK_RECORD_ID,})
+                        bluebook_obj = Sql.GetFirst("""SELECT BLUEBOOK,BLUEBOOK_RECORD_ID FROM SAACNT WHERE ACCOUNT_ID = '{}' AND ACCOUNT_NAME = '{}'""".format(custom_fields_detail.get("STPAccountID"), custom_fields_detail.get("STPAccountName") ))
+                        if bluebook_obj:
+                            if bluebook_obj.BLUEBOOK and bluebook_obj.BLUEBOOK_RECORD_ID:
+                                salesorg_data.update({"BLUEBOOK":bluebook_obj.BLUEBOOK,"BLUEBOOK_RECORD_ID":bluebook_obj.BLUEBOOK_RECORD_ID,})
                         if custom_fields_detail.get("Incoterms"):							
                             getInc = Sql.GetFirst("SELECT INCOTERM_ID,DESCRIPTION,INCOTERM_RECORD_ID FROM SAICTM WHERE INCOTERM_ID = '{}'".format(custom_fields_detail.get("Incoterms")))
                             if getInc:
