@@ -814,6 +814,7 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 					+ "</label><span class='req-field mrg3fltltmt7' >*</span></abbr> <a href='#' title='"+str(sefl.FIELD_LABEL)+"' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
 				)
 			else:
+				Trace.Write("FIELD_LABEL_CHK "+str(sefl.FIELD_LABEL))
 				sec_str += (
 					"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
 					+ str(sefl.FIELD_LABEL)
