@@ -4464,13 +4464,13 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,GREENBOOK,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,KIT_NUMBER,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from "+str(ObjectName)+" (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,GREENBOOK,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,KIT_NUMBER,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
-			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(ATTRIBUTE_VALUE_STR)+") m where m.ROW BETWEEN "
+			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -4479,13 +4479,13 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		QueryCount = ""
 
 		QueryCountObj = Sql.GetFirst(
-			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where QUOTE_RECORD_ID = '"
+			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
-			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(ATTRIBUTE_VALUE_STR)
+			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
 		)
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
