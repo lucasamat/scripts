@@ -125,7 +125,7 @@ def Related_Sub_Banner(
                 get_diff_days = abs((get_quote_revision_history_status.REVSTS_CHANGE_DATE-get_quote_status.CONTRACT_VALID_FROM).Days)
             else:
                 get_diff_days = 190
-            if str(get_quote_status.REVISION_STATUS).upper() in ("APR-APPROVED","OPD-PREPARING QUOTE DOCUMENTS") and get_diff_days < 180:
+            if str(get_quote_status.REVISION_STATUS).upper() in ("APR-APPROVED","OPD-PREPARING QUOTE DOCUMENTS"):
                 dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER  FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND SUBTAB_NAME = '"+str(subTabName)+"' ORDER BY DISPLAY_ORDER ")
                 if not dynamic_Button:
                     dynamic_Button = Sql.GetList("SELECT TOP 10 HTML_CONTENT,RELATED_LIST_RECORD_ID,DISPLAY_ORDER FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND ISNULL(SUBTAB_NAME,'')='' ORDER BY DISPLAY_ORDER")
