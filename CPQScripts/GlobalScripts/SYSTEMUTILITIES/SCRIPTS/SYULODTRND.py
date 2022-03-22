@@ -481,6 +481,8 @@ def CommonTreeViewHTMLDetail(
 		if ObjectName == "SYOBFD":
 			editable_permission = "TRUE"
 		Trace.Write("editable_permission==="+str(editable_permission))
+		if ObjectName == "SAQFBL":
+			editable_permission = "TRUE"
 		if editable_permission == "TRUE":			
 			sec_str += (
 				'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#'
