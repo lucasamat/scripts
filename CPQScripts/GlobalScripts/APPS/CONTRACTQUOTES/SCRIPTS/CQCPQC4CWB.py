@@ -9,6 +9,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import clr
 import System.Net
 import sys
+import time
 from SYDATABASE import SQL
 
 Sql = SQL()
@@ -213,6 +214,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
             webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
             webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
             if requestdata != " ":
+                time.sleep(3)
                 response = webclient.UploadString(URL, requestdata)
                 #Trace.Write("inside If condition")
             else:
