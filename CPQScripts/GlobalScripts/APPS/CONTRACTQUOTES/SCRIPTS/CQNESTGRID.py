@@ -4470,7 +4470,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
-			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)+") m where m.ROW BETWEEN "
+			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(ATTRIBUTE_VALUE_STR)+") m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -4485,7 +4485,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
-			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
+			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(ATTRIBUTE_VALUE_STR)
 		)
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
