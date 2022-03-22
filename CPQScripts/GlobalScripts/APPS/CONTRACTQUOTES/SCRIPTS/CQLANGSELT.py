@@ -1225,11 +1225,16 @@ def fpm_quote_doc():
 							FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(doc_id='Pending',doc_name='',quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=contract_quote_record_id,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
 			#Log.Info(qtqdoc)
 	Sql.RunQuery(saqdoc_output_insert)
-	
-	gen_doc = Quote.GenerateDocument('AMAT_FPM_QUOTE', GenDocFormat.PDF)
-	fileName = Quote.GetLatestGeneratedDocumentFileName()
-	GDB = Quote.GetLatestGeneratedDocumentInBytes()
-	List = Quote.GetGeneratedDocumentList('AMAT_FPM_QUOTE')
+	if Quote.GetCustomField('QT_OD_DELIVERY_SERVICE').Content == "YES":
+		gen_doc = Quote.GenerateDocument('AMAT_FPM_QUOTE', GenDocFormat.PDF)
+		fileName = Quote.GetLatestGeneratedDocumentFileName()
+		GDB = Quote.GetLatestGeneratedDocumentInBytes()
+		List = Quote.GetGeneratedDocumentList('AMAT_FPM_QUOTE')
+	else:
+		gen_doc = Quote.GenerateDocument('Amat FPM Z0110', GenDocFormat.PDF)
+		fileName = Quote.GetLatestGeneratedDocumentFileName()
+		GDB = Quote.GetLatestGeneratedDocumentInBytes()
+		List = Quote.GetGeneratedDocumentList('Amat FPM Z0110')
 	for doc in List:
 		doc_id = doc.Id
 		doc_name = doc.FileName
