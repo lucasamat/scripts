@@ -4369,7 +4369,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 	Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
 	for quer_key, quer_value in enumerate(Dict_formation):
 		x_picklistcheckobj = Sql.GetFirst(
-			"SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQGPA' AND API_NAME = '" + str(quer_value) + "'"
+			"SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQGPM' AND API_NAME = '" + str(quer_value) + "'"
 		)
 		x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
 		if Dict_formation.get(quer_value) != "":
