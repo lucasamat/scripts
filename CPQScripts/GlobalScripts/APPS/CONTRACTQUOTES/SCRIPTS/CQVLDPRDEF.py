@@ -238,12 +238,15 @@ def service_level_predefined():
 		#Log.Info('x---'+str(x))
 		entxmldict[x[0]]=sub_string
 
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) WHERE SERVICE_ID = '{service_id}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID IN ('AGS_{service_id}_VAL_POFFER','AGS_{service_id}_VAL_INTCPT') ".format(service_id = TreeParam))
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) WHERE SERVICE_ID = '{service_id}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID IN ('AGS_{service_id}_VAL_POFFER','AGS_{service_id}_VAL_INTCPT',AGS_{service_id}_VAL_CSTSEG) ".format(service_id = TreeParam))
 
 	for val in get_valuedriver_ids:
 		if 'PRODUCT OFFERING' in val.ENTITLEMENT_DESCRIPTION.upper() or 'INTERCEPT' in val.ENTITLEMENT_DESCRIPTION.upper():
 			ent_value = ""
 			updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value,TreeParam )
+		elif 'CUSTOMER SEGMENT' in val.ENTITLEMENT_DESCRIPTION.upper():
+			get_customer_segment =Sql.GetFirst("SELECT CUSTOMER_SEGMENT FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}' AND CPQ_PARTNER_FUNCTION = 'SOLD TO' ".format(quote_record_id,quote_revision_record_id))
+			updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_customer_segment.CUSTOMER_SEGMENT,TreeParam)
 	#Product.SetGlobal("updateentXML",updateentXML)
 	Sql.RunQuery( "UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(updateentXML.replace("'","''") , quote_record_id,TreeParam, quote_revision_record_id) )
 	##rolldown
