@@ -4366,10 +4366,18 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	ATTRIBUTE_VALUE_STR = ""
+	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010":
+		rec_id = "SYOBJ_1177076"
+		obj_id = "SYOBJ-1177076"
+		ObjectName = "SAQGPM"
+	else:
+		rec_id = "SYOBJ_1177055"
+		obj_id = "SYOBJ-1177055"
+		ObjectName = "SAQGPA"
 	Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
 	for quer_key, quer_value in enumerate(Dict_formation):
 		x_picklistcheckobj = Sql.GetFirst(
-			"SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME = 'SAQGPA' AND API_NAME = '" + str(quer_value) + "'"
+			"SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME = '" + str(ObjectName) + "' AND API_NAME = '" + str(quer_value) + "'"
 		)
 		x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
 		if Dict_formation.get(quer_value) != "":
@@ -4395,8 +4403,6 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 					ATTRIBUTE_VALUE_STR = (" CpqTableEntryId = '"+ str(xa_str)+ "' and ")    
 
 	data_list = []
-	rec_id = "SYOBJ_1177055"
-	obj_id = "SYOBJ-1177055"
 	objh_getid = Sql.GetFirst(
 		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
 	)
@@ -4460,7 +4466,6 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		if Count:
 			QueryCount = Count.cnt
 	elif (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
-		ObjectName = "SAQGPM"
 		Qstr = (
 			"select top "
 			+ str(PerPage)
@@ -4493,43 +4498,82 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 	for par in parent_obj:
 		
 		data_dict = {}
-		data_id = str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)        
-		Action_str = (
-			'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
-			+ str(data_id)
-			+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
-		)
-		if can_edit.upper() == "TRUE":
-			Action_str += (
-				'<li ><a class="dropdown-item cur_sty" href="#" id="'
+		if str(ObjectName) == "SAQGPA":
+			data_id = str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)        
+			Action_str = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
 				+ str(data_id)
-				+ '" onclick="Commonteree_view_RL(this)">EDIT</a></li>'
+				+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 			)
-		if can_delete.upper() == "TRUE":
-			Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
-		if can_clone.upper() == "TRUE":
-			Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+			if can_edit.upper() == "TRUE":
+				Action_str += (
+					'<li ><a class="dropdown-item cur_sty" href="#" id="'
+					+ str(data_id)
+					+ '" onclick="Commonteree_view_RL(this)">EDIT</a></li>'
+				)
+			if can_delete.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+			if can_clone.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
 
-		Action_str += "</ul></div></div>"
-		data_dict["ids"] = str(data_id)
-		data_dict["ACTIONS"] = str(Action_str)
-		data_dict["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
-			"SAQGPA", str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
-		)
-		data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
-		data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
-		data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
-		data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
-		data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>")
-		data_dict["DEVICE_NODE"] = ('<abbr id ="" title="' + str(par.DEVICE_NODE) + '">' + str(par.DEVICE_NODE) + "</abbr>")
-		data_dict["PROCESS_TYPE"] = ('<abbr id ="" title="' + str(par.PROCESS_TYPE) + '">' + str(par.PROCESS_TYPE) + "</abbr>")
-		data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
-		data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
-		data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
-		data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
-		data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
-		data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
-		data_list.append(data_dict)
+			Action_str += "</ul></div></div>"
+			data_dict["ids"] = str(data_id)
+			data_dict["ACTIONS"] = str(Action_str)
+			data_dict["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+				"SAQGPA", str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+			)
+			data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
+			data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
+			data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
+			data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
+			data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>")
+			data_dict["DEVICE_NODE"] = ('<abbr id ="" title="' + str(par.DEVICE_NODE) + '">' + str(par.DEVICE_NODE) + "</abbr>")
+			data_dict["PROCESS_TYPE"] = ('<abbr id ="" title="' + str(par.PROCESS_TYPE) + '">' + str(par.PROCESS_TYPE) + "</abbr>")
+			data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
+			data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
+			data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+			data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
+			data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
+			data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
+			data_list.append(data_dict)
+		else:
+			data_id = str(par.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID)
+			Action_str = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+			)
+			if can_edit.upper() == "TRUE":
+				Action_str += (
+					'<li ><a class="dropdown-item cur_sty" href="#" id="'
+					+ str(data_id)
+					+ '" onclick="Commonteree_view_RL(this)">EDIT</a></li>'
+				)
+			if can_delete.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+			if can_clone.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+
+			Action_str += "</ul></div></div>"
+			data_dict["ids"] = str(data_id)
+			data_dict["ACTIONS"] = str(Action_str)
+			data_dict["QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+				"SAQGPM", str(par.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID)
+			)
+			#data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
+			#data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
+			#data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
+			data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
+			#data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>")
+			data_dict["DEVICE_NODE"] = ('<abbr id ="" title="' + str(par.DEVICE_NODE) + '">' + str(par.DEVICE_NODE) + "</abbr>")
+			data_dict["PROCESS_TYPE"] = ('<abbr id ="" title="' + str(par.PROCESS_TYPE) + '">' + str(par.PROCESS_TYPE) + "</abbr>")
+			data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
+			data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
+			data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+			data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
+			data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
+			data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
+			data_list.append(data_dict)
 
 	page = ""
 	if QueryCount == 0:
