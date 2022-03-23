@@ -1263,6 +1263,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Trace.Write('533-----------'+str(TableName))
 							Sql.Upsert(tableInfo)
 						# sectional edit error message - ends
+							if TableName == "SAQFBL":
+								fab_id = TreeParam.split("-")[0]
+								Trace.Write("fab_id"+str(fab_id))
 
 						
 						if Product.GetGlobal("TreeParentLevel1") == "Product Offerings":
