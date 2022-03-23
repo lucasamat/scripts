@@ -370,11 +370,39 @@ def valuedriver_onchage():
 				Sql.RunQuery( "UPDATE {objname} SET ENTITLEMENT_XML = '{xml_data}'  {where}".format(xml_data=updateentXML.replace("'","''") ,objname=TreeParam,where=str(where_condition)) )
 		#return inputXML
 
+def equipment_fab_ent_rolldown():
+	Trace.Write("Inside this QULAITY")
+	getall_recid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID,ENTITLEMENT_XML,FABLOCATION_RECORD_ID,GREENBOOK_RECORD_ID,SERVICE_ID FROM SAQSCE(NOLOCK) {}""".format(str(where_condition)))
+	for rec in getall_recid:
+		entxmldict = {}
+		entl_id ="AGS_"+str(rec.SERVICE_ID)+"_VAL_QLYREQ"
+		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+		display_val_dict = {}
+		updateentXML = rec.ENTITLEMENT_XML
+		for m in re.finditer(pattern_tag, updateentXML):
+			sub_string = m.group(1)
+			x=re.findall(pattern_name,sub_string)
+			if x:
+				entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
+				if entitlement_display_value_tag_match:
+					display_val_dict[x[0]] = entitlement_display_value_tag_match[0].upper()
+			entxmldict[x[0]]=sub_string
+		get_fab =Sql.GetFirst("SELECT QUALITY_REQUIRED FROM SAQFBL(NOLOCK) {}".format(str(where_condition)))
+		updateentXML = updating_xml(entxmldict,updateentXML,entl_id,get_fab.QUALITY_REQUIRED,rec.SERVICE_ID)
+		#Trace.Write("updateentXML"+str(updateentXML))
+		Sql.RunQuery( "UPDATE SAQSCE SET ENTITLEMENT_XML = '{}' {} FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}' AND EQUIPMENT_RECORD_ID ='{}'".format(updateentXML.replace("'","''"),where_condition ,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID, rec.EQUIPMENT_RECORD_ID))
+
+
+
 try:
 	if LEVEL == 'SERVICE_LEVEL':
 		service_level_predefined()
 	elif LEVEL == 'ONCHNGAE_DRIVERS':
 		valuedriver_onchage()
+	elif LEVEL == 'QUALITY_FAB':
+		equipment_fab_ent_rolldown()
 	else:
 		obj_list = ['SAQSGE','SAQSCE']
 		for obj in obj_list:
