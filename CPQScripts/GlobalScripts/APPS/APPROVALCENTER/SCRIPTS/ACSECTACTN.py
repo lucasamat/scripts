@@ -2595,10 +2595,10 @@ class approvalCenter:
 					my_approval_queue_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID,OWNER_NAME,QUOTE_STATUS,QTEREV_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id") ,revision_rec_id=  self.quote_revision_record_id))
 					
 					quote_status = my_approval_queue_obj.QUOTE_STATUS
-					if quote_status == 'APPROVED':
-						Htmlstr += "<div class='noRecDisp'>This Quote has been self-approved.</div>"
-					else:
-						Htmlstr += "<div class='noRecDisp'>This quote can be self-approved. Kindly proceed to approve the quote.</div>"
+					# if quote_status == 'APPROVED':
+					# 	Htmlstr += "<div class='noRecDisp'>This Quote has been self-approved.</div>"
+					# else:
+					# 	Htmlstr += "<div class='noRecDisp'>This quote can be self-approved. Kindly proceed to approve the quote.</div>"
 				else:   
 					
 					Htmlstr += "<div class='noRecDisp'>No Records to Display</div>"
