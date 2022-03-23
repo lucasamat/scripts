@@ -2926,7 +2926,7 @@ class approvalCenter:
 			column_name = str(final_new_menu).replace("[", "").replace("]", "").replace("'", "")
 			
 			GetApprovalprocessobj = Sql.GetFirst(
-			"""SELECT ACAPCH.APROBJ_LABEL,ACAPCH.APRCHN_DESCRIPTION,ACACST.TSTOBJ_LABEL,ACAPTX.APPROVAL_RECORD_ID,
+			"""SELECT ACAPCH.APROBJ_LABEL,ACAPCH.APRCHN_DESCRIPTION,ACACST.TSTOBJ_FIELD_LABEL,ACAPTX.APPROVAL_RECORD_ID,
 				ACAPTX.APPROVAL_TRANSACTION_RECORD_ID
 				FROM ACAPTX (NOLOCK) INNER JOIN ACAPCH (NOLOCK)
 					ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID INNER JOIN ACACST (NOLOCK)
@@ -2939,7 +2939,7 @@ class approvalCenter:
 			objectdic = {
 				#"approvalObj": str(Quote)
 				"approvalObj": str(GetApprovalprocessobj.APROBJ_LABEL),
-				"testedObj": str(GetApprovalprocessobj.TSTOBJ_LABEL),
+				"testedObj": str(GetApprovalprocessobj.TSTOBJ_FIELD_LABEL),
 			}
 			objlableandobj = {}
 			getobjName = {}
