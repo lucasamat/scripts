@@ -1936,7 +1936,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					# 		)								
 					# else:
 					Trace.Write("else 1812"+str(current_obj_api_name))
-					if current_obj_api_name=='CANCELLATION_PERIOD_NOTPER':
+					if current_obj_api_name=='CANCELLATION_PERIOD':
 						len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"' 
 						Trace.Write('@421'+current_obj_api_name) 
 					else :
