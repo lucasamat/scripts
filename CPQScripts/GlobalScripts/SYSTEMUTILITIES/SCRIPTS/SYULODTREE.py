@@ -13,6 +13,8 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 #from datetime import date
 import re
+import CQCPQC4CWB
+import time
 
 Sql = SQL()
 
@@ -789,6 +791,9 @@ class TreeView:
 			update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-PREPARING CBC' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_record_id,quote_revision_rec_id=quote_revision_record_id)
 			#A055S000P01-17166 end
 			Sql.RunQuery(update_rev_status)
+			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			time.sleep(3) #A055S000P01-16535
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			if saqdlt_query:
 				if str(saqdlt_query.MEMBER_ID) == str(user_id):
 					Trace.Write("subtab_not empty")

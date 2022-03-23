@@ -15,6 +15,8 @@ from datetime import timedelta , date
 import sys
 import System.Net
 import CQPARTIFLW
+import CQCPQC4CWB
+import time
 import ACVIORULES
 Param = Param 
 Sql = SQL()
@@ -119,18 +121,18 @@ def Dynamic_Status_Bar(quote_item_insert,Text,edit_config):
 									
 					Sql.RunQuery(update_workflow_status)
 					status = "APR-APPROVED"
-				if (getsalesorg_ifo.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED" or getsalesorg_ifo.REVISION_STATUS == "CUSTOMER REJECTED") and Text == "COMPLETE STAGE":
+				if (getsalesorg_ifo.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED" or getsalesorg_ifo.REVISION_STATUS == "OPD-CUSTOMER REJECTED") and Text == "COMPLETE STAGE":
 					#if str(get_documents_date_validation_accepted.DATE_ACCEPTED) != "":
 					Trace.Write("accepted===")
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
 					Sql.RunQuery(update_workflow_status)
 					status = "QUOTE DOCUMENTS"			
 				
-				if getsalesorg_ifo.REVISION_STATUS == "CBC-SUBMITTED FOR BOOKING" and Text == "COMPLETE STAGE":
+				if getsalesorg_ifo.REVISION_STATUS == "BOK-CONTRACT CREATED" and Text == "COMPLETE STAGE":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
-					status = "CBC-SUBMITTED FOR BOOKING"
+					status = "BOK-CONTRACT CREATED"
 				if getsalesorg_ifo.REVISION_STATUS == "BOK-CONTRACT BOOKED" and Text == "COMPLETE STAGE":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
@@ -205,6 +207,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text,edit_config):
 					try:
 						##Calling the iflow for quote header writeback to cpq to c4c code starts..
 						CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						time.sleep(3)
 						CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 						##Calling the iflow for quote header writeback to cpq to c4c code ends...
 					except:

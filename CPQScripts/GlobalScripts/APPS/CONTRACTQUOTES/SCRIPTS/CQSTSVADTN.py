@@ -8,6 +8,8 @@ from datetime import timedelta , date
 import sys
 import System.Net
 import CQPARTIFLW
+import CQCPQC4CWB
+import time
 #import ACVIORULES
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
@@ -203,6 +205,9 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			update_legal_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS ='LGL-PREPARING LEGAL SOW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)
 			Sql.RunQuery(update_legal_status)
 			#A055S000P01-17165 end
+			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			time.sleep(3) #A055S000P01-16535
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))	
 		elif get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
 			status = "CONFIGURE"
 		elif get_workflow_status.WORKFLOW_STATUS == "PRICING REVIEW":
@@ -294,6 +299,10 @@ def complete_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):
 	
 	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS = 'LGL-LEGAL SOW ACCEPTED' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_record_id)
 	Sql.RunQuery(update_rev_status)
+	
+	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+	time.sleep(3) #A055S000P01-16535
+	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
 #A055S000P01-17166 end
 try:

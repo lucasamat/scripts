@@ -2124,6 +2124,7 @@ class SyncQuoteAndCustomTables:
 
                     ##Calling the iflow for quote header writeback to cpq to c4c code starts..
                     CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+                    time.sleep(3) #A055S000P01-16535
                     CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
                     ##Calling the iflow for quote header writeback to cpq to c4c code ends...
                     # # Approval Trigger - Start								

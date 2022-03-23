@@ -5,11 +5,13 @@
 #   __create_date :24-11-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import CQCPQC4CWB
 import Webcom.Configurator.Scripting.Test.TestProduct
 import clr
 import System.Net
 import sys
 import datetime
+import time
 from datetime import date
 from SYDATABASE import SQL
 
@@ -913,7 +915,10 @@ def submit_to_customer(doc_rec_id):
 	if output_doc_query:
 		if str(output_doc_query.DATE_SUBMITTED) != "":			
 			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'APR-SUBMITTED TO CUSTOMER' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-			Sql.RunQuery(update_revision_status)	
+			Sql.RunQuery(update_revision_status)
+			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			time.sleep(3) #A055S000P01-16535
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))	
 	return True
 #A055S000P01-17165 start
 def customer_accepted(doc_rec_id):
@@ -925,7 +930,10 @@ def customer_accepted(doc_rec_id):
 	if output_doc_query:
 		if str(output_doc_query.DATE_ACCEPTED) != "":			
 			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER ACCEPTED' , WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-			Sql.RunQuery(update_revision_status)	
+			Sql.RunQuery(update_revision_status)
+			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			time.sleep(3) #A055S000P01-16535
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))	
 	return True
 
 def customer_rejected(doc_rec_id,REJECT_COMMENT):
@@ -940,7 +948,10 @@ def customer_rejected(doc_rec_id,REJECT_COMMENT):
 		if str(output_doc_query.DATE_REJECTED) != "":
 			Trace.Write("DATE_REJ"+str(output_doc_query.DATE_REJECTED))
 			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER REJECTED',WORKFLOW_STATUS = 'QUOTE DOCUMENTS',INTERNAL_NOTES = '{internalnotes}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),internalnotes=REJECT_COMMENT)
-			Sql.RunQuery(update_revision_status)	
+			Sql.RunQuery(update_revision_status)
+			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			time.sleep(3) #A055S000P01-16535
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))		
 	return True
 #A055S000P01-17165 end
 def save_document_description(doc_desc_val,doc_rec_id):
