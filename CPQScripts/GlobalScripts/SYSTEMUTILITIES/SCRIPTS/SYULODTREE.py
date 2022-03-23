@@ -2838,7 +2838,7 @@ class TreeView:
 									else:
 										Product.SetGlobal("ParentNodeLevel",NodeText)
 										#A055S000P01-9646 CODE STARTS..
-										Trace.Write('2840--'+str(Obj_Name))
+										Trace.Write('2840--'+str(ObjName))
 										Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0046' AND SERVICE_ID != 'Z0101'".format(NodeText,quote_revision_record_id)
 										#A055S000P01-9646 CODE ENDS..
 								elif NodeText in  ("Pages"):
