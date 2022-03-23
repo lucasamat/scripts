@@ -396,17 +396,28 @@ def GSCONTLOOKUPPOPUP(
             
 
             elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(TreeParentParam) == "Approval Chain Steps":
-                Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(TRACKEDTESTEDOBJECT))
-                object_name = Header_Obj.OBJECT_NAME
-                if Header_Obj is not None:
+                if LOOKUP_ID == "TRKOBJ_TRACKEDFIELD_LABEL":
                     VAL_Str = (
                         "SELECT top 1000 "
                         + str(API_NAME_str)
                         + " FROM "
                         + str(TABLEID)
-                        + " WHERE OBJECT_NAME = '{}'".format(object_name)
+                        + " WHERE PARENT_OBJECT_RECORD_ID IN ( select DISTINCT TSTOBJ_RECORD_ID from ACACST where APRCHN_RECORD_ID ='{}')".format(KEYDATA)
                     )
-                VAL_Obj = Sql.GetList(VAL_Str)
+                    VAL_Obj = Sql.GetList(VAL_Str)
+
+                else:
+                    Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(TRACKEDTESTEDOBJECT))
+                    object_name = Header_Obj.OBJECT_NAME
+                    if Header_Obj is not None:
+                        VAL_Str = (
+                            "SELECT top 1000 "
+                            + str(API_NAME_str)
+                            + " FROM "
+                            + str(TABLEID)
+                            + " WHERE OBJECT_NAME = '{}'".format(object_name)
+                        )
+                    VAL_Obj = Sql.GetList(VAL_Str)
             elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and (str(SegmentsClickParam) == "Approval Chain Status Mappings" or str(TreeParentParam) == "Approval Chain Status Mappings"):
                 Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(MAPPINGSAPPROVALOBJECT))
                 object_name = Header_Obj.OBJECT_NAME
