@@ -1268,7 +1268,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 								#Trace.Write("fab_id"+str(fab_id))
 								try:					
 									where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND FABLOCATION_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id,fab_id)	
-									quality = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": contract_quote_record_id ,"level":"QUALITY_FAB", "treeparam": OfferingRow_detail.SERVICE_ID,"user_id": User.Id, "quote_rev_id":quote_revision_record_id})
+									quality = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": contract_quote_record_id ,"level":"QUALITY_FAB","user_id": User.Id, "quote_rev_id":quote_revision_record_id})
 
 								except:
 									Trace.Write("EXCEPT----QUALITY DRIVER IFLOW")
