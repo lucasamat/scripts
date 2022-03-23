@@ -62,18 +62,18 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		All_value = [xls_col(val,val) for val in All_value]
 		colums=','.join(All_value)
 		colums=str(colums)
-		colums = re.sub(r'CUSTOMER_PART_NUMBER',"STUFF( CUSTOMER_PART_NUMBER , PATINDEX('%Â%', CUSTOMER_PART_NUMBER) , 3 , '' ) AS CUSTOMER_PART_NUMBER",colums)
+		add_colums = re.sub(r'CUSTOMER_PART_NUMBER',"STUFF( CUSTOMER_PART_NUMBER , PATINDEX('%Â%', CUSTOMER_PART_NUMBER) , 3 , '' ) AS CUSTOMER_PART_NUMBER",colums)
 		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))				
 		while start < table_total_rows:
 			query_string_with_pagination = """
 							SELECT DISTINCT {Columns} FROM (
 								SELECT DISTINCT {Columns}, ROW_NUMBER()OVER(ORDER BY CpqTableEntryId) AS SNO FROM (
-									SELECT DISTINCT {Columns}, CpqTableEntryId
+									SELECT DISTINCT {add_col}, CpqTableEntryId
 									FROM {TableName} (NOLOCK)
 									WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'
 									) IQ)OQ
 							WHERE SNO>={Skip_Count} AND SNO<={Fetch_Count}              
-							""".format(Columns=colums, TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param, Skip_Count=start, Fetch_Count=end)
+							""".format(Columns=colums,add_col=add_colums, TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param, Skip_Count=start, Fetch_Count=end)
 
 			table_data = Sql.GetList(query_string_with_pagination)
 
