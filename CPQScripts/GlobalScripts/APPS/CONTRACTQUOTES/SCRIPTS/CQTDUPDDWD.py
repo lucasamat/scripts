@@ -629,9 +629,10 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 					
 					modified_records.append(str(tuple([float(spare_val) if type(spare_val) == "<type 'Decimal'>" else spare_val for spare_val in spare_record])))
 
-				
 				for spare_record in xls_spare_records:
 					if spare_record[1] and spare_record[1] != "NULL" and spare_record[1] != "null":
+						spare_record[1]=spare_record[1].replace("Â","")
+						Trace.Write((spare_record[1]))
 						spare_record[1]=str(spare_record[1])
 					else:
 						spare_record[1] =""
