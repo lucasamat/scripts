@@ -7465,7 +7465,8 @@ def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			chld_list.append(chld_dict)
 
 	# Table formation.
-	hyper_link = ["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"]    
+	#hyper_link = ["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"]
+	hyper_link = [" "]
 	table_header += "<tr>"
 	table_header += (
 		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
