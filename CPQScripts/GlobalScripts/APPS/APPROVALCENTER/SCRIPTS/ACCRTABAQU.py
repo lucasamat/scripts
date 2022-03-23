@@ -559,7 +559,7 @@ class QueryBuilder:
         fromProduct = False
         TableObjQuery = Sql.GetFirst(
             "select SYOBJH.RECORD_ID, SYOBJH.PLURAL_LABEL, SYOBJH.OBJECT_NAME from SYOBJH (nolock) "
-            + " inner join ACACST (nolock) on ACACST.TSTOBJ_RECORD_ID = SYOBJH.RECORD_ID where "
+            + " inner join ACACST (nolock) on ACACST.TSTOBJ_FIELD_RECORD_ID = SYOBJH.RECORD_ID where "
             + " ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = '{}' ".format(self.CurrentRecordId)
         )
         table_dict = {str(TableObjQuery.OBJECT_NAME): str(TableObjQuery.PLURAL_LABEL).upper()}
@@ -999,7 +999,7 @@ class QueryBuilder:
                         "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
                         "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
                         "TSTOBJ_FIELD_LABEL":getObjLabel.LABEL,
-                        "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
+                        "TSTOBJ_FIELD_RECORD_ID":getObjLabel.RECORD_ID
                         }
                         tableInfoACACSF.AddRow(row)
                 Sql.Upsert(tableInfoACACSF)
@@ -1036,7 +1036,7 @@ class QueryBuilder:
                             "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
                             "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
                             "TSTOBJ_FIELD_LABEL":getObjLabel.LABEL,
-                            "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
+                            "TSTOBJ_FIELD_RECORD_ID":getObjLabel.RECORD_ID
                         }
                         tableInfoACACSF.AddRow(row)
                 Sql.Upsert(tableInfoACACSF) 
@@ -1055,7 +1055,7 @@ class QueryBuilder:
                         "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
                         "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
                         "TSTOBJ_FIELD_LABEL":getObjLabel.LABEL,
-                        "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
+                        "TSTOBJ_FIELD_RECORD_ID":getObjLabel.RECORD_ID
                     }
                     tableInfoACACSF.AddRow(row)
                     Sql.Upsert(tableInfoACACSF)

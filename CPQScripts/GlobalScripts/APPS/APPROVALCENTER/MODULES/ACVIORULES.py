@@ -548,7 +548,7 @@ class ViolationConditions:
                 #Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND (WHERE_CONDITION_01) <> '' ORDER BY APRCHNSTP_NUMBER")
                 for result in CSSqlObjs:
                     GetObjName = Sql.GetFirst(
-                        "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_RECORD_ID) + "'"
+                        "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_FIELD_RECORD_ID) + "'"
                     )
                     # Select_Query = (
                     #     "SELECT "
@@ -696,7 +696,7 @@ class ViolationConditions:
 
                         CheckViolaionRule2 = Sql.GetList(
                             "SELECT ACACST.APPROVAL_CHAIN_STEP_RECORD_ID,ACACST.APRCHN_ID,ACACST.APRCHNSTP_NAME,ACAPCH.APPROVAL_METHOD,ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
-                            + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
+                            + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_FIELD_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
                             + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
                             + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
                             + str(Objh_Id)
@@ -705,7 +705,7 @@ class ViolationConditions:
                             + "' "
                         )
                         # Log.Info("CheckviolationRule2-----SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
-                        #     + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
+                        #     + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_FIELD_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
                         #     + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
                         #     + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
                         #     + str(Objh_Id)
@@ -716,7 +716,7 @@ class ViolationConditions:
                             for result in CheckViolaionRule2:
                                 GetObjName = Sql.GetFirst(
                                     "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '"
-                                    + str(result.TSTOBJ_RECORD_ID)
+                                    + str(result.TSTOBJ_FIELD_RECORD_ID)
                                     + "'"
                                 )
                                 # Select_Query = (
@@ -1385,7 +1385,7 @@ class ViolationConditions:
     #     )
     #     for result in CSSqlObjs:
     #         GetObjName = Sql.GetFirst(
-    #             "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_RECORD_ID) + "'"
+    #             "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_FIELD_RECORD_ID) + "'"
     #         )
     #         # Select_Query = (
     #         #     "SELECT "
@@ -1436,7 +1436,7 @@ class ViolationConditions:
     #             a = Sql.RunQuery(Rulebodywithcondition)
     #             CheckViolaionRule2 = Sql.GetList(
     #                 "SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
-    #                 + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
+    #                 + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_FIELD_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
     #                 + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
     #                 + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
     #                 + str(Objh_Id)
@@ -1448,7 +1448,7 @@ class ViolationConditions:
     #                 for result in CheckViolaionRule2:
     #                     GetObjName = Sql.GetFirst(
     #                         "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '"
-    #                         + str(result.TSTOBJ_RECORD_ID)
+    #                         + str(result.TSTOBJ_FIELD_RECORD_ID)
     #                         + "'"
     #                     )
     #                     # Select_Query = (

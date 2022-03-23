@@ -134,7 +134,7 @@ class approvalCenter:
 						ACAPTX.REQUESTOR_COMMENTS
 						FROM ACAPTX (NOLOCK)
 						INNER JOIN ACACST (NOLOCK) ON ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID
-						INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_RECORD_ID = SYOBJH.RECORD_ID
+						INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_FIELD_RECORD_ID = SYOBJH.RECORD_ID
 						WHERE ACAPTX.APPROVAL_RECORD_ID = '{QuoteNumber}'
 						AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '{UserId}' 
 						AND ACAPTX.ARCHIVED = 0""".format(
@@ -311,7 +311,7 @@ class approvalCenter:
 					if result:
 						GetObjName = Sql.GetFirst(
 							"SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '"
-							+ str(result.TSTOBJ_RECORD_ID)
+							+ str(result.TSTOBJ_FIELD_RECORD_ID)
 							+ "'"
 						)
 						Select_Query = (
@@ -538,7 +538,7 @@ class approvalCenter:
 						ACAPTX.REQUESTOR_COMMENTS
 						FROM ACAPTX (NOLOCK)
 						INNER JOIN ACACST (NOLOCK) ON ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID
-						INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_RECORD_ID = SYOBJH.RECORD_ID
+						INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_FIELD_RECORD_ID = SYOBJH.RECORD_ID
 						WHERE ACAPTX.APPROVAL_RECORD_ID = '{QuoteNumber}'
 						AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '{UserId}' AND ACAPTX.ARCHIVED = 0""".format(
 					QuoteNumber=str(self.QuoteNumber), UserId=str(self.UserId)
@@ -620,7 +620,7 @@ class approvalCenter:
 	#                         ACAPTX.REQUESTOR_COMMENTS
 	#                         FROM ACAPTX (NOLOCK)
 	#                         INNER JOIN ACACST (NOLOCK) ON ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID
-	#                         INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_RECORD_ID = SYOBJH.RECORD_ID
+	#                         INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_FIELD_RECORD_ID = SYOBJH.RECORD_ID
 	#                         WHERE ACAPTX.APPROVAL_RECORD_ID = '{QuoteNumber}'
 	#                         AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '{UserId}' """.format(
 	#                     QuoteNumber=str(self.QuoteNumber), UserId=str(self.UserId)
@@ -772,7 +772,7 @@ class approvalCenter:
 	#                     if result:
 	#                         GetObjName = Sql.GetFirst(
 	#                             "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '"
-	#                             + str(result.TSTOBJ_RECORD_ID)
+	#                             + str(result.TSTOBJ_FIELD_RECORD_ID)
 	#                             + "'"
 	#                         )
 	#                         Select_Query = (
@@ -948,7 +948,7 @@ class approvalCenter:
 	#                         ACAPTX.REQUESTOR_COMMENTS
 	#                         FROM ACAPTX (NOLOCK)
 	#                         INNER JOIN ACACST (NOLOCK) ON ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID
-	#                         INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_RECORD_ID = SYOBJH.RECORD_ID
+	#                         INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_FIELD_RECORD_ID = SYOBJH.RECORD_ID
 	#                         WHERE ACAPTX.APPROVAL_RECORD_ID = '{QuoteNumber}'
 	#                         AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '{UserId}' """.format(
 	#                     QuoteNumber=str(self.QuoteNumber), UserId=str(self.UserId)
@@ -2647,7 +2647,7 @@ class approvalCenter:
 	#                 FROM ACAPMA (NOLOCK)
 	#                 INNER JOIN ACAPTX (NOLOCK) ON ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
 	#                 INNER JOIN ACACST (NOLOCK) ON ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACAPTX.APRCHNSTP_RECORD_ID
-	#                 INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_RECORD_ID = SYOBJH.RECORD_ID
+	#                 INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_FIELD_RECORD_ID = SYOBJH.RECORD_ID
 	#                 INNER JOIN ACAPTF (NOLOCK) ON ACAPTF.APRCHNSTP_RECORD_ID = ACAPTX.APRCHNSTP_RECORD_ID
 	#                 WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}' AND APRSTAMAP_APPROVALSTATUS = 'REQUESTED' """.format(
 	#                 QuoteNumber=self.QuoteNumber
