@@ -460,6 +460,9 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 								"field":["SVSPCT","Service Split %","AGS_Z0105_PQB_SVSPPC"]
 								},
 								{
+								"field":["SWPKTA","Swap Kits (Applied Provided)","AGS_{}_STT_SWKTAP".format(partnumber)]
+								},
+								{
 								"field":["SPSPCT","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
 								},
 								##saqite column
