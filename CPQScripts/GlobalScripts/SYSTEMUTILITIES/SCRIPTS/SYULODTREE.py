@@ -2813,6 +2813,7 @@ class TreeView:
 								)
 							else:
 								SubNodeName = str(findSubChildOne.NODE_DISPLAY_NAME)
+								Trace.Write('2816--'+str(SubNodeName))
 								SubParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
 								#Trace.Write("elseeee")
 								subDynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
