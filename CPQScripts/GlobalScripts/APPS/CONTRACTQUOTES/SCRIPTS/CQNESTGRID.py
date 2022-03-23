@@ -2861,7 +2861,7 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 	lookup_str = ",".join(list(lookup_disply_list))
 	
-	if str(TreeTopSuperParentParam)=="Comprehensive Services":
+	if str(TreeTopSuperParentParam) in ("Comprehensive Services","Complementary Products"):
 		columns = "PM_ID,SERVICE_ID,KIT_ID,KIT_NUMBER,QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID "
 		objname = "SAQGPM"
 	else:
