@@ -809,7 +809,7 @@ def GSCONTLOOKUPPOPUPFILTER(
                     if LOOKUP_ID == "TRKOBJ_TRACKEDFIELD_LABEL":
                         VAL_Str = (
                             "SELECT top 1000 "
-                            + str(API_NAME_str)
+                            + str(COLUMNS_NAME)
                             + " FROM "
                             + str(TABLEID)
                             + " WHERE "
