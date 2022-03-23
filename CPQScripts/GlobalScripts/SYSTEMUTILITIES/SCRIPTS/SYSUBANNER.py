@@ -2973,10 +2973,10 @@ def Related_Sub_Banner(
         else:
             Submit_approval = "False"
         get_quote_status = Sql.GetList("SELECT CpqTableEntryId FROM ACAPTX (NOLOCK) WHERE APPROVAL_ID LIKE '%{}%'".format(quote_status.QUOTE_ID))
-        if not get_quote_status and str(quote_status.REVISION_STATUS) != 'APR-APPROVED':
-            sec_rel_sub_bnr += (
-                    '<button class="btnconfig cust_def_btn" id="APPROVE" onclick="quote_approval(this.id)">APPROVE</button>'
-                )
+        # if not get_quote_status and str(quote_status.REVISION_STATUS) != 'APR-APPROVED':
+        #     sec_rel_sub_bnr += (
+        #             '<button class="btnconfig cust_def_btn" id="APPROVE" onclick="quote_approval(this.id)">APPROVE</button>'
+        #         )
         Trace.Write("get_quote_status"+str(get_quote_status))
         Trace.Write("QUOTE_STATUS"+str(quote_status.REVISION_STATUS))
         Trace.Write("Submit_approval"+str(Submit_approval))
