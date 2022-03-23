@@ -62,18 +62,17 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		All_value = [xls_col(val,val) for val in All_value]
 		colums=','.join(All_value)
 		colums=str(colums)
-		add_colums = re.sub(r'CUSTOMER_PART_NUMBER',"STUFF( CUSTOMER_PART_NUMBER , PATINDEX('%Â%', CUSTOMER_PART_NUMBER) , 3 , '' ) AS CUSTOMER_PART_NUMBER",colums)
 		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))				
 		while start < table_total_rows:
 			query_string_with_pagination = """
 							SELECT DISTINCT {Columns} FROM (
 								SELECT DISTINCT {Columns}, ROW_NUMBER()OVER(ORDER BY CpqTableEntryId) AS SNO FROM (
-									SELECT DISTINCT {add_col}, CpqTableEntryId
+									SELECT DISTINCT {Columns}, CpqTableEntryId
 									FROM {TableName} (NOLOCK)
 									WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'
 									) IQ)OQ
 							WHERE SNO>={Skip_Count} AND SNO<={Fetch_Count}              
-							""".format(Columns=colums,add_col=add_colums, TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param, Skip_Count=start, Fetch_Count=end)
+							""".format(Columns=colums, TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param, Skip_Count=start, Fetch_Count=end)
 
 			table_data = Sql.GetList(query_string_with_pagination)
 
@@ -631,9 +630,6 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 
 				for spare_record in xls_spare_records:
 					if spare_record[1] and spare_record[1] != "NULL" and spare_record[1] != "null":
-						#spare_record[1]=spare_record[1].replace ("Â","")
-						spare_record[1] = spare_record[1].translate({ord('Â'): None})
-						Trace.Write((spare_record[1]))
 						spare_record[1]=str(spare_record[1])
 					else:
 						spare_record[1] =""
