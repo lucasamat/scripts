@@ -3112,21 +3112,6 @@ class approvalCenter:
 					+ str(bodystr) 
 					+ "</tbody></table></body></html>"
 				)
-			# ApproveLink = """https://rssandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&ACTION=APPROVEBTN&ApproveDesc=Approved&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
-			#     transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),
-			#     approvalid=str(getnotify.APPROVAL_RECORD_ID),
-			#     priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),
-			# )
-			# RejectLink = """https://rssandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&ACTION=REJECTBTN&ApproveDesc=Rejected&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
-			#     transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),
-			#     approvalid=str(getnotify.APPROVAL_RECORD_ID),
-			#     priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),
-			# )
-			#ViewLink = """https://rssandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&#ACTION=VIEWBTN&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
-			#    transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),
-			#    approvalid=str(getnotify.APPROVAL_RECORD_ID),
-			#    priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),
-			#)
 			ApproveLink = """https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
 			RejectLink = """https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
 			ViewLink ="""https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
