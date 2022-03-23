@@ -7064,7 +7064,7 @@ def POPUPLISTVALUEADDNEW(
 						TreeParam = Product.GetGlobal("TreeParam")
 						ChainRec = new_value_dict.get("APRCHN_RECORD_ID")
 						StepRecordId = Sql.GetFirst(
-							"select * from ACACST (nolock) INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_FIELD_RECORD_ID = SYOBJH.RECORD_ID"
+							"select * from ACACST (nolock) INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_RECORD_ID = SYOBJH.RECORD_ID"
 							+ " WHERE APRCHNSTP_NAME = '"
 							+ str(TreeParam).split(': ')[1]
 							+ "' AND APRCHN_RECORD_ID = '"
@@ -7321,7 +7321,7 @@ def POPUPLISTVALUEADDNEW(
 					if str(ObjectName) == "ACACSA" or str(ObjectName) == "ACAPTF":
 						ChainRec = new_value_dict.get("APRCHN_RECORD_ID")
 						StepRecordId = Sql.GetFirst(
-							"select * from ACACST (nolock) INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_FIELD_RECORD_ID = SYOBJH.RECORD_ID"
+							"select * from ACACST (nolock) INNER JOIN SYOBJH (NOLOCK) ON ACACST.TSTOBJ_RECORD_ID = SYOBJH.RECORD_ID"
 							+ " WHERE APRCHNSTP_NAME = '"
 							+ str(TreeParam).split(': ')[1]
 							+ "' AND APRCHN_RECORD_ID = '"
