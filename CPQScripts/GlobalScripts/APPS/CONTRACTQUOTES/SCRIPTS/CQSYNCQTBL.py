@@ -1090,6 +1090,11 @@ class SyncQuoteAndCustomTables:
                     ##A055S000P01-12754 code ends..
                     ##Updating the Document currency into the SAQTRV TABLE...
                     if custom_fields_detail.get("STPAccountID"):
+                        get_customer_segment =Sql.GetFirst("Select AGS_CUST_SGMT FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID ='{account_id}'".format(account_id=custom_fields_detail.get("STPAccountID")))
+                        if get_customer_segment:
+                            customer_level = str(get_customer_segment.AGS_CUST_SGMT).upper()
+                        else:
+                            customer_level =""
                         sold_to_update = {
                             "QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
                             "ADDRESS": custom_fields_detail.get("SoldToAddress"),
@@ -1103,7 +1108,8 @@ class SyncQuoteAndCustomTables:
                             "CPQ_PARTNER_FUNCTION": "SOLD TO",
                             "PHONE": custom_fields_detail.get("SoldToPhone"),
                             "QTEREV_RECORD_ID":quote_revision_id,
-                            "QTEREV_ID":quote_rev_id
+                            "QTEREV_ID":quote_rev_id,
+                            "CUSTOMER_SEGMENT":customer_level
                         }
                         quote_involved_party_table_info.AddRow(sold_to_update)
                     if self.quote.BillToCustomer:
