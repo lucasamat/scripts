@@ -998,7 +998,7 @@ class QueryBuilder:
                         "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
                         "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
                         "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
-                        "TSTOBJ_FIELD_LABEL":getObjLabel.LABEL,
+                        "TSTOBJ_LABEL":getObjLabel.LABEL,
                         "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
                         }
                         tableInfoACACSF.AddRow(row)
@@ -1035,7 +1035,7 @@ class QueryBuilder:
                             "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
                             "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
                             "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
-                            "TSTOBJ_FIELD_LABEL":getObjLabel.LABEL,
+                            "TSTOBJ_LABEL":getObjLabel.LABEL,
                             "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
                         }
                         tableInfoACACSF.AddRow(row)
@@ -1054,7 +1054,7 @@ class QueryBuilder:
                         "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
                         "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
                         "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
-                        "TSTOBJ_FIELD_LABEL":getObjLabel.LABEL,
+                        "TSTOBJ_LABEL":getObjLabel.LABEL,
                         "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
                     }
                     tableInfoACACSF.AddRow(row)
