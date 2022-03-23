@@ -161,7 +161,8 @@ def create_new_revision(Opertion,cartrev):
 				"COMPANY_ID":get_previous_rev_data.COMPANY_ID,
 				"COMPANY_NAME":get_previous_rev_data.COMPANY_NAME,
 				"COMPANY_RECORD_ID":get_previous_rev_data.COMPANY_RECORD_ID,
-				"HLV_ORG_BUN":"AGS - SSC"
+				"HLV_ORG_BUN":"AGS - SSC",
+				"TRANSACTION_TYPE":"O-QUOTE"
 			}
 
 		quote_revision_table_info.AddRow(quote_rev_data)
