@@ -219,7 +219,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		elif get_workflow_status.WORKFLOW_STATUS == "LEGAL SOW":
 			status = "LEGAL SOW"
 	
-		elif get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS":
+		elif get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS" and get_workflow_status.REVISION_STATUS != "OPD-CUSTOMER ACCEPTED"::
 			status = "QUOTE DOCUMENTS"
 		elif get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS" and get_workflow_status.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED":
 			status = "GENERATE SOW"
@@ -294,6 +294,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
 		##calling the iflow for pricing end
+	Trace.Write('status--297---'+str(status))
 	return status,error_msg
 	
 #A055S000P01-17166 start
