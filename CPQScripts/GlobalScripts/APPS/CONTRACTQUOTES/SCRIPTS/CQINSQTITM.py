@@ -1170,7 +1170,7 @@ class ContractQuoteItem:
 						""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, ancillary_where = ancillary_where, ancillary_join = ancillary_join)
 				)
 		basic_insert_end = time.time()
-		Trace.Write("Basic Insert Time-----"+str(basic_insert_end-basic_insert_start))
+		#Trace.Write("Basic Insert Time-----"+str(basic_insert_end-basic_insert_start))
 		#Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
 		
 		# Target (Sales) Price Discount %
