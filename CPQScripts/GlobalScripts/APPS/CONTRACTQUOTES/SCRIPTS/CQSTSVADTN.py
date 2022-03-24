@@ -10,7 +10,7 @@ import System.Net
 import CQPARTIFLW
 import CQCPQC4CWB
 import time
-#import ACVIORULES
+
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
 try:
@@ -253,15 +253,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 						##Calling the iflow for quote header writeback to cpq to c4c code ends...
 					except:
 						pass
-			# Approval Trigger - Start		
-			#import ACVIORULES
-			# violationruleInsert = ACVIORULES.ViolationConditions()
-			# header_obj = SqlHelper.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-			# if header_obj:			
-			# 	violationruleInsert.InsertAction(
-			# 	header_obj.RECORD_ID, Quote.GetGlobal("quote_revision_record_id"), "SAQTRV"
-			# 	)
-			# Approval Trigger - End
+		
 		
 
 		try:
