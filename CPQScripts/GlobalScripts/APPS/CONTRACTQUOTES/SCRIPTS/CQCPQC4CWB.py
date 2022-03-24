@@ -78,7 +78,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
             net_value = revision_obj.NET_VALUE_INGL_CURR
             opportunity_object = Sql.GetFirst("select ISNULL(SAOPPR.C4C_OPPOBJ_ID,0) AS C4C_OPPOBJ_ID FROM SAOPPR(NOLOCK) INNER JOIN SAOPQT (NOLOCK) ON  SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID AND SAOPPR.ACCOUNT_ID = SAOPQT.ACCOUNT_ID WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
             opportunity_object_id = opportunity_object.C4C_OPPOBJ_ID
-            Log.Info("opportunity_object_id --->"+str(opportunity_object.C4C_OPPOBJ_ID))
+            #Log.Info("opportunity_object_id --->"+str(opportunity_object.C4C_OPPOBJ_ID))
             ##Fetch the code according to the revision status..code starts...
             #revision_status_code = {"APR-APPROVAL PENDING":"111", "APR-RECALLED":"121", "APR-REJECTED":"131", "APR-APPROVED":"141","OPD-CUSTOMER ACCEPTED":"161","CBC-SUBMITTED FOR BOOKING":"181","BOK-CONTRACT BOOKED":"191","CFG-ON HOLD - COSTING":"221","CUSTOMER REJECTED":"171","CPG-CONFIGURATION":"211","OPPORTUNITY CANCELLED":"231","OPPORTUNITY LOST":"241","PRR-PRICING":"101","CFG-ACQUIRING":"261","ON HOLD PRICING":"251"}
             revision_status_code = {"APR-APPROVAL PENDING":"111", "APR-RECALLED":"121", "APR-REJECTED":"131", "APR-APPROVED":"141","APR-SUBMITTED TO CUSTOMER":"151","OPD-CUSTOMER ACCEPTED":"161","BOK-CONTRACT CREATED":"181","OPD-PREPARING QUOTE DOCUMENTS":"185","BOK-CONTRACT BOOKED":"191","CFG-ON HOLD - COSTING":"221","OPD-CUSTOMER REJECTED":"171","CFG-CONFIGURING":"211","PRI-PRICING":"101","CFG-ACQUIRING":"261","LGL-PREPARING LEGAL SOW":"271","LGL-LEGAL SOW REJECTED":"281","LGL-LEGAL SOW ACCEPTED":"291","PRR-ON HOLD PRICING":"251","CBC-PREPARING CBC":"301","CBC-CBC COMPLETED":"305"}
@@ -107,7 +107,6 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 + str(opportunity_object_id)
                 +"</opportunity_object_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
             )
-            Log.Info("###Opportunity Header Request data for quoterecid -"+str(contract_quote_record_id)+" are "+str(requestdata))
     elif writeback == "approver_list":
         contract_quote_id = Sql.GetFirst("Select QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
         approver_list_id=Sql.GetList("Select REPLACE(APRCHNSTP_APPROVER_ID,'USR-','') as APRCHNSTP_APPROVER_ID,APRCHNSTP_ID FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND (APPROVALSTATUS = 'APPROVAL REQUIRED' OR APPROVALSTATUS = 'REQUESTED')".format(contract_quote_id.QUOTE_ID))

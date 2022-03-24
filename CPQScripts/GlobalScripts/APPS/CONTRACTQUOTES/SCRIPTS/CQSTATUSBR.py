@@ -249,7 +249,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text,edit_config):
 				###calling script for saqris,saqtrv insert
 				# CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":str(contract_quote_id),"Operation":"Delete"})
 		except:
-			Log.Info("PART PRICING IFLOW ERROR!")
+			("PART PRICING IFLOW ERROR!")
 		# Quote Item Inserts - Ends
 	return status
 try:

@@ -753,7 +753,7 @@ def savecbc(Qt_rec_id, Quote_rec_id, MODE):
 		##Validation For Quote items
 		get_quote_items = Sql.GetFirst("SELECT * FROM SAQRIT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}'".format(Quote_rec_id,quote_revision_record_id))
 		if get_quote_items:
-			Log.Info("====> QTPOSTACRM for FPM called from ==> "+str(getfpm_quote_type.QUOTE_ID)+'--'+str(getfpm_quote_type.QTEREV_ID))
+			#Log.Info("====> QTPOSTACRM for FPM called from ==> "+str(getfpm_quote_type.QUOTE_ID)+'--'+str(getfpm_quote_type.QTEREV_ID))
 			ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':getfpm_quote_type.QUOTE_ID,'REVISION_ID':getfpm_quote_type.QTEREV_ID, 'Fun_type':'CPQ_TO_ECC'})
 	##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
 	CQREVSTSCH.Revisionstatusdatecapture(Quote_rec_id,quote_revision_record_id)

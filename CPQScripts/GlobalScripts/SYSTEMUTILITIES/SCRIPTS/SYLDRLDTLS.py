@@ -668,7 +668,6 @@ class SYLDRLDTLS:
                             + '" class="form-control related_popup_css" ></td>'
                         )
                     elif data_type == "FORMULA" and MODE == "EDIT" and formula_data_type != "CHECKBOX":
-                        Log.Info(str(lookup_val) + "354--------formaula" + str(current_obj_value))
                         if current_obj_api_name in lookup_val and str(readonly) != "readonly":
                             sec_str += (
                                 '<td><input id="'
