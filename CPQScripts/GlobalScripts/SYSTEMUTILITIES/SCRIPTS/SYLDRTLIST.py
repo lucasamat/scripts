@@ -2234,6 +2234,27 @@ class SYLDRTLIST:
                             + ""
                         )						
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
+                    elif str(RECORD_ID) == "SYOBJR-98882":
+                        Qustr = "WHERE GREENBOOK == '"+str(TreeParentParam)+"'"
+                        Qury_str = (
+                            "select DISTINCT top "
+                            + str(PerPage)
+                            + " "
+                            + str(select_obj_str)
+                            + ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "
+                            + str(Wh_API_NAMEs)
+                            + ") AS ROW, * from "
+                            + str(ObjectName)
+                            + " (nolock) "
+                            + str(Qustr)
+                            + " ) m where m.ROW BETWEEN "
+                            + str(Page_start)
+                            + " and "
+                            + str(Page_End)
+                            + ""
+                        )
+                        
+                        QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     else:
                         if  str(RECORD_ID) == "SYOBJR-98789" and "Sending Account -" in TreeParam :
                             Qustr += " AND RELOCATION_FAB_TYPE = 'SENDING FAB'"
