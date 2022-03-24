@@ -246,13 +246,13 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				   
 					
 					
-					try:
-						##Calling the iflow for quote header writeback to cpq to c4c code starts..
-						CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-						CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-						##Calling the iflow for quote header writeback to cpq to c4c code ends...
-					except:
-						pass
+					# try:
+					# 	##Calling the iflow for quote header writeback to cpq to c4c code starts..
+					# 	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+					# 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+					# 	##Calling the iflow for quote header writeback to cpq to c4c code ends...
+					# except:
+					# 	pass
 		
 		
 
