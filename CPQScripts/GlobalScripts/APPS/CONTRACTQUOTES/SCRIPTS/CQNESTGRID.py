@@ -7538,7 +7538,15 @@ def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		+ str(table_ids)
 		+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
 		+ str(table_ids)
-		+ '\ th.bs-checkbox div.th-inner").before("<div style=\'padding:0; border-bottom: 1px solid #dcdcdc;\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom");$(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
+		+ '\ th.bs-checkbox div.th-inner").before("<div style=\'padding:0; border-bottom: 1px solid #dcdcdc;\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $("'
+		+ str(table_ids)
+		+ "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
+		+ str(table_id)
+		+ "_SortColumn', name); localStorage.setItem('"
+		+ str(table_id)
+		+ "_SortColumnOrder', order); NestedContainerSorting(name, order, '"
+		+ str(table_id)
+		+ "'); }); "
 		)
 
 	NORECORDS = ""
