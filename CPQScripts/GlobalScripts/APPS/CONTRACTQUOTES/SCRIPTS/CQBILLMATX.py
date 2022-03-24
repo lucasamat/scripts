@@ -1366,3 +1366,12 @@ def billingmatrix_create():
 if contract_quote_rec_id:
 	ApiResponse = ApiResponseFactory.JsonResponse(_insert_billing_matrix())
 	#_insert_billing_matrix()
+	# Approval Trigger - Start		
+	#import ACVIORULES
+	violationruleInsert = ACVIORULES.ViolationConditions()
+	header_obj = SqlHelper.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+	if header_obj:			
+		violationruleInsert.InsertAction(
+		header_obj.RECORD_ID,quote_revision_rec_id, "SAQTRV"
+		)
+	# Approval Trigger - End
