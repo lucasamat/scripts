@@ -2234,27 +2234,6 @@ class SYLDRTLIST:
                             + ""
                         )						
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
-                    elif str(RECORD_ID) == "SYOBJR-98882":
-                        Qustr = "WHERE GREENBOOK == '"+str(TreeParentParam)+"'"
-                        Qury_str = (
-                            "select DISTINCT top "
-                            + str(PerPage)
-                            + " "
-                            + str(select_obj_str)
-                            + ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "
-                            + str(Wh_API_NAMEs)
-                            + ") AS ROW, * from "
-                            + str(ObjectName)
-                            + " (nolock) "
-                            + str(Qustr)
-                            + " ) m where m.ROW BETWEEN "
-                            + str(Page_start)
-                            + " and "
-                            + str(Page_End)
-                            + ""
-                        )
-                        
-                        QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     else:
                         if  str(RECORD_ID) == "SYOBJR-98789" and "Sending Account -" in TreeParam :
                             Qustr += " AND RELOCATION_FAB_TYPE = 'SENDING FAB'"
@@ -2263,6 +2242,8 @@ class SYLDRTLIST:
                         elif str(RECORD_ID) == "SYOBJR-98868":
                             Qustr += "AND EQUIPMENT_ID = '"+str(equipment_id)+"'"
                             Qustr += "AND SERVICE_ID = '"+str(TreeParentParam)+"'"
+                        elif str(RECORD_ID) == "SYOBJR-98882":
+                            Qustr += " AND GREENBOOK = '"+str(TreeParentParam)+"'"
                         elif str(RECORD_ID) == "SYOBJR-00029":
                             quote_rec_id = Product.GetGlobal("contract_quote_record_id")
                             quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
