@@ -6,9 +6,12 @@
 #   __create_date : 06/04/2020
 #   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ====================================================================================================
+from CPQScripts.GlobalScripts.APPS.CONTRACTQUOTES.SCRIPTS import CQCPQC4CWB
 import Webcom.Configurator.Scripting.Test.TestProduct
 import datetime
 from datetime import datetime
+
+import time
 from SYDATABASE import SQL
 
 Sql = SQL()
@@ -846,6 +849,9 @@ class ViolationConditions:
                                             Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'REQUESTED' WHERE APPROVAL_RECORD_ID = '{}'".format(GetLatestApproval.APPROVAL_RECORD_ID))
 
                                             Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'APR-APPROVAL PENDING' WHERE QUOTE_REVISION_RECORD_ID ='{}'".format(RecordId))
+                                            CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+                                            time.sleep(3)
+                                            CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
                                     else:
                                         where_conditon += """GROUP BY APPRO.USER_RECORD_ID,ACAPCH.APRCHN_ID,
                                     ACAPCH.APPROVAL_CHAIN_RECORD_ID ,APPRO.APRCHNSTP_APPROVER_ID ,
