@@ -157,9 +157,9 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 					#flag_excluse=1
 					break
 		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
-		if str(get_ent_val).upper() in ("OFFERING + EQUIPMENT","OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT","OFFERING + FAB + SCH. MAIN EVT","OFFERING + KIT"):
+		if str(get_ent_val).upper()  == "OFFERING + EQUIPMENT":
 			level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
-		elif str(get_ent_val).upper() == "OFFERING + GREENBOOK + GR EQUI":
+		elif str(get_ent_val).upper() == "OFFERING + GREENBOOK + GR EQUI","OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT","OFFERING + FAB + SCH. MAIN EVT","OFFERING + KIT"):
 			level_name = 'OFFERING FAB GREENBOOK LEVEL'
 		else:
 			level_name = 'OFFERING LEVEL'
@@ -176,7 +176,7 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 	elif ent_level_table == "SAQGPE":
 		Trace.Write('107-gpe---get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 		get_clicked_greenbook = Product.GetGlobal("TreeParentLevel1")
-		level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
+		level_name = 'OFFERING FAB GREENBOOK LEVEL'
 	else:
 		Trace.Write('107-else---get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
