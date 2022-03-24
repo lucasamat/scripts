@@ -2158,7 +2158,7 @@ def Related_Sub_Banner(
                 FifthLable = "Total Margin"
                 FifthValue = decimal_format.format(float("0.00"))+" "+curr
             elif subTabName == "Offerings":
-                saqris_details = Sql.GetFirst("SELECT SUM(ESTIMATED_VALUE) AS ESTIMATED_VALUE, SUM(NET_VALUE_INGL_CURR) AS NET_VALUE, SUM(TAX_AMOUNT_INGL_CURR) AS TOTAL_TAX, SUM(TOTAL_AMOUNT_INGL_CURR) AS TOTAL_AMT FROM SAQRIS (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                saqris_details = Sql.GetFirst("SELECT SUM(ESTIMATED_VALUE) AS ESTIMATED_VALUE, SUM(NET_VALUE_INGL_CURR) AS NET_VALUE, SUM(TAX_AMOUNT_INGL_CURR) AS TOTAL_TAX, SUM(TOTAL_AMOUNT_INGL_CURR) AS TOTAL_AMT FROM SAQRIS (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0117'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                 PrimaryLable = "Total Tax/VAT/GST"
                 PrimaryValue = decimal_format.format(float(saqris_details.TOTAL_TAX))+" "+curr if saqris_details.TOTAL_TAX else decimal_format.format(float("0.00"))+" "+curr
                 SecondLable = "Total Est Net Val"
