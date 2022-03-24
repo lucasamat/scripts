@@ -2205,8 +2205,8 @@ def Related_Sub_Banner(
                 #if item_detail:
                 PrimaryLable = "Product Offering Id"
                 PrimaryValue =  item_detail.SERVICE_ID
-                SecondLable = "Quantity"
-                SecondValue = item_detail.QUANTITY
+                SecondLable = ""
+                SecondValue = ""
                 ThirdLable = "Contract Start Date"
                 ThirdValue = valid_from
                 FourthLable = "Contract End Date"
