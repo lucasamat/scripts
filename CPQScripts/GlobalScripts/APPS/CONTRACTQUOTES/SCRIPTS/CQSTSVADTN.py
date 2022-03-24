@@ -189,7 +189,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING REVIEW',REVISION_STATUS='PRR- ON HOLD PRICING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 			Sql.RunQuery(update_workflow_status)
 		#A055S000P01-17164 end
-			
+		
 		#get pricing status from saqico-A055S000P01-17164 end
 
 
@@ -208,9 +208,6 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			#update_legal_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS ='LGL-PREPARING LEGAL SOW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)
 			#Sql.RunQuery(update_legal_status)
 			#A055S000P01-17165 end
-			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-			time.sleep(3) #A055S000P01-16535
-			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			status = "GENERATE SOW"
 		elif get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
 			status = "CONFIGURE"
@@ -233,6 +230,9 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			status = "BOOKED"
 		else:
 			status = "CONFIGURE"
+		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		time.sleep(3) #A055S000P01-16535
+		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 		if str(get_workflow_status.REVISION_STATUS) == "LGL-PREPARING LEGAL SOW" and str(get_workflow_status.CLM_AGREEMENT_NUM) == "":
 			error_msg = "You will not be able to complete the stage until the Legal SoW in CLM is executed"
 	if quote_item_insert == 'yes' and Text == "COMPLETE STAGE":
