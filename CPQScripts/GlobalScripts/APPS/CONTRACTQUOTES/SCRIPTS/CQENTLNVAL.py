@@ -159,7 +159,7 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
 		if str(get_ent_val).upper()  == "OFFERING + EQUIPMENT":
 			level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
-		elif str(get_ent_val).upper() == "OFFERING + GREENBOOK + GR EQUI","OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT","OFFERING + FAB + SCH. MAIN EVT","OFFERING + KIT"):
+		elif str(get_ent_val).upper() in ("OFFERING + GREENBOOK + GR EQUI","OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT","OFFERING + FAB + SCH. MAIN EVT","OFFERING + KIT"):
 			level_name = 'OFFERING FAB GREENBOOK LEVEL'
 		else:
 			level_name = 'OFFERING LEVEL'
