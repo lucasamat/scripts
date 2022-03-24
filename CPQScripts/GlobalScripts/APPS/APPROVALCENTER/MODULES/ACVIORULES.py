@@ -912,7 +912,7 @@ class ViolationConditions:
                                             Trackedobject=Trackedobject,
                                         )
                                         trackedbodywithcondition = TackedRuleBody + Tracked_where_conditon
-                                        #Trace.Write("trackedbodywithcondition-----> " + str(trackedbodywithcondition))
+                                        Trace.Write("trackedbodywithcondition-----> " + str(trackedbodywithcondition))
                                         b = Sql.RunQuery(trackedbodywithcondition)
 
                                     """GettingSnapshot = self.SnapshotDataInsert(
