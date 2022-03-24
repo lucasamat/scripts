@@ -179,10 +179,12 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			price_bar = "no_quote_items"
 
 		#A055S000P01-17164 start
-		if str(getsalesorg_info).upper() != "NONE" and get_service_info.COUNT > 0 and   'F' not in get_complete_list and 'F' not in tool_check and 'F' not in price_preview_status and Text == "COMPLETE STAGE":
-			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING',REVISION_STATUS='PRI-PRICING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-			Sql.RunQuery(update_workflow_status)
-			ScriptExecutor.ExecuteGlobal('CQSDELPGPN',{'QUOTE_ID':Quote.GetGlobal("contract_quote_record_id"),'QTEREV_ID':Quote.GetGlobal("quote_revision_record_id"),'ACTION':'EMAIL'})
+		get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+		if get_workflow_status.WORKFLOW_STATUS not in ("APPROVALS","LEGAL SOW","QUOTE-DOCUMNETS","CLEAN BOOKING CHECKLIST"):
+			if str(getsalesorg_info).upper() != "NONE" and get_service_info.COUNT > 0 and   'F' not in get_complete_list and 'F' not in tool_check and 'F' not in price_preview_status and Text == "COMPLETE STAGE":
+				update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING',REVISION_STATUS='PRI-PRICING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+				Sql.RunQuery(update_workflow_status)
+				ScriptExecutor.ExecuteGlobal('CQSDELPGPN',{'QUOTE_ID':Quote.GetGlobal("contract_quote_record_id"),'QTEREV_ID':Quote.GetGlobal("quote_revision_record_id"),'ACTION':'EMAIL'})
 		if str(getsalesorg_info).upper() != "NONE" and get_service_info.COUNT > 0 and   'F'  in get_complete_list and 'F' not in tool_check and 'F' not in price_preview_status and Text == "COMPLETE STAGE":
 			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING REVIEW',REVISION_STATUS='PRR- ON HOLD PRICING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 			Sql.RunQuery(update_workflow_status)
@@ -191,7 +193,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		#get pricing status from saqico-A055S000P01-17164 end
 
 
-		get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+		#get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		if get_workflow_status.REVISION_STATUS == "APR-APPROVAL PENDING" and Text == "COMPLETE STAGE":
 			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)
 			Sql.RunQuery(update_workflow_status)
