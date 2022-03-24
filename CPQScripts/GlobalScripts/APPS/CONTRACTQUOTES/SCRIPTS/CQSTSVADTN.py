@@ -202,12 +202,14 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 	if get_workflow_status:
 		if get_workflow_status.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED":
 			#A055S000P01-17165 started
+			Trace.Write('205---')
 			#update_legal_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS ='LGL-PREPARING LEGAL SOW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)
 			#Sql.RunQuery(update_legal_status)
 			#A055S000P01-17165 end
 			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			time.sleep(3) #A055S000P01-16535
-			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))	
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			status = "GENERATE SOW"
 		elif get_workflow_status.WORKFLOW_STATUS == "CONFIGURE":
 			status = "CONFIGURE"
 		elif get_workflow_status.WORKFLOW_STATUS == "PRICING REVIEW":
