@@ -2945,7 +2945,7 @@ class approvalCenter:
 			getobjName = {}
 			for objloop in objectdic.values():
 				getobjquery = Sql.GetFirst(
-					"SELECT OBJECT_NAME,RECORD_NAME FROM SYOBJH (NOLOCK) WHERE LABEL = '{}'".format(str(objloop))
+					"SELECT OBJECT_NAME,RECORD_NAME FROM SYOBJH (NOLOCK) WHERE LABEL = 'Quote Revision'".format(str(objloop))
 				)
 				getobjName[str(getobjquery.OBJECT_NAME)] = str(getobjquery.RECORD_NAME)
 				objlableandobj[str(objloop)] = str(getobjquery.OBJECT_NAME)
