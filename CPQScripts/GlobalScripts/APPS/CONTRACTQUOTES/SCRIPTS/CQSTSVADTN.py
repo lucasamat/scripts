@@ -232,7 +232,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			status = "LEGAL SOW ACCEPT"
 		elif get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":
 			status = "CLEAN BOOKING CHECKLIST"
-		elif get_workflow_status.WORKFLOW_STATUS == "BOOKED":
+		elif get_workflow_status.WORKFLOW_STATUS == "BOOKED" and get_workflow_status.CLM_AGREEMENT_NUM:
 			status = "BOOKED"
 		else:
 			status = "CONFIGURE"
