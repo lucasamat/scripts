@@ -788,12 +788,12 @@ class TreeView:
 			user_id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
 			saqdlt_query = Sql.GetFirst("SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER'".format(qte_rec_id = contract_quote_record_id,revision_rec_id = quote_revision_record_id))
 			#A055S000P01-17166 start
-			update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-PREPARING CBC' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_record_id,quote_revision_rec_id=quote_revision_record_id)
-			#A055S000P01-17166 end
-			Sql.RunQuery(update_rev_status)
-			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-			time.sleep(3) #A055S000P01-16535
-			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			get_status = Sql.GetFirst("SELECT WORKFLOW_STATUS from SAQTRV where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_record_id,quote_revision_rec_id=quote_revision_record_id))
+			if get_status:
+				if get_status.WORKFLOW_STATUS == "LEGAL-SOW":
+					update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-PREPARING CBC' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_record_id,quote_revision_rec_id=quote_revision_record_id)
+					#A055S000P01-17166 end
+					Sql.RunQuery(update_rev_status)
 			if saqdlt_query:
 				if str(saqdlt_query.MEMBER_ID) == str(user_id):
 					Trace.Write("subtab_not empty")
