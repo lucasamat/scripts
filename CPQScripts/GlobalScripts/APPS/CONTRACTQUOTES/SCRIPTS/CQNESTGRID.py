@@ -757,6 +757,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		"PM_FREQUENCY",
 		"KIT_ID",
 		"KIT_NAME",
+		"KIT_NUMBER",
 		"TKM_FLAG"
 	]
 	objh_getid = Sql.GetFirst(
@@ -809,19 +810,6 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 				where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
 	if str(where_string):
 		where_string = " AND "+str(where_string)
-		"QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID",
-		"EQUIPMENT_DESCRIPTION",
-		"EQUIPMENT_ID",
-		"ASSEMBLY_ID",
-		"GOT_CODE",
-		"PM_ID",
-		"PM_NAME",
-		"SSCM_PM_FREQUENCY",
-		"PM_FREQUENCY",
-		"KIT_ID",
-		"KIT_NAME",
-		"KIT_NUMBER",
-		"TKM_FLAG"
 	if TreeTopSuperParentParam == "Product Offerings":
 		Qstr = (
 			"select top "
