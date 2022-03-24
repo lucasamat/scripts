@@ -741,10 +741,6 @@ def savecbc(Qt_rec_id, Quote_rec_id, MODE):
 	#CBD POPUP FUNCTIONALITY ADDED UPDATE QUERY
 	Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'CBC-CBC-COMPLETED',WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))	
 	
-	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-	time.sleep(3) #A055S000P01-16535
-	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-	
 	#Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
 	get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
 	##FPM QUOTE SCENARIO
