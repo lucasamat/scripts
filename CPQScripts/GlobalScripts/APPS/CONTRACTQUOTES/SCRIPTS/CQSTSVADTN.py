@@ -303,6 +303,17 @@ def complete_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):
 	time.sleep(3) #A055S000P01-16535
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
+
+
+def create_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):
+	
+	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS = 'LGL-PREPARING LEGAL SOW' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_record_id)
+	Sql.RunQuery(update_rev_status)
+	
+	#CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+	#time.sleep(3) #A055S000P01-16535
+	#CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+	return True
 #A055S000P01-17166 end
 try:
 	quote_item_insert = Param.quote_item_insert
@@ -330,6 +341,8 @@ except:
 
 if STATUS_SOW == "SOW_ACCEPT":
 	ApiResponse = ApiResponseFactory.JsonResponse(complete_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW))
+elif STATUS_SOW == "CREATE_SOW":
+	ApiResponse = ApiResponseFactory.JsonResponse(create_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW))
 else:
 	Trace.Write("quote_item_insert_J "+str(quote_item_insert))
 	ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar(quote_item_insert,Text))  
