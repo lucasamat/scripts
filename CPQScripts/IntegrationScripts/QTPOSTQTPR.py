@@ -7,7 +7,7 @@ from System import Convert
 from SYDATABASE import SQL
 import CQVLDRIFLW
 import CQCPQC4CWB
-
+import ACVIORULES
 clr.AddReference("System.Net")
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
@@ -699,8 +699,16 @@ try:
 						""
 					+ str(Parameter1.QUERY_CRITERIA_1)
 					+ "  SAQTRV SET REVISION_STATUS=''PRI-PRICING'' FROM SAQTRV A(NOLOCK) JOIN (SELECT DISTINCT QUOTE_ID,QTEREV_ID FROM SAQRIT B(NOLOCK)  WHERE  ISNULL(STATUS,'''')  IN (''ACQUIRED'') AND QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'')B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID AND REVISION_STATUS NOT IN (''ON HOLD COSTING'',''PRR-ON HOLD PRICING'') '")
-					
 					quote_revision_object = SqlHelper.GetFirst("SELECT QUOTE_RECORD_ID, QTEREV_RECORD_ID FROM SAQTRV WHERE QUOTE_ID = '"+str(Qt_Id.QUOTE_ID)+"' AND QTEREV_ID = '"+str(Qt_Id.REVISION_ID)+"' ")
+					# Approval Trigger - Start		
+					
+					violationruleInsert = ACVIORULES.ViolationConditions()
+					header_obj = SqlHelper.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+					if header_obj:			
+						violationruleInsert.InsertAction(
+						header_obj.RECORD_ID,quote_revision_object.QTEREV_RECORD_ID, "SAQTRV"
+						)
+					# Approval Trigger - End
 
 					##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 					CQCPQC4CWB.writeback_to_c4c("quote_header",quote_revision_object.QUOTE_RECORD_ID,quote_revision_object.QTEREV_RECORD_ID)
