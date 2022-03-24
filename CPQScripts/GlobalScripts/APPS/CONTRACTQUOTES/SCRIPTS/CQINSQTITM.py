@@ -2823,7 +2823,7 @@ class ContractQuoteItem:
 					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID  AND SAQRIT.OBJECT_ID = OQ.OBJECT_ID AND SAQRIT.FABLOCATION_ID = OQ.FABLOCATION_ID AND SAQRIT.GREENBOOK = OQ.GREENBOOK AND SAQRIT.GOT_CODE = OQ.GOT_CODE
 					WHERE ISNULL(SAQRIT.OBJECT_ID,'') = ''
 				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count,billing_type=self.get_billing_type_val, DynamicValues=dynamic_ancillary_columns,DynamicColumnNames=dynamic_columns))				
-			elif self.quote_service_entitlement_type == "OFFERING + SCH. MAIN. EVENT":
+			elif self.quote_service_entitlement_type in ("OFFERING + SCH. MAIN. EVENT","OFFERING + FAB + SCH. MAIN EVT"):
 				Sql.RunQuery("""INSERT SAQRIT (QUOTE_REVISION_CONTRACT_ITEM_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE,PM_ID,PM_RECORD_ID,GOTCODE_RECORD_ID,GOT_CODE,MNTEVT_LEVEL, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,TAX_PERCENTAGE,{DynamicColumnNames} GREENBOOK,BILLING_TYPE,GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID,DEVICE_NODE,PROCESS_TYPE)
 					SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_CONTRACT_ITEM_ID,
 						'{UserName}' AS CPQTABLEENTRYADDEDBY,
@@ -3206,7 +3206,7 @@ class ContractQuoteItem:
 			# Item Level entitlement Insert
 			if self.quote_service_entitlement_type in ('OFFERING+CONSIGNED+ON REQUEST','OFFERING'):
 				self._service_based_quote_items_entitlement_insert(update=update)  
-			elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING + SCH. MAIN. EVENT','OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT'):
+			elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING + SCH. MAIN. EVENT','OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT',"OFFERING + FAB + SCH. MAIN EVT"):
 				self._pmsa_quote_items_entitlement_insert(update=update)  
 			else:
 				self._quote_items_entitlement_insert(update=update)
@@ -3895,7 +3895,7 @@ class ContractQuoteItem:
 		Sql.RunQuery(quote_item_delete_statement)
 
 	def _quote_item_qty_update(self):
-		if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT"):
+		if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT","OFFERING + FAB + SCH. MAIN EVT"):
 			Sql.RunQuery(""" UPDATE SAQRIT SET QUANTITY = SAQICO.QUANTITY 
 							
 							FROM SAQRIT (NOLOCK) 
@@ -3935,7 +3935,7 @@ class ContractQuoteItem:
 					SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 
 	def _simple_quote_items_summary_insert(self):	
-		if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT","OFFERING + KIT","OFFERING +FAB +GREENBOOK +KIT"):
+		if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT","OFFERING + KIT","OFFERING +FAB +GREENBOOK +KIT","OFFERING + FAB + SCH. MAIN EVT"):
 			condition_str = ' AND SAQTSE.SERVICE_ID = SAQTSV.SERVICE_ID '
 		else:
 			condition_str = ' AND SAQTSE.SERVICE_ID = SAQTSV.PAR_SERVICE_ID '	
@@ -4007,7 +4007,7 @@ class ContractQuoteItem:
 				self._simple_items_object_insert()
 				self._simple_quote_annualized_items_insert()
 			else:	
-				if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT",'OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT'):
+				if self.quote_service_entitlement_type in ("OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT",'OFFERING + KIT','OFFERING +FAB +GREENBOOK +KIT','OFFERING + FAB + SCH. MAIN EVT'):
 					self._simple_quote_items_summary_insert()
 				else:
 					self._quote_items_summary_insert()
