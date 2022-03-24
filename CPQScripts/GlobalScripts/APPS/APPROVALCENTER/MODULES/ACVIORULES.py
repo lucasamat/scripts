@@ -6,7 +6,7 @@
 #   __create_date : 06/04/2020
 #   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ====================================================================================================
-from CPQScripts.GlobalScripts.APPS.CONTRACTQUOTES.SCRIPTS import CQCPQC4CWB
+import CQCPQC4CWB
 import Webcom.Configurator.Scripting.Test.TestProduct
 import datetime
 from datetime import datetime
