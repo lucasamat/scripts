@@ -224,6 +224,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			status = "QUOTE DOCUMENTS"
 		elif get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS" and get_workflow_status.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED":
 			status = "GENERATE SOW"
+		elif get_workflow_status.WORKFLOW_STATUS == "LEGAL SOW" and get_workflow_status.REVISION_STATUS == "LGL-PREPARING LEGAL SOW":
+			status = "COMPLETESOW"
 		elif get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":
 			status = "CLEAN BOOKING CHECKLIST"
 		elif get_workflow_status.WORKFLOW_STATUS == "BOOKED":
