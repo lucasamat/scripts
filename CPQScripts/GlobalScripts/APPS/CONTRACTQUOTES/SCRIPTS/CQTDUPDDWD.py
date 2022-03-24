@@ -207,6 +207,11 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			spare_parts_existing_SAQIFP_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQIFP WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' ' ")
 			account_id=""
 			get_party_role = Sql.GetList("SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.contract_quote_revision_record_id)+"' and CPQ_PARTNER_FUNCTION in ('SOLD TO')")
+
+				
+			Sql.RunQuery("""UPDATE SAQTRV SET NET_VALUE_INGL_CURR = NULL, SALES_PRICE_INGL_CURR = NULL, TOTAL_AMOUNT_INGL_CURR =NULL, TAX_AMOUNT_INGL_CURR =NULL FROM SAQTRV WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format( QuoteRecordId=self.contract_quote_record_id,rev =self.contract_quote_revision_record_id))
+			
+			Sql.RunQuery("""UPDATE SAQRIT SET NET_VALUE_INGL_CURR = NULL FROM SAQRIT  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID IN ('Z0110','Z0108') """.format(QuoteRecordId=self.contract_quote_record_id ,rev =self.contract_quote_revision_record_id ))
 		
 			#Log.Info("error2!")
 			for keyobj in get_party_role:
