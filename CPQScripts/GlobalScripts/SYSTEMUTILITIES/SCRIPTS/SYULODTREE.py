@@ -795,7 +795,7 @@ class TreeView:
 					#A055S000P01-17166 end
 					Sql.RunQuery(update_rev_status)
 			if saqdlt_query:
-				if str(saqdlt_query.MEMBER_ID) == str(user_id):
+				if str(saqdlt_query.MEMBER_ID) == str(user_id) or str(saqdlt_query.MEMBER_ID) in str(user_id):
 					Trace.Write("subtab_not empty")
 					cbc_subtab = "Yes"
 				else:
