@@ -9180,7 +9180,7 @@ class SYLDRTLIST:
                     Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW<a><li>'  
                 else: 
                     Trace.Write("ObjectName_chk_j "+str(ObjectName))			
-                    if ObjectName != "SAQIBP" and ObjectName != "SAQTRV" and ObjectName != "SAQSCN" and ObjectName != "SAQDOC":
+                    if ObjectName != "SAQIBP" and ObjectName != "SAQTRV" and ObjectName != "SAQSCN" and ObjectName != "SAQDOC" and ObjectName != "SAQSPT":
                         Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 
                     elif ObjectName == "SAQTRV" :
@@ -9238,6 +9238,13 @@ class SYLDRTLIST:
                                     + str(onclick)
                                     + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE</a></li>'
                                 )
+                    elif ObjectName == "SAQSPT":
+                        Action_str += (
+                                    '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
+                                    + str(onclick)
+                                    + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE</a></li>'
+                                )
+
                     else:
                         Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModalDelete" data-toggle="modal" onclick="cont_delete(this)" href="#">DELETE</a></li>'
                 Action_str += "</ul></div></div>"
