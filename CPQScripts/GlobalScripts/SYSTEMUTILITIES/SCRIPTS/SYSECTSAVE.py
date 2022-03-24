@@ -747,6 +747,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
 						newdict.update(dictc)
 						tableInfo = Sql.GetTable(str(TableName))
+						Trace.Write('subtab_name---'+str(subtab_name))
 						if subtab_name != "Legal SoW":
 							newdict["SLSDIS_PRICE_INGL_CURR"] = re.sub('USD','',newdict["SLSDIS_PRICE_INGL_CURR"])
 							newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
