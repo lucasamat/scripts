@@ -739,7 +739,7 @@ def countcbc(Qt_rec_id, Quote, MODE):
 #A055S000P01-17166 start
 def savecbc(Qt_rec_id, Quote_rec_id, MODE):
 	#CBD POPUP FUNCTIONALITY ADDED UPDATE QUERY
-	Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'CBC-CBC-COMPLETED',WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))	
+	Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'CBC-CBC COMPLETED',WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))	
 	
 	#Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
 	get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
