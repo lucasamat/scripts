@@ -729,7 +729,7 @@ class SYLDRTLIST:
 
             Trace.Write("cm_to_009_INSIDE_CONDITION"+str(Qstn_REC_ID)+"kkkkkk"+str(Wh_API_NAME))
             if Qstn_REC_ID != "" and Wh_API_NAME != "":
-                Trace.Write("cm_to_009_INSIDE_COND")                
+                Trace.Write("cm_to_009_INSIDE_COND"+str(RECORD_ID))                
                 if OrderBy_obj is not None:
                     if OrderBy_obj.ORDERS_BY:
                         Wh_API_NAMEs = OrderBy_obj.ORDERS_BY
