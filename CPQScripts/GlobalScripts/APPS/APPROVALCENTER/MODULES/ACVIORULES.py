@@ -550,7 +550,7 @@ class ViolationConditions:
                 )
                 #Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND (WHERE_CONDITION_01) <> '' ORDER BY APRCHNSTP_NUMBER")
                 for result in CSSqlObjs:
-                    FirstReturn = self.ChainStepConditions(result,RecordId,QuoteId)
+                    FirstReturn = self.ChainStepConditions(result,RecordId,QuoteId)                    
                     if FirstReturn is not None:
                         #Trace.Write("Inside the approval heaeder ")
                         where_conditon = (
@@ -1240,8 +1240,8 @@ class ViolationConditions:
                 # Append Quote and Revision to the Query
                 if "SAQ" in x.TSTOBJ_LABEL:
                     selectQuery += " AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(RecordId,QuoteId)
-                elif "ACAPMA" in x.TSTOBJ_LABEL:
-                    selectQuery += " APRTRXOBJ_RECORD_ID = '{}' AND APRTRXOBJ_ID = '{}'".format(RecordId,QuoteId)
+                elif "ACAPTX" in x.TSTOBJ_LABEL:
+                    selectQuery += " APRTRXOBJ_ID = '{}'".format(QuoteId)
                 
                 QueryResult = Sql.GetFirst(selectQuery)
 
