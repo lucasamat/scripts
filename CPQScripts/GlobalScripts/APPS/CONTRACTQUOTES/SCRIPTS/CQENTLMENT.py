@@ -2145,7 +2145,6 @@ class Entitlements:
 
 				ScriptExecutor.ExecuteGlobal('CQPARTSINS',{"CPQ_Columns":{"Action": "Delete","QuoteID":saqtse_obj.QUOTE_ID}})
 			elif customer_wants_participate == 'Yes':
-				Sql.RunQuery("DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"'")
 				Trace.Write('2118----------'+str(saqtse_obj.QUOTE_ID))
 				#iflow for spare parts...
 				webclient = System.Net.WebClient()
@@ -2166,6 +2165,9 @@ class Entitlements:
 				for keyobj in get_party_role:
 					shipto_list.append('00'+str(keyobj.PARTY_ID))
 				shiptostr=str(shipto_list)
+				shiptostrs=shiptostr
+				shiptostrs=re.sub(r"[",'(',shiptostrs)
+				shiptostrs=re.sub(r"]",')',shiptostrs)
 				shiptostr=re.sub(r"'",'"',shiptostr)
 				account_info['SHIP TO']=shiptostr
 				get_sales_ifo = Sql.GetFirst("select SALESORG_ID,CONTRACT_VALID_TO,CONTRACT_VALID_FROM,PRICELIST_ID,PRICEGROUP_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.revision_recordid)+"'")
@@ -2185,7 +2187,8 @@ class Entitlements:
 					cm = '0'+str(cm) if len(cm)==1 else cm        
 					validto = cy+cm+cd
 				Trace.Write('2159----------'+str(User.UserName)+str(account_info.get('SOLD TO'))+str(account_info.get('SHIP TO')))
-
+				Sql.RunQuery("DELETE FROM SAQSPT WHERE SHPACCOUNT_ID NOT IN '"+str(shiptostrs)+"' AND QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"'")
+				Sql.RunQuery("DELETE FROM SAQIFP WHERE SHPACCOUNT_ID NOT IN '"+str(shiptostrs)+"' AND QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(self.revision_recordid)+"'")
 				CQIFLSPARE.iflow_pullspareparts_call(str(User.UserName),str(account_info.get('SOLD TO')),str(account_info.get('SHIP TO')),salesorg, pricelist,pricegroup,'Yes','Yes','',validfrom,validto,self.quote_id,self.revision_recordid,auth)
 
 
