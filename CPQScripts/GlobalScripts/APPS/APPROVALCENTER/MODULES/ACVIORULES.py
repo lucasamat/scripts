@@ -1252,7 +1252,7 @@ class ViolationConditions:
                     arr.append(1)
             
             if result.CONDITIONS_MET == "ANY":
-                if 0 in arr:
+                if 1 in arr:
                     return 1
                 else:
                     return None
