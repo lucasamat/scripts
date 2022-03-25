@@ -1247,9 +1247,9 @@ class ViolationConditions:
 
                 if QueryResult is not None:
 
-                    arr.append(1)
-                else:
                     arr.append(0)
+                else:
+                    arr.append(1)
             
             if result.CONDITIONS_MET == "ANY":
                 if 1 in arr:
