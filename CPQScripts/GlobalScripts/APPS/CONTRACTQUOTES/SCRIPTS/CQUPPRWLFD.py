@@ -236,7 +236,7 @@ class ContractQuoteItemAnnualizedPricing:
 		))
 
 	def generate_billing_matrix(self):
-		_insert_billing_matrix()
+		#_insert_billing_matrix()
 		Trace.Write('Genarte billing matrix')
 
 parameters = {}
