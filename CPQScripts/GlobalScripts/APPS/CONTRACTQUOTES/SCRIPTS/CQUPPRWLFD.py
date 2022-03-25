@@ -177,7 +177,66 @@ class ContractQuoteItemAnnualizedPricing:
 			#TNTVDC / TAXVDC / TAMTDC /TENVDC - Total Net Value / Tax / Total Amount/ Estimated (Document Currency) 
 			Sql.RunQuery("UPDATE SAQICO SET TNTVDC = ROUND( (TNTVGC * ISNULL(DCCRFX,1)) ,CONVERT(INT,{DecimalPlaces}),CONVERT(INT,{RoundingMethod})), TAXVDC = ROUND( (TAXVGC * ISNULL(DCCRFX,1)) ,CONVERT(INT,{DecimalPlaces}),CONVERT(INT,{RoundingMethod})), TAMTDC = ROUND( (TAMTGC * ISNULL(DCCRFX,1)) ,CONVERT(INT,{DecimalPlaces}),CONVERT(INT,{RoundingMethod})), TENVDC = ROUND( (TENVGC * ISNULL(DCCRFX,1)) ,CONVERT(INT,{DecimalPlaces}),CONVERT(INT,{RoundingMethod})) FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE = '{LineId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id, DecimalPlaces=currency_rounding_obj.DECIMAL_PLACES, RoundingMethod=currency_rounding_obj.ROUNDING_METHOD))
 
+
+	def _insert_billing_matrix(self):
+		Sql.RunQuery("DELETE FROM SAQRIB WHERE WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+		Sql.RunQuery("""
+				INSERT SAQRIB (
+				QUOTE_BILLING_PLAN_RECORD_ID,
+				BILLING_END_DATE,
+				BILLING_DAY,
+				BILLING_START_DATE,
+				QUOTE_ID,
+				QUOTE_NAME,
+				QUOTE_RECORD_ID,
+				QTEREV_ID,
+				QTEREV_RECORD_ID,
+				CPQTABLEENTRYADDEDBY,
+				CPQTABLEENTRYDATEADDED,
+				CpqTableEntryModifiedBy,
+				CpqTableEntryDateModified,
+				SALESORG_ID,
+				SALESORG_NAME,
+				SALESORG_RECORD_ID,
+				PRDOFR_ID,
+				PRDOFR_RECORD_ID,
+				SERVICE_ID,
+				SERVICE_DESCRIPTION
+				) 
+				SELECT 
+				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_BILLING_PLAN_RECORD_ID,
+				SAQTMT.CONTRACT_VALID_TO as BILLING_END_DATE,
+				30 as BILLING_DAY,
+				SAQTMT.CONTRACT_VALID_FROM as BILLING_START_DATE,
+				SAQTMT.QUOTE_ID,
+				SAQTMT.QUOTE_NAME,
+				SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
+				SAQTMT.QTEREV_ID as QTEREV_ID,
+				SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
+				'{UserName}' AS CPQTABLEENTRYADDEDBY,
+				GETDATE() as CPQTABLEENTRYDATEADDED,
+				{UserId} as CpqTableEntryModifiedBy,
+				GETDATE() as CpqTableEntryDateModified,
+				SAQTSV.SALESORG_ID,
+				SAQTSV.SALESORG_NAME,
+				SAQTSV.SALESORG_RECORD_ID,
+				SAQTSV.SERVICE_ID as PRDOFR_ID,
+				SAQTSV.SERVICE_RECORD_ID as PRDOFR_RECORD_ID,
+				SAQTSV.SERVICE_ID,
+				SAQTSV.SERVICE_DESCRIPTION                   
+				FROM SAQTMT (NOLOCK) JOIN SAQTSV on SAQTSV.QUOTE_ID = SAQTMT.QUOTE_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID
+				WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTMT.QTEREV_RECORD_ID = '{RevisionRecordId}'
+				AND SAQTSV.SERVICE_ID NOT IN ('Z0101','A6200','Z0108','Z0110') AND SAQTSV.SERVICE_ID NOT IN (SELECT PRDOFR_ID FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')
+														
+		""".format(                        
+			QuoteRecordId= self.contract_quote_record_id,
+			RevisionRecordId=self.contract_quote_revision_record_id,
+			UserId=user_id,
+			UserName=user_name
+		))
+
 	def generate_billing_matrix(self):
+		_insert_billing_matrix()
 		Trace.Write('Genarte billing matrix')
 
 parameters = {}
