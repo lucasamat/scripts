@@ -546,116 +546,12 @@ class ViolationConditions:
                 CSSqlObjs = Sql.GetList(
                     "SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"
                     + str(val.APPROVAL_CHAIN_RECORD_ID)
-                    + "' AND WHERE_CONDITION_01 <> '' ORDER BY APRCHNSTP_NUMBER"
+                    + "' AND CONDITIONS_MET <> '' ORDER BY APRCHNSTP_NUMBER"
                 )
                 #Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND (WHERE_CONDITION_01) <> '' ORDER BY APRCHNSTP_NUMBER")
                 for result in CSSqlObjs:
-                    GetObjName = Sql.GetFirst(
-                        "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_RECORD_ID) + "'"
-                    )
-                    # Select_Query = (
-                    #     "SELECT "
-                    #     + str(result.APROBJ_LABEL)
-                    #     + " FROM "
-                    #     + str(GetObjName.OBJECT_NAME)
-                    #     + " WHERE "
-                    #     + str(result.WHERE_CONDITION_01)
-                    # )
-                    #A055S000P01-15007 START
-                    fflag = 0
-                    if "PRENVL" in result.WHERE_CONDITION_01 and (result.APRCHN_ID == 'AMATAPPR'):
-                        fflag = 2
-                        getService = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(RecordId))
-                        service = [x.SERVICE_ID for x in getService]
-                        if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
-                            splitval = str(result.WHERE_CONDITION_01).split("OR")
-                            #Trace.Write("SPLITVAL--->"+str(splitval))
-                            count = 0
-                            for s in splitval:
-                                
-                                if "PRENVL" in s and count == 0:
-                                    #Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
-                                    res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service,QuoteId)
-                                    #res = 1
-                                    count += 1
-                                    if res == 1:
-                                        fflag = 1
-                                    else:
-                                        fflag = 2
-                                else:
-                                    if "PRENVL" not in s:
-                                        try:
-                                            objname = str(s).split(".")[0].replace("(","").replace(" ","").replace(")","")
-                                            Select_Query = Sql.GetFirst(
-                                            "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
-                                            )
-                                            #Trace.Write("585 SELECT QUERY--->"+str(Select_Query))
-                                        except:
-                                            Select_Query = None
-                                            #Trace.Write("Exception Else 587")
-                                        if Select_Query is not None:
-                                            fflag = 1
-                                        elif Select_Query is None and fflag != 1:
-                                            fflag = 0
-
-                                    
-                                    #A055S000P01-15007 END
-                    #A055S000P01-3687 START
-                    elif "ACAPMA" in result.WHERE_CONDITION_01:
-                        getData = Sql.GetFirst("SELECT CpqTableEntryId FROM ACAPMA (NOLOCK) WHERE {} '{}'".format(result.WHERE_CONDITION_01,RecordId))
-                        if getData is None:
-                            fflag = 1
-                        else:
-                            fflag = 2
-                    #A055S000P01-3687 END
-                    else:
-                        Select_Query = (
-                            "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE (" + str(result.WHERE_CONDITION_01) + ")"
-                        )
-                        #Trace.Write("611 ELSE SELECT QUERY --->"+str(Select_Query))
-                        
-                    TargeobjRelation = Sql.GetFirst(
-                        "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
-                        + str(ObjectName)
-                        + "' AND OBJECT_NAME = '"
-                        + str(GetObjName.OBJECT_NAME)
-                        + "' "
-                    )
-                    #if TargeobjRelation is None and str(ObjectName) == str(GetObjName.OBJECT_NAME):
-                    # Above code commented because we have parent and child (PARENTQUOTE_RECORD_ID) functionality in SAQTMT
-                    if str(ObjectName) == str(GetObjName.OBJECT_NAME):
-                        TargeobjRelation = Sql.GetFirst(
-                            "SELECT RECORD_NAME as API_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '"
-                            + str(GetObjName.OBJECT_NAME)
-                            + "' "
-                        )
-                        #rec_name = TargeobjRelation.API_NAME
-                    """ else:
-                        if str(ObjectName) == 'SAQTMT':
-                            rec_name = 'QUOTE_ID' """
-                    #Trace.Write("===>flag "+str(fflag))
-                    if fflag == 1:
-                        #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                        #Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
-                        SqlQuery = "Val"
-                        #Log.Info("if flag")
-                        #Trace.Write("if flag")
-                    elif fflag == 2:
-                        #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                        #Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
-                        SqlQuery = None
-                        #Log.Info("elif flag")
-                        #Trace.Write("elif flag")
-                    else:
-                        try:
-                            Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                            #Log.Info("648 ELSE SELECT QUERY--->" + str(Select_Query))
-                            SqlQuery = Sql.GetFirst(Select_Query)
-                            #Log.Info("else flag")
-                            #Trace.Write("else flag")
-                        except:
-                            SqlQuery = Select_Query
-                    if SqlQuery is not None:
+                    FirstReturn = self.ChainStepConditions(result,RecordId,QuoteId)
+                    if FirstReturn is not None:
                         #Trace.Write("Inside the approval heaeder ")
                         where_conditon = (
                             " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
@@ -703,7 +599,7 @@ class ViolationConditions:
                             + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
                             + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
                             + str(Objh_Id)
-                            + "' AND WHERE_CONDITION_01 <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
+                            + "' AND CONDITIONS_MET <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
                             + str(val.APPROVAL_CHAIN_RECORD_ID)
                             + "' "
                         )
@@ -717,93 +613,8 @@ class ViolationConditions:
                         #     + "' ")
                         if CheckViolaionRule2:
                             for result in CheckViolaionRule2:
-                                GetObjName = Sql.GetFirst(
-                                    "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '"
-                                    + str(result.TSTOBJ_RECORD_ID)
-                                    + "'"
-                                )
-                                # Select_Query = (
-                                #     "SELECT "
-                                #     + str(result.APROBJ_LABEL)
-                                #     + " FROM "
-                                #     + str(GetObjName.OBJECT_NAME)
-                                #     + " WHERE "
-                                #     + str(result.WHERE_CONDITION_01)
-                                # )
-                                Select_Query = (
-                                    "SELECT * FROM "
-                                    + str(GetObjName.OBJECT_NAME)
-                                    + " (NOLOCK) WHERE ("
-                                    + str(result.WHERE_CONDITION_01)
-                                    + ") "
-                                )
-                                TargeobjRelation = Sql.GetFirst(
-                                    "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
-                                    + str(ObjectName)
-                                    + "' AND OBJECT_NAME = '"
-                                    + str(GetObjName.OBJECT_NAME)
-                                    + "' "
-                                )
-                                #if TargeobjRelation is None and str(ObjectName) == str(GetObjName.OBJECT_NAME):
-                                # Above code commented because we have parent and child (PARENTQUOTE_RECORD_ID) functionality in SAQTMT
-                                if str(ObjectName) == str(GetObjName.OBJECT_NAME):
-                                    TargeobjRelation = Sql.GetFirst(
-                                        "SELECT RECORD_NAME as API_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '"
-                                        + str(GetObjName.OBJECT_NAME)
-                                        + "' "
-                                    )
-                                    #rec_name = TargeobjRelation.API_NAME
-                                """ else:
-                                    if str(ObjectName) == 'SAQTMT':
-                                        rec_name = 'QUOTE_ID' """
-                                fflag = 0
-                                if "PRENVL" in result.WHERE_CONDITION_01 and (result.APRCHN_ID == 'AMATAPPR'):
-                                    fflag = 2
-                                    getService = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(RecordId))
-                                    service = [x.SERVICE_ID for x in getService]
-                                    if "180" in result.WHERE_CONDITION_01 or "SAQTDA" in result.WHERE_CONDITION_01:
-                                        splitval = str(result.WHERE_CONDITION_01).split("OR")
-                                        #Trace.Write("SPLITVAL--->"+str(splitval))
-                                        count = 0
-                                        for s in splitval:
-                                            
-                                            if "PRENVL" in s and count == 0:
-                                                #Trace.Write("COUNT INSIDE SPLITVAL = "+str(count))
-                                                res = self.ItemApproval(RecordId,result.APRCHNSTP_NAME,service,QuoteId)
-                                                #res = 1
-                                                count += 1
-                                                if res == 1:
-                                                    fflag = 1
-                                                    Trace.Write("FLAG IS 1")
-                                                else:
-                                                    Select_Query = None
-                                            else:
-                                                if "PRENVL" not in s:
-                                                    try:
-                                                        objname = str(s).split(".")[0].replace("(","").replace(" ","").replace(")","")
-                                                        Select_Query = Sql.GetFirst(
-                                                        "SELECT * FROM " + str(objname) + " (NOLOCK) WHERE (" + str(s) + ")"
-                                                        )
-                                                        #Trace.Write("585 SELECT QUERY--->"+str(Select_Query))
-                                                    except:
-                                                        Select_Query = None
-                                                        #Trace.Write("Exception Else 587")
-
-                                if fflag == 1:
-                                    SqlQuery = "val"
-                                else:
-                                    try:
-                                        Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                                        #Log.Info("795 ELSE SELECT QUERY--->" + str(Select_Query))
-                                        SqlQuery = Sql.GetFirst(Select_Query)
-                                        #Log.Info("else flag")
-                                        #Trace.Write("else flag")
-                                    except:
-                                        SqlQuery = Select_Query
-                                    #Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                                    #Trace.Write("===============" + str(Select_Query))
-                                    #SqlQuery = Sql.GetFirst(Select_Query)
-                                if SqlQuery:
+                                SecondReturn = self.ChainStepConditions(result,RecordId,QuoteId)
+                                if SecondReturn:
                                     #Trace.Write("@626Inside the approval Transcation")
 
                                     where_conditon = (
@@ -1382,6 +1193,48 @@ class ViolationConditions:
         
         Trace.Write("ITEM APPROVAL RETURN VALUE = "+str(res))
         return res
+    
+    def ChainStepConditions(self,result,RecordId,QuoteId):
+
+        arr = []
+
+        # Get Rows from ACACSF based on chain step
+        GetACACSF = Sql.GetList("SELECT * FROM ACACSF (NOLOCK) WHERE APRCHNSTP_RECORD_ID = '{}'".format(result.APPROVAL_CHAIN_STEP_RECORD_ID))
+        
+        # Get Operators using dictionary
+        operators = {"LESS THAN": " < ","EQUALS": " = ","GREATER THAN": " > ","NOT EQUALS":" != ","LESS OR EQUALS":" <= ","GREATER OR EQUALS":" >= ","STARTS WITH":"","ENDS WITH":"","CONTAINS":"","DOES NOT CONTAIN":""}
+
+        # Iterate to form query and check feasibility
+
+        for x in GetACACSF:
+            selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} {}".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE if x.CMPOBJ_FIELD_LABEL is None else x.CMPOBJ_FIELD_LABEL)
+
+            # Append Quote and Revision to the Query
+            if "SAQ" in x.TSTOBJ_LABEL:
+                selectQuery += " AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(RecordId,QuoteId)
+            elif "ACAPMA" in x.TSTOBJ_LABEL:
+                selectQuery += " AND APRTRXOBJ_RECORD_ID = '{}' AND APRTRXOBJ_ID = '{}'".format(RecordId,QuoteId)
+            
+            QueryResult = Sql.GetFirst(selectQuery)
+
+            if QueryResult is not None:
+
+                arr.append(1)
+            else:
+                arr.append(0)
+        
+        if result.CONDITIONS_MET == "ANY":
+            if 1 in arr:
+                return 1
+            else:
+                return None
+        elif result.CONDITIONS_MET == "ALL":
+            if len(arr) == arr.count(1):
+                return 1
+            else:
+                return None
+
+
     # def insertviolationtableafterRecall(self, chainrecordId, RecordId, ObjectName, Objh_Id):
     #     """Insert violation record after recall."""
     #     CSSqlObjs = Sql.GetList(
