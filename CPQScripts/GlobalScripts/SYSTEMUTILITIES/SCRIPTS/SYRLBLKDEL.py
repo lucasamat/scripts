@@ -137,6 +137,8 @@ elif 'SYOBJR_00005' in table_id:
         Sql.RunQuery("DELETE FROM SAQSPT WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),TreeParam))
     elif selectall == "no":
         checkedrows = tuple(checkedrows.split(","))
+        Trace.Write("values"+str(checkedrows))
+
         rows = []
         for x in checkedrows:
             rows.append(x.split("-")[1])
