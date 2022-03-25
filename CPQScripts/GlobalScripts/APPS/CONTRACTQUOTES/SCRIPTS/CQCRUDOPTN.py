@@ -4359,7 +4359,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					PAR_SERVICE_ID,
 					PAR_SERVICE_RECORD_ID,
 					CONTRACT_VALID_FROM,
-					CONTRACT_VALID_TO
+					CONTRACT_VALID_TO,
+					QTESRVCOB_RECORD_ID
 					) SELECT
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,
 					'{UserName}' AS CPQTABLEENTRYADDEDBY,
@@ -4406,7 +4407,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQTSV.PAR_SERVICE_ID,
 					SAQTSV.PAR_SERVICE_RECORD_ID,
 					SAQSCO.CONTRACT_VALID_FROM,
-					SAQSCO.CONTRACT_VALID_TO
+					SAQSCO.CONTRACT_VALID_TO,
+					SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID
 					FROM SYSPBT (NOLOCK)
 					JOIN (select SAQFEA.*,SYSPBT.BATCH_GROUP_RECORD_ID from SAQFEA(nolock) join SYSPBT (nolock) on SAQFEA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID and SAQFEA.QTEREV_RECORD_ID = SYSPBT.QTEREV_RECORD_ID and SAQFEA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID where  SAQFEA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' ) SAQFEA ON SAQFEA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQFEA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID AND SAQFEA.QTEREV_RECORD_ID = SYSPBT.QTEREV_RECORD_ID
 					JOIN SAQTSV (NOLOCK) ON SAQFEA.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID  AND SAQFEA.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID
@@ -5392,8 +5394,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	
 	def applied_preventive_maintainence(self, **kwargs):
 		###Deleting the SAQSCA,SAQSAP and SAQSKP TABLE records when the user is changing the quote type from Tool Based to other values...
+		ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id)})
 		if kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes" and kwargs.get('tools_from_ui') != "Yes":
-			delete_obj_list = ["SAQSCA","SAQSAP","SAQSKP"]
+			delete_obj_list = ["SAQSAP","SAQSKP"]
 			for object in delete_obj_list:
 				Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(object,self.contract_quote_record_id, self.tree_param,self.quote_revision_record_id ))
 			self._process_query("""INSERT SAQRGG (
@@ -6366,24 +6369,23 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				#SAQSCO_end_time = time.time()
 				
 				#SAQSCA_start_time = time.time()
-				Trace.Write("@4546-5576--------"+str(record_ids))
-				import re
-				service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
-				if service_entitlement_object is not None:
-					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-					quote_type_attribute = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-					quote_type_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-					XML = service_entitlement_object.ENTITLEMENT_XML
-					for values in re.finditer(pattern_tag, XML):
-						sub_string = values.group(1)
-						quotetype_id =re.findall(quote_type_attribute,sub_string)
-						if quotetype_id:
-							quotetype_value =re.findall(quote_type_attribute_value,sub_string)
-							quotetype_value_for_offering = str(quotetype_value).upper()
-							#Log.Info("quotetype_value_for_offering -----"+str(quotetype_value_for_offering))
-							if quotetype_value_for_offering != "['EVENT BASED']" and quotetype_value_for_offering != "['FLEX EVENT BASED']":
-								self._insert_quote_service_covered_assembly(batch_group_record_id=batch_group_record_id)
-								break
+				# Trace.Write("@4546-5576--------"+str(record_ids))
+				# import re
+				# service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,service_id = self.tree_param))
+				# if service_entitlement_object is not None:
+				# 	pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+				# 	quote_type_attribute = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+				# 	quote_type_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+				# 	XML = service_entitlement_object.ENTITLEMENT_XML
+				# 	for values in re.finditer(pattern_tag, XML):
+				# 		sub_string = values.group(1)
+				# 		quotetype_id =re.findall(quote_type_attribute,sub_string)
+				# 		if quotetype_id:
+				# 			quotetype_value =re.findall(quote_type_attribute_value,sub_string)
+				# 			quotetype_value_for_offering = str(quotetype_value).upper()
+				# 			#Log.Info("quotetype_value_for_offering -----"+str(quotetype_value_for_offering))
+				# 			if quotetype_value_for_offering != "['EVENT BASED']" and quotetype_value_for_offering != "['FLEX EVENT BASED']":
+				self._insert_quote_service_covered_assembly(batch_group_record_id=batch_group_record_id)
 				self._insert_quote_service_fab_location(batch_group_record_id=batch_group_record_id)
 				#SAQSCA_end_time = time.time()
 				
