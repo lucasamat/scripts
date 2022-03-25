@@ -21,6 +21,7 @@ Trace.Write("selected id------" + str(Id))
 table_id = Param.table_id
 checkedrows = Param.checkedrows
 selectall = Param.selectall
+TreeParam = Product.GetGlobal("TreeParam")
 Trace.Write(checkedrows)
 Trace.Write("selectall------" + str(selectall))
 Trace.Write("table_id--- " + str(table_id))
