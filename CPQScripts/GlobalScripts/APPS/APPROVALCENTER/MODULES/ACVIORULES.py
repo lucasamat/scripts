@@ -1241,7 +1241,7 @@ class ViolationConditions:
                 if "SAQ" in x.TSTOBJ_LABEL:
                     selectQuery += " AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(RecordId,QuoteId)
                 elif "ACAPMA" in x.TSTOBJ_LABEL:
-                    selectQuery += " AND APRTRXOBJ_RECORD_ID = '{}' AND APRTRXOBJ_ID = '{}'".format(RecordId,QuoteId)
+                    selectQuery += " APRTRXOBJ_RECORD_ID = '{}' AND APRTRXOBJ_ID = '{}'".format(RecordId,QuoteId)
                 
                 QueryResult = Sql.GetFirst(selectQuery)
 
