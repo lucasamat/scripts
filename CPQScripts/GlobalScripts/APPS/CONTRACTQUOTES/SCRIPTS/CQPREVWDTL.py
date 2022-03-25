@@ -717,7 +717,9 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 						
 	return sec_str
 
-def editcbc(Qt_rec_id, Quote, MODE):	
+def editcbc(Qt_rec_id, Quote, MODE):
+	update_rev_cbc_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-PREPARING CBC' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=Quote,quote_revision_rec_id=quote_revision_record_id)
+	Sql.RunQuery(update_rev_cbc_status)	
 	for val in values:
 		if '.' not in val['CHECKLIST_ID']:
 			val['COMMENT'] = val['COMMENT'].replace("'", "").replace("<", "").replace(">", "")
