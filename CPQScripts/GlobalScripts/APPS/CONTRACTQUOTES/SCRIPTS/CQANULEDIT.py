@@ -30,7 +30,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 			#record_list.append(allvalue_edit3)	
 			#nonstandard consuamble logic is pending
 			Trace.Write("BPTTKPBPTTKPBPTTKP"+str(line_values.BPTTKP))
-			if str(line_values.BPTTKP) == 'Yes':
+			if (line_values.BPTTKP == 'Yes'):
 				Trace.Write("ifff")
 				editvalue1 ="BPTKCI"
 				editvalue2 ="BPTKPI"
@@ -78,6 +78,12 @@ def constructpricingsummary(Quote_rec_id,MODE,values):
 	for line_values in get_all_lines:
 		record_list=[]
 		if line_values:
+			if (line_values.BPTTKP == 'Yes'):
+				Trace.Write("ifff")
+				editvalue1 ="BPTKCI"
+				editvalue2 ="BPTKPI"
+				record_list.append(editvalue1)
+				record_list.append(editvalue2)
 			allvalue_edit1="TRGPRC"
 			allvalue_edit2="SLSPRC"
 			allvalue_edit3="BDVPRC"
