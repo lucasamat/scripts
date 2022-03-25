@@ -12454,6 +12454,7 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
 		ApiResponse = ApiResponseFactory.JsonResponse(GetAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID))
 	elif TABNAME == "Fts Assemblies Child":
 		RECID = Param.RECID
+		Trace.Write("record id-----------"+str(RECID))
 		ApiResponse = ApiResponseFactory.JsonResponse(GetFtsAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID))
 	elif TABNAME == "Covered Object Parent":
 		Trace.Write("trace for tabname during search----" + str(TABNAME))
