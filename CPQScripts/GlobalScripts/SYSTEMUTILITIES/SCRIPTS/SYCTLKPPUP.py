@@ -402,7 +402,7 @@ def GSCONTLOOKUPPOPUP(
                         + str(API_NAME_str)
                         + " FROM "
                         + str(TABLEID)
-                        + " WHERE PARENT_OBJECT_RECORD_ID IN ( select DISTINCT TSTOBJ_RECORD_ID from ACACST where APRCHN_RECORD_ID ='{}')".format(KEYDATA)
+                        + " WHERE OBJECT_NAME IN ( select DISTINCT TSTOBJ_LABEL from ACACSF where APRCHN_RECORD_ID ='{}')".format(KEYDATA)
                     )
                     VAL_Obj = Sql.GetList(VAL_Str)
 
@@ -814,7 +814,7 @@ def GSCONTLOOKUPPOPUPFILTER(
                             + str(TABLEID)
                             + " WHERE "
                             + str(ATTRIBUTE_VALUE_STR) 
-                            + " and PARENT_OBJECT_RECORD_ID IN ( select DISTINCT TSTOBJ_RECORD_ID from ACACST where APRCHN_RECORD_ID ='{}')".format(KEYDATA)
+                            + " and OBJECT_NAME IN ( select DISTINCT TSTOBJ_LABEL from ACACSF where APRCHN_RECORD_ID ='{}')".format(KEYDATA)
                         )
                         VAL_Obj = Sql.GetList(VAL_Str)
                     else:
