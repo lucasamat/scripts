@@ -21,7 +21,7 @@ Trace.Write("selected id------" + str(Id))
 table_id = Param.table_id
 checkedrows = Param.checkedrows
 selectall = Param.selectall
-Trace.Write("checkedrows------" + str(checkedrows))
+Trace.Write(checkedrows)
 Trace.Write("selectall------" + str(selectall))
 Trace.Write("table_id--- " + str(table_id))
 Table_ID = table_id
