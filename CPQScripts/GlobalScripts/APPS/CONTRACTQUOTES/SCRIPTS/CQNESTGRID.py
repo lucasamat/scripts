@@ -7383,7 +7383,7 @@ def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	can_edit1 = str(objs_obj1.CAN_EDIT)
 	can_add1 = str(objs_obj1.CAN_ADD)
 	can_delete1 = str(objs_obj1.CAN_DELETE)
-	table_id = "fts_covered_obj_child_" +str(recid)
+	table_id = "fts_obj_child_" +str(recid)
 	table_header = (
 		'<table id="'
 		+ str(table_id)
