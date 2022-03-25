@@ -30,7 +30,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 			#record_list.append(allvalue_edit3)	
 			#nonstandard consuamble logic is pending
 			Trace.Write("BPTTKPBPTTKPBPTTKP"+str(line_values.BPTTKP))
-			if(line_values.BPTTKP == 'Yes'):
+			if(line_values.BPTTKP) == 'Yes':
 				Trace.Write("ifff")
 				editvalue1 ="BPTKCI"
 				editvalue2 ="BPTKPI"
