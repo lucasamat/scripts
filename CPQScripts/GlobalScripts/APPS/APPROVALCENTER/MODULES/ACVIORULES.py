@@ -1205,34 +1205,62 @@ class ViolationConditions:
         operators = {"LESS THAN": " < ","EQUALS": " = ","GREATER THAN": " > ","NOT EQUALS":" != ","LESS OR EQUALS":" <= ","GREATER OR EQUALS":" >= ","STARTS WITH":"","ENDS WITH":"","CONTAINS":"","DOES NOT CONTAIN":""}
 
         # Iterate to form query and check feasibility
+        if result.APRCHN_ID != "SELFAPPR":
+            for x in GetACACSF:
+                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} '{}'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE)
 
-        for x in GetACACSF:
-            selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} '{}'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE)
+                # Append Quote and Revision to the Query
+                if "SAQ" in x.TSTOBJ_LABEL:
+                    selectQuery += " AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(RecordId,QuoteId)
+                elif "ACAPMA" in x.TSTOBJ_LABEL:
+                    selectQuery += " AND APRTRXOBJ_RECORD_ID = '{}' AND APRTRXOBJ_ID = '{}'".format(RecordId,QuoteId)
+                
+                QueryResult = Sql.GetFirst(selectQuery)
 
-            # Append Quote and Revision to the Query
-            if "SAQ" in x.TSTOBJ_LABEL:
-                selectQuery += " AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(RecordId,QuoteId)
-            elif "ACAPMA" in x.TSTOBJ_LABEL:
-                selectQuery += " AND APRTRXOBJ_RECORD_ID = '{}' AND APRTRXOBJ_ID = '{}'".format(RecordId,QuoteId)
+                if QueryResult is not None:
+
+                    arr.append(1)
+                else:
+                    arr.append(0)
             
-            QueryResult = Sql.GetFirst(selectQuery)
+            if result.CONDITIONS_MET == "ANY":
+                if 1 in arr:
+                    return 1
+                else:
+                    return None
+            elif result.CONDITIONS_MET == "ALL":
+                if len(arr) == arr.count(1):
+                    return 1
+                else:
+                    return None
+        else:
+            for x in GetACACSF:
+                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE ".format(x.TSTOBJ_LABEL)
 
-            if QueryResult is not None:
+                # Append Quote and Revision to the Query
+                if "SAQ" in x.TSTOBJ_LABEL:
+                    selectQuery += " AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(RecordId,QuoteId)
+                elif "ACAPMA" in x.TSTOBJ_LABEL:
+                    selectQuery += " AND APRTRXOBJ_RECORD_ID = '{}' AND APRTRXOBJ_ID = '{}'".format(RecordId,QuoteId)
+                
+                QueryResult = Sql.GetFirst(selectQuery)
 
-                arr.append(1)
-            else:
-                arr.append(0)
-        
-        if result.CONDITIONS_MET == "ANY":
-            if 1 in arr:
-                return 1
-            else:
-                return None
-        elif result.CONDITIONS_MET == "ALL":
-            if len(arr) == arr.count(1):
-                return 1
-            else:
-                return None
+                if QueryResult is not None:
+
+                    arr.append(1)
+                else:
+                    arr.append(0)
+            
+            if result.CONDITIONS_MET == "ANY":
+                if 1 in arr:
+                    return 1
+                else:
+                    return None
+            elif result.CONDITIONS_MET == "ALL":
+                if len(arr) == arr.count(1):
+                    return 1
+                else:
+                    return None
 
 
     # def insertviolationtableafterRecall(self, chainrecordId, RecordId, ObjectName, Objh_Id):
