@@ -1207,7 +1207,7 @@ class ViolationConditions:
         # Iterate to form query and check feasibility
 
         for x in GetACACSF:
-            selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} {}".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE)
+            selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} '{}'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE)
 
             # Append Quote and Revision to the Query
             if "SAQ" in x.TSTOBJ_LABEL:
