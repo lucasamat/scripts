@@ -2128,11 +2128,12 @@ def Related_Sub_Banner(
         #    if get_service_id.SERVICE_ID in('Z0110','Z0108'):
         #        Total=(get_quote_details.NET_VALUE_INGL_CURR)
         get_rounding_place = Sql.GetFirst("SELECT * FROM PRCURR WHERE CURRENCY_RECORD_ID = '{}' ".format(get_quote_details.GLOBAL_CURRENCY_RECORD_ID))
-        decimal_format = "{:,." + str(get_rounding_place.DISPLAY_DECIMAL_PLACES) + "f}"
         if get_rounding_place.DISPLAY_DECIMAL_PLACES:
             rounding_precsion = get_rounding_place.DISPLAY_DECIMAL_PLACES
         else:
             rounding_precsion = '3'
+        decimal_format = "{:,." + str(rounding_precsion) + "f}"
+        
         if subTabName == "Summary":
             PrimaryLable = "Total Excluding Tax/VAT/GST"
             PrimaryValue = decimal_format.format(float(get_quote_details.NET_VALUE_INGL_CURR))+" "+ curr if str(get_quote_details.NET_VALUE_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
