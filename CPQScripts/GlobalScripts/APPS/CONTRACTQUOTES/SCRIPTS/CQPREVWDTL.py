@@ -1524,8 +1524,8 @@ elif ACTION == "LEGALSOW_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
 		contract_id = Sql.GetFirst("SELECT CONTRACT_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '"+str(contract_record_id)+"'")
-		quote_id = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
-		Quote = quote_id.MASTER_TABLE_QUOTE_RECORD_ID
+		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
+		Quote = quote_id.QUOTE_RECORD_ID
 	elif TreeParam == "Quote Information":
 		Quote = Quote.GetGlobal("contract_quote_record_id")
 	#Trace.Write("Quote---->" + str(Quote))
@@ -1552,8 +1552,8 @@ elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
 		contract_id = Sql.GetFirst("SELECT CONTRACT_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '"+str(contract_record_id)+"'")
-		quote_id = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
-		Quote = quote_id.MASTER_TABLE_QUOTE_RECORD_ID
+		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
+		Quote = quote_id.QUOTE_RECORD_ID
 	elif TreeParam == "Quote Information":
 		Quote = Quote.GetGlobal("contract_quote_record_id")
 	#Trace.Write("Quote---->" + str(Quote))

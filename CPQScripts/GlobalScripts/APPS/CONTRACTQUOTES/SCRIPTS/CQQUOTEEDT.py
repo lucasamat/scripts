@@ -24,7 +24,7 @@ def bannerdetails(Quoteid,active_tab_name):
 	matchObj = re.search(r'\d+', Quoteid).group()
 	if active_tab_name == "Contracts":
 		reObj = re.match( r'.*>\s*(\d+)*?<', Quoteid)		
-		SQLObj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE CRM_CONTRACT_ID='" + str(reObj.group(1)) + "'")
+		SQLObj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID='" + str(reObj.group(1)) + "'")
 		##assigning contract rec id globally starts
 		get_contract_rec_id = Sql.GetFirst("SELECT CONTRACT_RECORD_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_ID='" + str(reObj.group(1)) + "'")
 		if get_contract_rec_id:
