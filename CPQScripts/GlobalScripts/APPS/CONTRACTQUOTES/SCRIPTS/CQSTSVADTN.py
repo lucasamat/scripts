@@ -176,6 +176,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					price_preview_status.append('F')
 		else:
 			Trace.Write("NO Quote Items")
+			price_preview_status.append('F')
 			price_bar = "no_quote_items"
 
 		#A055S000P01-17164 start
