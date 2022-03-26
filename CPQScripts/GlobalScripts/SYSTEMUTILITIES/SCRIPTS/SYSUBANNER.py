@@ -115,7 +115,7 @@ def Related_Sub_Banner(
         page_details = Sql.GetFirst("SELECT RECORD_ID FROM SYPAGE WHERE OBJECT_APINAME = '{}' AND PAGE_TYPE = '{}'".format(str(ObjName),str(page_type)))    
     if page_details:
         if ObjName =="SAQDOC":
-           
+        
             get_quote_revision_history_status = Sql.GetFirst("SELECT REVSTS_CHANGE_DATE FROM SAQRSH WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND REVISION_STATUS = 'PRI-PRICING'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
             
             
@@ -2129,6 +2129,10 @@ def Related_Sub_Banner(
         #        Total=(get_quote_details.NET_VALUE_INGL_CURR)
         get_rounding_place = Sql.GetFirst("SELECT * FROM PRCURR WHERE CURRENCY_RECORD_ID = '{}' ".format(get_quote_details.GLOBAL_CURRENCY_RECORD_ID))
         decimal_format = "{:,." + str(get_rounding_place.DISPLAY_DECIMAL_PLACES) + "f}"
+        if get_rounding_place.DISPLAY_DECIMAL_PLACES:
+            rounding_precsion = get_rounding_place.DISPLAY_DECIMAL_PLACES
+        else:
+            rounding_precsion = '3'
         if subTabName == "Summary":
             PrimaryLable = "Total Excluding Tax/VAT/GST"
             PrimaryValue = decimal_format.format(float(get_quote_details.NET_VALUE_INGL_CURR))+" "+ curr if str(get_quote_details.NET_VALUE_INGL_CURR) != '' else decimal_format.format(float("0.00"))+" "+curr
