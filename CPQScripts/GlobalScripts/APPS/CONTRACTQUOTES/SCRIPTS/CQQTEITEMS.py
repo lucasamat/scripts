@@ -108,7 +108,11 @@ def LoadSummary():
     
     if getRevisionDetails:
         get_rounding_place = Sql.GetFirst("SELECT * FROM PRCURR WHERE CURRENCY_RECORD_ID = '{}' ".format(getRevisionDetails.GLOBAL_CURRENCY_RECORD_ID))
-        decimal_format = "{:,." + str(get_rounding_place.DISPLAY_DECIMAL_PLACES) + "f}"
+        if get_rounding_place.DISPLAY_DECIMAL_PLACES:
+            rounding_precsion = get_rounding_place.DISPLAY_DECIMAL_PLACES
+        else:
+            rounding_precsion = '3'
+        decimal_format = "{:,." + str(rounding_precsion) + "f}"
         curr = str(getRevisionDetails.GLOBAL_CURRENCY)
         
         total_excluding = decimal_format.format(float(getRevisionDetails.NET_VALUE_INGL_CURR))
@@ -122,7 +126,7 @@ def LoadSummary():
         
         #argetPrice = decimal_format.format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))
         #Credit = decimal_format.format(float(getRevisionDetails.CREDIT_INGL_CURR))
-       
+    
         ##Updating the revision table values to custom fields  code starts...
         # Quote.GetCustomField('TARGET_PRICE').Content =decimal_format.format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))+ " " +curr
         # Quote.GetCustomField('BD_PRICE').Content = decimal_format.format(float(getRevisionDetails.BD_PRICE_INGL_CURR))+ " " +curr
