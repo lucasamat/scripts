@@ -1207,7 +1207,16 @@ class ViolationConditions:
         # Iterate to form query and check feasibility
         if result.APRCHN_ID != "SELFAPPR":
             for x in GetACACSF:
-                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} '{}'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE)
+                if x.CMP_OPERATOR == 'CONTAINS':
+                    selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}%'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+                elif x.CMP_OPERATOR == 'DOES NOT CONTAIN':
+                    selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  NOT LIKE '%{}%'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+                elif x.CMP_OPERATOR == 'STARTS WITH':
+                    selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '{}%'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+                elif x.CMP_OPERATOR == 'ENDS WITH':
+                    selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+                else:
+                    selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} '{}'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE)
 
                 # Append Quote and Revision to the Query
                 if "SAQ" in x.TSTOBJ_LABEL:
