@@ -68,12 +68,14 @@ try:
 				Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 				if Dirct_record['STATUS_DESCRIPTION'].upper() == "SUCCESS":
 					Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
-					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET REVISION_STATUS = ''CBC-SUBMITTED FOR BOOKING'',WORKFLOW_STATUS =''BOOKED'' FROM SAQTRV(NOLOCK)  WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND QTEREV_ID IN (SELECT QTEREV_ID FROM SAQTMT WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' ) '")
+					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET REVISION_STATUS = ''BOK-CONTRACT CREATED'',WORKFLOW_STATUS = ''BOOKED'' FROM SAQTRV(NOLOCK)  WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND QTEREV_ID IN (SELECT QTEREV_ID FROM SAQTMT WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' ) '")
 					
 					if 'CONTRACT_ID'  in Dirct_record:
-						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''CBC-SUBMITTED FOR BOOKING'',ECC_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID = ''ZWK1'' '")
+						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOK-CONTRACT CREATED'',ECC_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID = ''ZWK1'' '")
 						
-						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''CBC-SUBMITTED FOR BOOKING'',CRM_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
+						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOK-CONTRACT CREATED'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
+						
+						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET CRM_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
 						
 						Revsioninfoquery = SqlHelper.GetFirst("SELECT QTEREV_ID,QUOTE_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '"+str(Dirct_record['QUOTE_ID'])+"'")
 
@@ -101,6 +103,15 @@ try:
 							
 							LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_ECC_RECALL_ASYNC'")
 							response = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
+				
+				if Dirct_record['STATUS_DESCRIPTION'].upper() == "BOOKED":
+					Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
+					
+					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET REVISION_STATUS = ''BOK-CONTRACT BOOKED'' FROM SAQTRV(NOLOCK)  WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND QTEREV_ID IN (SELECT QTEREV_ID FROM SAQTMT WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' ) '")
+					
+					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOK-CONTRACT BOOKED'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
+					
+					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET CRM_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'',CRM_CONTRACT_STATUS=''BOOKED'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
 					
 				if 'ERROR1'  in Dirct_record:
 					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET IDOC_STATUS = ISNULL(IDOC_STATUS,'''')+ ''"+str(Dirct_record['ERROR1'])+"'' FROM SAQTRV(NOLOCK)  WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND QTEREV_ID IN (SELECT QTEREV_ID FROM SAQTMT WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' ) '")
@@ -188,4 +199,4 @@ try:
 except:		
 	Log.Info("QTGETQTSTS ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("QTGETQTSTS ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
+	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})	
