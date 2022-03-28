@@ -1,12 +1,6 @@
 import re
 import Webcom.Configurator.Scripting.Test.TestProduct
-import SYTABACTIN as Table
-import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
-import datetime
-from datetime import timedelta , date
-import sys
-import System.Net
 import CQPARTIFLW
 import CQCPQC4CWB
 import time
@@ -21,16 +15,12 @@ try:
 	contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
 except:
 	contract_quote_rec_id = ''
-
 try:
-	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-	
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")	
 except:
 	quote_revision_record_id =  ""
-
 try:
-	current_prod = Product.Name
-	
+	current_prod = Product.Name	
 except:
 	current_prod = "Sales"
 try:
@@ -78,7 +68,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					get_complete_list.append('F')
 		else:
 			get_complete_list.append('F')
-		get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+		#get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		#For Tool Based Quotes[SAQTSV]		
 		get_tool_service_info = Sql.GetList("SELECT DISTINCT SERVICE_ID as SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		
@@ -108,7 +98,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 					pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_ONSTCP</ENTITLEMENT_ID>')
 					pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-					consinged_part = 'True'
+					#consinged_part = 'True'
 					for m in re.finditer(pattern_tag, updateentXML):
 						sub_string = m.group(1)
 						get_ent_id = re.findall(pattern_id,sub_string)
@@ -123,44 +113,28 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 									Z0110_check.append('T')
 								else:
 									Z0110_check.append('F')
-			
 			else:
 				tool_check.append('T')
-		
-		
 		#All Addon Products which require parts to be added
 		get_addon_service_info = Sql.GetList("SELECT DISTINCT SERVICE_ID as SERVICE_ID from SAQSAO(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		
-		
-
-
 		#addon check    
-		Addon_check = []
-		
-		for dt in get_addon_service_info:			
-			
-			if str(dt.SERVICE_ID) in ['Z0100', 'Z0101', 'Z0123', 'Z0108', 'Z0110'] :
-			
-			
+		Addon_check = []		
+		for dt in get_addon_service_info:		
+			if str(dt.SERVICE_ID) in ['Z0100', 'Z0101', 'Z0123', 'Z0108', 'Z0110']:
 				get_parts_info = Sql.GetFirst("SELECT COUNT(DISTINCT PART_NUMBER) as COUNT from SAQSPT(NOLOCK) where SAQTSV.QUOTE_RECORD_ID = '{}' AND SAQTSV.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id),str(dt.SERVICE_ID))
-				
-				
-				if get_parts_ifno.COUNT > 0:
+				if get_parts_info.COUNT > 0:
 					Addon_check.append('T')	
 				else:
-					Addon_check.append('F')					
-				
+					Addon_check.append('F')
 			else:
-				Addon_check.append('T')				
-			
+				Addon_check.append('T')		
 		get_workflow_statusquery = Sql.GetFirst("SELECT WORKFLOW_STATUS FROM SAQTRV where WORKFLOW_STATUS = 'CONFIGURE' AND QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id))
 		if get_workflow_statusquery:
 			if str(getsalesorg_info).upper() != "NONE" and get_service_info.COUNT > 0 and get_fab_info.COUNT > 0  and get_involved_parties_info.COUNT > 0  and get_sales_team_info.COUNT > 0  and 'F' not in get_complete_list and 'F' not in tool_check and 'F' not in Z0110_check and 'F' not in Addon_check:
-				update_workflow_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING',WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)			
-				
+				update_workflow_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING',WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)	
 				Sql.RunQuery(update_workflow_status)
-		#AO55S000P01-17018 Starts	
-
+		#AO55S000P01-17018 Starts
 		#get pricing status from saqico-A055S000P01-17164 start
 		price_preview_status = []
 		item_covered_obj = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -177,7 +151,6 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		else:
 			Trace.Write("NO Quote Items")
 			price_preview_status.append('F')
-			price_bar = "no_quote_items"
 
 		#A055S000P01-17164 start
 		get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -192,11 +165,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			if str(getsalesorg_info).upper() != "NONE" and get_service_info.COUNT > 0 and   'F'  in get_complete_list and 'F' not in tool_check and 'F'  in price_preview_status and Text == "COMPLETE STAGE":
 				update_workflow_onhold_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE',REVISION_STATUS='CFG-ON HOLD-COSTING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 				Sql.RunQuery(update_workflow_onhold_status)
-		#A055S000P01-17164 end
-		
+		#A055S000P01-17164 end		
 		#get pricing status from saqico-A055S000P01-17164 end
-
-
 		#get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		if get_workflow_status.REVISION_STATUS == "APR-APPROVAL PENDING" and Text == "COMPLETE STAGE":
 			update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)
@@ -254,20 +224,6 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				get_ent_config_status = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(contract_quote_rec_id,quote_revision_record_id,service_id.SERVICE_ID))
 				if get_ent_config_status.COUNT > 0 or service_id.MATERIALCONFIG_TYPE =='SIMPLE MATERIAL' or service_id.SERVICE_ID == 'Z0117':
 					data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":contract_quote_rec_id, "ContractQuoteRevisionRecordId":quote_revision_record_id, "ServiceId":service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
-					
-				   
-					
-					
-					# try:
-					# 	##Calling the iflow for quote header writeback to cpq to c4c code starts..
-					# 	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-					# 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-					# 	##Calling the iflow for quote header writeback to cpq to c4c code ends...
-					# except:
-					# 	pass
-		
-		
-
 		try:
 			##Calling the iflow for quote header writeback to cpq to c4c code starts..
 			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
@@ -307,22 +263,17 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 	return status,error_msg
 	
 #A055S000P01-17166 start
-def complete_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):
-	
+def complete_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):	
 	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS = 'LGL-LEGAL SOW ACCEPTED' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_record_id)
-	Sql.RunQuery(update_rev_status)
-	
+	Sql.RunQuery(update_rev_status)	
 	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	time.sleep(3) #A055S000P01-16535
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
 
-
-def create_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):
-	
+def create_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):	
 	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS = 'LGL-PREPARING LEGAL SOW' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_record_id)
-	Sql.RunQuery(update_rev_status)
-	
+	Sql.RunQuery(update_rev_status)	
 	#CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	#time.sleep(3) #A055S000P01-16535
 	#CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
