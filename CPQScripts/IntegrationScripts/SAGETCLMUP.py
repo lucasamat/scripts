@@ -165,13 +165,13 @@ try:
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
 						+ str(Parameter1.QUERY_CRITERIA_1)
-						+ "  SAQTRV SET REVISION_STATUS=''LGL-PREPARING LEGAL SOW'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +''-''+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"'' AND ISNULL(CLM_AGREEMENT_STATUS,'''')=''DRAFT'' ' "
+						+ "  SAQTRV SET REVISION_STATUS=''OPD-LEGAL SOW CREATED'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +''-''+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"'' AND ISNULL(CLM_AGREEMENT_STATUS,'''')=''DRAFT'' ' "
 					)
 
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
 						+ str(Parameter1.QUERY_CRITERIA_1)
-						+ "  SAQTRV SET REVISION_STATUS=''LGL-LEGAL SOW ACCEPTED'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +''-''+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"'' AND ISNULL(CLM_AGREEMENT_STATUS,'''')=''ACCEPTED'' ' "
+						+ "  SAQTRV SET REVISION_STATUS=''OPD-LEGAL SOW ACCEPTED'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +''-''+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"'' AND ISNULL(CLM_AGREEMENT_STATUS,'''')=''ACCEPTED'' ' "
 					)
 										
 										
@@ -247,4 +247,4 @@ try:
 except:
 	Log.Info("SAGETCLMUP ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("SAGETCLMUP ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
+	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]}) 
