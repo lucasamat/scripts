@@ -91,6 +91,7 @@ try:
 
             LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF (nolock) where EXTERNAL_TABLE_NAME ='SSCM_DATA_GETMETHOD'")
             PSMA_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF (nolock) where EXTERNAL_TABLE_NAME ='SSCM_DATA_GETMETHOD_PMSA'")
+            TKM_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF (nolock) where EXTERNAL_TABLE_NAME ='SSCM_DATA_GETMETHOD_TKM'")
             
             primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,INTEGRATION_KEY,CpqTableEntryDateModified)  select ''"+str(Final_data)+ "'','"+ str(timestamp_sessionid)+ "',''SSCM_TO_CPQ_PRICING_DATA1'',''"+str(quote_id)+ "'',GETDATE() ' ")
 
@@ -131,7 +132,9 @@ try:
             
             primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,INTEGRATION_KEY,CpqTableEntryDateModified)  select ''"+str(conv_data)+ "'','"+ str(timestamp_sessionid)+ "',''SSCM_TO_CPQ_PRICING_DATA'',''"+str(quote_id)+ "'',GETDATE() ' ")
             
-            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter2.QUERY_CRITERIA_1)+ " FROM SYINPL WHERE SESSION_ID = '"+ str(timestamp_sessionid)+ "' AND INTEGRATION_PAYLOAD LIKE ''%FLEX%'' ' ")
+            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter2.QUERY_CRITERIA_1)+ " FROM SYINPL WHERE SESSION_ID = '"+ str(timestamp_sessionid)+ "' AND INTEGRATION_PAYLOAD LIKE ''%FLEX%'' AND INTEGRATION_NAME = ''SSCM_TO_CPQ_PRICING_DATA'' AND INTEGRATION_KEY =  ''"+str(quote_id)+ "'' ' ")
+            
+            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter2.QUERY_CRITERIA_1)+ " FROM SYINPL WHERE SESSION_ID = '"+ str(timestamp_sessionid)+ "' AND INTEGRATION_PAYLOAD LIKE ''%TKMKIT%'' AND INTEGRATION_NAME = ''SSCM_TO_CPQ_PRICING_DATA'' AND INTEGRATION_KEY =  ''"+str(quote_id)+ "'' ' ")
             
             #SSCM_DATA_GETMETHOD_PMSA call
             psma_webRequest = str(PSMA_CRE.URL).format(Sesion_id = Sesion_id,quote_id =quote_id )
@@ -165,11 +168,49 @@ try:
             jsonData = streamReader.ReadToEnd()
             PSMA_conv_data = jsonData.replace("'",'%%')
             
-            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,INTEGRATION_KEY,CpqTableEntryDateModified)  select REPLACE(''"+str(PSMA_conv_data)+ "'',''CM_LABOR_COST'',''LABOR_COST''),'"+ str(timestamp_sessionid)+ "',''SSCM_TO_CPQ_PRICING_DATA'',''"+str(quote_id)+ "'',GETDATE() ' ")
+            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,INTEGRATION_KEY,CpqTableEntryDateModified)  select REPLACE(''"+str(PSMA_conv_data)+ "'',''CM_LABOR_COST'',''LABOR_COST''),'"+ str(timestamp_sessionid)+ "',''SSCM_TO_CPQ_PRICING_DATA_FLEX'',''"+str(quote_id)+ "'',GETDATE() ' ")
             
             primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter2.QUERY_CRITERIA_1)+ " FROM SYINPL WHERE SESSION_ID = '"+ str(timestamp_sessionid)+ "' AND INTEGRATION_PAYLOAD NOT LIKE ''%FLEX%'' AND INTEGRATION_NAME=''SSCM_TO_CPQ_PRICING_DATA_FLEX'' ' ")
             
             primaryQueryItems = SqlHelper.GetFirst( "sp_executesql @T=N' UPDATE SYINPL SET INTEGRATION_NAME =''SSCM_TO_CPQ_PRICING_DATA'' WHERE SESSION_ID = '"+ str(timestamp_sessionid)+ "' AND INTEGRATION_PAYLOAD LIKE ''%FLEX%'' AND INTEGRATION_NAME=''SSCM_TO_CPQ_PRICING_DATA_FLEX'' ' ")
+            
+            #SSCM_DATA_GETMETHOD_PMSA call
+            tkm_webRequest = str(TKM_CRE.URL).format(Sesion_id = Sesion_id,quote_id =quote_id )
+            def GetNewRequest(targetUrl, Btoken):
+
+                newRequest = HttpWebRequest.Create(targetUrl)
+                newRequest.AllowAutoRedirect = 0
+                newRequest.Headers.Add("AUTHORIZATION", Btoken)
+                newRequest.Headers.Add("Environment-Identifier", 'X')
+                newRequest.Method = 'GET'
+                newRequest.ContentLength = 0
+                newRequest.ContentType = 'application/json'
+
+                return newRequest
+
+            Oauth_info = SqlHelper.GetFirst("SELECT  DOMAIN,URL FROM SYCONF where EXTERNAL_TABLE_NAME ='OAUTH'")
+
+            requestdata =Oauth_info.DOMAIN
+            webclient = System.Net.WebClient()
+            webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+            response = webclient.UploadString(Oauth_info.URL,str(requestdata))
+
+            response = eval(response)
+            access_token = response['access_token']
+            Btoken = "Bearer " + access_token
+
+            rew = GetNewRequest(tkm_webRequest, Btoken)
+            resp = rew.GetResponse()                                        
+
+            streamReader = StreamReader(resp.GetResponseStream())
+            jsonData = streamReader.ReadToEnd()
+            PSMA_conv_data = jsonData.replace("'",'%%')
+            
+            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,INTEGRATION_KEY,CpqTableEntryDateModified)  select REPLACE(''"+str(PSMA_conv_data)+ "'',''CM_LABOR_COST'',''LABOR_COST''),'"+ str(timestamp_sessionid)+ "',''SSCM_TO_CPQ_PRICING_DATA_TKM'',''"+str(quote_id)+ "'',GETDATE() ' ")
+            
+            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter2.QUERY_CRITERIA_1)+ " FROM SYINPL WHERE SESSION_ID = '"+ str(timestamp_sessionid)+ "' AND INTEGRATION_PAYLOAD NOT LIKE ''%TKMKIT%'' AND INTEGRATION_NAME=''SSCM_TO_CPQ_PRICING_DATA_TKM'' ' ")
+
+            primaryQueryItems = SqlHelper.GetFirst( "sp_executesql @T=N' UPDATE SYINPL SET INTEGRATION_NAME =''SSCM_TO_CPQ_PRICING_DATA'' WHERE SESSION_ID = '"+ str(timestamp_sessionid)+ "' AND INTEGRATION_PAYLOAD LIKE ''%TKMKIT%'' AND INTEGRATION_NAME=''SSCM_TO_CPQ_PRICING_DATA_TKM'' ' ")
             
             
             #Async call
@@ -212,4 +253,4 @@ try:
 except:     
     Log.Info("QTGETSCMPR ERROR---->:" + str(sys.exc_info()[1]))
     Log.Info("QTGETSCMPR ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-    ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
+    ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]}) 
