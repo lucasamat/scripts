@@ -605,30 +605,14 @@ class TreeView:
 
 					ProductDict["SubTabs"] = SubTabList
 					# if TabName == "Quote":
-					try:
-						getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
-					except:
-						getAccounts = ""
+				
+
+					findChildOneObj = Sql.GetList(
+						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+						+ str(RecId)
+						+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+					)
 					
-					if getAccounts is None:
-						findChildOneObj = Sql.GetList(
-							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-							+ str(RecId)
-							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)
-					elif getAccounts is not None:
-						if RecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or RecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or RecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or RecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7"  or RecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or RecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or RecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or RecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
-							findChildOneObj = Sql.GetList(
-								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-								+ str(RecId)
-								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)
-						else:
-							findChildOneObj = Sql.GetList(
-							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-							+ str(RecId)
-							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)
 					try:
 						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 						if getZ0009 is not None:
@@ -2099,25 +2083,12 @@ class TreeView:
 									)
 							ChildDict["SubTabs"] = SubTabList
 							
-							if getAccounts is None:
-								findSubChildAvailable = Sql.GetList(
-									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)
-							elif getAccounts is not None:
-								if ParRecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or ParRecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or ParRecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or ParRecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
-									findSubChildAvailable = Sql.GetList(
-										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)
-								else:
-									findSubChildAvailable = Sql.GetList(
-									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)
+
+							findSubChildAvailable = Sql.GetList(
+								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+								+ str(ParRecId)
+								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+							)
 							try:
 								getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 								if getZ0009 is not None:
@@ -2258,26 +2229,12 @@ class TreeView:
 								NewList = []                                
 								ChildList.append(ChildDict)
 		else:
-			if getAccounts is None:
-				findChildOneObj = Sql.GetList(
-				"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
-				+ str(ParRecId)
-				+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
+
+			findChildOneObj = Sql.GetList(
+			"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
+			+ str(ParRecId)
+			+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
 			)
-			elif getAccounts is not None:
-				if ParRecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or ParRecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7"  or ParRecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or ParRecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or ParRecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
-					findChildOneObj = Sql.GetList(
-					"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
-					+ str(ParRecId)
-					+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
-					)
-				else:
-					findChildOneObj = Sql.GetList(
-					"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
-					+ str(ParRecId)
-					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
-					)
-			
 			if Product.GetGlobal("PMSA_TREE") == '1' and ParRecId in  ('4237BF62-7934-4CFF-811A-7A64282CE693','FE46CADE-B72F-46FF-9E01-1699D2955E6B'):				
 				findChildOneObj = Sql.GetList(
 					"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
@@ -2372,25 +2329,11 @@ class TreeView:
 								ChildDict["id"] = RelatedObj.SAPCPQ_ATTRIBUTE_NAME
 					ChildDict["SubTabs"] = SubTabList
 					
-					if getAccounts is None:
-						findSubChildAvailable = Sql.GetList(
-									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)		
-					elif getAccounts is not None:
-						if ParRecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or ParRecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7"  or ParRecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or ParRecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or ParRecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
-							findSubChildAvailable = Sql.GetList(
-									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)		
-						else:
-							findSubChildAvailable = Sql.GetList(
-									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)		
+					findSubChildAvailable = Sql.GetList(
+							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+							+ str(ParRecId)
+							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+						)		
 					try:
 						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 						if getZ0009 is not None:
@@ -2594,25 +2537,13 @@ class TreeView:
 						if str(ObjName).strip() == 'SAQFGB':
 							childQuery = Sql.GetList("select  GREENBOOK from " + str(ObjName) + " (nolock) where " + str(where_string) + " GROUP BY GREENBOOK")
 				#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-				if getAccounts is None:
-					findSubChildAvailable = Sql.GetList(
-								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-								+ str(ParRecId)
-								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)		
-				elif getAccounts is not None:
-					if ParRecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or ParRecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7"  or ParRecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or ParRecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or ParRecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
-						findSubChildAvailable = Sql.GetList(
-								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-								+ str(ParRecId)
-								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)		
-					else:
-						findSubChildAvailable = Sql.GetList(
-								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-								+ str(ParRecId)
-								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)	
+				#if getAccounts is None:
+				findSubChildAvailable = Sql.GetList(
+							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+							+ str(ParRecId)
+							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+						)		
+				
 				try:
 					getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 					if getZ0009 is not None:
@@ -2725,25 +2656,13 @@ class TreeView:
 
 						ChildDict["SubTabs"] = SubTabList
 						#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-						if getAccounts is None:
-							findSubChildAvailable = Sql.GetList(
-										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)		
-						elif getAccounts is not None:
-							if ParRecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or ParRecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7"  or ParRecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or ParRecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or ParRecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
-								findSubChildAvailable = Sql.GetList(
-										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)		
-							else:
-								findSubChildAvailable = Sql.GetList(
-										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)	
+						#if getAccounts is None:
+						findSubChildAvailable = Sql.GetList(
+									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+									+ str(ParRecId)
+									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+								)		
+						
 						try:
 							getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id, quote_revision_record_id))
 							if getZ0009 is not None:
@@ -2763,25 +2682,13 @@ class TreeView:
 							for findSubChildOne in findSubChildAvailable:
 								NewList = []
 								ParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)								
-								if getAccounts is None:
-									findSubChildAvailable1 = Sql.GetList(
-												"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-												+ str(ParRecId)
-												+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-											)		
-								elif getAccounts is not None:
-									if ParRecId == '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' or ParRecId == '35DFE5A1-5967-4A55-AEA7-155FA15572A1' or ParRecId == "D721CE0D-CBBD-4620-85D5-C354E368FA52" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7"  or ParRecId == "D1020D61-E16C-408E-966A-5F32FE22B977" or ParRecId == "E0BC1275-82F7-443A-BB2E-4FE2E0463D70" or ParRecId == "63AEDE4C-8E69-4601-B79E-4A0F43060646" or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5':
-										findSubChildAvailable1 = Sql.GetList(
-												"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-												+ str(ParRecId)
-												+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-											)		
-									else:
-										findSubChildAvailable1 = Sql.GetList(
-												"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-												+ str(ParRecId)
-												+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-											)	
+								#if getAccounts is None:
+								findSubChildAvailable1 = Sql.GetList(
+											"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+											+ str(ParRecId)
+											+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+										)		
+								
 								try:
 									getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 									if getZ0009 is not None:
