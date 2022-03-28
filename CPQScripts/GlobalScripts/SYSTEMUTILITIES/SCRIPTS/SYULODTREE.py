@@ -24,13 +24,13 @@ except:
 	pass
 #node visibility query based on sales employee end
 
-# try:
-# 	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
-# except:
-# 	#Trace.Write("EXCEPT: GetActiveRevision")
-# 	GetActiveRevision = ""
-# if GetActiveRevision:
-# 	Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
+try:
+	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+except:
+	#Trace.Write("EXCEPT: GetActiveRevision")
+	GetActiveRevision = ""
+if GetActiveRevision:
+	Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 
 class TreeView:
 	def __init__(self):
@@ -437,9 +437,9 @@ class TreeView:
 				GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
 			except:				
 				GetActiveRevision = ""
-			#if GetActiveRevision:
-			# 	Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
-			# 	Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
+			if GetActiveRevision:
+			 	Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
+			 	Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
 			# 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 			try:
 				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.CompositeNumber,GetActiveRevision.QUOTE_REVISION_RECORD_ID))
