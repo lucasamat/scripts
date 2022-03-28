@@ -632,30 +632,18 @@ class TreeView:
 					try:
 						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 						if getZ0009 is not None:
-							getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
-							#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-							Trace.Write("return1 value Z0009====---"+str(getZ0009))
+							is_pmsa = self.PMSATree(getZ0009.SERVICE_ID)
+						else:
+							is_pmsa = 0							
 					except:
-						getZ0009 = ""
-					if getZ0009 is None or getZ0009 == 0:						
-						findChildOneObj = Sql.GetList(
-							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-							+ str(RecId)
-							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)
-					elif getZ0009 is not None:						
-						if (RecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or RecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or RecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or RecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or RecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or RecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or RecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or RecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453' or RecId == 'B9E7FF3A-CD32-4414-8036-A4310FB4A80E') and getZ0009 == 1:							
+						is_pmsa = 0
+					if is_pmsa:						
+						if RecId in ('1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8','B7BC662B-91A4-42C0-A2D9-B1E713D59E18', '1CE55561-F2DF-4A05-A21B-82AF08C23215',"1D531821-21B2-4F5F-8579-9724F10F8911","5C5AA48D-6598-4B55-91BB-1D043575C3B7",'72FC842D-99A8-430C-A689-6DBB093015B5',"11C3DA16-72B3-49A8-8B80-23637D0D499E",'EBC61A4C-18C8-4374-9BDD-17BB93172453','B9E7FF3A-CD32-4414-8036-A4310FB4A80E'):							
 							findChildOneObj = Sql.GetList(
 								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 								+ str(RecId)
 								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)
-						else:							
-							findChildOneObj = Sql.GetList(
-							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-							+ str(RecId)
-							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)		
+							)							
 					if findChildOneObj is not None:
 						for findChildOne in findChildOneObj:
 							parobj = str(findChildOne.PARENTNODE_OBJECT)
@@ -2133,30 +2121,19 @@ class TreeView:
 							try:
 								getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 								if getZ0009 is not None:
-									getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)									
+									is_pmsa =  self.PMSATree(getZ0009.SERVICE_ID)		
+								else:
+									is_pmsa = 0							
 							except:
-								getZ0009 = ""
-							Product.SetGlobal("PMSA_TREE",str(getZ0009))
-							if getZ0009 is None or getZ0009 == 0:								
-								findSubChildAvailable = Sql.GetList(
-									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)
-							elif getZ0009 is not None:								
-								if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
+								is_pmsa = ""
+							Product.SetGlobal("PMSA_TREE",str(is_pmsa))
+							if is_pmsa:								
+								if RecId in ('1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8','B7BC662B-91A4-42C0-A2D9-B1E713D59E18', '1CE55561-F2DF-4A05-A21B-82AF08C23215',"1D531821-21B2-4F5F-8579-9724F10F8911","5C5AA48D-6598-4B55-91BB-1D043575C3B7",'72FC842D-99A8-430C-A689-6DBB093015B5',"11C3DA16-72B3-49A8-8B80-23637D0D499E",'EBC61A4C-18C8-4374-9BDD-17BB93172453','B9E7FF3A-CD32-4414-8036-A4310FB4A80E'):	
 									findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 										+ str(ParRecId)
 										+ "' AND DISPLAY_CRITERIA = 'DYNAMIC'  ORDER BY abs(DISPLAY_ORDER) "
-									)
-								else:
-									findSubChildAvailable = Sql.GetList(
-									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-									+ str(ParRecId)
-									+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-								)					
-							                    
+									)	         
 							# Getting parent node for Add-On Products 
 							if NodeText in ('Z0091','Z0009','Z0092','Z0035','Z0004','Z0100','Z0110','Z0006','Z0007','Z0010','Z0016'): 
 								Quote.SetGlobal("SERVICE",NodeText)							
@@ -2310,29 +2287,18 @@ class TreeView:
 			try:
 				getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 				if getZ0009 is not None:
-					getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
+					is_pmsa = self.PMSATree(getZ0009.SERVICE_ID)
+				else:
+					is_pmsa = 0
 			except:
-				getZ0009 = ""
-			if getZ0009 is None or getZ0009 == 0:				
-				findSubChildAvailable = Sql.GetList(
-					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					+ str(ParRecId)
-					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-				)
-			elif getZ0009 is not None:				
-				if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:		
+				is_pmsa = 0
+			if is_pmsa:				
+				if RecId in ('1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8','B7BC662B-91A4-42C0-A2D9-B1E713D59E18', '1CE55561-F2DF-4A05-A21B-82AF08C23215',"1D531821-21B2-4F5F-8579-9724F10F8911","5C5AA48D-6598-4B55-91BB-1D043575C3B7",'72FC842D-99A8-430C-A689-6DBB093015B5',"11C3DA16-72B3-49A8-8B80-23637D0D499E",'EBC61A4C-18C8-4374-9BDD-17BB93172453','B9E7FF3A-CD32-4414-8036-A4310FB4A80E'):	
 					findSubChildAvailable = Sql.GetList(
 						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 						+ str(ParRecId)
 						+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 					)
-					
-				else:					
-					findSubChildAvailable = Sql.GetList(
-					"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-					+ str(ParRecId)
-					+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-				)	
 			if findChildOneObj is not None and len(findChildOneObj) > 0:
 				for findChildOne in findChildOneObj:
 					if DynamicQuery is not None and len(DynamicQuery) > 0:
@@ -2428,29 +2394,18 @@ class TreeView:
 					try:
 						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 						if getZ0009 is not None:
-							getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)							
+							is_pmsa = self.PMSATree(getZ0009.SERVICE_ID)		
+						else:
+							is_pmsa = 0					
 					except:
-						getZ0009 = ""
-					if getZ0009 is None or getZ0009 == 0:						
-						findSubChildAvailable = Sql.GetList(
-							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-							+ str(ParRecId)
-							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)
-					elif getZ0009 is not None:
-						#Trace.Write("elif getZ0009 is not None")
-						if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
+						is_pmsa = 0
+					if is_pmsa is not None:						
+						if RecId in ('1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8','B7BC662B-91A4-42C0-A2D9-B1E713D59E18', '1CE55561-F2DF-4A05-A21B-82AF08C23215',"1D531821-21B2-4F5F-8579-9724F10F8911","5C5AA48D-6598-4B55-91BB-1D043575C3B7",'72FC842D-99A8-430C-A689-6DBB093015B5',"11C3DA16-72B3-49A8-8B80-23637D0D499E",'EBC61A4C-18C8-4374-9BDD-17BB93172453','B9E7FF3A-CD32-4414-8036-A4310FB4A80E'):	
 							findSubChildAvailable = Sql.GetList(
 								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 								+ str(ParRecId)
 								+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)							
-						else:
-							findSubChildAvailable = Sql.GetList(
-							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-							+ str(ParRecId)
-							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)                       
+							)                 
 					if findSubChildAvailable is not None:
 						for findSubChildOne in findSubChildAvailable:
 							if str(findSubChildOne.TREEIMAGE_URL):
@@ -2661,36 +2616,18 @@ class TreeView:
 				try:
 					getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 					if getZ0009 is not None:
-						getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
-						#Trace.Write("return value Z0009---"+str(self.PMSATree()))
-						#Trace.Write("return5 value Z0009====---"+str(getZ0009))
+						is_pmsa = self.PMSATree(getZ0009.SERVICE_ID)
 					else:
-						getZ0009 = None
+						is_pmsa = 0
 				except:
-					getZ0009 = None
-				if getZ0009 is None or getZ0009 == 0:
-					#Trace.Write("if getZ0009 is None")
-					findSubChildAvailable = Sql.GetList(
-						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-						+ str(ParRecId)
-						+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					)
-				elif getZ0009 is not None:
-					#Trace.Write("elif getZ0009 is not None")
-					if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:
-						Trace.Write("if55 RecId == '1F47A350-4E38-41C9-A5C5-F5")
+					is_pmsa = 0
+				if is_pmsa:					
+					if RecId in ('1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8','B7BC662B-91A4-42C0-A2D9-B1E713D59E18', '1CE55561-F2DF-4A05-A21B-82AF08C23215',"1D531821-21B2-4F5F-8579-9724F10F8911","5C5AA48D-6598-4B55-91BB-1D043575C3B7",'72FC842D-99A8-430C-A689-6DBB093015B5',"11C3DA16-72B3-49A8-8B80-23637D0D499E",'EBC61A4C-18C8-4374-9BDD-17BB93172453','B9E7FF3A-CD32-4414-8036-A4310FB4A80E'):	
 						findSubChildAvailable = Sql.GetList(
 							"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 							+ str(ParRecId)
 							+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-						)						
-					else:
-						#Trace.Write("else Z0009")
-						findSubChildAvailable = Sql.GetList(
-						"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-						+ str(ParRecId)
-						+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-					)	      
+						)      
 				if childQuery is not None:
 					ChildList = []
 					for childdata in childQuery:
@@ -2810,30 +2747,18 @@ class TreeView:
 						try:
 							getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id, quote_revision_record_id))
 							if getZ0009 is not None:
-								getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)								
+								is_pmsa = self.PMSATree(getZ0009.SERVICE_ID)								
 							else:
-								getZ0009 = None
+								is_pmsa = 0
 						except:
-							getZ0009 = None
-						if getZ0009 is None or getZ0009 == 0:							
-							findSubChildAvailable = Sql.GetList(
-								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-								+ str(ParRecId)
-								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)
-						elif getZ0009 is not None:							
-							if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:								
+							is_pmsa = 0
+						if is_pmsa:							
+							if RecId in ('1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8','B7BC662B-91A4-42C0-A2D9-B1E713D59E18', '1CE55561-F2DF-4A05-A21B-82AF08C23215',"1D531821-21B2-4F5F-8579-9724F10F8911","5C5AA48D-6598-4B55-91BB-1D043575C3B7",'72FC842D-99A8-430C-A689-6DBB093015B5',"11C3DA16-72B3-49A8-8B80-23637D0D499E",'EBC61A4C-18C8-4374-9BDD-17BB93172453','B9E7FF3A-CD32-4414-8036-A4310FB4A80E'):									
 								findSubChildAvailable = Sql.GetList(
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 									+ str(ParRecId)
 									+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 								)
-							else:
-								findSubChildAvailable = Sql.GetList(
-								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-								+ str(ParRecId)
-								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-							)	
 						if findSubChildAvailable is not None:
 							for findSubChildOne in findSubChildAvailable:
 								NewList = []
@@ -2860,28 +2785,18 @@ class TreeView:
 								try:
 									getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
 									if getZ0009 is not None:
-										getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)										
+										is_pmsa = self.PMSATree(getZ0009.SERVICE_ID)	
+									else:
+										is_pmsa = 0									
 								except:
-									getZ0009 = ""
-								if getZ0009 is None or getZ0009 == 0:									
-									findSubChildAvailable = Sql.GetList(
-										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)
-								elif getZ0009 is not None:									
-									if (ParRecId == '1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8' or ParRecId == 'B7BC662B-91A4-42C0-A2D9-B1E713D59E18' or ParRecId == "1D531821-21B2-4F5F-8579-9724F10F8911" or ParRecId == "5C5AA48D-6598-4B55-91BB-1D043575C3B7" or ParRecId == '1CE55561-F2DF-4A05-A21B-82AF08C23215' or ParRecId == '72FC842D-99A8-430C-A689-6DBB093015B5' or ParRecId == "11C3DA16-72B3-49A8-8B80-23637D0D499E" or ParRecId == 'EBC61A4C-18C8-4374-9BDD-17BB93172453') and getZ0009 == 1:										
+									is_pmsa = 0
+								if is_pmsa:									
+									if RecId in ('1F47A350-4E38-41C9-A5C5-F53DC9BB3DB8','B7BC662B-91A4-42C0-A2D9-B1E713D59E18', '1CE55561-F2DF-4A05-A21B-82AF08C23215',"1D531821-21B2-4F5F-8579-9724F10F8911","5C5AA48D-6598-4B55-91BB-1D043575C3B7",'72FC842D-99A8-430C-A689-6DBB093015B5',"11C3DA16-72B3-49A8-8B80-23637D0D499E",'EBC61A4C-18C8-4374-9BDD-17BB93172453','B9E7FF3A-CD32-4414-8036-A4310FB4A80E'):								
 										findSubChildAvailable = Sql.GetList(
 											"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
 											+ str(ParRecId)
 											+ "' AND DISPLAY_CRITERIA = 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 										)
-									else:										
-										findSubChildAvailable = Sql.GetList(
-										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
-										+ str(ParRecId)
-										+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
-									)
 								if findSubChildAvailable1 is not None:
 									for findSubChildOne in findSubChildAvailable1:
 										parobj = str(findSubChildOne.PARENTNODE_OBJECT)
@@ -3058,7 +2973,6 @@ class TreeView:
 	#A055S000P01-4578 ends
 	
 	def PMSATree(self,TreeParam):
-
 		flag = 0
 		if str(Quote.GetGlobal("SERVICE")) == "Z0009" or str(Quote.GetGlobal("SERVICE")) == "Z0010":
 			TableName = 'SAQTSE'
