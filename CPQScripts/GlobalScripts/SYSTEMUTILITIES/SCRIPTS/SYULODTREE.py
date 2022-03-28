@@ -1927,7 +1927,7 @@ class TreeView:
 										ent_table =""
 										subTabName =""
 										ent_value_dict = {}
-										service_id = Product.GetGlobal("SERVICE")
+										service_id = Quote.GetGlobal("SERVICE")
 										if subtab_temp_variable in ('Greenbook Inclusions','Green Parts List','Green New Parts'):
 											whr_str_greenbook = " AND GREENBOOK = '{}'".format(NodeText)
 											ent_table_list.append("SAQSGE")
@@ -2001,7 +2001,7 @@ class TreeView:
 										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" else ""
 									elif (subTabName == 'Periods') and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
 										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
-										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" and Product.GetGlobal("SERVICE") == "Z0108" else ""
+										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" and Quote.GetGlobal("SERVICE") == "Z0108" else ""
 									elif subTabName =='Equipment' and Product.GetGlobal("ParentNodeLevel")=="Complementary Products":
 										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 										subTabName = "" if str(doc_type.DOCTYP_ID) == "ZWK1" else str(getRightView.SUBTAB_NAME)
@@ -2012,9 +2012,9 @@ class TreeView:
 									RelatedId = getRightView.RELATED_RECORD_ID
 									RelatedName = getRightView.RELATED_LIST_NAME									
 									if subTabName:
-										Trace.Write("Events subtab-----"+str(subTabName)+"NodeText--->"+str(NodeText)+" ===> Service"+Product.GetGlobal("SERVICE"))
-										if subTabName=="Events" and Product.GetGlobal("SERVICE")=="Z0009":
-											service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE")))
+										Trace.Write("Events subtab-----"+str(subTabName)+"NodeText--->"+str(NodeText)+" ===> Service"+Quote.GetGlobal("SERVICE"))
+										if subTabName=="Events" and Quote.GetGlobal("SERVICE")=="Z0009":
+											service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = contract_quote_record_id,RevisionRecordId=quote_revision_record_id,service_id = Quote.GetGlobal("SERVICE")))
 											if service_entitlement_object is not None:
 												pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 												quote_type_attribute = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
@@ -2035,7 +2035,7 @@ class TreeView:
 															RelatedId = 'SYOBJR-00011'
 															RelatedName = 'Events'
 															break
-										elif subTabName=="Events" and Product.GetGlobal("SERVICE")=="Z0010":
+										elif subTabName=="Events" and Quote.GetGlobal("SERVICE")=="Z0010":
 											ObjRecId = '0975E1E2-9D30-4928-AB0A-4DA54537A67A'
 											RelatedId = 'SYOBJR-95556'
 											RelatedName = 'Events'
@@ -2153,7 +2153,7 @@ class TreeView:
 							                    
 							# Getting parent node for Add-On Products 
 							if NodeText in ('Z0091','Z0009','Z0092','Z0035','Z0004','Z0100','Z0110','Z0006','Z0007','Z0010','Z0016'): 
-								Product.SetGlobal("SERVICE",NodeText)							
+								Quote.SetGlobal("SERVICE",NodeText)							
 							# PROFILE EXPLORER
 							if NodeText in ('APPROVAL CENTER','SALES','MATERIALS','PRICE MODELS','PRICE MODELS','SYSTEM ADMIN'):
 								Product.SetGlobal("APPS",NodeText)							
@@ -2491,7 +2491,7 @@ class TreeView:
 									if Currenttab == "Contracts":
 										Subwhere_string += " AND PRODUCT_TYPE = '{}'".format(NodeText)
 									elif NodeText == "Add-On Products":
-										service_id = Product.GetGlobal("SERVICE")										                               			   
+										service_id = Quote.GetGlobal("SERVICE")										                               			   
 										Subwhere_string += " AND SERVICE_ID = '{}'".format(str(service_id))
 									elif NodeText == "Tabs":
 										apps = Product.GetGlobal("APPS")
@@ -2747,8 +2747,8 @@ class TreeView:
 								# ChildDict["id"] = RelatedId
 								if subTabName == 'Green Parts List':
 									subTabName = ""
-									service_id = Product.GetGlobal("SERVICE")
-									greenbook_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
+									#service_id = Product.GetGlobal("SERVICE")
+									greenbook_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Quote.GetGlobal("SERVICE"),NodeText = NodeText))
 									if greenbook_entitlement_object is not None:
 										updateentXML = greenbook_entitlement_object.ENTITLEMENT_XML
 										flag_excluse=0
