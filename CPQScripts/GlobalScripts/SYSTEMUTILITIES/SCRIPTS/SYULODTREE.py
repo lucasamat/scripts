@@ -74,7 +74,6 @@ class TreeView:
 			)
 
 			if getParentObjQuery:
-
 				for getParentObj in getParentObjQuery:
 					Wh_API_NAME = ""
 					objrList.append(getParentObj.NAME)
@@ -447,6 +446,13 @@ class TreeView:
 				Quote.SetGlobal("contract_quote_record_id",getQuote.MASTER_TABLE_QUOTE_RECORD_ID)
 			except:
 				getQuote = ""
+			
+			try:
+				contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+			except Exception:
+				contract_quote_record_id = ""
+				quote_revision_record_id = ""
 		returnList = []
 		nodeId = 0
 		
@@ -469,10 +475,10 @@ class TreeView:
 					RecAttValue = RecAtt.GetValue()
 				else: # Fix for cart item insert
 					if TabName == 'Quote':
-						RecAttValue = Quote.GetGlobal("contract_quote_record_id")
+						RecAttValue = contract_quote_record_id
 			except Exception:
 				if TabName == 'Quote':
-					RecAttValue = Quote.GetGlobal("contract_quote_record_id")
+					RecAttValue = contract_quote_record_id
 				else:
 					RecAttValue = ""
 			
@@ -537,8 +543,8 @@ class TreeView:
 							RelatedId = getRightView.RELATED_RECORD_ID
 							RelatedName = getRightView.RELATED_LIST_NAME
 							ProductDict["id"] = RelatedId
-							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+							#contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+							#quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 							if subTabName:
 								if subTabName == "Spare Parts Line Item Details":
@@ -600,7 +606,7 @@ class TreeView:
 					ProductDict["SubTabs"] = SubTabList
 					# if TabName == "Quote":
 					try:
-						getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+						getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE CPQ_PARTNER_FUNCTION = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
 					except:
 						getAccounts = ""
 					
@@ -624,7 +630,7 @@ class TreeView:
 							+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
 						)
 					try:
-						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+						getZ0009 = Sql.GetFirst("SELECT CpqTableEntryId,SERVICE_ID FROM SAQTSV (NOLOCK) WHERE SERVICE_ID IN ('Z0009','Z0010') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 						if getZ0009 is not None:
 							getZ0009 =  self.PMSATree(getZ0009.SERVICE_ID)
 							#Trace.Write("return value Z0009---"+str(self.PMSATree()))
