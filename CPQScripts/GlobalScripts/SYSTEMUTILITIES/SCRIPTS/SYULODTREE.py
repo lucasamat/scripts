@@ -416,7 +416,7 @@ class TreeView:
 		try:
 			TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 			tab_name = TestProduct.CurrentTab
-			TabName = str(TestProduct.CurrentTab)			
+			TabName = str(tab_name)			
 			crnt_prd_val = str(CurrentModuleObj.APP_ID)
 		except:
 			TestProduct = "Sales"
@@ -438,8 +438,8 @@ class TreeView:
 			except:				
 				GetActiveRevision = ""
 			if GetActiveRevision:
-			 	Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
-			 	Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
+				Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
+				Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
 			# 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 			try:
 				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.CompositeNumber,GetActiveRevision.QUOTE_REVISION_RECORD_ID))
