@@ -123,6 +123,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		for dt in get_addon_service_info:		
 			if str(dt.SERVICE_ID) in ['Z0100', 'Z0101', 'Z0123', 'Z0108', 'Z0110']:
 				get_parts_info = Sql.GetFirst("SELECT COUNT(DISTINCT PART_NUMBER) as COUNT from SAQSPT(NOLOCK) where SAQTSV.QUOTE_RECORD_ID = '{}' AND SAQTSV.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id),str(dt.SERVICE_ID))
+				
+				
 				if get_parts_info.COUNT > 0:
 					Addon_check.append('T')	
 				else:
