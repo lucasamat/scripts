@@ -56,7 +56,7 @@ try:
         if STPObj:
             stp_account_id = str(STPObj.ACCOUNT_ID)		
         tax_classification = None
-        quote_item_obj =Sql.GetFirst("SELECT MAMSCT.TAXCLASSIFICATION_ID FROM SAQTRV (NOLOCK) LEFT JOIN MAMSCT (NOLOCK) ON MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID = SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID AND MAMSCT.COUNTRY_RECORD_ID = SAQTRV.COUNTRY_RECORD_ID AND MAMSCT.DIVISION_ID = SAQTRV.DIVISION_ID AND MAMSCT.SAP_PART_NUMBER = '{ServiceId}' WHERE SAQTRV.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND ".format(QuoteRecordId=contract_quote_record_id, RevisionRecordId=quote_revision_record_id, ServiceId=service_id))
+        quote_item_obj =Sql.GetFirst("SELECT MAMSCT.TAXCLASSIFICATION_ID FROM SAQTRV (NOLOCK) LEFT JOIN MAMSCT (NOLOCK) ON MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID = SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID AND MAMSCT.COUNTRY_RECORD_ID = SAQTRV.COUNTRY_RECORD_ID AND MAMSCT.DIVISION_ID = SAQTRV.DIVISION_ID AND MAMSCT.SAP_PART_NUMBER = '{ServiceId}' WHERE SAQTRV.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SAQTRV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=contract_quote_record_id, RevisionRecordId=quote_revision_record_id, ServiceId=service_id))
         if quote_item_obj:
             tax_classification = quote_item_obj.TAXCLASSIFICATION_ID
         itemid = 1  
