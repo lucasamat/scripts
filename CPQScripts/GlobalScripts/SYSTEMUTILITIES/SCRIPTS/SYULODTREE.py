@@ -24,13 +24,13 @@ except:
 	pass
 #node visibility query based on sales employee end
 
-try:
-	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
-except:
-	#Trace.Write("EXCEPT: GetActiveRevision")
-	GetActiveRevision = ""
-if GetActiveRevision:
-	Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
+# try:
+# 	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+# except:
+# 	#Trace.Write("EXCEPT: GetActiveRevision")
+# 	GetActiveRevision = ""
+# if GetActiveRevision:
+# 	Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 
 class TreeView:
 	def __init__(self):
@@ -436,8 +436,7 @@ class TreeView:
 		if tab_name == "Quote" and current_prod == "Sales":			
 			try:
 				GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
-			except:
-				Trace.Write("EXCEPT: GetActiveRevision")
+			except:				
 				GetActiveRevision = ""
 			#if GetActiveRevision:
 			# 	Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
@@ -447,12 +446,7 @@ class TreeView:
 				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.CompositeNumber,GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 				Quote.SetGlobal("contract_quote_record_id",getQuote.MASTER_TABLE_QUOTE_RECORD_ID)
 			except:
-				Trace.Write("EXCEPT: getQuote")
 				getQuote = ""
-			#GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID LIKE '%{}%' AND ACTIVE = 1".format(Quote.CompositeNumber))
-			#quote_revision_record_id = Quote.GetCustomField('QUOTE_REVISION_ID').Content
-			#Trace.Write("@454---------->"+str(quote_revision_record_id))
-			
 		returnList = []
 		nodeId = 0
 		
@@ -486,17 +480,13 @@ class TreeView:
 				"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NAME = '"
 				+ str(TabName)
 				+ "' AND NODE_TYPE = 'STATIC' AND PARENT_NODE_RECORD_ID ='' ORDER BY abs(DISPLAY_ORDER)"
-			)
-			
+			)			
 			if getParentObjQuery is not None:
-				
 				for getParentObj in getParentObjQuery:
 					##adding image along with tree params
 					#12096 start-quote item visibility start
 					if get_node_visibility and str(get_ohold_pricing_status).upper() == "ON HOLD - COSTING" and str(getParentObj.NODE_NAME) == "Quote Items":
 						continue
-					# elif not get_delivery_nodes and str(getParentObj.NODE_NAME) == "Delivery Schedule":
-					# 	continue
 					#12096 start-quote item visibility end
 					if str(getParentObj.TREEIMAGE_URL):
 						image_url = str(getParentObj.TREEIMAGE_URL)
@@ -515,8 +505,7 @@ class TreeView:
 					ProductDict["text"] = NodeText
 					ProductDict["nodeId"] = int(getParentObj.NODE_ID)
 					PageRecId = str(getParentObj.NODE_PAGE_RECORD_ID)
-					pageDetails = Sql.GetFirst("select * from SYPAGE (nolock) where RECORD_ID = '" + str(PageRecId) + "'")
-					#Trace.Write('567--NodeText---'+str(NodeText))
+					pageDetails = Sql.GetFirst("select * from SYPAGE (nolock) where RECORD_ID = '" + str(PageRecId) + "'")				
 					if pageDetails is not None:
 						ObjName = pageDetails.OBJECT_APINAME
 						ProductDict["objname"] = ObjName
@@ -554,7 +543,7 @@ class TreeView:
 							if subTabName:
 								if subTabName == "Spare Parts Line Item Details":
 									subTabName = ""
-									spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIFP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+									spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIFP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 									if spare_parts_object is not None:
 										if spare_parts_object.cnt > 0:
 											subTabName = str(getRightView.SUBTAB_NAME)
@@ -563,7 +552,7 @@ class TreeView:
 								)
 						# Billing Matrix Dynamic Tabs - Start
 						if ProductDict.get("objname") == 'SAQRIB' and ProductDict.get("text") == 'Billing':
-							item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+							item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID".format(contract_quote_record_id,quote_revision_record_id))
 							if item_billing_plan_obj is not None:
 								quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
 								years = quotient + (1 if remainder > 0 else 0)
@@ -737,8 +726,6 @@ class TreeView:
 										list2.append(item)
 								ProductDict["nodes"] = list2						
 						returnList.append(ProductDict)
-		
-		
 		Product.SetGlobal("CommonTreeList", str(returnList))
 		#Trace.Write("returnList----------------> " + str(returnList))
 		cbc_subtab = ""
@@ -2001,7 +1988,7 @@ class TreeView:
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 										subTabName = ""
 										service_id = NodeText.split('-')[1].strip()
-										spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id,service_id))
+										spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,service_id))
 										if spare_parts_object is not None:
 											if spare_parts_object.cnt > 0:
 												subTabName = str(getRightView.SUBTAB_NAME)
@@ -2010,15 +1997,15 @@ class TreeView:
 										subTabName = "Events"
 									##A055S000P01-14790 code ends...
 									# elif (subTabName == 'Spare Parts') and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
-									# 	doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCk) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-									# 	subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" else ""
-									# elif (subTabName == 'Periods') and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
-									# 	doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-									# 	subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" and Product.GetGlobal("SERVICE") == "Z0108" else ""
-									# elif subTabName =='Equipment' and Product.GetGlobal("ParentNodeLevel")=="Complementary Products":
-									# 	doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-									# 	subTabName = "" if str(doc_type.DOCTYP_ID) == "ZWK1" else str(getRightView.SUBTAB_NAME)
-									# 	Product.SetGlobal("ParentNodeLevel",'')
+										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCk) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" else ""
+									elif (subTabName == 'Periods') and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
+										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" and Product.GetGlobal("SERVICE") == "Z0108" else ""
+									elif subTabName =='Equipment' and Product.GetGlobal("ParentNodeLevel")=="Complementary Products":
+										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+										subTabName = "" if str(doc_type.DOCTYP_ID) == "ZWK1" else str(getRightView.SUBTAB_NAME)
+										Product.SetGlobal("ParentNodeLevel",'')
 									
 									else:
 										subTabName = str(getRightView.SUBTAB_NAME)
@@ -2058,7 +2045,7 @@ class TreeView:
 										)
 										#Trace.Write("SubTabList --->"+str(SubTabList))
 									if str(ObjRecId) == "01C264E8-9B64-4F99-B05C-D61ECD2C4D27":
-										item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID,LINE".format(Product.GetGlobal("contract_quote_record_id"),str(NodeText),quote_revision_record_id))
+										item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID,LINE".format(contract_quote_record_id,str(NodeText),quote_revision_record_id))
 										if item_billing_plan_obj is not None:
 											if str(NodeText) == "Z0117":
 												years = item_billing_plan_obj.cnt
@@ -2383,7 +2370,7 @@ class TreeView:
 									subTabName = ""
 								elif subTabName =="Spare Parts Line Item Details":
 									subTabName = ""
-									spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIFP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+									spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIFP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 									if spare_parts_object is not None:
 										if spare_parts_object.cnt > 0:
 											subTabName = str(getRightView.SUBTAB_NAME)
@@ -3113,8 +3100,7 @@ except:
 if not quote_revision_record_id and quote_revision_record_id!="":
 	try:
 		GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
-	except:
-		Trace.Write("EXCEPT: GetActiveRevision")
+	except:		
 		GetActiveRevision = ""
 	if GetActiveRevision:
 		Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
