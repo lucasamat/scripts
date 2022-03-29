@@ -7993,7 +7993,7 @@ def POPUPLISTVALUEADDNEW(
 									Trace.Write("EXCEPTION Occured")
 							elif "Z0007" in service_ids:
 								try:
-									Trace.Write("Tier_List1"+str(Tier_List1))
+									Trace.Write("Tier_List2"+str(Tier_List2))
 									Tier_List1.remove("SENDING ACCOUNT")
 									Tier_List1.remove("RECEIVING ACCOUNT")
 								except:
