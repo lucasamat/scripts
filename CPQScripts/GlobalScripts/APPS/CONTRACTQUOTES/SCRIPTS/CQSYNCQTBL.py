@@ -1765,6 +1765,7 @@ class SyncQuoteAndCustomTables:
                                             equipment_fab_data[service_level_temp_equipment_json_data.get('FAB_LOCATION_ID')] = [service_level_temp_equipment_json_data.get('EQUIPMENT_ID')]
                                 if equipment_fab_data:
                                     #Log.Info("equipment_fab_data"+str(equipment_fab_data))
+                                    Log.info(str(equipment_fab_data.items()))
                                     for fab_location_id, value in equipment_fab_data.items():
                                         #Log.Info("fab_location_id"+str(fab_location_id))
                                         #Log.Info("value------temp"+str(value))
