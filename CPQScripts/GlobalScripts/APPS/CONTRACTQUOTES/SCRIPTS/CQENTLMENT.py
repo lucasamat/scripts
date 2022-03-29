@@ -335,6 +335,7 @@ class Entitlements:
 
 	def EntitlementSave(self, subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT,scheduled_parts):
 		#AttributeValCode = AttributeValCode.replace("_"," ")
+		cps_error = ''
 		Trace.Write(str(type(NewValue))+'----NewValue')
 		if not type(NewValue) is 'str' and multiselect_flag == 'true':
 			NewValue = list(NewValue)	
