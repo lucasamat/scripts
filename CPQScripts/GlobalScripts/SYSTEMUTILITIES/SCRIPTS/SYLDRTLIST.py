@@ -4655,6 +4655,7 @@ class SYLDRTLIST:
                     if RECORD_ID == "SYOBJR-00005" or RECORD_ID == "SYOBJR-98882":
                         Trace.Write("Doubleclick")
                         cls = "eq(3)"
+                        
 
                     local_variable = "PartsListBulkedit"
                 Trace.Write('@4578'+str(local_variable)+''+str(RECORD_ID))
