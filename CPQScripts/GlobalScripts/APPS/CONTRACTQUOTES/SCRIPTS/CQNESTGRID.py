@@ -747,7 +747,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		key_column = "APPROVAL_CHAIN_STEP_RECORD_ID"
 		Columns = [
 		"APPROVAL_CHAIN_STEP_RECORD_ID",
-		"FIELD_LABEL",
+		"APROBJ_LABEL",
 		"UNANIMOUS_CONSENT",
 		"REQUIRE_EXPLICIT_APPROVAL",
 		"ADVANCED_CONDITION",
