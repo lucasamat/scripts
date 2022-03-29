@@ -257,7 +257,7 @@ class Entitlements:
 			Trace.Write("Patch Error---176----"+str(sys.exc_info()[1]))
 			error = sys.exc_info()[1]
 			# response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-			# Trace.Write('274------'+str(response1))
+			Trace.Write('274------'+str(error))
 			cpsmatc_incr = cpsmatchID
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
@@ -271,13 +271,13 @@ class Entitlements:
 		response2 = webclient.DownloadString(Request_URL)
 		#Trace.Write('response2--182---------'+str(response2))
 		response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
-		try:
-			if (not error) and response2:
-				response_temp = eval(response2)
-				if response_temp['conflicts']:
-					cps_error = response_temp['conflicts']
-		except:
-			pass
+		#try:
+		if (not error) and response2:
+			response_temp = eval(response2)
+			if response_temp['conflicts']:
+				cps_error = response_temp['conflicts']
+		# except:
+		# 	pass
 		return eval(response2),cpsmatc_incr,attribute_code,cps_error
 	
 	def get_product_attr_level_cps_pricing(self, characteristics_attr_values=None,serviceId =None):
