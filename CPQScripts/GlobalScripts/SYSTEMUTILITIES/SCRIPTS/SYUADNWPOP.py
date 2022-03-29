@@ -7980,6 +7980,7 @@ def POPUPLISTVALUEADDNEW(
 							Tier_List1 = sorted(Tier_List)
 							service_id_query=SqlHelper.GetList("select SERVICE_ID FROM  SAQTSV (NOLOCK) where QUOTE_RECORD_ID = '{}'")
 							service_ids= []
+							
 							for i in service_id_query:
 								service_ids.append(i.SERVICE_ID)
 								Trace.Write("service_ids--->"+str(service_ids))
