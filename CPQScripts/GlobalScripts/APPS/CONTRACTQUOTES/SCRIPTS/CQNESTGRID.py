@@ -987,7 +987,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		if ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
 			data_dict["APROBJ_LABEL"] = ('<abbr id ="" title="' + str(par.APROBJ_LABEL) + '">' + str(par.APROBJ_LABEL) + "</abbr>") 
 			data_dict["UNANIMOUS_CONSENT"] = str(par.UNANIMOUS_CONSENT)
-			data_dict["REQUIRE_EXPLICIT_APPROVAL"] = str(par.UNANIMOUS_CONSENT)
+			data_dict["REQUIRE_EXPLICIT_APPROVAL"] = str(par.REQUIRE_EXPLICIT_APPROVAL)
 			data_dict["ADVANCED_CONDITION"] = ('<abbr id ="" title="' + str(par.ADVANCED_CONDITION) + '">' + str(par.ADVANCED_CONDITION) + "</abbr>")
 			data_dict["CONDITIONS_MET"] = ('<abbr id ="" title="' + str(par.CONDITIONS_MET) + '">' + str(par.CONDITIONS_MET) + "</abbr>")
 			data_dict["ENABLE_SMARTAPPROVAL"] = str(par.ENABLE_SMARTAPPROVAL)
