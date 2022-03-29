@@ -183,6 +183,7 @@ class Entitlements:
 		webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
 		Trace.Write(str(cpsmatchID)+"--Request_UR-L--"+Request_URL+"---cpsConfigID---: "+str(cpsConfigID))
 		#AttributeValCode = ''
+		cps_error = ""
 		try:
 			STANDARD_ATTRIBUTE_VALUES =''
 			#STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE FROM STANDARD_ATTRIBUTE_VALUES (nolock) where STANDARD_ATTRIBUTE_DISPLAY_VAL='{}' and SYSTEM_ID like '{}%'".format(NewValue,AttributeID))
@@ -254,6 +255,7 @@ class Entitlements:
 			Trace.Write("new cps match Id: "+str(cpsmatc_incr))
 		except Exception:
 			Trace.Write("Patch Error---176----"+str(sys.exc_info()[1]))
+			error = sys.exc_info()[1]
 			# response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 			# Trace.Write('274------'+str(response1))
 			cpsmatc_incr = cpsmatchID
@@ -269,7 +271,14 @@ class Entitlements:
 		response2 = webclient.DownloadString(Request_URL)
 		#Trace.Write('response2--182---------'+str(response2))
 		response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
-		return eval(response2),cpsmatc_incr,attribute_code
+		try:
+			if (not error) and response2:
+				response_temp = eval(response2)
+				if response_temp['conflicts']:
+					cps_error = response_temp['conflicts']
+		except:
+			pass
+		return eval(response2),cpsmatc_incr,attribute_code,cps_error
 	
 	def get_product_attr_level_cps_pricing(self, characteristics_attr_values=None,serviceId =None):
 		webclient = System.Net.WebClient()
@@ -542,7 +551,7 @@ class Entitlements:
 			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
 			if get_ent_type:
 				if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-					Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)				
+					Fullresponse,cpsmatc_incr,attribute_code,cps_error = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)				
 					Trace.Write("Fullresponse--"+str(Fullresponse))
 					Product.SetGlobal('Fullresponse',str(Fullresponse))
 					#restriction for value driver call to CPS end
@@ -778,7 +787,7 @@ class Entitlements:
 				else:
 					Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
 			else:
-				Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+				Fullresponse,cpsmatc_incr,attribute_code,cps_error = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
 			
 				Trace.Write("Fullresponse--"+str(Fullresponse))
 				Product.SetGlobal('Fullresponse',str(Fullresponse))
@@ -2008,9 +2017,9 @@ class Entitlements:
 						attribute_code = ''
 						if get_ent_type:
 							if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-								Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+								Fullresponse,cpsmatc_incr,attribute_code,cps_error = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
 						else:
-							Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+							Fullresponse,cpsmatc_incr,attribute_code,cps_error = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
 						if Fullresponse and cpsmatc_incr:
 							Trace.Write("Fullresponse"+str(Fullresponse))
 							Trace.Write("tableName--894---"+str(tableName))
@@ -2198,7 +2207,7 @@ class Entitlements:
 		# Trace.Write('get_conflict_message--2043----'+str(get_conflict_message))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
-		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesdisrequired_list,attriburesrequired_list
+		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesdisrequired_list,attriburesrequired_list,cps_error
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
