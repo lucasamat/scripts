@@ -9923,30 +9923,30 @@ def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				+ str(TreeParentParam)
 				+ "'"
 			)
-        elif TreeParam == "Add-On Products" and (TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products"):
-            child_obj_recid = Sql.GetList(
-                "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,EQUIPMENTTYPE_ID,GOT_CODE,EQUIPMENT_DESCRIPTION,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}') m where m.ROW BETWEEN ".format(
-                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
-                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
-                    Parent_Equipmentid=Parent_Equipmentid,
-                    treeparam=TreeSuperParentParam
-                )
-                + str(Page_start)
-                + " and "
-                + str(Page_End)
-            )
+		elif TreeParam == "Add-On Products" and (TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products"):
+			child_obj_recid = Sql.GetList(
+				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,EQUIPMENTTYPE_ID,GOT_CODE,EQUIPMENT_DESCRIPTION,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}') m where m.ROW BETWEEN ".format(
+					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+					RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
+					Parent_Equipmentid=Parent_Equipmentid,
+					treeparam=TreeSuperParentParam
+				)
+				+ str(Page_start)
+				+ " and "
+				+ str(Page_End)
+			)
 
-            QueryCountObj = Sql.GetFirst(
-                "select count(CpqTableEntryId) as cnt from SAQSCA (NOLOCK) where QUOTE_RECORD_ID = '"
-                + str(ContractRecordId)
-                + "' and QTEREV_RECORD_ID = '"
-                + str(RevisionRecordId)
-                + "'and EQUIPMENT_ID ='"
-                + str(Parent_Equipmentid)
-                + "'and SERVICE_ID ='"
-                + str(TreeSuperParentParam)
-                + "'"
-            )
+			QueryCountObj = Sql.GetFirst(
+				"select count(CpqTableEntryId) as cnt from SAQSCA (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "'and EQUIPMENT_ID ='"
+				+ str(Parent_Equipmentid)
+				+ "'and SERVICE_ID ='"
+				+ str(TreeSuperParentParam)
+				+ "'"
+			)
 		elif TreeParentParam == "Receiving Equipment":
 			child_obj_recid = Sql.GetList(
 				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,EQUIPMENTTYPE_ID,GOT_CODE,EQUIPMENT_DESCRIPTION,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}' AND FABLOCATION_ID = '{fab}') m where m.ROW BETWEEN ".format(
