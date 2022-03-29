@@ -739,6 +739,24 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		"SSCM_PM_FREQUENCY",
 		"PM_FREQUENCY"
 	]
+	elif str(TreeSuperParentParam)=="Approvals":
+		obj_idval = "SYOBJ_01023_SYOBJ_01023"
+		rec_id = "SYOBJ-01023"
+		obj_id = "SYOBJ-01023"
+		ObjectName = "ACACST"
+		key_column = "APPROVAL_CHAIN_STEP_RECORD_ID"
+		Columns = [
+		"APPROVAL_CHAIN_STEP_RECORD_ID",
+		"FIELD_LABEL",
+		"UNANIMOUS_CONSENT",
+		"REQUIRE_EXPLICIT_APPROVAL",
+		"ADVANCED_CONDITION",
+		"CONDITIONS_MET",
+		"ENABLE_SMARTAPPROVAL",
+		"ACTIVE"
+	]
+
+		
 	else:
 		key_column = "QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"
 		obj_idval = "SYOBJ_1177055_SYOBJ_1177055"
@@ -918,6 +936,28 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(TreeSuperParentParam)
 			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
 		)
+	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, APPROVAL_CHAIN_STEP_RECORD_ID, APROBJ_LABEL, UNANIMOUS_CONSENT, REQUIRE_EXPLICIT_APPROVAL, ADVANCED_CONDITION,CONDITIONS_MET, ENABLE_SMARTAPPROVAL, ACTIVE from "+str(ObjectName)+" (NOLOCK) where APRCHN_ID = '"
+			+ str(TreeParentParam)
+			+ "' and APRCHNSTP_NUMBER = 1 "
+			+ str(where_string) 
+			+ ") m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where APRCHN_ID = '"
+			+ str(TreeParentParam)
+			+ "' and APRCHNSTP_NUMBER = 1 "
+			+ str(where_string)
+		)
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
 	parent_obj = Sql.GetList(Qstr)
@@ -944,29 +984,39 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		data_dict[key_column] = CPQID.KeyCPQId.GetCPQId(
 			ObjectName, data_id
 		)
-		if str(ObjectName) == "SAQGPA":
-			data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
-			data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
-			data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
-			data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
-			data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
-			data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
-			data_dict["KIT_ID"] = ('<abbr id ="" title="' + str(par.KIT_ID) + '">' + str(par.KIT_ID) + "</abbr>")
-			data_dict["KIT_NAME"] = ('<abbr id ="" title="' + str(par.KIT_NAME) + '">' + str(par.KIT_NAME) + "</abbr>")
-			data_dict["TKM_FLAG"] = str(par.TKM_FLAG)
-
-		elif str(ObjectName) == "SAQGPM":
-			data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
-			data_dict["DEVICE_NODE"] = ('<abbr id ="" title="' + str(par.DEVICE_NODE) + '">' + str(par.DEVICE_NODE) + "</abbr>")
-			data_dict["PROCESS_TYPE"] = ('<abbr id ="" title="' + str(par.PROCESS_TYPE) + '">' + str(par.PROCESS_TYPE) + "</abbr>")
-			data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
-			data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
-			data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+		if ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
+			data_dict["APROBJ_LABEL"] = ('<abbr id ="" title="' + str(par.APROBJ_LABEL) + '">' + str(par.APROBJ_LABEL) + "</abbr>") 
+			data_dict["UNANIMOUS_CONSENT"] = str(par.UNANIMOUS_CONSENT)
+			data_dict["REQUIRE_EXPLICIT_APPROVAL"] = str(par.UNANIMOUS_CONSENT)
+			data_dict["ADVANCED_CONDITION"] = ('<abbr id ="" title="' + str(par.ADVANCED_CONDITION) + '">' + str(par.ADVANCED_CONDITION) + "</abbr>")
+			data_dict["CONDITIONS_MET"] = ('<abbr id ="" title="' + str(par.CONDITIONS_MET) + '">' + str(par.CONDITIONS_MET) + "</abbr>")
+			data_dict["ENABLE_SMARTAPPROVAL"] = str(par.ENABLE_SMARTAPPROVAL)
+			data_dict["ACTIVE"] = str(par.ACTIVE)
 			
-		
-		data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
-		data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
-		data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
+		else: 
+			if str(ObjectName) == "SAQGPA":
+				data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
+				data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
+				data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
+				data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
+				data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
+				data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+				data_dict["KIT_ID"] = ('<abbr id ="" title="' + str(par.KIT_ID) + '">' + str(par.KIT_ID) + "</abbr>")
+				data_dict["KIT_NAME"] = ('<abbr id ="" title="' + str(par.KIT_NAME) + '">' + str(par.KIT_NAME) + "</abbr>")
+				data_dict["TKM_FLAG"] = str(par.TKM_FLAG)
+
+			elif str(ObjectName) == "SAQGPM":
+				data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
+				data_dict["DEVICE_NODE"] = ('<abbr id ="" title="' + str(par.DEVICE_NODE) + '">' + str(par.DEVICE_NODE) + "</abbr>")
+				data_dict["PROCESS_TYPE"] = ('<abbr id ="" title="' + str(par.PROCESS_TYPE) + '">' + str(par.PROCESS_TYPE) + "</abbr>")
+				data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
+				data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
+				data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+				
+			
+			data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
+			data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
+			data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
 
 		data_list.append(data_dict)
 	
