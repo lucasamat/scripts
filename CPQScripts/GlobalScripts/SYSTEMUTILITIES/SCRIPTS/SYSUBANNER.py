@@ -1413,22 +1413,23 @@ def Related_Sub_Banner(
                 if (str(ObjName) == 'SAQTSV'or str(ObjName) == 'SAQSCO' or str(ObjName) == 'SAQSPT') and TreeSuperParentParam == 'Product Offerings'and TabName == "Quotes":
                     ##Added the sixth label value....
                     entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
-                    entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-                    import re
-                    quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-                    quote_type_id = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(TreeParam)+'[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-                    quote_type_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-                    for m in re.finditer(quote_item_tag, entitlement_xml):
-                        sub_string = m.group(1)
-                        type_id = re.findall(quote_type_id,sub_string)
-                        if type_id:
-                            type_value = re.findall(quote_type_value,sub_string)
-                            type_value = type_value[0]
-                            Trace.Write("type_id ---"+str(type_id)+"type_value--"+str(type_value))
-                            SeventhLable = "Quote Type"
-                            SeventhValue = str(type_value)
-                            Trace.Write("seventh fields-------"+str(SeventhLable)+"sevent values"+str(SeventhLable))
-                            break
+                    if entitlement_obj:
+                        entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+                        import re
+                        quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                        quote_type_id = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(TreeParam)+'[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+                        quote_type_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+                        for m in re.finditer(quote_item_tag, entitlement_xml):
+                            sub_string = m.group(1)
+                            type_id = re.findall(quote_type_id,sub_string)
+                            if type_id:
+                                type_value = re.findall(quote_type_value,sub_string)
+                                type_value = type_value[0]
+                                Trace.Write("type_id ---"+str(type_id)+"type_value--"+str(type_value))
+                                SeventhLable = "Quote Type"
+                                SeventhValue = str(type_value) if type_value else ""
+                                Trace.Write("seventh fields-------"+str(SeventhLable)+"sevent values"+str(SeventhLable))
+                                break
                     Trace.Write('*subb--')					
                     TreeParam = Quote.GetGlobal("TreeParam")
                     TreeParentParam = Quote.GetGlobal("TreeParentLevel0")
