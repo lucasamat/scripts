@@ -7986,7 +7986,8 @@ def POPUPLISTVALUEADDNEW(
 								Trace.Write("service_ids--->"+str(service_ids))
 							if "Z0007" not in service_ids:
 								try:
-									Tier_List1.remove("SENDING ACCOUNT").remove("RECEIVING ACCOUNT")
+									Tier_List1.remove("SENDING ACCOUNT")
+									Tier_List1.remove("RECEIVING ACCOUNT")
 								except:
 									Trace.Write("EXCEPTION Occured")
 							Trace.Write('4063--Tier_List1-----'+str(TabName))
