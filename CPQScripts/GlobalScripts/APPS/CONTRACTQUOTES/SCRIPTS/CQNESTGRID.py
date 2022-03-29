@@ -5095,7 +5095,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	obj_id = "SYOBJ-00974"
 	if str(SortColumn) == "SSCM_PM_FREQUENCY" or str(SortColumn) == "PM_FREQUENCY":
 		sort_by = " ORDER BY CAST("+str(SortColumn)+" AS FLOAT) "+str(SortColumnOrder)
-	elif str(SortColumn)!='' and str(SortColumnOrder)!='':
+	elif SortColumn and SortColumnOrder:
 		sort_by = " ORDER BY "+str(SortColumn)+" "+str(SortColumnOrder)
 	else:
 		sort_by = ' ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID'
