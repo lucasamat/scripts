@@ -563,7 +563,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="IF THE CUSTOMER HAS A MASTER SERVICE AGREEMENT" and str(value.CHECKLIST_ID) in ['5','6','7','8','9','10','11','12','12.1','12.2','12.3']:
+			elif sect.SECTION_NAME =="IF THE CUSTOMER HAS A MASTER SERVICE AGREEMENT" and str(value.CHECKLIST_ID) in ['5','6','7','8','9','10','10.1','10.2','10.3','11','12','12.1','12.2','12.3']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
