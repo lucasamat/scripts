@@ -5173,7 +5173,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
-			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ) m where m.ROW BETWEEN "
+			+ "' and PM_FREQUENCY_EDITABLE = 'True'  ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End) + " "+ str(sort_by)
@@ -5183,7 +5183,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
-			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' "
+			+ "' and PM_FREQUENCY_EDITABLE = 'True' "
 		)
 	elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
 		offset = int(Page_start)-1
@@ -5194,7 +5194,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam).split('-')[0]
-			+ "' "+str(sort_by)+" OFFSET "+str(offset)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
+			+ "' and PM_FREQUENCY_EDITABLE = 'True' "+str(sort_by)+" OFFSET "+str(offset)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
 		)
 		QueryCountObj = Sql.GetFirst(
 			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where "+str(where_string)+" QUOTE_RECORD_ID = '"
@@ -5203,7 +5203,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam).split('-')[0]
-			+ "' "
+			+ "' and PM_FREQUENCY_EDITABLE = 'True' "
 		)
 		
 	if QueryCountObj is not None:
