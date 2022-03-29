@@ -1845,7 +1845,7 @@ class TreeView:
 								##showing config status along with offering
 								if str(ObjName).strip() == 'SAQTSV' and str(NodeName) == 'SERVICE_ID':
 									service_id = NodeText
-									
+									image_url = ''
 									try:
 										get_status = Sql.GetFirst("SELECT CONFIGURATION_STATUS FROM SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, NodeText ) )
 										if get_status:
