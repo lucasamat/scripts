@@ -1006,7 +1006,7 @@ class EntitlementView():
 							##validation msg
 							validation_attr = ""
 							if attrSysId in validation_dict.keys():
-								validation_attr = ' onkeypress="return isNumberKey(event);"'
+								#validation_attr = ' onkeypress="return isNumberKey(event);"'
 								if validation_dict[attrSysId]  == '0.00':
 									sec_validation = "Only enter the values in the following range: -&infin; - "+str(validation_dict[attrSysId])
 								else:
