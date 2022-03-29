@@ -523,8 +523,11 @@ class ConfigUpdateScript:
 				#if action_visible_obj is not None:
 					#for record in action_visible_obj:
 				Trace.Write('At 453')
-				res=[record.RECORD_ID for record in action_visible_obj]
-				Trace.Write('##res--->'+str(res))
+				if action_visible_obj:
+					res=[record.RECORD_ID for record in action_visible_obj]
+					Trace.Write('##res--->'+str(res))
+				else:
+					res =[]
 		return res
 		#return []
 
