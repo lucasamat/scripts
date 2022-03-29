@@ -7978,7 +7978,7 @@ def POPUPLISTVALUEADDNEW(
 							Tier_List1 = []
 							Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")
 							Tier_List1 = sorted(Tier_List)
-							service_id_query=SqlHelper.GetList("select SERVICE_ID FROM  SAQTSV (NOLOCK) where QUOTE_RECORD_ID = '{}'")
+							service_id_query=SqlHelper.GetList("select SERVICE_ID FROM  SAQTSV (NOLOCK) where QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
 							service_ids= []
 
 							for i in service_id_query:
