@@ -7985,7 +7985,7 @@ def POPUPLISTVALUEADDNEW(
 								service_ids.append(i.SERVICE_ID)
 								Trace.Write("service_ids--->"+str(service_ids))
 							if "Z0007" not in service_ids:
-								Tier_List1.remove("Sending Account").remove("Receiving Account")
+								Tier_List1.remove("SENDING ACCOUNT").remove("RECEIVING ACCOUNT")
 							Trace.Write('4063--Tier_List1-----'+str(TabName))
 							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND CPQ_PARTNER_FUNCTION != 'RECEIVING ACCOUNT'".format(contract_quote_record_id,quote_revision_record_id))
 							if str(TabName) == "Quote":
