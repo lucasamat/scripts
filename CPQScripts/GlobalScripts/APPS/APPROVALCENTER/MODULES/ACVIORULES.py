@@ -1242,6 +1242,14 @@ class ViolationConditions:
                     return 1
                 else:
                     return None
+            else:
+                getMax = Sql.GetFirst("SELECT MAX(APRCHNSTP_NUMBER_CONDITION) AS MAX_COUNT FROM ACACSF (NOLOCK) WHERE APRCHNSTP_RECORD_ID = '{}'".format(result.APPROVAL_CHAIN_STEP_RECORD_ID))
+                condition = result.ADVANCED_CONDITION
+                for i in range(1,int(getMax.MAX_COUNT)+1):
+                    condition.replace(i,arr[i-1])
+                
+                return bool(condition)
+
         else:
             for x in GetACACSF:
                 selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE ".format(x.TSTOBJ_LABEL)
