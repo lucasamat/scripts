@@ -7979,12 +7979,12 @@ def POPUPLISTVALUEADDNEW(
 							Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")
 							Tier_List1 = sorted(Tier_List)
 							service_id_query=SqlHelper.GetList("select SERVICE_ID FROM  SAQTSV (NOLOCK) where QUOTE_RECORD_ID = '{}'")
-								service_ids= []
-								for i in service_id_query:
-									service_ids.append(i.SERVICE_ID)
-									Trace.Write("service_ids--->"+str(service_ids))
-								if Z0007 not in:
-									Tier_List.remove("Sending Account").remove("Receiving Account")
+							service_ids= []
+							for i in service_id_query:
+								service_ids.append(i.SERVICE_ID)
+								Trace.Write("service_ids--->"+str(service_ids))
+							if Z0007 not in:
+								Tier_List1.remove("Sending Account").remove("Receiving Account")
 							Trace.Write('4063--Tier_List1-----'+str(TabName))
 							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND CPQ_PARTNER_FUNCTION != 'RECEIVING ACCOUNT'".format(contract_quote_record_id,quote_revision_record_id))
 							if str(TabName) == "Quote":
