@@ -663,7 +663,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="NSOS/UPGRADES" and str(value.CHECKLIST_ID) in ['26','27']:
+			elif sect.SECTION_NAME =="NSOS/UPGRADES" and str(value.CHECKLIST_ID) in ['24','25']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -683,7 +683,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="MULTI-ELEMENT ARRANGEMENT" and str(value.CHECKLIST_ID) in ['28','28.1','28.2','28.3']:
+			elif sect.SECTION_NAME =="MULTI-ELEMENT ARRANGEMENT" and str(value.CHECKLIST_ID) in ['26','26.1','26.2','26.3']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -724,7 +724,7 @@ def editcbc(Qt_rec_id, Quote, MODE):
 		if '.' not in val['CHECKLIST_ID']:
 			val['COMMENT'] = val['COMMENT'].replace("'", "").replace("<", "").replace(">", "")
 			Sql.RunQuery("UPDATE SAQCBC SET SERVICE_CONTRACT = '{service_contract}',SPECIALIST_REVIEW = '{specialist_review}',COMMENT = '{comment}' WHERE CHECKLIST_ID = '{checklist_id}' AND QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' ".format(checklist_id = val['CHECKLIST_ID'] if val['CHECKLIST_ID'] !="" else "",service_contract = val['SERVICE_CONTRACT'],specialist_review = val['SPECIALIST_REVIEW'],comment = val['COMMENT'],quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
-	get_all_checklist=Sql.GetFirst("SELECT COUNT(*) as cnt FROM SAQCBC (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND SERVICE_CONTRACT=0 AND SPECIALIST_REVIEW=0 AND CHECKLIST_ID NOT IN('4.1','4.2','4.3','4.4','10.1','10.2','10.3','12.1','12.2','12.3','28.1','28.2','28.3')".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+	get_all_checklist=Sql.GetFirst("SELECT COUNT(*) as cnt FROM SAQCBC (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND SERVICE_CONTRACT=0 AND SPECIALIST_REVIEW=0 AND CHECKLIST_ID NOT IN('4.1','4.2','4.3','4.4','10.1','10.2','10.3','26.1','26.2','26.3')".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	if get_all_checklist.cnt == "0":
 		update_rev_cb_complete_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-CBC COMPLETED' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=Quote,quote_revision_rec_id=quote_revision_record_id)
 		Sql.RunQuery(update_rev_cb_complete_status)
