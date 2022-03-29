@@ -583,7 +583,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="VALIDATE CANCELLATION FOR CONVENIENCE DAYS IN CRM ARE RECORDED ACCORDING TO TS&CS IN THE BOOKING PACKAGE (I.E. SOW, PO, CL, MSA, ETC...) AND ENTER 0, NA, OR THE NUMBER OF DAYS BASED ON THESE RULES:(DO NOT INCLUDE POSS CANCELLATION TERMS WITH SERVICE TERMS. IF MULTIPLE CANCELLATION TERMS FOR SERVICE PRODUCTS, SPLIT OUT)" and str(value.CHECKLIST_ID) in ['13','14','15','16','17']:
+			elif sect.SECTION_NAME =="VALIDATE CANCELLATION FOR CONVENIENCE DAYS IN CRM ARE RECORDED ACCORDING TO TS&CS IN THE BOOKING PACKAGE (I.E. SOW, PO, CL, MSA, ETC...) AND ENTER 0, NA, OR THE NUMBER OF DAYS BASED ON THESE RULES:(DO NOT INCLUDE POSS CANCELLATION TERMS WITH SERVICE TERMS. IF MULTIPLE CANCELLATION TERMS FOR SERVICE PRODUCTS, SPLIT OUT)" and str(value.CHECKLIST_ID) in ['11','12','13','14','15']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
