@@ -703,8 +703,6 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
-			
-					sec_str +='<p>note</p>'
 		sec_str += '</tbody></table></div>'
 		
 	values_lists = ""
