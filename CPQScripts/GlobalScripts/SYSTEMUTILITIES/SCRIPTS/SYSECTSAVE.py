@@ -756,7 +756,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							if current_payment_term == payment_term_name_previous:
 								Trace.Write("current_payment_term"+str(current_payment_term))
 								Trace.Write("payment_term_name_previous"+str(payment_term_name_previous))
-							newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
+							#newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
 							#newdict["CEILING_PRICE_INGL_CURR"] = re.sub('USD','',newdict["CEILING_PRICE_INGL_CURR"])
 							# newdict["NET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["NET_PRICE_INGL_CURR"])
 							newdict["TAX_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["TAX_AMOUNT_INGL_CURR"])
