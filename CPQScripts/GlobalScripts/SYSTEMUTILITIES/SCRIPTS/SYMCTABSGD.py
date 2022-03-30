@@ -1737,34 +1737,35 @@ class CONTAINER:
                                                                         )
                                                                     if product_id != "" and product_id is not None:
                                                                         product_num = str(product_id.PRODUCT_ID)
-                                                                        gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
-                                                                        if gettabvisibility.visible == 1:
-                                                                            idval = RECORD_ID + "|" + tab_val
-                                                                            newRow[rowName] = (
-                                                                                "<a href='/Configurator.aspx?pid="
-                                                                                + str(product_num)
-                                                                                + "' id='"
-                                                                                + str(idval)
-                                                                                + "' class='cur_sty' onclick='Move_to_parent_obj(this)'><abbr id='"
-                                                                                + str(row_value)
-                                                                                + "' title='"
-                                                                                + str(row_value)
-                                                                                + "'>"
-                                                                                + str(row_value)
-                                                                                + "</abbr></a>"
-                                                                            )
+                                                                        # gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
+                                                                        # gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
+                                                                        # if gettabvisibility.visible == 1:
+                                                                        #     idval = RECORD_ID + "|" + tab_val
+                                                                        #     newRow[rowName] = (
+                                                                        #         "<a href='/Configurator.aspx?pid="
+                                                                        #         + str(product_num)
+                                                                        #         + "' id='"
+                                                                        #         + str(idval)
+                                                                        #         + "' class='cur_sty' onclick='Move_to_parent_obj(this)'><abbr id='"
+                                                                        #         + str(row_value)
+                                                                        #         + "' title='"
+                                                                        #         + str(row_value)
+                                                                        #         + "'>"
+                                                                        #         + str(row_value)
+                                                                        #         + "</abbr></a>"
+                                                                        #     )
                                                                             
-                                                                        else:
-                                                                            idval = RECORD_ID + "|" + tab_val
-                                                                            newRow[rowName] = (
-                                                                                "<abbr id='"
-                                                                                + str(row_value)
-                                                                                + "' title='"
-                                                                                + str(row_value)
-                                                                                + "'>"
-                                                                                + str(row_value)
-                                                                                + "</abbr>"
-                                                                            )
+                                                                        # else:
+                                                                        idval = RECORD_ID + "|" + tab_val
+                                                                        newRow[rowName] = (
+                                                                            "<abbr id='"
+                                                                            + str(row_value)
+                                                                            + "' title='"
+                                                                            + str(row_value)
+                                                                            + "'>"
+                                                                            + str(row_value)
+                                                                            + "</abbr>"
+                                                                        )
                                                                             
                                                                     else:
                                                                         idval = RECORD_ID + "|" + lookup_val.strip()
@@ -1783,11 +1784,11 @@ class CONTAINER:
 
                                                             else:
                                                                 #hyperlink permissions start
-                                                                gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
+                                                                # gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
                                                                 if tab_val in list_of_tabs:
-                                                                    if gettabvisibility:
+                                                                    if 1=1:
                                                                         #Trace.Write('1420-gettabvisibility------'+str(gettabvisibility.VISIBLE))
-                                                                        if gettabvisibility.VISIBLE == 1:
+                                                                        if 1 == 1:
                                                                             
                                                                             idval = RECORD_ID + "|" + tab_val.strip()
                                                                             row_value = str(eval("data." + col_name))
@@ -1819,8 +1820,8 @@ class CONTAINER:
                                                                             
                                                                     else:
                                                                         
-                                                                        gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
-                                                                        if gettabvisibility.visible == 1:
+                                                                        # gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
+                                                                        if 1 == 1:
                                                                             idval = RECORD_ID + "|" + tab_val.strip()
                                                                             row_value = str(eval("data." + col_name))
                                                                             newRow[rowName] = (
