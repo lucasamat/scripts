@@ -4620,9 +4620,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(PerPage)
 			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, APPROVAL_CHAIN_STEP_RECORD_ID, APROBJ_LABEL, UNANIMOUS_CONSENT, REQUIRE_EXPLICIT_APPROVAL, ADVANCED_CONDITION,CONDITIONS_MET, ENABLE_SMARTAPPROVAL, ACTIVE from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" APRCHN_ID = '"
 			+ str(TreeParentParam)
-			+ "' and APRCHNSTP_NUMBER = 1 "
-			+ str(where_string) 
-			+ ") m where m.ROW BETWEEN "
+			+ "' and APRCHNSTP_NUMBER = 1 ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -4633,8 +4631,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		QueryCountObj = Sql.GetFirst(
 			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" APRCHN_ID = '"
 			+ str(TreeParentParam)
-			+ "' and APRCHNSTP_NUMBER = 1 "
-			+ str(where_string)
+			+ "' and APRCHNSTP_NUMBER = 1 
 		)
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
