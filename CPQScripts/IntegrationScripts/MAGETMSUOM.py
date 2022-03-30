@@ -47,6 +47,9 @@ try:
 
 
 			if str(Partquery).upper() != "NONE":
+				
+				start = start + 1
+				end = end + 1
 
 				part = "'"+str(Partquery.SAP_PART_NUMBER)+"'"
 		
@@ -63,15 +66,12 @@ try:
 					
 					Stagingquery = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " "+str(Table_Name)+" (SAP_PART_NUMBER,CONVERSIONUOM_ID,BASE_QUANTITY,CONVERSION_QUANTITY)  select  N''"+record_dict['SAP_PART_NUMBER']+ "'',N''"+record_dict['CONVERSIONUOM_ID']+ "'',N''"+record_dict['BASE_QUANTITY']+ "'',N''"+record_dict['CONVERSION_QUANTITY']+ "'' ' ")
 
-				start = start + 1
-				end = end + 1
-
 			else:
 				check_flag1 = 0
 		
 		
 		
-		MaterialupdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  MAMUOC_INBOUND set MAMUOC_INBOUND.SAP_PART_NUMBER= CONVERT(BIGINT,SAP_PART_NUMBER)  FROM MAMUOC_INBOUND (NOLOCK) WHERE ISNUMERIC(SAP_PART_NUMBER)=1 AND SAP_PART_NUMBER NOT LIKE ''%.%''  ' ")
+		MaterialupdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  MAMUOC_INBOUND set MAMUOC_INBOUND.SAP_PART_NUMBER= CONVERT(BIGINT,SAP_PART_NUMBER)  FROM MAMUOC_INBOUND (NOLOCK) WHERE ISNUMERIC(SAP_PART_NUMBER)=1 AND SAP_PART_NUMBER NOT LIKE ''%.%'' AND SAP_PART_NUMBER NOT LIKE ''%D%'' AND SAP_PART_NUMBER NOT LIKE ''%E%''  ' ")
 		
 		MaterialupdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  MAMUOC_INBOUND set MAMUOC_INBOUND.MATERIAL_NAME= MAMTRL.SAP_DESCRIPTION,MAMUOC_INBOUND.MATERIAL_RECORD_ID= MAMTRL.MATERIAL_RECORD_ID,BASEUOM_RECORD_ID=UOM_RECORD_ID,BASEUOM_ID = UNIT_OF_MEASURE FROM MAMUOC_INBOUND(NOLOCK)  JOIN MAMTRL(NOLOCK) ON MAMUOC_INBOUND.SAP_PART_NUMBER= MAMTRL.SAP_PART_NUMBER  ' ")
 		
@@ -106,4 +106,4 @@ try:
 except:     
 	Log.Info("MAGETMSUOM ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("MAGETMSUOM ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]}) 
+	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
