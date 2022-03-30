@@ -2978,7 +2978,7 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY APRCHNSTP_TESTEDFIELD_RECORD_ID) AS ROW, APRCHNSTP_TESTEDFIELD_RECORD_ID,TSTOBJ_LABEL,TSTOBJ_TESTEDFIELD_LABEL,CMPOBJ_LABEL,CMPOBJ_FIELD_LABEL,CMP_DATATYPE,CMP_OPERATOR,CMP_VALUE from ACACSF (NOLOCK) where APRCHN_ID = '"+str(Parent_event.APRCHN_ID)+"'  AND APRCHNSTP_NUMBER = '"+str(Parent_event.APRCHNSTP_NUMBER)+"'  )m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)
 			)
 			QueryCountObj = Sql.GetFirst(
-			"select count(CpqTableEntryId) as cnt from ACACSF (NOLOCK) where APRCHN_ID = '"+str(APRCHN_ID)+"'  AND APRCHNSTP_NUMBER = '"+str(APRCHNSTP_NUMBER)+"' "
+			"select count(CpqTableEntryId) as cnt from ACACSF (NOLOCK) where APRCHN_ID = '"+str(Parent_event.APRCHN_ID)+"'  AND APRCHNSTP_NUMBER = '"+str(Parent_event.APRCHNSTP_NUMBER)+"' "
 			)
 
 		else:
