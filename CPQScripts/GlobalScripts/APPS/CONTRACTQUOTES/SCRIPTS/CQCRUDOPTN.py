@@ -6239,9 +6239,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					BatchGroupRecordId=kwargs.get('batch_group_record_id')
 					))
 
-		delete_obj_list = ["MAEAPM_INBOUND","MAKTPT_INBOUND"]
-		for object in delete_obj_list:
-			Sql.RunQuery("DELETE FROM {} WHERE QUOTE_ID='{}' and SERVICE_ID = '{}' AND QTEREV_ID = '{}' ".format(object,self.contract_quote_id, self.tree_param,self.quote_revision_id))
+		# delete_obj_list = ["MAEAPM_INBOUND","MAKTPT_INBOUND"]
+		# for object in delete_obj_list:
+		# 	Sql.RunQuery("DELETE FROM {} WHERE QUOTE_ID='{}' and SERVICE_ID = '{}' AND QTEREV_ID = '{}' ".format(object,self.contract_quote_id, self.tree_param,self.quote_revision_id))
 			# self._process_query("""INSERT SAQGPE (
 			# 		CPS_CONFIGURATION_ID,
 			# 		CPS_MATCH_ID,
@@ -6531,10 +6531,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				Entitlement_end_time = time.time()
 				#Log.Info("Entitlement end==> "+str(Entitlement_end_time - Entitlement_start_time)
 				#Commented to check the inforamtion
-				self._process_query(
-					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
-					))
+				# self._process_query(
+				# 	"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+				# 		BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
+				# 	))
 				covered_end_time = time.time()
 				#Log.Info("ADD_COVERED_OBJ end==> "+str(covered_end_time - covered_start_time) +" QUOTE ID----"+str(self.contract_quote_id))
 				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='CMP' """.format(str(self.contract_quote_record_id),self.quote_revision_record_id))
