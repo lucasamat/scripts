@@ -489,8 +489,11 @@ def CommonTreeViewHTMLDetail(
 			)
 
 		if action_visible_obj:
-			if action_visible_obj.OBJECT_RECORD_ID:
-				action_visible_str = action_visible_obj.OBJECT_RECORD_ID
+			try:
+				if action_visible_obj.OBJECT_RECORD_ID:
+					action_visible_str = action_visible_obj.OBJECT_RECORD_ID
+			except:
+				Trace.Write("Exception: Expando object has no attribute OBJECT_RECORD_ID")
 		if ObjectName == "SYOBFD":
 			editable_permission = "TRUE"
 		Trace.Write("editable_permission==="+str(editable_permission))
