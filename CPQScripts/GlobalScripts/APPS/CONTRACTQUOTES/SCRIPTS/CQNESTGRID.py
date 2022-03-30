@@ -4487,6 +4487,11 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		rec_id = "SYOBJ_1177076"
 		obj_id = "SYOBJ-1177076"
 		ObjectName = "SAQGPM"
+	elif str(TreeSuperParentParam) == "Approvals":
+		obj_idval = "SYOBJ_01023_SYOBJ_01023"
+		rec_id = "SYOBJ-01023"
+		obj_id = "SYOBJ-01023"
+		ObjectName = "ACACST"
 	else:
 		rec_id = "SYOBJ_1177055"
 		obj_id = "SYOBJ-1177055"
@@ -4609,6 +4614,28 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(TreeSuperParentParam)
 			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
 		)
+	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, APPROVAL_CHAIN_STEP_RECORD_ID, APROBJ_LABEL, UNANIMOUS_CONSENT, REQUIRE_EXPLICIT_APPROVAL, ADVANCED_CONDITION,CONDITIONS_MET, ENABLE_SMARTAPPROVAL, ACTIVE from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" APRCHN_ID = '"
+			+ str(TreeParentParam)
+			+ "' and APRCHNSTP_NUMBER = 1 "
+			+ str(where_string) 
+			+ ") m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" APRCHN_ID = '"
+			+ str(TreeParentParam)
+			+ "' and APRCHNSTP_NUMBER = 1 "
+			+ str(where_string)
+		)
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
 	parent_obj = Sql.GetList(Qstr)
@@ -4652,6 +4679,38 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
 			data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
 			data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
+			data_list.append(data_dict)
+		elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
+			data_id = str(par.APPROVAL_CHAIN_STEP_RECORD_ID)        
+			Action_str = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+			)
+			if can_edit.upper() == "TRUE":
+				Action_str += (
+					'<li ><a class="dropdown-item cur_sty" href="#" id="'
+					+ str(data_id)
+					+ '" onclick="Commonteree_view_RL(this)">EDIT</a></li>'
+				)
+			if can_delete.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+			if can_clone.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+
+			Action_str += "</ul></div></div>"
+			data_dict["ids"] = str(data_id)
+			data_dict["ACTIONS"] = str(Action_str)
+			data_dict["APPROVAL_CHAIN_STEP_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+				"ACACST", str(par.APPROVAL_CHAIN_STEP_RECORD_ID)
+			)
+			data_dict["APROBJ_LABEL"] = ('<abbr id ="" title="' + str(par.APROBJ_LABEL) + '">' + str(par.APROBJ_LABEL) + "</abbr>") 
+			data_dict["UNANIMOUS_CONSENT"] = str(par.UNANIMOUS_CONSENT)
+			data_dict["REQUIRE_EXPLICIT_APPROVAL"] = str(par.REQUIRE_EXPLICIT_APPROVAL)
+			data_dict["ADVANCED_CONDITION"] = ('<abbr id ="" title="' + str(par.ADVANCED_CONDITION) + '">' + str(par.ADVANCED_CONDITION) + "</abbr>")
+			data_dict["CONDITIONS_MET"] = ('<abbr id ="" title="' + str(par.CONDITIONS_MET) + '">' + str(par.CONDITIONS_MET) + "</abbr>")
+			data_dict["ENABLE_SMARTAPPROVAL"] = str(par.ENABLE_SMARTAPPROVAL)
+			data_dict["ACTIVE"] = str(par.ACTIVE)
 			data_list.append(data_dict)
 		else:
 			data_id = str(par.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID)
