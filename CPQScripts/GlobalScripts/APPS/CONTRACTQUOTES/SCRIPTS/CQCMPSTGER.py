@@ -16,6 +16,8 @@ Sql = SQL()
 
 def complete_stage_error():
     Trace.Write("Complete Stage Error")
+    a = "Complete Stage Error"
+    return(a)
 
 
 ApiResponse = ApiResponseFactory.JsonResponse(complete_stage_error())
