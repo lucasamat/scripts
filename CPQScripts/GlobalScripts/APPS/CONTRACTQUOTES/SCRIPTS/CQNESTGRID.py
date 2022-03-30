@@ -2874,8 +2874,28 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	chld_list = []
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
-	obj_idval = "SYOBJ_00007_SYOBJ_00007"
-	obj_id1 = "SYOBJ-00007"
+	if str(TreeSuperParentParam)=="Approvals":
+		obj_idval = "SYOBJ_01023_SYOBJ_01023"
+		obj_id1 = "SYOBJ-01023"
+		ObjectName = "ACACST"
+		Columns = [
+		"QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID",
+		"KIT_ID",
+		"KIT_NAME",
+		"KIT_NUMBER",
+		"TKM_FLAG"
+	]
+	else:
+		obj_idval = "SYOBJ_00007_SYOBJ_00007"
+		obj_id1 = "SYOBJ-00007"
+		ObjectName = "SAQSKP"
+		Columns = [
+		"QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID",
+		"KIT_ID",
+		"KIT_NAME",
+		"KIT_NUMBER",
+		"TKM_FLAG"
+	]
 	CpqTableEntryId = recid.split("-")[1].lstrip("0")
 	objh_getid = Sql.GetFirst(
 		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id1) + "'"
@@ -2894,15 +2914,9 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		+ str(table_id)
 		+ '" data-pagination="false" data-sortable="true" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
 	)
-	Columns = [
-		"QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID",
-		"KIT_ID",
-		"KIT_NAME",
-		"KIT_NUMBER",
-		"TKM_FLAG"
-	]
+	
 	Objd_Obj = Sql.GetList(
-		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = 'SAQSKP'"
+		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = '" + str(ObjectName) + "' "
 	)
 	attr_list = []
 	attrs_datatype_dict = {}
@@ -2922,16 +2936,26 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	if str(TreeTopSuperParentParam) in ("Comprehensive Services","Complementary Products"):
 		columns = "PM_ID,SERVICE_ID,KIT_ID,KIT_NUMBER,QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID "
 		objname = "SAQGPM"
+	elif str(TreeSuperParentParam)=="Approvals":
+		columns = "APPROVAL_CHAIN_STEP_RECORD_ID, APRCHN_ID, APRCHNSTP_NUMBER "
+		objname = "ACACST"
 	else:
 		columns = "ASSEMBLY_ID,EQUIPMENT_ID,PM_ID,SERVICE_ID,KIT_ID,KIT_NUMBER,QTEREVPME_RECORD_ID"
 		objname = "SAQGPA"
-	Parent_event = Sql.GetFirst(
-		"select "+str(columns)+" from "+str(objname)+" (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND CpqTableEntryId = '{CpqTableEntryId}' ".format(
-			ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
-			RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
-			EquipmentId=recid,CpqTableEntryId=CpqTableEntryId
+	if str(TreeSuperParentParam)=="Approvals":
+		Parent_event = Sql.GetFirst(
+			"select "+str(columns)+" from "+str(objname)+" (NOLOCK) where  CpqTableEntryId = '{CpqTableEntryId}' ".format(
+				CpqTableEntryId=CpqTableEntryId
+			)
 		)
-	)
+	else:
+		Parent_event = Sql.GetFirst(
+			"select "+str(columns)+" from "+str(objname)+" (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND CpqTableEntryId = '{CpqTableEntryId}' ".format(
+				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+				RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
+				EquipmentId=recid,CpqTableEntryId=CpqTableEntryId
+			)
+		)
 	if Parent_event:
 		if str(objname)=="SAQGPA":
 			child_obj_recid = Sql.GetList(
@@ -2944,6 +2968,14 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				+ str(Parent_event.ASSEMBLY_ID)
 				+ "' AND EQUIPMENT_ID = '"+str(Parent_event.EQUIPMENT_ID)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND KIT_ID = '"+str(Parent_event.KIT_ID)+"' AND KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QTEREVPME_RECORD_ID)+"' "
 			)
+		if str(objname)=="ACACST":
+			child_obj_recid = Sql.GetList(
+				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY APRCHNSTP_TESTEDFIELD_RECORD_ID) AS ROW, APRCHNSTP_TESTEDFIELD_RECORD_ID,TSTOBJ_LABEL,TSTOBJ_TESTEDFIELD_LABEL,CMPOBJ_LABEL,CMPOBJ_FIELD_LABEL,CMP_DATATYPE,CMP_OPERATOR,CMP_VALUE from ACACSF (NOLOCK) where APRCHN_ID = '"+str(APRCHN_ID)+"'  AND APRCHNSTP_NUMBER = '"+str(APRCHNSTP_NUMBER)+"'  )m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)
+			)
+			QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from ACACSF (NOLOCK) where APRCHN_ID = '"+str(APRCHN_ID)+"'  AND APRCHNSTP_NUMBER = '"+str(APRCHNSTP_NUMBER)+"' "
+			)
+
 		else:
 			child_obj_recid = Sql.GetList(
 				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,KIT_NAME,KIT_NUMBER,TKM_FLAG from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND KIT_ID = '"+str(Parent_event.KIT_ID)+"' AND KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID)+"' )m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)
@@ -2957,7 +2989,11 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			QueryCount = QueryCountObj.cnt
 		# Data construction for table.
 		for child in child_obj_recid:
-			data_id = str(child.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) + "|SAQSKP"
+			if str(objname)=="ACACST":
+				data_id = str(child.APRCHNSTP_TESTEDFIELD_RECORD_ID) + "|ACACSF"	
+			else:
+				data_id = str(child.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) + "|SAQSKP"
+
 			chld_dict = {}
 			Action_str1 = (
 				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a  data-toggle="modal" data-target="#cont_viewModalSection" id="'
