@@ -18,4 +18,4 @@ def complete_stage_error():
     Trace.Write("Complete Stage Error")
 
 
-complete_stage_error()
+ApiResponse = ApiResponseFactory.JsonResponse(complete_stage_error())
