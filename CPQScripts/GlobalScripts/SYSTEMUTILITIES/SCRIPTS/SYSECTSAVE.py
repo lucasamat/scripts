@@ -755,7 +755,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							# newdict["NET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["NET_PRICE_INGL_CURR"])
 							newdict["TAX_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["TAX_AMOUNT_INGL_CURR"])
 							#newdict["TARGET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["TARGET_PRICE_INGL_CURR"])
-							newdict["NET_VALUE_INGL_CURR"] = re.sub('USD','',newdict["NET_VALUE_INGL_CURR"])
+							#newdict["NET_VALUE_INGL_CURR"] = re.sub('USD','',newdict["NET_VALUE_INGL_CURR"])
 							newdict["DISCOUNT_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["DISCOUNT_AMOUNT_INGL_CURR"])
 							newdict["CANCELLATION_PERIOD_EXCEPTION"] = "" if newdict["CANCELLATION_PERIOD"]!="EXCEPTION" else newdict["CANCELLATION_PERIOD_EXCEPTION"]
 							exchange_rate_type = newdict.get("EXCHANGE_RATE_TYPE")
