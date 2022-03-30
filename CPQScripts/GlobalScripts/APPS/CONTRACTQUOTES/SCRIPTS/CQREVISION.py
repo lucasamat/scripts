@@ -201,7 +201,7 @@ def create_new_revision(Opertion,cartrev):
 			##Calling the iflow for quote header writeback to cpq to c4c code ends...
 			
 			#update SAQTIP start
-			Sql.RunQuery("""UPDATE SAQTIP SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
+			# Sql.RunQuery("""UPDATE SAQTIP SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#update SAQTIP end
 			
 			#CLONE ALL OBJECTS 
@@ -227,6 +227,8 @@ def create_new_revision(Opertion,cartrev):
 						insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = str(col.COLUMN_NAME) if selectcols == '' else selectcols + "," + str(col.COLUMN_NAME)
 				insertcols += " )"
+				insertcols  = insertcols.replace("PRIMARY","[PRIMARY]")
+				selectcols = selectcols.replace("PRIMARY","[PRIMARY]")
 				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no))
 				finalquery=insertval + insertcols +' '+ selectval + selectcols
 				Trace.Write(finalquery)
