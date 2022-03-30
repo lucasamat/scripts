@@ -375,19 +375,25 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					act_status = (eval("col_name." + str(sefl_api)))
 					Trace.Write("sefl_api"+str(sefl_api))
 					Trace.Write("act_status"+str(act_status))
-					if act_status =="True":
-						value_check ="checked"						
+					if act_status == True  or act_status == 1:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled checked><span class="lbl"></span></div>'
+						)						
 					else:
-						value_check =""
-					sec_str += (
-						'<div class="col-md-3 padtop5 padleft10"><input id="'
-						+ str(sefl_api)
-						+'" type="CHECKBOX" value="'
-						+str(act_status)
-						+'" class="custom" '
-						+'disabled '
-						+ str(value_check)+'><span class="lbl"></span></div>'
-					)
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled ><span class="lbl"></span></div>'
+						)
+					
 				elif sefl_api in ["INTERNAL_NOTES","CUSTOMER_NOTES"]:
 					#Trace.Write('At line 289-->err'+str(sefl_api))
 					sec_str += (
