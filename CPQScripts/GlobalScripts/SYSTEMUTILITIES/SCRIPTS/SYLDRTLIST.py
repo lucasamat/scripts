@@ -557,17 +557,16 @@ class SYLDRTLIST:
         related_list_permission_obj = Sql.GetFirst(
             """
                                     SELECT
-                            SYOBJR.RELATED_LIST_SINGULAR_NAME,SYPROH.CAN_ADD,SYPROH.CAN_DELETE,SYPROH.CAN_EDIT,SYOBJR.COLUMN_REC_ID ,SYOBJR.COLUMNS,SYOBJR.DISPLAY_ORDER, SYOBJR.NAME,SYOBJR.OBJ_REC_ID,SYOBJR.PARENT_LOOKUP_REC_ID,SYOBJR.RECORD_ID,SYOBJR.SAPCPQ_ATTRIBUTE_NAME,SYOBJR.VISIBLE
+                            SYOBJR.RELATED_LIST_SINGULAR_NAME,SYOBJR.CAN_ADD,SYOBJR.CAN_DELETE,SYOBJR.CAN_EDIT,SYOBJR.COLUMN_REC_ID ,SYOBJR.COLUMNS,SYOBJR.DISPLAY_ORDER, SYOBJR.NAME,SYOBJR.OBJ_REC_ID,SYOBJR.PARENT_LOOKUP_REC_ID,SYOBJR.RECORD_ID,SYOBJR.SAPCPQ_ATTRIBUTE_NAME,SYOBJR.VISIBLE
                         FROM
                             SYOBJR (NOLOCK)
-                        JOIN SYPROH (NOLOCK) ON SYPROH.OBJECT_RECORD_ID = SYOBJR.OBJ_REC_ID
-                        JOIN USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPROH.PROFILE_RECORD_ID
+                        
                         WHERE
                             SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{RECORD_ID}' AND
-                            SYPROH.VISIBLE = 1 AND
-                            UP.USER_ID = '{get_user_id}'
+                            SYOBJR.VISIBLE = 1 AND
+                           
                             """.format(
-                RECORD_ID=str(RECORD_ID), get_user_id=str(get_user_id)
+                RECORD_ID=str(RECORD_ID)
             )
         )
         #Realted list permissions end
