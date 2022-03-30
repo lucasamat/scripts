@@ -748,8 +748,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						newdict.update(dictc)
 						tableInfo = Sql.GetTable(str(TableName))
 						Trace.Write('subtab_name---'+str(subtab_name))
+						get_previous_payment_term =Sql.GetFirst("SELECT PAYMENTTERM_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_record_id}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}'".format(contract_quote_record_id =contract_quote_record_id,quote_revision_record_id =quote_revision_record_id))
+						payment_term_name_previous = get_previous_payment_term.PAYMENTTERM_ID
 						if subtab_name not in  ("Legal SoW","Basic Information"):
 							#newdict["SLSDIS_PRICE_INGL_CURR"] = re.sub('USD','',newdict["SLSDIS_PRICE_INGL_CURR"])
+							current_payment_term = newdict.get("PAYMENTTERM_ID")
+							if current_payment_term == payment_term_name_previous:
+								Trace.Write("current_payment_term"+str(current_payment_term))
+								Trace.Write("payment_term_name_previous"+str(payment_term_name_previous))
 							newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
 							#newdict["CEILING_PRICE_INGL_CURR"] = re.sub('USD','',newdict["CEILING_PRICE_INGL_CURR"])
 							# newdict["NET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["NET_PRICE_INGL_CURR"])
@@ -790,6 +796,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 						Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
 						Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
+						#getpaymentterm changes
+						
+
 						##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 						CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
 						time.sleep(5)
