@@ -2905,12 +2905,17 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	)
 	if objh_getid:
 		obj_id1 = objh_getid.RECORD_ID
-	objs_obj1 = Sql.GetFirst(
-		"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id1) + "' "
-	)
-	can_edit1 = str(objs_obj1.CAN_EDIT)
-	can_add1 = str(objs_obj1.CAN_ADD)
-	can_delete1 = str(objs_obj1.CAN_DELETE)
+	if str(TreeSuperParentParam)=="Approvals":
+		can_edit1 = "TRUE"
+		can_add1 = "FALSE"
+		can_delete1 = "TRUE"
+	else:
+		objs_obj1 = Sql.GetFirst(
+			"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id1) + "' "
+		)
+		can_edit1 = str(objs_obj1.CAN_EDIT)
+		can_add1 = str(objs_obj1.CAN_ADD)
+		can_delete1 = str(objs_obj1.CAN_DELETE)
 	table_id = "table_events_child_"+str(recid)
 	table_header = (
 		'<table id="'
