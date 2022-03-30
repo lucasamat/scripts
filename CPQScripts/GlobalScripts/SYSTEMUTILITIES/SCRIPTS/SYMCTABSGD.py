@@ -292,19 +292,26 @@ class CONTAINER:
                         tot_names = ""
                         PRIMARY_OBJECT_NAMes = str(sql.PRIMARY_OBJECT_NAME).strip()
                         #syproh permissions start
-                        data_obj = Sql.GetFirst(
-                            "SELECT S.RECORD_ID,S.CONTAINER_NAME,S.COLUMNS,S.CAN_DELETE,S.CAN_EDIT FROM SYOBJS S (NOLOCK) INNER JOIN SYPROH P ON P.OBJECT_NAME = S.CONTAINER_NAME INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = P.PROFILE_RECORD_ID WHERE S.NAME='Tab list' AND S.OBJ_REC_ID = '"
-                            + str(sql.PRIMARY_OBJECT_RECORD_ID)
-                            + "' AND UP.USER_ID = '"
-                            + str(userid)
-                            + "' and P.VISIBLE=1"
-                        )
+                        # data_obj = Sql.GetFirst(
+                        #     "SELECT S.RECORD_ID,S.CONTAINER_NAME,S.COLUMNS,S.CAN_DELETE,S.CAN_EDIT FROM SYOBJS S (NOLOCK) INNER JOIN SYPROH P ON P.OBJECT_NAME = S.CONTAINER_NAME INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = P.PROFILE_RECORD_ID WHERE S.NAME='Tab list' AND S.OBJ_REC_ID = '"
+                        #     + str(sql.PRIMARY_OBJECT_RECORD_ID)
+                        #     + "' AND UP.USER_ID = '"
+                        #     + str(userid)
+                        #     + "' and P.VISIBLE=1"
+                        # )
+                        # data_obj = Sql.GetFirst(
+                        #     "SELECT S.RECORD_ID,S.CONTAINER_NAME,S.COLUMNS,S.CAN_DELETE,S.CAN_EDIT FROM SYOBJS S (NOLOCK) INNER JOIN SYPROH P ON P.OBJECT_NAME = S.CONTAINER_NAME INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = P.PROFILE_RECORD_ID WHERE S.NAME='Tab list' AND S.OBJ_REC_ID = '"
+                        #     + str(sql.PRIMARY_OBJECT_RECORD_ID)
+                        #     + "' AND UP.USER_ID = '"
+                        #     + str(userid)
+                        #     + "' and P.VISIBLE=1"
+                        # )
                         #syproh permissions end
-                        '''data_obj = Sql.GetFirst(
+                        data_obj = Sql.GetFirst(
                             "SELECT S.RECORD_ID,S.CONTAINER_NAME,S.COLUMNS,S.CAN_DELETE,S.CAN_EDIT FROM SYOBJS S (NOLOCK) WHERE S.NAME='Tab list' AND S.OBJ_REC_ID = '"
                             + str(sql.PRIMARY_OBJECT_RECORD_ID)
                             + "'"
-                        )'''
+                        )
                         if data_obj is not None:
                             # if tab_name == "Quotes":
                             #     name_obj = Sql.GetList(
@@ -1558,17 +1565,17 @@ class CONTAINER:
                                 obj_ids = section_obj.PRIMARY_OBJECT_RECORD_ID
                                 
                                 #SYPROH Permissions start
-                                objsk_obj = Sql.GetFirst(
-                                    "SELECT P.CAN_ADD,S.CAN_CLONE, P.CAN_EDIT,P.CAN_DELETE FROM SYPROH P inner join SYOBJS S on S.OBJ_REC_ID = P.OBJECT_RECORD_ID inner join users_permissions up on up.permission_id = P.PROFILE_RECORD_ID WHERE S.NAME = 'Tab list' AND S.OBJ_REC_ID = '{0}' and P.VISIBLE = 1 and up.user_id='{1}'".format(
-                                        str(obj_ids), str(userid)
-                                    )
-                                )
+                                # objsk_obj = Sql.GetFirst(
+                                #     "SELECT P.CAN_ADD,S.CAN_CLONE, P.CAN_EDIT,P.CAN_DELETE FROM SYPROH P inner join SYOBJS S on S.OBJ_REC_ID = P.OBJECT_RECORD_ID inner join users_permissions up on up.permission_id = P.PROFILE_RECORD_ID WHERE S.NAME = 'Tab list' AND S.OBJ_REC_ID = '{0}' and P.VISIBLE = 1 and up.user_id='{1}'".format(
+                                #         str(obj_ids), str(userid)
+                                #     )
+                                # )
                                 #SYPROH Permissions end
-                                '''objsk_obj = Sql.GetFirst(
+                                objsk_obj = Sql.GetFirst(
                                     "SELECT S.CAN_ADD,S.CAN_CLONE, S.CAN_EDIT,S.CAN_DELETE FROM SYOBJH P inner join SYOBJS S on S.OBJ_REC_ID = P.RECORD_ID WHERE S.NAME = 'Tab list' AND S.OBJ_REC_ID = '{0}'".format(
                                         str(obj_ids)
                                     )
-                                )'''
+                                )
 
                                 if objsk_obj is not None:
                                     
