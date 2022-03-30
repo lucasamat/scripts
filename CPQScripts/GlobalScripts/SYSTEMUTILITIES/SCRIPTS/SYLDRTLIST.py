@@ -563,7 +563,7 @@ class SYLDRTLIST:
                         
                         WHERE
                             SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{RECORD_ID}' AND
-                            SYOBJR.VISIBLE = 1 AND
+                            SYOBJR.VISIBLE = 1
                            
                             """.format(
                 RECORD_ID=str(RECORD_ID)
