@@ -150,6 +150,8 @@ def create_new_revision(Opertion,cartrev):
 				"INCOTERM_NAME" : get_previous_rev_data.INCOTERM_NAME,
 				"INCOTERM_RECORD_ID" : get_previous_rev_data.INCOTERM_RECORD_ID,
 				"INCOTERM_LOCATION" : get_previous_rev_data.INCOTERM_LOCATION,
+				"BLUEBOOK" : get_previous_rev_data.BLUEBOOK,
+				"BLUEBOOK_RECORD_ID" : get_previous_rev_data.BLUEBOOK_RECORD_ID,
 				"MODUSR_RECORD_ID" : get_previous_rev_data.MODUSR_RECORD_ID,
 				"PAYMENTTERM_DAYS" : get_previous_rev_data.PAYMENTTERM_DAYS,
 				"PAYMENTTERM_ID" : get_previous_rev_data.PAYMENTTERM_ID,
