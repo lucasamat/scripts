@@ -80,8 +80,8 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 				for row_data in table_data:
 					data = [row_obj.Value for row_obj in row_data]
 					data = str(data)
-					data = data.replace('False',"'False'")
-					data = data.replace('True',"'True'")
+					data = data.replace('False','0')
+					data = data.replace('True','1')
 					Trace.Write("DATA++"+str(data))
 					yield data
 			start += 1000		
