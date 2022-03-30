@@ -28,7 +28,7 @@ class ContractQuoteItemAnnualizedPricing:
 			Trace.Write("-------------+++ "+str(self.records))	
 			for data in self.records:
 				for line_id, value in data.items():					
-					update_fields_str = ' ,'.join(["{} = {}".format(field_name,float(field_value) if field_value else 0) for field_name, field_value in value.items()])					
+					update_fields_str = ' ,'.join(["{} = {}".format(field_name,float(field_value.replace(" USD","")) if field_value else 0) for field_name, field_value in value.items()])					
 
 					Sql.RunQuery("""UPDATE SAQICO
 							SET {UpdateFields}	
