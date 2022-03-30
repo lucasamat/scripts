@@ -8007,7 +8007,10 @@ def POPUPLISTVALUEADDNEW(
 									for acnt in send_n_receive_acnt:
 										list_of_role.append(acnt.CPQ_PARTNER_FUNCTION)
 										if acnt.CPQ_PARTNER_FUNCTION == "SENDING ACCOUNT" or acnt.CPQ_PARTNER_FUNCTION == "RECEIVING ACCOUNT":
-											Tier_List1.remove(acnt.CPQ_PARTNER_FUNCTION)
+											try:
+												Tier_List1.remove(acnt.CPQ_PARTNER_FUNCTION)
+											except:
+												Trace.Write("Error occured while removing C4C partner function")
 									# if "SENDING ACCOUNT" not in list_of_role and "RECEIVING ACCOUNT" not in list_of_role:
 									# 	Tier_List1.remove("RECEIVING ACCOUNT")
 							Trace.Write("CHKNG_J "+str(Tier_List1))
