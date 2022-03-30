@@ -4614,7 +4614,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(TreeSuperParentParam)
 			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
 		)
-	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
+	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals" :
 		Qstr = (
 			"select top "
 			+ str(PerPage)
