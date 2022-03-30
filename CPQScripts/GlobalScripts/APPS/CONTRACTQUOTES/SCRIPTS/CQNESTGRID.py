@@ -3027,7 +3027,7 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				chld_dict["TSTOBJ_LABEL"] =('<abbr id ="" title="' + str(child.TSTOBJ_LABEL) + '">' + str(child.TSTOBJ_LABEL) + "</abbr>")
 				chld_dict["TSTOBJ_TESTEDFIELD_LABEL"] =('<abbr id ="" title="' + str(child.TSTOBJ_TESTEDFIELD_LABEL) + '">' + str(child.TSTOBJ_TESTEDFIELD_LABEL) + "</abbr>")
 				chld_dict["CMPOBJ_LABEL"] = ('<abbr id ="" title="' + str(child.CMPOBJ_LABEL) + '">' + str(child.CMPOBJ_LABEL) + "</abbr>")
-				chld_dict["CMP_DATATYPE"] = ('<abbr id ="" title="' + str(child.CMPOBJ_FIELD_LABEL) + '">' + str(child.CMPOBJ_FIELD_LABEL) + "</abbr>")
+				chld_dict["CMPOBJ_FIELD_LABEL"] = ('<abbr id ="" title="' + str(child.CMPOBJ_FIELD_LABEL) + '">' + str(child.CMPOBJ_FIELD_LABEL) + "</abbr>")
 				chld_dict["CMP_DATATYPE"] = ('<abbr id ="" title="' + str(child.CMP_DATATYPE) + '">' + str(child.CMP_DATATYPE) + "</abbr>")
 				chld_dict["CMP_OPERATOR"] = ('<abbr id ="" title="' + str(child.CMP_OPERATOR) + '">' + str(child.CMP_OPERATOR) + "</abbr>")
 				chld_dict["CMP_VALUE"] = ('<abbr id ="" title="' + str(child.CMP_VALUE) + '">' + str(child.CMP_VALUE) + "</abbr>")
