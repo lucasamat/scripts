@@ -2379,6 +2379,29 @@ class CONTAINER:
         except:
             tab_name = Param.CurrentTab
         tabcolumns_list = []
+        # section_qstns_visble_obj = Sql.GetList(
+        #     """
+        #                     SELECT SYSECT.RECORD_ID AS SECTION_REC_ID, SYSEFL.RECORD_ID, SYOBJD.DATA_TYPE, SYSEFL.API_NAME
+        #                     FROM SYTABS (NOLOCK) 
+        #                     JOIN SYPAGE (NOLOCK) ON SYTABS.PAGE_RECORD_ID = SYPAGE.RECORD_ID
+        #                     JOIN SYSECT (NOLOCK) ON SYSECT.TAB_RECORD_ID = SYPAGE.RECORD_ID AND SYSECT.TAB_NAME = SYPAGE.TAB_NAME
+        #                     JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID=SYSECT.RECORD_ID 
+        #                     JOIN SYOBJD (NOLOCK) ON  SYOBJD.API_NAME = SYSEFL.API_NAME  AND   SYOBJD.OBJECT_NAME = SYSEFL.API_NAME 
+        #                     JOIN
+        #                         SYPRSN (NOLOCK)  ON SYPRSN.SECTION_RECORD_ID = SYSECT.RECORD_ID 
+        #                     JOIN 
+        #                         USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
+        #                     WHERE
+        #                         LTRIM(RTRIM(SYTABS.TAB_LABEL)) = '{Tab_Text}' AND 
+        #                         LTRIM(RTRIM(SYTABS.APP_LABEL)) ='{APP_LABEL}' AND
+        #                         ISNULL(SYSECT.SECTION_NAME,'') != '' AND
+        #                         ISNULL(SYSECT.PRIMARY_OBJECT_NAME,'') != ''  AND
+        #                         UP.USER_ID = '{User_Record_Id}' AND 
+        #                         SYPRSN.VISIBLE = 0
+        #                     """.format(
+        #         Tab_Text=tab_name, APP_LABEL=productName, User_Record_Id=get_user_id
+        #     )
+        # )
         section_qstns_visble_obj = Sql.GetList(
             """
                             SELECT SYSECT.RECORD_ID AS SECTION_REC_ID, SYSEFL.RECORD_ID, SYOBJD.DATA_TYPE, SYSEFL.API_NAME
@@ -2387,25 +2410,48 @@ class CONTAINER:
                             JOIN SYSECT (NOLOCK) ON SYSECT.TAB_RECORD_ID = SYPAGE.RECORD_ID AND SYSECT.TAB_NAME = SYPAGE.TAB_NAME
                             JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID=SYSECT.RECORD_ID 
                             JOIN SYOBJD (NOLOCK) ON  SYOBJD.API_NAME = SYSEFL.API_NAME  AND   SYOBJD.OBJECT_NAME = SYSEFL.API_NAME 
-                            JOIN
-                                SYPRSN (NOLOCK)  ON SYPRSN.SECTION_RECORD_ID = SYSECT.RECORD_ID 
-                            JOIN 
-                                USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
+                           
                             WHERE
                                 LTRIM(RTRIM(SYTABS.TAB_LABEL)) = '{Tab_Text}' AND 
                                 LTRIM(RTRIM(SYTABS.APP_LABEL)) ='{APP_LABEL}' AND
                                 ISNULL(SYSECT.SECTION_NAME,'') != '' AND
-                                ISNULL(SYSECT.PRIMARY_OBJECT_NAME,'') != ''  AND
-                                UP.USER_ID = '{User_Record_Id}' AND 
-                                SYPRSN.VISIBLE = 0
+                                ISNULL(SYSECT.PRIMARY_OBJECT_NAME,'') != '' 
                             """.format(
-                Tab_Text=tab_name, APP_LABEL=productName, User_Record_Id=get_user_id
+                Tab_Text=tab_name, APP_LABEL=productName
             )
         )
-
+        # question_visible_obj = Sql.GetList(
+        #     """
+        #                     SELECT TOP 1000 SYPRSF.SECTIONFIELD_RECORD_ID, MO.DATA_TYPE,MQ.API_NAME
+        #                     FROM SYTABS (NOLOCK) MT
+        #                     JOIN SYPAGE (NOLOCK) PG ON PG.RECORD_ID = MT.PAGE_RECORD_ID
+        #                     JOIN SYSECT (NOLOCK) MS ON MS.TAB_RECORD_ID = PG.RECORD_ID
+                            
+        #                     JOIN SYSEFL (NOLOCK) MQ ON MQ.SECTION_RECORD_ID = MS.RECORD_ID
+                            
+        #                     JOIN SYOBJD (NOLOCK) MO ON MO.API_NAME = MQ.API_NAME
+        #                     AND MO.OBJECT_NAME = MQ.API_NAME
+        #                     JOIN
+        #                         SYPRSN (NOLOCK)  ON SYPRSN.SECTION_RECORD_ID = MS.RECORD_ID 
+        #                     JOIN
+        #                         SYPRSF (NOLOCK)  ON SYPRSF.SECTIONFIELD_RECORD_ID = MQ.RECORD_ID 
+        #                     JOIN 
+        #                         USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
+                            
+        #                     AND ISNULL(MQ.FIELD_LABEL,'') != ''
+        #                     AND UP.USER_ID = '{User_Record_Id}'
+        #                     AND LTRIM(RTRIM(MT.TAB_NAME)) = '{Tab_Text}'
+        #                     AND (SYPRSN.VISIBLE = 0 OR SYPRSF.VISIBLE = 0)
+        #                     AND LTRIM(RTRIM(MT.APP_LABEL)) ='{APP_LABEL}'
+        #                     AND ISNULL(MS.SECTION_NAME,'') != ''
+        #                     ORDER BY ABS(MQ.DISPLAY_ORDER)
+        #                     """.format(
+        #         Tab_Text=tab_name, APP_LABEL=productName, User_Record_Id=get_user_id
+        #     )
+        # )
         question_visible_obj = Sql.GetList(
             """
-                            SELECT TOP 1000 SYPRSF.SECTIONFIELD_RECORD_ID, MO.DATA_TYPE,MQ.API_NAME
+                            SELECT TOP 1000 MQ.RECORD_ID, MO.DATA_TYPE,MQ.API_NAME
                             FROM SYTABS (NOLOCK) MT
                             JOIN SYPAGE (NOLOCK) PG ON PG.RECORD_ID = MT.PAGE_RECORD_ID
                             JOIN SYSECT (NOLOCK) MS ON MS.TAB_RECORD_ID = PG.RECORD_ID
@@ -2414,22 +2460,16 @@ class CONTAINER:
                             
                             JOIN SYOBJD (NOLOCK) MO ON MO.API_NAME = MQ.API_NAME
                             AND MO.OBJECT_NAME = MQ.API_NAME
-                            JOIN
-                                SYPRSN (NOLOCK)  ON SYPRSN.SECTION_RECORD_ID = MS.RECORD_ID 
-                            JOIN
-                                SYPRSF (NOLOCK)  ON SYPRSF.SECTIONFIELD_RECORD_ID = MQ.RECORD_ID 
-                            JOIN 
-                                USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
+                            
                             
                             AND ISNULL(MQ.FIELD_LABEL,'') != ''
-                            AND UP.USER_ID = '{User_Record_Id}'
                             AND LTRIM(RTRIM(MT.TAB_NAME)) = '{Tab_Text}'
-                            AND (SYPRSN.VISIBLE = 0 OR SYPRSF.VISIBLE = 0)
+                          
                             AND LTRIM(RTRIM(MT.APP_LABEL)) ='{APP_LABEL}'
                             AND ISNULL(MS.SECTION_NAME,'') != ''
                             ORDER BY ABS(MQ.DISPLAY_ORDER)
                             """.format(
-                Tab_Text=tab_name, APP_LABEL=productName, User_Record_Id=get_user_id
+                Tab_Text=tab_name, APP_LABEL=productName
             )
         )
         if section_qstns_visble_obj is not None:
