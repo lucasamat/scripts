@@ -126,18 +126,32 @@ class SYLDRTLIST:
         Trace.Write('139---'+str(RECORD_ID))
         
         #object level permissions
+        # obj_obj = Sql.GetFirst(
+        #     """SELECT   SYOBJR.RECORD_ID, SYOBJR.SAPCPQ_ATTRIBUTE_NAME,SYOBJR.PARENT_LOOKUP_REC_ID, SYOBJR.OBJ_REC_ID,
+        #                                 SYOBJR.NAME, SYOBJR.COLUMN_REC_ID, SYOBJR.COLUMNS,
+        #                                 SYPROH.CAN_ADD, SYPROH.CAN_EDIT, SYPROH.CAN_DELETE, SYOBJR.RELATED_LIST_SINGULAR_NAME,
+        #                                 SYOBJR.DISPLAY_ORDER, SYOBJR.ORDERS_BY
+        #                             FROM
+        #                                 SYOBJR (NOLOCK) inner join SYPROH (NOLOCK) on SYPROH.OBJECT_RECORD_ID = SYOBJR.OBJ_REC_ID INNER JOIN USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPROH.PROFILE_RECORD_ID
+
+        #                             WHERE
+        #                                 SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{RECORD_ID}'  AND SYPROH.VISIBLE= 1 AND UP.USER_ID = '{get_user_id}'
+        #                             """.format(
+        #         RECORD_ID=str(RECORD_ID), get_user_id=str(get_user_id)
+        #     )
+        # )
         obj_obj = Sql.GetFirst(
             """SELECT   SYOBJR.RECORD_ID, SYOBJR.SAPCPQ_ATTRIBUTE_NAME,SYOBJR.PARENT_LOOKUP_REC_ID, SYOBJR.OBJ_REC_ID,
                                         SYOBJR.NAME, SYOBJR.COLUMN_REC_ID, SYOBJR.COLUMNS,
-                                        SYPROH.CAN_ADD, SYPROH.CAN_EDIT, SYPROH.CAN_DELETE, SYOBJR.RELATED_LIST_SINGULAR_NAME,
+                                        SYOBJR.CAN_ADD, SYOBJR.CAN_EDIT, SYOBJR.CAN_DELETE, SYOBJR.RELATED_LIST_SINGULAR_NAME,
                                         SYOBJR.DISPLAY_ORDER, SYOBJR.ORDERS_BY
                                     FROM
-                                        SYOBJR (NOLOCK) inner join SYPROH (NOLOCK) on SYPROH.OBJECT_RECORD_ID = SYOBJR.OBJ_REC_ID INNER JOIN USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPROH.PROFILE_RECORD_ID
+                                        SYOBJR (NOLOCK) 
 
                                     WHERE
-                                        SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{RECORD_ID}'  AND SYPROH.VISIBLE= 1 AND UP.USER_ID = '{get_user_id}'
+                                        SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{RECORD_ID}'  
                                     """.format(
-                RECORD_ID=str(RECORD_ID), get_user_id=str(get_user_id)
+                RECORD_ID=str(RECORD_ID)
             )
         )
         CurrentModuleObj = Sql.GetFirst("select * from SYAPPS (NOLOCK) where APP_LABEL = '" + str(current_prod) + "'")
