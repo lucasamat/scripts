@@ -1958,6 +1958,11 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					else :
 						len_restrict=""
 
+					if current_obj_api_name=='CANCELLATION_PERIOD_NOTPER':
+						len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="2"' 
+					else :
+						len_restrict=""
+
 					# if str(ObjectName) == "SAQIGB" and current_obj_value != "":
 					# 	decimal_val = 2
 					# 	formatting_string = "{0:." + str(decimal_val) + "f}"
