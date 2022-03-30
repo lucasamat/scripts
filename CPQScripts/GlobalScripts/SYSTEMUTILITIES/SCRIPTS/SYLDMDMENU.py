@@ -45,10 +45,8 @@ def LOAD_MOD_MENU():
                 
                  WHERE
                 (MM.APP_STATUS='DEPLOYED' OR MM.APP_STATUS='OUT OF SYNC')
-                AND  MM.SAPCPQ_APP_TYPE='CUSTOM'  AND MM.APP_LABEL != 'INTEGRATION_MODULE' AND MM.APP_ID != 'CT' AND UP.USER_ID = {user_Id}
-                ORDER BY MM.DISPLAY_ORDER) MOD WHERE MOD.RANK = 1 """.format(
-                user_Id=Session["USERID"]
-            )
+                AND  MM.SAPCPQ_APP_TYPE='CUSTOM'  AND MM.APP_LABEL != 'INTEGRATION_MODULE' AND MM.APP_ID != 'CT'
+                ORDER BY MM.DISPLAY_ORDER) MOD WHERE MOD.RANK = 1 """
         )
     test = []
     if record_obj is not None and len(record_obj) > 0:
