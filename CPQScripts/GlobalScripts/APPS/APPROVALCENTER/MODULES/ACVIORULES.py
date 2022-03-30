@@ -677,6 +677,9 @@ class ViolationConditions:
                                         Rulebodywithcondition = Transcationrulebody + where_conditon
                                     
                                         b = Sql.RunQuery(Rulebodywithcondition)
+
+                                        self.SnapshotConditions(result,RecordId,QuoteId,GetLatestApproval.APPROVAL_RECORD_ID)
+                                        
                                     #UPDATE ACAPTX APPROVAL STATUS OF SECOND CHAIN DURING RECALL
                                     #if flag == 1:
                                     #Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'APPROVAL REQUIRED' WHERE APPROVAL_CHAIN_RECORD_ID = '{}' AND APRCHNSTP_ID != 1 AND APPROVAL_ROUND = '{}' AND APRTRXOBJ_ID = '{}' ".format(result.APPROVAL_CHAIN_RECORD_ID,roundd,QuoteId))
@@ -1274,6 +1277,70 @@ class ViolationConditions:
                 else:
                     return None
 
+    def SnapshotConditions(self,result,RecordId,QuoteId,ApprovalRecordId):
+
+
+        # Get Rows from ACACSF based on chain step
+        GetACACSF = Sql.GetList("SELECT * FROM ACACSF (NOLOCK) WHERE APRCHNSTP_RECORD_ID = '{}'".format(result.APPROVAL_CHAIN_STEP_RECORD_ID))
+        
+        # Get Operators using dictionary
+        operators = {"LESS THAN": " < ","EQUALS": " = ","GREATER THAN": " > ","NOT EQUALS":" != ","LESS OR EQUALS":" <= ","GREATER OR EQUALS":" >= ","STARTS WITH":"","ENDS WITH":"","CONTAINS":"","DOES NOT CONTAIN":""}
+
+        # Iterate to form query and check feasibility
+
+        for x in GetACACSF:
+            if x.CMP_OPERATOR == 'CONTAINS':
+                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}%'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+            elif x.CMP_OPERATOR == 'DOES NOT CONTAIN':
+                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  NOT LIKE '%{}%'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+            elif x.CMP_OPERATOR == 'STARTS WITH':
+                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '{}%'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+            elif x.CMP_OPERATOR == 'ENDS WITH':
+                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+            else:
+                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} '{}'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE)
+
+            # Append Quote and Revision to the Query
+            if "SAQ" in x.TSTOBJ_LABEL:
+                selectQuery += " AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(RecordId,QuoteId)
+            elif "ACAPTX" in x.TSTOBJ_LABEL:
+                selectQuery += "  AND APRTRXOBJ_ID = '{}'".format(QuoteId)
+            
+            QueryResult = Sql.GetFirst(selectQuery)
+            Result = eval("QueryResult."+str(x.TSTOBJ_TESTEDFIELD_LABEL))
+
+            InsertSnapshot = Sql.RunQuery(""" INSERT ACAPSS(
+                                        APPROVAL_TRANSACTION_SNAPSHOT_RECORD_ID,
+                                        APRCHN_ID,
+                                        APRCHN_RECORD_ID,
+                                        APRCHNSTP,
+                                        APRCHNSTP_RECORD_ID,
+                                        APRCHNSTPTRX_ID,
+                                        APRCHNSTPTRX_RECORD_ID,
+                                        APPROVAL_ID,
+                                        APPROVAL_RECORD_ID,
+                                        APRCHNSTP_TESTEDFIELD_LABEL,
+                                        APRCHNSTP_TESTEDFIELD_VALUE,
+                                        APRCHNSTP_TESTEDFIELD_RECORD_ID
+                                        ) SELECT DISTINCT
+                                                CONVERT(VARCHAR(4000), NEWID()) AS APPROVAL_TRANSACTION_SNAPSHOT_RECORD_ID,
+                                                ACAPTX.APRCHN_ID,
+                                                ACAPTX.APRCHN_RECORD_ID,
+                                                ACAPTX.APRCHNSTP,
+                                                ACAPTX.APRCHNSTP_RECORD_ID,
+                                                ACAPTX.APRCHNSTPTRX_ID,
+                                                APRCHNSTPTRX_RECORD_ID,
+                                                ACAPTX.APPROVAL_ID,
+                                                ACAPTX.APPROVAL_RECORD_ID,
+                                                ACACSF.APRCHNSTP_TESTEDFIELD_LABEL,
+                                                '{}',
+                                                ACACSF.APRCHNSTP_TESTEDFIELD_RECORD_ID
+                                                FROM ACAPTX (NOLOCK) JOIN ACACSF (NOLOCK) ON
+                                                ACAPTX.APRCHNSTP_RECORD_ID = ACACSF.APRCHNSTP_RECORD_ID AND ACAPTX.APPROVAL_RECORD_ID = '{}'""".format(Result,ApprovalRecordId))
+                
+            
+
+        
 
     # def insertviolationtableafterRecall(self, chainrecordId, RecordId, ObjectName, Objh_Id):
     #     """Insert violation record after recall."""
