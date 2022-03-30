@@ -721,7 +721,7 @@ class ViolationConditions:
                                             TrackedFieldPrimayId=TrackedFieldPrimayId,
                                             approvalrecordId=str(GetLatestApproval.APPROVAL_RECORD_ID),
                                             violationsrule=str(result.WHERE_CONDITION_01),
-                                            ViolatedObjAutoKey=str(TargeobjRelation.API_NAME),
+                                            ViolatedObjAutoKey="QTEREV_RECORD_ID" if Trackedobject != 'SAQTRV' else "QUOTE_REVISION_RECORD_ID",
                                             ViolatedObjAutoKeyValue=str(RecordId),
                                             Trackedobject=Trackedobject,
                                         )
