@@ -6789,6 +6789,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							additional_where = ""
 							if quote_type_attribute_id:
 								quote_type_attribute_value =re.findall(pattern_name,sub_string)
+								quote_type_attribute_value = quote_type_attribute_value[0]
 							if pm_event_attribute_id:
 								pm_event_attribute_value = re.findall(pattern_name,sub_string)
 							if pm_event_attribute_id and self.tree_param != 'Z0009' and self.tree_param != 'Z0010':
