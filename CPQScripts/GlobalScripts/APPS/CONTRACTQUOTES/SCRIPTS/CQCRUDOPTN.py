@@ -1513,7 +1513,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					elif str(ent_disp_val) == 'Complementary':
 						val = "COMPLEMENTARY PRODUCTS"
 					Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),self.contract_quote_record_id,self.quote_revision_record_id,OfferingRow_detail.get("SERVICE_ID")))
-					Log.Info('ent_disp_val---'+str(ent_disp_val)+'--val-----'+str(val))
+					#Log.Info('ent_disp_val---'+str(ent_disp_val)+'--val-----'+str(val))
 				#A055S000P01-7401 END
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
