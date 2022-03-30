@@ -373,13 +373,12 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					)
 				elif sefl_api=="PAYMENTTERM_NAME_ISCHANGED":
 					act_status = (eval("col_name." + str(sefl_api)))
+					if act_status =="True":
+						value_check ="Checked"
+					else:
+						value_check =""
 					sec_str += (
-						'<div class="col-md-3 padtop5 padleft10"><input id="'
-						+ str(sefl_api)
-						+ '" type="CHECKBOX" value="'
-						+ str(act_status)
-						+ '" class="custom" '
-						+ 'disabled ><span class="lbl"></span></div>'
+						'<div class="col-md-3 padtop5 padleft10"><input id="'+ str(sefl_api)+'" type="CHECKBOX" value="'+str(act_status)+'" class="custom" '+'disabled'+ str(value_check)+'><span class="lbl"></span></div>'
 					)
 				elif sefl_api in ["INTERNAL_NOTES","CUSTOMER_NOTES"]:
 					#Trace.Write('At line 289-->err'+str(sefl_api))
