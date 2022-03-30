@@ -2879,11 +2879,13 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		obj_id1 = "SYOBJ-01023"
 		ObjectName = "ACACST"
 		Columns = [
-		"QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID",
-		"KIT_ID",
-		"KIT_NAME",
-		"KIT_NUMBER",
-		"TKM_FLAG"
+		"APRCHNSTP_TESTEDFIELD_RECORD_ID,TSTOBJ_LABEL",
+		"TSTOBJ_TESTEDFIELD_LABEL",
+		"CMPOBJ_LABEL",
+		"CMPOBJ_FIELD_LABEL",
+		"CMP_DATATYPE",
+		"CMP_OPERATOR",
+		"CMP_VALUE"
 	]
 	else:
 		obj_idval = "SYOBJ_00007_SYOBJ_00007"
@@ -2943,12 +2945,14 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		columns = "ASSEMBLY_ID,EQUIPMENT_ID,PM_ID,SERVICE_ID,KIT_ID,KIT_NUMBER,QTEREVPME_RECORD_ID"
 		objname = "SAQGPA"
 	if str(TreeSuperParentParam)=="Approvals":
+		hyper_link = ["APRCHNSTP_TESTEDFIELD_RECORD_ID"]
 		Parent_event = Sql.GetFirst(
 			"select "+str(columns)+" from "+str(objname)+" (NOLOCK) where  CpqTableEntryId = '{CpqTableEntryId}' ".format(
 				CpqTableEntryId=CpqTableEntryId
 			)
 		)
 	else:
+		hyper_link = ["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID"]
 		Parent_event = Sql.GetFirst(
 			"select "+str(columns)+" from "+str(objname)+" (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND CpqTableEntryId = '{CpqTableEntryId}' ".format(
 				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
@@ -3014,17 +3018,31 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 
 			chld_dict["ids"] = str(data_id)
 			chld_dict["ACTIONS"] = str(Action_str1)
-			chld_dict["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
-				"SAQSKP", str(child.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID)
-			)
-			chld_dict["KIT_ID"] =('<abbr id ="" title="' + str(child.KIT_ID) + '">' + str(child.KIT_ID) + "</abbr>") 
-			chld_dict["KIT_NUMBER"] =('<abbr id ="" title="' + str(child.KIT_NUMBER) + '">' + str(child.KIT_NUMBER) + "</abbr>") 
-			chld_dict["KIT_NAME"] = ('<abbr id ="" title="' + str(child.KIT_NAME) + '">' + str(child.KIT_NAME) + "</abbr>") 
-			chld_dict["TKM_FLAG"] = child.TKM_FLAG
+			if str(TreeSuperParentParam)=="Approvals":
+				ObjectName = "ACACSF"
+				chld_dict["APRCHNSTP_TESTEDFIELD_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+					"ACACSF", str(child.APRCHNSTP_TESTEDFIELD_RECORD_ID)
+				)
+				chld_dict["TSTOBJ_LABEL"] =('<abbr id ="" title="' + str(child.TSTOBJ_LABEL) + '">' + str(child.TSTOBJ_LABEL) + "</abbr>")
+				chld_dict["TSTOBJ_TESTEDFIELD_LABEL"] =('<abbr id ="" title="' + str(child.TSTOBJ_TESTEDFIELD_LABEL) + '">' + str(child.TSTOBJ_TESTEDFIELD_LABEL) + "</abbr>")
+				chld_dict["CMPOBJ_LABEL"] = ('<abbr id ="" title="' + str(child.CMPOBJ_LABEL) + '">' + str(child.CMPOBJ_LABEL) + "</abbr>")
+				chld_dict["CMP_DATATYPE"] = ('<abbr id ="" title="' + str(child.CMPOBJ_FIELD_LABEL) + '">' + str(child.CMPOBJ_FIELD_LABEL) + "</abbr>")
+				chld_dict["CMP_DATATYPE"] = ('<abbr id ="" title="' + str(child.CMP_DATATYPE) + '">' + str(child.CMP_DATATYPE) + "</abbr>")
+				chld_dict["CMP_OPERATOR"] = ('<abbr id ="" title="' + str(child.CMP_OPERATOR) + '">' + str(child.CMP_OPERATOR) + "</abbr>")
+				chld_dict["CMP_VALUE"] = ('<abbr id ="" title="' + str(child.CMP_VALUE) + '">' + str(child.CMP_VALUE) + "</abbr>")
+				
+			else:
+				ObjectName = "SAQSKP"
+				chld_dict["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+					"SAQSKP", str(child.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID)
+				)
+				chld_dict["KIT_ID"] =('<abbr id ="" title="' + str(child.KIT_ID) + '">' + str(child.KIT_ID) + "</abbr>") 
+				chld_dict["KIT_NUMBER"] =('<abbr id ="" title="' + str(child.KIT_NUMBER) + '">' + str(child.KIT_NUMBER) + "</abbr>") 
+				chld_dict["KIT_NAME"] = ('<abbr id ="" title="' + str(child.KIT_NAME) + '">' + str(child.KIT_NAME) + "</abbr>") 
+				chld_dict["TKM_FLAG"] = child.TKM_FLAG
 			chld_list.append(chld_dict)
 
 	# Table formation.
-	hyper_link = ["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID"]
 	table_header += "<tr>"
 	table_header += (
 		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
@@ -3111,7 +3129,6 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	if len(chld_list) == 0:
 		NORECORDS = "NORECORDS"
 
-	ObjectName = "SAQSKP"
 	DropDownList = []
 	filter_level_list = []
 	filter_clas_name = ""
