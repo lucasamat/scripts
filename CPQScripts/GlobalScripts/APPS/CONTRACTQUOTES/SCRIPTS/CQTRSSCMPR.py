@@ -43,7 +43,7 @@ class pricing_call:
                             entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
                             if entitlement_display_value_tag_match:
                                 quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
-                                if quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
+                                if quote_service_entitlement_type == 'STR-OFFBGBEQ OBJ-EQ':
                                     source_object_name = 'SAQSCE'
                                 elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART'):
                                     source_object_name = 'SAQSGE'
