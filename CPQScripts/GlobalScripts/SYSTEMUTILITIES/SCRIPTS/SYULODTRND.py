@@ -291,11 +291,12 @@ def CommonTreeViewHTMLDetail(
 	#section level permissions start	
 	if ( ObjectName == "SYSECT" or ObjectName == "SYSEFL") and (crnt_prd_val == "SY"):		
 		#Below query is in the logic to remove duplicate if the user is in more than one profile
-		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT WHERE SYSECT.RECORD_ID IN (SELECT DISTINCT SECTION_RECORD_ID FROM SYPRSN (NOLOCK) JOIN USERS_PERMISSIONS (NOLOCK) up ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID WHERE SYPRSN.TAB_RECORD_ID = '' AND SYPRSN.VISIBLE = 'True' AND UP.USER_ID = '"
-			+ str(get_user_id)
-			+ "') AND SYSECT.PRIMARY_OBJECT_NAME = '"
-			+ str(ObjectName)
-			+ "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
+		# QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT WHERE SYSECT.RECORD_ID IN (SELECT DISTINCT SECTION_RECORD_ID FROM SYPRSN (NOLOCK) JOIN USERS_PERMISSIONS (NOLOCK) up ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID WHERE SYPRSN.TAB_RECORD_ID = '' AND SYPRSN.VISIBLE = 'True' AND UP.USER_ID = '"
+		# 	+ str(get_user_id)
+		# 	+ "') AND SYSECT.PRIMARY_OBJECT_NAME = '"
+		# 	+ str(ObjectName)
+		# 	+ "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
+		QStr1 = ("SELECT TOP 1000 * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '"+ str(ObjectName)+ "' ORDER BY ABS (DISPLAY_ORDER)")
 		# QStr1 = (
 		# 	"SELECT TOP 1000 SYSECT.* FROM SYSECT WITH (NOLOCK)"
 		# 	+ " JOIN SYPRSN (NOLOCK) ON SYPRSN.SECTION_RECORD_ID = SYSECT.RECORD_ID"
@@ -458,20 +459,32 @@ def CommonTreeViewHTMLDetail(
 		action_visible_obj = ""
 		SecEdiApp = ["SYSTEM ADMIN", "SALES"]
 		if current_prod not in SecEdiApp:
+			# action_visible_obj = Sql.GetFirst(
+			# 	"""
+			# 						SELECT
+			# 							SYPRSN.*
+			# 						FROM
+			# 							SYPRSN (NOLOCK)
+			# 						JOIN
+			# 							USERS_PERMISSIONS UP (NOLOCK) ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
+			# 						WHERE
+			# 							SYPRSN.SECTION_RECORD_ID = '{Section_Rec_Id}' AND
+			# 							UP.USER_ID = '{User_Record_Id}' AND
+			# 							SYPRSN.EDITABLE = 0
+			# 						""".format(
+			# 		Section_Rec_Id=sec.RECORD_ID, User_Record_Id=get_user_id
+			# 	)
+			# )
 			action_visible_obj = Sql.GetFirst(
 				"""
 									SELECT
-										SYPRSN.*
+										SYSECT.*
 									FROM
-										SYPRSN (NOLOCK)
-									JOIN
-										USERS_PERMISSIONS UP (NOLOCK) ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
+										SYSECT (NOLOCK)
 									WHERE
-										SYPRSN.SECTION_RECORD_ID = '{Section_Rec_Id}' AND
-										UP.USER_ID = '{User_Record_Id}' AND
-										SYPRSN.EDITABLE = 0
+										RECORD_ID = '{Section_Rec_Id}' 
 									""".format(
-					Section_Rec_Id=sec.RECORD_ID, User_Record_Id=get_user_id
+					Section_Rec_Id=sec.RECORD_ID
 				)
 			)
 
