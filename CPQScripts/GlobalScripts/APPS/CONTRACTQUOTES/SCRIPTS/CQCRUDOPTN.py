@@ -4428,6 +4428,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			)
 		)
 		if self.tree_param in ("Z0009","Z0010") and kwargs.get('quotetype_value_for_offering').upper() != "TOOL BASED":
+			Log.Info()
 			ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id)})
 		
 		if self.sale_type == 'TOOL RELOCATION' and self.tree_param == "Sending Equipment":			
@@ -6599,7 +6600,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						quotetype_id =re.findall(quote_type_attribute,sub_string)
 						if quotetype_id:
 							quotetype_value =re.findall(quote_type_attribute_value,sub_string)
-							quotetype_value_for_offering = str(quotetype_value).upper()
+							quotetype_value_for_offering = str(quotetype_value[0]).upper()
 							#Log.Info("quotetype_value_for_offering -----"+str(quotetype_value_for_offering))
 							if quotetype_value_for_offering != "['EVENT BASED']" and quotetype_value_for_offering != "['FLEX EVENT BASED']":
 								Trace.Write("quotetype_value_for_offering---"+str(quotetype_value_for_offering))
