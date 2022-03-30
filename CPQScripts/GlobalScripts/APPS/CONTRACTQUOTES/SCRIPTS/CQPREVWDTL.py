@@ -373,8 +373,10 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					)
 				elif sefl_api=="PAYMENTTERM_NAME_ISCHANGED":
 					act_status = (eval("col_name." + str(sefl_api)))
+					Trace.Write("act_status"+str(act_status))
 					if act_status =="True":
-						value_check ="Checked"
+						value_check ="checked"
+						
 					else:
 						value_check =""
 					sec_str += (
