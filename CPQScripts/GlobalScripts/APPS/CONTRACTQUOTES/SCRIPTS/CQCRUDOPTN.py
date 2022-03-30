@@ -2601,7 +2601,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					columns=["CREDITVOUCHER_RECORD_ID"],
 					table_name=master_object_name,
 					table_joins="",
-					where_condition=""" {} ZUONR = '{}' """.format(qury_str,Quote.GetCustomField('STPAccountID').Content,single_record=False)
+					where_condition=""" {} REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '{}' """.format(qury_str,Quote.GetCustomField('STPAccountID').Content,single_record=False)
 				)
 
 				if master_credit_obj:
