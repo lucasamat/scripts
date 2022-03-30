@@ -2875,9 +2875,9 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	if str(TreeSuperParentParam)=="Approvals":
-		obj_idval = "SYOBJ_01023_SYOBJ_01023"
-		obj_id1 = "SYOBJ-01023"
-		ObjectName = "ACACST"
+		obj_idval = "SYOBJ-1177047_SYOBJ-1177047"
+		obj_id1 = "SYOBJ-1177047"
+		ObjectName = "ACACSF"
 		Columns = [
 		"APRCHNSTP_TESTEDFIELD_RECORD_ID",
 		"TSTOBJ_LABEL",
