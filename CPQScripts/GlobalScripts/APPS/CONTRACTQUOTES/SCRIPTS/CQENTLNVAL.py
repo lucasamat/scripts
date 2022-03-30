@@ -86,7 +86,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 					#flag_excluse=1
 					break
 		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
-		if str(get_ent_val).upper() == "STR-OFFBGBEQ OBJ-EQ":
+		if str(get_ent_val).upper() == "OFFERING + EQUIPMENT":
 			level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
 		elif str(get_ent_val).upper() in ("OFFERING + GREENBOOK + GR EQUI","OFFERING + KIT","OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT"):
 			level_name = 'OFFERING FAB GREENBOOK LEVEL'
@@ -157,7 +157,7 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 					#flag_excluse=1
 					break
 		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
-		if str(get_ent_val).upper()  == "STR-OFFBGBEQ OBJ-EQ":
+		if str(get_ent_val).upper()  == "OFFERING + EQUIPMENT":
 			level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
 		elif str(get_ent_val).upper() in ("OFFERING + GREENBOOK + GR EQUI","OFFERING + PM EVENT","OFFERING + SCH. MAIN. EVENT","OFFERING + FAB + SCH. MAIN EVT","OFFERING + KIT"):
 			level_name = 'OFFERING FAB GREENBOOK LEVEL'

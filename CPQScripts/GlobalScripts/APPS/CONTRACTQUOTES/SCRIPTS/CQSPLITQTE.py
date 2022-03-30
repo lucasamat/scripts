@@ -423,7 +423,7 @@ def splitserviceinsert():
 				split_entitlement_display_value = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
 			if entitlement_display_value_tag_match and split_entitlement_display_value:
 				quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
-				if quote_service_entitlement_type == 'STR-OFFBGBEQ OBJ-EQ' and split_entitlement_display_value == ["Yes"]:
+				if quote_service_entitlement_type == 'OFFERING + EQUIPMENT' and split_entitlement_display_value == ["Yes"]:
 					Trace.Write("1")
 					servicelevel_split_equip(service_entitlement_obj.SERVICE_ID)
 					break

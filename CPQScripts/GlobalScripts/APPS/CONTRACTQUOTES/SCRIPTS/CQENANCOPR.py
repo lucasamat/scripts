@@ -1026,7 +1026,7 @@ class AncillaryProductOperation:
 			# if obj in ('SAQICO','SAQRIT','SAQRIO'):
 			# 	ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 			if obj == 'SAQRIT' and 'EQUIPMENT_ID' in ancillary_where:
-				if self.quote_service_entitlement_type != "STR-OFFBGBEQ OBJ-EQ":
+				if self.quote_service_entitlement_type != "OFFERING + EQUIPMENT":
 					ancillary_where = re.sub(r'AND EQUIPMENT_ID\s*\=\s*\'[^>]*?\'', '', ancillary_where )
 				else:
 					ancillary_where = re.sub('EQUIPMENT_ID', 'OBJECT_ID', ancillary_where )
