@@ -128,51 +128,96 @@ class ContractQuoteItem:
 				self.parent_service_id = check_addon.SERVICE_ID
 		return True
 
-	def _quote_items_assembly_insert(self, update=True):		
+	def _quote_items_assembly_insert(self, update=True):
+		import re
+		service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,service_id = self.service_id))
+		if service_entitlement_object is not None:
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			quote_type_attribute = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+			quote_type_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			XML = service_entitlement_object.ENTITLEMENT_XML
+			for values in re.finditer(pattern_tag, XML):
+				sub_string = values.group(1)
+				quotetype_id =re.findall(quote_type_attribute,sub_string)
+				if quotetype_id:
+					quotetype_value =re.findall(quote_type_attribute_value,sub_string)
+					quotetype_value_for_offering = str(quotetype_value[0]).upper()
 		datetime_string = self.datetime_value.strftime("%d%m%Y%H%M%S")
+		if str(quotetype_value_for_offering) == "TOOL BASED":
+			# SAQSCE_BKP = "SAQSCE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
+			SAQSCA_BKP = "SAQSCA_BKP_{}_{}".format(self.contract_quote_id, datetime_string)     
+			SAQICO_BKP = "SAQICO_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
+			# SAQSCE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCE_BKP)+" END  ' ")
 
-		# SAQSCE_BKP = "SAQSCE_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
-		SAQSCA_BKP = "SAQSCA_BKP_{}_{}".format(self.contract_quote_id, datetime_string)		
-		
-		# SAQSCE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCE_BKP)+" END  ' ")
+			SAQSCA_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCA_BKP)+" END  ' ")
+			SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
+			try:
+				SAQSCA_BKP_INS = SqlHelper.GetFirst(
+					"sp_executesql @T=N'SELECT SAQSCA.* INTO "+str(SAQSCA_BKP)+" FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND SAQSCA.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SAQSCA.SERVICE_ID = ''"+str(self.service_id)+"'' '")
+				SAQICO_BKP_INS = SqlHelper.GetFirst(
+					"sp_executesql @T=N'SELECT SAQICO.* INTO "+str(SAQICO_BKP)+" FROM SAQICO (NOLOCK) WHERE SAQICO.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND SAQICO.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SAQICO.SERVICE_ID = ''"+str(self.service_id)+"'' '")
 
-		SAQSCA_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCA_BKP)+" END  ' ")
-		try:
-			# SAQSCE_BKP_INS = SqlHelper.GetFirst(
-			# 	"sp_executesql @T=N'SELECT SAQSCE.* INTO "+str(SAQSCE_BKP)+" FROM SAQSCE (NOLOCK) WHERE QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' '")
-			
-			# SAQSCA_BKP_INS = SqlHelper.GetFirst(
-			#     "sp_executesql @T=N'SELECT SAQSCA.* INTO "+str(SAQSCA_BKP)+" FROM SAQSCA (NOLOCK) JOIN "+str(SAQSCE_BKP)+" SAQSCE_BKP ON SAQSCA.QUOTE_RECORD_ID = SAQSCE_BKP.QUOTE_RECORD_ID AND SAQSCA.QTEREV_RECORD_ID = SAQSCE_BKP.QTEREV_RECORD_ID AND SAQSCA.SERVICE_RECORD_ID = SAQSCE_BKP.SERVICE_RECORD_ID AND SAQSCA.FABLOCATION_ID = SAQSCE_BKP.FABLOCATION_ID AND SAQSCA.GREENBOOK = SAQSCE_BKP.GREENBOOK AND SAQSCA.EQUIPMENT_RECORD_ID = SAQSCE_BKP.EQUIPMENT_RECORD_ID WHERE SAQSCA.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND SAQSCA.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' '")
-			
-			SAQSCA_BKP_INS = SqlHelper.GetFirst(
-				"sp_executesql @T=N'SELECT SAQSCA.* INTO "+str(SAQSCA_BKP)+" FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND SAQSCA.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SAQSCA.SERVICE_ID = ''"+str(self.service_id)+"'' '")
-
-			Sql.RunQuery("""INSERT SAQICA (EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,EQUIPMENTTYPE_ID,LINE,QTEITM_RECORD_ID,QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) 
+				Sql.RunQuery("""INSERT SAQICA (EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,EQUIPMENTTYPE_ID,QTEITMCOB_RECORD_ID,LINE,QTEITM_RECORD_ID,QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) 
 					SELECT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy,GETDATE() as CpqTableEntryDateModified 
 					FROM ( 
 						SELECT IQ.* FROM (
 							SELECT SQ.*, SAQRIO.LINE, SAQRIO.QTEITM_RECORD_ID 
 							FROM (
 								SELECT 
-									DISTINCT SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQSCA.QUOTE_ID,SAQSCA.QUOTE_RECORD_ID,SAQSCA.QTEREV_ID,SAQSCA.QTEREV_RECORD_ID,SAQSCA.SERVICE_DESCRIPTION,SAQSCA.SERVICE_ID,SAQSCA.SERVICE_RECORD_ID,SAQSCA.GREENBOOK,SAQSCA.GREENBOOK_RECORD_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_DESCRIPTION,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQSCA.SALESORG_ID,SAQSCA.SALESORG_NAME,SAQSCA.SALESORG_RECORD_ID,SAQSCA.EQUIPMENTTYPE_ID	FROM					
-								{TempSAQSCA} (NOLOCK) SAQSCA
+									DISTINCT SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQSCA.QUOTE_ID,SAQSCA.QUOTE_RECORD_ID,SAQSCA.QTEREV_ID,SAQSCA.QTEREV_RECORD_ID,SAQSCA.SERVICE_DESCRIPTION,SAQSCA.SERVICE_ID,SAQSCA.SERVICE_RECORD_ID,SAQSCA.GREENBOOK,SAQSCA.GREENBOOK_RECORD_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_DESCRIPTION,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQSCA.SALESORG_ID,SAQSCA.SALESORG_NAME,SAQSCA.SALESORG_RECORD_ID,SAQSCA.EQUIPMENTTYPE_ID ,SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID FROM                    
+								{TempSAQSCA} (NOLOCK) SAQSCA  JOIN {item_level_covered_object} SAQICO ON 
+								SAQICO.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = 
+								SAQSCA.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID AND SAQICO.FABLOCATION_RECORD_ID = SAQSCA.FABLOCATION_RECORD_ID AND SAQICO.GREENBOOK_RECORD_ID = SAQSCA.GREENBOOK_RECORD_ID
 								WHERE SAQSCA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCA.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSCA.SERVICE_ID = '{ServiceId}'
-							) SQ 							
+							) SQ                            
 							JOIN SAQRIO (NOLOCK) ON SAQRIO.QUOTE_RECORD_ID = SQ.QUOTE_RECORD_ID AND SAQRIO.QTEREV_RECORD_ID = SQ.QTEREV_RECORD_ID AND SAQRIO.SERVICE_RECORD_ID = SQ.SERVICE_RECORD_ID AND SAQRIO.GREENBOOK_RECORD_ID = SQ.GREENBOOK_RECORD_ID AND SAQRIO.EQUIPMENT_RECORD_ID = SQ.EQUIPMENT_RECORD_ID
 							WHERE SAQRIO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIO.SERVICE_ID = '{ServiceId}'
-						) IQ	
+						) IQ    
 						LEFT JOIN SAQICA (NOLOCK) ON SAQICA.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICA.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICA.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQICA.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID AND SAQICA.FABLOCATION_RECORD_ID = IQ.FABLOCATION_RECORD_ID AND SAQICA.EQUIPMENT_RECORD_ID = IQ.EQUIPMENT_RECORD_ID AND SAQICA.ASSEMBLY_RECORD_ID = IQ.ASSEMBLY_RECORD_ID
 						WHERE ISNULL(SAQICA.ASSEMBLY_RECORD_ID,'') = ''
-					)OQ""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, TempSAQSCA=SAQSCA_BKP))
+					)OQ""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, TempSAQSCA=SAQSCA_BKP,item_level_covered_object = SAQICO_BKP))
 
-			# SAQSCE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCE_BKP)+" END  ' ")
+				SAQSCA_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCA_BKP)+" END  ' ")
+				SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
+			except Exception:
+				SAQSCA_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCA_BKP)+" END  ' ")
+				SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
+				Log.Info("Occured Exception In Quote Item Assembly Insert For The Quote: {} And Revision: {}".format(self.contract_quote_id, self.contract_quote_revision_id))
+		else:
+			SAQGPA_BKP = "SAQGPA_BKP_{}_{}".format(self.contract_quote_id, datetime_string)     
+			SAQICO_BKP = "SAQICO_BKP_{}_{}".format(self.contract_quote_id, datetime_string)
+			try:
+				SAQGPA_BKP_INS = SqlHelper.GetFirst(
+					"sp_executesql @T=N'SELECT SAQGPA.* INTO "+str(SAQGPA_BKP)+" FROM SAQGPA (NOLOCK) WHERE SAQGPA.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND SAQGPA.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SAQGPA.SERVICE_ID = ''"+str(self.service_id)+"'' '")
 
-			SAQSCA_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCA_BKP)+" END  ' ")
-		except Exception:
-			# SAQSCE_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCE_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCE_BKP)+" END  ' ")
+				SAQICO_BKP_INS = SqlHelper.GetFirst(
+								"sp_executesql @T=N'SELECT SAQICO.* INTO "+str(SAQICO_BKP)+" FROM SAQICO (NOLOCK) WHERE SAQICO.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' AND SAQICO.QTEREV_ID = ''"+str(self.contract_quote_revision_id)+"'' AND SAQICO.SERVICE_ID = ''"+str(self.service_id)+"'' '")
+				Sql.RunQuery("""INSERT SAQICA (EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,EQUIPMENTTYPE_ID,QTEITMCOB_RECORD_ID,LINE,QTEITM_RECORD_ID,QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) 
+						SELECT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy,GETDATE() as CpqTableEntryDateModified 
+						FROM ( 
+							SELECT IQ.* FROM (
+								SELECT SQ.*, SAQRIO.LINE, SAQRIO.QTEITM_RECORD_ID,
+								FROM (
+									SELECT 
+										DISTINCT SAQGPA.EQUIPMENT_ID,SAQGPA.EQUIPMENT_RECORD_ID,SAQGPA.QUOTE_ID,SAQGPA.QUOTE_RECORD_ID,SAQGPA.QTEREV_ID,SAQGPA.QTEREV_RECORD_ID,SAQGPA.SERVICE_DESCRIPTION,SAQGPA.SERVICE_ID,SAQGPA.SERVICE_RECORD_ID,SAQGPA.GREENBOOK,SAQGPA.GREENBOOK_RECORD_ID,SAQGPA.FABLOCATION_ID,SAQGPA.FABLOCATION_NAME,SAQGPA.FABLOCATION_RECORD_ID,SAQGPA.ASSEMBLY_DESCRIPTION,SAQGPA.ASSEMBLY_ID,SAQGPA.ASSEMBLY_RECORD_ID,SAQGPA.SALESORG_ID,SAQGPA.SALESORG_NAME,SAQGPA.SALESORG_RECORD_ID,SAQGPA.EQUIPMENTTYPE_ID,SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID  FROM                    
+									{pmsa_assembly} (NOLOCK) SAQGPA JOIN {item_level_covered_object} SAQICO ON 
+									SAQICO.QUOTE_RECORD_ID = SAQGPA.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = 
+									SAQGPA.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = SAQGPA.SERVICE_RECORD_ID AND SAQICO.FABLOCATION_RECORD_ID = SAQGPA.FABLOCATION_RECORD_ID AND SAQICO.GREENBOOK_RECORD_ID = SAQGPA.GREENBOOK_RECORD_ID
+									WHERE SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPA.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQGPA.SERVICE_ID = '{ServiceId}'
+								) SQ                            
+								JOIN SAQRIO (NOLOCK) ON SAQRIO.QUOTE_RECORD_ID = SQ.QUOTE_RECORD_ID AND SAQRIO.QTEREV_RECORD_ID = SQ.QTEREV_RECORD_ID AND SAQRIO.SERVICE_RECORD_ID = SQ.SERVICE_RECORD_ID AND SAQRIO.GREENBOOK_RECORD_ID = SQ.GREENBOOK_RECORD_ID AND SAQRIO.EQUIPMENT_RECORD_ID = SQ.EQUIPMENT_RECORD_ID
+								WHERE SAQRIO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIO.SERVICE_ID = '{ServiceId}'
+							) IQ    
+							LEFT JOIN SAQICA (NOLOCK) ON SAQICA.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICA.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICA.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQICA.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID AND SAQICA.FABLOCATION_RECORD_ID = IQ.FABLOCATION_RECORD_ID AND SAQICA.EQUIPMENT_RECORD_ID = IQ.EQUIPMENT_RECORD_ID AND SAQICA.ASSEMBLY_RECORD_ID = IQ.ASSEMBLY_RECORD_ID
+							WHERE ISNULL(SAQICA.ASSEMBLY_RECORD_ID,'') = ''
+						)OQ""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, pmsa_assembly=SAQGPA_BKP,item_level_covered_object = SAQICO_BKP))
 
-			SAQSCA_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQSCA_BKP)+" END  ' ")
-			Log.Info("Occured Exception In Quote Item Assembly Insert For The Quote: {} And Revision: {}".format(self.contract_quote_id, self.contract_quote_revision_id))
+				SAQGPA_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQGPA_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQGPA_BKP)+" END  ' ")
+				SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
+			except Exception:
+				SAQGPA_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQGPA_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQGPA_BKP)+" END  ' ")
+				SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
+				Log.Info("Occured Exception In Quote Item Assembly Insert For The Quote: {} And Revision: {}".format(self.contract_quote_id, self.contract_quote_revision_id))
 
 	def _construct_dict_xml(self,updateentXML):
 		entxmldict = {}
@@ -1818,7 +1863,7 @@ class ContractQuoteItem:
 						SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSCO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQSAE.CONFIGURATION_STATUS,'') = 'COMPLETE' AND ISNULL(SAQRIO.ASSEMBLY_ID,'') = ''
 					) IQ
 					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id,
-					 WhereConditionString=item_object_where_string)
+					WhereConditionString=item_object_where_string)
 				)
 		
 		else:
@@ -2005,7 +2050,7 @@ class ContractQuoteItem:
 								AND SAQRIT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID	
 								AND ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ISNULL(SAQSCO.GREENBOOK_RECORD_ID,'')
 								AND ISNULL(SAQSCO.TEMP_TOOL,'') = ISNULL(SAQRIT.TEMP_TOOL,'')
-								 AND SAQRIT.FABLOCATION_RECORD_ID = SAQSCO.FABLOCATION_RECORD_ID AND SAQRIT.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID
+								AND SAQRIT.FABLOCATION_RECORD_ID = SAQSCO.FABLOCATION_RECORD_ID AND SAQRIT.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID
 								WHERE SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSCO.SERVICE_ID = '{ServiceId}'
 						) SAQRIT
 						JOIN {ObjectName} (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID
