@@ -869,7 +869,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						# Sql.RunQuery(saqitm_contract_update)
 						# Sql.RunQuery(saqifl_contract_update)
 						# Sql.RunQuery(saqigb_contract_update)
-						Sql.RunQuery(saqico_contract_update)
+						#Sql.RunQuery(saqico_contract_update)
 						# Sql.RunQuery(saqtrv_contract_update)
 
 					# elif TableName == "SAQIGB":
