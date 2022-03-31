@@ -320,6 +320,7 @@ def set_active_revision(Opertion,cartrev):
 		get_rev_info_details = Sql.GetFirst("select QTEREV_ID,CART_ID,ADDUSR_RECORD_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and QUOTE_REVISION_RECORD_ID = '"+str(recid)+"'")
 		gtcart_idval = get_rev_info_details.CART_ID
 		Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=recid,newrev_inc= get_rev_info_details.QTEREV_ID,QuoteRecordId=quote_contract_recordId,active_rev = 1))
+		Quote.SetGlobal("quote_revision_record_id",recid)
 		GETCARTID=SqlHelper.GetFirst("sp_executesql @t = N'update CART set ACTIVE_REV =''0'' WHERE CART_ID in (select distinct top 10 CART_REVISIONS.CART_ID as ID from CART_REVISIONS (nolock) INNER JOIN CART2 (nolock) ON CART_REVISIONS.CART_ID = CART2.CartId AND CART_REVISIONS.VISITOR_ID = CART2.OwnerId INNER JOIN CART(NOLOCK) ON CART.CART_ID = CART2.CartId and CART.USERID = CART2.OwnerId WHERE CART2.CartCompositeNumber = ''"+ str(Quote.CompositeNumber)+ "'') '")
 		UPDATEACTIVE = SqlHelper.GetFirst("sp_executesql @t=N'update CART set ACTIVE_REV =''1'' where CART_ID = ''"+str(gtcart_idval)+"'' and USERID =''"+str(User.Id)+"'' '")
 		NRev = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)
