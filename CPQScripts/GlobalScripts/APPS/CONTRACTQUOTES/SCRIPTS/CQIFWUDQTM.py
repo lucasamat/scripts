@@ -779,6 +779,12 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 			get_total_milestons += val
 		elif 'AGS_Z0007_PQB_MILST3' in data:
 			get_total_milestons += val
+		elif 'AGS_Z0006_PQB_MILST1' in data:
+			get_total_milestons += val
+		elif 'AGS_Z0006_PQB_MILST2' in data:
+			get_total_milestons += val
+		elif 'AGS_Z0006_PQB_MILST3' in data:
+			get_total_milestons += val
 	amount_columnss = str(float(get_total_milestons)/100.00)
 	Trace.Write('amount_column--'+str(amount_column))
 	Sql.RunQuery(""" INSERT SAQIBP (
