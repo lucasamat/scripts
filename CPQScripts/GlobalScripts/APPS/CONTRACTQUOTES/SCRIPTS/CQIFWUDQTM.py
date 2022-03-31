@@ -15,7 +15,7 @@ import System.Net
 from SYDATABASE import SQL
 from System import Convert
 import re
-
+import datetime
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 from System.Text.Encoding import UTF8
@@ -383,35 +383,10 @@ def quote_items_pricing(Qt_id):
 						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id ) )
 
 	#updating value to quote summary ends
-	if manual_pricing != 'True':
-		try:
-			# get_services = Sql.GetList("SELECT SERVICE_ID from SAQTSE WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id ))
-			# get_services_list = []
-			# for val in get_services:
-			# 	if val.SERVICE_ID:
-			# 		get_services_list.append(val.SERVICE_ID)
-			LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
-			if LOGIN_CREDENTIALS is not None:
-				Login_Username = str(LOGIN_CREDENTIALS.Username)
-				Login_Password = str(LOGIN_CREDENTIALS.Password)
-				authorization = Login_Username+":"+Login_Password
-				binaryAuthorization = UTF8.GetBytes(authorization)
-				authorization = Convert.ToBase64String(binaryAuthorization)
-				authorization = "Basic " + authorization
-
-
-				webclient = System.Net.WebClient()
-				webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-				webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
-				
-				result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_record_id,Rev_Id = contract_quote_revision_record_id)
-				
-				LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
-				Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
-		except:
-			Log.Info('error in Billing')	
 	
-	return "True"
+
+
+
 
 # def voucher_amt_update(Qt_id):
 # 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
@@ -472,7 +447,142 @@ def quoteitemupdate(Qt_id):
 	delete_saqrit = Sql.RunQuery("DELETE FROM SAQRIT WHERE QUOTE_ID = '{}'".format(Qt_id))
 	delete_saqico = Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_ID = '{}'".format(Qt_id))
 	update_saqtrv = Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT_INGL_CURR=NULL, NET_VALUE_INGL_CURR=NULL WHERE QUOTE_ID = '{}'".format(Qt_id))
+
+
+
+
+def _insert_billing_matrix(Qt_id):
+	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
+	contract_quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
+	quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID
+	Sq.RunQuery("DELETE FROM SAQRIB where WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId= contract_quote_record_id,RevisionRecordId=quote_revision_rec_id))
+	Sql.RunQuery("""
+			INSERT SAQRIB (
+			QUOTE_BILLING_PLAN_RECORD_ID,
+			BILLING_END_DATE,
+			BILLING_DAY,
+			BILLING_START_DATE,
+			QUOTE_ID,
+			QUOTE_NAME,
+			QUOTE_RECORD_ID,
+			QTEREV_ID,
+			QTEREV_RECORD_ID,
+			CPQTABLEENTRYADDEDBY,
+			CPQTABLEENTRYDATEADDED,
+			CpqTableEntryModifiedBy,
+			CpqTableEntryDateModified,
+			SALESORG_ID,
+			SALESORG_NAME,
+			SALESORG_RECORD_ID,
+			PRDOFR_ID,
+			PRDOFR_RECORD_ID,
+			SERVICE_ID,
+			SERVICE_DESCRIPTION,LINE
+			) 
+			SELECT 
+			CONVERT(VARCHAR(4000),NEWID()) as QUOTE_BILLING_PLAN_RECORD_ID,
+			SAQTMT.CONTRACT_VALID_TO as BILLING_END_DATE,
+			30 as BILLING_DAY,
+			SAQTMT.CONTRACT_VALID_FROM as BILLING_START_DATE,
+			SAQTMT.QUOTE_ID,
+			SAQTMT.QUOTE_NAME,
+			SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
+			SAQTMT.QTEREV_ID as QTEREV_ID,
+			SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
+			'{UserName}' AS CPQTABLEENTRYADDEDBY,
+			GETDATE() as CPQTABLEENTRYDATEADDED,
+			{UserId} as CpqTableEntryModifiedBy,
+			GETDATE() as CpqTableEntryDateModified,
+			SAQTSV.SALESORG_ID,
+			SAQTSV.SALESORG_NAME,
+			SAQTSV.SALESORG_RECORD_ID,
+			SAQTSV.SERVICE_ID as PRDOFR_ID,
+			SAQTSV.SERVICE_RECORD_ID as PRDOFR_RECORD_ID,
+			SAQTSV.SERVICE_ID,
+			SAQTSV.SERVICE_DESCRIPTION,SAQRIS.LINE                   
+			FROM SAQTMT (NOLOCK) JOIN SAQTSV on SAQTSV.QUOTE_ID = SAQTMT.QUOTE_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID JOIN SAQRIS on SAQTSV.QUOTE_ID = SAQRIS.QUOTE_ID AND SAQTSV.QTEREV_RECORD_ID = SAQRIS.QTEREV_RECORD_ID
+			WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTMT.QTEREV_RECORD_ID = '{RevisionRecordId}'
+			AND SAQTSV.SERVICE_ID NOT IN ('Z0101','A6200','Z0108','Z0110') AND SAQTSV.SERVICE_ID NOT IN (SELECT PRDOFR_ID FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')
+													
+	""".format(                        
+		QuoteRecordId= contract_quote_rec_id,
+		RevisionRecordId=quote_revision_rec_id,
+		UserId=User.Id,
+		UserName=User.Name
+	))
 	
+	billingmatrix_create()
+			
+	return True
+
+def _quote_items_greenbook_summary_insert():
+	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
+	contract_quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
+	quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID
+	Sq.RunQuery("DELETE FROM SAQRIB where WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId= contract_quote_record_id,RevisionRecordId=quote_revision_rec_id))	
+	greenbook_summary_last_line_no = 0
+	Sql.RunQuery("DELETE FROM SAQIGS where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
+	quote_item_summary_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQIGS (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
+	if quote_item_summary_obj:
+		greenbook_summary_last_line_no = int(quote_item_summary_obj.LINE) 	
+	
+	Sql.RunQuery("""INSERT SAQIGS (CONTRACT_VALID_FROM, CONTRACT_VALID_TO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, QTEITMSUM_RECORD_ID, COMMITTED_VALUE_INGL_CURR, ESTVAL_INGL_CURR, NET_VALUE_INGL_CURR, DOC_CURRENCY, DOCCURR_RECORD_ID, COMMITTED_VALUE, ESTIMATED_VALUE, NET_VALUE, LINE, QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+		SELECT IQ.*, ROW_NUMBER()OVER(ORDER BY(IQ.GREENBOOK)) + {ItemGreenbookSummaryLastLineNo} as LINE, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+			SELECT DISTINCT
+				SAQTRV.CONTRACT_VALID_FROM,
+				SAQTRV.CONTRACT_VALID_TO,
+				SAQTRV.GLOBAL_CURRENCY,
+				SAQTRV.GLOBAL_CURRENCY_RECORD_ID,						
+				SQ.GREENBOOK,
+				SQ.GREENBOOK_RECORD_ID,
+				SQ.SERVICE_DESCRIPTION,
+				SQ.SERVICE_ID,
+				SQ.SERVICE_RECORD_ID,
+				SAQTRV.QUOTE_ID,
+				SAQTRV.QUOTE_RECORD_ID,
+				SAQTMT.QTEREV_ID,
+				SAQTMT.QTEREV_RECORD_ID,
+				SQ.QTEITMSUM_RECORD_ID,
+				SQ.COMMITTED_VALUE_INGL_CURR as COMMITTED_VALUE_INGL_CURR,
+				SQ.ESTVAL_INGL_CURR as ESTVAL_INGL_CURR,
+				SQ.NET_VALUE_INGL_CURR as NET_VALUE_INGL_CURR,
+				SQ.DOC_CURRENCY,
+				SQ.DOCCURR_RECORD_ID as DOCCURR_RECORD_ID,
+				SQ.COMMITTED_VALUE as COMMITTED_VALUE,
+				SQ.ESTIMATED_VALUE as ESTIMATED_VALUE,
+				SQ.NET_VALUE as NET_VALUE
+			FROM (
+					SELECT 
+						SAQRIT.QUOTE_RECORD_ID, 
+						SAQRIT.QTEREV_RECORD_ID,   
+						SAQRIT.SERVICE_DESCRIPTION,
+						SAQRIT.SERVICE_ID,
+						SAQRIT.SERVICE_RECORD_ID,
+						SAQRIT.GREENBOOK,
+						SAQRIT.GREENBOOK_RECORD_ID,
+						SAQRIT.QTEITMSUM_RECORD_ID,
+						SUM(SAQRIT.COMMITTED_VALUE) as COMMITTED_VALUE_INGL_CURR,
+						SUM(SAQRIT.ESTVAL_INGL_CURR) as ESTVAL_INGL_CURR,
+						SUM(SAQRIT.NET_VALUE_INGL_CURR) as NET_VALUE_INGL_CURR,
+						SAQRIT.DOC_CURRENCY,
+						SAQRIT.DOCURR_RECORD_ID as DOCCURR_RECORD_ID,
+						SUM(SAQRIT.COMMITTED_VALUE) as COMMITTED_VALUE,
+						SUM(SAQRIT.ESTIMATED_VALUE) as ESTIMATED_VALUE,
+						SUM(SAQRIT.NET_VALUE) as NET_VALUE
+					FROM SAQRIT (NOLOCK) 
+					WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' 
+					and SAQRIT.TOTAL_AMOUNT IS NOT NULL  GROUP BY SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID, SAQRIT.SERVICE_DESCRIPTION, SAQRIT.SERVICE_ID, SAQRIT.SERVICE_RECORD_ID, SAQRIT.GREENBOOK, SAQRIT.GREENBOOK_RECORD_ID, SAQRIT.QTEITMSUM_RECORD_ID, SAQRIT.DOC_CURRENCY, SAQRIT.DOCURR_RECORD_ID
+				) SQ
+			JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SQ.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SQ.QTEREV_RECORD_ID     
+			JOIN SAQTRV (NOLOCK) ON SAQTRV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID			
+			) IQ			
+			LEFT JOIN SAQIGS (NOLOCK) ON SAQIGS.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQIGS.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQIGS.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQIGS.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
+			WHERE ISNULL(SAQIGS.GREENBOOK_RECORD_ID,'') = ''
+	""".format(UserId=User.Id, UserName=User.UserName, QuoteRecordId= contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id, ItemGreenbookSummaryLastLineNo=greenbook_summary_last_line_no))
+	return True
+
+
+
 try: 
 	Qt_id = Param.QT_REC_ID
 except:
