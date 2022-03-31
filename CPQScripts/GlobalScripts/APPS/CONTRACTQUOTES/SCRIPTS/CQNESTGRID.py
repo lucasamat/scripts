@@ -2278,7 +2278,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	)
 	Columns = [
 		#"QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID",
-		#"INCLUDED",
+		"INCLUDED",
 		"EQUIPMENTCATEGORY_ID",
 		#"SERIAL_NUMBER",
 		"ASSEMBLY_ID",
@@ -4631,7 +4631,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		QueryCountObj = Sql.GetFirst(
 			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" APRCHN_ID = '"
 			+ str(TreeParentParam)
-			+ "' and APRCHNSTP_NUMBER = 1 
+			+ "' and APRCHNSTP_NUMBER = 1 "
 		)
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
