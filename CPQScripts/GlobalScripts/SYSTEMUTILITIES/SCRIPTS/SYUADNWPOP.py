@@ -585,8 +585,8 @@ def POPUPLISTVALUEADDNEW(
 					ObjectName,
 					receiving_account_id,
 					sales_org_id,
-              		contract_quote_record_id,
-                	quote_revision_record_id
+					contract_quote_record_id,
+					quote_revision_record_id
 					)
 				)	
 			else:
@@ -594,11 +594,11 @@ def POPUPLISTVALUEADDNEW(
 				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID AND MAFBLC.SALESORG_ID = '{}' WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'AND QTEREV_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
 					ObjectName, 
 					sales_org_id,
-     				contract_quote_record_id,
-         			quote_revision_record_id,
-            		where_string,
-              		contract_quote_record_id,
-                	quote_revision_record_id
+					contract_quote_record_id,
+					quote_revision_record_id,
+					where_string,
+					contract_quote_record_id,
+					quote_revision_record_id
 				)
 			)
 
@@ -2385,17 +2385,17 @@ def POPUPLISTVALUEADDNEW(
 				"PRICEBOOK_ENTRIES_RECORD_ID": "KEY",
 				"GREENBOOK": "GREENBOOK",
 				"DIVISION_ID": "DIVISION",
-                "BUSINESS_UNIT": "BU",
-                "POSS_NSO_PART_ID": "AGS POSS ID",
-                "POSS_NSO_DESCRIPTION": "POSS FOR NSO DESCRIPTION"
+				"BUSINESS_UNIT": "BU",
+				"POSS_NSO_PART_ID": "AGS POSS ID",
+				"POSS_NSO_DESCRIPTION": "POSS FOR NSO DESCRIPTION"
 			}
 			ordered_keys = [
 				"PRICEBOOK_ENTRIES_RECORD_ID",
 				"GREENBOOK",
 				"DIVISION_ID",
-                "BUSINESS_UNIT",
-                "POSS_NSO_PART_ID",
-                "POSS_NSO_DESCRIPTION"
+				"BUSINESS_UNIT",
+				"POSS_NSO_PART_ID",
+				"POSS_NSO_DESCRIPTION"
 			]
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
