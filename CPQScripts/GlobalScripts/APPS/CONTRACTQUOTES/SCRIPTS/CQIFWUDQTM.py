@@ -456,7 +456,7 @@ def _insert_billing_matrix(Qt_id):
 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
 	contract_quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
 	quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID
-	Sql.RunQuery("DELETE FROM SAQRIB where WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId= contract_quote_record_id,RevisionRecordId=quote_revision_rec_id))
+	Sql.RunQuery("DELETE FROM SAQRIB where WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId= contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
 	Sql.RunQuery("""
 			INSERT SAQRIB (
 			QUOTE_BILLING_PLAN_RECORD_ID,
