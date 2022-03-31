@@ -2286,7 +2286,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		"ASSEMBLYTYPE_ID",
 		"GOT_CODE",
 		"MNT_PLANT_ID",
-		#"FABLOCATION_ID",
+		"FABLOCATION_ID",
 		#"WARRANTY_START_DATE",
 		#"WARRANTY_END_DATE"
 	]
