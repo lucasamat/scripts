@@ -1854,6 +1854,17 @@ class SyncQuoteAndCustomTables:
                                         #service_object = Sql.GetFirst("SELECT SERVICE_DESCRIPTION,SERVICE_RECORD_ID FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(contract_quote_record_id,quote_revision_record_id,val))
                                         
                                         #parts_value = 0
+                                        GetPricingProcedure = Sql.GetFirst("SELECT DISTINCT SASAPP.PRICINGPROCEDURE_ID, SASAPP.PRICINGPROCEDURE_NAME, SASAPP.PRICINGPROCEDURE_RECORD_ID, SASAPP.DOCUMENT_PRICING_PROCEDURE,SASAPP.CUSTOMER_PRICING_PROCEDURE FROM SASAPP (NOLOCK) JOIN SASAAC (NOLOCK) ON SASAPP.SALESORG_ID = SASAAC.SALESORG_ID AND SASAPP.DIVISION_ID = SASAAC.DIVISION_ID AND SASAPP.DISTRIBUTIONCHANNEL_ID = SASAAC.DISTRIBUTIONCHANNEL_ID JOIN SAQTRV (NOLOCK) ON SAQTRV.DIVISION_ID = SASAPP.DIVISION_ID AND SAQTRV.DISTRIBUTIONCHANNEL_ID = SASAPP.DISTRIBUTIONCHANNEL_ID AND SAQTRV.SALESORG_ID = SASAPP.SALESORG_ID WHERE SASAPP.FPM = 'True' AND SAQTRV.QUOTE_RECORD_ID = '{}' AND SAQTRV.QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+                                        if GetPricingProcedure:
+                                            UpdateSAQTRV = """UPDATE SAQTRV SET SAQTRV.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTRV.PRICINGPROCEDURE_NAME = '{prcname}',SAQTRV.PRICINGPROCEDURE_RECORD_ID = '{prcrec}', SAQTRV.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_id}' AND SAQTRV.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
+                                            prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
+                                            prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
+                                            customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,					
+                                            docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
+                                            quote_id=contract_quote_record_id,quote_revision_id=quote_revision_record_id)
+
+                                            Sql.RunQuery(UpdateSAQTRV)
+
                                         Service = 'Z0108'
                                         entitlement_obj = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID  = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id))
                                         if entitlement_obj:
