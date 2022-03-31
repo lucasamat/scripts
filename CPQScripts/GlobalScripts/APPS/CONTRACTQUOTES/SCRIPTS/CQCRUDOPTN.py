@@ -4431,7 +4431,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		Log.Info("saqsca_count------"+str(saqsca_count.cnt))
 		if self.tree_param in ("Z0009","Z0010") and kwargs.get('quotetype_value_for_offering').upper() != "TOOL BASED":
 			Log.Info("QTPOSTPKIT script"+str(self.contract_quote_id))
-			ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id)})
+			ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id),'LEVEL':"OFFERING_LEVEL"})
 		
 		if self.sale_type == 'TOOL RELOCATION' and self.tree_param == "Sending Equipment":			
 			self._process_query(
