@@ -830,7 +830,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 					if TreeParam == "Quote Information":
 
-						contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
+						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 						product_offering_contract_validity = Sql.GetFirst("SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id)))
@@ -839,17 +839,17 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 						# min_validity_date = Sql.GetFirst("SELECT MIN(CONTRACT_VALID_FROM) AS CONTRACT_VALID_TO FROM SAQSFB (NOLOCK) WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id)))
 
-						service_contract_update = "UPDATE SAQTSV SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+						service_contract_update = "UPDATE SAQTSV SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
 
 						fab_contract_update = "UPDATE SAQSFB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
-						greenbook_contract_update = "UPDATE SAQSGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+						greenbook_contract_update = "UPDATE SAQSGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
 
-						equipment_contract_update = "UPDATE SAQSCO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+						equipment_contract_update = "UPDATE SAQSCO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
-						assembly_contract_update = "UPDATE SAQSCA SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+						assembly_contract_update = "UPDATE SAQSCA SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
 						# saqitm_contract_update = "UPDATE SAQITM SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
@@ -857,7 +857,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 						# saqigb_contract_update = "UPDATE SAQIGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
-						saqico_contract_update = "UPDATE SAQICO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+						saqico_contract_update = "UPDATE SAQICO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
 						# saqtrv_contract_update = "UPDATE SAQTRV SET CONTRACT_VALID_FROM = '{min_validity_date}' , CONTRACT_VALID_TO = '{max_validity_date}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(max_validity_date= max_validity_date.CONTRACT_VALID_FROM, min_validity_date =   min_validity_date.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
