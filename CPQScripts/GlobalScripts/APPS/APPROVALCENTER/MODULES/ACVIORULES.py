@@ -1290,15 +1290,15 @@ class ViolationConditions:
 
         for x in GetACACSF:
             if x.CMP_OPERATOR == 'CONTAINS':
-                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}%'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+                selectQuery = "SELECT {} FROM {} (NOLOCK) WHERE {}  LIKE '%{}%'".format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
             elif x.CMP_OPERATOR == 'DOES NOT CONTAIN':
-                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  NOT LIKE '%{}%'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+                selectQuery = "SELECT {} FROM {} (NOLOCK) WHERE {}  NOT LIKE '%{}%'".format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
             elif x.CMP_OPERATOR == 'STARTS WITH':
-                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '{}%'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+                selectQuery = "SELECT {} FROM {} (NOLOCK) WHERE {}  LIKE '{}%'".format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
             elif x.CMP_OPERATOR == 'ENDS WITH':
-                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+                selectQuery = "SELECT {} FROM {} (NOLOCK) WHERE {}  LIKE '%{}'".format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
             else:
-                selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} '{}'".format(x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE)
+                selectQuery = "SELECT {} FROM {} (NOLOCK) WHERE {} {} '{}'".format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE)
 
             # Append Quote and Revision to the Query
             if "SAQ" in x.TSTOBJ_LABEL:
