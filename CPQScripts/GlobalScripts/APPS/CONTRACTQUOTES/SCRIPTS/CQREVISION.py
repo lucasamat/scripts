@@ -172,7 +172,7 @@ def create_new_revision(Opertion,cartrev):
 				"PRICELIST_DESCRIPTION" : get_previous_rev_data.PRICELIST_DESCRIPTION,
 				"PRICELIST_ID" : get_previous_rev_data.PRICELIST_ID,
 				"CANCELLATION_PERIOD":"180",
-				"CANCELLATION_PERIOD_NOTPER":"0",
+				"CANCELLATION_PERIOD_NOTPER":"",
 				"CONTRACT_VALID_FROM":get_previous_rev_data.CONTRACT_VALID_FROM,
 				"CONTRACT_VALID_TO":get_previous_rev_data.CONTRACT_VALID_TO,
 				"COMPANY_ID":get_previous_rev_data.COMPANY_ID,
