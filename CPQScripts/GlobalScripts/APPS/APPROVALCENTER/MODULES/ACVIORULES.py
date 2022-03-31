@@ -1307,7 +1307,10 @@ class ViolationConditions:
                 selectQuery += "  AND APRTRXOBJ_ID = '{}'".format(QuoteId)
             
             QueryResult = Sql.GetFirst(selectQuery)
-            Result = eval("QueryResult."+str(x.TSTOBJ_TESTEDFIELD_LABEL))
+            if QueryResult:
+                Result = eval("QueryResult."+str(x.TSTOBJ_TESTEDFIELD_LABEL))
+            else:
+                Result = ""
 
             InsertSnapshot = Sql.RunQuery(""" INSERT ACAPSS(
                                         APPROVAL_TRANSACTION_SNAPSHOT_RECORD_ID,
