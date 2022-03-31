@@ -1958,11 +1958,6 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					else :
 						len_restrict=""
 
-					if current_obj_api_name=='CANCELLATION_PERIOD_NOTPER':
-						len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"' 
-					else :
-						len_restrict=""
-
 					# if str(ObjectName) == "SAQIGB" and current_obj_value != "":
 					# 	decimal_val = 2
 					# 	formatting_string = "{0:." + str(decimal_val) + "f}"
@@ -2309,11 +2304,15 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					)
 				else:	
 					Trace.Write('2032---'+ str(current_obj_api_name) +str(MODE))
+					if current_obj_api_name=='CANCELLATION_PERIOD_NOTPER':
+						len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"' 
+					else :
+						len_restrict=""
 					if str(MODE) == "EDIT":				
 						sec_str += (
 							'<td><input id="'
 							+ str(current_obj_api_name)
-							+ '" type="text" value="'
+							+ '" type="text" '+len_restrict+' value="'
 							+ current_obj_value.lstrip()
 							+ '" title="'
 							+ current_obj_value
@@ -2346,7 +2345,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						sec_str += (
 							'<td><input id="'
 							+ str(current_obj_api_name)
-							+ '" type="text" value="'
+							+ '" type="text" '+len_restrict+' value="'
 							+ current_obj_value.lstrip()
 							+ '" title="'
 							+ current_obj_value
