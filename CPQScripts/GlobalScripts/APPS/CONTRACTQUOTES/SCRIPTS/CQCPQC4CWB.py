@@ -62,7 +62,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
                 + str(c4c_quote_object_id)
                 +"</c4c_quote_object_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
             )
-            Log.Info("###Quote Header Request data for quoterecid -"+str(contract_quote_record_id)+" are "+str(requestdata))
+            #Log.Info("###Quote Header Request data for quoterecid -"+str(contract_quote_record_id)+" are "+str(requestdata))
     elif writeback == "opportunity_header":
         ##To Fetch the values from revision table....
         revision_obj = Sql.GetFirst("select REVISION_STATUS,DOC_CURRENCY,ISNULL(NET_VALUE_INGL_CURR,0) AS NET_VALUE_INGL_CURR,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
