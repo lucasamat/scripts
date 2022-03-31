@@ -661,7 +661,7 @@ class ViolationConditions:
 
                                             Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'APR-APPROVAL PENDING' WHERE QUOTE_REVISION_RECORD_ID ='{}'".format(RecordId))
                                             CQCPQC4CWB.writeback_to_c4c("quote_header",QuoteId,RecordId)
-                                            time.sleep(3)
+                                            #time.sleep(3)
                                             CQCPQC4CWB.writeback_to_c4c("opportunity_header",QuoteId,RecordId)
                                     else:
                                         where_conditon += """GROUP BY APPRO.USER_RECORD_ID,ACAPCH.APRCHN_ID,
