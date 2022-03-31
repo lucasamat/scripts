@@ -4427,7 +4427,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				included = 1 if self.tree_param  == 'Sending Equipment' else "''"
 			)
 		)
-		saqsca_count = SqlHelper.GetList("select count(QUOTE_ID) as cnt from SAQSCA where QUOTE_ID = '{}'".format(self.contract_quote_id))
+		saqsca_count = SqlHelper.GetFirst("select count(QUOTE_ID) as cnt from SAQSCA where QUOTE_ID = '{}'".format(self.contract_quote_id))
 		Log.Info("saqsca_count------"+str(saqsca_count.cnt))
 		if self.tree_param in ("Z0009","Z0010") and kwargs.get('quotetype_value_for_offering').upper() != "TOOL BASED":
 			Log.Info("QTPOSTPKIT script"+str(self.contract_quote_id))
