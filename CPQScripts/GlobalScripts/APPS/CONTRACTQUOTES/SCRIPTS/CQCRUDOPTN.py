@@ -5678,7 +5678,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			drop_saqgpm_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpm_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpm_backup_table)+" END  ' ")
 
 
-			saqgpm_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQGPM.GOT_CODE,SAQGPM.GOTCODE_RECORD_ID,SAQGPM.GREENBOOK,SAQGPM.GREENBOOK_RECORD_ID,SAQGPM.PM_ID,SAQGPM.PM_NAME,SAQGPM.PM_RECORD_ID,SAQGPM.MNTEVT_LEVEL,SAQGPM.SERVICE_ID,SAQGPM.SERVICE_DESCRIPTION,SAQGPM.SERVICE_RECORD_ID,SAQGPM.PM_FREQUENCY,SAQGPM.SSCM_PM_FREQUENCY,SAQGPM.PM_FREQUENCY_EDITABLE,SAQGPM.PROCESS_TYPE,SAQGPM.DEVICE_NODE,SAQGPM.QUOTE_ID,SAQGPM.QUOTE_RECORD_ID,SAQGPM.QTEREV_ID,SAQGPM.QTEREV_RECORD_ID,SAQGPM.QTESRV_RECORD_ID,SAQGPM.QTESRVGBK_RECORD_ID,SAQGPM.KIT_ID,SAQGPM.KIT_NAME,SAQGPM.KIT_NUMBER,SAQGPM.KITNUMBER_RECORD_ID,SAQGPM.KIT_RECORD_ID,SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEREVPME_RECORD_ID INTO "+str(saqgpm_backup_table)+" FROM SAQGPM (NOLOCK) WHERE SAQGPM.QUOTE_RECORD_ID = ''{}'' AND SAQGPM.QTEREV_RECORD_ID = ''{}'' AND  SAQGPM.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
+			saqgpm_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQGPM.GOT_CODE,SAQGPM.GOTCODE_RECORD_ID,SAQGPM.GREENBOOK,SAQGPM.GREENBOOK_RECORD_ID,SAQGPM.PM_ID,SAQGPM.PM_NAME,SAQGPM.PM_RECORD_ID,SAQGPM.TKM_FLAG,SAQGPM.MNTEVT_LEVEL,SAQGPM.SERVICE_ID,SAQGPM.SERVICE_DESCRIPTION,SAQGPM.SERVICE_RECORD_ID,SAQGPM.PM_FREQUENCY,SAQGPM.SSCM_PM_FREQUENCY,SAQGPM.PM_FREQUENCY_EDITABLE,SAQGPM.PROCESS_TYPE,SAQGPM.DEVICE_NODE,SAQGPM.QUOTE_ID,SAQGPM.QUOTE_RECORD_ID,SAQGPM.QTEREV_ID,SAQGPM.QTEREV_RECORD_ID,SAQGPM.QTESRV_RECORD_ID,SAQGPM.QTESRVGBK_RECORD_ID,SAQGPM.KIT_ID,SAQGPM.KIT_NAME,SAQGPM.KIT_NUMBER,SAQGPM.KITNUMBER_RECORD_ID,SAQGPM.KIT_RECORD_ID,SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEREVPME_RECORD_ID INTO "+str(saqgpm_backup_table)+" FROM SAQGPM (NOLOCK) WHERE SAQGPM.QUOTE_RECORD_ID = ''{}'' AND SAQGPM.QTEREV_RECORD_ID = ''{}'' AND  SAQGPM.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
 
 
 			saqsco_backup_table = "saqsco_backup_table_{}".format(self.contract_quote_id) 
@@ -6238,7 +6238,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			drop_saqgpm_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqgpm_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqgpm_backup_table)+" END  ' ")
 
 
-			saqgpm_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQGPM.GOT_CODE,SAQGPM.GOTCODE_RECORD_ID,SAQGPM.GREENBOOK,SAQGPM.GREENBOOK_RECORD_ID,SAQGPM.PM_ID,SAQGPM.PM_NAME,SAQGPM.PM_RECORD_ID,SAQGPM.MNTEVT_LEVEL,SAQGPM.SERVICE_ID,SAQGPM.SERVICE_DESCRIPTION,SAQGPM.SERVICE_RECORD_ID,SAQGPM.PM_FREQUENCY,SAQGPM.SSCM_PM_FREQUENCY,SAQGPM.PM_FREQUENCY_EDITABLE,SAQGPM.PROCESS_TYPE,SAQGPM.DEVICE_NODE,SAQGPM.QUOTE_ID,SAQGPM.QUOTE_RECORD_ID,SAQGPM.QTEREV_ID,SAQGPM.QTEREV_RECORD_ID,SAQGPM.QTESRV_RECORD_ID,SAQGPM.QTESRVGBK_RECORD_ID,SAQGPM.KIT_ID,SAQGPM.KIT_NAME,SAQGPM.KIT_NUMBER,SAQGPM.KITNUMBER_RECORD_ID,SAQGPM.KIT_RECORD_ID,SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEREVPME_RECORD_ID INTO "+str(saqgpm_backup_table)+" FROM SAQGPM (NOLOCK) WHERE SAQGPM.QUOTE_RECORD_ID = ''{}'' AND SAQGPM.QTEREV_RECORD_ID = ''{}'' AND  SAQGPM.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
+			saqgpm_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQGPM.GOT_CODE,SAQGPM.GOTCODE_RECORD_ID,SAQGPM.GREENBOOK,SAQGPM.GREENBOOK_RECORD_ID,SAQGPM.PM_ID,SAQGPM.PM_NAME,SAQGPM.PM_RECORD_ID,SAQGPM.TKM_FLAG,SAQGPM.MNTEVT_LEVEL,SAQGPM.SERVICE_ID,SAQGPM.SERVICE_DESCRIPTION,SAQGPM.SERVICE_RECORD_ID,SAQGPM.PM_FREQUENCY,SAQGPM.SSCM_PM_FREQUENCY,SAQGPM.PM_FREQUENCY_EDITABLE,SAQGPM.PROCESS_TYPE,SAQGPM.DEVICE_NODE,SAQGPM.QUOTE_ID,SAQGPM.QUOTE_RECORD_ID,SAQGPM.QTEREV_ID,SAQGPM.QTEREV_RECORD_ID,SAQGPM.QTESRV_RECORD_ID,SAQGPM.QTESRVGBK_RECORD_ID,SAQGPM.KIT_ID,SAQGPM.KIT_NAME,SAQGPM.KIT_NUMBER,SAQGPM.KITNUMBER_RECORD_ID,SAQGPM.KIT_RECORD_ID,SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID as QTEREVPME_RECORD_ID INTO "+str(saqgpm_backup_table)+" FROM SAQGPM (NOLOCK) WHERE SAQGPM.QUOTE_RECORD_ID = ''{}'' AND SAQGPM.QTEREV_RECORD_ID = ''{}'' AND  SAQGPM.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
 
 
 			saqsco_backup_table = "saqsco_backup_table_{}".format(self.contract_quote_id) 
@@ -6617,9 +6617,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						if quotetype_id:
 							quotetype_value =re.findall(quote_type_attribute_value,sub_string)
 							quotetype_value_for_offering = str(quotetype_value[0]).upper()
-							#Log.Info("quotetype_value_for_offering -----"+str(quotetype_value_for_offering))
-							if quotetype_value_for_offering != "['EVENT BASED']" and quotetype_value_for_offering != "['FLEX EVENT BASED']":
-								Trace.Write("quotetype_value_for_offering---"+str(quotetype_value_for_offering))
 				self._insert_quote_service_covered_assembly(batch_group_record_id=batch_group_record_id,quotetype_value_for_offering= quotetype_value_for_offering)
 				self._insert_quote_service_fab_location(batch_group_record_id=batch_group_record_id)
 				#SAQSCA_end_time = time.time()
