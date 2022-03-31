@@ -100,7 +100,7 @@ def create_new_revision(Opertion,cartrev):
 		Quote.SetGlobal("quote_revision_record_id",str(quote_revision_id))
 		get_current_rev = Sql.GetFirst("select MAX(QTEREV_ID) as rev_id from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		
-		get_previous_rev_data = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' AND QTEREV_ID = '"+str(get_current_rev.rev_id)+"' AND ACTIVE = 1")
+		get_previous_rev_data = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' AND ACTIVE = 1")
 
 		update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=quote_contract_recordId,active_rev = 0))
 		newrev_inc = int(get_current_rev.rev_id)+1
