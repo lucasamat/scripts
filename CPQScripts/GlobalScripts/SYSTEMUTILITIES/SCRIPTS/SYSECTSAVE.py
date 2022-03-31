@@ -748,15 +748,15 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						newdict.update(dictc)
 						tableInfo = Sql.GetTable(str(TableName))
 						Trace.Write('subtab_name---'+str(subtab_name))
-						get_previous_payment_term =Sql.GetFirst("SELECT PAYMENTTERM_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_record_id}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}'".format(contract_quote_record_id =contract_quote_record_id,quote_revision_record_id =quote_revision_record_id))
-						payment_term_name_previous = get_previous_payment_term.PAYMENTTERM_ID
+						#get_previous_payment_term =Sql.GetFirst("SELECT PAYMENTTERM_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_record_id}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}'".format(contract_quote_record_id =contract_quote_record_id,quote_revision_record_id =quote_revision_record_id))
+						#payment_term_name_previous = get_previous_payment_term.PAYMENTTERM_ID
 						if subtab_name not in  ("Legal SoW","Basic Information"):
 							#newdict["SLSDIS_PRICE_INGL_CURR"] = re.sub('USD','',newdict["SLSDIS_PRICE_INGL_CURR"])
-							current_payment_term = newdict.get("PAYMENTTERM_ID")
-							if current_payment_term != payment_term_name_previous:
-								Trace.Write("current_payment_term"+str(current_payment_term))
-								Trace.Write("payment_term_name_previous"+str(payment_term_name_previous))
-								newdict["PAYMENTTERM_NAME_ISCHANGED"] = 'True'
+							#current_payment_term = newdict.get("PAYMENTTERM_ID")
+							#if current_payment_term != payment_term_name_previous:
+							#	Trace.Write("current_payment_term"+str(current_payment_term))
+							#	Trace.Write("payment_term_name_previous"+str(payment_term_name_previous))
+							#	newdict["PAYMENTTERM_NAME_ISCHANGED"] = 'True'
 							#newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
 							#newdict["CEILING_PRICE_INGL_CURR"] = re.sub('USD','',newdict["CEILING_PRICE_INGL_CURR"])
 							# newdict["NET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["NET_PRICE_INGL_CURR"])
