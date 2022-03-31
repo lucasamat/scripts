@@ -838,7 +838,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParentParam)
-			+ "' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)+") m where m.ROW BETWEEN "
+			+ "' and GREENBOOK = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -853,7 +853,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParentParam)
-			+ "' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
+			+ "' and GREENBOOK = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
 	elif TreeSuperParentParam == "Product Offerings":
 		Qstr = (
@@ -865,7 +865,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam)
-			+ "'  and PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)+") m where m.ROW BETWEEN "
+			+ "'  and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -880,7 +880,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam)
-			+ "' and PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
+			+ "' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
 	elif parentlevel4 == "Product Offerings":
 		Qstr = (
@@ -892,7 +892,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeTopSuperParentParam)
-			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)+") m where m.ROW BETWEEN "
+			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -907,7 +907,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeTopSuperParentParam)
-			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
+			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
 	elif ObjectName == "SAQGPM" and (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
 		Qstr = (
@@ -919,7 +919,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
-			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)+") m where m.ROW BETWEEN "
+			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -934,7 +934,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
-			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "+str(where_string)
+			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
 	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
 		Qstr = (
@@ -4546,9 +4546,9 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		parent_obj = Sql.GetList(
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,KIT_NUMBER,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' ) m "
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,KIT_NUMBER,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m "
 		)
-		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' "
+		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
 		)
 		if Count:
 			QueryCount = Count.cnt
@@ -4556,9 +4556,9 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		parent_obj = Sql.GetList(
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,KIT_NUMBER,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True')m "
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,KIT_NUMBER,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1'))m "
 		)
-		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and PM_FREQUENCY_EDITABLE = 'True' "
+		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
 		)
 		if Count:
 			QueryCount = Count.cnt
@@ -4572,7 +4572,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeTopSuperParentParam)
-			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' ) m "
+			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m "
 		)
 
 		Count = Sql.GetFirst(
@@ -4582,7 +4582,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeTopSuperParentParam)
-			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
+			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
 		)
 
 		if Count:
@@ -4597,7 +4597,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
-			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' ) m where m.ROW BETWEEN "
+			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -4612,7 +4612,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
-			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' "
+			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
 		)
 	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals" :
 		Qstr = (
@@ -5288,7 +5288,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(ContractRecordId)
 			+ "' and SAQSAP.QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
-			+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND SAQSAP.PM_FREQUENCY_EDITABLE = 'True' ) m where m.ROW BETWEEN "
+			+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End) + " "+ str(sort_by)
@@ -5298,7 +5298,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(ContractRecordId)
 			+ "' and SAQSAP.QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
-			+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND SAQSAP.PM_FREQUENCY_EDITABLE = 'True' "
+			+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') "
 		)
 	elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
 		offset = int(Page_start)-1
@@ -5309,7 +5309,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam).split('-')[0]
-			+ "' and PM_FREQUENCY_EDITABLE = 'True' "+str(sort_by)+" OFFSET "+str(offset)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
+			+ "' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(sort_by)+" OFFSET "+str(offset)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
 		)
 		QueryCountObj = Sql.GetFirst(
 			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where "+str(where_string)+" QUOTE_RECORD_ID = '"
@@ -5318,7 +5318,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam).split('-')[0]
-			+ "' and PM_FREQUENCY_EDITABLE = 'True' "
+			+ "' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
 		)
 		
 	if QueryCountObj is not None:
@@ -6162,26 +6162,26 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ str(ContractRecordId)            
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' ORDER BY "+str(orderby)+" "
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ORDER BY "+str(orderby)+" "
 			)
 			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)            
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' ")
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ")
 		elif TreeSuperParentParam == "Comprehensive Services" or TreeSuperParentParam == "Complementary Products":
 			parent_obj = Sql.GetList(
 				"select top "+str(PerPage)+" SAQSAP.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,SAQSAP.EQUIPMENT_DESCRIPTION,SAQSAP.EQUIPMENT_ID,SAQSAP.SERIAL_NO,SAQSAP.GOT_CODE,SAQSAP.ASSEMBLY_ID,SAQSAP.KIT_ID,SAQSAP.KIT_NAME,SAQSAP.PM_ID,SAQSAP.PM_NAME,SAQSAP.TKM_FLAG,SAQSAP.KIT_NUMBER,SAQSAP.ANNUAL_FREQUENCY_BASE,SAQSAP.SSCM_PM_FREQUENCY,SAQSAP.PM_FREQUENCY from SAQSAP (NOLOCK) INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = SAQSAP.QTESRVCOA_RECORD_ID where SAQSAP.QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)            
 				+ "' and SAQSAP.QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND SAQSAP.PM_FREQUENCY_EDITABLE = 'True' ORDER BY "+str(orderby)+" "
+				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') ORDER BY "+str(orderby)+" "
 			)
 			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = SAQSAP.QTESRVCOA_RECORD_ID where SAQSAP.QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)            
 				+ "' and SAQSAP.QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND SAQSAP.PM_FREQUENCY_EDITABLE = 'True' ")
+				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') ")
 		if Count:
 			QueryCount = Count.cnt
 	else:
@@ -6213,7 +6213,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ str(ContractRecordId)
 				+ "'  and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "'  AND SERVICE_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' ORDER BY "+str(orderby)+" "
+				+ "'  AND SERVICE_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ORDER BY "+str(orderby)+" "
 			)
 			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where "
 				+ str(ATTRIBUTE_VALUE_STR)
@@ -6221,20 +6221,20 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' AND PM_FREQUENCY_EDITABLE = 'True' ")
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ")
 		elif TreeSuperParentParam == "Comprehensive Services" or TreeSuperParentParam == "Complementary Products":
 			parent_obj = Sql.GetList(
 				"select top "+str(PerPage)+" SAQSAP.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,SAQSAP.EQUIPMENT_DESCRIPTION,SAQSAP.EQUIPMENT_ID,SAQSAP.SERIAL_NO,SAQSAP.GOT_CODE,SAQSAP.ASSEMBLY_ID,SAQSAP.KIT_ID,SAQSAP.KIT_NAME,SAQSAP.PM_ID,SAQSAP.PM_NAME,SAQSAP.TKM_FLAG,SAQSAP.KIT_NUMBER,SAQSAP.ANNUAL_FREQUENCY_BASE,SAQSAP.SSCM_PM_FREQUENCY,SAQSAP.PM_FREQUENCY from SAQSAP (NOLOCK) INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = SAQSAP.QTESRVCOA_RECORD_ID where "+str(ATTRIBUTE_VALUE_STR)+" 1=1 AND SAQSAP.QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)            
 				+ "' and SAQSAP.QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND SAQSAP.PM_FREQUENCY_EDITABLE = 'True' ORDER BY "+str(orderby)+" "
+				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') ORDER BY "+str(orderby)+" "
 			)
 			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = SAQSAP.QTESRVCOA_RECORD_ID where "+str(ATTRIBUTE_VALUE_STR)+" 1=1 AND SAQSAP.QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)            
 				+ "' and SAQSAP.QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND SAQSAP.PM_FREQUENCY_EDITABLE = 'True' ")
+				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') ")
 		if Count:
 			QueryCount = Count.cnt
 
