@@ -518,6 +518,9 @@ def _insert_billing_matrix(Qt_id):
 
 def insert_item_per_billing(total_months=1, billing_date='',billing_end_date ='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
 	get_billing_cycle = get_billing_type = ''
+	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
+	contract_quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
+	quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID
 	#Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
 	#Trace.Write(str(service_id)+'get_ent_val_type--'+str(psyl))
 	for data,val in get_billling_data_dict.items():
@@ -749,6 +752,9 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 	get_billing_cycle = get_billing_type = ''
 	#Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
 	Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
+	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
+	contract_quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
+	quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID
 	for data,val in get_billling_data_dict.items():
 		if 'AGS_'+str(service_id)+'_PQB_BILCYC' in data:
 			get_billing_cycle = val
