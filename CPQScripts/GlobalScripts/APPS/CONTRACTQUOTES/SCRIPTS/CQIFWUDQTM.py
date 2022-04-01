@@ -1411,6 +1411,7 @@ def billingmatrix_create():
 	billing_plan_obj = Sql.GetList("SELECT DISTINCT PRDOFR_ID,BILLING_START_DATE,BILLING_END_DATE,BILLING_DAY FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_rec_id))
 	quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_rec_id))
 	get_billling_data_dict = {}
+	Log.Info('billing_plan_obj-------'+str(Qt_id))
 	contract_start_date = quotedetails.CONTRACT_VALID_FROM
 	contract_end_date = quotedetails.CONTRACT_VALID_TO
 	get_ent_val = get_ent_billing_type_value = get_ent_bill_cycle = get_billing_type = ''
