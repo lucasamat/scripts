@@ -1604,6 +1604,7 @@ def billingmatrix_create():
 							if get_ent_id:
 								get_ent_val = str(get_ent_val[0])
 								get_milestones_data_dict[get_ent_id[0]] = str(get_ent_val)
+					Log.Info('1595-get_milestones_data_dict-----'+str(get_milestones_data_dict))
 					for data,val in get_milestones_data_dict.items():
 						Log.Info('--1545--data---'+str(data))
 						Log.Info('--1546--data---'+str(val))
