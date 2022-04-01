@@ -424,7 +424,7 @@ class Entitlements:
 				
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
-				
+				Log.Info("YES EQUIPMENT LEVEL----"+str(EquipmentId))				
 				tableName = 'SAQSCE'
 				serviceId = self.treeparentparam
 				parentObj = 'SAQSGE'
@@ -2301,7 +2301,6 @@ class Entitlements:
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "				
 				# ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
-				Trace.Write("YES EQUIPMENT LEVEL----"+str(EquipmentId))
 				tableName = 'SAQSCE'
 				# parentObj = 'SAQSGE'
 				serviceId = self.treeparentparam
