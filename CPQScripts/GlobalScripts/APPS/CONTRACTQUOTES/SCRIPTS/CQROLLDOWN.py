@@ -289,7 +289,7 @@ def CoveredObjEntitlement():
 	
 	try:
 		##saqgpe ent columns update
-		for rec_table in ['SAQSGE','SAQSCE','SAQGPE']:
+		for rec_table in ['SAQSGE','SAQSCE','SAQGPE','SAQTSE']:
 			ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_COLUMN_UPDATE',
 														'partnumber':TreeParam,
 														'where_cond' :where_condition, 

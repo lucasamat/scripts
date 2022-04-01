@@ -570,6 +570,8 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 				addtional_whr = " AND GREENBOOK = '{}' AND EQUIPMENT_ID = '{}'".format(ent_rec.GREENBOOK,ent_rec.EQUIPMENT_ID )
 			elif entitlement_table == 'SAQGPE':
 				addtional_whr = " AND GREENBOOK = '{}' AND GOT_CODE = '{}' AND PM_ID = '{}'".format(ent_rec.GREENBOOK,ent_rec.GOT_CODE,  ent_rec.PM_ID)
+			sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(entitlement_table)))
+			tables_column = [col_name.COLUMN_NAME for col_name in sqlobj]
 			get_xml_dict,dict_val = _construct_dict_xml(ent_rec.ENTITLEMENT_XML)
 			Trace.Write("dict_val--"+str(dict_val))
 			for entitlement_detail in entitlement_details:
@@ -577,9 +579,9 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 				entitlement_id = entitlement_detail['field'][2]
 				if entitlement_id == 'AGS_Z0092_TSC_CONSUM':
 					entitlement_id = 'AGS_Z0092_TSC_CONADD' 
-				if entitlement_id in dict_val.keys():
+				if entitlement_id in dict_val.keys() and entitlement_table_col in tables_column:
 					entitlement_disp_val = dict_val[entitlement_id]
-					if entitlement_disp_val:
+					if entitlement_disp_val :
 						if entitlement_table_col in ('SPSPCT','SVSPCT') and "%" in entitlement_disp_val:
 							entitlement_disp_val = entitlement_disp_val.replace("%","")
 						update_values += ", {} = '{}' ".format(entitlement_table_col, entitlement_disp_val  ) 
