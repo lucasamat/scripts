@@ -6472,17 +6472,17 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									self.tools_from_ui = "No"
 									
 									self.applied_preventive_maintainence_quote_type_changed = "Yes"
-									self.applied_preventive_maintainence(self.entitlement_level_value,self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
+									self.applied_preventive_maintainence(entitlement_level_value = self.entitlement_level_value,entitlement_level = self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
 									qte_type_flag=1
 								if (self.tree_param in ("Z0009") and "Included - All PM" in pm_event_attribute_value):
 									additional_where = " AND ((MAEAPK.MNTEVT_LEVEL = 'Chamber / Module PM' OR MAEAPK.MNTEVT_LEVEL = 'Scheduled Maintenance') AND MAEAPK.MNTEVT_LEVEL != '') "
 									if pm_event_attribute_value != "":
-										self.applied_preventive_maintainence(self.entitlement_level_value,self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
+										self.applied_preventive_maintainence(entitlement_level_value = self.entitlement_level_value,entitlement_level = self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
 										qte_type_flag=1
 								if (self.tree_param in ("Z0009") and "Included - < Quarterly" in pm_event_attribute_value):
 									additional_where = " AND (MAEAPK.MNTEVT_LEVEL = 'Chamber / Module PM' OR MAEAPK.MNTEVT_LEVEL = 'Scheduled Maintenance') AND (MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly')"
 									if pm_event_attribute_value != "":
-										self.applied_preventive_maintainence(self.entitlement_level_value,self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
+										self.applied_preventive_maintainence(entitlement_level_value = self.entitlement_level_value,entitlement_level = self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
 										qte_type_flag=1
 							else:
 								# pm_event_attribute_value = re.findall(pattern_name,sub_string)
@@ -6567,7 +6567,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					additional_where = ""
 					quote_type_attribute_value = self.entitlement_value
 					batch_group_record_id = ""
-					self.applied_preventive_maintainence(self.entitlement_level_value,self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
+					self.applied_preventive_maintainence(entitlement_level_value = self.entitlement_level_value,entitlement_level = self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
 				if self.pmevents_changes_insert == "Yes":
 					batch_group_record_id = str(Guid.NewGuid()).upper()
 					equipment_record_ids = []
@@ -6630,12 +6630,12 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 										additional_where = " AND ((MAEAPK.MNTEVT_LEVEL = 'Chamber / Module PM' OR MAEAPK.MNTEVT_LEVEL = 'Scheduled Maintenance') AND MAEAPK.MNTEVT_LEVEL != '') "
 										Trace.Write("additional_where_chk_1 "+str(additional_where))
 										if pm_event_attribute_value != "":
-											self.applied_preventive_maintainence(self.entitlement_level_value,self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
+											self.applied_preventive_maintainence(entitlement_level_value = self.entitlement_level_value,entitlement_level = self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
 											qte_type_flag=1
 									if (self.tree_param in ("Z0009") and "Included - < Quarterly" in pm_event_attribute_value):
 										additional_where = " AND (MAEAPK.MNTEVT_LEVEL = 'Chamber / Module PM' OR MAEAPK.MNTEVT_LEVEL = 'Scheduled Maintenance') AND (MAEAPK.PM_ID = 'Monthly' OR MAEAPK.PM_ID = 'Quarterly')"
 										if pm_event_attribute_value != "":
-											self.applied_preventive_maintainence(self.entitlement_level_value,self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
+											self.applied_preventive_maintainence(entitlement_level_value = self.entitlement_level_value,entitlement_level = self.entitlement_level,batch_group_record_id=batch_group_record_id,quote_type_attribute_value = quote_type_attribute_value,applied_preventive_maintainence_quote_type_changed = self.applied_preventive_maintainence_quote_type_changed,additional_where=additional_where)
 											qte_type_flag=1
 								else:
 									# pm_event_attribute_value = re.findall(pattern_name,sub_string)
