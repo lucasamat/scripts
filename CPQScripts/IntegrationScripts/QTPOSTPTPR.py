@@ -211,7 +211,10 @@ try:
 							elif condition['conditionType'] == "ZEEC":
 								core_credit_amount = condition['conditionValue']
 								break
-							elif condition['conditionType'] == "ZERU":
+							elif condition['conditionType'] == "ZCCA":
+								core_credit_amount = condition['conditionValue']
+								break
+							elif condition['conditionType'] == "ZCCP":
 								core_credit_amount = condition['conditionValue']
 								break
 				#Log.Info("core_credit_amount--->"+str(core_credit_amount))
