@@ -3728,6 +3728,7 @@ def POPUPLISTVALUEADDNEW(
 								new_value_dict[data.Key] = data.Value
 							new_value_dict["pop_val"] = pop_val
 						date_field.append(new_value_dict)
+						Trace.Write("date_field_chk_j "+str(date_field))
 				QueryCount = len(date_field)
 
 				pagination_total_count = 0
