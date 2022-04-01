@@ -3707,10 +3707,12 @@ def POPUPLISTVALUEADDNEW(
 						new_value_dict = {}
 
 						for data in row_data:
+							Trace.Write("data_chk_J "+str(data))
 							if str(data.Key) == "CREDITVOUCHER_RECORD_ID":
 								pop_val = str(data.Value) + "|addcredits"
 								cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 								new_value_dict[data.Key] = cpqidval
+							
 							else:
 								new_value_dict[data.Key] = data.Value
 							new_value_dict["pop_val"] = pop_val
