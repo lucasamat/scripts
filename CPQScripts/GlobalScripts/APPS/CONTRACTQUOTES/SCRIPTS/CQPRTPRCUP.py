@@ -55,7 +55,7 @@ loop_count = 0
 contract_quote_record_id = None
 account_info={}
 taxk1=''
-pricingPro={'ZZCQAP':'ZC07','ZZCQNA':'M','ZZCQNA-KONDA':'75','ZZCQAP-KONDA':'S4'}
+pricingPro={'ZZCQAP':'ZC07','ZZCQNA':'M','ZZCQEU':'M','ZZCQEU-KONDA':'75','ZZCQNA-KONDA':'75','ZZCQAP-KONDA':'S4'}
 
 
 SAQTIP_INFO = SqlHelper.GetList(""" SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM SAQTIP (NOLOCK) WHERE QUOTE_ID='{}' AND QTEREV_RECORD_ID='{}' AND CPQ_PARTNER_FUNCTION IN ('SOLD TO','SHIP TO') """.format(QUOTE,revision))
