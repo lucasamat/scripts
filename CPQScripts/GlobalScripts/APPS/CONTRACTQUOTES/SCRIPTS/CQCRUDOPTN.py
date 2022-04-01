@@ -2545,6 +2545,10 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				CREDIT_AMOUNTS = Param.CREDIT_AMOUNTS
 			except:
 				CREDIT_AMOUNTS = ''
+			try:
+				CREDIT_NOTE = Param.CREDIT_NOTE
+			else:
+				CREDIT_NOTE = ''
 			for key,val in enumerate(list(self.values)):
 				val = re.sub("[^0-9]","",val)
 				id = val.lstrip("0")
@@ -2585,7 +2589,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"SERVICE_RECORD_ID": get_addon.SERVICE_RECORD_ID,
 				"GL_ACCOUNT_NO": credit_details.HKONT if credit_details.HKONT else '',
 				"SALESORDER_NO": credit_details.ZUONR if credit_details.ZUONR else '',
-				"CRDVCH_NOTE": credit_details.ZAFNOTE if credit_details.ZAFNOTE else ''
+				"CRDVCH_NOTE": CREDIT_NOTE
 			}
 			credit_table_info = Sql.GetTable(table_name)
 			saqrcv_ids = []
