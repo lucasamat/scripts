@@ -3545,7 +3545,7 @@ def POPUPLISTVALUEADDNEW(
 					"CREDITVOUCHER_RECORD_ID": "KEY",
 					"ZAFTYPE":"ZAF TYPE",
 					"UNBL_INGL_CURR": "CREDIT AMOUNT",
-					"CREDIT_NOTES": "CREDIT NOTES",
+					"SACVNT.ZAFNOTE": "CREDIT NOTES",
 					"CREDIT_APPLIED": "APPLIED CREDIT",
 				}
 				ordered_keys = [
@@ -3553,7 +3553,7 @@ def POPUPLISTVALUEADDNEW(
 					"CREDITVOUCHER_RECORD_ID",
 					"ZAFTYPE",
 					"UNBL_INGL_CURR",
-					"CREDIT_NOTES",
+					"SACVNT.CREDIT_NOTES",
 					"CREDIT_APPLIED"
 				]
 				Objd_Obj = Sql.GetList(
@@ -3654,7 +3654,7 @@ def POPUPLISTVALUEADDNEW(
 
 				pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count)
 
-				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '"+str(account_id)+"'")
+				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC (NOLOCK) LEFT JOIN SACVNT (NOLOCK) ON SACRVC.BUKRS = SACVNT.BUKRS AND SACRVC.HKONT = SACVNT.HKONT AND SACRVC.BELNR = SACVNT.BELNR AND SACRVC.ZUONR = SACVNT.ZUONR AND SACRVC.GJAHR = SACVNT.GJAHR AND SACRVC.BUZEI = SACVNT.BUZEI AND SACRVC.MANDT = SACVNT.MANDT WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '"+str(account_id)+"'")
 
 				# order_by = "order by SACRVC.COMP_PRDOFR_NAME ASC"
 
