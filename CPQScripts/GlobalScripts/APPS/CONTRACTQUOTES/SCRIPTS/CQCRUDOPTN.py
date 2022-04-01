@@ -7445,7 +7445,7 @@ else:
 		try:
 			entitlement_level = Param.entitlement_level
 		except:
-			entitlement_level = "No"
+			entitlement_level = "OFFERING LEVEL"
 		try:
 			entitlement_level_value = Param.entitlement_level_value
 		except:
