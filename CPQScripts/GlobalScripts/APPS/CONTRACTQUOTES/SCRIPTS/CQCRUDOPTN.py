@@ -4430,6 +4430,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			)
 		)
 		if self.tree_param in ("Z0009","Z0010") and kwargs.get('quotetype_value_for_offering').upper() != "TOOL BASED":
+			self.entitlement_level = self.entitlement_level if self.entitlement_level else "OFFERING LEVEL"
+			self.entitlement_level_value = self.entitlement_level_value if self.entitlement_level_value else self.tree_param
 			ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id),'LEVEL':str(self.entitlement_level),'VALUE':str(self.entitlement_level_value)})
 		
 		if self.sale_type == 'TOOL RELOCATION' and self.tree_param == "Sending Equipment":			
@@ -5405,7 +5407,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	def applied_preventive_maintainence(self, **kwargs):
 		###Deleting the SAQSCA,SAQSAP and SAQSKP TABLE records when the user is changing the quote type from Tool Based to other values...
 		if kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes" and kwargs.get('tools_from_ui') != "Yes":
-			#ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id)})
+			self.entitlement_level = self.entitlement_level if self.entitlement_level else "OFFERING LEVEL"
+			self.entitlement_level_value = self.entitlement_level_value if self.entitlement_level_value else self.tree_param
+			ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id),'LEVEL':str(self.entitlement_level),'VALUE':str(self.entitlement_level_value)})
 			delete_obj_list = ["SAQSAP","SAQSKP"]
 			for object in delete_obj_list:
 				Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID='{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(object,self.contract_quote_record_id, self.tree_param,self.quote_revision_record_id ))
