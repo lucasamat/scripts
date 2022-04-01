@@ -1606,8 +1606,8 @@ def billingmatrix_create():
 								get_milestones_data_dict[get_ent_id[0]] = str(get_ent_val)
 					Log.Info('1595-get_milestones_data_dict-----'+str(get_milestones_data_dict))
 					for data,val in get_milestones_data_dict.items():
-						Log.Info('--1545--data---'+str(data))
-						Log.Info('--1546--data---'+str(val))
+						#Log.Info('--1545--data---'+str(data))
+						#Log.Info('--1546--data---'+str(val))
 						count =0
 						if ('AGS_Z0006_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z006_PQB_MILES3','AGS_Z006_PQB_MILES2','AGS_Z006_PQB_MILES1') in data:
 							billing_month_end += 1
