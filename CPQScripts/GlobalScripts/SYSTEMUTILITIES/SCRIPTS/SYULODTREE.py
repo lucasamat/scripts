@@ -723,7 +723,7 @@ class TreeView:
 				else:					
 					cbc_subtab = "No"
 			else:				
-				cbc_subtab = "Yes"
+				cbc_subtab = "No"
 		except:
 			Trace.Write("CBC_Subtab_Exception")
 		return returnList, "",cbc_subtab
