@@ -1618,10 +1618,10 @@ def billingmatrix_create():
 								Log.Info('-1551-get_service_val--'+str(get_service_val))
 								fts_zoo7_insert(total_months=total_months, 
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
-														Month=count, BillingDate=val.strftime('%m/%d/%Y')
+														Month=count, BillingDate=start_date.strftime('%m/%d/%Y')
 														),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
-														Month_add=billing_month_end, BillingDate=val.strftime('%m/%d/%Y')
-														), amount_column="YEAR_"+str((count/12) + 1),
+														Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
+														),  amount_column="YEAR_"+str((count/12) + 1),
 														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict,get_milestones_data_dict=get_milestones_data_dict)
 								count += 1
 
