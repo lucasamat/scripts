@@ -1562,7 +1562,66 @@ def billingmatrix_create():
 															), amount_column="YEAR_"+str((count/12) + 1),
 															entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict,get_milestones_data_dict=get_milestones_data_dict)
 									count += 1
+				elif str(get_ent_bill_cycle).upper() == "MILESTONE" :
+					if billing_day in (29,30,31):
+						if start_date.month == 2:
+							isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
+							end_day = 29 if isLeap(start_date.year) else 28
+							start_date = start_date.replace(day=end_day)
+						elif start_date.month in (4, 6, 9, 11) and billing_day == 31:
+							start_date = start_date.replace(day=30)
+						else:
+							start_date = start_date.replace(day=billing_day)
+					else:
+						start_date = start_date.replace(day=billing_day)
+					end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
+					#end_date = str(contract_end_date).split(' ')[0]
+					diff1 = end_date - start_date
+
+					avgyear = 365.2425        # pedants definition of a year length with leap years
+					avgmonth = 365.2425/12.0  # even leap years have 12 months
+					years, remainder = divmod(diff1.days, avgyear)
+					years, months = int(years), int(remainder // avgmonth)            
 					
+					total_months = years * 12 + months
+					get_milestones_data_dict = {}
+					get_total_milestons= ''
+					
+					get_service_val = service_id
+					
+					get_milestone_details = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE where QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'  and SERVICE_ID = '{get_service}'".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id,get_service = str(service_id).strip()))
+					Log.Info('--1531-----'+str(service_id)+'---contract_quote_rec_id----'+str(contract_quote_rec_id)+'---quote_revision_rec_id---'+str(quote_revision_rec_id))
+					if get_milestone_details:
+						updateentXML = get_milestone_details.ENTITLEMENT_XML
+						pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+						pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_MILEST|AGS_'+str(get_service_val)+'_PQB_MILST1|AGS_'+str(get_service_val)+'_PQB_MILST2|AGS_'+str(get_service_val)+'_PQB_MILST3|AGS_'+str(get_service_val)+'_PQB_MIL3DS|AGS_'+str(get_service_val)+'_PQB_MIL1DS|AGS_'+str(get_service_val)+'_PQB_MIL2DS|AGS_'+str(get_service_val)+'_PQB_MIL3BD|AGS_'+str(get_service_val)+'_PQB_MIL2BD|AGS_'+str(get_service_val)+'_PQB_MIL1BD)</ENTITLEMENT_ID>')
+						pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+						for m in re.finditer(pattern_tag, updateentXML):
+							sub_string = m.group(1)
+							get_ent_id = re.findall(pattern_id,sub_string)
+							get_ent_val= re.findall(pattern_name,sub_string)
+							if get_ent_id:
+								get_ent_val = str(get_ent_val[0])
+								get_milestones_data_dict[get_ent_id[0]] = str(get_ent_val)
+					for data,val in get_milestones_data_dict.items():
+						Log.Info('--1545--data---'+str(data))
+						Log.Info('--1546--data---'+str(val))
+						count =0
+						if ('AGS_Z0007_PQB_MIL3BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD') in data:
+							billing_month_end += 1
+							if val:
+								Log.Info('-1551-count--'+str(count))
+								Log.Info('-1551-get_ent_billing_type_value--'+str(get_ent_billing_type_value))
+								Log.Info('-1551-get_service_val--'+str(get_service_val))
+								fts_zoo7_insert(total_months=total_months, 
+													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+														Month=count, BillingDate=val.strftime('%m/%d/%Y')
+														),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+														Month_add=billing_month_end, BillingDate=val.strftime('%m/%d/%Y')
+														), amount_column="YEAR_"+str((count/12) + 1),
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict,get_milestones_data_dict=get_milestones_data_dict)
+								count += 1
+
 				elif str(get_ent_bill_cycle).upper() == "QUARTELY":
 					ct_start_date =contract_start_date
 					ct_end_date =contract_end_date
