@@ -1609,7 +1609,7 @@ def billingmatrix_create():
 						Log.Info('--1545--data---'+str(data))
 						Log.Info('--1546--data---'+str(val))
 						count =0
-						if ('AGS_Z0007_PQB_MIL3BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD') in data:
+						if ('AGS_Z0006_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z006_PQB_MILES3','AGS_Z006_PQB_MILES2','AGS_Z006_PQB_MILES1') in data:
 							billing_month_end += 1
 							if val:
 								Log.Info('-1551-count--'+str(count))
