@@ -3478,27 +3478,24 @@ class SYLDRTLIST:
                                 Trace.Write("CHKZ_J_3_1"+str(value1234))
                                 new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + str(value1234) + '">' + str(imgValue) + "</abbr>")
                             else:
-                                try:
-                                    if not re.match(r'[A-Za-z0-9]',str(value1234)):
-                                        Trace.Write("encode character")
-                                        Trace.Write("key_value ---"+str(key_value))
-                                        # Trace.Write(value1234.encode('utf-8'))
-                                        # Trace.Write(value1234.decode('utf-8'))
-                                        #Trace.Write(value1234.encode('utf-8').decode('utf-8'))
-                                        try:
-                                            value1234 = str(value1234).encode('utf-8').decode('utf-8')
-                                        except:
-                                            value1234 = value1234
-                                        value1234 = re.sub(r'\[|\]|\"','',str(value1234))
-                                        Trace.Write("CHKZ_J_3_1"+str(value1234))
-                                        new_dict[str(value123)] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")
-                                    else:
-                                        if data_type_val == "DATE":
-                                            value1234 = str(value1234).split(" ")[0]
-                                        Trace.Write("CHKZ_J_4"+str(value1234))
-                                        new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + value1234 + '">' + value1234 + "</abbr>")  
-                                except:
-                                    Log.Info("Unicode Error occur in SYLDRTLIST FOR IMGURL str(value1234)")
+                                if not re.match(r'[A-Za-z0-9]',str(value1234)):
+                                    Trace.Write("encode character")
+                                    Trace.Write("key_value ---"+str(key_value))
+                                    # Trace.Write(value1234.encode('utf-8'))
+                                    # Trace.Write(value1234.decode('utf-8'))
+                                    #Trace.Write(value1234.encode('utf-8').decode('utf-8'))
+                                    try:
+                                        value1234 = str(value1234).encode('utf-8').decode('utf-8')
+                                    except:
+                                        value1234 = value1234
+                                    value1234 = re.sub(r'\[|\]|\"','',str(value1234))
+                                    Trace.Write("CHKZ_J_3_1"+str(value1234))
+                                    new_dict[str(value123)] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")
+                                else:
+                                    if data_type_val == "DATE":
+                                        value1234 = str(value1234).split(" ")[0]
+                                    Trace.Write("CHKZ_J_4"+str(value1234))
+                                    new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + value1234 + '">' + value1234 + "</abbr>")  
                                 #new_dict[value123] = value1234                           
                         ## addon product hyperlink starts
                         if str(RECORD_ID) == "SYOBJR-98859" and value123 == 'SERVICE_ID':
