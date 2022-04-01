@@ -1053,7 +1053,7 @@ class Entitlements:
 			if Fullresponse:
 				Fullresponse = eval(Fullresponse)
 				##getting configuration_status status
-				if Fullresponse['complete'] == 'true':
+				if Fullresponse['complete'] == 'true' and Fullresponse['consistent'] == 'true' :
 					configuration_status = 'COMPLETE'
 				elif Fullresponse['complete'] == 'false':
 					configuration_status = 'INCOMPLETE'

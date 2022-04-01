@@ -157,7 +157,7 @@ class SyncQuoteAndCustomTables:
             Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.SERVICE_ID,'request_url':Request_URL,'request_type':"New"})
             Fullresponse=str(Fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
             Fullresponse= eval(Fullresponse)
-            if Fullresponse['complete'] == 'true':
+            if Fullresponse['complete'] == 'true' and Fullresponse['consistent'] == 'true' :
                 configuration_status = 'COMPLETE'
             elif Fullresponse['complete'] == 'false':
                 configuration_status = 'INCOMPLETE'

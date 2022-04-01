@@ -326,7 +326,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		Fullresponse= eval(response2)
 		Trace.Write("Fullresponse--"+str(Fullresponse))
 		##getting configuration_status status
-		if Fullresponse['complete'] == 'true':
+		if Fullresponse['complete'] == 'true' and Fullresponse['consistent'] == 'true' :
 			configuration_status = 'COMPLETE'
 		elif Fullresponse['complete'] == 'false':
 			configuration_status = 'INCOMPLETE'
