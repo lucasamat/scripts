@@ -3712,7 +3712,7 @@ def POPUPLISTVALUEADDNEW(
 								pop_val = str(data.Value) + "|addcredits"
 								cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 								new_value_dict[data.Key] = cpqidval
-							elif str(data.key) == "ZAFNOTE":
+							elif str(data.Key) == "ZAFNOTE":
 								credit_notes = []
 
 								credit_notes_query = Sql.GetList("SELECT SACVNT.ZAFNOTE AS NOTES FROM SACRVC (NOLOCK) INNER JOIN SACVNT (NOLOCK) ON SACRVC.BUKRS = SACVNT.BUKRS AND SACRVC.HKONT = SACVNT.HKONT AND SACRVC.BELNR = SACVNT.BELNR AND SACRVC.ZUONR = SACVNT.ZUONR AND SACRVC.GJAHR = SACVNT.GJAHR AND SACRVC.BUZEI = SACVNT.BUZEI AND SACRVC.MANDT = SACVNT.MANDT WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '"+str(account_id)+"'")
