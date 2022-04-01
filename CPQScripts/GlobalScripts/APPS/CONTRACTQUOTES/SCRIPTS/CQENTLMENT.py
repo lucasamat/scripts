@@ -2266,6 +2266,7 @@ class Entitlements:
 		else:
 			##addon product condition is added
 			if ((self.treesuperparentparam == 'Product Offerings' or (self.treeparentparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements'):
+				Trace.Write("YES OFFERING LEVEL"+str(self.treeparam))
 				tableName = 'SAQTSE'
 				serviceId = self.treeparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
@@ -2276,6 +2277,7 @@ class Entitlements:
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
+				Trace.Write("YES GREENBOOK LEVEL"+str(self.treeparam))
 				tableName = 'SAQSGE'
 				# parentObj = 'SAQTSE'
 				if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
@@ -2286,6 +2288,7 @@ class Entitlements:
 					serviceId = get_service_id.SERVICE_ID
 					whereReq += " AND SERVICE_ID = '{}'".format(serviceId)
 				else:
+					Trace.Write("YES GREENBOOK GREENBOOK LEVEL"+str(self.treeparam))
 					greenbook_id = self.treeparam
 					serviceId = self.treeparentparam
 					whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId, greenbook_id)
@@ -2577,6 +2580,7 @@ class Entitlements:
 					serviceId = self.treeparentparam
 					where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid, serviceId, greenbook_id)
 			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
+				Trace.Write("YES EQUIPMENT LEVEL----"+str(EquipmentId))
 				Trace.Write("inside--2303-----"+str(self.treeparam))
 				objName = 'SAQSCE'			
 				serviceId = self.treeparentparam
