@@ -25,17 +25,26 @@ import time
 import datetime
 
 try:
-	input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]	
-	input_data = [input_data]
+	#input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]	
+	#input_data = [input_data]
+
+	#Quote_Id = Param.QUOTE_ID
+	#Revision_Id = Param.REVISION_ID
 	
 	Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 	Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
 	Parameter2 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'DEL' ")
 
-	for crmifno in input_data:	
-		
-		Quote_Id = crmifno[0]
-		Revision_Id = crmifno[-1]
+
+
+	Quote_Id = str(Param.QUOTE_ID)
+	Revision_Id = str(Param.REVISION_ID)
+	Level = str(Param.LEVEL)
+	Value = str(Param.VALUE)
+
+	#Log.Info("44444 Quote_Id--->"+str(Quote_Id))
+	#Log.Info("44444 Revision_Id--->"+str(Revision_Id))
+
 
 	primaryQuerysession =  SqlHelper.GetFirst("SELECT NEWID() AS A")
 	today = datetime.datetime.now()
@@ -44,10 +53,24 @@ try:
 	sessionid = SqlHelper.GetFirst("SELECT NEWID() AS A")
 	timestamp_sessionid = "'" + str(sessionid.A) + "'"
 
-	RTKM_INPUT_QUERY = SqlHelper.GetFirst(
-				"SELECT replace ('{\"QTQICA\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"SESSION_ID\" : \"'+SESSION_ID+'\",\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"Assembly_ID\" : \"'+ASSEMBLY_ID+'\",\"PREVENTIVE_MAINTENANCE\" : \"'+PREVENTIVE_MAINTENANCE+'\",\"CORRECTIVE_MAINTENANCE\" : \"'+CORRECTIVE_MAINTENANCE+'\",\"WET_CLEAN\" : \"'+WET_CLEAN+'\"}' AS JSON from (SELECT DISTINCT  "+str(timestamp_sessionid)+"  as SESSION_ID, SAQSCA.QUOTE_ID AS QUOTE_ID,ISNULL(SAQSCA.EQUIPMENT_ID,'') AS EQUIPMENT_ID,ISNULL(SAQSCA.SERVICE_ID,'') AS SERVICE_ID,ISNULL(SAQSCA.ASSEMBLY_ID,'') AS ASSEMBLY_ID,ISNULL(PMLAB_ENT,'') AS PREVENTIVE_MAINTENANCE,ISNULL(CMLAB_ENT,'') AS CORRECTIVE_MAINTENANCE,ISNULL(WETCLN_ENT,'') AS WET_CLEAN FROM SAQSCA (NOLOCK) JOIN SAQSCE (NOLOCK) ON SAQSCA.QUOTE_ID = SAQSCE.QUOTE_ID AND SAQSCA.QTEREV_ID = SAQSCE.QTEREV_ID AND SAQSCA.SERVICE_ID = SAQSCE.SERVICE_ID AND SAQSCA.EQUIPMENT_ID = SAQSCA.EQUIPMENT_ID  WHERE SAQSCA.QUOTE_ID = '"+str(Quote_Id)+"' AND SAQSCA.QTEREV_ID = '"+str(Revision_Id)+"') t 	) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT ")
+	if str(Level) == 'OFFERING LEVEL':
+
+		RTKM_INPUT_QUERY = SqlHelper.GetFirst(
+				"SELECT replace ('{\"QTQICA\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"SESSION_ID\" : \"'+SESSION_ID+'\",\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"Assembly_ID\" : \"'+ASSEMBLY_ID+'\",\"PREVENTIVE_MAINTENANCE\" : \"'+PREVENTIVE_MAINTENANCE+'\",\"CORRECTIVE_MAINTENANCE\" : \"'+CORRECTIVE_MAINTENANCE+'\",\"WET_CLEAN\" : \"'+WET_CLEAN+'\"}' AS JSON from (SELECT DISTINCT  "+str(timestamp_sessionid)+"  as SESSION_ID, SAQSCA.QUOTE_ID AS QUOTE_ID,ISNULL(SAQSCA.EQUIPMENT_ID,'') AS EQUIPMENT_ID,ISNULL(SAQSCA.SERVICE_ID,'') AS SERVICE_ID,ISNULL(SAQSCA.ASSEMBLY_ID,'') AS ASSEMBLY_ID,ISNULL(PMLAB_ENT,'') AS PREVENTIVE_MAINTENANCE,ISNULL(CMLAB_ENT,'') AS CORRECTIVE_MAINTENANCE,ISNULL(WETCLN_ENT,'') AS WET_CLEAN FROM SAQSCA (NOLOCK) JOIN SAQTSE (NOLOCK) ON SAQSCA.QUOTE_ID = SAQTSE.QUOTE_ID AND SAQSCA.QTEREV_ID = SAQTSE.QTEREV_ID AND SAQSCA.SERVICE_ID = SAQTSE.SERVICE_ID WHERE SAQSCA.QUOTE_ID = '"+str(Quote_Id)+"' AND SAQSCA.QTEREV_ID = '"+str(Revision_Id)+"') t 	) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT ")
+
+	elif str(Level) == 'GREENBOOK LEVEL':
+
+		RTKM_INPUT_QUERY = SqlHelper.GetFirst(
+				"SELECT replace ('{\"QTQICA\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"SESSION_ID\" : \"'+SESSION_ID+'\",\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"Assembly_ID\" : \"'+ASSEMBLY_ID+'\",\"PREVENTIVE_MAINTENANCE\" : \"'+PREVENTIVE_MAINTENANCE+'\",\"CORRECTIVE_MAINTENANCE\" : \"'+CORRECTIVE_MAINTENANCE+'\",\"WET_CLEAN\" : \"'+WET_CLEAN+'\"}' AS JSON from (SELECT DISTINCT  "+str(timestamp_sessionid)+"  as SESSION_ID, SAQSCA.QUOTE_ID AS QUOTE_ID,ISNULL(SAQSCA.EQUIPMENT_ID,'') AS EQUIPMENT_ID,ISNULL(SAQSCA.SERVICE_ID,'') AS SERVICE_ID,ISNULL(SAQSCA.ASSEMBLY_ID,'') AS ASSEMBLY_ID,ISNULL(PMLAB_ENT,'') AS PREVENTIVE_MAINTENANCE,ISNULL(CMLAB_ENT,'') AS CORRECTIVE_MAINTENANCE,ISNULL(WETCLN_ENT,'') AS WET_CLEAN FROM SAQSCA (NOLOCK) JOIN SAQSGE (NOLOCK) ON SAQSCA.QUOTE_ID = SAQSGE.QUOTE_ID AND SAQSCA.QTEREV_ID = SAQSGE.QTEREV_ID AND SAQSCA.SERVICE_ID = SAQSGE.SERVICE_ID AND SAQSCA.GREENBOOK = SAQSGE.GREENBOOK WHERE SAQSCA.QUOTE_ID = '"+str(Quote_Id)+"' AND SAQSCA.QTEREV_ID = '"+str(Revision_Id)+"') t 	) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT ")
+
+	elif str(Level) == 'EQUIPMENT LEVEL':
+
+		RTKM_INPUT_QUERY = SqlHelper.GetFirst(
+				"SELECT replace ('{\"QTQICA\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"SESSION_ID\" : \"'+SESSION_ID+'\",\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"Assembly_ID\" : \"'+ASSEMBLY_ID+'\",\"PREVENTIVE_MAINTENANCE\" : \"'+PREVENTIVE_MAINTENANCE+'\",\"CORRECTIVE_MAINTENANCE\" : \"'+CORRECTIVE_MAINTENANCE+'\",\"WET_CLEAN\" : \"'+WET_CLEAN+'\"}' AS JSON from (SELECT DISTINCT  "+str(timestamp_sessionid)+"  as SESSION_ID, SAQSCA.QUOTE_ID AS QUOTE_ID,ISNULL(SAQSCA.EQUIPMENT_ID,'') AS EQUIPMENT_ID,ISNULL(SAQSCA.SERVICE_ID,'') AS SERVICE_ID,ISNULL(SAQSCA.ASSEMBLY_ID,'') AS ASSEMBLY_ID,ISNULL(PMLAB_ENT,'') AS PREVENTIVE_MAINTENANCE,ISNULL(CMLAB_ENT,'') AS CORRECTIVE_MAINTENANCE,ISNULL(WETCLN_ENT,'') AS WET_CLEAN FROM SAQSCA (NOLOCK) JOIN SAQSCE (NOLOCK) ON SAQSCA.QUOTE_ID = SAQSCE.QUOTE_ID AND SAQSCA.QTEREV_ID = SAQSCE.QTEREV_ID AND SAQSCA.SERVICE_ID = SAQSCE.SERVICE_ID AND SAQSCA.EQUIPMENT_ID = SAQSCA.EQUIPMENT_ID  WHERE SAQSCA.QUOTE_ID = '"+str(Quote_Id)+"' AND SAQSCA.QTEREV_ID = '"+str(Revision_Id)+"') t 	) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT ")	
 
 	if  str(RTKM_INPUT_QUERY).upper() != 'NONE' and str(type(RTKM_INPUT_QUERY.RESULT)) == "<type 'str'>":
+
+		#Log.Info("First if working --->")
 
 		LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF (nolock) where EXTERNAL_TABLE_NAME ='CPQ_TO_SSCM_REAL_TIME_KIT'")
 		Oauth_info = SqlHelper.GetFirst("SELECT  DOMAIN,URL FROM SYCONF where EXTERNAL_TABLE_NAME ='OAUTH'")
@@ -77,7 +100,7 @@ try:
 			
 		
 		if len(syinpl_data) > 0:		
-
+			#Log.Info("Second if working --->")
 			Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 
 			primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,INTEGRATION_NAME,CpqTableEntryDateModified,INTEGRATION_KEY)  select ''"+syinpl_data+ "'',''REAL_TIME_KIT'',GETDATE(),''"+str(Quote_Id)+"'' ' ")
@@ -86,7 +109,7 @@ try:
 			rebuilt_data = eval(syinpl_data.replace('false','"false"').replace('true','"true"').replace('null','"NALL"'))      
 
 			if len(rebuilt_data) != 0:      
-
+				#Log.Info("Third if working --->")
 				rebuilt_data = rebuilt_data["CPQ_Columns"]
 				Table_Names = rebuilt_data.keys()
 				Check_flag = 0
@@ -136,12 +159,16 @@ try:
 				+ "'',''"+ str(User.Id)
 				+ "'',GETDATE(),CONVERT(VARCHAR(1000),NEWID()) FROM (SELECT DISTINCT MAMKIT.KIT_ID,MAMKIT.KIT_NAME,MAMKIT.KIT_RECORD_ID,SAP_DESCRIPTION,MAKTPT_INBOUND.PART_NUMBER,MATERIAL_RECORD_ID,MAKTPT_INBOUND.QUANTITY,''ACTIVE'' AS BOM_STATUS FROM MAKTPT_INBOUND (NOLOCK) JOIN MAMKIT (NOLOCK) ON MAKTPT_INBOUND.KIT_ID = MAMKIT.KIT_ID JOIN MAMTRL (NOLOCK) ON MAKTPT_INBOUND.PART_NUMBER = MAMTRL.SAP_PART_NUMBER)SUB_MAKTPT LEFT JOIN MAKTPT (NOLOCK) ON SUB_MAKTPT.KIT_ID = MAKTPT.KIT_ID AND SUB_MAKTPT.PART_NUMBER = MAKTPT.PART_NUMBER WHERE MAKTPT.PART_NUMBER IS NULL  '")
 			
-			
-				ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "REAL TIME KIT DATA SUCCESSFULLY UPLOADED"}]})	
+				#Log.Info("Final if working --->")
+				Result = '''{"Response": [{"Status": "200", "Message": "REAL TIME KIT DATA SUCCESSFULLY UPLOADED"}]}'''
 		else:
-			ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": "REAL TIME KIT DATA GETTING ERROR IN RESPONSE"}]})
+			Result = '''{"Response": [{"Status": "400", "Message": "REAL TIME KIT DATA GETTING ERROR IN RESPONSE"}]})'''
 
+
+	else:
+		Result = '''{"Response": [{"Status": "200", "Message": "No data available in table"}]}'''
 except:
 	Log.Info("QTPOSTPKIT ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("QTPOSTPKIT ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
+	error_info = {"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]}
+	Result  = str(error_info)
