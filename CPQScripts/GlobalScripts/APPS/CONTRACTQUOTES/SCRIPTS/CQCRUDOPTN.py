@@ -2547,7 +2547,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				CREDIT_AMOUNTS = ''
 			try:
 				CREDIT_NOTE = Param.CREDIT_NOTE
-			else:
+			except:
 				CREDIT_NOTE = ''
 			for key,val in enumerate(list(self.values)):
 				val = re.sub("[^0-9]","",val)
