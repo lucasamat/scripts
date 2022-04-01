@@ -2266,6 +2266,7 @@ class Entitlements:
 		else:
 			##addon product condition is added
 			if ((self.treesuperparentparam == 'Product Offerings' or (self.treeparentparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements'):
+				Log.Info("YES OFFERING LEVEL"+str(self.treeparam))
 				Trace.Write("YES OFFERING LEVEL"+str(self.treeparam))
 				tableName = 'SAQTSE'
 				serviceId = self.treeparam
@@ -2277,6 +2278,7 @@ class Entitlements:
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
+				Log.Info("YES GREENBOOK LEVEL"+str(self.treeparam))
 				Trace.Write("YES GREENBOOK LEVEL"+str(self.treeparam))
 				tableName = 'SAQSGE'
 				# parentObj = 'SAQTSE'
@@ -2288,6 +2290,7 @@ class Entitlements:
 					serviceId = get_service_id.SERVICE_ID
 					whereReq += " AND SERVICE_ID = '{}'".format(serviceId)
 				else:
+					Log.Info("YES GREENBOOK GREENBOOK LEVEL"+str(self.treeparam))
 					Trace.Write("YES GREENBOOK GREENBOOK LEVEL"+str(self.treeparam))
 					greenbook_id = self.treeparam
 					serviceId = self.treeparentparam
