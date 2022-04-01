@@ -3681,7 +3681,7 @@ def POPUPLISTVALUEADDNEW(
 				# where_string += """ PRDOFR_ID = '{}' AND PRDOFR_DOCTYP = '{}' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeSuperParentParam),str(getDocType.DOCTYP_ID),contract_quote_record_id,quote_revision_record_id)
 
 				table_data = Sql.GetList(
-					"select {} from SACRVC (NOLOCK) WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '{}' ".format(
+					"select {} from SACRVC (NOLOCK) LEFT JOIN SACVNT (NOLOCK) ON SACRVC.BUKRS = SACVNT.BUKRS AND SACRVC.HKONT = SACVNT.HKONT AND SACRVC.BELNR = SACVNT.BELNR AND SACRVC.ZUONR = SACVNT.ZUONR AND SACRVC.GJAHR = SACVNT.GJAHR AND SACRVC.BUZEI = SACVNT.BUZEI AND SACRVC.MANDT = SACVNT.MANDT WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '{}' ".format(
 						", ".join(ordered_keys),str(account_id)
 						# "WHERE " + where_string if where_string else "",
 						# order_by,
@@ -3690,11 +3690,11 @@ def POPUPLISTVALUEADDNEW(
 				)
 				
 				table_data = Sql.GetList(
-				"select {} from SACRVC (NOLOCK) WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '{}' ".format(
+				"select {} from SACRVC (NOLOCK) LEFT JOIN SACVNT (NOLOCK) ON SACRVC.BUKRS = SACVNT.BUKRS AND SACRVC.HKONT = SACVNT.HKONT AND SACRVC.BELNR = SACVNT.BELNR AND SACRVC.ZUONR = SACVNT.ZUONR AND SACRVC.GJAHR = SACVNT.GJAHR AND SACRVC.BUZEI = SACVNT.BUZEI AND SACRVC.MANDT = SACVNT.MANDT WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '{}' ".format(
 					", ".join(ordered_keys), str(account_id),str(TreeParentParam),str(ADDON_PRD_ID), contract_quote_record_id,quote_revision_record_id
 				)
 				)
-				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '"+str(account_id)+"'")
+				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) LEFT JOIN SACVNT (NOLOCK) ON SACRVC.BUKRS = SACVNT.BUKRS AND SACRVC.HKONT = SACVNT.HKONT AND SACRVC.BELNR = SACVNT.BELNR AND SACRVC.ZUONR = SACVNT.ZUONR AND SACRVC.GJAHR = SACVNT.GJAHR AND SACRVC.BUZEI = SACVNT.BUZEI AND SACRVC.MANDT = SACVNT.MANDT WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '"+str(account_id)+"'")
 
 				if QueryCountObj is not None:
 					QryCount = QueryCountObj.cnt
