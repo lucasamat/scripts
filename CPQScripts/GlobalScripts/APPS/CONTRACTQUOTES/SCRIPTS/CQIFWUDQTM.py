@@ -1411,13 +1411,13 @@ def billingmatrix_create():
 	billing_plan_obj = Sql.GetList("SELECT DISTINCT PRDOFR_ID,BILLING_START_DATE,BILLING_END_DATE,BILLING_DAY FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_rec_id))
 	quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_rec_id))
 	get_billling_data_dict = {}
-	Log.Info('billing_plan_obj-------'+str(Qt_id))
+	#Log.Info('billing_plan_obj-------'+str(Qt_id))
 	contract_start_date = quotedetails.CONTRACT_VALID_FROM
 	contract_end_date = quotedetails.CONTRACT_VALID_TO
 	get_ent_val = get_ent_billing_type_value = get_ent_bill_cycle = get_billing_type = ''
 	if contract_start_date and contract_end_date and billing_plan_obj:
 		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
-		Log.Info('4739---------4744------')
+		#Log.Info('4739---------4744------')
 		for val in billing_plan_obj:
 			if billing_plan_obj:				
 				contract_start_date = val.BILLING_START_DATE
@@ -1428,7 +1428,7 @@ def billingmatrix_create():
 				get_service_val = val.PRDOFR_ID
 				get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =contract_quote_rec_id,qt_rev_id=quote_revision_rec_id,get_service = str(get_service_val).strip()))
 				if get_billing_cycle:
-					Log.Info('1431-----')
+					#Log.Info('1431-----')
 					updateentXML = get_billing_cycle.ENTITLEMENT_XML
 					pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 					pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILCYC|AGS_'+str(get_service_val)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
@@ -1586,7 +1586,7 @@ def billingmatrix_create():
 					total_months = years * 12 + months
 					get_milestones_data_dict = {}
 					get_total_milestons= ''
-					Log.Info('1589-get_service_val----'+str(get_service_val))
+					#Log.Info('1589-get_service_val----'+str(get_service_val))
 					#get_service_val = service_id
 					
 					get_milestone_details = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE where QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'  and SERVICE_ID = '{get_service}'".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id,get_service = str(get_service_val).strip()))
