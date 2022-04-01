@@ -3679,7 +3679,7 @@ def POPUPLISTVALUEADDNEW(
 				if where_string:
 					where_string += " AND"
 				# where_string += """ PRDOFR_ID = '{}' AND PRDOFR_DOCTYP = '{}' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeSuperParentParam),str(getDocType.DOCTYP_ID),contract_quote_record_id,quote_revision_record_id)
-
+				ordered_keys.remove("ZAFNOTE")
 				table_data = Sql.GetList(
 					"select {} from SACRVC (NOLOCK) LEFT JOIN SACVNT (NOLOCK) ON SACRVC.BUKRS = SACVNT.BUKRS AND SACRVC.HKONT = SACVNT.HKONT AND SACRVC.BELNR = SACVNT.BELNR AND SACRVC.ZUONR = SACVNT.ZUONR AND SACRVC.GJAHR = SACVNT.GJAHR AND SACRVC.BUZEI = SACVNT.BUZEI AND SACRVC.MANDT = SACVNT.MANDT WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '{}' ".format(
 						", ".join(ordered_keys),str(account_id)
