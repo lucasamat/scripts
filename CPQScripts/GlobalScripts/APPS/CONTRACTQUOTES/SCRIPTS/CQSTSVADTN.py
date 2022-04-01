@@ -132,8 +132,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			else:
 				Addon_check.append('T')		
 		get_workflow_statusquery = Sql.GetFirst("SELECT WORKFLOW_STATUS FROM SAQTRV where WORKFLOW_STATUS = 'CONFIGURE' AND QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id))
-
 		if get_workflow_statusquery and get_workflow_statusquery.WORKFLOW_STATUS not in ("APPROVALS","LEGAL SOW","QUOTE-DOCUMNETS","CLEAN BOOKING CHECKLIST","BOOKED"):
+			Trace.Write('136----')
 			if str(getsalesorg_info).upper() != "NONE" and get_service_info.COUNT > 0 and get_fab_info.COUNT > 0  and get_involved_parties_info.COUNT > 0  and get_sales_team_info.COUNT > 0  and 'F' not in get_complete_list and 'F' not in tool_check and 'F' not in Z0110_check and 'F' not in Addon_check:
 				update_workflow_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING',WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)	
 				Sql.RunQuery(update_workflow_status)
@@ -216,7 +216,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		else:
 			status = "CONFIGURE"
 		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-		#time.sleep(3) #A055S000P01-16535
+		
 		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 		if str(get_workflow_status.REVISION_STATUS) == "LGL-PREPARING LEGAL SOW" and str(get_workflow_status.CLM_AGREEMENT_NUM) == "":
 			error_msg = "You will not be able to complete the stage until the Legal SoW in CLM is executed"
@@ -270,7 +270,7 @@ def complete_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):
 	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS = 'LGL-LEGAL SOW ACCEPTED' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_record_id)
 	Sql.RunQuery(update_rev_status)	
 	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-	#time.sleep(3) #A055S000P01-16535
+	
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
 
@@ -278,7 +278,7 @@ def create_sow_update(quote_id_val,quote_rev_id_val,STATUS_SOW):
 	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW',REVISION_STATUS = 'LGL-PREPARING LEGAL SOW' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_record_id)
 	Sql.RunQuery(update_rev_status)	
 	#CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-	#time.sleep(3) #A055S000P01-16535
+	
 	#CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
 #A055S000P01-17166 end
