@@ -1404,7 +1404,7 @@ def _quote_items_greenbook_summary_insert():
 
 def billingmatrix_create():
 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
-	Log.Info('Qt_id--1621-------'+str(Qt_id))
+	#Log.Info('Qt_id--1621-------'+str(Qt_id))
 	contract_quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
 	quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID
 	_quote_items_greenbook_summary_insert()
