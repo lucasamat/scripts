@@ -805,7 +805,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						time.sleep(5)
 						CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
 						#A055S000P01-17165 started
-						if get_status.upper() in ("APR-REJECTED","APR-RECALLED","APR-APPROVAL PENDING"):
+						if get_status.upper() in ("APR-REJECTED","APR-RECALLED","APR-APPROVAL PENDING","APR-APPROVED",):
 							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 						if get_status.upper() in ("OPD-PREPARING QUOTE DOCUMENTS","OPD-CUSTOMER ACCEPTED","OPD-CUSTOMER REJECTED"):
 							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
