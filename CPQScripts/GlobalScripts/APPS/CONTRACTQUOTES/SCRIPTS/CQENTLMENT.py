@@ -336,6 +336,8 @@ class Entitlements:
 	def EntitlementSave(self, subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT,scheduled_parts):
 		#AttributeValCode = AttributeValCode.replace("_"," ")
 		cps_error = ''
+		LEVEL = ''
+		VALUE = ''
 		Trace.Write(str(type(NewValue))+'----NewValue')
 		if not type(NewValue) is 'str' and multiselect_flag == 'true':
 			NewValue = list(NewValue)	
@@ -392,8 +394,8 @@ class Entitlements:
 		else:
 			##addon product condition is added
 			if ((self.treesuperparentparam == 'Product Offerings' or (self.treeparentparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements'):
-				Log.Info("YES OFFERING LEVEL"+str(self.treeparam))
-				Trace.Write("YES OFFERING LEVEL"+str(self.treeparam))
+				LEVEL = "OFFERING LEVEL"
+				VALUE = str(self.treeparam)
 				tableName = 'SAQTSE'
 				serviceId = self.treeparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
@@ -404,8 +406,8 @@ class Entitlements:
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)	
 			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
-				Log.Info("YES GREENBOOK LEVEL"+str(self.treeparam))
-				Trace.Write("YES GREENBOOK LEVEL"+str(self.treeparam))
+				LEVEL = "GREENBOOK LEVEL"
+				VALUE = str(self.treeparam)
 				tableName = 'SAQSGE'
 				parentObj = 'SAQTSE'
 				if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
@@ -424,7 +426,8 @@ class Entitlements:
 				
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
-				Log.Info("YES EQUIPMENT LEVEL----"+str(EquipmentId))				
+				LEVEL = "EQUIPMENT LEVEL"
+				VALUE = str(EquipmentId)
 				tableName = 'SAQSCE'
 				serviceId = self.treeparentparam
 				parentObj = 'SAQSGE'
@@ -1220,8 +1223,54 @@ class Entitlements:
 									Trace.Write("Exception While running CQCRUDOPTN "+str(e))
 						Trace.Write("PMevents changes started "+str(key)+" - "+str(tableName))
 						if key in ( "AGS_{}_NET_PRMALB".format(serviceId)) and str(tableName) in ('SAQTSE'):
-							Trace.Write("entitlement_value_chk "+str(entitlement_value))
-							Sql.RunQuery("DELETE FROM SAQSAP WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId))
+							##To get the quote type of the attribute to delete the events table and their child tables based on the quote type...
+							where_string = ''
+							import re
+							service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.ContractRecordId,RevisionRecordId=self.revision_recordid,service_id = serviceId))
+							if service_entitlement_object is not None:
+								pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+								quote_type_attribute = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+								quote_type_attribute_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+								XML = service_entitlement_object.ENTITLEMENT_XML
+								for values in re.finditer(pattern_tag, XML):
+									sub_string = values.group(1)
+									quotetype_id =re.findall(quote_type_attribute,sub_string)
+									if quotetype_id:
+										quotetype_value =re.findall(quote_type_attribute_value,sub_string)
+										quotetype_value_for_offering = str(quotetype_value[0]).upper()
+							if str(quotetype_value_for_offering).upper() == "TOOL BASED":
+								delete_obj_list = ["SAQSAP","SAQSKP"]
+								for object in delete_obj_list:
+									Sql.RunQuery("DELETE FROM '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(object,self.ContractRecordId,self.revision_recordid,serviceId))
+							else:
+								if LEVEL == "OFFERING LEVEL":
+									where_string = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,VALUE)
+
+									Sql.RunQuery("UPDATE SAQSCA SET PM_INTG_STATUS = 'False' WHERE '{}'".format(where_string))
+
+									delete_obj_list = ["SAQSKP","SAQGPA","SAQGPM"]
+									for object in delete_obj_list:
+										Sql.RunQuery("DELETE FROM '{}' WHERE {} ".format(object,where_string))
+								elif LEVEL == "GREENBOOK LEVEL":
+									where_string = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE)
+									
+									Sql.RunQuery("UPDATE SAQSCA SET PM_INTG_STATUS = 'False' WHERE '{}'".format(where_string))
+
+									Sql.RunQuery("DELETE SAQSKP FROM SAQSKP(NOLOCK) JOIN SAQGPM ON SAQSKP.QTEGBKPME_RECORD_ID = SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID WHERE SAQSKP.QUOTE_RECORD_ID = '{}' AND SAQSKP.QTEREV_RECORD_ID = '{}' AND SAQSKP.SERVICE_ID = '{}' AND SAQGPM.GREENBOOK = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
+
+									Sql.RunQuery("DELETE SAQGPA FROM SAQGPA(NOLOCK) WHERE SAQGPA.QUOTE_RECORD_ID = '{}' AND SAQGPA.QTEREV_RECORD_ID = '{}' AND SAQGPA.SERVICE_ID = '{}' AND SAQGPA.GREENBOOK = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
+									
+									Sql.RunQuery("DELETE SAQGPM FROM SAQGPM(NOLOCK) WHERE SAQGPM.QUOTE_RECORD_ID = '{}' AND SAQGPM.QTEREV_RECORD_ID = '{}' AND SAQGPM.SERVICE_ID = '{}' AND SAQGPM.GREENBOOK = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
+								elif LEVEL == "EQUIPMENT LEVEL":
+									where_string = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE)
+									Sql.RunQuery("UPDATE SAQSCA SET PM_INTG_STATUS = 'False' WHERE '{}'".format(where_string))
+
+									Sql.RunQuery("DELETE SAQSKP FROM SAQSKP(NOLOCK) JOIN SAQGPM ON SAQSKP.QTEGBKPME_RECORD_ID = SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID WHERE SAQSKP.QUOTE_RECORD_ID = '{}' AND SAQSKP.QTEREV_RECORD_ID = '{}' AND SAQSKP.SERVICE_ID = '{}' AND SAQSKP.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
+
+									Sql.RunQuery("DELETE SAQGPM FROM SAQGPM(NOLOCK) JOIN SAQGPA ON SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID = SAQGPA.QTEREVPME_RECORD_ID WHERE SAQGPM.QUOTE_RECORD_ID = '{}' AND SAQGPM.QTEREV_RECORD_ID = '{}' AND SAQGPM.SERVICE_ID = '{}' AND SAQGPM.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
+
+									Sql.RunQuery("DELETE SAQGPA FROM SAQGPA(NOLOCK) WHERE SAQGPA.QUOTE_RECORD_ID = '{}' AND SAQGPA.QTEREV_RECORD_ID = '{}' AND SAQGPA.SERVICE_ID = '{}' AND SAQGPM.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
+								
 							try:
 								ScriptExecutor.ExecuteGlobal(
 										"CQCRUDOPTN",
@@ -1230,7 +1279,9 @@ class Entitlements:
 										"ActionType" : "ADD_COVERED_OBJ",
 										"Opertion"    : "ADD",
 										"pmevents_changes_insert" : "Yes",
-										"pm_entlmnt_val" : entitlement_value
+										"pm_entlmnt_val" : entitlement_value,
+										"entitlement_level":LEVEL,
+										"entitlement_level_value":VALUE
 									},
 								)
 							except Exception as e:
@@ -2281,8 +2332,6 @@ class Entitlements:
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
-				Log.Info("YES GREENBOOK LEVEL"+str(self.treeparam))
-				Trace.Write("YES GREENBOOK LEVEL"+str(self.treeparam))
 				tableName = 'SAQSGE'
 				# parentObj = 'SAQTSE'
 				if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
@@ -2293,8 +2342,6 @@ class Entitlements:
 					serviceId = get_service_id.SERVICE_ID
 					whereReq += " AND SERVICE_ID = '{}'".format(serviceId)
 				else:
-					Log.Info("YES GREENBOOK GREENBOOK LEVEL"+str(self.treeparam))
-					Trace.Write("YES GREENBOOK GREENBOOK LEVEL"+str(self.treeparam))
 					greenbook_id = self.treeparam
 					serviceId = self.treeparentparam
 					whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId, greenbook_id)
