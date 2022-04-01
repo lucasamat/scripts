@@ -4432,7 +4432,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		if self.tree_param in ("Z0009","Z0010") and kwargs.get('quotetype_value_for_offering').upper() != "TOOL BASED":
 			self.entitlement_level = self.entitlement_level if self.entitlement_level else "OFFERING LEVEL"
 			self.entitlement_level_value = self.entitlement_level_value if self.entitlement_level_value else self.tree_param
-			ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id),'LEVEL':str(self.entitlement_level),'VALUE':str(self.entitlement_level_value)})
+			ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id),'LEVEL':str(kwargs.get('entitlement_level')),'VALUE': str(kwargs.get('entitlement_level_value'))})
 		
 		if self.sale_type == 'TOOL RELOCATION' and self.tree_param == "Sending Equipment":			
 			self._process_query(
@@ -6412,7 +6412,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						if quotetype_id:
 							quotetype_value =re.findall(quote_type_attribute_value,sub_string)
 							quotetype_value_for_offering = str(quotetype_value[0]).upper()
-				self._insert_quote_service_covered_assembly(self.entitlement_level_value,self.entitlement_level,batch_group_record_id=batch_group_record_id,quotetype_value_for_offering= quotetype_value_for_offering)
+				self._insert_quote_service_covered_assembly(entitlement_level_value = self.entitlement_level_value,entitlement_level = self.entitlement_level,batch_group_record_id=batch_group_record_id,quotetype_value_for_offering= quotetype_value_for_offering)
 				self._insert_quote_service_fab_location(batch_group_record_id=batch_group_record_id)
 				#SAQSCA_end_time = time.time()
 				
