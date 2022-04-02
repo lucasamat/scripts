@@ -238,7 +238,7 @@ def service_level_predefined():
 		#Log.Info('x---'+str(x))
 		entxmldict[x[0]]=sub_string
 
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) WHERE SERVICE_ID = '{service_id}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID IN ('AGS_{service_id}_VAL_POFFER','AGS_{service_id}_VAL_INTCPT',AGS_{service_id}_VAL_CSTSEG) ".format(service_id = TreeParam))
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) WHERE SERVICE_ID = '{service_id}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID IN ('AGS_{service_id}_VAL_POFFER','AGS_{service_id}_VAL_INTCPT','AGS_{service_id}_VAL_CSTSEG') ".format(service_id = TreeParam))
 
 	for val in get_valuedriver_ids:
 		if 'PRODUCT OFFERING' in val.ENTITLEMENT_DESCRIPTION.upper() or 'INTERCEPT' in val.ENTITLEMENT_DESCRIPTION.upper():
