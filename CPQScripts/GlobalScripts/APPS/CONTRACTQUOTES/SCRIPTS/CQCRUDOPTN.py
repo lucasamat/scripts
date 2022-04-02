@@ -2549,6 +2549,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				CREDIT_NOTE = Param.CREDIT_NOTE
 			except:
 				CREDIT_NOTE = ''
+			Trace.Write("CREDIT_NOTE_CHK "+str(CREDIT_NOTE))
 			for key,val in enumerate(list(self.values)):
 				val = re.sub("[^0-9]","",val)
 				id = val.lstrip("0")
