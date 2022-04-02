@@ -1269,13 +1269,13 @@ class Entitlements:
 
 									Sql.RunQuery("DELETE SAQSKP FROM SAQSKP(NOLOCK) JOIN SAQGPM ON SAQSKP.QTEGBKPME_RECORD_ID = SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID WHERE SAQSKP.QUOTE_RECORD_ID = '{}' AND SAQSKP.QTEREV_RECORD_ID = '{}' AND SAQSKP.SERVICE_ID = '{}' AND SAQSKP.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
 
-									Sql.RunQuery("DELETE SAQGPA FROM SAQGPA(NOLOCK) WHERE SAQGPA.QUOTE_RECORD_ID = '{}' AND SAQGPA.QTEREV_RECORD_ID = '{}' AND SAQGPA.SERVICE_ID = '{}' AND SAQGPM.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
+									Sql.RunQuery("DELETE SAQGPA FROM SAQGPA(NOLOCK) WHERE SAQGPA.QUOTE_RECORD_ID = '{}' AND SAQGPA.QTEREV_RECORD_ID = '{}' AND SAQGPA.SERVICE_ID = '{}' AND SAQGPA.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
         
 									##Checking the pm events mapped to many assemnlies or not...
 									pm_events_and_assembly_object = Sql.GetFirst("select SAQGPA.QTEREVPME_RECORD_ID FROM SAQGPM(NOLOCK) JOIN SAQGPA ON SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID = SAQGPA.QTEREVPME_RECORD_ID WHERE SAQGPM.QUOTE_RECORD_ID = '{}' AND SAQGPM.QTEREV_RECORD_ID = '{}' AND SAQGPM.SERVICE_ID = '{}' AND SAQGPA.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
 									if not pm_events_and_assembly_object:
 										##Deleting the pm events table records if the event is mapped to the single tool...	
-										Sql.RunQuery("DELETE SAQGPM FROM SAQGPM(NOLOCK) JOIN SAQGPA ON SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID = SAQGPA.QTEREVPME_RECORD_ID WHERE SAQGPM.QUOTE_RECORD_ID = '{}' AND SAQGPM.QTEREV_RECORD_ID = '{}' AND SAQGPM.SERVICE_ID = '{}' AND SAQGPM.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))	
+										Sql.RunQuery("DELETE SAQGPM FROM SAQGPM(NOLOCK) JOIN SAQGPA ON SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID = SAQGPA.QTEREVPME_RECORD_ID WHERE SAQGPM.QUOTE_RECORD_ID = '{}' AND SAQGPM.QTEREV_RECORD_ID = '{}' AND SAQGPM.SERVICE_ID = '{}' AND SAQGPA.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))	
 							try:
 								ScriptExecutor.ExecuteGlobal(
 										"CQCRUDOPTN",
