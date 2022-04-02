@@ -245,8 +245,13 @@ def service_level_predefined():
 			ent_value = ""
 			updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value,TreeParam )
 		elif 'CUSTOMER SEGMENT' in val.ENTITLEMENT_DESCRIPTION.upper():
-			get_customer_segment =Sql.GetFirst("SELECT CUSTOMER_SEGMENT FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}' AND CPQ_PARTNER_FUNCTION = 'SOLD TO' ".format(quote_record_id,quote_revision_record_id))
-			updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_customer_segment.CUSTOMER_SEGMENT,TreeParam)
+			try:
+				get_customer_segment =Sql.GetFirst("SELECT CUSTOMER_SEGMENT FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}' AND CPQ_PARTNER_FUNCTION = 'SOLD TO' ".format(quote_record_id,quote_revision_record_id))
+				
+			except:
+				get_customer_segment =''
+			if get_customer_segment :
+				updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_customer_segment.CUSTOMER_SEGMENT,TreeParam)
 	#Product.SetGlobal("updateentXML",updateentXML)
 	Sql.RunQuery( "UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(updateentXML.replace("'","''") , quote_record_id,TreeParam, quote_revision_record_id) )
 	##rolldown
