@@ -7624,6 +7624,24 @@ def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				+ str(TreeParam)
 				+ "'"
 			)    
+		elif TreeSuperParentParam in ('Comprehensive Services','Complementary Products'):
+			child_obj_recid = Sql.GetList(
+				"select top 10 QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeParentParam}' ".format(
+					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),Parent_Equipmentid=recid, TreeParam=TreeParam, TreeParentParam=TreeParentParam
+				)
+			)
+
+			QueryCountObj = Sql.GetFirst(
+				"select count(QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID) as cnt from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' and EQUIPMENT_ID ='"
+				+ str(recid)
+				+ "'and SERVICE_ID ='"
+				+ str(TreeParentParam)
+				+ "' and GREENBOOK = '"+str(TreeParam)+"' "
+			)    	
 		if QueryCountObj is not None:
 			QueryCount = QueryCountObj.cnt
 		# Data construction for table.
