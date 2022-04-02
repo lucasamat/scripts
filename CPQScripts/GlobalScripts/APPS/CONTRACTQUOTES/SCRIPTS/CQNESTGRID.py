@@ -5465,17 +5465,6 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	### editablity in Grid 
 	if TopSuperParentParam in ('Comprehensive Services','Complementary Products'): 
 		cls = "eq(2)"
-		# dbl_clk_function = ( 
-		# 	'var checkedRows=[]; debugger;localStorage.setItem("multiedit_checkbox_clicked", []); $("'
-		# 	+ str(table_ids)
-		# 	+ '").on("dbl-click-cell.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
-		# 	+ str(cls)
-		# 	+ '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
-		# 	+ str(table_ids)
-		# 	+ '").on("check-all.bs.table", function (e) { var table = $("'
-		# 	+ str(table_ids)
-		# 	+ '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });  '
-		# ) 
 		# buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>" 
 		# dbl_clk_function = (	 
 		# 	'$("'	
@@ -5500,7 +5489,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ "_SortColumnOrder', order); }); "	
 		)
 	else:
-		if TreeParentParam in ('Comprehensive Services','Complementary Products'):
+		if TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeSuperParentParam in ('Comprehensive Services','Complementary Products'):
 			cls = "eq(2)"
 			dbl_clk_function += (
 				'$("'	
@@ -5525,6 +5514,17 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ "_SortColumnOrder', order); PmEventsNestedContainerSorting(name, order, '"
 			+ str(table_id)
 			+ "','"+str(ASSEMBLYID)+"','"+str(EQUIPMENTID)+"'); }); "
+		)
+	dbl_clk_function += ( 
+			'var checkedRows=[]; debugger;localStorage.setItem("multiedit_checkbox_clicked", []); $("'
+			+ str(table_ids)
+			+ '").on("dbl-click-cell.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
+			+ str(cls)
+			+ '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+			+ str(table_ids)
+			+ '").on("check-all.bs.table", function (e) { var table = $("'
+			+ str(table_ids)
+			+ '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });  '
 		)
 	Trace.Write("7777 dbl_clk_function --->"+str(dbl_clk_function))
 	NORECORDS = ""
