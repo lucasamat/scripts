@@ -5515,16 +5515,22 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(table_id)
 			+ "','"+str(ASSEMBLYID)+"','"+str(EQUIPMENTID)+"'); }); "
 		)
-	dbl_clk_function += ( 
-			'var checkedRows=[]; debugger;localStorage.setItem("multiedit_checkbox_clicked", []); $("'
-			+ str(table_ids)
-			+ '").on("dbl-click-cell.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
-			+ str(cls)
-			+ '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
-			+ str(table_ids)
-			+ '").on("check-all.bs.table", function (e) { var table = $("'
-			+ str(table_ids)
-			+ '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });  '
+	dbl_clk_function += (
+		'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
+		+ str(table_ids)
+		+ '").on("check.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
+		+ str(cls)
+		+ '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+		+ str(table_ids)
+		+ '").on("check-all.bs.table", function (e) { var table = $("'
+		+ str(table_ids)
+		+ '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(4)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+		+ str(table_ids)
+		+ '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
+		+ str(table_ids)
+		+ '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:'
+		+ str(cls)
+		+ '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
 		)
 	Trace.Write("7777 dbl_clk_function --->"+str(dbl_clk_function))
 	NORECORDS = ""
