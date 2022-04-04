@@ -915,6 +915,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 	else:				
 		get_val =12
 	amount_column_split = amount_column.replace('_',' ')
+	if service_id  in ('Z0091W'):
+		amount_column = 'NET_VALUE_INGL_CURR'
 	#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5	
 	if str(get_billing_type).upper() == "FIXED" and get_billing_type != '' and service_id not in ('Z0100'):
 		
