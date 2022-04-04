@@ -130,6 +130,7 @@ class ContractQuoteItem:
 
 	def _quote_items_assembly_insert(self, update=True):
 		import re
+		quotetype_value_for_offering =''
 		service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,service_id = self.service_id))
 		if service_entitlement_object is not None:
 			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
