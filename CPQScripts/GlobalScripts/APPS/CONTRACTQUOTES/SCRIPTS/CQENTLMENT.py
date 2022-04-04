@@ -2275,11 +2275,15 @@ class Entitlements:
 		if Fullresponse:
 			if Fullresponse['conflicts']:
 				Trace.Write("Fullresponse-con-"+str(Fullresponse['conflicts']))
-				msg_text = (
-					'<div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '
-					+ str(Fullresponse['conflicts'][0]['explanation'])
-					+ "</label></div></div>"
-				)
+				# msg_text = (
+				# 	'<div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '
+				# 	+ str(Fullresponse['conflicts'][0]['explanation'])
+				# 	+ "</label></div></div>"
+				# )
+				try:
+					msg_text = '<div class="emp_notifiy" style="display: none;"><div class="col-md-12 page_alert_notifi" id="PageAlert"><div class="row modulesecbnr brdr" onclick="call_vertical_scrl()" data-toggle="collapse" data-target="#alertnotify" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div id="alertnotify" class="col-md-12  alert-notification  brdr collapse in"><div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '+str(Fullresponse['conflicts'][0]['explanation']).split('(ID')[0]+' </label></div></div> </div></div></div>'
+				except:
+					pass
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
 		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesdisrequired_list,attriburesrequired_list,str(cps_error),str(msg_text)
 
