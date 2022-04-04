@@ -5445,7 +5445,6 @@ class SYLDRTLIST:
             + str(str(CurrentModuleObj.APP_RECORD_ID))
             + "'"
         )
-        
         if Tree_Enable is not None:
             if str(Tree_Enable.ENABLE_TREE).upper() == "TRUE":
                 (
