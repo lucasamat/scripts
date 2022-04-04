@@ -1304,11 +1304,11 @@ class EntitlementView():
 											# 		imgstr  = ""
 											# else:
 											# 	imgstr  = ""
-											if str(attrSysId) in ("AGS_REL_STDATE",'AGS_Z0007_GEN_RELDAT','AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD'):
+											if str(attrSysId) in ("AGS_REL_STDATE",'AGS_Z0007_GEN_RELDAT','AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
 												datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 												if attrSysId == 'AGS_Z0007_GEN_RELDAT':
 													datepicker = "onclick_datepicker('" + attrSysId + "')"
-												elif attrSysId in ('AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD'):
+												elif attrSysId in ('AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
 													datepicker = "onclick_datepicker('" + attrSysId + "')"	
 												sec_str1 += (
 													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
