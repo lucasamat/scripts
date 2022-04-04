@@ -119,7 +119,7 @@ def _insert_service_level_entitlement(par_service=''):
 	fullresponse=str(fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
 	fullresponse= eval(fullresponse)
 	##getting configuration_status status
-	if Fullresponse['complete'] == 'true' and Fullresponse['consistent'] == 'true' :
+	if fullresponse['complete'] == 'true' and fullresponse['consistent'] == 'true' :
 		configuration_status = 'COMPLETE'
 	elif fullresponse['complete'] == 'false':
 		configuration_status = 'INCOMPLETE'
