@@ -833,7 +833,7 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 				FROM SAQSCO (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID  and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK LEFT JOIN SAQIBP (NOLOCK) on SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID AND
 				EXISTS (SELECT * FROM  SAQIBP (NOLOCK) WHERE SAQIBP.ANNUAL_BILLING_AMOUNT <> SAQRIT.NET_PRICE AND SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID)
 				WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'  and SAQRIT.NET_VALUE IS NOT NULL and SAQRIT.OBJECT_ID IS NOT NULL )A """.format(
-				UserId=user_id, QuoteRecordId=contract_quote_rec_id,amount_columnss=amount_columnss,
+				UserId=User.Id, QuoteRecordId=contract_quote_rec_id,amount_columnss=amount_columnss,
 				RevisionRecordId=quote_revision_rec_id,
 				BillingDate=billing_date,billing_end_date=billing_end_date,
 				get_val=get_val,
@@ -883,7 +883,7 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 				FROM SAQRIT (NOLOCK)  LEFT JOIN SAQIBP (NOLOCK) on SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID AND
 				EXISTS (SELECT * FROM  SAQIBP (NOLOCK) WHERE SAQIBP.ANNUAL_BILLING_AMOUNT <> SAQRIT.NET_PRICE AND SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID)
 				WHERE SAQRIT.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRIT.SERVICE_ID ='{service_id}'  and SAQRIT.NET_VALUE IS NOT NULL  and SAQRIT.OBJECT_ID IS NULL )A """.format(
-				UserId=user_id, QuoteRecordId=contract_quote_rec_id,amount_columnss=amount_columnss,
+				UserId=User.Id, QuoteRecordId=contract_quote_rec_id,amount_columnss=amount_columnss,
 				RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
 				BillingDate=billing_date,
 				get_val=get_val,
