@@ -3738,7 +3738,7 @@ def POPUPLISTVALUEADDNEW(
 							Trace.Write("Credit_Notes_chk "+str(credit_notes_str))
 							new_value_dict["ZAFNOTE"] = credit_notes_str
 						else:
-							new_value_dict[data.Key] = ""
+							new_value_dict["ZAFNOTE"] = ""
 						date_field.append(new_value_dict)
 						Trace.Write("date_field_chk_j "+str(date_field))
 				QueryCount = len(date_field)
