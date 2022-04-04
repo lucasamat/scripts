@@ -942,7 +942,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 		objh_head = str(objh_obj.RECORD_NAME)
 		item_lines_record_ids = []
 		if obj_name in ('SAQSAP','SAQRSP','SAQSPT','SAQGPA','SAQGPM','SAQRIS','SAQRDS') and (not (TITLE == 'QUANTITY' and obj_name == 'SAQRSP')):
-			selected_rows = selectPN if selectPN else selected_rows
+			if obj_name =='SAQGPA':
+				selected_rows = selected_rows
+			else:
+				selected_rows = selectPN if selectPN else selected_rows
 			qury_str = ""
 			Trace.Write(str(CLICKEDID)+'--Values-->'+str(A_Values))
 			Trace.Write("selected_rows_CHK "+str(selected_rows))
@@ -1334,11 +1337,11 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					service_id = TreeTopSuperParentParam 
 				Sql.RunQuery("""
 						UPDATE SAQGPM
-                        SET
-                        PM_FREQUENCY = assembly.PM_FREQUENCY,
-                        SSCM_PM_FREQUENCY = assembly.SSCM_PM_FREQUENCY
-                        FROM SAQGPM (NOLOCK)
-                        INNER JOIN (select SAQGPA.QUOTE_RECORD_ID,SAQGPA.QTEREV_RECORD_ID,SAQGPA.SERVICE_RECORD_ID,SAQGPA.GOTCODE_RECORD_ID,SAQGPA.PM_RECORD_ID,SAQGPA.DEVICE_NODE,SAQGPA.PROCESS_TYPE,SUM(ISNULL(SAQGPA.PM_FREQUENCY, 0)) as PM_FREQUENCY,SUM(ISNULL(SAQGPA.SSCM_PM_FREQUENCY, 0)) as SSCM_PM_FREQUENCY FROM SAQGPA where SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{service_id}' GROUP BY QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_RECORD_ID,GOTCODE_RECORD_ID,PM_RECORD_ID,DEVICE_NODE,PROCESS_TYPE) assembly ON SAQGPM.QUOTE_RECORD_ID = assembly.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = assembly.QTEREV_RECORD_ID WHERE SAQGPM.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.SERVICE_ID = '{service_id}' """.format(QuoteRecordId=Qt_rec_id,RevisionRecordId=rev_rec_id,service_id=service_id)
+						SET
+						PM_FREQUENCY = assembly.PM_FREQUENCY,
+						SSCM_PM_FREQUENCY = assembly.SSCM_PM_FREQUENCY
+						FROM SAQGPM (NOLOCK)
+						INNER JOIN (select SAQGPA.QUOTE_RECORD_ID,SAQGPA.QTEREV_RECORD_ID,SAQGPA.SERVICE_RECORD_ID,SAQGPA.GOTCODE_RECORD_ID,SAQGPA.PM_RECORD_ID,SAQGPA.DEVICE_NODE,SAQGPA.PROCESS_TYPE,SUM(ISNULL(SAQGPA.PM_FREQUENCY, 0)) as PM_FREQUENCY,SUM(ISNULL(SAQGPA.SSCM_PM_FREQUENCY, 0)) as SSCM_PM_FREQUENCY FROM SAQGPA where SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{service_id}' GROUP BY QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_RECORD_ID,GOTCODE_RECORD_ID,PM_RECORD_ID,DEVICE_NODE,PROCESS_TYPE) assembly ON SAQGPM.QUOTE_RECORD_ID = assembly.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = assembly.QTEREV_RECORD_ID WHERE SAQGPM.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.SERVICE_ID = '{service_id}' """.format(QuoteRecordId=Qt_rec_id,RevisionRecordId=rev_rec_id,service_id=service_id)
 					)
 
 			elif obj_name == "SAQGPM":
