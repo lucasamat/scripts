@@ -443,7 +443,7 @@ class ContractQuoteItem:
 								PRLPBE.REGION,
 								MAEQUP.PRODUCT_ID,
 								PRLPBE.GREENBOOK,
-								PRLPBE.LICENSE,
+								#PRLPBE.LICENSE,
 								MAEQUP.ENGG_LINK,
 								SAQITE.CONCOV,
 								SAQITE.LINE,
