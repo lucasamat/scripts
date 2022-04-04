@@ -2567,7 +2567,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						unapplied = float(credit_details.UNBL_INGL_CURR)-int(APPLIED_CREDITS[key]) if APPLIED_CREDITS[key]!='' else float(credit_details.UNBL_INGL_CURR)
 					if str(credit_details.CRTAPP_INGL_CURR) == "":
 						credit_details.CRTAPP_INGL_CURR = 0
-					Sql.RunQuery("UPDATE SACRVC SET CRTAPP_INGL_CURR = '{}', UNBL_INGL_CURR = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CRTAPP_INGL_CURR)- int(APPLIED_CREDITS[key]), unapplied, id))
+					Sql.RunQuery("UPDATE SACRVC SET CRTAPP_INGL_CURR = '{}', UNBL_INGL_CURR = '{}' WHERE CpqTableEntryId = '{}'".format(float(credit_details.CRTAPP_INGL_CURR)+ int(APPLIED_CREDITS[key]), unapplied, id))
 					# except Exception as e:
 					# 	Trace.Write('EXCEPTION: '+str(e))
 					# 	Trace.Write('APPLIED_CREDITS'+str(APPLIED_CREDITS))
