@@ -423,11 +423,11 @@ def splitserviceinsert():
 				split_entitlement_display_value = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
 			if entitlement_display_value_tag_match and split_entitlement_display_value:
 				quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
-				if quote_service_entitlement_type == 'OFFERING + EQUIPMENT' and split_entitlement_display_value == ["Yes"]:
+				if quote_service_entitlement_type == 'STR-OFFBGBEQ OBJ-EQ' and split_entitlement_display_value == ["Yes"]:
 					Trace.Write("1")
 					servicelevel_split_equip(service_entitlement_obj.SERVICE_ID)
 					break
-				elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART') and split_entitlement_display_value == ["Yes"]:
+				elif quote_service_entitlement_type in ('STR-OFFBGB OBJ-GREQ PRD-GRPT','STR-OFFBGB OBJ-GREQ','STR-OFFBGB OBJ-EQ','STR-OFFBGR OBJ-GREQ','STR-OFFBGB OBJ-ASKT') and split_entitlement_display_value == ["Yes"]:
 					Trace.Write("2")
 					servicelevel_split_green(service_entitlement_obj.SERVICE_ID)
 					break
