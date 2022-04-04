@@ -9597,7 +9597,7 @@ class SYLDRTLIST:
                                     getdate_indication_billing = datetime.strptime(str(value123), '%m-%d-%Y')                                        
                                     contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
                                     curr_symbol_obj = Sql.GetFirst(
-                                        "select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select QUOTE_CURRENCY_RECORD_ID"
+                                        "select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select GLOBAL_CURRENCY_RECORD_ID"
                                         + " from SAQTMT"
                                         + " where MASTER_TABLE_QUOTE_RECORD_ID  "
                                         + " = '"
