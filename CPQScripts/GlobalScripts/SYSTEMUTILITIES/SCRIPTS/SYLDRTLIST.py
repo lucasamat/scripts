@@ -3329,7 +3329,8 @@ class SYLDRTLIST:
                             if curr_symbol_obj is not None and len(curr_symbol_obj) > 0 and curr_symbol_obj != "":
                                 
                                 curr_symbol = curr_symbol_obj.CURRENCY
-                                decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
+                                if curr_symbol_obj.DISPLAY_DECIMAL_PLACES:
+                                    decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                                 
                             if value1234 is not None:
                                 if value1234 != "":
@@ -3587,7 +3588,8 @@ class SYLDRTLIST:
                                             if curr_symbol_obj:
                                                 curr_symbol = curr_symbol_obj.CURRENCY												
                                                 try:
-                                                    decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES								
+                                                    if curr_symbol_obj.DISPLAY_DECIMAL_PLACES:
+                                                        decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                                                     my_format = "{:,." + str(decimal_place) + "f}"
                                                     value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
                                                 except:
@@ -9368,7 +9370,8 @@ class SYLDRTLIST:
                         if curr_symbol_obj is not None:
                             #Trace.Write("value123-"+str(value123)+'--'+str(curr_symbol_obj.DISPLAY_DECIMAL_PLACES))
                             curr_symbol = curr_symbol_obj.CURRENCY
-                            decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
+                            if curr_symbol_obj.DISPLAY_DECIMAL_PLACES:
+                                decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                         if value1234 is not None:
                             if value1234 != "":
                                 my_format = "{:,." + str(decimal_place) + "f}"                                
