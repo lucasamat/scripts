@@ -2861,6 +2861,7 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 	parentlevel4 = Product.GetGlobal("TreeParentLevel4")
+	Trace.Write("TreeParam--"+str(TreeParam)+"TreeParentParam"+str(TreeParentParam)+"TreeSuperParentParam"+str(TreeSuperParentParam)+"parentlevel4"+str(parentlevel4))
 	if str(PerPage) == "" and str(PageInform) == "":
 		Page_start = 1
 		Page_End = 10
@@ -2948,6 +2949,7 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		columns = "APPROVAL_CHAIN_STEP_RECORD_ID, APRCHN_ID, APRCHNSTP_NUMBER "
 		objname = "ACACST"
 	else:
+		Trace.Write("saqgpa object")
 		columns = "ASSEMBLY_ID,EQUIPMENT_ID,PM_ID,SERVICE_ID,KIT_ID,KIT_NUMBER,QTEREVPME_RECORD_ID"
 		objname = "SAQGPA"
 	if str(TreeSuperParentParam)=="Approvals":
