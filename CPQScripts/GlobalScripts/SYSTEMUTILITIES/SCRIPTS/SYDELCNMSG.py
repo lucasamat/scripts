@@ -435,9 +435,14 @@ class DeleteConfirmPopup:
                     update_saqtrv = ("UPDATE SAQTRV SET DIRTY_FLAG = 'TRUE', REVISION_STATUS = 'CFG-CONFIGURING', WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
                     Sql.RunQuery(update_saqtrv)
         elif ObjName == "SAQRCV":
-            Trace.Write("TABLE_CHKK "+str(RecordId))
-            # QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID ='"+str(RecordId)+"'"
-            # Sql.RunQuery(QueryStatement)
+            # deleted_rec_query = Sql.GetFirst("SELECT CREDIT_APPLIED_INGL_CURR,CREDITVOUCHER_RECORD_ID FROM SAQRCV (NOLOCK) WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID = '"+str(RecordId)+"'")
+            # saqrcv_rec_query = Sql.GetFirst("SELECT ")
+            # credit_applied = deleted_rec_query.CREDIT_APPLIED_INGL_CURR - 
+
+            # update_SAQRCV = 'UPDATE SAQRCV SET CREDIT_APPLIED_INGL_CURR = "'+str(credit_applied)+'",UNBL_INGL_CURR = "'+str(unapplied_balance)+'" WHERE CREDITVOUCHER_RECORD_ID = "'+str(deleted_rec_query.CREDITVOUCHER_RECORD_ID)+'"'
+
+            QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID ='"+str(RecordId)+"'"
+            Sql.RunQuery(QueryStatement)
         
         else:
             tableInfo = Sql.GetTable(ObjName)
