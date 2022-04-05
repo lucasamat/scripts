@@ -8,7 +8,6 @@
 
 import datetime
 from SYDATABASE import SQL
-import re
 Sql = SQL()
 
 class ContractQuoteItemAnnualizedPricing:
