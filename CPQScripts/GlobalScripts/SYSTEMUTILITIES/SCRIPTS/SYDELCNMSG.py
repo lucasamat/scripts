@@ -434,6 +434,11 @@ class DeleteConfirmPopup:
                     
                     update_saqtrv = ("UPDATE SAQTRV SET DIRTY_FLAG = 'TRUE', REVISION_STATUS = 'CFG-CONFIGURING', WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
                     Sql.RunQuery(update_saqtrv)
+        elif ObjName == "SAQRCV":
+            Trace.Write("TABLE_CHKK "+str(Table))
+            # QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID ='"+str(RecordId)+"'"
+            # Sql.RunQuery(QueryStatement)
+        
         else:
             tableInfo = Sql.GetTable(ObjName)
             ColumnName = Sql.GetFirst(
