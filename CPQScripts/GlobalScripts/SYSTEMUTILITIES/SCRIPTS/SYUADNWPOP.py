@@ -3739,6 +3739,7 @@ def POPUPLISTVALUEADDNEW(
 							
 							# new_value_dict["ZAFNOTE"] = credit_notes_str
 							new_value_dict["ZAFNOTE"] = '<abbr>'+ credit_notes_str + '</abbr>'
+							
 						else:
 							new_value_dict["ZAFNOTE"] = ""
 						date_field.append(new_value_dict)
