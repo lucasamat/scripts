@@ -7163,11 +7163,15 @@ def POPUPLISTVALUEADDNEW(
 				#     + "'"
 				# )
 				if StepRecordId:
+					if ObjectName == "ACACSF":
+						aprchstp = "APRCHNSTP_RECORD_ID"
+					else:
+						aprchstp = "APPROVAL_CHAIN_STEP_RECORD_ID"
 					result = ScriptExecutor.ExecuteGlobal(
 						"SYPARCEFMA",
 						{
 							"Object": str(ObjectName),
-							"API_Name": "APPROVAL_CHAIN_STEP_RECORD_ID",
+							"API_Name": aprchstp,
 							"API_Value": str(StepRecordId.APPROVAL_CHAIN_STEP_RECORD_ID),
 						},
 					)
