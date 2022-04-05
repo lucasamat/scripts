@@ -1549,7 +1549,7 @@ def billingmatrix_create():
 						for data,val in get_milestones_data_dict.items():
 							
 							count =0
-							if ('AGS_Z0007_PQB_MIL3BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD') in data:
+							if ('AGS_{}_PQB_MIL3BD','AGS_{}_PQB_MIL2BD','AGS_{}_PQB_MIL1BD','AGS_{}_PQB_MIL3BD','AGS_{}_PQB_MIL2BD','AGS_{}_PQB_MIL1BD'.format(get_service_val)) in data:
 								billing_month_end += 1
 								if val:
 									
