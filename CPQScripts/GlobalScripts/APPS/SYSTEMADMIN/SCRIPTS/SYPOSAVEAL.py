@@ -296,6 +296,9 @@ def do_process(TABLEID, LABLE, VALUE):
                         #ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
                         # quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME FROM SAQTMT WHERE QUOTE_ID = '"+row["QUOTE_ID"]+"'")
                         
+                        
+                        row.pop("CPQTABLEENTRYMODIFIEDBY")
+                        row.pop("CPQTABLEENTRYDATEMODIFIED")
                         Trace.Write("row==111"+str(row))
                         Table.TableActions.Create(TABLEID, row)
                 
