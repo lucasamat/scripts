@@ -168,7 +168,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 				shipto = [s.SHPACCOUNT_ID for s in get_part_query]
 				salesUOM = [t.SALESUOM_ID for t in get_part_query]
 				salesUOMConv = [u.SALESUOM_CONVERSION_FACTOR for u in get_part_query]
-				salesUOMConv = int(salesUOMConv)
+				salesUOMConvs = int(salesUOMConv[0])
 				if salesUOMConv==0:
 					salesUOMConv = 1
 				shipto_details=shipto[0] or account_info['SHIP TO']
@@ -188,7 +188,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 				quantity[0] = int(quantity[0])
 				curr_attr = currency_attribute
 				if salesUOM !='':
-					salesuom_attr = '"quantity":{"value":'+str(quantity[0])+',"unit":"'+str(ISOCode[salesUOM[0]])+'"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(partids[0])+'","baseUnit":"EA","alternateProductUnits": [{"alternateUnitName": "'+str(ISOCode[salesUOM[0]])+'","numerator": "'+str(salesUOMConv[0])+'","denominator": 1}]}'
+					salesuom_attr = '"quantity":{"value":'+str(quantity[0])+',"unit":"'+str(ISOCode[salesUOM[0]])+'"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(partids[0])+'","baseUnit":"EA","alternateProductUnits": [{"alternateUnitName": "'+str(ISOCode[salesUOM[0]])+'","numerator": "'+str(salesUOMConvs)+'","denominator": "1"}]}'
 				if str_odcc_flag !='':
 					curr_attr += ','+'{"name":"KOMP-ZZ_ODCC_ELIGIBILITY_FLAG","values":["'+str(str_odcc_flag)+'"]}'
 				itemid = str(partids[0])+";"+str(QUOTE)+";"+str(quantity[0])+";"+str(currencies)
