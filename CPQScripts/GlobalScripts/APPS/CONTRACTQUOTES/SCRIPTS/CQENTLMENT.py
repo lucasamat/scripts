@@ -335,6 +335,7 @@ class Entitlements:
 
 	def EntitlementSave(self, subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT,scheduled_parts):
 		#AttributeValCode = AttributeValCode.replace("_"," ")
+		Fullresponse =''
 		cps_error = ''
 		LEVEL = ''
 		VALUE = ''
