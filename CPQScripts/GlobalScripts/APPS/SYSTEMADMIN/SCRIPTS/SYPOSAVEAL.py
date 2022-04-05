@@ -192,7 +192,7 @@ def do_process(TABLEID, LABLE, VALUE):
                 row["OBJECT_CONSTRAINT_RECORD_ID"] = str(Guid.NewGuid()).upper()                
             if Flag_unique == "True":
                 Trace.Write("Flag_unique===>>>")
-                if "CPQTABLEENTRYMODIFIEDBY" in str(row.keys()).upper() and "CPQTABLEENTRYDATEMODIFIED" in str(row.keys()).upper():
+                if "CpqTableEntryModifiedBy" in row.keys() and "CpqTableEntryDateModified" in row.keys():
                     Trace.Write("Flag_unique===")
                     if TABLEID == 'SAQTIP':
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
