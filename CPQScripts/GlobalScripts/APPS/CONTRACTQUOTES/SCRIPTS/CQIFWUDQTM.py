@@ -1537,7 +1537,7 @@ def billingmatrix_create():
 						get_service_val = service_id
 						
 						get_milestone_details = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE where QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'  and SERVICE_ID = '{get_service}'".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id,get_service = str(service_id).strip()))
-						Log.Info('--1531-----'+str(service_id)+'---contract_quote_rec_id----'+str(contract_quote_rec_id)+'---quote_revision_rec_id---'+str(quote_revision_rec_id))
+						
 						if get_milestone_details:
 							updateentXML = get_milestone_details.ENTITLEMENT_XML
 							pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -1551,8 +1551,7 @@ def billingmatrix_create():
 									get_ent_val = str(get_ent_val[0])
 									get_milestones_data_dict[get_ent_id[0]] = str(get_ent_val)
 						for data,val in get_milestones_data_dict.items():
-							Log.Info('--1545--data---'+str(data))
-							Log.Info('--1546--data---'+str(val))
+							
 							count =0
 							if ('AGS_Z0007_PQB_MIL3BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD') in data:
 								billing_month_end += 1
