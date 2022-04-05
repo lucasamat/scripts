@@ -131,11 +131,9 @@ class SyncQuoteAndCustomTables:
         return self.quote.GetCustomField(_field_name).Content
 
     def datetime_format_field(self, _field_name):
-        return (
-            datetime.datetime.strptime(
+        return datetime.datetime.strptime(
                 self.quote.GetCustomField(_field_name).Content, "%Y-%m-%d"
-            ).date(),
-        )
+            ).date()
 
     def format(self, _field):
         return self.datetime_formatting_fields.get(_field, self.default_field_format)(_field)
