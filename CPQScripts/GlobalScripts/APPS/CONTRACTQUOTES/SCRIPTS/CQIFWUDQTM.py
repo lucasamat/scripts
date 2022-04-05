@@ -772,22 +772,22 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 	get_total_milestons =''
 	count_dates = 0		
 	for data,val in get_milestones_data_dict.items():
-		if 'AGS_Z0007_PQB_MILST1' in data:
+		if 'AGS_{}_PQB_MILST1'.format(service_id) in data:
 			get_total_milestons += val
 			count_dates += 1
-		elif 'AGS_Z0007_PQB_MILST2' in data:
+		elif 'AGS_{}_PQB_MILST2'.format(service_id) in data:
 			get_total_milestons += val
 			count_dates += 1
-		elif 'AGS_Z0007_PQB_MILST3' in data:
+		elif 'AGS_{}_PQB_MILST3'.format(service_id) in data:
 			get_total_milestons += val
 			count_dates += 1
-		elif 'AGS_Z0006_PQB_MILST1' in data:
+		elif 'AGS_{}_PQB_MILST1'.format(service_id) in data:
 			get_total_milestons += val
 			count_dates += 1
-		elif 'AGS_Z0006_PQB_MILST2' in data:
+		elif 'AGS_{}_PQB_MILST2'.format(service_id) in data:
 			get_total_milestons += val
 			count_dates += 1
-		elif 'AGS_Z0006_PQB_MILST3' in data:
+		elif 'AGS_{}_PQB_MILST3'.format(service_id) in data:
 			get_total_milestons += val
 			count_dates += 1
 	if get_total_milestons:
