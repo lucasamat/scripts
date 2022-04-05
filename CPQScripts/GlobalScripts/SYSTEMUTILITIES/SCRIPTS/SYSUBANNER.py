@@ -3165,13 +3165,9 @@ def Related_Sub_Banner(
         else:
             
             style = 'style="display: none;"'
-        sec_rel_sub_bnr += (
-            """<div class="segmentButtons" style=""><button """+str(style)+""" class="btnconfig QBeditbtn" """
-            + """ onclick="QBeditbtn()">EDIT CRITERIA</button><button class="
-        btnconfig QBsavebtn" style="display:none;" onclick="QBsavebtn()">SAVE</button>
-        <button class=" btnconfig QBcanclbtn" onclick="QBcanclbtn()" style="display:none;">CANCEL</button>
-        </div>"""
-        ) 
+            sec_rel_sub_bnr += (
+                        '<button id="ADDNEW__SYOBJR_98798_7F4F4C8D_73C7_4779_9BE5_38C695" onclick="cont_openaddnew(this, \'div_CTR_Approvers\')" class="btnconfig addNewRel HideAddNew">ADD NEW</button>'
+                    )
     elif (str(TabName) == "My Approvals Queue" or str(TabName) == "Team Approvals Queue") and (
         str(TreeParentParam) == "Approval History"
     ):
