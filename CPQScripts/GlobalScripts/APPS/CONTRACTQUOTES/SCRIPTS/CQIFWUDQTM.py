@@ -772,22 +772,30 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 		get_val =12
 	amount_column_split = amount_column.replace('_',' ')
 	
-	get_total_milestons =''			
+	get_total_milestons =''
+	count_dates = 0		
 	for data,val in get_milestones_data_dict.items():
 		if 'AGS_Z0007_PQB_MILST1' in data:
 			get_total_milestons += val
+			count_dates += 1
 		elif 'AGS_Z0007_PQB_MILST2' in data:
 			get_total_milestons += val
+			count_dates += 1
 		elif 'AGS_Z0007_PQB_MILST3' in data:
 			get_total_milestons += val
+			count_dates += 1
 		elif 'AGS_Z0006_PQB_MILST1' in data:
 			get_total_milestons += val
+			count_dates += 1
 		elif 'AGS_Z0006_PQB_MILST2' in data:
 			get_total_milestons += val
+			count_dates += 1
 		elif 'AGS_Z0006_PQB_MILST3' in data:
 			get_total_milestons += val
+			count_dates += 1
 	if get_total_milestons:
 		amount_columnss = str(float(get_total_milestons)/100.00)
+		get_val = count_dates
 	else:
 		amount_columnss = 'NET_VALUE_INGL_CURR'
 	Trace.Write('amount_column--'+str(amount_columnss))
@@ -803,7 +811,7 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
 				{billing_end_date} as BILLING_END_DATE,
 				{BillingDate} as BILLING_START_DATE,
-				{amount_column}  AS ANNUAL_BILLING_AMOUNT,
+				{amount_columnss}  AS ANNUAL_BILLING_AMOUNT,
 				ISNULL({amount_columnss}, 0) / {get_val}*{amount_columnss}   as BILLING_VALUE,
 				{amount_columnss}   as  BILLING_VALUE_INGL_CURR,
 				'{billing_type}' as BILLING_TYPE,
@@ -852,8 +860,8 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
 				{billing_end_date} as BILLING_END_DATE,
 				{BillingDate} as BILLING_START_DATE,
-				{amount_column} AS ANNUAL_BILLING_AMOUNT,
-				ISNULL({amount_column}, 0) / {get_val}*{amount_columnss}  as BILLING_VALUE,
+				{amount_columnss} AS ANNUAL_BILLING_AMOUNT,
+				ISNULL({amount_columnss}, 0) / {get_val}*{amount_columnss}  as BILLING_VALUE,
 				ISNULL(SAQRIT.ESTVAL_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
 				'{billing_type}' as BILLING_TYPE,
 				SAQRIT.LINE AS LINE,
@@ -1423,7 +1431,6 @@ def billingmatrix_create():
 	get_ent_val = get_ent_billing_type_value = get_ent_bill_cycle = get_billing_type = ''
 	if contract_start_date and contract_end_date and billing_plan_obj:
 		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
-		#Log.Info('4739---------4744------')
 		for val in billing_plan_obj:
 			if billing_plan_obj:				
 				contract_start_date = val.BILLING_START_DATE
@@ -1591,13 +1598,10 @@ def billingmatrix_create():
 					total_months = years * 12 + months
 					get_milestones_data_dict = {}
 					get_total_milestons= ''
-					#Log.Info('1589-get_service_val----'+str(get_service_val))
-					#get_service_val = service_id
 					
 					get_milestone_details = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE where QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'  and SERVICE_ID = '{get_service}'".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id,get_service = str(get_service_val).strip()))
-					#Log.Info('--1531-----'+str(get_service_val)+'---contract_quote_rec_id----'+str(contract_quote_rec_id)+'---quote_revision_rec_id---'+str(quote_revision_rec_id))
+					
 					if get_milestone_details:
-						Log.Info('1595-indise if condition-----'+str(get_ent_bill_cycle))
 						updateentXML = get_milestone_details.ENTITLEMENT_XML
 						pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 						pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_MILEST|AGS_'+str(get_service_val)+'_PQB_MILST1|AGS_'+str(get_service_val)+'_PQB_MILST2|AGS_'+str(get_service_val)+'_PQB_MILES2|AGS_'+str(get_service_val)+'_PQB_MILES3|AGS_'+str(get_service_val)+'_PQB_MILES1|AGS_'+str(get_service_val)+'_PQB_MILST3|AGS_'+str(get_service_val)+'_PQB_MIL3DS|AGS_'+str(get_service_val)+'_PQB_MIL1DS|AGS_'+str(get_service_val)+'_PQB_MIL2DS|AGS_'+str(get_service_val)+'_PQB_MIL3BD|AGS_'+str(get_service_val)+'_PQB_MIL2BD|AGS_'+str(get_service_val)+'_PQB_MIL1BD)</ENTITLEMENT_ID>')
@@ -1609,17 +1613,13 @@ def billingmatrix_create():
 							if get_ent_id:
 								get_ent_val = str(get_ent_val[0])
 								get_milestones_data_dict[get_ent_id[0]] = str(get_ent_val)
-					Log.Info('1595-get_milestones_data_dict-----'+str(get_milestones_data_dict))
 					for data,val in get_milestones_data_dict.items():
-						#Log.Info('--1545--data---'+str(data))
-						#Log.Info('--1546--data---'+str(val))
+						
 						count =0
 						if data:
 							billing_month_end += 1
 							if val:
-								Log.Info('-1551-count--'+str(count))
-								Log.Info('-1551-get_ent_billing_type_value--'+str(get_ent_billing_type_value))
-								Log.Info('-1551-get_service_val--'+str(get_service_val))
+								
 								fts_zoo7_insert(total_months=total_months, 
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=count, BillingDate=start_date.strftime('%m/%d/%Y')
