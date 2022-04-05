@@ -581,7 +581,7 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 					entitlement_id = 'AGS_Z0092_TSC_CONADD' 
 				if entitlement_id in dict_val.keys() and entitlement_table_col in tables_column:
 					entitlement_disp_val = dict_val[entitlement_id]
-					if entitlement_disp_val and entitlement_disp_val != None:
+					if entitlement_disp_val and entitlement_disp_val not in (None,'None') :
 						if entitlement_table_col in ('SPSPCT','SVSPCT') and "%" in entitlement_disp_val:
 							entitlement_disp_val = entitlement_disp_val.replace("%","")
 						update_values += ", {} = '{}' ".format(entitlement_table_col, entitlement_disp_val  ) 
