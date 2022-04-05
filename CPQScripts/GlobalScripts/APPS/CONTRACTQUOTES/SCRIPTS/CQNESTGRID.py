@@ -2981,7 +2981,7 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				+ str(Parent_event.ASSEMBLY_ID)
 				+ "' AND EQUIPMENT_ID = '"+str(Parent_event.EQUIPMENT_ID)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND KIT_ID = '"+str(Parent_event.KIT_ID)+"' AND KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QTEREVPME_RECORD_ID)+"' "
 			)
-		if str(objname)=="ACACST":
+		elif str(objname)=="ACACST":
 			child_obj_recid = Sql.GetList(
 				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY APRCHNSTP_TESTEDFIELD_RECORD_ID) AS ROW, APRCHNSTP_TESTEDFIELD_RECORD_ID,TSTOBJ_LABEL,TSTOBJ_TESTEDFIELD_LABEL,CMPOBJ_LABEL,CMPOBJ_FIELD_LABEL,CMP_DATATYPE,CMP_OPERATOR,CMP_VALUE from ACACSF (NOLOCK) where APRCHN_ID = '"+str(Parent_event.APRCHN_ID)+"'  AND APRCHNSTP_NUMBER = '"+str(Parent_event.APRCHNSTP_NUMBER)+"'  )m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)
 			)
