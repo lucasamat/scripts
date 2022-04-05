@@ -10,7 +10,7 @@ import sys
 Sql = SQL()
 
 def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id,quote_record_id):
-    Sql.RunQuery("""INSERT SAQDLT (
+    query = ("""INSERT SAQDLT (
                             C4C_PARTNERFUNCTION_ID,
                             CRM_PARTNERFUNCTION_ID,
                             PARTNERFUNCTION_DESC,
@@ -117,9 +117,10 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             QuoteRecordId=quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
                             RevisionId=quote_rev_id,
                             RevisionRecordId=quote_revision_record_id,
-                            is_primary = employee.get("PRIMARY")
+                            is_primary = "1" if employee.get("PRIMARY").upper()=="TRUE" else "0"
                             )
                         )
+    Log.Info("###123"+str(query))
     created_by_master_rec = None
     created_by_master_rec = Sql.GetFirst("SELECT C4C_PARTNER_FUNCTION,PARTNERFUNCTION_DESCRIPTION,PARTNERFUNCTION_ID,PARTNERFUNCTION_RECORD_ID FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
     if created_by_master_rec:

@@ -2270,7 +2270,7 @@ class SyncQuoteAndCustomTables:
 
     ##A055S000P01-8690 starts..
     def salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail):
-        Sql.RunQuery("""INSERT SAQDLT (
+        query = ("""INSERT SAQDLT (
                                 C4C_PARTNERFUNCTION_ID,
                                 CRM_PARTNERFUNCTION_ID,
                                 PARTNERFUNCTION_DESC,
@@ -2437,9 +2437,10 @@ class SyncQuoteAndCustomTables:
                                 QuoteRecordId=contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
                                 RevisionId=quote_rev_id,
                                 RevisionRecordId=quote_revision_id,
-                                is_primary = employee.get("PRIMARY")
+                                is_primary = "1" if employee.get("PRIMARY").upper()=="TRUE" else "0"
                                 )
                             )
+        Log.Info("###2443 "+str(query))
         created_by_master_rec = None
         created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
         if created_by_master_rec:
