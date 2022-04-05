@@ -1890,12 +1890,9 @@ class SyncQuoteAndCustomTables:
                                         
 
                             if product_offering:
-                                if len(product_offering) > 1:
-                                    sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'Comprehensive Service Agreement', CLM_TEMPLATE_NAME = 'ComprehensiveServiceAgreement' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
-                                    Sql.RunQuery(sow_update_query)
-                                elif len(product_offering) <= 1:
-                                    mamtrl_record = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(product_offering[0])+"'")
-                                    sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = '"+str(mamtrl_record.CLM_CONTRACT_TYPE)+"', CLM_TEMPLATE_NAME = '"+str(mamtrl_record.CLM_TEMPLATE_NAME)+"' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
+                                mamtrl_record_obj = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(product_offering[0])+"'")
+                                if mamtrl_record_obj:
+                                    sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = '{ClmContractType}', CLM_TEMPLATE_NAME = '{ClmTemplateName}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QUOTE_REVISION_RECORD_ID = '{QuoteRevisionRecordId}' ".format(QuoteRecordId = quote_record_id, QuoteRevisionRecordId = quote_revision_id, ClmContractType = mamtrl_record_obj.CLM_CONTRACT_TYPE, ClmTemplateName=mamtrl_record_obj.CLM_TEMPLATE_NAME)
                                     Sql.RunQuery(sow_update_query)							
                             if not service_ids:
                                 #Log.Info("non_service_docutype"+str(quote_revision_id)+"====="+str(quote_record_id))
