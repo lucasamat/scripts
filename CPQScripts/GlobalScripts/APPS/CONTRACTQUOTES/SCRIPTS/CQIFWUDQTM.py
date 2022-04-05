@@ -752,7 +752,6 @@ def insert_item_per_billing(total_months=1, billing_date='',billing_end_date =''
 def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None,get_milestones_data_dict=None):
 	get_billing_cycle = get_billing_type = ''
 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
-	Log.Info('755--INSIDE__Z0006--')
 	contract_quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
 	quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID
 	for data,val in get_billling_data_dict.items():
@@ -760,8 +759,6 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 			get_billing_cycle = val
 		elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
 			get_billing_type =val
-	#Trace.Write('get_billing_cycle---'+str(get_billing_cycle))
-	Log.Info(str(service_id)+'-764-----billing_type---'+str(get_billing_type)+'--CYCLE---'+str(get_billing_cycle))
 	if get_billing_cycle == "Monthly":				
 		get_val =12
 	elif str(get_billing_cycle).upper() == "QUARTERLY":			
@@ -798,6 +795,7 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 		get_val = count_dates
 	else:
 		amount_columnss = 'NET_VALUE_INGL_CURR'
+		get_val = count_dates
 	Trace.Write('amount_column--'+str(amount_columnss))
 	Sql.RunQuery(""" INSERT SAQIBP (
 
