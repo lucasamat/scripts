@@ -2927,7 +2927,7 @@ class SYLDRTLIST:
                         + ""
                     )
                     
-                    QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND APRCHNSTP_NAME = '"+str(TreeParam)+"' "
+                    QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND APRCHNSTP_NAME = '"+str(TreeParam).split(" : ")[1]+"' "
                     
                 try:
                     if str(RECORD_ID)!="SYOBJR-00005": # restricted Query_obj for SYOBJR-00005 since the values are modified in Scripting
