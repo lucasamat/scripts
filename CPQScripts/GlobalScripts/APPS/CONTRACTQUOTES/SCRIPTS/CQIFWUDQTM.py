@@ -900,8 +900,7 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 
 def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date ='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
 	get_billing_cycle = get_billing_type = ''
-	#Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
-	Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
+	
 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
 	contract_quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
 	quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID
@@ -911,7 +910,6 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 		elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
 			get_billing_type =val
 	#Trace.Write('get_billing_cycle---'+str(get_billing_cycle))
-	Trace.Write(str(service_id)+'----billing_type---'+str(get_billing_type)+'--CYCLE---'+str(get_billing_cycle))
 	if get_billing_cycle == "Monthly":				
 		get_val =12
 	elif str(get_billing_cycle).upper() == "QUARTERLY":			
@@ -926,7 +924,6 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 	#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5	
 	if str(get_billing_type).upper() == "FIXED" and get_billing_type != '' and service_id not in ('Z0100'):
 		
-		Trace.Write(str(service_id)+'------billing_type_value-----'+str(get_ent_billing_type_value))
 		Sql.RunQuery(""" INSERT SAQIBP (
 
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
@@ -1028,9 +1025,6 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 	elif str(get_billing_type).upper() == "MILESTONE" and service_id not in ('Z0007','Z0009','Z0123'):
-
-		
-		Trace.Write(str(service_id)+'------billing_type_value-----'+str(get_ent_billing_type_value))
 		Sql.RunQuery(""" INSERT SAQIBP (
 
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
@@ -1416,14 +1410,12 @@ def _quote_items_greenbook_summary_insert():
 
 def billingmatrix_create():
 	get_rev_rec_id = Sql.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
-	#Log.Info('Qt_id--1621-------'+str(Qt_id))
 	contract_quote_rec_id = get_rev_rec_id.MASTER_TABLE_QUOTE_RECORD_ID
 	quote_revision_rec_id = get_rev_rec_id.QTEREV_RECORD_ID
 	_quote_items_greenbook_summary_insert()
 	billing_plan_obj = Sql.GetList("SELECT DISTINCT PRDOFR_ID,BILLING_START_DATE,BILLING_END_DATE,BILLING_DAY FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_rec_id))
 	quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_rec_id))
 	get_billling_data_dict = {}
-	#Log.Info('billing_plan_obj-------'+str(Qt_id))
 	contract_start_date = quotedetails.CONTRACT_VALID_FROM
 	contract_end_date = quotedetails.CONTRACT_VALID_TO
 	get_ent_val = get_ent_billing_type_value = get_ent_bill_cycle = get_billing_type = ''
