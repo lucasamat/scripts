@@ -7787,6 +7787,7 @@ class SYLDRTLIST:
                     elif str(RECORD_ID) == "SYOBJR-00029":
                         quote_rec_id = Product.GetGlobal("contract_quote_record_id")
                         quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+                        Qustr +=  " AND QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id)
                         if TreeSuperParentParam == "Product Offerings":
                             service_id = TreeParam.split('-')[0]	
                             if subTab == "New Parts":	
