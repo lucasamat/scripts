@@ -279,6 +279,12 @@ def do_process(TABLEID, LABLE, VALUE):
                         row["QTEREV_ID"]=quote_val.QTEREV_ID
                         Trace.Write("row==111"+str(row))
                         Table.TableActions.Create(TABLEID, row)
+                    elif TABLEID == 'ACACSF':
+                        #ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+                        # quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME FROM SAQTMT WHERE QUOTE_ID = '"+row["QUOTE_ID"]+"'")
+                        
+                        Trace.Write("row==111"+str(row))
+                        Table.TableActions.Create(TABLEID, row)
                     else:                       
                         if TABLEID == "SYTREE":
                             newTableInfo = SqlHelper.GetTable('SYTREE')
