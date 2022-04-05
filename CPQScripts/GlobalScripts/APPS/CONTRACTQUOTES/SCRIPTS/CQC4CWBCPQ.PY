@@ -120,7 +120,6 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             is_primary = "1" if employee.get("PRIMARY").upper()=="TRUE" else "0"
                             )
                         )
-    Log.Info("###123"+str(query))
     Sql.RunQuery(query)
     created_by_master_rec = None
     created_by_master_rec = Sql.GetFirst("SELECT C4C_PARTNER_FUNCTION,PARTNERFUNCTION_DESCRIPTION,PARTNERFUNCTION_ID,PARTNERFUNCTION_RECORD_ID FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
@@ -160,6 +159,7 @@ if 'Param' in globals():
                 if quote_id:
                     payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = '' ORDER BY CpqTableEntryId DESC".format(quote_id))
                     #Log.Info("CpqTableEntryId  ---------------"+str(payload_json_obj.CpqTableEntryId))
+                    Log.Info("CQC4CWBCPQ Called------")
                     if payload_json_obj:
                         payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
                         payload_json = eval(payload_json.get('Param'))
