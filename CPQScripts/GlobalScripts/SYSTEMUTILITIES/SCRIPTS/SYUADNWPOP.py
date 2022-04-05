@@ -7569,7 +7569,9 @@ def POPUPLISTVALUEADDNEW(
 						"DELEGATED_APPROVER_ID",
 						"DELEGATION_END",
 						"DELEGATION_START",
-						"TAB_ID"
+						"TAB_ID",
+						"CPQTABLEENTRYMODIFIEDBY",
+						"CPQTABLEENTRYDATEMODIFIED"
 					]:
 						add_style = "display: none;"
 
