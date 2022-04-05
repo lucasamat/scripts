@@ -2293,7 +2293,7 @@ class SYLDRTLIST:
                             Qustr += "AND SNDFBL_ID = '"+str(Product.GetGlobal('sending_fab_id'))+"'"
                         if str(RECORD_ID) == "SYOBJR-98872":
                             Wh_API_NAMEs +=",LINE"
-                        if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00013","SYOBJR-98825","SYOBJR-00016"):
+                        if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00013","SYOBJR-98825","SYOBJR-00016","SYOBJR-98120"):
                             Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
                         
                         Qury_str = (
