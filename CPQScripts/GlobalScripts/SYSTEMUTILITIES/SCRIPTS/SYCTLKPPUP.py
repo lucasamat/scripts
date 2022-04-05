@@ -405,7 +405,14 @@ def GSCONTLOOKUPPOPUP(
                         + " WHERE OBJECT_NAME IN ( select DISTINCT TSTOBJ_LABEL from ACACSF where APRCHN_RECORD_ID ='{}')".format(KEYDATA)
                     )
                     VAL_Obj = Sql.GetList(VAL_Str)
-
+                elif LOOKUP_ID == "TSTOBJ_TESTEDFIELD_LABEL":
+                    VAL_Str = (
+                        "SELECT top 1000 "
+                        + str(API_NAME_str)
+                        + " FROM "
+                        + str(TABLEID))
+                    VAL_Obj = Sql.GetList(VAL_Str)
+                
                 else:
                     Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(TRACKEDTESTEDOBJECT))
                     object_name = Header_Obj.OBJECT_NAME
@@ -816,6 +823,13 @@ def GSCONTLOOKUPPOPUPFILTER(
                             + str(ATTRIBUTE_VALUE_STR) 
                             + " and OBJECT_NAME IN ( select DISTINCT TSTOBJ_LABEL from ACACSF where APRCHN_RECORD_ID ='{}')".format(KEYDATA)
                         )
+                        VAL_Obj = Sql.GetList(VAL_Str)
+                    elif LOOKUP_ID == "TSTOBJ_TESTEDFIELD_LABEL":
+                        VAL_Str = (
+                            "SELECT top 1000 "
+                            + str(COLUMNS_NAME)
+                            + " FROM "
+                            + str(TABLEID))
                         VAL_Obj = Sql.GetList(VAL_Str)
                     else:
                         Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(TRACKEDTESTEDOBJECT))
