@@ -2441,6 +2441,7 @@ class SyncQuoteAndCustomTables:
                                 )
                             )
         Log.Info("###2443 "+str(query))
+        Sql.RunQuery(query)
         created_by_master_rec = None
         created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
         if created_by_master_rec:

@@ -121,6 +121,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             )
                         )
     Log.Info("###123"+str(query))
+    Sql.RunQuery(query)
     created_by_master_rec = None
     created_by_master_rec = Sql.GetFirst("SELECT C4C_PARTNER_FUNCTION,PARTNERFUNCTION_DESCRIPTION,PARTNERFUNCTION_ID,PARTNERFUNCTION_RECORD_ID FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
     if created_by_master_rec:
