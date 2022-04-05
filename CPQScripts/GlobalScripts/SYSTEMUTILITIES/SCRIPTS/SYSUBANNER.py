@@ -3163,7 +3163,7 @@ def Related_Sub_Banner(
         
             style = 'style="display: none;"'
             sec_rel_sub_bnr += (
-                        '<button id="ADDNEW__SYOBJR_98798_7F4F4C8D_73C7_4779_9BE5_38C695" onclick="cont_openaddnew(this, \'div_CTR_Approvers\')" class="btnconfig addNewRel HideAddNew">ADD NEW</button>'
+                        '<button id="ADDNEW__SYOBJR_98120_35946577-0CD2-452E-BFEA-C7AEE4AB1EFB" onclick="cont_openaddnew(this, \'div_CTR_Approvers\')" class="btnconfig addNewRel HideAddNew">ADD NEW</button>'
                     )
     elif (str(TabName) == "My Approvals Queue" or str(TabName) == "Team Approvals Queue") and (
         str(TreeParentParam) == "Approval History"
