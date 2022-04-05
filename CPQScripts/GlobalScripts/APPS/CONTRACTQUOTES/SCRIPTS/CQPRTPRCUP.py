@@ -112,20 +112,23 @@ if getPricingProc:
 		exch = pricingPro[PricingProcedure]
 		update_SAQTRV = "UPDATE SAQTRV  SET PRICINGPROCEDURE_ID = '{prc}', EXCHANGE_RATE_TYPE = '{EXCH}' WHERE SAQTRV.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure),EXCH=str(exch), quote=QUOTE)
 		Sql.RunQuery(update_SAQTRV)
-
-currency_attribute = account_info['docCurrency']+','+account_info['globalCurrency']+','+'{"name":"KOMK-KONDA","values":["'+str(pricingPro[PricingProcedure+'-KONDA'])+'"]}'
 # update_SAQITM = "UPDATE SAQITM SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQITM.QUOTE_ID = '{quote}' AND SAQITM.QTEREV_RECORD_ID='{revision_rec_id}'".format(prc=str(PricingProcedure), quote=QUOTE, revision_rec_id = revision)
 # Sql.RunQuery(update_SAQITM)
 update_SAQIFP = "UPDATE SAQIFP SET PRICINGPROCEDURE_ID = '{prc}', TAX_PERCENTAGE = '{tax}' WHERE SAQIFP.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure),tax=str(taxk1), quote=QUOTE)
 Sql.RunQuery(update_SAQIFP)
 
 price_listtype=''
+price_groupid=''
 
-price_list = SqlHelper.GetFirst("SELECT  PRICELIST_ID FROM  SASAAC (NOLOCK) WHERE  SALESORG_ID ='"+str(salesorg)+"'AND ACCOUNT_ID='"+str(account_info['SHIP TO'])+"' AND DIVISION_ID ='"+str(div)+"'   AND DISTRIBUTIONCHANNEL_ID ='"+str(dis)+"'")
+price_list = SqlHelper.GetFirst("SELECT  PRICEGROUP_ID, PRICELIST_ID FROM  SASAAC (NOLOCK) WHERE  SALESORG_ID ='"+str(salesorg)+"'AND ACCOUNT_ID='"+str(account_info['SOLD TO'])+"' AND DIVISION_ID ='"+str(div)+"'   AND DISTRIBUTIONCHANNEL_ID ='"+str(dis)+"'")
 
 if price_list:
 	price_listtype=price_list.PRICELIST_ID
+	price_groupid=price_list.PRICEGROUP_ID
 
+
+#currency_attribute = account_info['docCurrency']+','+account_info['globalCurrency']+','+'{"name":"KOMK-KONDA","values":["'+str(pricingPro[PricingProcedure+'-KONDA'])+'"]}'
+currency_attribute = account_info['docCurrency']+','+account_info['globalCurrency']+','+'{"name":"KOMK-KONDA","values":["'+str(price_groupid)+'"]}'
 
 today = datetime.datetime.now()
 Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
