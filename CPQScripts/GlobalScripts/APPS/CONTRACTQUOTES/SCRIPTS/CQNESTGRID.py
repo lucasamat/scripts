@@ -2969,7 +2969,8 @@ def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
 			)
 		)
 	if Parent_event:
-		if str(objname)=="SAQGPA":
+		Trace.Write("objname---"+str(objname))
+		if str(objname) == "SAQGPA":
 			child_obj_recid = Sql.GetList(
 				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,KIT_NAME,KIT_NUMBER,TKM_FLAG from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND ASSEMBLY_ID = '"
 				+ str(Parent_event.ASSEMBLY_ID)
