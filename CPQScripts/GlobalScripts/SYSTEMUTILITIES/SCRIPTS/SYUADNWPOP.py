@@ -3738,8 +3738,8 @@ def POPUPLISTVALUEADDNEW(
 							Trace.Write("Credit_Notes_chk "+str(credit_notes_str))
 							
 							# new_value_dict["ZAFNOTE"] = credit_notes_str
-							new_value_dict["ZAFNOTE"] = '<abbr>'+ credit_notes_str + '</abbr>'
-							
+							new_value_dict["ZAFNOTE"] = '<abbr>'+ str(credit_notes_str) + '</abbr>'.replace("&lt;","<")
+
 						else:
 							new_value_dict["ZAFNOTE"] = ""
 						date_field.append(new_value_dict)
