@@ -2461,6 +2461,7 @@ class SyncQuoteAndCustomTables:
                     "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
                     "QTEREV_ID": quote_rev_id,
                     "QTEREV_RECORD_ID": quote_revision_id,
+                    "PRIMARY":"1"
                 }
                 sales_team_table.AddRow(sales_team_createdby_insert)
                 Sql.Upsert(sales_team_table)

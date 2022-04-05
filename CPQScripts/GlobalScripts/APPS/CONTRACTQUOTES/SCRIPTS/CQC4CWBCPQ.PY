@@ -143,6 +143,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                     "QUOTE_RECORD_ID": quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
                     "QTEREV_ID": quote_rev_id,
                     "QTEREV_RECORD_ID": quote_revision_record_id,
+                    "PRIMARY": "1"
                 }
                 sales_team_table.AddRow(sales_team_createdby_insert)
                 Sql.Upsert(sales_team_table)
