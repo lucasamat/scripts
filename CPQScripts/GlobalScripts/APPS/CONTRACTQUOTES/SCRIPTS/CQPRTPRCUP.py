@@ -169,8 +169,8 @@ if part_query or ancillary_part_query or fpm_part_query:
 				salesUOM = [t.SALESUOM_ID for t in get_part_query]
 				salesUOMConv = [u.SALESUOM_CONVERSION_FACTOR for u in get_part_query]
 				salesUOMConvs = int(salesUOMConv[0])
-				if salesUOMConv==0:
-					salesUOMConv = 1
+				if salesUOMConvs==0:
+					salesUOMConvs = 1
 				shipto_details=shipto[0] or account_info['SHIP TO']
 				str_odcc_flag = odcc_flag[0]
 			except:
