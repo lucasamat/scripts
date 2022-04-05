@@ -2280,6 +2280,7 @@ class SyncQuoteAndCustomTables:
                                 MEMBER_ID,
                                 MEMBER_NAME,
                                 MEMBER_RECORD_ID,
+                                PRIMARY,
                                 QUOTE_ID,
                                 QUOTE_RECORD_ID,
                                 QTEREV_ID,
@@ -2421,6 +2422,7 @@ class SyncQuoteAndCustomTables:
                                 SAEMPL.EMPLOYEE_ID,
                                 SAEMPL.EMPLOYEE_NAME,
                                 SAEMPL.EMPLOYEE_RECORD_ID,
+                                '{is_primary}' as PRIMARY,
                                 '{QuoteId}' as QUOTE_ID,
                                 '{QuoteRecordId}' as QUOTE_RECORD_ID,
                                 '{RevisionId}' as QTEREV_ID,
@@ -2435,6 +2437,7 @@ class SyncQuoteAndCustomTables:
                                 QuoteRecordId=contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
                                 RevisionId=quote_rev_id,
                                 RevisionRecordId=quote_revision_id,
+                                is_primary = employee.get("PRIMARY")
                                 )
                             )
         created_by_master_rec = None

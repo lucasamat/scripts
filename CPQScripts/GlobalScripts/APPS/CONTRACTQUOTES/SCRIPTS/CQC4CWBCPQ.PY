@@ -20,6 +20,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             MEMBER_ID,
                             MEMBER_NAME,
                             MEMBER_RECORD_ID,
+                            PRIMARY,
                             QUOTE_ID,
                             QUOTE_RECORD_ID,
                             QTEREV_ID,
@@ -101,6 +102,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             SAEMPL.EMPLOYEE_ID,
                             SAEMPL.EMPLOYEE_NAME,
                             SAEMPL.EMPLOYEE_RECORD_ID,
+                            '{is_primary}' as PRIMARY,
                             '{QuoteId}' as QUOTE_ID,
                             '{QuoteRecordId}' as QUOTE_RECORD_ID,
                             '{RevisionId}' as QTEREV_ID,
@@ -115,6 +117,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             QuoteRecordId=quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
                             RevisionId=quote_rev_id,
                             RevisionRecordId=quote_revision_record_id,
+                            is_primary = employee.get("PRIMARY")
                             )
                         )
     created_by_master_rec = None
