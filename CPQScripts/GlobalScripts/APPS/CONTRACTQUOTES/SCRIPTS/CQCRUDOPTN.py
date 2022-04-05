@@ -7242,13 +7242,15 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 						+ "</label></div></div>"
 					)
 			getStatus = Sql.GetFirst("SELECT REVISION_STATUS,MODVRS_DIRTY_FLAG FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(get_quote_id.QUOTE_ID,self.quote_revision_record_id))
+			getFlag = Sql.GetFirst("SELECT MODVRS_DIRTY_FLAG FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(get_quote_id.QUOTE_ID,self.quote_revision_record_id))
+			getItemFlag = Sql.GetFirst("SELECT MODVRS_DIRTY_FLAG FROM SAQRIT (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(get_quote_id.QUOTE_ID,self.quote_revision_record_id))
 			edit_config_notification_query = Sql.GetFirst("SELECT DIRTY_FLAG FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(get_quote_id.QUOTE_ID,self.quote_revision_record_id))
 			if edit_config_notification_query:
 				if str(edit_config_notification_query.DIRTY_FLAG) == "True":
 					gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> The quote configuration has changed. Please click on the complete stage button to regenerate the quote items.</label></div></div>')
 			if getStatus.REVISION_STATUS == "APPROVED":
 				gettransactionmessage = ""
-			if getStatus.MODVRS_DIRTY_FLAG == 1:
+			if getStatus.MODVRS_DIRTY_FLAG == 1 or getItemFlag.MODVRS_DIRTY_FLAG == 1 or getFlag.MODVRS_DIRTY_FLAG == 1:
 				gettransactionmessage += 'This Quote has the following notifications:'
 				gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> 99999 | NEW COST MODEL VERSIONS AVAILABLE | There are new cost model versions available from SSCM. In order to update the costs and prices, please revision the quote.</label></div></div>')
 		#Trace.Write('gettransactionmessage---'+str(gettransactionmessage))
