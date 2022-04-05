@@ -2920,7 +2920,7 @@ class SYLDRTLIST:
                         + str(ObjectName)
                         + " (nolock) "
                         + str(Qustr)
-                        + " AND APRCHNSTP_NAME = '"+str(TreeParam)+"') m where m.ROW BETWEEN "
+                        + " AND APRCHNSTP_NAME = '"+str(TreeParam).split(" : ")[1]+"') m where m.ROW BETWEEN "
                         + str(Page_start)
                         + " and "
                         + str(Page_End)
