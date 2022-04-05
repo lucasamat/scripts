@@ -2909,6 +2909,25 @@ class SYLDRTLIST:
                     )
                     
                     QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND SERVICE_ID = '"+str(get_bom.SERVICE_ID)+"' AND ASSEMBLY_ID = '"+str(get_bom.ASSEMBLY_ID)+"' AND EQUIPMENT_ID = '"+str(get_bom.EQUIPMENT_ID)+"' AND KIT_ID = '"+str(get_bom.KIT_ID)+"' AND KIT_NUMBER = '"+str(get_bom.KIT_NUMBER)+"' AND PM_ID = '"+str(get_bom.PM_ID)+"' "
+                
+                elif RECORD_ID == "SYOBJR-98120":
+                    
+                    Qury_str = (
+                        "select DISTINCT top "
+                        + str(PerPage)
+                        + " * from ( select ROW_NUMBER() OVER(order by CpqTableEntryId"
+                        + ") AS ROW, * from "
+                        + str(ObjectName)
+                        + " (nolock) "
+                        + str(Qustr)
+                        + " AND APRCHNSTP_ID = '"+str(TreeParam)+"') m where m.ROW BETWEEN "
+                        + str(Page_start)
+                        + " and "
+                        + str(Page_End)
+                        + ""
+                    )
+                    
+                    QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr) + " AND APRCHNSTP_ID = '"+str(TreeParam)+"' "
                     
                 try:
                     if str(RECORD_ID)!="SYOBJR-00005": # restricted Query_obj for SYOBJR-00005 since the values are modified in Scripting
