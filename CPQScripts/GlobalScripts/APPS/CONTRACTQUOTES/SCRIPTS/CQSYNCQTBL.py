@@ -15,116 +15,136 @@ import System.Net
 from System.Text.Encoding import UTF8
 from System import Convert
 import re
-from datetime import timedelta , date
+from datetime import timedelta, date
 import CQCPQC4CWB
 import CQREVSTSCH
 import CQPARTIFLW
 import CQIFLSPARE
-#from datetime import datetime, timedelta
 
+# ---------------------------------------------------CONFIGURATION------------------------------------------------#
 Sql = SQL()
-ScriptExecutor = ScriptExecutor
-#Log.Info("==========================>00000000")
+
+CUSTOM_FIELDS_DETAIL = [
+    ("STPAccountID", "STPAccountID"),
+    ("STPAccountName", "STPAccountName"),
+    ("STPAccountType", "STPAccountType"),
+    ("Region", "Region"),
+    ("TransactionType", "TransactionType"),
+    ("OpportunityId", "OpportunityId"),
+    ("OpportunityType", "OpportunityType"),
+    ("QuoteLevel", "QuoteLevel"),
+    ("OpportunityOwner", "OpportunityOwner"),
+    ("OpportunityStage", "OpportunityStage"),
+    ("SalesOrgID", "SalesOrgID"),
+    ("SalesOrgName", "SalesOrgName"),
+    ("SalesUnit", "SalesUnit"),
+    ("DistributionChannel", "DistributionChannel"),
+    ("Division", "Division"),
+    ("PrimaryContactName", "PrimaryContactName"),
+    ("PrimaryContactId", "PrimaryContactId"),
+    ("SoldToAddress", "SoldToAddress"),
+    ("SoldToPhone", "SoldToPhone"),
+    ("SoldToEmail", "SoldToEmail"),
+    ("SalesOfficeID", "SalesOfficeID"),
+    ("SalesPerson", "SalesPerson"),
+    ("PaymentTerms", "PaymentTerms"),
+    ("CustomerPO", "CustomerPO"),
+    ("FabLocationID", "FabLocationID"),
+    ("FabLocationName", "FabLocationName"),
+    ("FabLocation", "FabLocation"),
+    ("AdditionalShipToName", "AdditionalShipToName"),
+    ("AdditionalShipToEmail", "AdditionalShipToEmail"),
+    ("AdditionalShipToPhone", "AdditionalShipToPhone"),
+    ("AdditionalShipToID", "AdditionalShipToID"),
+    ("AdditionalShipToAddress1", "AdditionalShipToAddress1"),
+    ("ContractType", "ContractType"),
+    ("Currency", "Currency"),
+    ("Incoterms", "Incoterms"),
+    ("ExchangeRateType", "ExchangeRateType"),
+    ("PayerName", "PayerName"),
+    ("PayerAddress1", "PayerAddress1"),
+    ("PayerCity", "PayerCity"),
+    ("PayerState", "PayerState"),
+    ("PayerCountry", "PayerCountry"),
+    ("PayerPostalCode", "PayerPostalCode"),
+    ("PayerEmail", "PayerEmail"),
+    ("PayerPhone", "PayerPhone"),
+    ("SellerName", "SellerName"),
+    ("SellerAddress", "SellerAddress"),
+    ("SellerEmail", "SellerEmail"),
+    ("SellerPhone", "SellerPhone"),
+    ("SalesUnitName", "SalesUnitName"),
+    ("SalesUnitAddress", "SalesUnitAddress"),
+    ("SalesUnitEmail", "SalesUnitEmail"),
+    ("SalesUnitPhone", "SalesUnitPhone"),
+    ("SalesEmployeeName", "SalesEmployeeName"),
+    ("SalesEmployeePhone", "SalesEmployeePhone"),
+    ("EmployeeResponsibleName", "EmployeeResponsibleName"),
+    ("EmployeeResponsibleAddress", "EmployeeResponsibleAddress"),
+    ("EmployeeResponsibleEmail", "EmployeeResponsibleEmail"),
+    ("EmployeeResponsiblePhone", "EmployeeResponsiblePhone"),
+    ("SalesPersonPhone", "SalesPersonPhone"),
+    ("ContractManagerName", "ContractManagerName"),
+    ("ContractManagerPhone", "ContractManagerPhone"),
+    ("ContractManagerEmail", "ContractManagerEmail"),
+    ("ContractManagerAddress", "ContractManagerAddress"),
+    ("PaymentTermName", "PaymentTermName"),
+    ("ContractManagerID", "ContractManagerID"),
+    ("PayerID", "PayerID"),
+    ("SellerID", "SellerID"),
+    ("SalesUnitID", "SalesUnitID"),
+    ("SalesEmployeeID", "SalesEmployeeID"),
+    ("EmployeeResponsibleID", "EmployeeResponsibleID"),
+    ("SalesEmployeeEmail", "SalesEmployeeEmail"),
+    ("SalesEmployeeAddress", "SalesEmployeeAddress"),
+    ("IncotermsLocation", "IncotermsLocation"),
+    ("SourceContractID", "SourceContractID"),
+    ("SourceAccountID", "SourceAccountID"),
+    ("SourceAccountAddress", "SourceAccountAddress"),
+    ("SourceAccountEmail", "SourceAccountEmail"),
+    ("SourceAccountName", "SourceAccountName"),
+    ("SourceAccountPhone", "SourceAccountPhone"),
+    ("POES", "POES"),
+    ("LOW", "LOW"),
+    ("C4C_Quote_Object_ID", "C4C_Quote_Object_ID"),
+    ("AccountAssignmentGroup", "AccountAssignmentGroup"),
+    ("QuoteExpirationDate", "QuoteExpirationDate"),
+    ("PricingDate", "PricingDate"),
+    ("QuoteStartDate", "QuoteStartDate"),
+]
+
+# ---------------------------------------------------CONFIGURATION------------------------------------------------ #
 
 
 class SyncQuoteAndCustomTables:
-    def __init__(self, Quote):
-        #Log.Info("==========================>111111111111")
+    def __init__(self, quote):
         self.quote_start_time = time.time()
-        self.quote = Quote
-        #Log.Info("++++++++ QUote " + str(Quote.GetCustomField("STPAccountID").Content))
-        # self.user_id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
-        # self.datetime_value = datetime.datetime.now()
-
-    def _get_custom_fields_detail(self):		
-        return {
-            'STPAccountID':self.quote.GetCustomField('STPAccountID').Content,
-            'STPAccountName':self.quote.GetCustomField('STPAccountName').Content,
-            'STPAccountType':self.quote.GetCustomField('STPAccountType').Content,
-            'Region':self.quote.GetCustomField('Region').Content,
-            'TransactionType':self.quote.GetCustomField('TransactionType').Content,
-            'OpportunityId':self.quote.GetCustomField('OpportunityId').Content,
-            'OpportunityType':self.quote.GetCustomField('OpportunityType').Content,
-            'QuoteLevel':self.quote.GetCustomField('QuoteLevel').Content,
-            'OpportunityOwner':self.quote.GetCustomField('OpportunityOwner').Content,
-            'OpportunityStage':self.quote.GetCustomField('OpportunityStage').Content,
-            'SalesOrgID':self.quote.GetCustomField('SalesOrgID').Content,
-            'SalesOrgName':self.quote.GetCustomField('SalesOrgName').Content,
-            'SalesUnit':self.quote.GetCustomField('SalesUnit').Content,
-            'DistributionChannel':self.quote.GetCustomField('DistributionChannel').Content,
-            'Division':self.quote.GetCustomField('Division').Content,
-            'PrimaryContactName' : self.quote.GetCustomField('PrimaryContactName').Content,
-            'PrimaryContactId' : self.quote.GetCustomField('PrimaryContactId').Content,
-            'SoldToAddress' : self.quote.GetCustomField('SoldToAddress').Content,
-            'SoldToPhone' : self.quote.GetCustomField('SoldToPhone').Content,
-            'SoldToEmail' : self.quote.GetCustomField('SoldToEmail').Content,
-            'SalesOfficeID':self.quote.GetCustomField('SalesOfficeID').Content,            
-            'SalesPerson':self.quote.GetCustomField('SalesPerson').Content,
-            'PaymentTerms':self.quote.GetCustomField('PaymentTerms').Content,
-            'CustomerPO':self.quote.GetCustomField('CustomerPO').Content,
-            'FabLocationID':self.quote.GetCustomField('FabLocationID').Content,
-            'FabLocationName':self.quote.GetCustomField('FabLocationName').Content,
-            'FabLocation':self.quote.GetCustomField('FabLocation').Content,
-            'AdditionalShipToName':self.quote.GetCustomField('AdditionalShipToName').Content,
-            'AdditionalShipToEmail':self.quote.GetCustomField('AdditionalShipToEmail').Content,
-            'AdditionalShipToPhone':self.quote.GetCustomField('AdditionalShipToPhone').Content,
-            'AdditionalShipToID':self.quote.GetCustomField('AdditionalShipToID').Content,
-            'AdditionalShipToAddress1':self.quote.GetCustomField('AdditionalShipToAddress1').Content,
-            'QuoteExpirationDate':datetime.datetime.strptime(self.quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date(),
-            'PricingDate':datetime.datetime.strptime(self.quote.GetCustomField('PricingDate').Content, '%Y-%m-%d').date(),
-            'ContractType':self.quote.GetCustomField('ContractType').Content,
-            'Currency':self.quote.GetCustomField('Currency').Content,
-            'Incoterms':self.quote.GetCustomField('Incoterms').Content,
-            'ExchangeRateType':self.quote.GetCustomField('ExchangeRateType').Content,
-            'PayerName':self.quote.GetCustomField('PayerName').Content,
-            'PayerAddress1':self.quote.GetCustomField('PayerAddress1').Content,
-            'PayerCity':self.quote.GetCustomField('PayerCity').Content,
-            'PayerState':self.quote.GetCustomField('PayerState').Content,
-            'PayerCountry':self.quote.GetCustomField('PayerCountry').Content,
-            'PayerPostalCode':self.quote.GetCustomField('PayerPostalCode').Content,
-            'PayerEmail':self.quote.GetCustomField('PayerEmail').Content,
-            'PayerPhone':self.quote.GetCustomField('PayerPhone').Content,
-            'SellerName':self.quote.GetCustomField('SellerName').Content,
-            'SellerAddress':self.quote.GetCustomField('SellerAddress').Content,
-            'SellerEmail':self.quote.GetCustomField('SellerEmail').Content,
-            'SellerPhone':self.quote.GetCustomField('SellerPhone').Content,
-            'SalesUnitName':self.quote.GetCustomField('SalesUnitName').Content,
-            'SalesUnitAddress':self.quote.GetCustomField('SalesUnitAddress').Content,
-            'SalesUnitEmail':self.quote.GetCustomField('SalesUnitEmail').Content,
-            'SalesUnitPhone':self.quote.GetCustomField('SalesUnitPhone').Content,
-            'SalesEmployeeName':self.quote.GetCustomField('SalesEmployeeName').Content,
-            'SalesEmployeePhone':self.quote.GetCustomField('SalesEmployeePhone').Content,
-            'EmployeeResponsibleName':self.quote.GetCustomField('EmployeeResponsibleName').Content,
-            'EmployeeResponsibleAddress':self.quote.GetCustomField('EmployeeResponsibleAddress').Content,
-            'EmployeeResponsibleEmail':self.quote.GetCustomField('EmployeeResponsibleEmail').Content,
-            'EmployeeResponsiblePhone':self.quote.GetCustomField('EmployeeResponsiblePhone').Content,
-            'SalesPersonPhone':self.quote.GetCustomField('SalesPersonPhone').Content,
-            'ContractManagerName':self.quote.GetCustomField('ContractManagerName').Content,
-            'ContractManagerPhone':self.quote.GetCustomField('ContractManagerPhone').Content,
-            'ContractManagerEmail':self.quote.GetCustomField('ContractManagerEmail').Content,
-            'ContractManagerAddress':self.quote.GetCustomField('ContractManagerAddress').Content,
-            'PaymentTermName':self.quote.GetCustomField('PaymentTermName').Content,
-            'ContractManagerID':self.quote.GetCustomField('ContractManagerID').Content,
-            'PayerID':self.quote.GetCustomField('PayerID').Content,
-            'SellerID':self.quote.GetCustomField('SellerID').Content,
-            'SalesUnitID':self.quote.GetCustomField('SalesUnitID').Content,
-            'SalesEmployeeID':self.quote.GetCustomField('SalesEmployeeID').Content,
-            'EmployeeResponsibleID':self.quote.GetCustomField('EmployeeResponsibleID').Content,
-            'SalesEmployeeEmail':self.quote.GetCustomField('SalesEmployeeEmail').Content,
-            'SalesEmployeeAddress':self.quote.GetCustomField('SalesEmployeeAddress').Content,
-            'IncotermsLocation':self.quote.GetCustomField('IncotermsLocation').Content,
-            'SourceContractID':self.quote.GetCustomField('SourceContractID').Content,
-            'QuoteStartDate':datetime.datetime.strptime(self.quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date(),
-            'SourceAccountID':self.quote.GetCustomField('SourceAccountID').Content,
-            'SourceAccountAddress':self.quote.GetCustomField('SourceAccountAddress').Content,
-            'SourceAccountEmail':self.quote.GetCustomField('SourceAccountEmail').Content,
-            'SourceAccountName':self.quote.GetCustomField('SourceAccountName').Content,
-            'SourceAccountPhone':self.quote.GetCustomField('SourceAccountPhone').Content,
-            'POES':self.quote.GetCustomField('POES').Content,#A055S000P01-9777 code starts..
-            'LOW':self.quote.GetCustomField('LOW').Content,			
-            'C4C_Quote_Object_ID':self.quote.GetCustomField('C4C_Quote_Object_ID').Content,
-            'AccountAssignmentGroup':self.quote.GetCustomField('AccountAssignmentGroup').Content,
+        self.quote = quote
+        self.field_mapping = CUSTOM_FIELDS_DETAIL
+        self.datetime_formatting_fields = {
+            "QuoteExpirationDate": self.datetime_format_field,
+            "PricingDate": self.datetime_format_field,
+            "QuoteStartDate": self.datetime_format_field,
         }
+
+    def default_field_format(self, _field_name):
+        return self.quote.GetCustomField(_field_name).Content
+
+    def datetime_format_field(self, _field_name):
+        return (
+            datetime.datetime.strptime(
+                self.quote.GetCustomField(_field_name).Content, "%Y-%m-%d"
+            ).date(),
+        )
+
+    def format(self, _field):
+        return self.datetime_formatting_fields.get(_field, self.default_field_format)(_field)
+
+    def _get_custom_fields_detail(self):
+        _map_data = {}
+        for fi, eld in self.field_mapping:
+            _map_data[fi] = self.format(eld)
+        return _map_data
 
     @staticmethod
     def get_formatted_date(year, month, day, date_format="", separator=""):
