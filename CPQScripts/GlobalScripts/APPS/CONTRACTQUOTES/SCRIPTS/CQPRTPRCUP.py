@@ -102,7 +102,7 @@ if doctype_id=='ZWK1':
 ISOCode={}
 getIsocode=SqlHelper.GetList("""SELECT DISTINCT UOM, UOM_ISO_CODE FROM MAMUOM (NOLOCK)""")
 for code in getIsocode:
-    ISOCode[code.UOM]=code.UOM_ISO_CODE
+	ISOCode[code.UOM]=code.UOM_ISO_CODE
 
 #UPDATE PRICING PROCEDURE TO SAQITM
 getPricingProc=SqlHelper.GetFirst("""SELECT PRICINGPROCEDURE_ID FROM SASAPP (NOLOCK) WHERE DISTRIBUTIONCHANNEL_ID='{}' AND DIVISION_ID='{}' AND SALESORG_ID='{}'""".format(dis,div,salesorg))
@@ -208,6 +208,8 @@ if part_query or ancillary_part_query or fpm_part_query:
 					s=val[3] or account_info['SHIP TO']
 					salesUOM=val[4]
 					salesUOMConv=int(val[5])
+					if salesUOMConv==0:
+						salesUOMConv = 1
 					if q<=0 or q=='':
 						q=1
 					q=int(q)
