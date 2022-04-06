@@ -4,7 +4,7 @@
 #   __script_description : This script is to insert the data to violation rule table
 #   __primary_author__ : VIJAYAKUMAR THANGARASU
 #   __create_date : 06/04/2020
-#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Ã‚Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ====================================================================================================
 import CQCPQC4CWB
 import Webcom.Configurator.Scripting.Test.TestProduct
@@ -27,9 +27,27 @@ class ViolationConditions:
         self.Get_UserID = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
         self.Get_UserNAME = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
         self.Get_NAME = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "NAME")
-        now = datetime.now()
-        self.datetime_value = now.strftime("%m/%d/%Y %H:%M:%S")
+        self.datetime_value = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+        self.operators_config = {
+            "LESS THAN": " < ",
+            "EQUALS": " = ",
+            "GREATER THAN": " > ",
+            "NOT EQUALS": " != ",
+            "LESS OR EQUALS": " <= ",
+            "GREATER OR EQUALS": " >= ",
+            "STARTS WITH": "",
+            "ENDS WITH": "",
+            "CONTAINS": "",
+            "DOES NOT CONTAIN": "",
+        }
 
+        self.snap_query_config = {
+            "CONTAINS": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}%'",
+            "DOES NOT CONTAIN": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  NOT LIKE '%{}%'",
+            "STARTS WITH": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '{}%'",
+            "ENDS WITH": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}'",
+            'default': "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} '{}'",
+        }
     def Factory(self, node=None):
         """Create class object factory Method."""
         objects = {
@@ -69,17 +87,10 @@ class ViolationConditions:
     def DeleteforApprovalHeaderTable(self, RecordId, chainId, ChainStep, ObjectName):
         Trace.Write("gggdelete")
         Log.Info("Entered DeleteforApprovalHeaderTable---delete")
-        """Delete approval header."""
+
+        # Delete approval header.
         ApprovalCombinationID = str(RecordId)
-        """getApprovalId = Sql.GetFirst(
-            "SELECT APPROVAL_ID FROM ACAPMA WHERE APRTRXOBJ_RECORD_ID = '"
-            + str(ApprovalCombinationID)
-            + "' AND APRCHN_RECORD_ID = '"
-            + str(chainId)
-            + "' AND APRCHNSTP_RECORD_ID = '"
-            + str(ChainStep)
-            + "' "
-        )"""
+
         getApprovalId = Sql.GetList(
             "SELECT APPROVAL_ID FROM ACAPMA (NOLOCK) WHERE APRTRXOBJ_RECORD_ID = '" + str(ApprovalCombinationID) + "' "
         )
@@ -99,16 +110,7 @@ class ViolationConditions:
                     + "Script Name:ACVIORULES.PY Query Statement:"
                     + str(DeleteQueryStatementApprovalTrans)
                 )
-                
-        """DeleteQueryStatementApprovalHeader = (
-            "DELETE FROM ACAPMA WHERE APRTRXOBJ_RECORD_ID = '"
-            + str(ApprovalCombinationID)
-            + "' AND APRCHN_RECORD_ID = '"
-            + str(chainId)
-            + "' AND APRCHNSTP_RECORD_ID = '"
-            + str(ChainStep)
-            + "' "
-        )"""
+
         DeleteQueryStatementApprovalHeader = "DELETE FROM ACAPMA WHERE APRTRXOBJ_RECORD_ID = '" + str(ApprovalCombinationID) + "' "
         DeleteApproval = Sql.RunQuery(DeleteQueryStatementApprovalHeader)
         Log.Info(
@@ -124,12 +126,9 @@ class ViolationConditions:
         """Approval violations."""
         ApprovalCombinationID = approval_id_auto = ""
         GetObjHPromaryKey = Sql.GetFirst("SELECT RECORD_NAME,RECORD_ID FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
-        #Log.Info("SELECT RECORD_NAME FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
-        QuoteId = CurrentId
-        
+
         GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
-        #Log.Info("SELECT QUOTE_ID,QTEREV_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
-        
+
         QuoteId = str(GetQuoteId.QUOTE_ID)
         RevisionId = str(GetQuoteId.QTEREV_ID)
         ApprovalCombinationID = str(CurrentId)
@@ -316,6 +315,7 @@ class ViolationConditions:
             Get_UserID=self.Get_UserID, datetime_value=self.datetime_value, UserName=self.Get_UserNAME, ApprovalChainRecordId=ApprovalChainRecordId,QuoteId=QuoteId,roundkey=RoundKey,round=Round
         )
         return InsertQueryStatement
+
     def CustomApprovalTranscationDataInsert(self, ApprovalChainRecordId=None,QuoteId=None,RoundKey=None,Round=None,CustomQuery=None):
         InsertQueryStatement = """INSERT ACAPTX ( APRCHNRND_RECORD_ID,APPROVAL_ROUND,APRTRXOBJ_ID,APRCHN_ID ,APPROVAL_TRANSACTION_RECORD_ID ,APRCHN_RECORD_ID ,
         APRCHNSTP_APPROVER_ID ,APRCHNSTP_ID ,APRCHNSTP_NAME,APRCHNSTP_RECORD_ID ,
@@ -371,8 +371,6 @@ class ViolationConditions:
             Get_UserID=self.Get_UserID, datetime_value=self.datetime_value, UserName=self.Get_UserNAME, ApprovalChainRecordId=ApprovalChainRecordId,QuoteId=QuoteId,roundkey=RoundKey,round=Round,CustomQuery=CustomQuery
         )
         return InsertQueryStatement
-    # A043S001P01-12266 Start
-    # A043S001P01-12266 End
 
     def TrackedValueDataInsert(self, objName, trackedfield, TrackedobjectApiName):
         GetKey = SqlHelper.GetList(
@@ -380,17 +378,10 @@ class ViolationConditions:
                 objName=objName
             )
         )
-        # combokey = "CONCAT(VARCHAR(4000),"
-        """ combokey = "CONCAT("
-        for index, eachKey in enumerate(GetKey):
-            if index != 0:
-                combokey += ", '-' , "
-            combokey += objName + "." + str(eachKey.API_NAME)
-        combokey += ")"
-        Trace.Write(str(combokey)) """
-        
+
         combokey = objName + "." + "QUOTE_ID"
-        """Tracked value data insert."""
+
+        # Tracked value data insert.
         trackedvalue = """INSERT ACAPFV (
             APPROVAL_TRACKED_VALUE_RECORD_ID
             ,APRCHN_ID
@@ -456,22 +447,12 @@ class ViolationConditions:
     def TrackedValueDataUpdate(self, objName, ApprovelObjectId):
         """Param: objName -> Refere  table table object."""
         """Param: ApprovelObjectId -> Refere APRTRXOBJ_RECORD_ID in approval master table."""
-        # violationruleInsert.TrackedValueDataUpdate('PAPBEN','0001543530-000012-20200909-01')
-        selectcolumn = loopselectcolumn = []
+        loopselectcolumn = []
         GetKey = SqlHelper.GetList(
             """SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='{objName}' AND IS_KEY = 'True' """.format(
                 objName=objName
             )
         )
-        """ combokey = "CONCAT("
-        for index, eachKey in enumerate(GetKey):
-            if index != 0:
-                combokey += " , '-' , "
-            combokey += objName + "." + str(eachKey.API_NAME)
-            loopselectcolumn.append(str(eachKey.API_NAME))
-        combokey += ")"
-        loopselectcolumn.append(str(objName + ".CpqTableEntryId"))
-        Trace.Write(str(combokey)) """
 
         combokey = objName + "." + "QUOTE_ID"
         loopselectcolumn.append("QUOTE_ID")
@@ -522,248 +503,198 @@ class ViolationConditions:
             selectcolumn = ""
 
     def InsertAction(self, Objh_Id, RecordId=None, ObjectName=None, method=None):
-        
+
         """Param: Objh_Id -> Refere SYOBJH table Record Id."""
         """Param: RecordId -> Refere Curresponding object auto number key."""
         """Param: ObjectName -> Refere Curresponding object Name."""
         """Param: method -> Refere Only for Recall Option."""
         rec_name = ""
         Log.Info("Entered Insert Action")
-        if 1==1:
-            QuoteId = ""
-            if str(ObjectName).strip() == "SAQTRV":
-                GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(RecordId))
-                QuoteId = GetQuoteId.QUOTE_ID
-            
-            #Log.Info("Quote ID = "+str(QuoteId))
-            Vio_Select_Query = Vio_where_conditon = ""
-            CHSqlObjs = Sql.GetList(
-                "SELECT APPROVAL_CHAIN_RECORD_ID,APRCHN_ID FROM ACAPCH (NOLOCK) WHERE APROBJ_RECORD_ID = '"
-                + str(Objh_Id)
-                + "'"
+        QuoteId = ""
+        if str(ObjectName).strip() == "SAQTRV":
+            GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(RecordId))
+            QuoteId = GetQuoteId.QUOTE_ID
+
+        CHSqlObjs = Sql.GetList(
+            "SELECT APPROVAL_CHAIN_RECORD_ID,APRCHN_ID FROM ACAPCH (NOLOCK) WHERE APROBJ_RECORD_ID = '"
+            + str(Objh_Id)
+            + "'"
+        )
+        for index, val in enumerate(CHSqlObjs):
+            CSSqlObjs = Sql.GetList(
+                "SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"
+                + str(val.APPROVAL_CHAIN_RECORD_ID)
+                + "' AND CONDITIONS_MET <> '' ORDER BY APRCHNSTP_NUMBER"
             )
-            for index, val in enumerate(CHSqlObjs):
-                CSSqlObjs = Sql.GetList(
-                    "SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"
-                    + str(val.APPROVAL_CHAIN_RECORD_ID)
-                    + "' AND CONDITIONS_MET <> '' ORDER BY APRCHNSTP_NUMBER"
-                )
-                #Log.Info("ACVIORULES -----SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"+ str(val.APPROVAL_CHAIN_RECORD_ID)+ "' AND (WHERE_CONDITION_01) <> '' ORDER BY APRCHNSTP_NUMBER")
-                for result in CSSqlObjs:
-                    FirstReturn = self.ChainStepConditions(result,RecordId,QuoteId)                    
-                    if FirstReturn is not None:
-                        #Trace.Write("Inside the approval heaeder ")
-                        where_conditon = (
-                            " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
-                            + str(val.APPROVAL_CHAIN_RECORD_ID)
-                            + "' AND ACACST.APRCHNSTP_NUMBER = '"
-                            + str(result.APRCHNSTP_NUMBER)
-                            + "' "
-                        )
-                        if method is None:
-                            if index == 0:
-                                #Log.Info(" ACVIORULES Inside the delete cal")
-                                Rundelete = self.DeleteforApprovalHeaderTable(
-                                    str(RecordId),
-                                    str(val.APPROVAL_CHAIN_RECORD_ID),
-                                    str(result.APPROVAL_CHAIN_STEP_RECORD_ID),
-                                    str(ObjectName),
-                                )
-                            where_conditon += "AND ACACSS.APPROVALSTATUS = 'APPROVAL REQUIRED' "
-                        else:
-                            #Trace.Write("method@@111")
-                            where_conditon += "AND ACACSS.APPROVALSTATUS = 'REQUESTED' "
-
-                        where_conditon += " ORDER BY ACACST.APRCHNSTP_NUMBER"
-                        rulebody = self.ViolationRuleForApprovals(str(RecordId), str(ObjectName), str(val.APRCHN_ID))
-                        Rulebodywithcondition = rulebody + where_conditon
-                        #Log.Info("ACAPMA=====>>>>>>>>Rulebodywithcondition "+str(Rulebodywithcondition))
-                        a = Sql.RunQuery(Rulebodywithcondition)
-
-                        # Approval Rounding - Start
-                        primarykey = str(Guid.NewGuid()).upper()	
-                        roundd = 1
-                        if QuoteId!= '':
-                            round_obj = Sql.GetFirst("SELECT TOP 1 APPROVAL_ROUND FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' AND APRCHN_RECORD_ID = '{}' ORDER BY CpqTableEntryId DESC".format(QuoteId,val.APPROVAL_CHAIN_RECORD_ID))
-                            #Log.Info("SELECT TOP 1 APPROVAL_ROUND FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' ORDER BY CpqTableEntryId DESC".format(QuoteId))
-                            if round_obj:
-                                roundd = int(round_obj.APPROVAL_ROUND) + 1
-                        QueryStatement = """INSERT INTO ACACHR (APPROVAL_CHAIN_ROUND_RECORD_ID,TOTAL_CHNSTP,TOTAL_APRTRX,COMPLETED_DATE,COMPLETEDBY_RECORD_ID,COMPLETED_BY,APPROVAL_ROUND,APPROVAL_RECORD_ID,APPROVAL_ID,APRCHN_RECORD_ID,APRCHN_NAME,APRCHN_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES ('{primarykey}',0,0,null,'','',{Round},'','','','','','{UserName}','{datetime_value}','{UserId}','{datetime_value}')""".format(primarykey = primarykey,UserId=self.Get_UserID, UserName=self.Get_UserNAME,Round=roundd,datetime_value=self.datetime_value, Name=self.Get_NAME)
-                        #Log.Info("INSERT ACACHR---"+str(QueryStatement))  
-                        Sql.RunQuery(QueryStatement)
-                        # Approval Rounding - End
-
-                        CheckViolaionRule2 = Sql.GetList(
-                            "SELECT ACACST.APPROVAL_CHAIN_STEP_RECORD_ID,ACACST.APRCHN_ID,ACACST.APRCHNSTP_NAME,ACAPCH.APPROVAL_METHOD,ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,ACACST.CONDITIONS_MET,"
-                            + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
-                            + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
-                            + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
-                            + str(Objh_Id)
-                            + "' AND CONDITIONS_MET <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
-                            + str(val.APPROVAL_CHAIN_RECORD_ID)
-                            + "' "
-                        )
-                        # Log.Info("CheckviolationRule2-----SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
-                        #     + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
-                        #     + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
-                        #     + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
-                        #     + str(Objh_Id)
-                        #     + "' AND WHERE_CONDITION_01 <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
-                        #     + str(val.APPROVAL_CHAIN_RECORD_ID)
-                        #     + "' ")
-                        if CheckViolaionRule2:
-                            for result in CheckViolaionRule2:
-                                SecondReturn = self.ChainStepConditions(result,RecordId,QuoteId)
-                                if SecondReturn:
-                                    #Trace.Write("@626Inside the approval Transcation")
-
-                                    where_conditon = (
-                                        " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
-                                        + str(result.APPROVAL_CHAIN_RECORD_ID)
-                                        + "' AND ACACST.APRCHNSTP_NUMBER = '"
-                                        + str(result.APRCHNSTP_NUMBER)
-                                        + "'  "
-                                    )
-                                    GetLatestApproval = Sql.GetFirst(
-                                        "SELECT TOP 1 APPROVAL_RECORD_ID FROM ACAPMA (NOLOCK) ORDER BY CpqTableEntryId DESC "
-                                    )
-                                    where_conditon += (
-                                        " AND ACAPMA.APPROVAL_RECORD_ID = '"
-                                        + str(GetLatestApproval.APPROVAL_RECORD_ID)
-                                        + "' "
-                                    )
-                                    if method is None:
-                                        where_conditon += " AND ACACSS.APPROVALSTATUS = 'APPROVAL REQUIRED' "
-                                        flag = 0
-                                    else:
-                                        where_conditon += " AND ACACSS.APPROVALSTATUS = 'REQUESTED' "
-                                        if result.APPROVAL_METHOD == "SERIES STEP APPROVAL":
-                                            flag = 1
-                                        else:
-                                            flag = 0
-
-                                    
-                                    
-                                    getCustomQuery = Sql.GetFirst("SELECT CpqTableEntryId,CUSTOM_QUERY,APRCHN_ID FROM ACACSA (NOLOCK) WHERE APPROVER_SELECTION_METHOD = ' CUSTOM QUERY' AND APRCHN_RECORD_ID = '{}' AND APRCHNSTP_RECORD_ID = '{}'".format(str(val.APPROVAL_CHAIN_RECORD_ID),result.APPROVAL_CHAIN_STEP_RECORD_ID))
-                                    if getCustomQuery is not None:
-                                        CustomQuery = str(getCustomQuery.CUSTOM_QUERY).upper()
-                                        CustomQuery = str(CustomQuery.split("WHERE")[1]).lstrip()
-                                        CustomQuery = "SAQDLT." + CustomQuery
-                                        
-                                        where_conditon = where_conditon.replace("WHERE", "AND")
-                                        Transcationrulebody = self.CustomApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=primarykey,Round=roundd,CustomQuery=CustomQuery)
-                                        Rulebodywithcondition = Transcationrulebody + where_conditon
-                                        #Trace.Write("777777 ACAPTX--------->"+str(Rulebodywithcondition))
-                                        b = Sql.RunQuery(Rulebodywithcondition)
-
-                                        if getCustomQuery.APRCHN_ID == 'SELFAPPR':
-                                            Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'REQUESTED' WHERE APPROVAL_RECORD_ID = '{}'".format(GetLatestApproval.APPROVAL_RECORD_ID))
-
-                                            Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'APR-APPROVAL PENDING' WHERE QUOTE_REVISION_RECORD_ID ='{}'".format(RecordId))
-                                            CQCPQC4CWB.writeback_to_c4c("quote_header",QuoteId,RecordId)
-                                            #time.sleep(3)
-                                            CQCPQC4CWB.writeback_to_c4c("opportunity_header",QuoteId,RecordId)
-                                    else:
-                                        where_conditon += """GROUP BY APPRO.USER_RECORD_ID,ACAPCH.APRCHN_ID,
-                                    ACAPCH.APPROVAL_CHAIN_RECORD_ID ,APPRO.APRCHNSTP_APPROVER_ID ,
-                                    APPRO.APPROVAL_CHAIN_STEP_APPROVER_RECORD_ID,ACACST.APRCHNSTP_NUMBER ,
-                                    ACACST.APPROVAL_CHAIN_STEP_RECORD_ID,ACACSS.APPROVAL_CHAIN_STATUS_MAPPING_RECORD_ID,
-                                    ACAPMA.APPROVAL_ID,APPRO.USER_NAME,ACAPMA.APPROVAL_RECORD_ID,ACACSS.APPROVALSTATUS,
-                                    ACACST.APPROVE_TEMPLATE_ID,ACACST.APPROVE_TEMPLATE_RECORD_ID,APPRO.DELEGATED_APPROVER_ID,
-                                    ACACST.REJECT_TEMPLATE_ID,ACACST.REJECT_TEMPLATE_RECORD_ID,ACACST.REQUEST_TEMPLATE_ID,
-                                    ACACST.REQUEST_TEMPLATE_RECORD_ID,ACACST.REQUIRE_EXPLICIT_APPROVAL,
-                                    APPRO.UNANIMOUS_CONSENT,ACACST.APRCHNSTP_NAME,ACAPMA.APRTRXOBJ_ID ORDER BY ACACST.APRCHNSTP_NUMBER"""
-                                        Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=primarykey,Round=roundd)
-                                        Rulebodywithcondition = Transcationrulebody + where_conditon
-                                    
-                                        b = Sql.RunQuery(Rulebodywithcondition)
-
-                                        self.SnapshotConditions(result,RecordId,QuoteId,GetLatestApproval.APPROVAL_RECORD_ID)
-                                        
-                                    #UPDATE ACAPTX APPROVAL STATUS OF SECOND CHAIN DURING RECALL
-                                    #if flag == 1:
-                                    #Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'APPROVAL REQUIRED' WHERE APPROVAL_CHAIN_RECORD_ID = '{}' AND APRCHNSTP_ID != 1 AND APPROVAL_ROUND = '{}' AND APRTRXOBJ_ID = '{}' ".format(result.APPROVAL_CHAIN_RECORD_ID,roundd,QuoteId))
-                                    #Log.Info("@@RECALL ----->>UPDATE ACAPTX SET APPROVALSTATUS = 'APPROVAL REQUIRED' WHERE APPROVAL_CHAIN_RECORD_ID = '{}' AND APRCHNSTP_ID != 1 AND APPROVAL_ROUND = '{}' AND APRTRXOBJ_ID = '{}' ".format(result.APPROVAL_CHAIN_RECORD_ID,roundd,QuoteId))
-                                    GetTrackedFields = Sql.GetList(
-                                        """SELECT APPROVAL_TRACKED_FIELD_RECORD_ID,API_NAME,OBJECT_NAME FROM ACAPTF (NOLOCK)
-                                        INNER JOIN SYOBJD (NOLOCK)
-                                        ON ACAPTF.TRKOBJ_TRACKEDFIELD_RECORD_ID = SYOBJD.RECORD_ID
-                                        WHERE ACAPTF.APRCHN_RECORD_ID = '{chainrecordId}'
-                                        AND ACAPTF.APRCHNSTP = '{chainstep}' """.format(
-                                            chainrecordId=str(result.APPROVAL_CHAIN_RECORD_ID),
-                                            chainstep=str(result.APRCHNSTP_NUMBER),
-                                        )
-                                    )
-                                    for trackedfield in GetTrackedFields:
-                                        TrackedFieldPrimayId = str(trackedfield.APPROVAL_TRACKED_FIELD_RECORD_ID)
-                                        TrackedFieldName = str(trackedfield.API_NAME)
-                                        Trackedobject = str(trackedfield.OBJECT_NAME)
-                                        TrackedobjectApiNameQry = Sql.GetFirst(
-                                            """select RECORD_NAME
-                                        from SYOBJH (nolock) where
-                                        OBJECT_NAME = '{Trackedobject}'
-                                        """.format(
-                                                Trackedobject=Trackedobject
-                                            )
-                                        )
-                                        TrackedobjectApiName = str(TrackedobjectApiNameQry.RECORD_NAME)
-                                        TackedRuleBody = self.TrackedValueDataInsert(
-                                            Trackedobject, TrackedFieldName, TrackedobjectApiName
-                                        )
-                                        Tracked_where_conditon = """WHERE ACAPTF.APRCHN_RECORD_ID = '{chainrecordId}'
-                                            AND ACAPTF.APRCHNSTP = '{chainstep}'
-                                            AND ACAPTF.APPROVAL_TRACKED_FIELD_RECORD_ID = '{TrackedFieldPrimayId}'
-                                            AND ACAPMA.APPROVAL_RECORD_ID = '{approvalrecordId}'
-                                            AND {violationsrule} AND
-                                            {Trackedobject}.{ViolatedObjAutoKey} = '{ViolatedObjAutoKeyValue}' """.format(
-                                            chainrecordId=str(result.APPROVAL_CHAIN_RECORD_ID),
-                                            chainstep=str(result.APRCHNSTP_NUMBER),
-                                            TrackedFieldPrimayId=TrackedFieldPrimayId,
-                                            approvalrecordId=str(GetLatestApproval.APPROVAL_RECORD_ID),
-                                            violationsrule=str(result.WHERE_CONDITION_01),
-                                            ViolatedObjAutoKey="QTEREV_RECORD_ID" if Trackedobject != 'SAQTRV' else "QUOTE_REVISION_RECORD_ID",
-                                            ViolatedObjAutoKeyValue=str(RecordId),
-                                            Trackedobject=Trackedobject,
-                                        )
-                                        trackedbodywithcondition = TackedRuleBody + Tracked_where_conditon
-                                        Trace.Write("trackedbodywithcondition-----> " + str(trackedbodywithcondition))
-                                        b = Sql.RunQuery(trackedbodywithcondition)
-
-                                    """GettingSnapshot = self.SnapshotDataInsert(
-                                        str(GetObjName.OBJECT_NAME), str(result.WHERE_CONDITION_01), ObjectName
-                                    )
-                                    Wherecond1 = " WHERE ACAPTX.APPROVAL_RECORD_ID = '{secCondi}' ".format(
-                                        secCondi=str(GetLatestApproval.APPROVAL_RECORD_ID)
-                                    )
-                                    SnapshorQuery = GettingSnapshot + Wherecond1
-                                    c = Sql.RunQuery(SnapshorQuery)"""
-                                    """GetCurStatus = Sql.GetFirst("SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.REC_NAME FROM ACACSS
-                                    (NOLOCK) INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID = SYOBJD.RECORD_ID
-                                    INNER JOIN SYOBJH on SYOBJH.OBJECT_NAME = SYOBJD.OBJECT_NAME  WHERE SYOBJD.OBJECT_NAME = '"
-                                    +str(ObjectName)+"' ")
-                                    if(GetCurStatus):
-                                        #GetCurrentStatus = Sql.GetFirst("select "+str(GetCurStatus.API_NAME)+" as API_NAME from
-                                        # "+str(ObjectName)+" where "+str(GetCurStatus.REC_NAME)+" ='"+str(RecordId)+"' ")
-
-                                        where_conditon = " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
-                                        +str(result.APPROVAL_CHAIN_RECORD_ID)+"'
-                                        AND ACACST.APRCHNSTP_NUMBER = '"+str(result.APRCHNSTP_NUMBER)+"' ORDER BY ACACST.APRCHNSTP_NUMBER "
-
-                                        Transcationrulebody = self.ApprovalTranscationDataInsert()
-                                        Rulebodywithcondition = Transcationrulebody +where_conditon
-                                        b= Sql.RunQuery(Rulebodywithcondition)"""
-                        if QuoteId != "":
-                            #Log.Info("Entering Round")
-                            transaction_count_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
-                            chnstp_count_obj = Sql.GetFirst("SELECT count(distinct APRCHNSTP_ID) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
-                            UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.TOTAL_APRTRX = {total},ACACHR.TOTAL_CHNSTP={totalchnstp},ACACHR.APRCHN_NAME=ACAPCH.APRCHN_NAME,ACACHR.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID,ACACHR.APPROVAL_ID = ACAPTX.APPROVAL_ID,ACACHR.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID,ACACHR.APRCHN_ID = ACAPTX.APRCHN_ID FROM ACAPTX INNER JOIN ACAPCH (NOLOCK) ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID INNER JOIN ACACHR ON ACAPTX.APRCHNRND_RECORD_ID = ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID WHERE ACAPTX.APRTRXOBJ_ID ='{quoteId}' AND ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID='{primarykey}'""".format(quoteId=QuoteId,primarykey=primarykey,total=transaction_count_obj.cnt,totalchnstp=chnstp_count_obj.cnt)
-                            #Log.Info(UPDATE_ACACHR)
-                            Sql.RunQuery(UPDATE_ACACHR)               
+            for result in CSSqlObjs:
+                FirstReturn = self.ChainStepConditions(result,RecordId,QuoteId)
+                if FirstReturn is not None:
+                    where_conditon = (
+                        " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
+                        + str(val.APPROVAL_CHAIN_RECORD_ID)
+                        + "' AND ACACST.APRCHNSTP_NUMBER = '"
+                        + str(result.APRCHNSTP_NUMBER)
+                        + "' "
+                    )
+                    if method is None:
+                        if index == 0:
+                            #Log.Info(" ACVIORULES Inside the delete cal")
+                            Rundelete = self.DeleteforApprovalHeaderTable(
+                                str(RecordId),
+                                str(val.APPROVAL_CHAIN_RECORD_ID),
+                                str(result.APPROVAL_CHAIN_STEP_RECORD_ID),
+                                str(ObjectName),
+                            )
+                        where_conditon += "AND ACACSS.APPROVALSTATUS = 'APPROVAL REQUIRED' "
                     else:
-                        Log.Info("else @758")
-        '''except Exception as e:
-            Log.Info("EXCEPTION ACVIORULES!!!!---->>>"+str(e))'''
-            
+                        where_conditon += "AND ACACSS.APPROVALSTATUS = 'REQUESTED' "
+
+                    where_conditon += " ORDER BY ACACST.APRCHNSTP_NUMBER"
+                    rulebody = self.ViolationRuleForApprovals(str(RecordId), str(ObjectName), str(val.APRCHN_ID))
+                    Rulebodywithcondition = rulebody + where_conditon
+                    a = Sql.RunQuery(Rulebodywithcondition)
+
+                    # Approval Rounding - Start
+                    primarykey = str(Guid.NewGuid()).upper()
+                    roundd = 1
+                    if QuoteId!= '':
+                        round_obj = Sql.GetFirst("SELECT TOP 1 APPROVAL_ROUND FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' AND APRCHN_RECORD_ID = '{}' ORDER BY CpqTableEntryId DESC".format(QuoteId,val.APPROVAL_CHAIN_RECORD_ID))
+                        if round_obj:
+                            roundd = int(round_obj.APPROVAL_ROUND) + 1
+                    QueryStatement = """INSERT INTO ACACHR (APPROVAL_CHAIN_ROUND_RECORD_ID,TOTAL_CHNSTP,TOTAL_APRTRX,COMPLETED_DATE,COMPLETEDBY_RECORD_ID,COMPLETED_BY,APPROVAL_ROUND,APPROVAL_RECORD_ID,APPROVAL_ID,APRCHN_RECORD_ID,APRCHN_NAME,APRCHN_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES ('{primarykey}',0,0,null,'','',{Round},'','','','','','{UserName}','{datetime_value}','{UserId}','{datetime_value}')""".format(primarykey = primarykey,UserId=self.Get_UserID, UserName=self.Get_UserNAME,Round=roundd,datetime_value=self.datetime_value, Name=self.Get_NAME)
+
+                    Sql.RunQuery(QueryStatement)
+                    # Approval Rounding - End
+
+                    CheckViolaionRule2 = Sql.GetList(
+                        "SELECT ACACST.APPROVAL_CHAIN_STEP_RECORD_ID,ACACST.APRCHN_ID,ACACST.APRCHNSTP_NAME,ACAPCH.APPROVAL_METHOD,ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,ACACST.CONDITIONS_MET,"
+                        + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
+                        + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
+                        + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
+                        + str(Objh_Id)
+                        + "' AND CONDITIONS_MET <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
+                        + str(val.APPROVAL_CHAIN_RECORD_ID)
+                        + "' "
+                    )
+
+                    if CheckViolaionRule2:
+                        for result in CheckViolaionRule2:
+                            SecondReturn = self.ChainStepConditions(result,RecordId,QuoteId)
+                            if SecondReturn:
+
+                                where_conditon = (
+                                    " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
+                                    + str(result.APPROVAL_CHAIN_RECORD_ID)
+                                    + "' AND ACACST.APRCHNSTP_NUMBER = '"
+                                    + str(result.APRCHNSTP_NUMBER)
+                                    + "'  "
+                                )
+                                GetLatestApproval = Sql.GetFirst(
+                                    "SELECT TOP 1 APPROVAL_RECORD_ID FROM ACAPMA (NOLOCK) ORDER BY CpqTableEntryId DESC "
+                                )
+                                where_conditon += (
+                                    " AND ACAPMA.APPROVAL_RECORD_ID = '"
+                                    + str(GetLatestApproval.APPROVAL_RECORD_ID)
+                                    + "' "
+                                )
+                                if method is None:
+                                    where_conditon += " AND ACACSS.APPROVALSTATUS = 'APPROVAL REQUIRED' "
+                                    flag = 0
+                                else:
+                                    where_conditon += " AND ACACSS.APPROVALSTATUS = 'REQUESTED' "
+                                    if result.APPROVAL_METHOD == "SERIES STEP APPROVAL":
+                                        flag = 1
+                                    else:
+                                        flag = 0
+
+                                getCustomQuery = Sql.GetFirst("SELECT CpqTableEntryId,CUSTOM_QUERY,APRCHN_ID FROM ACACSA (NOLOCK) WHERE APPROVER_SELECTION_METHOD = ' CUSTOM QUERY' AND APRCHN_RECORD_ID = '{}' AND APRCHNSTP_RECORD_ID = '{}'".format(str(val.APPROVAL_CHAIN_RECORD_ID),result.APPROVAL_CHAIN_STEP_RECORD_ID))
+                                if getCustomQuery is not None:
+                                    CustomQuery = str(getCustomQuery.CUSTOM_QUERY).upper()
+                                    CustomQuery = str(CustomQuery.split("WHERE")[1]).lstrip()
+                                    CustomQuery = "SAQDLT." + CustomQuery
+
+                                    where_conditon = where_conditon.replace("WHERE", "AND")
+                                    Transcationrulebody = self.CustomApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=primarykey,Round=roundd,CustomQuery=CustomQuery)
+                                    Rulebodywithcondition = Transcationrulebody + where_conditon
+                                    #Trace.Write("777777 ACAPTX--------->"+str(Rulebodywithcondition))
+                                    b = Sql.RunQuery(Rulebodywithcondition)
+
+                                    if getCustomQuery.APRCHN_ID == 'SELFAPPR':
+                                        Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'REQUESTED' WHERE APPROVAL_RECORD_ID = '{}'".format(GetLatestApproval.APPROVAL_RECORD_ID))
+
+                                        Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'APR-APPROVAL PENDING' WHERE QUOTE_REVISION_RECORD_ID ='{}'".format(RecordId))
+                                        CQCPQC4CWB.writeback_to_c4c("quote_header",QuoteId,RecordId)
+                                        #time.sleep(3)
+                                        CQCPQC4CWB.writeback_to_c4c("opportunity_header",QuoteId,RecordId)
+                                else:
+                                    where_conditon += """GROUP BY APPRO.USER_RECORD_ID,ACAPCH.APRCHN_ID,
+                                ACAPCH.APPROVAL_CHAIN_RECORD_ID ,APPRO.APRCHNSTP_APPROVER_ID ,
+                                APPRO.APPROVAL_CHAIN_STEP_APPROVER_RECORD_ID,ACACST.APRCHNSTP_NUMBER ,
+                                ACACST.APPROVAL_CHAIN_STEP_RECORD_ID,ACACSS.APPROVAL_CHAIN_STATUS_MAPPING_RECORD_ID,
+                                ACAPMA.APPROVAL_ID,APPRO.USER_NAME,ACAPMA.APPROVAL_RECORD_ID,ACACSS.APPROVALSTATUS,
+                                ACACST.APPROVE_TEMPLATE_ID,ACACST.APPROVE_TEMPLATE_RECORD_ID,APPRO.DELEGATED_APPROVER_ID,
+                                ACACST.REJECT_TEMPLATE_ID,ACACST.REJECT_TEMPLATE_RECORD_ID,ACACST.REQUEST_TEMPLATE_ID,
+                                ACACST.REQUEST_TEMPLATE_RECORD_ID,ACACST.REQUIRE_EXPLICIT_APPROVAL,
+                                APPRO.UNANIMOUS_CONSENT,ACACST.APRCHNSTP_NAME,ACAPMA.APRTRXOBJ_ID ORDER BY ACACST.APRCHNSTP_NUMBER"""
+                                    Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=primarykey,Round=roundd)
+                                    Rulebodywithcondition = Transcationrulebody + where_conditon
+
+                                    b = Sql.RunQuery(Rulebodywithcondition)
+
+                                    self.SnapshotConditions(result,RecordId,QuoteId,GetLatestApproval.APPROVAL_RECORD_ID)
+
+                                GetTrackedFields = Sql.GetList(
+                                    """SELECT APPROVAL_TRACKED_FIELD_RECORD_ID,API_NAME,OBJECT_NAME FROM ACAPTF (NOLOCK)
+                                    INNER JOIN SYOBJD (NOLOCK)
+                                    ON ACAPTF.TRKOBJ_TRACKEDFIELD_RECORD_ID = SYOBJD.RECORD_ID
+                                    WHERE ACAPTF.APRCHN_RECORD_ID = '{chainrecordId}'
+                                    AND ACAPTF.APRCHNSTP = '{chainstep}' """.format(
+                                        chainrecordId=str(result.APPROVAL_CHAIN_RECORD_ID),
+                                        chainstep=str(result.APRCHNSTP_NUMBER),
+                                    )
+                                )
+                                for trackedfield in GetTrackedFields:
+                                    TrackedFieldPrimayId = str(trackedfield.APPROVAL_TRACKED_FIELD_RECORD_ID)
+                                    TrackedFieldName = str(trackedfield.API_NAME)
+                                    Trackedobject = str(trackedfield.OBJECT_NAME)
+                                    TrackedobjectApiNameQry = Sql.GetFirst(
+                                        """select RECORD_NAME
+                                    from SYOBJH (nolock) where
+                                    OBJECT_NAME = '{Trackedobject}'
+                                    """.format(
+                                            Trackedobject=Trackedobject
+                                        )
+                                    )
+                                    TrackedobjectApiName = str(TrackedobjectApiNameQry.RECORD_NAME)
+                                    TackedRuleBody = self.TrackedValueDataInsert(
+                                        Trackedobject, TrackedFieldName, TrackedobjectApiName
+                                    )
+                                    Tracked_where_conditon = """WHERE ACAPTF.APRCHN_RECORD_ID = '{chainrecordId}'
+                                        AND ACAPTF.APRCHNSTP = '{chainstep}'
+                                        AND ACAPTF.APPROVAL_TRACKED_FIELD_RECORD_ID = '{TrackedFieldPrimayId}'
+                                        AND ACAPMA.APPROVAL_RECORD_ID = '{approvalrecordId}'
+                                        AND {violationsrule} AND
+                                        {Trackedobject}.{ViolatedObjAutoKey} = '{ViolatedObjAutoKeyValue}' """.format(
+                                        chainrecordId=str(result.APPROVAL_CHAIN_RECORD_ID),
+                                        chainstep=str(result.APRCHNSTP_NUMBER),
+                                        TrackedFieldPrimayId=TrackedFieldPrimayId,
+                                        approvalrecordId=str(GetLatestApproval.APPROVAL_RECORD_ID),
+                                        violationsrule=str(result.WHERE_CONDITION_01),
+                                        ViolatedObjAutoKey="QTEREV_RECORD_ID" if Trackedobject != 'SAQTRV' else "QUOTE_REVISION_RECORD_ID",
+                                        ViolatedObjAutoKeyValue=str(RecordId),
+                                        Trackedobject=Trackedobject,
+                                    )
+                                    trackedbodywithcondition = TackedRuleBody + Tracked_where_conditon
+                                    Trace.Write("trackedbodywithcondition-----> " + str(trackedbodywithcondition))
+                                    b = Sql.RunQuery(trackedbodywithcondition)
+
+                    if QuoteId != "":
+                        transaction_count_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
+                        chnstp_count_obj = Sql.GetFirst("SELECT count(distinct APRCHNSTP_ID) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
+                        UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.TOTAL_APRTRX = {total},ACACHR.TOTAL_CHNSTP={totalchnstp},ACACHR.APRCHN_NAME=ACAPCH.APRCHN_NAME,ACACHR.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID,ACACHR.APPROVAL_ID = ACAPTX.APPROVAL_ID,ACACHR.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID,ACACHR.APRCHN_ID = ACAPTX.APRCHN_ID FROM ACAPTX INNER JOIN ACAPCH (NOLOCK) ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID INNER JOIN ACACHR ON ACAPTX.APRCHNRND_RECORD_ID = ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID WHERE ACAPTX.APRTRXOBJ_ID ='{quoteId}' AND ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID='{primarykey}'""".format(quoteId=QuoteId,primarykey=primarykey,total=transaction_count_obj.cnt,totalchnstp=chnstp_count_obj.cnt)
+                        Sql.RunQuery(UPDATE_ACACHR)
+                else:
+                    Log.Info("else @758")
         return True
 
     def AutoApproval(self, revisionId, segmentId):
@@ -793,410 +724,9 @@ class ViolationConditions:
             b = Sql.RunQuery(updateAutoApproval)
         return True
 
-    def BDHeadEnt(self,RecordId,service,QuoteId):
-        Trace.Write("BD HEAD ENTITLEMENT")
-        BDHead = {}
-        where_str = ""
-        if "Z0114" in service:
-            BDHead.update({"SW Maintenance Fee":"Excluded"})
-        if "Z0091" in service:
-            BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
-            if where_str == "":
-                where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0091')"
-            else:
-                where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0091')"
-        if "Z0092" in service:
-            BDHead.update({"Additional target KPI":"Excursion Detection","Additional target KPI":"Max wafer Output ≤ 4%","Additional target KPI":"Max Wafer Output >4%","Additional target KPI":"Throughput","Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Contract Coverage":"7x16","Contract Coverage":"7x24","Non-Consumable":"Some Exclusions","Quote Type":"Usage based"})
-            if where_str == "":
-                where_str += " ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Usage based' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0092')"
-            else:
-                where_str += " OR ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Usage based' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0092')"
-        if "Z0092W" in service:
-            BDHead.update({"Additional target KPI":"Excursion Detection","Additional target KPI":"Max wafer Output ≤ 4%","Additional target KPI":"Max Wafer Output >4%","Additional target KPI":"Throughput","Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Contract Coverage":"7x16","Contract Coverage":"7x24"})
-            if where_str == "":
-                where_str += " ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24'  OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0092W')"
-            else:
-                where_str += " OR ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Throughput' OR SAQICO.ATGKEY = 'Exception'  OR SAQICO.SPQTEV = 'Yes' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24'  OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0092W')"
-        if "Z0009" in service:
-            BDHead.update({"PM Quantity Credit %":"0.3","Quote Type":"Event Based","Quote Type":"Flex Event Based","Additional Target KPI":"Mean TIme Between Clean","Additional Target KPI":"Green to Green","Contract Coverage":"7x16","Contract Coverage":"7x24","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Process Parts/Kits clean, recy":"Shared"})
-            if where_str == "":
-                where_str += " ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Mean TIme Between Clean' OR  SAQICO.ATGKEY = 'Green to Green'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQITE.PM_QTY_CRD = '0.3' OR SAQICO.USRPRC > SAQICO.CELPRC   OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0009')"
-            else:
-                where_str += " OR ((SAQICO.ATGKEY = 'Excursion Detection' OR SAQICO.ATGKEY = 'Max wafer Output ≤ 4%' OR SAQICO.ATGKEY = 'Max Wafer Output >4%'  OR  SAQICO.ATGKEY = 'Mean TIme Between Clean' OR  SAQICO.ATGKEY = 'Green to Green'  OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.QTETYP = 'Event Based' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.CONCOV = '7x16' OR SAQITE.CONCOV = '7x24' OR SAQITE.PM_QTY_CRD = '0.3' OR SAQICO.USRPRC > SAQICO.CELPRC   OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0009')"
-        if "Z0091W" in service:
-            BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes"})
-            if where_str == "":
-                where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.NWPTON = 'Yes' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR  SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0091W')"
-            else:
-                where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.NWPTON = 'Yes' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR  SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0091W')"
-        if "Z0035" in service:
-            BDHead.update({"Primary KPI. Perf Guarantee":"Std Srvc + All PM's","Wet Cleans Labor":"Shared","Non-Consumable":"Some Exclusions","Consumable":"Some Exclusions","Process Parts/Kits clean, recy":"Shared","Bonus and Penalty tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional Target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","On Wafer Specs Input":"Manual Input(Free text)"})
-            if where_str == "":
-                where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQITE.WAF_SPEC_INP = 'Manual Input(Free text)' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035')"
-            else:
-                where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRMKPI_ENT LIKE '%Std Srvc + All%' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQITE.WAF_SPEC_INP = 'Manual Input(Free text)' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035')"
-        if "Z0035W" in service:
-            
-            if where_str == "":
-                where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.WARM_HOT_IDLE < '0.3' OR SAQITE.MAX_OF_TOOLS > '0.3' OR SAQITE.IDLE_DURATION < '28' OR SAQITE.IDLE_NOTICE < '30' OR SAQITE.MISC_TERM = 'Included' OR SAQITE.IDLING_EXCEP = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035W')"
-            else:
-                where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.WETCLN_ENT = 'Shared' OR SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQITE.WARM_HOT_IDLE < '0.3' OR SAQITE.MAX_OF_TOOLS > '0.3' OR SAQITE.IDLE_DURATION < '28' OR SAQITE.IDLE_NOTICE < '30' OR SAQITE.MISC_TERM = 'Included' OR SAQITE.IDLING_EXCEP = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes' OR SAQICO.PROPRT_CLEAN_ENT = 'Shared') AND SAQICO.SERVICE_ID = 'Z0035W')"
-        if "Z0010" in service:
-            BDHead.update({"Billing Type":"Fixed","Billing Cycle":"Quarterly","Billing Condition":"Shipment based","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
-            if where_str == "":
-                where_str += " ((SAQICO.BILTYP = 'Fixed' OR SAQITE.BILLING_CYCLE = 'Quarterly' OR SAQITE.BILLING_CONDITION = 'Shipment based' OR SAQICO.USRPRC > SAQICO.CELPRC  OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0010')"
-            else:
-                where_str += " OR ((SAQICO.BILTYP = 'Fixed' OR SAQITE.BILLING_CYCLE = 'Quarterly' OR SAQITE.BILLING_CONDITION = 'Shipment based' OR SAQICO.USRPRC > SAQICO.CELPRC  OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0010')"
-        if "Z0128" in service:
-            BDHead.update({"Billing Cycle":"Quarterly","Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
-            if where_str == "":
-                where_str += " (( SAQICO.USRPRC > SAQICO.CELPRC  OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0128')"
-            else:
-                where_str += " OR (( SAQICO.USRPRC > SAQICO.CELPRC  OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes' ) AND SAQICO.SERVICE_ID = 'Z0128')"
-        if "Z0100" in service:
-            BDHead.update({"Quote Type":"Usage based"})
-            if where_str == "":
-                where_str += " ((SAQICO.QTETYP = 'Usage based'  OR SAQICO.USRPRC > SAQICO.CELPRC) AND SAQICO.SERVICE_ID = 'Z0100')"
-            else:
-                where_str += " OR  ((SAQICO.QTETYP = 'Usage based'  OR SAQICO.USRPRC > SAQICO.CELPRC) AND SAQICO.SERVICE_ID = 'Z0100')"
-        if "Z0004W" in service:
-            BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Consumable":"Some Exclusions"})
-            if where_str == "":
-                where_str += " ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004W')"
-            else:
-                where_str += " OR ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004W')"
-        if "Z0004-Subfab" in service:
-            BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included","Consumable":"Some Exclusions","Non-Consumable":"Some Exclusions"})
-            if where_str == "":
-                where_str += " ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004-Subfab')"
-            else:
-                where_str += " OR ((SAQICO.CNSMBL_ENT = 'Some Exclusions' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.NCNSMB_ENT = 'Some Exclusions' OR SAQICO.USRPRC > SAQICO.CELPRC OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0004-Subfab')"
-        
-        lines = []
-        annualized_items_obj = Sql.GetList("SELECT DISTINCT SAQICO.LINE FROM SAQICO (NOLOCK) JOIN SAQITE (NOLOCK) ON SAQICO.LINE = SAQITE.LINE WHERE SAQICO.QUOTE_ID = '{}' AND SAQICO.QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        if annualized_items_obj:
-           lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
-        # saqite_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQITE (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        # if saqite_items_obj:
-        #    for saqite_item_obj in saqite_items_obj:
-        #        lines.append(saqite_item_obj.LINE)
-        if len(lines) != 0:
-            Trace.Write(" BD HEAD LINE = "+str(lines))
-            if len(lines) == 1:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
 
-            else:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-            return 1
-        else:
-            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QuoteId,RecordId))
-            if getDeviation and getDeviation.BCHDPT > 10:
-                return 1
-            else:
-                return 2
-    def BDEnt(self,RecordId,service,QuoteId):
-        Trace.Write("BD ENTITLEMENT")
-        BDHead = {}
-        where_str = ""
-        if "Z0091" in service or "Z0035" in service or "Z0091W" in service:
-            BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
-            if "Z0091" in service:
-                if where_str == "":
-                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0091')"
-                else:
-                    where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0091')"
-            elif "Z0035" in service:
-                if where_str == "":
-                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0035')"
-                else:
-                    where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0035')"
-            elif "Z0091W" in service:
-                if where_str == "":
-                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0091W')"
-                else:
-                    where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0091W'))"
-        if "Z0035W" in service:
-                if where_str == "":
-                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0035W')"
-                else:
-                    where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0035W')"
-        if "Z0092" in service:
-            BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included","Quote Type":"Tool Based"})
-            if where_str == "":
-                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQICO.QTETYP = 'Tool Based' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0092')"
-            else:
-                where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQICO.QTETYP = 'Tool Based' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0092')"
-        if "Z0092W" in service:
-            BDHead.update({"Response Time":"16 Covered Hours","Response Time":"24 Covered Hours","New Parts Only":"Yes","Repair Cust Owned Parts":"Yes","CoO Reduction Guarantees":"Included"})
-            if where_str == "":
-                    where_str += " ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0092W')"
-            else:
-                where_str += " OR ((SAQICO.NWPTON = 'Yes' OR SAQITE.REPONSE_TIME = '16 Covered Hours' OR SAQITE.REPONSE_TIME = '24 Covered Hours' OR SAQITE.RPRCUS_OWNPRT = 'Yes' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0092W')"
-        if "Z0010" in service:
-            #BDHead.update({"CoO Reduction Guarantees":"Included"})
-            if where_str == "":
-                    where_str += " (( SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0010')"
-            else:
-                where_str += " OR (( SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0010')"
-        if "Z0110" in service:
-            BDHead.update({"On-site Consigned Parts":"9","On-site Consigned Parts":"8","On-site Consigned Parts":"7","On-site Consigned Parts":"6"})
-            if where_str == "":
-                    where_str += " ((SAQITE.ONSITE_CONSPRT = '9' OR SAQITE.ONSITE_CONSPRT = '8' OR SAQITE.ONSITE_CONSPRT = '7' OR SAQITE.ONSITE_CONSPRT = '6' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0110')"
-            else:
-                where_str += " OR ((SAQITE.ONSITE_CONSPRT = '9' OR SAQITE.ONSITE_CONSPRT = '8' OR SAQITE.ONSITE_CONSPRT = '7' OR SAQITE.ONSITE_CONSPRT = '6' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0110')"
-        if "Z0123" in service:
-            BDHead.update({"Billing Type":"Fixed"})
-            if where_str == "":
-                    where_str += " ((SAQICO.BILTYP = 'Fixed' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0123')"
-            else:
-                where_str += " OR ((SAQICO.BILTYP = 'Fixed' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0123')"
-        if "Z0128" in service:
-            BDHead.update({"CoO Reduction Guarantees":"Included"})
-            if where_str == "":
-                    where_str += " (( SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0128')"
-            else:
-                where_str += " OR (( SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0128')"
-        if "Z0009" in service:
-            BDHead.update({"CoO Reduction Guarantees":"Included","Primary KPI. Perf Guarantee":"First Time Right"})
-            if where_str == "":
-                    where_str += " ((SAQICO.PRMKPI_ENT = 'First Time Right' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0009')"
-            else:
-                where_str += " OR ((SAQICO.PRMKPI_ENT = 'First Time Right' OR SAQITE.COO_RED_GUAR = 'Included' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0009')"
-        if "Z0007" in service:
-            BDHead.update({"Decontamination":"Included","New Parts Only":"Yes"})
-            if where_str == "":
-                    where_str += " ((SAQICO.NWPTON = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0007')"
-            else:
-                where_str += " OR ((SAQICO.NWPTON = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC)) AND SAQICO.SERVICE_ID = 'Z0007')"
-        if "Z0004W" in service:
-            BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded"})
-            if where_str == "":
-                where_str += " ((SAQITE.RPRCUS_OWNPRT = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC ) OR SAQICO.PROPRT_CLEAN_ENT = 'Excluded' OR SAQICO.SWPKTA = 'Excluded') AND SAQICO.SERVICE_ID = 'Z0004W')"
-            else:
-                where_str += " OR ((SAQITE.RPRCUS_OWNPRT = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC ) OR SAQICO.PROPRT_CLEAN_ENT = 'Excluded' OR SAQICO.SWPKTA = 'Excluded') AND SAQICO.SERVICE_ID = 'Z0004W')"
-        if "Z0004-Subfab" in service:
-            BDHead.update({"Process Parts/Kits clean, recy":"Excluded","Swap Kits (Applied provided)":"Excluded","Repair Cust Owned Parts":"Yes"})
-            if where_str == "":
-                    where_str += " ((SAQITE.RPRCUS_OWNPRT = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC) OR SAQICO.PROPRT_CLEAN_ENT = 'Excluded' OR SAQICO.SWPKTA = 'Excluded') AND SAQICO.SERVICE_ID = 'Z0004-Subfab')"
-            else:
-                where_str += " OR ((SAQITE.RPRCUS_OWNPRT = 'Yes' OR (SAQICO.USRPRC < SAQICO.SLSPRC AND SAQICO.USRPRC > SAQICO.BDVPRC) OR SAQICO.PROPRT_CLEAN_ENT = 'Excluded' OR SAQICO.SWPKTA = 'Excluded') AND SAQICO.SERVICE_ID = 'Z0004-Subfab')"
-        lines = []
-        annualized_items_obj = Sql.GetList("SELECT DISTINCT SAQICO.LINE FROM SAQICO (NOLOCK) JOIN SAQITE (NOLOCK) ON SAQICO.LINE = SAQITE.LINE WHERE SAQICO.QUOTE_ID = '{}' AND SAQICO.QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        if annualized_items_obj:
-           lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
-        # saqite_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQITE (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        # if saqite_items_obj:
-        #    for saqite_item_obj in saqite_items_obj:
-        #        lines.append(saqite_item_obj.LINE)
+ 
 
-        if len(lines) != 0:
-            Trace.Write(" BD LINE = "+str(lines))
-            if len(lines) == 1:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-
-            else:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-            return 1
-        else:
-            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND BCHDPT > 10".format(QuoteId,RecordId))
-            if getDeviation is not None:
-                return 1
-            else:
-                return 2
-    def NSDREnt(self,RecordId,service,QuoteId):
-        Trace.Write("NSDR ENTITLEMENT")
-        BDHead = {}
-        where_str = ''
-        if "Z0114" in service:
-            #BDHead.update({"SW Maintenance Fee":"Excluded"})
-            where_str += ""
-        if "Z0091" in service or "Z0091W" in service:
-            #BDHead.update({"95 Bonus and Penalty Tied to KPI":"Yes","Price per Critical Parameter":"Yes","Additional target KPI":"Exception","Swap Kits (Applied provided)":"Excluded","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
-            if "Z0091" in service:
-                if where_str == "":
-                    where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0091')"
-                else:
-                    where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0091')"
-            else:
-                if where_str == "":
-                    where_str += " ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0091W')"
-                else:
-                    where_str += " OR ((SAQICO.BPTKPI = 'Yes' OR SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.PRIPER_CRCPRM_ENT = 'Yes' OR SAQICO.SWPKTA = 'Excluded' OR SAQICO.LIMITED_PART_ENT = 'Yes' OR SAQICO.PART_BRNDWN_ENT = 'Included' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0091W')"
-
-        if "Z0092" in service or "Z0092W" in service:       
-            #BDHead.update({"Additional target KPI":"Exception","Limited Parts Pay":"Yes","Split Quote Entitlement Value":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
-            if "Z0092" in service:
-                if where_str == "":
-                    where_str += " ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092')"
-                else:
-                    where_str += " OR ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092')"
-            else:
-                if where_str == "":
-                    where_str += " ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092W')"
-                else:
-                    where_str += " OR ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0092W')"
-        if "Z0010" in service or "Z0128" in service:
-            #BDHead.update({"Swap Kits (Applied provided)":"Excluded","Parts Buy Back":"Included"})
-            if "Z0010" in service:
-                if where_str == "":
-                    where_str += " ((SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0010')"
-                else:
-                    where_str += " OR ((SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0010')"
-            else:
-                if where_str == "":
-                    where_str += " ((SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0128')"
-                else:
-                    where_str += " OR ((SAQICO.SWPKTA = 'Excluded' OR SAQICO.PART_BUYBCK_ENT = 'Yes') AND SAQICO.SERVICE_ID = 'Z0128')"
-        
-        if "Z0110" in service:
-            
-            #BDHead.update({"KPI - Monthly Consigned":"Exception %","KPI - ≥90% On Request":"Exception days","Perf. Credit NTE - Consigned":"Exception %","Perf. Credit NTE - On Request":"Exception %","Perf. Credit - Consigned Parts":"Exception %","Perf. Credit-On Request Parts":"Exception %","Consignment Fee-Low Qty Parts":"Exception %","Cust. Commit-Consigned Parts":"Per contract value","Cust. Commit-On Request Parts":"Exception %","Cust. Commit-On Request Parts":"Per contract value","Fcst Redistribution-Frequency":"Exception times/year"})
-            if where_str == "":
-                where_str += " ((SAQICO.ATGKEY = 'Exception' OR SAQICO.SPQTEV = 'Yes' OR SAQICO.KPI_MONTHLY_CON = 'Exception %' OR SAQICO.KPI_ON_REQUEST = 'Exception days' OR SAQICO.CREDIT_NTE_CON = 'Exception %' OR SAQICO.CREDIT_NTE_REQ = 'Exception %' OR SAQICO.CREDIT_CONSIGNED_PART = 'Exception %' OR SAQICO.CREDIT_REQUEST_PART = 'Exception %' OR SAQICO.LOW_QTY_PART = 'Exception %' OR SAQICO.COMMIT_CONSIGNED_PART = 'Per contract value' OR SAQICO.COMMIT_REQUEST_PART = 'Exception %' OR SAQICO.COMMIT_REQUEST_PART = 'Per contract value' OR SAQICO.FORECAST_REDIS_FREQ = 'Exception times/year') AND SAQICO.SERVICE_ID = 'Z0110')"
-            else:
-                where_str += " OR ((ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR KPI_MONTHLY_CON = 'Exception %' OR KPI_ON_REQUEST = 'Exception days' OR CREDIT_NTE_CON = 'Exception %' OR CREDIT_NTE_REQ = 'Exception %' OR CREDIT_CONSIGNED_PART = 'Exception %' OR CREDIT_REQUEST_PART = 'Exception %' OR LOW_QTY_PART = 'Exception %' OR COMMIT_CONSIGNED_PART = 'Per contract value' OR COMMIT_REQUEST_PART = 'Exception %' OR COMMIT_REQUEST_PART = 'Per contract value' OR FORECAST_REDIS_FREQ = 'Exception times/year') AND SERVICE_ID = 'Z0110')"
-        if "Z0009" in service:
-            #BDHead.update({"Swap Kits (Applied provided)":"Excluded","Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
-            if where_str == "":
-                where_str += " ((SPQTEV = 'Yes' OR SWPKTA = 'Excluded'  OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0009')"
-            else:
-                where_str += " OR ((SPQTEV = 'Yes' OR SWPKTA = 'Excluded'  OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0009')"
-        if "Z0004W" in service:
-            #BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
-            if where_str == "":
-                where_str += " ((SPQTEV = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004W')"
-            else:
-                where_str += " OR ((SPQTEV = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004W')"
-        if "Z0004-Subfab" in service:
-            #BDHead.update({"Split Quote":"Yes","Parts Burn Down":"Included","Parts Buy Back":"Included"})
-            if where_str == "":
-                where_str += " ((SPQTEV = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
-            else:
-                where_str += " OR ((SPQTEV = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0004-Subfab')"
-        
-        if "Z0035W" in service:
-            if where_str == "":
-                where_str += " ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR MAX_OF_TOOLS > '0.3' OR IDLING_EXCEP = 'Yes' OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0035W')"
-            else:
-                where_str += " OR ((BPTKPI = 'Yes' OR ATGKEY = 'Exception' OR SPQTEV = 'Yes' OR MAX_OF_TOOLS > '0.3' OR IDLING_EXCEP = 'Yes' OR PRIPER_CRCPRM_ENT = 'Yes' OR SWPKTA = 'Excluded' OR LIMITED_PART_ENT = 'Yes' OR PART_BRNDWN_ENT = 'Included' OR PART_BUYBCK_ENT = 'Yes') AND SERVICE_ID = 'Z0035W')"
-        lines = []
-        annualized_items_obj = Sql.GetList("SELECT DISTINCT SAQICO.LINE FROM SAQICO (NOLOCK) JOIN SAQITE (NOLOCK) ON SAQICO.LINE = SAQITE.LINE WHERE SAQICO.QUOTE_ID = '{}' AND SAQICO.QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        if annualized_items_obj:
-           lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
-        # saqite_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQITE (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        # if saqite_items_obj:
-        #    for saqite_item_obj in saqite_items_obj:
-        #        lines.append(saqite_item_obj.LINE)
-        
-        if len(lines) != 0:
-            Trace.Write(" NSDR LINE = "+str(lines))
-            if len(lines) == 1:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-
-            else:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-            return 1
-        else:
-            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QuoteId,RecordId))
-            if getDeviation and getDeviation.BCHDPT > 10:
-                return 1
-            else:
-                return 2
-    def RegionalBDHead(self,RecordId,service,QuoteId):
-        Trace.Write("REGIONAL BD HEAD ENTITLEMENT")
-        BDHead = {}
-        where_str = ""
-        if "Z0110" in service:
-            BDHead.update({"KPI - Monthly Consigned":"96%","Consignment Fee-Low Qty Parts":"1%","Fcst Redistribution-Frequency":"2 times/year"})
-            if where_str == "":
-                where_str += " ((SPQTEV = 'Yes' OR KPI_MONTHLY_CON = '96%' OR LOW_QTY_PART = '1%' OR FORECAST_REDIS_FREQ = '2 times/year') AND SERVICE_ID = 'Z0110')"
-            else:
-                where_str += " OR ((SPQTEV = 'Yes' OR KPI_MONTHLY_CON = '96%' OR LOW_QTY_PART = '1%' OR FORECAST_REDIS_FREQ = '2 times/year') AND SERVICE_ID = 'Z0110')"
-        if "Z0108" in service:
-            BDHead.update({"Sched Parts 24 Hr Commitment":"98%","Fcst Adjustment - Frequency":"2 times/year"})
-            if where_str == "":
-                where_str += " ((SCHEDULE_PART = '98%' OR FORECAST_REDIS_FREQ = '2 times/year') AND SERVICE_ID = 'Z0108')"
-            else:
-                where_str += " OR ((SCHEDULE_PART = '98%' OR FORE CAST_REDIS_FREQ = '2 times/year') AND SERVICE_ID = 'Z0108')"
-        lines = []
-        annualized_items_obj = Sql.GetList("SELECT DISTINCT SAQICO.LINE FROM SAQICO (NOLOCK) JOIN SAQITE (NOLOCK) ON SAQICO.LINE = SAQITE.LINE WHERE SAQICO.QUOTE_ID = '{}' AND SAQICO.QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        if annualized_items_obj:
-           lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
-        # saqite_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQITE (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        # if saqite_items_obj:
-        #    for saqite_item_obj in saqite_items_obj:
-        #        lines.append(saqite_item_obj.LINE)
-        
-        if len(lines) != 0:
-            if len(lines) == 1:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-
-            else:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-            return 1
-        else:
-            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QuoteId,RecordId))
-            if getDeviation and getDeviation.BCHDPT > 10:
-                return 1
-            else:
-                return 2
-    
-    def GlobalBDHead(self,RecordId,service,QuoteId):
-        Trace.Write("GLOBAL BD HEAD ENTITLEMENT")
-        BDHead = {}
-        where_str = ""
-        if "Z0110" in service:
-            BDHead.update({"Cust. Commit-Consigned Parts":"Exception %","Cust. Commit-On Request Parts":"90%","Fcst Redistribution-Frequency":"2 times/year"})
-        if "Z0108" in service:
-            BDHead.update({"Unscheduled Parts 7 Day Commit":"93%","Customer Purchase Commit":"90% per part number","Customer Purchase Commit":"85% per part number"})
-        lines = []
-        annualized_items_obj = Sql.GetList("SELECT DISTINCT SAQICO.LINE FROM SAQICO (NOLOCK) JOIN SAQITE (NOLOCK) ON SAQICO.LINE = SAQITE.LINE WHERE SAQICO.QUOTE_ID = '{}' AND SAQICO.QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        if annualized_items_obj:
-           lines = [annualized_item_obj.LINE for annualized_item_obj in annualized_items_obj]
-        # saqite_items_obj = Sql.GetList("SELECT DISTINCT LINE FROM SAQITE (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ({})".format(QuoteId,RecordId, where_str))
-        # if saqite_items_obj:
-        #    for saqite_item_obj in saqite_items_obj:
-        #        lines.append(saqite_item_obj.LINE)
-        
-        if len(lines) != 0:
-            if len(lines) == 1:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE = {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(lines[0],RecordId,QuoteId))
-
-            else:
-                Sql.RunQuery("UPDATE SAQRIT SET APPROVAL_REQUIRED = 1 WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-                #Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE LINE IN {} AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(tuple(lines),RecordId,QuoteId))
-            return 1
-        else:
-            getDeviation = Sql.GetFirst("SELECT BCHDPT FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QuoteId,RecordId))
-            if getDeviation and getDeviation.BCHDPT > 10:
-                return 1
-            else:
-                return 2
-    def ItemApproval(self,RecordId,aprchName,service,QuoteId):
-        Trace.Write("APRCHSTP NAME = "+str(aprchName))
-        if aprchName == "NSDR":
-            res = self.NSDREnt(RecordId,service,QuoteId)
-        elif aprchName == "BD":
-            res = self.BDEnt(RecordId,service,QuoteId)
-        elif aprchName == "BD Head":
-            res = self.BDHeadEnt(RecordId,service,QuoteId)
-        elif aprchName == "Regional BD":
-            res = self.RegionalBDHead(RecordId,service,QuoteId)
-        elif aprchName == "Global BD Head":
-            res = self.GlobalBDHead(RecordId,service,QuoteId)
-        
-        Trace.Write("ITEM APPROVAL RETURN VALUE = "+str(res))
-        return res
-    
     def ChainStepConditions(self, result, RecordId, QuoteId):
         arr = []
 
@@ -1205,34 +735,17 @@ class ViolationConditions:
             "SELECT * FROM ACACSF (NOLOCK) WHERE APRCHNSTP_RECORD_ID = '{}'".format(result.APPROVAL_CHAIN_STEP_RECORD_ID)
         )
         # Get Operators using dictionary
-        operators = {
-            "LESS THAN": " < ",
-            "EQUALS": " = ",
-            "GREATER THAN": " > ",
-            "NOT EQUALS": " != ",
-            "LESS OR EQUALS": " <= ",
-            "GREATER OR EQUALS": " >= ",
-            "STARTS WITH": "",
-            "ENDS WITH": "",
-            "CONTAINS": "",
-            "DOES NOT CONTAIN": "",
-        }
+
         # Iterate to form query and check feasibility
         if result.APRCHN_ID != "SELFAPPR":
             for x in GetACACSF:
                 # ----------------------------------------
-                config = {
-                    "CONTAINS": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}%'",
-                    "DOES NOT CONTAIN": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  NOT LIKE '%{}%'",
-                    "STARTS WITH": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '{}%'",
-                    "ENDS WITH": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}'",
-                }
-                config_entry = config.get(x.CMP_OPERATOR)
+                config_entry = self.snap_query_config.get(x.CMP_OPERATOR)
                 if config_entry:
                     selectQuery = config_entry.format(x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, x.CMP_VALUE)
                 else:
-                    selectQuery = "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} '{}'".format(
-                        x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, operators[x.CMP_OPERATOR], x.CMP_VALUE
+                    selectQuery = self.snap_query_config['default'].format(
+                        x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, self.operators_config[x.CMP_OPERATOR], x.CMP_VALUE
                     )
                 # ----------------------------------------
 
@@ -1291,35 +804,32 @@ class ViolationConditions:
 
         # Get Rows from ACACSF based on chain step
         GetACACSF = Sql.GetList("SELECT * FROM ACACSF (NOLOCK) WHERE APRCHNSTP_RECORD_ID = '{}'".format(result.APPROVAL_CHAIN_STEP_RECORD_ID))
-        
+
         # Get Operators using dictionary
-        operators = {"LESS THAN": " < ","EQUALS": " = ","GREATER THAN": " > ","NOT EQUALS":" != ","LESS OR EQUALS":" <= ","GREATER OR EQUALS":" >= ","STARTS WITH":"","ENDS WITH":"","CONTAINS":"","DOES NOT CONTAIN":""}
 
         # Iterate to form query and check feasibility
 
         for x in GetACACSF:
-            if x.CMP_OPERATOR == 'CONTAINS':
-                selectQuery = "SELECT {} FROM {} (NOLOCK) WHERE {}  LIKE '%{}%'".format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
-            elif x.CMP_OPERATOR == 'DOES NOT CONTAIN':
-                selectQuery = "SELECT {} FROM {} (NOLOCK) WHERE {}  NOT LIKE '%{}%'".format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
-            elif x.CMP_OPERATOR == 'STARTS WITH':
-                selectQuery = "SELECT {} FROM {} (NOLOCK) WHERE {}  LIKE '{}%'".format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
-            elif x.CMP_OPERATOR == 'ENDS WITH':
-                selectQuery = "SELECT {} FROM {} (NOLOCK) WHERE {}  LIKE '%{}'".format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,x.CMP_VALUE)
+            # ----------------------------------------
+            config_entry = self.snap_query_config.get(x.CMP_OPERATOR)
+            if config_entry:
+                selectQuery = config_entry.format(x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, x.CMP_VALUE)
             else:
-                selectQuery = "SELECT {} FROM {} (NOLOCK) WHERE {} {} '{}'".format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL,x.TSTOBJ_TESTEDFIELD_LABEL,operators[x.CMP_OPERATOR] ,x.CMP_VALUE)
+                selectQuery = self.snap_query_config['default'].format(
+                    x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, self.operators_config[x.CMP_OPERATOR], x.CMP_VALUE
+                )
+            # ----------------------------------------
 
             # Append Quote and Revision to the Query
             if "SAQ" in x.TSTOBJ_LABEL:
                 selectQuery += " AND QTEREV_RECORD_ID = '{}' AND QUOTE_ID = '{}'".format(RecordId,QuoteId)
             elif "ACAPTX" in x.TSTOBJ_LABEL:
                 selectQuery += "  AND APRTRXOBJ_ID = '{}'".format(QuoteId)
-            
+
             QueryResult = Sql.GetFirst(selectQuery)
+            result = ""
             if QueryResult:
-                Result = eval("QueryResult."+str(x.TSTOBJ_TESTEDFIELD_LABEL))
-            else:
-                Result = ""
+                result = eval("QueryResult."+str(x.TSTOBJ_TESTEDFIELD_LABEL))
 
             InsertSnapshot = Sql.RunQuery(""" INSERT ACAPSS(
                                         APPROVAL_TRANSACTION_SNAPSHOT_RECORD_ID,
@@ -1348,172 +858,4 @@ class ViolationConditions:
                                                 '{}',
                                                 ACACSF.APRCHNSTP_TESTEDFIELD_RECORD_ID
                                                 FROM ACAPTX (NOLOCK) JOIN ACACSF (NOLOCK) ON
-                                                ACAPTX.APRCHNSTP_RECORD_ID = ACACSF.APRCHNSTP_RECORD_ID AND ACAPTX.APPROVAL_RECORD_ID = '{}'""".format(Result,ApprovalRecordId))
-                
-            
-
-        
-
-    # def insertviolationtableafterRecall(self, chainrecordId, RecordId, ObjectName, Objh_Id):
-    #     """Insert violation record after recall."""
-    #     CSSqlObjs = Sql.GetList(
-    #         "SELECT TOP 1 * FROM ACACST (NOLOCK) WHERE APRCHN_RECORD_ID = '"
-    #         + str(chainrecordId)
-    #         + "' AND WHERE_CONDITION_01 <> '' ORDER BY ACACST.APRCHNSTP_NUMBER  "
-    #     )
-    #     for result in CSSqlObjs:
-    #         GetObjName = Sql.GetFirst(
-    #             "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '" + str(result.TSTOBJ_RECORD_ID) + "'"
-    #         )
-    #         # Select_Query = (
-    #         #     "SELECT "
-    #         #     + str(result.APROBJ_LABEL)
-    #         #     + " FROM "
-    #         #     + str(GetObjName.OBJECT_NAME)
-    #         #     + " WHERE "
-    #         #     + str(result.WHERE_CONDITION_01)
-    #         # )
-    #         Select_Query = (
-    #             "SELECT * FROM " + str(GetObjName.OBJECT_NAME) + " (NOLOCK) WHERE " + str(result.WHERE_CONDITION_01)
-    #         )
-    #         TargeobjRelation = Sql.GetFirst(
-    #             "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
-    #             + str(ObjectName)
-    #             + "' AND OBJECT_NAME = '"
-    #             + str(GetObjName.OBJECT_NAME)
-    #             + "' "
-    #         )
-    #         Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-    #         Trace.Write("===============" + str(Select_Query))
-    #         SqlQuery = Sql.GetFirst(Select_Query)
-    #         if SqlQuery:
-    #             Trace.Write("Inside the approval heaeder")
-    #             '"+str(Objh_Id)+"'
-    #             where_conditon = (
-    #                 " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
-    #                 + str(chainrecordId)
-    #                 + "' AND ACACST.APRCHNSTP_NUMBER = '"
-    #                 + str(result.APRCHNSTP_NUMBER)
-    #                 + "' AND ACACSS.APPROVALSTATUS = 'REQUESTED' ORDER BY ACACST.APRCHNSTP_NUMBER"
-    #             )
-    #             # if method is None:
-    #             #     # if index == 0:
-    #             #     # 	Rundelete = self.DeleteforApprovalHeaderTable(
-    #             #     # 		str(RecordId),
-    #             #     # 		str(chainrecordId),
-    #             #     # 		str(result.APPROVAL_CHAIN_STEP_RECORD_ID),
-    #             #     # 		str(ObjectName),
-    #             #     # 	)
-    #             #     where_conditon += "AND ACACSS.APPROVALSTATUS = 'APPROVAL REQUIRED' "
-    #             # else:
-    #             #     where_conditon += "AND ACACSS.APPROVALSTATUS = 'REQUESTED' "
-
-    #             # where_conditon += " ORDER BY ACACST.APRCHNSTP_NUMBER"
-    #             rulebody = self.ViolationRuleForApprovals(str(RecordId), str(ObjectName))
-    #             Rulebodywithcondition = rulebody + where_conditon
-    #             a = Sql.RunQuery(Rulebodywithcondition)
-    #             CheckViolaionRule2 = Sql.GetList(
-    #                 "SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
-    #                 + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
-    #                 + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
-    #                 + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
-    #                 + str(Objh_Id)
-    #                 + "' AND WHERE_CONDITION_01 <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
-    #                 + str(chainrecordId)
-    #                 + "' "
-    #             )
-    #             if CheckViolaionRule2:
-    #                 for result in CheckViolaionRule2:
-    #                     GetObjName = Sql.GetFirst(
-    #                         "SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID = '"
-    #                         + str(result.TSTOBJ_RECORD_ID)
-    #                         + "'"
-    #                     )
-    #                     # Select_Query = (
-    #                     #     "SELECT "
-    #                     #     + str(result.APROBJ_LABEL)
-    #                     #     + " FROM "
-    #                     #     + str(GetObjName.OBJECT_NAME)
-    #                     #     + " WHERE "
-    #                     #     + str(result.WHERE_CONDITION_01)
-    #                     # )
-    #                     Select_Query = (
-    #                         "SELECT * FROM "
-    #                         + str(GetObjName.OBJECT_NAME)
-    #                         + " (NOLOCK) WHERE "
-    #                         + str(result.WHERE_CONDITION_01)
-    #                     )
-    #                     TargeobjRelation = Sql.GetFirst(
-    #                         "SELECT API_NAME FROM SYOBJD (NOLOCK) WHERE DATA_TYPE = 'LOOKUP' AND LOOKUP_OBJECT = '"
-    #                         + str(ObjectName)
-    #                         + "' AND OBJECT_NAME = '"
-    #                         + str(GetObjName.OBJECT_NAME)
-    #                         + "' "
-    #                     )
-    #                     Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-    #                     Trace.Write("===============" + str(Select_Query))
-    #                     SqlQuery = Sql.GetFirst(Select_Query)
-    #                     if SqlQuery:
-    #                         Trace.Write("Inside the approval Transcation")
-    #                         GetLatestApproval = Sql.GetFirst(
-    #                             "SELECT TOP 1 APPROVAL_RECORD_ID FROM ACAPMA ORDER BY CpqTableEntryId DESC "
-    #                         )
-    #                         where_conditon = (
-    #                             " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
-    #                             + str(result.APPROVAL_CHAIN_RECORD_ID)
-    #                             + "' AND ACACST.APRCHNSTP_NUMBER = '"
-    #                             + str(result.APRCHNSTP_NUMBER)
-    #                             + "'  AND ACAPMA.APPROVAL_RECORD_ID = '"
-    #                             + str(GetLatestApproval.APPROVAL_RECORD_ID)
-    #                             + "' "
-    #                             + "  AND ACACSS.APPROVALSTATUS = 'REQUESTED' ORDER BY ACACST.APRCHNSTP_NUMBER "
-    #                         )
-    #                         Transcationrulebody = self.ApprovalTranscationDataInsert()
-    #                         Rulebodywithcondition = Transcationrulebody + where_conditon
-    #                         b = Sql.RunQuery(Rulebodywithcondition)
-
-    #                         GetTrackedFields = Sql.GetList(
-    #                             """SELECT APPROVAL_TRACKED_FIELDS_RECORD_ID,API_NAME,OBJECT_NAME FROM ACAPTF (NOLOCK)
-    #                             INNER JOIN SYOBJD (NOLOCK)
-    #                             ON ACAPTF.TRKOBJ_TRACKEDFIELD_RECORD_ID = SYOBJD.RECORD_ID
-    #                             WHERE ACAPTF.APRCHN_RECORD_ID = '{chainrecordId}'
-    #                             AND ACAPTF.APRCHNSTP_NUMBER = '{chainstep}' """.format(
-    #                                 chainrecordId=str(result.APPROVAL_CHAIN_RECORD_ID), chainstep=str(result.APRCHNSTP_NUMBER)
-    #                             )
-    #                         )
-    #                         for trackedfield in GetTrackedFields:
-    #                             TrackedFieldPrimayId = str(trackedfield.APPROVAL_TRACKED_FIELDS_RECORD_ID)
-    #                             TrackedFieldName = str(trackedfield.API_NAME)
-    #                             Trackedobject = str(trackedfield.OBJECT_NAME)
-    #                             TrackedobjectApiNameQry = Sql.GetFirst(
-    #                                 """select REC_NAME
-    #                             from SYOBJH (nolock) where
-    #                             OBJECT_NAME = '{Trackedobject}'
-    #                             """.format(
-    #                                     Trackedobject=Trackedobject
-    #                                 )
-    #                             )
-    #                             TrackedobjectApiName = str(TrackedobjectApiNameQry.REC_NAME)
-    #                             TackedRuleBody = self.TrackedValueDataInsert(
-    #                                 Trackedobject, TrackedFieldName, TrackedobjectApiName
-    #                             )
-    #                             Tracked_where_conditon = """WHERE ACAPTF.APRCHN_RECORD_ID = '{chainrecordId}'
-    #                                 AND ACAPTF.APRCHNSTP_NUMBER = '{chainstep}'
-    #                                 AND ACAPTF.APPROVAL_TRACKED_FIELDS_RECORD_ID = '{TrackedFieldPrimayId}'
-    #                                 AND ACAPMA.APPROVAL_RECORD_ID = '{approvalrecordId}'
-    #                                 AND {violationsrule} AND
-    #                                 {Trackedobject}.{ViolatedObjAutoKey} = '{ViolatedObjAutoKeyValue}' """.format(
-    #                                 chainrecordId=str(result.APPROVAL_CHAIN_RECORD_ID),
-    #                                 chainstep=str(result.APRCHNSTP_NUMBER),
-    #                                 TrackedFieldPrimayId=TrackedFieldPrimayId,
-    #                                 approvalrecordId=str(GetLatestApproval.APPROVAL_RECORD_ID),
-    #                                 violationsrule=str(result.WHERE_CONDITION_01),
-    #                                 ViolatedObjAutoKey=str(TargeobjRelation.API_NAME),
-    #                                 ViolatedObjAutoKeyValue=str(RecordId),
-    #                                 Trackedobject=Trackedobject,
-    #                             )
-    #                             trackedbodywithcondition = TackedRuleBody + Tracked_where_conditon
-    #                             Trace.Write("trackedbodywithcondition-----> " + str(trackedbodywithcondition))
-    #                             b = Sql.RunQuery(trackedbodywithcondition)
-    #     return True
-
+                                                ACAPTX.APRCHNSTP_RECORD_ID = ACACSF.APRCHNSTP_RECORD_ID AND ACAPTX.APPROVAL_RECORD_ID = '{}'""".format(result,ApprovalRecordId))
