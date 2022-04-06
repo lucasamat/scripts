@@ -1685,7 +1685,7 @@ class approvalCenter:
 									revision_rec_id=  self.quote_revision_record_id,chain_rec_id = approval_chain
 								)
 								)
-						Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}' AND ACAPTX.APRCHN_RECORD_ID = '{chain_rec_id}'".format(quote_record = my_approval_queue_obj.QUOTE_ID, chain_rec_id = approval_chain))
+						Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}' AND ACAPTX.APRCHN_ID = '{chain_rec_id}'".format(quote_record = my_approval_queue_obj.QUOTE_ID, chain_rec_id = approval_chain))
 						get_chain_max_rounds.append(GetMaxQuery)   ##to get max rounds of all chains
 						## to get max round of a particular chain in multi chain ends
 						appround = Max_Round.ROUND
