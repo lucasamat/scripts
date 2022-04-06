@@ -1026,7 +1026,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 							parts_value = scheduled_value[0]
 							break
 					if self.tree_param == 'Z0108':
-						delivery_mode = "OFFSITE" if "Z0108" in self.tree_param else "ONSITE"
+						delivery_mode = "OFFSITE"
 						schedule_mode= "SCHEDULED" if int(parts_value) > 9 else "UNSCHEDULED"
 					elif self.tree_param == 'Z0110':
 						delivery_mode = " "
