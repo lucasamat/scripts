@@ -3734,7 +3734,7 @@ def POPUPLISTVALUEADDNEW(
 						if credit_notes_query:
 							for notes in credit_notes_query:
 								credit_notes.append(notes.NOTES)
-							
+							Trace.Write("credit_notes_chk "+str(credit_notes))
 							new_value_dict["ZAFNOTE"] = credit_notes[0]
 							# new_value_dict["ZAFNOTE"] = '<abbr title="'+credit_notes[0]+'">'+credit_notes[0]+ '</abbr>'
 
