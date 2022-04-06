@@ -5053,9 +5053,9 @@ class SYLDRTLIST:
                     if string == "CFG-ON HOLD - COSTING":
                         Trace.Write("cmng_inside_on_hold_1 "+str(value1234))
                         string_value = string.replace("CFG-ON HOLD - COSTING","<img title='CFG-ON HOLD - COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg> CFG-ON HOLD - COSTING")
-                    if value1234 == "PRR-ON HOLD PRICING":
+                    if string == "PRR-ON HOLD PRICING":
                         Trace.Write("cmng_inside_on_hold_1 "+str(value1234))
-                        value1234 = value1234.replace("PRR-ON HOLD PRICING","<img title='PRR-ON HOLD PRICING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
+                        string_value = string.replace("PRR-ON HOLD PRICING","<img title='PRR-ON HOLD PRICING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
                     if string == "PARTIALLY PRICED":
                         string_value = string.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
                     if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "CFG-ON HOLD - COSTING" and string != "PARTIALLY PRICED" and string != "ACQUIRING" and string != "PRICED" and string != "PRR-ON HOLD PRICING":                        
