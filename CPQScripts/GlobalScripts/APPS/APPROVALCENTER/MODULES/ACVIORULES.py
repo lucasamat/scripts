@@ -856,7 +856,7 @@ class ViolationConditions:
                                                 ACAPTX.APPROVAL_TRANSACTION_RECORD_ID,
                                                 ACAPTX.APPROVAL_ID,
                                                 ACAPTX.APPROVAL_RECORD_ID,
-                                                ACACSF.APRCHNSTP_TESTEDFIELD_LABEL,
+                                                ACACSF.TSTOBJ_TESTEDFIELD_LABEL,
                                                 '{}',
                                                 ACACSF.APRCHNSTP_TESTEDFIELD_RECORD_ID
                                                 FROM ACAPTX (NOLOCK) JOIN ACACSF (NOLOCK) ON
