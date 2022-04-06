@@ -112,6 +112,9 @@ CUSTOM_FIELDS_DETAIL = [
     ("PricingDate", "PricingDate"),
     ("QuoteStartDate", "QuoteStartDate"),
     ("SIGFPOPPORTUNITYID", "SIGFPOPPORTUNITYID"),
+    ("SIGFPOPPORTUNITYNAME","SIGFPOPPORTUNITYNAME"),
+    ("SIGFPQUOTEID","SIGFPQUOTEID"),
+    ("SIGFPQUOTEDATE","SIGFPQUOTEDATE"),
 ]
 
 # ---------------------------------------------------CONFIGURATION------------------------------------------------ #
@@ -1408,6 +1411,10 @@ class SyncQuoteAndCustomTables:
                                         "ACCOUNT_TYPE": "Sold to Party",
                                         "OPPORTUNITY_OWNER_ID": custom_fields_detail.get("OpportunityOwner"),
                                         "SIGFP_OPP_ID":custom_fields_detail.get("SIGFPOPPORTUNITYID"),
+                                        "SIGFP_OPR_NAME":custom_fields_detail.get("SIGFPOPPORTUNITYNAME"),
+                                        "SIGFP_QUOTE_ID":custom_fields_detail.get("SIGFPQUOTEID"),
+                                        "SIGFP_QUOTE_NAME":custom_fields_detail.get("SIGFPQUOTEDATE"),
+
                                     }
                                     master_opportunity_table_info.AddRow(master_opportunity_data)
                                     Sql.Upsert(master_opportunity_table_info)
