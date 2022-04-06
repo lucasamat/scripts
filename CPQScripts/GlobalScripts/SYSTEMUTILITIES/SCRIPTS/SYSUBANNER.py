@@ -104,7 +104,7 @@ def Related_Sub_Banner(
     add_button = ""
     # Getting page details
     multi_buttons = []
-    dropdown_multi_btn_str = '''<div id="ctr_drop.cbc_ctr_drop" class="btn-group dropdown dropdown_multi_btn_str"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'''
+    dropdown_multi_btn_str = '''<div id="ctr_drop" class="btn-group dropdown dropdown_multi_btn_str"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'''
     Trace.Write('ObjName---103--'+str(ObjName))
     if ObjName == "SAQIGS" or ObjName == "SAQRIB":
         ObjName ="SAQRIB"
