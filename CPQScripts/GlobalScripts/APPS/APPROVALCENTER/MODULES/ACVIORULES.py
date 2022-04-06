@@ -42,11 +42,11 @@ class ViolationConditions:
         }
 
         self.snap_query_config = {
-            "CONTAINS": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}%'",
-            "DOES NOT CONTAIN": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  NOT LIKE '%{}%'",
-            "STARTS WITH": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '{}%'",
-            "ENDS WITH": "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}  LIKE '%{}'",
-            'default': "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {} {} '{}'",
+            "CONTAINS": "SELECT {} FROM {} (NOLOCK) WHERE {}  LIKE '%{}%'",
+            "DOES NOT CONTAIN": "SELECT {} FROM {} (NOLOCK) WHERE {}  NOT LIKE '%{}%'",
+            "STARTS WITH": "SELECT {} FROM {} (NOLOCK) WHERE {}  LIKE '{}%'",
+            "ENDS WITH": "SELECT {} FROM {} (NOLOCK) WHERE {}  LIKE '%{}'",
+            'default': "SELECT {} FROM {} (NOLOCK) WHERE {} {} '{}'",
         }
     def Factory(self, node=None):
         """Create class object factory Method."""
@@ -818,7 +818,7 @@ class ViolationConditions:
                 selectQuery = config_entry.format(x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, x.CMP_VALUE)
             else:
                 selectQuery = self.snap_query_config['default'].format(
-                    x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, self.operators_config[x.CMP_OPERATOR], x.CMP_VALUE
+                    x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, self.operators_config[x.CMP_OPERATOR], x.CMP_VALUE
                 )
             # ----------------------------------------
 
