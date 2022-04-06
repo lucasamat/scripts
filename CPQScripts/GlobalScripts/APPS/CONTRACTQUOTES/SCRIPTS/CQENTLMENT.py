@@ -276,7 +276,7 @@ class Entitlements:
 		if (not cps_error) and response2:
 			response_temp = eval(response2)
 			if response_temp['conflicts']:
-				cps_conflict = response_temp['conflicts']
+				cps_conflict = str(response_temp['conflicts'][0]['explanation']).split('(ID')[0]
 		# except:
 		# 	pass
 		return eval(response2),cpsmatc_incr,attribute_code,cps_error,cps_conflict
