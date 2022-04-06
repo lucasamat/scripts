@@ -8395,17 +8395,19 @@ class SYLDRTLIST:
                                     Trace.Write("c1")
                                     ##A055S000P01-4578 strts
                                     #Trace.Write('xchk--')
+                                    wh = "LINE"
+                                    #Wh_API_NAMEs
                                     saqico_cols =""
                                     Qury_str = (
                                         "select top "
                                             + str(PerPage)
-                                            + " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS in ('CFG-ON HOLD - COSTING','PRR-ON HOLD PRICING') THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,SERVICE_ID,OBJECT_ID,ASSEMBLY_ID,GOT_CODE,EQNODE,PROCES,PM_ID,KIT_ID,KIT_NUMBER,MNTEVT_LEVEL,SAPMMP,CNTDAY,FABLOCATION_ID,GREENBOOK,QUANTITY,TOLCFG,KPU,SPQTEV,SPSPCT,SVSPCT,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,ATKNCI,ATKNPI,NWPTOC,NWPTOP,CONSCP,CONSPI,NONCCI,NONCPI,AMNCCI,AMNPPI,TNTVGC,TENVGC,BPTKCI,BPTKPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,TGADJP,YOYPCT,USRPRC,BCHPGC,BCHDPT,CNTPRC,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+                                            + " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS in ('CFG-ON HOLD - COSTING','PRR-ON HOLD PRICING') THEN '"+ on_hold_costing +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,SERVICE_ID,OBJECT_ID,ASSEMBLY_ID,GOT_CODE,EQNODE,PROCES,PM_ID,KIT_ID,KIT_NUMBER,MNTEVT_LEVEL,SAPMMP,CNTDAY,FABLOCATION_ID,GREENBOOK,QUANTITY,TOLCFG,KPU,SPQTEV,SPSPCT,SVSPCT,WTYSTE,WTYEND,WTYDAY,INWRTY,ATGKEC,ATGKEP,ATKNCI,ATKNPI,NWPTOC,NWPTOP,CONSCP,CONSPI,NONCCI,NONCPI,AMNCCI,AMNPPI,TNTVGC,TENVGC,BPTKCI,BPTKPI,TRGPRC,SLSPRC,BDVPRC,CELPRC,TGADJP,YOYPCT,USRPRC,BCHPGC,BCHDPT,CNTPRC,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(wh)
                                             +") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
                                             + str(qt_rec_id.QUOTE_ID)
                                             + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
                                             + str(Page_start)
                                             + " and "
-                                            + str(Page_End)+" ORDER BY "+ str(Wh_API_NAMEs)
+                                            + str(Page_End)+" ORDER BY "+ str(wh)
                                     )
                                     ##A055S000P01-4578 ends
                                     QuryCount_str = (
