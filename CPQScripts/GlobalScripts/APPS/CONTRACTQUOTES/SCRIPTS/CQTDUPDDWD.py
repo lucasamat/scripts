@@ -79,7 +79,9 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 			if table_data is not None:				
 				for row_data in table_data:
 					data = [row_obj.Value for row_obj in row_data]
+					data = data.replace("True","Yes").replace("False","No")
 					Trace.Write("DATA++"+str(data))
+
 					yield data
 			start += 1000		
 			end += 1000			
