@@ -3711,21 +3711,9 @@ def POPUPLISTVALUEADDNEW(
 							if str(data.Key) == "CREDITVOUCHER_RECORD_ID":
 								pop_val = str(data.Value) + "|addcredits"
 								cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
-								new_value_dict[data.Key] = cpqidval
-							elif str(data.Key) == "ZAFNOTE":
-								credit_notes = []
-
-								credit_notes_query = Sql.GetList("SELECT SACVNT.ZAFNOTE AS NOTES FROM SACRVC (NOLOCK) INNER JOIN SACVNT (NOLOCK) ON SACRVC.BUKRS = SACVNT.BUKRS AND SACRVC.HKONT = SACVNT.HKONT AND SACRVC.BELNR = SACVNT.BELNR AND SACRVC.ZUONR = SACVNT.ZUONR AND SACRVC.GJAHR = SACVNT.GJAHR AND SACRVC.BUZEI = SACVNT.BUZEI AND SACRVC.MANDT = SACVNT.MANDT WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '"+str(account_id)+"'")
-								if credit_notes_query:
-									for notes in credit_notes_query:
-										credit_notes.append(notes.NOTES)
-									credit_notes_str = str(credit_notes).replace(","," ").replace('"','').replace("[","").replace("]","")
-									Trace.Write("Credit_Notes_chk "+str(credit_notes_str))
-									new_value_dict[data.Key] = credit_notes_str
-								else:
-									new_value_dict[data.Key] = ""
+								new_value_dict[data.Key] = '<abbr title="'+str(cpqidval)+'">'+str(cpqidval)+'</abbr>'
 							else:
-								new_value_dict[data.Key] = data.Value
+								new_value_dict[data.Key] = '<abbr title="'+str(data.Value)+'">'+str(data.Value)+'</abbr>'
 
 							new_value_dict["pop_val"] = pop_val
 						credit_notes = []
