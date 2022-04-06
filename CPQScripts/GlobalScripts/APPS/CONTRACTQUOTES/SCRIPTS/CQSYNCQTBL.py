@@ -111,6 +111,7 @@ CUSTOM_FIELDS_DETAIL = [
     ("QuoteExpirationDate", "QuoteExpirationDate"),
     ("PricingDate", "PricingDate"),
     ("QuoteStartDate", "QuoteStartDate"),
+    ("SIGFPOPPORTUNITYID", "SIGFPOPPORTUNITYID"),
 ]
 
 # ---------------------------------------------------CONFIGURATION------------------------------------------------ #
@@ -1406,6 +1407,7 @@ class SyncQuoteAndCustomTables:
                                         "OPPORTUNITY_STAGE": Opportunitystagedict.get(custom_fields_detail.get("OpportunityStage")),
                                         "ACCOUNT_TYPE": "Sold to Party",
                                         "OPPORTUNITY_OWNER_ID": custom_fields_detail.get("OpportunityOwner"),
+                                        "SIGFP_OPP_ID":custom_fields_detail.get("SIGFPOPPORTUNITYID"),
                                     }
                                     master_opportunity_table_info.AddRow(master_opportunity_data)
                                     Sql.Upsert(master_opportunity_table_info)
