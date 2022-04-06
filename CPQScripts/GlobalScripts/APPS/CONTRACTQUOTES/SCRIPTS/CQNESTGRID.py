@@ -796,7 +796,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 		+ '"  data-pagination="false" data-sortable="true" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
 	)
 	Objd_Obj = Sql.GetList(
-		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = '"+str(ObjectName)+"' "
+		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = '"+str(ObjectName)+"' "
 	)
 	attr_list = []
 	attrs_datatype_dict = {}
@@ -809,7 +809,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			attrs_datatype_dict[str(attr.API_NAME)] = str(attr.DATA_TYPE)
 			if attr.LOOKUP_API_NAME != "" and attr.LOOKUP_API_NAME is not None:
 				lookup_disply_list.append(str(attr.API_NAME))
-		checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX"]
+		checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX"]
 		lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 	lookup_str = ",".join(list(lookup_disply_list))
 	orderby = ""
