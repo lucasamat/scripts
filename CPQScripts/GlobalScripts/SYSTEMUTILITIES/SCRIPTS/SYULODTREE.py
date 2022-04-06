@@ -709,7 +709,7 @@ class TreeView:
 		cbc_subtab = ""
 		try:			
 			user_id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
-			saqdlt_query = Sql.GetFirst("SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER'".format(qte_rec_id = contract_quote_record_id,revision_rec_id = quote_revision_record_id))
+			salesteam_obj = Sql.GetList("SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' AND MEMBER_ID = '{UserId}'".format(qte_rec_id = contract_quote_record_id,revision_rec_id = quote_revision_record_id, UserId = user_id))
 			#A055S000P01-17166 start
 			get_status = Sql.GetFirst("SELECT WORKFLOW_STATUS from SAQTRV where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_record_id,quote_revision_rec_id=quote_revision_record_id))
 			if get_status:
@@ -717,11 +717,8 @@ class TreeView:
 					update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-PREPARING CBC' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=contract_quote_record_id,quote_revision_rec_id=quote_revision_record_id)
 					#A055S000P01-17166 end
 					Sql.RunQuery(update_rev_status)
-			if saqdlt_query:
-				if str(saqdlt_query.MEMBER_ID) == str(user_id) or str(saqdlt_query.MEMBER_ID) in str(user_id):					
-					cbc_subtab = "Yes"
-				else:					
-					cbc_subtab = "No"
+			if salesteam_obj:
+				cbc_subtab = "Yes"				
 			else:				
 				cbc_subtab = "No"
 		except:
