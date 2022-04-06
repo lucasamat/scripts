@@ -956,7 +956,7 @@ class ViolationConditions:
                                         AND ACAPTF.APRCHNSTP = '{chainstep}'
                                         AND ACAPTF.APPROVAL_TRACKED_FIELD_RECORD_ID = '{TrackedFieldPrimayId}'
                                         AND ACAPMA.APPROVAL_RECORD_ID = '{approvalrecordId}'
-                                        AND {violationsrule}
+                                        
                                         AND {Trackedobject}.{ViolatedObjAutoKey} = '{ViolatedObjAutoKeyValue}'
                                     """.format(
                                         chainrecordId=str(result.APPROVAL_CHAIN_RECORD_ID),
