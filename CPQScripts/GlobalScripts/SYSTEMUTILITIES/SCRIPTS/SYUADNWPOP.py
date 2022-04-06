@@ -3736,7 +3736,7 @@ def POPUPLISTVALUEADDNEW(
 								credit_notes.append(notes.NOTES)
 							
 							# new_value_dict["ZAFNOTE"] = credit_notes[0]
-							new_value_dict["ZAFNOTE"] = '<abbr title="'+str(credit_notes[0])+'">'+ str(credit_notes[0]) + '</abbr>'
+							new_value_dict["ZAFNOTE"] = '<abbr title="'+credit_notes[0]+'">'+credit_notes[0]+ '</abbr>'
 
 						else:
 							new_value_dict["ZAFNOTE"] = ""
