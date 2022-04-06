@@ -184,6 +184,7 @@ class Entitlements:
 		Trace.Write(str(cpsmatchID)+"--Request_UR-L--"+Request_URL+"---cpsConfigID---: "+str(cpsConfigID))
 		#AttributeValCode = ''
 		cps_error = ""
+		cps_conflict = ""
 		try:
 			STANDARD_ATTRIBUTE_VALUES =''
 			#STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE FROM STANDARD_ATTRIBUTE_VALUES (nolock) where STANDARD_ATTRIBUTE_DISPLAY_VAL='{}' and SYSTEM_ID like '{}%'".format(NewValue,AttributeID))
@@ -275,10 +276,10 @@ class Entitlements:
 		if (not cps_error) and response2:
 			response_temp = eval(response2)
 			if response_temp['conflicts']:
-				cps_error = response_temp['conflicts']
+				cps_conflict = response_temp['conflicts']
 		# except:
 		# 	pass
-		return eval(response2),cpsmatc_incr,attribute_code,cps_error
+		return eval(response2),cpsmatc_incr,attribute_code,cps_error,cps_conflict
 	
 	def get_product_attr_level_cps_pricing(self, characteristics_attr_values=None,serviceId =None):
 		webclient = System.Net.WebClient()
@@ -337,6 +338,7 @@ class Entitlements:
 		#AttributeValCode = AttributeValCode.replace("_"," ")
 		Fullresponse =''
 		cps_error = ''
+		cps_conflict = ''
 		LEVEL = ''
 		VALUE = ''
 		Trace.Write(str(type(NewValue))+'----NewValue')
@@ -561,7 +563,7 @@ class Entitlements:
 			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
 			if get_ent_type:
 				if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-					Fullresponse,cpsmatc_incr,attribute_code,cps_error = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)				
+					Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)				
 					Trace.Write("Fullresponse--"+str(Fullresponse))
 					Product.SetGlobal('Fullresponse',str(Fullresponse))
 					#restriction for value driver call to CPS end
@@ -797,7 +799,7 @@ class Entitlements:
 				else:
 					Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
 			else:
-				Fullresponse,cpsmatc_incr,attribute_code,cps_error = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+				Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
 			
 				Trace.Write("Fullresponse--"+str(Fullresponse))
 				Product.SetGlobal('Fullresponse',str(Fullresponse))
@@ -2080,9 +2082,9 @@ class Entitlements:
 						attribute_code = ''
 						if get_ent_type:
 							if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-								Fullresponse,cpsmatc_incr,attribute_code,cps_error = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+								Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
 						else:
-							Fullresponse,cpsmatc_incr,attribute_code,cps_error = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+							Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
 						if Fullresponse and cpsmatc_incr:
 							Trace.Write("Fullresponse"+str(Fullresponse))
 							Trace.Write("tableName--894---"+str(tableName))
@@ -2273,18 +2275,18 @@ class Entitlements:
 		
 		##conflict messgae notification
 		msg_text = ""
-		if Fullresponse:
-			if Fullresponse['conflicts']:
-				Trace.Write("Fullresponse-con-"+str(Fullresponse['conflicts']))
-				# msg_text = (
-				# 	'<div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '
-				# 	+ str(Fullresponse['conflicts'][0]['explanation'])
-				# 	+ "</label></div></div>"
-				# )
-				try:
-					msg_text = '<div class="emp_notifiy" style="display: none;"><div class="col-md-12 page_alert_notifi" id="PageAlert"><div class="row modulesecbnr brdr" onclick="call_vertical_scrl()" data-toggle="collapse" data-target="#alertnotify" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div id="alertnotify" class="col-md-12  alert-notification  brdr collapse in"><div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '+str(Fullresponse['conflicts'][0]['explanation']).split('(ID')[0]+' </label></div></div> </div></div></div>'
-				except:
-					pass
+		if cps_conflict:
+			# if Fullresponse['conflicts']:
+			# 	Trace.Write("Fullresponse-con-"+str(Fullresponse['conflicts']))
+			# 	# msg_text = (
+			# 	# 	'<div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '
+			# 	# 	+ str(Fullresponse['conflicts'][0]['explanation'])
+			# 	# 	+ "</label></div></div>"
+			# 	# )
+			try:
+				msg_text = '<div class="emp_notifiy" style="display: none;"><div class="col-md-12 page_alert_notifi" id="PageAlert"><div class="row modulesecbnr brdr" onclick="call_vertical_scrl()" data-toggle="collapse" data-target="#alertnotify" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div id="alertnotify" class="col-md-12  alert-notification  brdr collapse in"><div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '+str(cps_conflict)+' </label></div></div> </div></div></div>'
+			except:
+				pass
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
 		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesdisrequired_list,attriburesrequired_list,str(cps_error),str(msg_text)
 
