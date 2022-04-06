@@ -441,7 +441,7 @@ class DeleteConfirmPopup:
             unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR + deleted_rec_query.CREDIT_APPLIED_INGL_CURR
             update_SAQRCV = "UPDATE SACRVC SET CRTAPP_INGL_CURR = '"+str(credit_applied)+"',UNBL_INGL_CURR = '"+str(unapplied_balance)+"' WHERE CREDITVOUCHER_RECORD_ID = '"+str(deleted_rec_query.CREDITVOUCHER_RECORD_ID)+"'"
             Sql.RunQuery(update_SAQRCV)
-            QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID ='"+str(RecordId)+"'"
+            QueryStatement = "DELETE FROM SAQRCV WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID ='"+str(RecordId)+"'"
             Sql.RunQuery(QueryStatement)
         
         else:
