@@ -742,10 +742,10 @@ class ViolationConditions:
                 # ----------------------------------------
                 config_entry = self.snap_query_config.get(x.CMP_OPERATOR)
                 if config_entry:
-                    selectQuery = config_entry.format(x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, x.CMP_VALUE)
+                    selectQuery = config_entry.format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, x.CMP_VALUE)
                 else:
                     selectQuery = self.snap_query_config['default'].format(
-                        x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, self.operators_config[x.CMP_OPERATOR], x.CMP_VALUE
+                        x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, self.operators_config[x.CMP_OPERATOR], x.CMP_VALUE
                     )
                 # ----------------------------------------
 
@@ -815,7 +815,7 @@ class ViolationConditions:
             # ----------------------------------------
             config_entry = self.snap_query_config.get(x.CMP_OPERATOR)
             if config_entry:
-                selectQuery = config_entry.format(x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, x.CMP_VALUE)
+                selectQuery = config_entry.format(x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, x.CMP_VALUE)
             else:
                 selectQuery = self.snap_query_config['default'].format(
                     x.TSTOBJ_TESTEDFIELD_LABEL,x.TSTOBJ_LABEL, x.TSTOBJ_TESTEDFIELD_LABEL, self.operators_config[x.CMP_OPERATOR], x.CMP_VALUE
