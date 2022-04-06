@@ -3690,3 +3690,4 @@ class SyncQuoteAndCustomTables:
 # A055S000P01-8690 starts..
 sync_obj = SyncQuoteAndCustomTables(Quote)
 sync_obj.create_custom_table_record()
+
