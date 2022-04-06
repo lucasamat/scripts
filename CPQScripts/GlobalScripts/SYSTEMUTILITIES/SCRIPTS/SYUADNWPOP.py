@@ -3711,7 +3711,7 @@ def POPUPLISTVALUEADDNEW(
 							if str(data.Key) == "CREDITVOUCHER_RECORD_ID":
 								pop_val = str(data.Value) + "|addcredits"
 								cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
-								new_value_dict[data.Key] = '<abbr title="'+str(cpqidval)+'">'+str(cpqidval)+'</abbr>'
+								new_value_dict[data.Key] = cpqidval
 							else:
 								new_value_dict[data.Key] = '<abbr title="'+str(data.Value)+'">'+str(data.Value)+'</abbr>'
 
