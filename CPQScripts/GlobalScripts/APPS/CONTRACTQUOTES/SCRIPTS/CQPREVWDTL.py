@@ -757,7 +757,11 @@ def editcbc(Qt_rec_id, Quote, MODE):
 		#popupquery_value = popupquery.cnt
 		#A055S000P01-17166 start
 		#update_rev_cb_complete_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-CBC COMPLETED' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=Quote,quote_revision_rec_id=quote_revision_record_id)
-		#Sql.RunQuery(update_rev_cb_complete_status)		
+		#Sql.RunQuery(update_rev_cb_complete_status)
+		# 	
+	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+	time.sleep(3)
+	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))	
 	return True
 
 def countcbc(Qt_rec_id, Quote, MODE):
