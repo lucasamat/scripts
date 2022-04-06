@@ -317,8 +317,8 @@ class approvalCenter:
 						Select_Query = (
 							"SELECT * FROM "
 							+ str(GetObjName.OBJECT_NAME)
-							+ " (NOLOCK) WHERE "
-							+ str(result.WHERE_CONDITION_01)
+							+ " (NOLOCK) WHERE ("
+							+ str(result.WHERE_CONDITION_01) + ")"
 						)
 						getObjSplit = str(GetCurrentStrpId.APPROVAL_ID).split("-")
 						ObjectName = getObjSplit[0]
