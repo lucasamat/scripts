@@ -111,10 +111,10 @@ CUSTOM_FIELDS_DETAIL = [
     ("QuoteExpirationDate", "QuoteExpirationDate"),
     ("PricingDate", "PricingDate"),
     ("QuoteStartDate", "QuoteStartDate"),
-    ("SIGFPOPPORTUNITYID", "SIGFPOPPORTUNITYID"),
-    ("SIGFPOPPORTUNITYNAME","SIGFPOPPORTUNITYNAME"),
-    ("SIGFPQUOTEID","SIGFPQUOTEID"),
-    ("SIGFPQUOTEDATE","SIGFPQUOTEDATE"),
+    ("SIGFPOpportunityID", "SIGFPOpportunityID"),
+    ("SIGFPOpportunityName","SIGFPOpportunityName"),
+    ("SIGFPQuoteID","SIGFPQuoteID"),
+    ("SIGFPQuoteDate","SIGFPQuoteDate"),
 ]
 
 # ---------------------------------------------------CONFIGURATION------------------------------------------------ #
@@ -1410,10 +1410,10 @@ class SyncQuoteAndCustomTables:
                                         "OPPORTUNITY_STAGE": Opportunitystagedict.get(custom_fields_detail.get("OpportunityStage")),
                                         "ACCOUNT_TYPE": "Sold to Party",
                                         "OPPORTUNITY_OWNER_ID": custom_fields_detail.get("OpportunityOwner"),
-                                        "SIGFP_OPP_ID":custom_fields_detail.get("SIGFPOPPORTUNITYID"),
-                                        "SIGFP_OPR_NAME":custom_fields_detail.get("SIGFPOPPORTUNITYNAME"),
-                                        "SIGFP_QUOTE_ID":custom_fields_detail.get("SIGFPQUOTEID"),
-                                        "SIGFP_QUOTE_NAME":custom_fields_detail.get("SIGFPQUOTEDATE"),
+                                        "SIGFP_OPP_ID":custom_fields_detail.get("SIGFPOpportunityID"),
+                                        "SIGFP_OPR_NAME":custom_fields_detail.get("SIGFPOpportunityName"),
+                                        "SIGFP_QUOTE_ID":custom_fields_detail.get("SIGFPQuoteID"),
+                                        "SIGFP_QUOTE_NAME":custom_fields_detail.get("SIGFPQuoteDate"),
 
                                     }
                                     master_opportunity_table_info.AddRow(master_opportunity_data)
