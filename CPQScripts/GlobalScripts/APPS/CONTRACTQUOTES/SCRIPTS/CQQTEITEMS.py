@@ -441,7 +441,7 @@ def LoadQuoteSummary():
     values["Total Est Net Val"] = str(GetDetails.ESTVAL_INGL_CURR) + " USD"
     values["Total Amt"] = str(GetDetails.TOTAL_AMOUNT_INGL_CURR) + " USD"
     values["Total Margin"] = str(GetDetails.CNTMRG_INGL_CURR) + " USD"
-    values["Total Margin Pct"] = str(GetDetails.TOTAL_MARGIN_PERCENT) + "%"
+    values["Total Margin Pct"] = str(GetDetails.TOTAL_MARGIN_PERCENT) + " %"
     sec_str = """ <div onclick="dyn_main_sec_collapse_arrow(this)" data-bind="attr: {'data-toggle':'collapse','data-target':'.col'+stdAttrCode(), 
 			'id':'dyn'+stdAttrCode(),'class': isWholeRow() ? 'g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer' : 'g1 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer'}" data-target=".sec_5802398A-50DA-40C7-8C80-99149E0C2561" id="dyn1577" data-toggle="collapse" class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"> 
 			<label data-bind="html: hint" class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="5802398A-50DA-40C7-8C80-99149E0C2561" class="dropdown-item" href="#" onclick="QuoteSummaryEdit(this)">EDIT</a></li></ul></div></div>QUOTE SUMMARY</div></label> </div>"""
