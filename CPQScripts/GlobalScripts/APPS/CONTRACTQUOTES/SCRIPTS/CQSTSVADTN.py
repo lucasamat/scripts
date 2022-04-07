@@ -241,7 +241,13 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		#restricted for multiple calls scenario based on status
 		if status not in ("GENERATE SOW","COMPLETESOW","APPROVALS","LEGAL SOW","QUOTE DOCUMENTS","BOOKED","CLEAN BOOKING CHECKLIST","LEGAL SOW ACCEPT"):
 
-			quote_line_item_obj = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'  AND ISNULL(STATUS,'') = ''".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_record_id))
+			quote_line_item_obj = Sql.GetFirst("""SELECT LINE 
+													FROM SAQICO (NOLOCK) 
+													JOIN PRSPRV (NOLOCK) ON PRSPRV.SERVICE_ID = SAQICO.SERVICE_ID
+													WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' 
+													AND ISNULL(STATUS,'') = '' AND ISNULL(PRSPRV.SSCM_COST,0) = 1""".format(
+														QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_record_id
+													))
 			#added condition to restrict email trigger thrice
 		
 			if quote_line_item_obj:
