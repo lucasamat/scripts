@@ -435,20 +435,20 @@ def LoadQuoteSummary():
     sec_str = ""
     GetDetails = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR,TAX_AMOUNT_INGL_CURR,ESTVAL_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,CNTMRG_INGL_CURR,TOTAL_MARGIN_PERCENT FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_record_id))
 
-    values = {}
-    values["Total Excluding Tax/VAT/GST"] = str(GetDetails.NET_VALUE_INGL_CURR) + " USD"
-    values["Total Tax/VAT/GST"] = str(GetDetails.TAX_AMOUNT_INGL_CURR) + " USD"
-    values["Total Est Net Val"] = str(GetDetails.ESTVAL_INGL_CURR) + " USD"
-    values["Total Amt"] = str(GetDetails.TOTAL_AMOUNT_INGL_CURR) + " USD"
-    values["Total Margin"] = str(GetDetails.CNTMRG_INGL_CURR) + " USD"
-    values["Total Margin Pct"] = str(GetDetails.TOTAL_MARGIN_PERCENT) + " %"
+    values = []
+    values.append("Total Excluding Tax/VAT/GST_" + str(GetDetails.NET_VALUE_INGL_CURR) + " USD")
+    values.append("Total Tax/VAT/GST_" + str(GetDetails.TAX_AMOUNT_INGL_CURR) + " USD")
+    values.append("Total Est Net Val_"+ str(GetDetails.ESTVAL_INGL_CURR) + " USD")
+    values.append("Total Amt_" +str(GetDetails.TOTAL_AMOUNT_INGL_CURR) + " USD")
+    values.append("Total Margin_"+ str(GetDetails.CNTMRG_INGL_CURR) + " USD")
+    values.append("Total Margin Pct_"+ str(GetDetails.TOTAL_MARGIN_PERCENT) + " %")
     sec_str = """ <div onclick="dyn_main_sec_collapse_arrow(this)" data-bind="attr: {'data-toggle':'collapse','data-target':'.col'+stdAttrCode(), 
 			'id':'dyn'+stdAttrCode(),'class': isWholeRow() ? 'g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer' : 'g1 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer'}" data-target=".sec_5802398A-50DA-40C7-8C80-99149E0C2561" id="dyn1577" data-toggle="collapse" class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"> 
 			<label data-bind="html: hint" class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="5802398A-50DA-40C7-8C80-99149E0C2561" class="dropdown-item" href="#" onclick="QuoteSummaryEdit(this)">EDIT</a></li></ul></div></div>QUOTE SUMMARY</div></label> </div>"""
-    for x,y in values.items():
+    for x in values:
         sec_str += '''
         <div id="sec_5802398A-50DA-40C7-8C80-99149E0C2561" class="sec_5802398A-50DA-40C7-8C80-99149E0C2561 collapse in ">
-        <div style="height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;" data-bind="attr: {" id ':'mat '+stdattrcode(),'class ':="" iswholerow()="" ?="" 'g4="" except_sec="" removehorline="" iconhvr '="" :="" 'g1="" } '="" id="mat1578" class="g4  except_sec removeHorLine iconhvr"><div class="col-md-5">	<abbr data-bind="attr:{" title':label} '="" title="'''+str(x)+'''"> <label class="col-md-11 pull-left" style="padding: 5px 5px;margin: 0;" data-bind="html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), " pull-left':="" hint()="" } '="">'''+str(x)+'''</label> </abbr> <a href="#" title="" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'''+str(x)+'''" class="col-md-1 bgcccwth10" style="text-align:right;padding: 7px 5px;color:green;" data-original-title=""><i title="'''+str(x)+'''" class="fa fa-info-circle fltlt"></i></a> </div><div class="col-md-3 pad-0"> <input type="text" id="'''+str(x)+'''" title="'''+str(y)+'''" value="'''+str(y)+'''" 'title ':userinput},="" incrementaltabindex,="" enable:="" isenabled'="" class="form-control" style="height: 28px;border-top: 0 !important;border-bottom: 0 !important;" tabindex="" disabled=""> </div>
+        <div style="height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;" data-bind="attr: {" id ':'mat '+stdattrcode(),'class ':="" iswholerow()="" ?="" 'g4="" except_sec="" removehorline="" iconhvr '="" :="" 'g1="" } '="" id="mat1578" class="g4  except_sec removeHorLine iconhvr"><div class="col-md-5">	<abbr data-bind="attr:{" title':label} '="" title="'''+x.split("_")[0]+'''"> <label class="col-md-11 pull-left" style="padding: 5px 5px;margin: 0;" data-bind="html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), " pull-left':="" hint()="" } '="">'''+x.split("_")[0]+'''</label> </abbr> <a href="#" title="" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'''+x.split("_")[0]+'''" class="col-md-1 bgcccwth10" style="text-align:right;padding: 7px 5px;color:green;" data-original-title=""><i title="'''+x.split("_")[0]+'''" class="fa fa-info-circle fltlt"></i></a> </div><div class="col-md-3 pad-0"> <input type="text" id="'''+x.split("_")[0]+'''" title="'''+x.split("_")[1]+'''" value="'''+x.split("_")[1]+'''" 'title ':userinput},="" incrementaltabindex,="" enable:="" isenabled'="" class="form-control" style="height: 28px;border-top: 0 !important;border-bottom: 0 !important;" tabindex="" disabled=""> </div>
         <div class="col-md-3" style="display:none;"> <span class="" data-bind="attr:{" id ':="" $data.name()}'="" id="">  </span></div>
         <div class="col-md-1" style="float: right;">
             <div class="col-md-12 editiconright">
