@@ -518,7 +518,7 @@ elif SubtabName == "Summary" and Action == "SAVE":
     ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
 if SubtabName == "Items" and Action == "Edit":
     ApiResponse = ApiResponseFactory.JsonResponse(EditItems())
-GetPOES = Sql.GetFirst("SELECT POES FROM SAQTMT(NOLOCK) WHERE QTEREV_RECORD_ID  = '{}' AND QUOTE_RECORD_ID  = '{}' ".format(quote_revision_record_id,quote_record_id))
+GetPOES = Sql.GetFirst("SELECT POES FROM SAQTMT(NOLOCK) WHERE QTEREV_RECORD_ID  = '{}' AND MASTER_TABLE_QUOTE_RECORD_ID  = '{}' ".format(quote_revision_record_id,quote_record_id))
 
 if GetPOES:
 
