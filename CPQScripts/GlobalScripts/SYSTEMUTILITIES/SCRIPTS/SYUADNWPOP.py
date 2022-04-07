@@ -492,10 +492,11 @@ def POPUPLISTVALUEADDNEW(
 				invs = str(invs).strip()
 				qstring = Header_details.get(str(invs)) or ""
 				if key == 0:
+					data_formatter = "addReceivingFabFtsLink" if str(TreeParam) == "Customer Information" else "MAfablocationKeyHyperLink"
 					sec_str += (
 						'<th data-field="'
 						+ str(invs)
-						+ '" data-formatter="MAfablocationKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ '" data-formatter="'+str(data_formatter)+'" data-sortable="true" data-title-tooltip="'
 						+ str(qstring)
 						+ '" data-filter-control="input">'
 						+ str(qstring)
