@@ -447,9 +447,9 @@ def LoadQuoteSummary():
                     '<td><input id="'
                     + str(x)
                     + '" type="text" value="'
-                    + y
+                    + str(y)
                     + '" title="'
-                    + y
+                    + str(y)
                     + ""
                     + '" class="form-control related_popup_css" disabled></td>'
                     )
