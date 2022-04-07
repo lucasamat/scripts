@@ -495,11 +495,11 @@ try:
 
                 Sql.RunQuery("""UPDATE SAQRIS SET NET_VALUE_INGL_CURR = {total_net} - {total_tax}, NET_PRICE_INGL_CURR = '{total_unit}', TOTAL_AMOUNT_INGL_CURR ='{total_net}', TAX_AMOUNT_INGL_CURR ='{total_tax}' FROM SAQRIS (NOLOCK) 
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(total_unit=GetSum.TOTAL_UNIT,total_net = GetSum.TOTAL_EXT,total_tax = GetSum.TOTAL_TAX,  QuoteRecordId=quote_record_id,rev =revision_record_id))
-                getstatus=SqlHelper.GetFirst("""SELECT COUNT(PRICING_STATUS) AS CNT FROM SAQIFP WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND PRICING_STATUS='ERROR'""".format(QuoteRecordId=contract_quote_record_id))
+                getstatus=SqlHelper.GetFirst("""SELECT COUNT(PRICING_STATUS) AS CNT FROM SAQIFP WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND PRICING_STATUS='ERROR' AND QTEREV_RECORD_ID='{rev}'""".format(QuoteRecordId=contract_quote_record_id,rev =revision_record_id))
                 if getstatus.CNT>0:
-                    Sql.RunQuery("""UPDATE SAQICO SET STATUS='ERROR' WHERE QUOTE_RECORD_ID='{QuoteRecordId}'""".format(QuoteRecordId=contract_quote_record_id))
+                    Sql.RunQuery("""UPDATE SAQICO SET STATUS='ERROR' WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(QuoteRecordId=contract_quote_record_id,rev =revision_record_id))
                     Sql.RunQuery("""UPDATE SAQTRV SET WORKFLOW_STATUS='PRICING REVIEW',REVISION_STATUS='PRR-ON HOLD PRICING' WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(QuoteRecordId=contract_quote_record_id,rev =revision_record_id))
-                    Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ERROR' WHERE QUOTE_RECORD_ID='{QuoteRecordId}'""".format(QuoteRecordId=contract_quote_record_id))
+                    Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ERROR' WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(QuoteRecordId=contract_quote_record_id,rev =revision_record_id))
                                 
             
 except:
