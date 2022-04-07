@@ -3546,7 +3546,7 @@ def POPUPLISTVALUEADDNEW(
 					"ZAFTYPE":"ZAF TYPE",
 					"UNBL_INGL_CURR": "CREDIT AMOUNT",
 					"CREDIT_APPLIED": "APPLIED CREDIT",
-					"ZAFNOTE": "NOTE",
+					"ZAFNOTE": "NOTES",
 				}
 				ordered_keys = [
 					#"ADD_ON_PRODUCT_RECORD_ID",
