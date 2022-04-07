@@ -498,6 +498,7 @@ try:
                 getstatus=SqlHelper.GetFirst("""SELECT COUNT(PRICING_STATUS) AS CNT FROM SAQIFP WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND PRICING_STATUS='ERROR'""".format(QuoteRecordId=contract_quote_record_id))
                 if getstatus.CNT>0:
                     Sql.RunQuery("""UPDATE SAQICO SET STATUS='ERROR' WHERE QUOTE_RECORD_ID='{QuoteRecordId}'""".format(QuoteRecordId=contract_quote_record_id))
+                    Sql.RunQuery("""UPDATE SAQTRV SET WORKFLOW_STATUS='PRICING REVIEW',REVISION_STATUS='PRR-ON HOLD PRICING' WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(QuoteRecordId=contract_quote_record_id,rev =revision_record_id))
                     Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ERROR' WHERE QUOTE_RECORD_ID='{QuoteRecordId}'""".format(QuoteRecordId=contract_quote_record_id))
                                 
             
