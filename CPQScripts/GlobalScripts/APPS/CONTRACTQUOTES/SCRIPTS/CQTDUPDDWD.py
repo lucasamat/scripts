@@ -58,8 +58,8 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		col=colums
 		All_col=col.split(",")
 		rpl_col ={'CONSUMABLE/NON CONSUMABLE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART': 'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY'}
-		xls_col=rpl_col.get
-		All_value = [xls_col(val,val) for val in All_col]
+		xls_cols=rpl_col.get
+		All_col = [xls_cols(val,val) for val in All_col]
 		col=','.join(All_col)
 		cols=str(col)
 
