@@ -57,7 +57,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		end = 1000
 		All_value=colums.split(",")
 		Trace.Write(str(All_value))
-		replace_col ={'CONSUMABLE/NON CONSUMABLE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY'}
+		replace_col ={'CONSUMABLE/NON CONSUMABLE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY','EXCHANGE_ELIGILBE':"CASE WHEN EXCHANGE_ELIGILBE ='True' THEN 'Yes' ELSE 'No' END AS EXCHANGE_ELIGILBE"}
 		xls_col=replace_col.get
 		All_value = [xls_col(val,val) for val in All_value]
 		colums=','.join(All_value)
@@ -79,7 +79,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 			if table_data is not None:				
 				for row_data in table_data:
 					data = [row_obj.Value for row_obj in row_data]
-					data = ['Yes' if str(val) =='TRUE'or str(val) =='True' else 'No' if str(val) == 'FALSE' or str(val) =='False' else val for val in data]
+					#data = ['Yes' if str(val) =='TRUE'or str(val) =='True' else 'No' if str(val) == 'FALSE' or str(val) =='False' else val for val in data]
 					Trace.Write("DATA++"+str(data))
 					yield data
 			start += 1000		
