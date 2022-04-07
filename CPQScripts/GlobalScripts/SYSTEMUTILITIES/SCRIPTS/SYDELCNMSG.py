@@ -276,7 +276,7 @@ class DeleteConfirmPopup:
 
     # A055S000P01-1170 Start-Om Shanker
     def DelEquipmentTrace(self, RecordId, ObjName):
-        # Trace.Write("OM.........> CAME TO DelEquipmentTrace")
+        Trace.Write("CAME TO DelEquipmentTrace")
         Trace.Write("OM...RecordId-----> " + str(RecordId))
         Trace.Write("OM...ObjName-----> " + str(ObjName))
 
