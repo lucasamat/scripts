@@ -430,11 +430,36 @@ def EditItems():
         line.append(str(x.LINE))
     
     return str(line)
+
+def LoadQuoteSummary():
+    sec_str = ""
+    GetDetails = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR,TAX_AMOUNT_INGL_CURR,ESTVAL_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,CNTMRG_INGL_CURR,TOTAL_MARGIN_PERCENT FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_record_id))
+
+    values = {}
+    values["NET_VALUE_INGL_CURR"] = GetDetails.NET_VALUE_INGL_CURR
+    values["TAX_AMOUNT_INGL_CURR"] = GetDetails.TAX_AMOUNT_INGL_CURR
+    values["ESTVAL_INGL_CURR"] = GetDetails.ESTVAL_INGL_CURR
+    values["TOTAL_AMOUNT_INGL_CURR"] = GetDetails.TOTAL_AMOUNT_INGL_CURR
+    values["CNTMRG_INGL_CURR"] = GetDetails.CNTMRG_INGL_CURR
+    values["TOTAL_MARGIN_PERCENT"] = GetDetails.TOTAL_MARGIN_PERCENT
+    for x,y in values.items():
+        sec_str += (
+                    '<td><input id="'
+                    + str(x)
+                    + '" type="text" value="'
+                    + y
+                    + '" title="'
+                    + y
+                    + ""
+                    + '" class="form-control related_popup_css" disabled></td>'
+                    )
+    return sec_str	
 try:
     SubtabName = Param.SUBTAB
 except:
     SubtabName = ""
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 try:
     Action = Param.ACTION
 except:
@@ -493,4 +518,11 @@ elif SubtabName == "Summary" and Action == "SAVE":
     ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
 if SubtabName == "Items" and Action == "Edit":
     ApiResponse = ApiResponseFactory.JsonResponse(EditItems())
+GetPOES = Sql.GetFirst("SELECT POES FROM SAQTMT(NOLOCK) WHERE QTEREV_RECORD_ID  = '{}' AND QUOTE_RECORD_ID  = '{}' ".format(quote_revision_record_id,quote_record_id))
+
+if GetPOES:
+
+    if SubtabName == "Summary" and GetPOES == 1:
+
+        ApiResponse = ApiResponseFactory.JsonResponse(LoadQuoteSummary())
 
