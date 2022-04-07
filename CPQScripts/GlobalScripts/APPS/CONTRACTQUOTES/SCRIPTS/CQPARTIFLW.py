@@ -49,5 +49,5 @@ def iflow_pricing_call(user,entries,revision):
     webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
     webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
     response = webclient.UploadString(URL, requestdata)
-    Log.Info("33333333333333333    " + str(response))
+    #Log.Info("33333333333333333    " + str(response))
     

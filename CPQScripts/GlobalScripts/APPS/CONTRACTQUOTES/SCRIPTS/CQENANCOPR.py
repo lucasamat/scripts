@@ -959,7 +959,7 @@ class AncillaryProductOperation:
 					if get_ancillary:
 						for offering in get_ancillary:
 							where_condition = "WHERE "+self.where_string.replace('SERVICE_ID','PAR_SERVICE_ID')+ " AND SERVICE_ID = '{}'".format(get_ancillary.SERVICE_ID)
-							for rec_table in ['SAQSGE','SAQSCE','SAQGPE']:
+							for rec_table in ['SAQSGE','SAQSCE','SAQGPE','SAQTSE']:
 								ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_COLUMN_UPDATE',
 																			'partnumber':get_ancillary.SERVICE_ID,
 																			'where_cond' :where_condition, 
@@ -1026,7 +1026,7 @@ class AncillaryProductOperation:
 			# if obj in ('SAQICO','SAQRIT','SAQRIO'):
 			# 	ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 			if obj == 'SAQRIT' and 'EQUIPMENT_ID' in ancillary_where:
-				if self.quote_service_entitlement_type != "OFFERING + EQUIPMENT":
+				if self.quote_service_entitlement_type != "STR-OFFBGBEQ OBJ-EQ":
 					ancillary_where = re.sub(r'AND EQUIPMENT_ID\s*\=\s*\'[^>]*?\'', '', ancillary_where )
 				else:
 					ancillary_where = re.sub('EQUIPMENT_ID', 'OBJECT_ID', ancillary_where )

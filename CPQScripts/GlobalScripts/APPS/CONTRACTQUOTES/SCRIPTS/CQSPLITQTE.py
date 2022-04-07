@@ -55,7 +55,7 @@ def _insert_equipment_entitlement():
 					JOIN SAQSCO (NOLOCK) ON SAQSCO.PAR_SERVICE_ID = SAQTSE.PAR_SERVICE_ID AND SAQSCO.SERVICE_ID = SAQTSE.SERVICE_ID AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID  AND SAQSCO.QTEREV_RECORD_ID = SAQTSE.QTEREV_RECORD_ID 
 					
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND ISNULL(SAQTSE.CONFIGURATION_STATUS,'') = 'COMPLETE' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.SERVICE_ID = 'Z0105' AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'   AND QTEREV_RECORD_ID = '{revision_rec_id}'  AND SAQSCE.SERVICE_ID = 'Z0105')) IQ""".format(UserId=user_id, QuoteRecordId=contract_quote_rec_id, revision_rec_id = quote_revision_rec_id)
-	Log.Info('@qtqsce_anc_query-renewal----179=---Qt_rec_id--'+str(qtqsce_anc_query))
+	#Log.Info('@qtqsce_anc_query-renewal----179=---Qt_rec_id--'+str(qtqsce_anc_query))
 	Sql.RunQuery(qtqsce_anc_query)
 
 def _construct_dict_xml(updateentXML):
@@ -119,7 +119,7 @@ def _insert_service_level_entitlement(par_service=''):
 	fullresponse=str(fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
 	fullresponse= eval(fullresponse)
 	##getting configuration_status status
-	if fullresponse['complete'] == 'true':
+	if fullresponse['complete'] == 'true' and fullresponse['consistent'] == 'true' :
 		configuration_status = 'COMPLETE'
 	elif fullresponse['complete'] == 'false':
 		configuration_status = 'INCOMPLETE'
@@ -423,11 +423,11 @@ def splitserviceinsert():
 				split_entitlement_display_value = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
 			if entitlement_display_value_tag_match and split_entitlement_display_value:
 				quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
-				if quote_service_entitlement_type == 'OFFERING + EQUIPMENT' and split_entitlement_display_value == ["Yes"]:
+				if quote_service_entitlement_type == 'STR-OFFBGBEQ OBJ-EQ' and split_entitlement_display_value == ["Yes"]:
 					Trace.Write("1")
 					servicelevel_split_equip(service_entitlement_obj.SERVICE_ID)
 					break
-				elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART') and split_entitlement_display_value == ["Yes"]:
+				elif quote_service_entitlement_type in ('STR-OFFBGB OBJ-GREQ PRD-GRPT','STR-OFFBGB OBJ-GREQ','STR-OFFBGB OBJ-EQ','STR-OFFBGR OBJ-GREQ','STR-OFFBGB OBJ-ASKT') and split_entitlement_display_value == ["Yes"]:
 					Trace.Write("2")
 					servicelevel_split_green(service_entitlement_obj.SERVICE_ID)
 					break

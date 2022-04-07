@@ -14,7 +14,11 @@ try :
 	While_flag = 1
 	Trigger_flag = 0
 	while While_flag == 1:
-		Jsonquery = SqlHelper.GetList("SELECT  replace(integration_payload,'\\\\','\\') as INTEGRATION_PAYLOAD,CpqTableEntryId from SYINPL(NOLOCK) WHERE INTEGRATION_NAME = 'INSTALLED BASE' AND ISNULL(STATUS,'')='' ")
+	
+		replacedquery = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE SYINPL  SET integration_payload =  replace(replace(integration_payload,''\\\\'',''\\''),''VALID_TP'',''VALID_TO'')  from SYINPL(NOLOCK) WHERE INTEGRATION_NAME = ''INSTALLED BASE'' AND ISNULL(STATUS,'''')='''' '")
+		
+		Jsonquery = SqlHelper.GetList("SELECT integration_payload as INTEGRATION_PAYLOAD,CpqTableEntryId from SYINPL(NOLOCK) WHERE INTEGRATION_NAME = 'INSTALLED BASE' AND ISNULL(STATUS,'')='' ")
+		
 		if len(Jsonquery) > 0:
 
 			for json_data in Jsonquery:

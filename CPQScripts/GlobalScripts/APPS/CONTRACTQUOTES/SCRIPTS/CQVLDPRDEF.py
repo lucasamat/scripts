@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED FOR PREDEFINED VALUES IN VALUE DRIVER (GETS TRIGGERED AFTER IFLOW SCRIPT - CQTVLDRIFW.py)
 #   __primary_author__ : 
 #   __create_date :06-09-2021
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import Webcom.Configurator.Scripting.Test.TestProduct
 import clr
@@ -55,7 +55,7 @@ except:
 	serviceId = ""
 
 def equipment_predefined():	
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK TOOL LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING FAB LEVEL','OFFERING LEVEL','OFFERING FAB GREENBOOK LEVEL')) ".format(TreeParam) )
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK)  WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE ='VALUE DRIVER'   ".format(TreeParam) )
 	getall_recid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID,ENTITLEMENT_XML,GREENBOOK_RECORD_ID,FABLOCATION_RECORD_ID FROM SAQSCE {}""".format(str(where_condition) ))
 	for rec in getall_recid:
 		entxmldict = {}
@@ -238,12 +238,20 @@ def service_level_predefined():
 		#Log.Info('x---'+str(x))
 		entxmldict[x[0]]=sub_string
 
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) WHERE SERVICE_ID = '{service_id}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID IN ('AGS_{service_id}_VAL_POFFER','AGS_{service_id}_VAL_INTCPT') ".format(service_id = TreeParam))
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) WHERE SERVICE_ID = '{service_id}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENTL.ENTITLEMENT_ID IN ('AGS_{service_id}_VAL_POFFER','AGS_{service_id}_VAL_INTCPT','AGS_{service_id}_VAL_CSTSEG') ".format(service_id = TreeParam))
 
 	for val in get_valuedriver_ids:
 		if 'PRODUCT OFFERING' in val.ENTITLEMENT_DESCRIPTION.upper() or 'INTERCEPT' in val.ENTITLEMENT_DESCRIPTION.upper():
 			ent_value = ""
 			updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value,TreeParam )
+		elif 'CUSTOMER SEGMENT' in val.ENTITLEMENT_DESCRIPTION.upper():
+			try:
+				get_customer_segment =Sql.GetFirst("SELECT CUSTOMER_SEGMENT FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}' AND CPQ_PARTNER_FUNCTION = 'SOLD TO' ".format(quote_record_id,quote_revision_record_id))
+				
+			except:
+				get_customer_segment =''
+			if get_customer_segment :
+				updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_customer_segment.CUSTOMER_SEGMENT,TreeParam)
 	#Product.SetGlobal("updateentXML",updateentXML)
 	Sql.RunQuery( "UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(updateentXML.replace("'","''") , quote_record_id,TreeParam, quote_revision_record_id) )
 	##rolldown
@@ -255,7 +263,7 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value,service_id):
 	if ent_value:
 		get_value_code = Sql.GetFirst("SELECT ENTITLEMENT_VALUE_CODE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(ent_id, service_id, ent_value) )
 		entitlement_string = entxmldict[ent_id]
-		entitlement_string = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(ent_value)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string)
+		entitlement_string = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(ent_value.replace("'","''").replace("&",";#38").replace(">","&gt;").replace("<","&lt;"))+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string)
 		entitlement_string = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_value_code.ENTITLEMENT_VALUE_CODE)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string)
 		where = " AND PRENVL.ENTITLEMENT_DISPLAY_VALUE = '{}'".format(ent_value)
 		input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(ent_id)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string, input_xml )
@@ -323,7 +331,8 @@ def valuedriver_onchage():
 						entxmldict[uptime_coeff] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_coeff])
 						querystring = querystring + entxmldict[uptime_coeff]
 					elif uptime_key == key:
-						entxmldict[uptime_key] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_DISPLAY_VALUE)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_key])
+						Trace.Write("value--"+str(update.ENTITLEMENT_DISPLAY_VALUE))
+						entxmldict[uptime_key] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_DISPLAY_VALUE).replace("'","''").replace("&",";#38").replace(">","&gt;").replace("<","&lt;")+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_key])
 						entxmldict[uptime_key] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_VALUE_CODE)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_key])
 						querystring = querystring + entxmldict[uptime_key]
 					else:
@@ -369,11 +378,39 @@ def valuedriver_onchage():
 				Sql.RunQuery( "UPDATE {objname} SET ENTITLEMENT_XML = '{xml_data}'  {where}".format(xml_data=updateentXML.replace("'","''") ,objname=TreeParam,where=str(where_condition)) )
 		#return inputXML
 
+def equipment_fab_ent_rolldown():
+	Trace.Write("Inside this QULAITY")
+	getall_recid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID,ENTITLEMENT_XML,FABLOCATION_RECORD_ID,GREENBOOK_RECORD_ID,SERVICE_ID FROM SAQSCE(NOLOCK) {}""".format(str(where_condition)))
+	for rec in getall_recid:
+		entxmldict = {}
+		entl_id ="AGS_"+str(rec.SERVICE_ID)+"_VAL_QLYREQ"
+		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+		display_val_dict = {}
+		updateentXML = rec.ENTITLEMENT_XML
+		for m in re.finditer(pattern_tag, updateentXML):
+			sub_string = m.group(1)
+			x=re.findall(pattern_name,sub_string)
+			if x:
+				entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
+				if entitlement_display_value_tag_match:
+					display_val_dict[x[0]] = entitlement_display_value_tag_match[0].upper()
+			entxmldict[x[0]]=sub_string
+		get_fab =Sql.GetFirst("SELECT QUALITY_REQUIRED FROM SAQFBL(NOLOCK) {}".format(str(where_condition)))
+		updateentXML = updating_xml(entxmldict,updateentXML,entl_id,get_fab.QUALITY_REQUIRED,rec.SERVICE_ID)
+		#Trace.Write("updateentXML"+str(updateentXML))
+		Sql.RunQuery( "UPDATE SAQSCE SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}' AND EQUIPMENT_RECORD_ID ='{}'".format(updateentXML.replace("'","''"),where_condition ,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID, rec.EQUIPMENT_RECORD_ID))
+
+
+
 try:
 	if LEVEL == 'SERVICE_LEVEL':
 		service_level_predefined()
 	elif LEVEL == 'ONCHNGAE_DRIVERS':
 		valuedriver_onchage()
+	elif LEVEL == 'QUALITY_FAB':
+		equipment_fab_ent_rolldown()
 	else:
 		obj_list = ['SAQSGE','SAQSCE']
 		for obj in obj_list:
@@ -384,4 +421,4 @@ try:
 			elif obj == "SAQSCE":
 				equipment_predefined()
 except Exception as e:
-	Log.Info('error--'+str(e)+str(sys.exc_info()[1])) 
+    Log.Info('error--'+str(e)+str(sys.exc_info()[1]))

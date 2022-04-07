@@ -49,13 +49,13 @@ try :
 									
 								for record_dict in Tbl_data:	
 
-									for col in ['ACCOUNT_ID','ACCOUNT_NAME','ADDRESS_1','CITY','COUNTRY','POSTAL_CODE','STATE','ACCOUNTGROUP_ID','TAX_CODE','PAR_ACCOUNT_ID','LEGACY_FABLOC_ID']:
+									for col in ['ACCOUNT_ID','ACCOUNT_NAME','ADDRESS_1','CITY','COUNTRY','POSTAL_CODE','STATE','ACCOUNTGROUP_ID','TAX_CODE','PAR_ACCOUNT_ID','LEGACY_FABLOC_ID','AGS_BLUEBOOK','AGS_CUST_SGMT','AGS_CUSSHT_NAME']:
 										if col not in record_dict:
 											record_dict[col] = ''	
 									
-									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SAACNT_INBOUND (CITY,POSTAL_CODE,ACCOUNT_NAME,COUNTRY,STATE,ACCOUNT_ID,ADDRESS_1,ACCOUNTGROUP_ID,TAX_CODE,PAR_ACCOUNT_ID,	LEGACY_FBL_ID,cpqtableentrydatemodified,SESSION_ID)  select  N''"+record_dict['CITY']+ "'',''"+record_dict['POSTAL_CODE']+ "'',N''"+record_dict['ACCOUNT_NAME']+ "'',N''"+record_dict['COUNTRY']+ "'',N''"+record_dict['STATE']+ "'',N''"+record_dict['ACCOUNT_ID']+ "'',N''"+record_dict['ADDRESS_1']+"'',N''"+record_dict['ACCOUNTGROUP_ID']+"'',N''"+record_dict['TAX_CODE']+ "'',N''"+record_dict['PAR_ACCOUNT_ID']+ "'',N''"+record_dict['LEGACY_FABLOC_ID']+ "'',''"+ str(Modi_date)+ "'',''"+ str(primaryQuerysession.A)+ "'' ' ")		
+									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SAACNT_INBOUND (CITY,POSTAL_CODE,ACCOUNT_NAME,COUNTRY,STATE,ACCOUNT_ID,ADDRESS_1,ACCOUNTGROUP_ID,TAX_CODE,PAR_ACCOUNT_ID,	LEGACY_FBL_ID,cpqtableentrydatemodified,SESSION_ID,AGS_BLUEBOOK,AGS_CUST_SGMT,AGS_CUSSHT_NAME)  select  N''"+record_dict['CITY']+ "'',''"+record_dict['POSTAL_CODE']+ "'',N''"+record_dict['ACCOUNT_NAME']+ "'',N''"+record_dict['COUNTRY']+ "'',N''"+record_dict['STATE']+ "'',N''"+record_dict['ACCOUNT_ID']+ "'',N''"+record_dict['ADDRESS_1']+"'',N''"+record_dict['ACCOUNTGROUP_ID']+"'',N''"+record_dict['TAX_CODE']+ "'',N''"+record_dict['PAR_ACCOUNT_ID']+ "'',N''"+record_dict['LEGACY_FABLOC_ID']+ "'',''"+ str(Modi_date)+ "'',''"+ str(primaryQuerysession.A)+ "'',N''"+record_dict['AGS_BLUEBOOK']+ "'',N''"+record_dict['AGS_CUST_SGMT']+ "'',N''"+record_dict['AGS_CUSSHT_NAME']+ "'' ' ")		
 							
-							elif str(tn).upper() == "SAACCT":
+							elif str(tn).upper() == "SAACCT": 
 								if str(type(rebuilt_data[tn])) == "<type 'dict'>":
 									Tbl_data = [rebuilt_data[tn]]
 								else:
@@ -63,13 +63,13 @@ try :
 									
 								for record_dict in Tbl_data:	
 									
-									for col in ['ACCOUNT_ID','FIRSTNAME','LASTNAME','CONTACT_ID','PHONE']:
+									for col in ['ACCOUNT_ID','FIRST_NAME','LAST_NAME','CONTACT_ID','PHONE','EMAIL','MOBILE','FAX']:
 										if col not in record_dict:
 											record_dict[col] = ''					
 											
-									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SAACNT_INBOUND (CONTACT_ID,PHONE,ACCOUNT_ID,FIRSTNAME,LASTNAME,INTEGRATION_OBJECT,cpqtableentrydatemodified,SESSION_ID)  select  N''"+str(record_dict['CONTACT_ID'])+ "'',''"+str(record_dict['PHONE'])+ "'',''"+str(record_dict['ACCOUNT_ID'])+ "'',N''"+record_dict['FIRSTNAME']+ "'',N''"+record_dict['LASTNAME']+ "'',''SAACCT'',''"+ str(Modi_date)+ "'',''"+ str(primaryQuerysession.A)+ "'' ' ")
+									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SAACNT_INBOUND (CONTACT_ID,PHONE,ACCOUNT_ID,FIRSTNAME,LASTNAME,EMAIL,FAX,MOBILE,INTEGRATION_OBJECT,cpqtableentrydatemodified,SESSION_ID)  select  N''"+str(record_dict['CONTACT_ID'])+ "'',''"+str(record_dict['PHONE'])+ "'',''"+str(record_dict['ACCOUNT_ID'])+ "'',N''"+record_dict['FIRST_NAME']+ "'',N''"+record_dict['LAST_NAME']+ "'',N''"+record_dict['EMAIL']+ "'',N''"+record_dict['FAX']+ "'',N''"+record_dict['MOBILE']+ "'',''SAACCT'',''"+ str(Modi_date)+ "'',''"+ str(primaryQuerysession.A)+ "'' ' ")
 									
-							elif str(tn).upper() == "SASAAC":
+							elif str(tn).upper() == "SASAAC": 
 								if str(type(rebuilt_data[tn])) == "<type 'dict'>":
 									Tbl_data = [rebuilt_data[tn]]
 								else:
@@ -77,11 +77,11 @@ try :
 									
 								for record_dict in Tbl_data:
 								
-									for col in ['ACCOUNT_ID','BLUEBOOK','CUSTOMER_PRICING_PROCEDURE','DISTRIBUTIONCHANNEL_ID','DIVISION_ID','SALESORG_ID','PAYMENTTERM_ID','EXCHANGE_RATE_TYPE','INCOTERM_ID','CURRENCY','PRICEGROUP_ID','REGION']:
+									for col in ['ACCOUNT_ID','BLUEBOOK','CUSTOMER_PRICING_PROCEDURE','DISTRIBUTIONCHANNEL_ID','DIVISION_ID','SALESORG_ID','PAYMENTTERM_ID','EXCHANGE_RATE_TYPE','INCOTERM_ID','CURRENCY','PRICEGROUP_ID','REGION','PRICELIST_ID']:
 										if col not in record_dict:
 											record_dict[col] = ''
 																		
-									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SAACNT_INBOUND (DISTRIBUTIONCHANNEL_ID,BLUEBOOK,INCOTERM_ID,CUSTOMER_PRICING_PROCEDURE,REGION,SALESORG_ID,ACCOUNT_ID,PAYMENTTERM_ID,CURRENCY,DIVISION_ID,EXCHANGE_RATE_TYPE,PRICEGROUP_ID,INTEGRATION_OBJECT,cpqtableentrydatemodified,SESSION_ID)  select  ''"+str(record_dict['DISTRIBUTIONCHANNEL_ID'])+ "'',''"+str(record_dict['BLUEBOOK'])+"'',''"+str(record_dict['INCOTERM_ID'])+ "'',N''"+str(record_dict['CUSTOMER_PRICING_PROCEDURE'])+ "'',''"+str(record_dict['REGION'])+ "'',''"+str(record_dict['SALESORG_ID'])+ "'',N''"+str(record_dict['ACCOUNT_ID'])+ "'',''"+str(record_dict['PAYMENTTERM_ID'])+ "'',N''"+str(record_dict['CURRENCY'])+ "'',''"+str(record_dict['DIVISION_ID'])+ "'',''"+str(record_dict['EXCHANGE_RATE_TYPE'])+ "'',''"+record_dict['PRICEGROUP_ID']+ "'',''SASAAC'',''"+ str(Modi_date)+ "'',''"+ str(primaryQuerysession.A)+ "'' ' ")
+									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SAACNT_INBOUND (DISTRIBUTIONCHANNEL_ID,BLUEBOOK,INCOTERM_ID,CUSTOMER_PRICING_PROCEDURE,REGION,SALESORG_ID,ACCOUNT_ID,PAYMENTTERM_ID,CURRENCY,DIVISION_ID,EXCHANGE_RATE_TYPE,PRICEGROUP_ID,PRICELIST_ID,INTEGRATION_OBJECT,cpqtableentrydatemodified,SESSION_ID)  select  ''"+str(record_dict['DISTRIBUTIONCHANNEL_ID'])+ "'',''"+str(record_dict['BLUEBOOK'])+"'',''"+str(record_dict['INCOTERM_ID'])+ "'',N''"+str(record_dict['CUSTOMER_PRICING_PROCEDURE'])+ "'',''"+str(record_dict['REGION'])+ "'',''"+str(record_dict['SALESORG_ID'])+ "'',N''"+str(record_dict['ACCOUNT_ID'])+ "'',''"+str(record_dict['PAYMENTTERM_ID'])+ "'',N''"+str(record_dict['CURRENCY'])+ "'',''"+str(record_dict['DIVISION_ID'])+ "'',''"+str(record_dict['EXCHANGE_RATE_TYPE'])+ "'',''"+record_dict['PRICEGROUP_ID']+ "'',''"+record_dict['PRICELIST_ID']+ "'',''SASAAC'',''"+ str(Modi_date)+ "'',''"+ str(primaryQuerysession.A)+ "'' ' ")
 							
 							elif str(tn).upper() == "SAACPF":
 								if str(type(rebuilt_data[tn])) == "<type 'dict'>":

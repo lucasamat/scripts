@@ -23,16 +23,13 @@ def update_document_type(QuoteRecordId,RevisionRecordId,ServicerecordId):
         document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT(NOLOCK) where SAP_PART_NUMBER = '{}' AND POES ='{}'".format(service_obj.SERVICE_ID,Quote_obj.POES))
         Sql.RunQuery("UPDATE SAQTSV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(DocumentType = document_type_obj.DOCTYP_ID,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = QuoteRecordId,RevisionRecordId = RevisionRecordId,ServicerecordId = ServicerecordId))
     else:
-        Log.Info('26---')
         if Quote_obj is not None:
             if str(Quote_obj.POES).upper() =="TRUE":
                 document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT where DOCTYP_ID ='ZSWC'")
             else:
-                Log.Info('26--inside condt-')
                 document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT where DOCTYP_ID ='ZTBC'")    
         
     if document_type_obj:
-        Log.Info('26--update---'+str(document_type_obj.DOCTYP_ID))
         Sql.RunQuery("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type_obj.DOCTYP_ID,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = QuoteRecordId,RevisionRecordId = RevisionRecordId)) 
     
 try:

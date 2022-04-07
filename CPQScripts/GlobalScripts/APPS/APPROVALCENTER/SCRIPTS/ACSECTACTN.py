@@ -14,7 +14,7 @@ import datetime
 import CQCPQC4CWB
 import CQREVSTSCH
 import clr
-
+import time
 import SYCNGEGUID as CPQID
 import ACVIORULES
 
@@ -245,7 +245,7 @@ class approvalCenter:
 					if GetCurStatus:
 						
 						MainObjUpdateQuery = """UPDATE SAQTRV SET
-							REVISION_STATUS = 'APPROVED'
+							REVISION_STATUS = 'APR-APPROVED',WORKFLOW_STATUS = 'APPROVALS'
 							WHERE {primaryKey} = '{Primaryvalue}' """.format(
 							statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 							ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -317,8 +317,8 @@ class approvalCenter:
 						Select_Query = (
 							"SELECT * FROM "
 							+ str(GetObjName.OBJECT_NAME)
-							+ " (NOLOCK) WHERE "
-							+ str(result.WHERE_CONDITION_01)
+							+ " (NOLOCK) WHERE ("
+							+ str(result.WHERE_CONDITION_01) + ")"
 						)
 						getObjSplit = str(GetCurrentStrpId.APPROVAL_ID).split("-")
 						ObjectName = getObjSplit[0]
@@ -416,7 +416,7 @@ class approvalCenter:
 							
 							if statusupdate == True:
 								MainObjUpdateQuery = """UPDATE SAQTRV SET
-									REVISION_STATUS = 'APPROVED' 
+									REVISION_STATUS = 'APR-APPROVED',WORKFLOW_STATUS = 'APPROVALS'
 									WHERE {primaryKey} = '{Primaryvalue}' """.format(
 									statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 									ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -448,6 +448,7 @@ class approvalCenter:
 			try:
 				##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 				CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				#time.sleep(5)
 				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			except Exception as e:
 				Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
@@ -499,8 +500,8 @@ class approvalCenter:
 			if GetCurStatus:
 				
 				MainObjUpdateQuery = """UPDATE {ObjName} SET
-					{ApiName} = '{statusUpdate}'
-					WHERE {primaryKey} = '{Primaryvalue}' """.format(
+					{ApiName} = '{statusUpdate}',WORKFLOW_STATUS = 'APPROVALS'
+					WHERE {primaryKey} = '{Primaryvalue}'""".format(
 					statusUpdate = "REJECTED",
 					ObjName="SAQTRV",
 					ApiName="REVISION_STATUS",
@@ -521,6 +522,7 @@ class approvalCenter:
 			try:
 				##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 				CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				time.sleep(5)
 				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			except Exception as e:
 				Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
@@ -1213,7 +1215,7 @@ class approvalCenter:
 				if GetCurStatus:
 					
 					MainObjUpdateQuery = """UPDATE SAQTRV SET
-						REVISION_STATUS = 'APPROVAL PENDING'
+						REVISION_STATUS = 'APR-APPROVAL PENDING',WORKFLOW_STATUS = 'APPROVALS'
 						WHERE {primaryKey} = '{Primaryvalue}' """.format(
 						statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 						ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -1228,6 +1230,7 @@ class approvalCenter:
 				try:
 					##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 					CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+					time.sleep(5)
 					CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				except Exception as e:
 					Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
@@ -1352,8 +1355,8 @@ class approvalCenter:
 			if GetCurStatus:
 				
 				MainObjUpdateQuery = """UPDATE SAQTRV SET
-					REVISION_STATUS = 'APPROVAL PENDING'
-					WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}' """.format(
+					REVISION_STATUS = 'APR-APPROVAL PENDING',WORKFLOW_STATUS = 'APPROVALS'
+					WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}'""".format(
 					statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 					ObjName=str(GetCurStatus.OBJECT_NAME),
 					ApiName=str(GetCurStatus.API_NAME),
@@ -1371,13 +1374,14 @@ class approvalCenter:
 					+str(self.quote_revision_record_id)
 					+"'"
 				)
-				if getQuote.REVISION_STATUS == "APPROVED":
+				if getQuote.REVISION_STATUS == "APR-APPROVED":
 					
 					result = ScriptExecutor.ExecuteGlobal("QTPOSTACRM", {"QUOTE_ID": getQuote.QUOTE_ID, 'Fun_type':'cpq_to_crm'})
 			
 			try:
 				##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 				CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				time.sleep(5)
 				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			except Exception as e:
 				Trace.Write("EXCEPTION: QUOTE WRITE BACK " +str(e))
@@ -1486,7 +1490,7 @@ class approvalCenter:
 						)
 						if GetCurStatus:
 							MainObjUpdateQuery = """UPDATE SAQTRV SET
-							REVISION_STATUS = 'RECALLED'
+							REVISION_STATUS = 'APR-RECALLED',WORKFLOW_STATUS = 'APPROVALS'
 							WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}' """.format(
 									statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 									ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -1517,6 +1521,7 @@ class approvalCenter:
 						try:
 							##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 							CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+							time.sleep(5)
 							CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 
 						except Exception as e:
@@ -1679,10 +1684,11 @@ class approvalCenter:
 									where ACAPMA.APRTRXOBJ_RECORD_ID = '{revision_rec_id}' AND ACAPMA.APRCHN_ID = '{chain_rec_id}' GROUP BY ACAPTX.APRCHN_ID,ACAPTX.REQUESTOR_COMMENTS""".format(
 									revision_rec_id=  self.quote_revision_record_id,chain_rec_id = approval_chain
 								)
-							)
+								)
+						Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}' AND ACAPTX.APRCHN_ID = '{chain_rec_id}'".format(quote_record = my_approval_queue_obj.QUOTE_ID, chain_rec_id = approval_chain))
 						get_chain_max_rounds.append(GetMaxQuery)   ##to get max rounds of all chains
 						## to get max round of a particular chain in multi chain ends
-						appround = GetMaxQuery.appround
+						appround = Max_Round.ROUND
 						MaxStep = GetMaxQuery.MaxStep
 
 					getaprovalsubtabname = 'Round '+str(appround)+" : "+str(GetMaxStep.APRCHN_ID)
@@ -2590,10 +2596,10 @@ class approvalCenter:
 					my_approval_queue_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID,OWNER_NAME,QUOTE_STATUS,QTEREV_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id") ,revision_rec_id=  self.quote_revision_record_id))
 					
 					quote_status = my_approval_queue_obj.QUOTE_STATUS
-					if quote_status == 'APPROVED':
-						Htmlstr += "<div class='noRecDisp'>This Quote has been self-approved.</div>"
-					else:
-						Htmlstr += "<div class='noRecDisp'>This quote can be self-approved. Kindly proceed to approve the quote.</div>"
+					# if quote_status == 'APPROVED':
+					# 	Htmlstr += "<div class='noRecDisp'>This Quote has been self-approved.</div>"
+					# else:
+					# 	Htmlstr += "<div class='noRecDisp'>This quote can be self-approved. Kindly proceed to approve the quote.</div>"
 				else:   
 					
 					Htmlstr += "<div class='noRecDisp'>No Records to Display</div>"
@@ -2940,7 +2946,7 @@ class approvalCenter:
 			getobjName = {}
 			for objloop in objectdic.values():
 				getobjquery = Sql.GetFirst(
-					"SELECT OBJECT_NAME,RECORD_NAME FROM SYOBJH (NOLOCK) WHERE LABEL = '{}'".format(str(objloop))
+					"SELECT OBJECT_NAME,RECORD_NAME FROM SYOBJH (NOLOCK) WHERE LABEL = 'Quote Revision'".format(str(objloop))
 				)
 				getobjName[str(getobjquery.OBJECT_NAME)] = str(getobjquery.RECORD_NAME)
 				objlableandobj[str(objloop)] = str(getobjquery.OBJECT_NAME)
@@ -3107,21 +3113,6 @@ class approvalCenter:
 					+ str(bodystr) 
 					+ "</tbody></table></body></html>"
 				)
-			# ApproveLink = """https://sandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&ACTION=APPROVEBTN&ApproveDesc=Approved&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
-			#     transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),
-			#     approvalid=str(getnotify.APPROVAL_RECORD_ID),
-			#     priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),
-			# )
-			# RejectLink = """https://sandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&ACTION=REJECTBTN&ApproveDesc=Rejected&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
-			#     transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),
-			#     approvalid=str(getnotify.APPROVAL_RECORD_ID),
-			#     priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),
-			# )
-			#ViewLink = """https://sandbox.webcomcpq.com/sso/login.aspx?u=iSbvvR727kdpKBzPhaQlCQG2R2R7BAG7zrBeA09ehWU6IRL8YYeU5IF1kx6EqoTc&d=octanner_dev&#ACTION=VIEWBTN&CurrentTransId={transactionid}&approvalrecid={approvalid}&PriceagreementRevId={priceagreementrevid}""".format(
-			#    transactionid=str(getnotify.APPROVAL_TRANSACTION_RECORD_ID),
-			#    approvalid=str(getnotify.APPROVAL_RECORD_ID),
-			#    priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),
-			#)
 			ApproveLink = """https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
 			RejectLink = """https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
 			ViewLink ="""https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
@@ -3141,7 +3132,7 @@ class approvalCenter:
 	
 	def cbcmailtrigger(self):
 		revision_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-		if revision_status.REVISION_STATUS=="APPROVED":
+		if revision_status.REVISION_STATUS=="APR-APPROVED":
 			try:
 				LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
 				MANAGER_DETAILS=Sql.GetFirst("SELECT EMAIL,MEMBER_NAME,QUOTE_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' ")

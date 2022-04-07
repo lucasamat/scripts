@@ -15,6 +15,8 @@ from datetime import timedelta , date
 import sys
 import System.Net
 import CQPARTIFLW
+import CQCPQC4CWB
+import time
 import ACVIORULES
 Param = Param 
 Sql = SQL()
@@ -50,8 +52,10 @@ user_id = str(User.Id)
 user_name = str(User.UserName) 
 
 
-def Dynamic_Status_Bar(quote_item_insert,Text):
-	
+def Dynamic_Status_Bar(quote_item_insert,Text,edit_config):
+	if edit_config != "":
+		Sql.RunQuery("UPDATE SAQTRV SET DIRTY_FLAG='{}',REVISION_STATUS='CFG-CONFIGURING' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(edit_config,Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+
 	if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
 		Trace.Write('SAQSPT delete=======')
 		Sql.RunQuery("UPDATE SAQSPT SET SCHEDULE_MODE='ON REQUEST', DELIVERY_MODE='OFFSITE' WHERE CUSTOMER_ANNUAL_QUANTITY<10 AND UNIT_PRICE >50 AND SERVICE_ID='Z0110' AND  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -98,6 +102,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		#if getsalesorg_ifo and getfab_info:
 		Trace.Write('not_acquired_status--'+str(price_bar))
 		Trace.Write('COMPLETE STAGE---'+str(Text))
+		if getsalesorg_ifo.REVISION_STATUS == "APPROVAL PENDING":
+			Text = "COMPLETE STAGE"
 		if getsalesorg_ifo:
 			if Text == "COMPLETE STAGE":		
 				Trace.Write('salesorg--present---')
@@ -111,40 +117,57 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 									
 					Sql.RunQuery(update_workflow_status)
 					ScriptExecutor.ExecuteGlobal('CQSDELPGPN',{'QUOTE_ID':Quote.GetGlobal("contract_quote_record_id"),'QTEREV_ID':Quote.GetGlobal("quote_revision_record_id"),'ACTION':'EMAIL'})
-				if getsalesorg_ifo.REVISION_STATUS == "APPROVED" and Text == "COMPLETE STAGE":
+				if getsalesorg_ifo.REVISION_STATUS == "APR-APPROVED" and Text == "COMPLETE STAGE":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
-					status = "APPROVED"
-				if (getsalesorg_ifo.REVISION_STATUS == "CUSTOMER ACCEPTED" or getsalesorg_ifo.REVISION_STATUS == "CUSTOMER REJECTED") and Text == "COMPLETE STAGE":
+					status = "APR-APPROVED"
+				if (getsalesorg_ifo.REVISION_STATUS == "OPD-CUSTOMER ACCEPTED" or getsalesorg_ifo.REVISION_STATUS == "OPD-CUSTOMER REJECTED") and Text == "COMPLETE STAGE":
 					#if str(get_documents_date_validation_accepted.DATE_ACCEPTED) != "":
 					Trace.Write("accepted===")
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))			
 					Sql.RunQuery(update_workflow_status)
 					status = "QUOTE DOCUMENTS"			
 				
-				if getsalesorg_ifo.REVISION_STATUS == "SUBMITTED FOR BOOKING" and Text == "COMPLETE STAGE":
+				if getsalesorg_ifo.REVISION_STATUS == "BOK-CONTRACT CREATED" and Text == "COMPLETE STAGE":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
-					status = "SUBMITTED FOR BOOKING"
-				if getsalesorg_ifo.REVISION_STATUS == "CONTRACT BOOKED" and Text == "COMPLETE STAGE":
+					status = "BOK-CONTRACT CREATED"
+				if getsalesorg_ifo.REVISION_STATUS == "BOK-CONTRACT BOOKED" and Text == "COMPLETE STAGE":
 					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 									
 					Sql.RunQuery(update_workflow_status)
 					status = "CONTRACT BOOKED"
-			
+				#AO55S000P01-17018 Starts
+				if getsalesorg_ifo.REVISION_STATUS == "APPROVAL PENDING" and Text == "COMPLETE STAGE":
+					update_workflow_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+									
+					Sql.RunQuery(update_workflow_status)
+					status = "APPROVALS"
+				#AO55S000P01-17018 ends
+			#workflow status bar update status -- A055S000P01-17166
 			get_workflow_status = Sql.GetFirst(" SELECT WORKFLOW_STATUS,REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 						
-			if get_workflow_status.REVISION_STATUS == "APPROVED" and get_workflow_status.WORKFLOW_STATUS == "APPROVALS":				
-				status = "APPROVED"
-			elif get_workflow_status.REVISION_STATUS == "CUSTOMER ACCEPTED" or get_workflow_status.REVISION_STATUS == "CUSTOMER REJECTED":										
-				status = "QUOTE DOCUMENTS"		
+			if get_workflow_status.REVISION_STATUS == "APR-APPROVED" and get_workflow_status.WORKFLOW_STATUS == "APPROVALS":				
+				status = "APR-APPROVED"
 			
 			elif get_workflow_status.REVISION_STATUS == "SUBMITTED FOR BOOKING" and get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":					
 				status = "SUBMITTED FOR BOOKING"
 			elif get_workflow_status.REVISION_STATUS == "CONTRACT BOOKED" and get_workflow_status.WORKFLOW_STATUS == "BOOKED":					
 				status = "CONTRACT BOOKED"
+			elif get_workflow_status.REVISION_STATUS == "APPROVAL PENDING" and get_workflow_status.WORKFLOW_STATUS == "APPROVALS":					
+				status = "APPROVALS"
+			elif get_workflow_status.REVISION_STATUS == "LEGAL SOW":
+
+				status = "LEGAL SOW"
+
+			elif get_workflow_status.WORKFLOW_STATUS == "QUOTE DOCUMENTS":
+
+				status = "QUOTE DOCUMENTS"
+			elif get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST":
+
+				status = "CLEAN BOOKING CHECKLIST"
 
 			elif get_workflow_status.WORKFLOW_STATUS:			
 				Trace.Write('No button-2454-')
@@ -153,14 +176,14 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				Trace.Write('No button--1')
 				status = "IN-COMPLETE"
 				
-			# Set Quote Item Insert --> No, If Revision Status Equal to Approved - Start
-			if getsalesorg_ifo.REVISION_STATUS == 'APPROVED':
+			# Set Quote Item Insert --> No, If Revision Status Equal to APR-APPROVED - Start
+			if getsalesorg_ifo.REVISION_STATUS == 'APR-APPROVED':
 				quote_item_insert = "No"
-			# Set Quote Item Insert --> No, If Revision Status Equal to Approved - End
+			# Set Quote Item Insert --> No, If Revision Status Equal to APR-APPROVED - End
 		else:
 			Trace.Write('No button--2')
 			status = "IN-COMPLETE"
-	#Trace.Write("buttonvisibility=="+str(buttonvisibility))
+	#Trace.Write("buttonvisibility=="+str(buttonvisibility))--A055S000P01-17166--end
 	
 	# Quote Item Inserts - Starts
 	if quote_item_insert == 'yes' and Text == "COMPLETE STAGE":
@@ -172,33 +195,20 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				get_ent_config_status = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(contract_quote_rec_id,quote_revision_record_id,service_id.SERVICE_ID))
 				if get_ent_config_status.COUNT > 0 or service_id.MATERIALCONFIG_TYPE =='SIMPLE MATERIAL' or service_id.SERVICE_ID == 'Z0117':
 					data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":contract_quote_rec_id, "ContractQuoteRevisionRecordId":quote_revision_record_id, "ServiceId":service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
-					if 1==1:
-						GetSelf = Sql.GetFirst("SELECT CpqTableEntryId,APRTRXOBJ_ID FROM ACAPMA (NOLOCK) WHERE APRCHN_ID = 'SELFAPPR' AND APRTRXOBJ_RECORD_ID = '{}'".format(quote_revision_record_id))
-						if GetSelf is not None:
-							Sql.RunQuery("DELETE FROM ACAPMA WHERE APRTRXOBJ_RECORD_ID = '{}' AND APRCHN_ID = 'SELFAPPR'".format(quote_revision_record_id))
-							Sql.RunQuery("DELETE FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' AND APRCHN_ID = 'SELFAPPR'".format(GetSelf.APRTRXOBJ_ID))
-							Sql.RunQuery("DELETE FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' AND APRCHN_ID = 'SELFAPPR'".format(GetSelf.APRTRXOBJ_ID))
-						else:
-							Sql.RunQuery("DELETE FROM ACAPMA WHERE APRTRXOBJ_RECORD_ID = '{}'".format(quote_revision_record_id))
-							Sql.RunQuery("DELETE FROM ACAPTX WHERE APRTRXOBJ_ID = '{}' ".format(Quote.CompositeNumber))
-							Sql.RunQuery("DELETE FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%'".format(Quote.CompositeNumber))
-						#Approval Trigger - Start		
-						try:
-							violationruleInsert = ACVIORULES.ViolationConditions()
-							header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-							if header_obj:			
-								violationruleInsert.InsertAction(
-																header_obj.RECORD_ID, quote_revision_record_id, "SAQTRV"
-																)
-						except:
-							Trace.Write("violation error")
-						#Approval Trigger - End
-					'''except:
-						Trace.Write("EXCEPT APPROVAL TRIGGER")'''
-					Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_record_id))
+					# Approval Trigger - Start		
+					#import ACVIORULES
+					violationruleInsert = ACVIORULES.ViolationConditions()
+					header_obj = SqlHelper.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+					if header_obj:			
+						violationruleInsert.InsertAction(
+						header_obj.RECORD_ID, quote_revision_record_id, "SAQTRV"
+						)
+					# Approval Trigger - End
+					Sql.RunQuery("""UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_record_id))
 					try:
 						##Calling the iflow for quote header writeback to cpq to c4c code starts..
 						CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						time.sleep(3)
 						CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 						##Calling the iflow for quote header writeback to cpq to c4c code ends...
 					except:
@@ -220,7 +230,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			if quote_line_item_obj:
 				quote_revision_obj = Sql.GetFirst("SELECT QTEREV_ID,QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' ".format(QuoteRecordId=contract_quote_rec_id))
 				if quote_revision_obj:
-					#Log.Info("====> QTPOSTACRM called from ==> "+str(quote_revision_obj.QUOTE_ID)+'--'+str(quote_revision_obj.QTEREV_ID))
+					Log.Info("====> QTPOSTACRM called from ==> "+str(quote_revision_obj.QUOTE_ID)+'--'+str(quote_revision_obj.QTEREV_ID))
 					ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':quote_revision_obj.QUOTE_ID,'REVISION_ID':quote_revision_obj.QTEREV_ID, 'Fun_type':'cpq_to_sscm'})
 					SqlHelper.GetFirst("sp_executesql @T=N'update A SET A.STATUS = (CASE WHEN A.STATUS =''ERROR'' THEN ''ERROR'' WHEN A.STATUS =''PARTIALLY PRICED'' THEN ''ERROR'' END) from SAQRIT A inner join ( select SERVICE_ID,LINE,SAQICO.QUOTE_ID from SAQICO WHERE SAQICO.QUOTE_ID = ''"+str(quote_revision_obj.QUOTE_ID)+"'' group by SERVICE_ID,LINE,SAQICO.QUOTE_ID Having count(*) > 1 ) as od on od.LINE = A.LINE AND od.SERVICE_ID = A.SERVICE_ID '")
 					SqlHelper.GetFirst("sp_executesql @T=N'update A SET A.STATUS = (CASE WHEN A.STATUS =''ACQUIRING'' THEN ''ACQUIRING'' WHEN A.STATUS =''ERROR'' THEN ''ERROR'' END) from SAQRIT A inner join ( select SERVICE_ID,LINE,SAQICO.QUOTE_ID from SAQICO WHERE SAQICO.QUOTE_ID = ''"+str(quote_revision_obj.QUOTE_ID)+"'' group by SERVICE_ID,LINE,SAQICO.QUOTE_ID Having count(*) > 1 ) as od on od.LINE = A.LINE AND od.SERVICE_ID = A.SERVICE_ID '")
@@ -240,7 +250,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 				###calling script for saqris,saqtrv insert
 				# CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":str(contract_quote_id),"Operation":"Delete"})
 		except:
-			Log.Info("PART PRICING IFLOW ERROR!")
+			("PART PRICING IFLOW ERROR!")
 		# Quote Item Inserts - Ends
 	return status
 try:
@@ -252,5 +262,12 @@ try:
 	Text = Param.Text
 except:
 	Text = ""
+
+try:
+	edit_config = Param.edit_config
+except:
+	edit_config = ""
+
+Trace.Write("edit_config_status "+str(edit_config))
 Trace.Write("quote_item_insert_J "+str(quote_item_insert))
-ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar(quote_item_insert,Text))  
+ApiResponse = ApiResponseFactory.JsonResponse(Dynamic_Status_Bar(quote_item_insert,Text,edit_config))  

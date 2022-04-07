@@ -27,9 +27,9 @@ def nativeProfileDelete(RecordId):
         Login_Password = str(LOGIN_CREDENTIALS.Password)
         Login_Domain = str(LOGIN_CREDENTIALS.Domain)
     #Trace.Write("29---------" + str(Login_Username))
-    sandboxBaseURL = "https://sandbox.webcomcpq.com"
+    rssandboxBaseURL = "https://rssandbox.webcomcpq.com"
     authenticationUrl = (
-        sandboxBaseURL
+        rssandboxBaseURL
         + "/api/rd/v1/Core/Login?username="
         + Login_Username
         + "&password="
@@ -54,11 +54,11 @@ def nativeProfileDelete(RecordId):
 
     data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""
     # authentication api token creation start
-    authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
+    authenticationapitokenUrl = "https://rssandbox.webcomcpq.com/basic/api/token"
     authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
     authRequesttoken.Method = "DELETE"
     webclienttoken = System.Net.WebClient()
-    webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+    webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
     webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
     webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
     webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
@@ -72,9 +72,9 @@ def nativeProfileDelete(RecordId):
         RecordId
     )
     #Trace.Write("188-------------datasave----" + str(datasave))
-    setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups/" + str(int(RecordId))
+    setPermissionURL = rssandboxBaseURL + "/setup/api/v1/admin/permissionGroups/" + str(int(RecordId))
     webclient = System.Net.WebClient()
-    webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+    webclient.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
     webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
     webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
     webclient.Headers.Add("X-CSRF-Token", xcrf)
@@ -432,8 +432,18 @@ class DeleteConfirmPopup:
                         QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' and FABLOCATION_ID = '{fab_id}' and FABLOCATION_RECORD_ID = '{fab_location_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(ObjectName = Table,fab_id = fab_location.FABLOCATION_ID,fab_location_rec_id = fab_location.FABLOCATION_RECORD_ID,quote_revision_record_id=quote_revision_record_id)
                         Sql.RunQuery(QueryStatement)
                     
-                    update_saqtrv = ("UPDATE SAQTRV SET PRICING_DIRTY_FLAG = 'TRUE', REVISION_STATUS = 'PREPARING REVISION', WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
+                    update_saqtrv = ("UPDATE SAQTRV SET DIRTY_FLAG = 'TRUE', REVISION_STATUS = 'CFG-CONFIGURING', WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"'")
                     Sql.RunQuery(update_saqtrv)
+        elif ObjName == "SAQRCV":
+            deleted_rec_query = Sql.GetFirst("SELECT CREDIT_APPLIED_INGL_CURR,CREDITVOUCHER_RECORD_ID FROM SAQRCV (NOLOCK) WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID = '"+str(RecordId)+"'")
+            sacrcv_rec_query = Sql.GetFirst("SELECT CRTAPP_INGL_CURR,UNBL_INGL_CURR FROM SACRVC (NOLOCK) WHERE CREDITVOUCHER_RECORD_ID = '"+str(deleted_rec_query.CREDITVOUCHER_RECORD_ID)+"'")
+            credit_applied = sacrcv_rec_query.CRTAPP_INGL_CURR - deleted_rec_query.CREDIT_APPLIED_INGL_CURR
+            unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR + deleted_rec_query.CREDIT_APPLIED_INGL_CURR
+            update_SAQRCV = "UPDATE SACRVC SET CRTAPP_INGL_CURR = '"+str(credit_applied)+"',UNBL_INGL_CURR = '"+str(unapplied_balance)+"' WHERE CREDITVOUCHER_RECORD_ID = '"+str(deleted_rec_query.CREDITVOUCHER_RECORD_ID)+"'"
+            Sql.RunQuery(update_SAQRCV)
+            QueryStatement = "DELETE FROM SAQRCV WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID ='"+str(RecordId)+"'"
+            Sql.RunQuery(QueryStatement)
+        
         else:
             tableInfo = Sql.GetTable(ObjName)
             ColumnName = Sql.GetFirst(

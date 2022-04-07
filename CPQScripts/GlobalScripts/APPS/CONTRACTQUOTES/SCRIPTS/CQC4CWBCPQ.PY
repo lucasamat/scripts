@@ -10,7 +10,7 @@ import sys
 Sql = SQL()
 
 def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id,quote_record_id):
-    Sql.RunQuery("""INSERT SAQDLT (
+    query = ("""INSERT SAQDLT (
                             C4C_PARTNERFUNCTION_ID,
                             CRM_PARTNERFUNCTION_ID,
                             PARTNERFUNCTION_DESC,
@@ -20,6 +20,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             MEMBER_ID,
                             MEMBER_NAME,
                             MEMBER_RECORD_ID,
+                            [PRIMARY],
                             QUOTE_ID,
                             QUOTE_RECORD_ID,
                             QTEREV_ID,
@@ -101,6 +102,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             SAEMPL.EMPLOYEE_ID,
                             SAEMPL.EMPLOYEE_NAME,
                             SAEMPL.EMPLOYEE_RECORD_ID,
+                            '{is_primary}' as [PRIMARY],
                             '{QuoteId}' as QUOTE_ID,
                             '{QuoteRecordId}' as QUOTE_RECORD_ID,
                             '{RevisionId}' as QTEREV_ID,
@@ -115,8 +117,10 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             QuoteRecordId=quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
                             RevisionId=quote_rev_id,
                             RevisionRecordId=quote_revision_record_id,
+                            is_primary = "1" if employee.get("PRIMARY").upper()=="TRUE" else "0"
                             )
                         )
+    Sql.RunQuery(query)
     created_by_master_rec = None
     created_by_master_rec = Sql.GetFirst("SELECT C4C_PARTNER_FUNCTION,PARTNERFUNCTION_DESCRIPTION,PARTNERFUNCTION_ID,PARTNERFUNCTION_RECORD_ID FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
     if created_by_master_rec:
@@ -140,6 +144,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                     "QUOTE_RECORD_ID": quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
                     "QTEREV_ID": quote_rev_id,
                     "QTEREV_RECORD_ID": quote_revision_record_id,
+                    "PRIMARY": "1"
                 }
                 sales_team_table.AddRow(sales_team_createdby_insert)
                 Sql.Upsert(sales_team_table)
@@ -154,6 +159,7 @@ if 'Param' in globals():
                 if quote_id:
                     payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = '' ORDER BY CpqTableEntryId DESC".format(quote_id))
                     #Log.Info("CpqTableEntryId  ---------------"+str(payload_json_obj.CpqTableEntryId))
+                    Log.Info("CQC4CWBCPQ Called------")
                     if payload_json_obj:
                         payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
                         payload_json = eval(payload_json.get('Param'))

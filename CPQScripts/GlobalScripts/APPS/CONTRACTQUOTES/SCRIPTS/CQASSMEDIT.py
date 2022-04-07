@@ -121,9 +121,9 @@ def save_assembly_level(included_value,fab_id,equipment_id,assembly_id,selected_
 		Trace.Write("selected_value-"+str(selected_value))
 		table_name = 'SAQSCA'
 		if selected_value:
-			join_condition = " AND QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = '{}'".format(CPQID.KeyCPQId.GetKEYId(str(table_name), str(selected_value)))
+			join_condition = " AND SERVICE_ID ='Z0007' AND QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = '{}'".format(CPQID.KeyCPQId.GetKEYId(str(table_name), str(selected_value)))
 		
-	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND EQUIPMENT_ID = '{equipment_id}' AND ASSEMBLY_ID = '{assembly_id}' AND FABLOCATION_ID ='{fab_id}' AND SERVICE_ID ='Z0007' {join_condition}".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,equipment_id=equipment_id,assembly_id=assembly_id,fab_id=fab_id, table_name = table_name, join_condition= join_condition))
+	Sql.RunQuery("UPDATE {table_name} SET INCLUDED = {included_value} WHERE QUOTE_RECORD_ID= '{ContractRecordId}' AND QTEREV_RECORD_ID ='{revision_record_id}' AND EQUIPMENT_ID = '{equipment_id}' AND ASSEMBLY_ID = '{assembly_id}' AND FABLOCATION_ID ='{fab_id}'  {join_condition}".format(included_value =1 if included_value == True else 0 ,ContractRecordId=ContractRecordId,revision_record_id=revision_record_id,equipment_id=equipment_id,assembly_id=assembly_id,fab_id=fab_id, table_name = table_name, join_condition= join_condition))
 	
 	return True
 
@@ -326,7 +326,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		Fullresponse= eval(response2)
 		Trace.Write("Fullresponse--"+str(Fullresponse))
 		##getting configuration_status status
-		if Fullresponse['complete'] == 'true':
+		if Fullresponse['complete'] == 'true' and Fullresponse['consistent'] == 'true' :
 			configuration_status = 'COMPLETE'
 		elif Fullresponse['complete'] == 'false':
 			configuration_status = 'INCOMPLETE'

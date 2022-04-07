@@ -39,31 +39,37 @@ try:
 		TempTable = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(Table_Name)+"'' ) BEGIN DROP TABLE "+str(Table_Name)+" END CREATE TABLE "+str(Table_Name)+" (ACCOUNT_ID VARCHAR(250) ,CUSTOMER_PART_DESC VARCHAR(250) ,CUSTOMER_PART_NUMBER VARCHAR(250) ,DISTRIBUTIONCHANNEL_ID VARCHAR(250) ,SALESORG_ID VARCHAR(250) ,SAP_PART_NUMBER VARCHAR(250) ,ACCOUNT_NAME VARCHAR(250),ACCOUNT_RECORD_ID VARCHAR(250),DISTRIBUTIONCHANNEL_RECORD_ID VARCHAR(250),MATERIAL_NAME VARCHAR(250),MATERIAL_RECORD_ID VARCHAR(250),MATSOR_RECORD_ID VARCHAR(250),SORACC_RECORD_ID VARCHAR(250),SALESORG_NAME VARCHAR(250),SALESORG_RECORD_ID VARCHAR(250))'")	
 
 		start =1
-		end = 10000
+		end = 1
 		check_flag1 = 1
 		while check_flag1 == 1:
 
-			req_input = '{"query":"select * from (select  KUNNR as ACCOUNT_ID,POSTX as CUSTOMER_PART_DESC,KDMAT as CUSTOMER_PART_NUMBER,VTWEG as DISTRIBUTIONCHANNEL_ID,VKORG as SALESORG_ID,MATNR as SAP_PART_NUMBER,row_number () over (order by KUNNR) as sno from KNMT where to_date(erdat)> add_days(current_date,-1) )a where sno>='+str(start)+' and sno<='+str(end)+'"}'
+			Partquery=SqlHelper.GetFirst("SELECT SAP_PART_NUMBER FROM (SELECT SAP_PART_NUMBER,ROW_NUMBER()OVER(ORDER BY SAP_PART_NUMBER) AS SNO FROM ( select DISTINCT A.SAP_PART_NUMBER  from MAMTRL(NOLOCK) A WHERE CONVERT(VARCHAR(11),CPQTABLEENTRYDATEMODIFIED,121)= CONVERT(VARCHAR(11),GETDATE(),121) )A)a where sno>='"+str(start)+"' and sno<='"+str(end)+"'  ")
 
-			response2 = webclient.UploadString(str(LOGIN_CREDENTIALS.URL), str(req_input))
+			if str(Partquery).upper() != "NONE":
+			
+				start = start + 1
+				end = end + 1
 
-			response = eval(response2)
-			if str(type(response)) == "<type 'dict'>":
-				response = [response]
+				part = "'"+str(Partquery.SAP_PART_NUMBER)+"'"
 
-			if len(response) > 0:			
+				req_input = '{"query":"select  KUNNR as ACCOUNT_ID,POSTX as CUSTOMER_PART_DESC,KDMAT as CUSTOMER_PART_NUMBER,VTWEG as DISTRIBUTIONCHANNEL_ID,VKORG as SALESORG_ID,MATNR as SAP_PART_NUMBER from KNMT where MATNR='+str(part)+'"}' 
 
-				for record_dict in response:
+				response2 = webclient.UploadString(str(LOGIN_CREDENTIALS.URL), str(req_input))
 
-					if 'CUSTOMER_PART_DESC' in record_dict:
-						record_dict['CUSTOMER_PART_DESC'] = record_dict['CUSTOMER_PART_DESC'].replace("'",'&#39;').replace('"','&#34;')
-					if 'CUSTOMER_PART_NUMBER' in record_dict:
-						record_dict['CUSTOMER_PART_NUMBER'] = record_dict['CUSTOMER_PART_NUMBER'].replace("'",'&#39;').replace('"','&#34;')
+				response = eval(response2)
+				if str(type(response)) == "<type 'dict'>":
+					response = [response]
 
-					Stagingquery = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " "+str(Table_Name)+" (ACCOUNT_ID,CUSTOMER_PART_DESC,CUSTOMER_PART_NUMBER ,DISTRIBUTIONCHANNEL_ID,SALESORG_ID,SAP_PART_NUMBER)  select  N''"+record_dict['ACCOUNT_ID']+ "'',N''"+record_dict['CUSTOMER_PART_DESC']+ "'',N''"+record_dict['CUSTOMER_PART_NUMBER']+ "'',N''"+record_dict['DISTRIBUTIONCHANNEL_ID']+ "'',N''"+record_dict['SALESORG_ID']+ "'',N''"+record_dict['SAP_PART_NUMBER']+ "'' ' ")
+				if len(response) > 0:			
 
-				start = start + 10000
-				end = end + 10000
+					for record_dict in response:
+
+						if 'CUSTOMER_PART_DESC' in record_dict:
+							record_dict['CUSTOMER_PART_DESC'] = record_dict['CUSTOMER_PART_DESC'].replace("'",'&#39;').replace('"','&#34;')
+						if 'CUSTOMER_PART_NUMBER' in record_dict:
+							record_dict['CUSTOMER_PART_NUMBER'] = record_dict['CUSTOMER_PART_NUMBER'].replace("'",'&#39;').replace('"','&#34;')
+
+						Stagingquery = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " "+str(Table_Name)+" (ACCOUNT_ID,CUSTOMER_PART_DESC,CUSTOMER_PART_NUMBER ,DISTRIBUTIONCHANNEL_ID,SALESORG_ID,SAP_PART_NUMBER)  select  N''"+record_dict['ACCOUNT_ID']+ "'',N''"+record_dict['CUSTOMER_PART_DESC']+ "'',N''"+record_dict['CUSTOMER_PART_NUMBER']+ "'',N''"+record_dict['DISTRIBUTIONCHANNEL_ID']+ "'',N''"+record_dict['SALESORG_ID']+ "'',N''"+record_dict['SAP_PART_NUMBER']+ "'' ' ")
 
 			else:
 				check_flag1 = 0
@@ -71,7 +77,7 @@ try:
 		
 		S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE MAMSAC_INBOUND set ACCOUNT_ID = convert(bigint,ACCOUNT_ID)  where isnumeric(ACCOUNT_ID)=1  ' ")
 		
-		S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE MAMSAC_INBOUND set ACCOUNT_ID = convert(bigint,SAP_PART_NUMBER)  where isnumeric(SAP_PART_NUMBER)=1  ' ")
+		S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE MAMSAC_INBOUND set SAP_PART_NUMBER = convert(bigint,SAP_PART_NUMBER)  where isnumeric(SAP_PART_NUMBER)=1  ' ")
 		
 		AccountupdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  MAMSAC_INBOUND set MAMSAC_INBOUND.ACCOUNT_NAME= SAACNT.ACCOUNT_NAME,MAMSAC_INBOUND.ACCOUNT_RECORD_ID= SAACNT.ACCOUNT_RECORD_ID FROM MAMSAC_INBOUND(NOLOCK)  JOIN SAACNT(NOLOCK) ON MAMSAC_INBOUND.ACCOUNT_ID= SAACNT.ACCOUNT_ID  ' ")
 		

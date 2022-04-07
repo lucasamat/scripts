@@ -18,6 +18,7 @@ clr.AddReference("System.Net")
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 
+
 try:
 	if 'Param' in globals(): 	
 		if hasattr(Param, 'CPQ_Columns'): 
@@ -67,10 +68,50 @@ try:
 				Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 				if Dirct_record['STATUS_DESCRIPTION'].upper() == "SUCCESS":
 					Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
-					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET REVISION_STATUS = ''SUBMITTED FOR BOOKING'' FROM SAQTRV(NOLOCK)  WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND QTEREV_ID IN (SELECT QTEREV_ID FROM SAQTMT WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' ) '")
+					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET REVISION_STATUS = ''BOK-CONTRACT CREATED'',WORKFLOW_STATUS = ''BOOKED'' FROM SAQTRV(NOLOCK)  WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND QTEREV_ID IN (SELECT QTEREV_ID FROM SAQTMT WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' ) '")
 					
 					if 'CONTRACT_ID'  in Dirct_record:
-						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''CONVERTED CONTRACT'',CRM_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK)  WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' '")
+						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOK-CONTRACT CREATED'',ECC_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID = ''ZWK1'' '")
+						
+						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOK-CONTRACT CREATED'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
+						
+						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET CRM_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
+						
+						Revsioninfoquery = SqlHelper.GetFirst("SELECT QTEREV_ID,QUOTE_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '"+str(Dirct_record['QUOTE_ID'])+"'")
+
+						Qt_id = Revsioninfoquery.QUOTE_ID
+						Rev_id = Revsioninfoquery.QTEREV_ID
+
+
+						LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+						if LOGIN_CREDENTIALS is not None:
+							Login_Username = str(LOGIN_CREDENTIALS.Username)
+							Login_Password = str(LOGIN_CREDENTIALS.Password)
+							authorization = Login_Username+":"+Login_Password
+							binaryAuthorization = UTF8.GetBytes(authorization)
+							authorization = Convert.ToBase64String(binaryAuthorization)
+							authorization = "Basic " + authorization
+
+
+							webclient = System.Net.WebClient()
+							webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+							webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+							
+							
+							result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
+				  				<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
+							
+							LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_ECC_RECALL_ASYNC'")
+							response = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
+				
+				if Dirct_record['STATUS_DESCRIPTION'].upper() == "BOOKED":
+					Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
+					
+					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET REVISION_STATUS = ''BOK-CONTRACT BOOKED'' FROM SAQTRV(NOLOCK)  WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND QTEREV_ID IN (SELECT QTEREV_ID FROM SAQTMT WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' ) '")
+					
+					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOK-CONTRACT BOOKED'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
+					
+					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET CRM_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'',CRM_CONTRACT_STATUS=''BOOKED'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
 					
 				if 'ERROR1'  in Dirct_record:
 					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET IDOC_STATUS = ISNULL(IDOC_STATUS,'''')+ ''"+str(Dirct_record['ERROR1'])+"'' FROM SAQTRV(NOLOCK)  WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND QTEREV_ID IN (SELECT QTEREV_ID FROM SAQTMT WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' ) '")
@@ -93,7 +134,7 @@ try:
 					Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black'} </style></head><body id = 'bd'>"
 
 
-					Table_start = "<p>Hi Team,<br><br>The following Quote id having Error status description</p><table class='table table-bordered'><tr><th id ='grey'>QUOTE ID</th><th id = 'grey'>STATUS CODE</th><th id = 'grey'>STATUS DESCRIPTION</th></tr><tr><td >"+str(Dirct_record['QUOTE_ID'])+"</td><td >"+str(Dirct_record['STATUS_CODE'])+"</td ><td >"+str(Dirct_record['STATUS_DESCRIPTION'])+"</td></tr>"
+					Table_start = "<p>Hi Team,<br><br>The following Quote is in error status in CRM/ECC. Please refer IDOC status in Quote->Information  Page</p><table class='table table-bordered'><tr><th id ='grey'>QUOTE ID</th><th id = 'grey'>STATUS DESCRIPTION</th></tr><tr><td >"+str(Dirct_record['QUOTE_ID'])+"</td><td >"+str(Dirct_record['STATUS_DESCRIPTION'])+"</td></tr>"
 
 					Table_info = ""
 					Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
@@ -124,7 +165,7 @@ try:
 					msg = MailMessage(fromEmail, toEmail)
 
 					# Set message subject and body
-					msg.Subject = "Quote Error Status - Notification(X-Tenant)"
+					msg.Subject = "CPQ Quote to CRM/ECC Contract Error Status - Notification(X-Tenant)"
 					msg.IsBodyHtml = True
 					msg.Body = Error_Info
 
@@ -158,4 +199,4 @@ try:
 except:		
 	Log.Info("QTGETQTSTS ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("QTGETQTSTS ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
+	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})	

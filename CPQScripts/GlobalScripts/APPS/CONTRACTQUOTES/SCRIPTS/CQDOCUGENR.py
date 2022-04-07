@@ -5,11 +5,13 @@
 #   __create_date :24-11-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import CQCPQC4CWB
 import Webcom.Configurator.Scripting.Test.TestProduct
 import clr
 import System.Net
 import sys
 import datetime
+import time
 from datetime import date
 from SYDATABASE import SQL
 
@@ -311,7 +313,7 @@ def englishdoc():
 		Login_Password = str(login.PASSWORD)
 		Login_Domain = str(login.DOMAIN)
 	#example of url service
-		url = 'https://sandbox.webcomcpq.com/customapi/executescript?scriptName=CQGNRTDOCS_ENGLISH&username='+str(Login_Username)+'&password='+str(Login_Password)+'&domain='+str(Login_Domain)+''
+		url = 'https://rssandbox.webcomcpq.com/customapi/executescript?scriptName=CQGNRTDOCS_ENGLISH&username='+str(Login_Username)+'&password='+str(Login_Password)+'&domain='+str(Login_Domain)+''
 		#quoterecid=Product.Attributes.GetByName('QSTN_SYSEFL_QT_00001').GetValue()
 		#example of user autorization header
 		headers = { 'authorization': RestClient.GetBasicAuthenticationHeader(Login_Username, Login_Password+"#"+Login_Domain) }
@@ -672,7 +674,7 @@ def chinesedoc():
 		Login_Password = str(LOGIN_CREDENTIALS.PASSWORD)
 		Login_Domain = str(LOGIN_CREDENTIALS.DOMAIN)
 	#example of url service
-		url = 'https://sandbox.webcomcpq.com/customapi/executescript?scriptName=CQGNRTDOCS_CHINESE&username='+str(Login_Username)+'&password='+str(Login_Password)+'&domain='+str(Login_Domain)+''
+		url = 'https://rssandbox.webcomcpq.com/customapi/executescript?scriptName=CQGNRTDOCS_CHINESE&username='+str(Login_Username)+'&password='+str(Login_Password)+'&domain='+str(Login_Domain)+''
 		quoterecid=Product.Attributes.GetByName('QSTN_SYSEFL_QT_00001').GetValue()
 		#example of user autorization header
 		headers = { 'authorization': RestClient.GetBasicAuthenticationHeader(Login_Username, Login_Password+"#"+Login_Domain) }
@@ -912,10 +914,13 @@ def submit_to_customer(doc_rec_id):
 	output_doc_query = Sql.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 	if output_doc_query:
 		if str(output_doc_query.DATE_SUBMITTED) != "":			
-			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'SUBMITTED TO CUSTOMER' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-			Sql.RunQuery(update_revision_status)	
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'APR-SUBMITTED TO CUSTOMER' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+			Sql.RunQuery(update_revision_status)
+			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			time.sleep(3) #A055S000P01-16535
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))	
 	return True
-
+#A055S000P01-17165 start
 def customer_accepted(doc_rec_id):
 	Trace.Write("cm to this acceptedfunction=====")		
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
@@ -924,8 +929,11 @@ def customer_accepted(doc_rec_id):
 	output_doc_query = Sql.GetFirst(" SELECT * FROM SAQDOC WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_DOCUMENT_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id,doc_rec_id))
 	if output_doc_query:
 		if str(output_doc_query.DATE_ACCEPTED) != "":			
-			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CUSTOMER ACCEPTED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
-			Sql.RunQuery(update_revision_status)	
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER ACCEPTED' , WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
+			Sql.RunQuery(update_revision_status)
+			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			time.sleep(3) #A055S000P01-16535
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))	
 	return True
 
 def customer_rejected(doc_rec_id,REJECT_COMMENT):
@@ -939,10 +947,13 @@ def customer_rejected(doc_rec_id,REJECT_COMMENT):
 	if output_doc_query:
 		if str(output_doc_query.DATE_REJECTED) != "":
 			Trace.Write("DATE_REJ"+str(output_doc_query.DATE_REJECTED))
-			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CUSTOMER REJECTED',MEMO = '{memo}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),memo=REJECT_COMMENT)
-			Sql.RunQuery(update_revision_status)	
+			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER REJECTED',WORKFLOW_STATUS = 'QUOTE DOCUMENTS',INTERNAL_NOTES = '{internalnotes}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),internalnotes=REJECT_COMMENT)
+			Sql.RunQuery(update_revision_status)
+			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			time.sleep(3) #A055S000P01-16535
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))		
 	return True
-
+#A055S000P01-17165 end
 def save_document_description(doc_desc_val,doc_rec_id):
 	Trace.Write("cm to this savefunction=====")	
 	quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")	

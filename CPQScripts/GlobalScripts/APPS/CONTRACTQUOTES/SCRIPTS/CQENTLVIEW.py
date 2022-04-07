@@ -237,6 +237,10 @@ class EntitlementView():
 			# where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
 			TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "'  AND GREENBOOK = '"+str(self.treeparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"'  AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
+		elif EntitlementType == "EDIT_CONFIG":
+			TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(RECORD_ID) + "'")
+			ObjectName = "SAQTSE"
+			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(RECORD_ID) + "'"
 		#Trace.Write('Treeparam--'+str(self.treeparam))
 		#Trace.Write('treeparentparam----'+str(self.treeparentparam))
 		if self.treeparam == "Quote Items":
@@ -400,10 +404,14 @@ class EntitlementView():
 			if GetCPSVersion :
 				if GetCPSVersion.KB_VERSION is not None and GetCPSVersion.KB_VERSION != Fullresponse["kbKey"]["version"]:
 					sec_str += '<div id="Headerbnr" class="mart_col_back disp_blk"><div class="col-md-12" id="PageAlert_not"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert_notifcatio6" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down"></i><i class="pull-right fa fa-chevron-up"></i></div><div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-info"><label title=" Information : The Knowledge Base of the VC Characteristics has been updated in CPS."><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> Information : The Knowledge Base of the VC Characteristics has been updated in CPS.</label></div></div></div></div>'
+
+					# sec_str += '<div id="Headerbnr" class="mart_col_back disp_blk"><div class="col-md-12" id="PageAlert_not"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert_notifcatio6" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down"></i><i class="pull-right fa fa-chevron-up"></i></div><div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-info"><label title=" Information : The quote configuration has changed. Please click on the complete stage button to regenerate the quote items"><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> Information : The quote configuration has changed. Please click on the complete stage button to regenerate the quote items</label></div></div></div></div>'
 				else:
 					sec_str += ''
 			else:
-				Trace.Write("GETCPS VERSION EMPTY!")	
+				Trace.Write("GETCPS VERSION EMPTY!")
+
+			# sec_str += '<div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-info"><label title=" Information : The quote configuration has changed. Please click on the complete stage button to regenerate the quote items"><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> Information : The quote configuration has changed. Please click on the complete stage button to regenerate the quote items</label></div></div>'
 		
 			desc_list = ["APPROVAL","ENTITLEMENT","DESCRIPTION","REQUIRED","VALUE","VALIDATION","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT"]
 			#attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}			
@@ -998,7 +1006,7 @@ class EntitlementView():
 							##validation msg
 							validation_attr = ""
 							if attrSysId in validation_dict.keys():
-								validation_attr = ' onkeypress="return isNumberKey(event);"'
+								validation_attr = ' onkeypress="return isNumberKey(event,this);"'
 								if validation_dict[attrSysId]  == '0.00':
 									sec_validation = "Only enter the values in the following range: -&infin; - "+str(validation_dict[attrSysId])
 								else:
@@ -1296,9 +1304,11 @@ class EntitlementView():
 											# 		imgstr  = ""
 											# else:
 											# 	imgstr  = ""
-											if str(attrSysId) in ("AGS_REL_STDATE",'AGS_Z0007_GEN_RELDAT'):
+											if str(attrSysId) in ("AGS_REL_STDATE",'AGS_Z0007_GEN_RELDAT','AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
 												datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 												if attrSysId == 'AGS_Z0007_GEN_RELDAT':
+													datepicker = "onclick_datepicker('" + attrSysId + "')"
+												elif attrSysId in ('AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
 													datepicker = "onclick_datepicker('" + attrSysId + "')"	
 												sec_str1 += (
 													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
@@ -1693,6 +1703,10 @@ try:
 	AssemblyId = Param.AssemblyId
 except:
 	AssemblyId = ""
+try:
+	edit_configuration_flag = Param.edit_configuration_flag
+except:
+	edit_configuration_flag = ""
 EntitlementType = ""
 SectionObjectName = ""
 mode = ""
@@ -1712,6 +1726,7 @@ if SectionList is not None and (
 	or "484F3029-7844-4DE7-BBB4-535A7BAE476E" in SectionList
 ) and ObjectName != 'SAQGPM':
 	sectionId = tuple(SectionList)
+
 	sectObj = Sql.GetFirst("SELECT PRIMARY_OBJECT_NAME FROM SYSECT (NOLOCK) WHERE RECORD_ID IN " + str(sectionId) + "")
 	if sectObj is not None:
 		SectionObjectName = sectObj.PRIMARY_OBJECT_NAME	
@@ -1775,6 +1790,10 @@ elif ObjectName == "SAQGPM":
 	#Trace.Write("TOOLS")
 	SectionObjectName = ObjectName
 	EntitlementType = "EVENT"
+if edit_configuration_flag == "TRUE":
+	SectionObjectName = "SAQTSE"
+	EntitlementType = "EDIT_CONFIG"
+
 # elif ObjectName == "CTCTSE":	
 # 	SectionObjectName = ObjectName
 # 	EntitlementType = "TOOLS"

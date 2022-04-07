@@ -143,6 +143,7 @@ def replace_contract_manager_replace(repalce_values,cont_rec_id,table_name):
         row['QUOTE_RECORD_ID'] = contract_quote_record_id
         row['QTEREV_RECORD_ID'] = quote_revision_record_id
         row['QUOTE_REV_DEAL_TEAM_MEMBER_ID'] = cont_rec_id
+        row['PRIMARY'] = con_data_chk.PRIMARY
         tableInfo.AddRow(row)
         SqlHelper.Upsert(tableInfo)
         update_saqdlt="UPDATE SAQDLT SET PARTNERFUNCTION_DESC = '{pf_desc}',PARTNERFUNCTION_ID = '{pf_id}',CRM_PARTNERFUNCTION_ID = '{crm_pf_id}',C4C_PARTNERFUNCTION_ID = '{c4c_pf_id}',PARTNERFUNCTION_RECORD_ID = '{pf_rec_id}',MEMBER_ID = '{member_id}',MEMBER_NAME = '{member_name}',MEMBER_RECORD_ID = '{member_rec_id}',EMAIL = '{email}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{cont_rec_id}'".format(pf_desc = con_data_chk.PARTNERFUNCTION_DESC,pf_id = con_data_chk.PARTNERFUNCTION_ID,pf_rec_id = con_data_chk.PARTNERFUNCTION_RECORD_ID,crm_pf_id = con_data_chk.CRM_PARTNERFUNCTION_ID,c4c_pf_id = con_data_chk.C4C_PARTNERFUNCTION_ID,member_id = rpl_con_data_chk.EMPLOYEE_ID,member_name = rpl_con_data_chk.EMPLOYEE_NAME,member_rec_id = rpl_con_data_chk.EMPLOYEE_RECORD_ID,email=rpl_con_data_chk.EMAIL,QuoteRecordId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id,cont_rec_id = cont_rec_id)

@@ -52,7 +52,12 @@ def create_new_revision(Opertion,cartrev):
 		"SAQFGB":"QUOTE_FAB_LOC_GB_RECORD_ID",
 		"SAQSFB":"QUOTE_SERVICE_FAB_LOCATION_RECORD_ID",
 		"SAQSSF":"QUOTE_SERVICE_SENDING_FAB_LOC_ID",
-		"SAQCBC":"QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID"
+		"SAQCBC":"QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID",
+		"SAQDLT":"QUOTE_REV_DEAL_TEAM_MEMBER_ID",
+		"SAQTIP":"QUOTE_INVOLVED_PARTY_RECORD_ID",
+		"SAQICT":"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID",
+		"SAQSAP":"QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID",
+		
 		}
 	#"SAQIBP":"QUOTE_ITEM_BILLING_PLAN_RECORD_ID"
 	# "SAQITM":"QUOTE_ITEM_RECORD_ID",
@@ -96,7 +101,7 @@ def create_new_revision(Opertion,cartrev):
 		Quote.SetGlobal("quote_revision_record_id",str(quote_revision_id))
 		get_current_rev = Sql.GetFirst("select MAX(QTEREV_ID) as rev_id from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		
-		get_previous_rev_data = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' AND QTEREV_ID = '"+str(get_current_rev.rev_id)+"' AND ACTIVE = 1")
+		get_previous_rev_data = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' AND ACTIVE = 1")
 
 		update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=quote_contract_recordId,active_rev = 0))
 		newrev_inc = int(get_current_rev.rev_id)+1
@@ -114,7 +119,7 @@ def create_new_revision(Opertion,cartrev):
 				"ACTIVE":1,
 				"REV_CREATE_DATE":current_date.strftime('%m/%d/%Y'),
 				"REV_EXPIRE_DATE":'',
-				"REVISION_STATUS":"PREPARING REVISION",
+				"REVISION_STATUS":"CFG-CONFIGURING",
 				"QTEREV_ID":newrev_inc,
 				"QTEREV_RECORD_ID":quote_revision_id, 
 				"REV_APPROVE_DATE":'',
@@ -128,6 +133,9 @@ def create_new_revision(Opertion,cartrev):
 				"SALESORG_RECORD_ID": get_previous_rev_data.SALESORG_RECORD_ID,							
 				"GLOBAL_CURRENCY":get_previous_rev_data.GLOBAL_CURRENCY,							
 				"GLOBAL_CURRENCY_RECORD_ID":get_previous_rev_data.GLOBAL_CURRENCY,
+				"SALESOFFICE_ID":get_previous_rev_data.SALESOFFICE_ID,
+				"SALESOFFICE_NAME":get_previous_rev_data.SALESOFFICE_NAME,
+				"SALESOFFICE_RECORD_ID":get_previous_rev_data.SALESOFFICE_RECORD_ID,
 				"DIVISION_ID" : get_previous_rev_data.DIVISION_ID,
 				"DISTRIBUTIONCHANNEL_RECORD_ID" :get_previous_rev_data.DISTRIBUTIONCHANNEL_RECORD_ID,
 				"DIVISION_RECORD_ID" : get_previous_rev_data.DIVISION_RECORD_ID,
@@ -146,6 +154,9 @@ def create_new_revision(Opertion,cartrev):
 				"INCOTERM_ID" : get_previous_rev_data.INCOTERM_ID,
 				"INCOTERM_NAME" : get_previous_rev_data.INCOTERM_NAME,
 				"INCOTERM_RECORD_ID" : get_previous_rev_data.INCOTERM_RECORD_ID,
+				"INCOTERM_LOCATION" : get_previous_rev_data.INCOTERM_LOCATION,
+				"BLUEBOOK" : get_previous_rev_data.BLUEBOOK,
+				"BLUEBOOK_RECORD_ID" : get_previous_rev_data.BLUEBOOK_RECORD_ID,
 				"MODUSR_RECORD_ID" : get_previous_rev_data.MODUSR_RECORD_ID,
 				"PAYMENTTERM_DAYS" : get_previous_rev_data.PAYMENTTERM_DAYS,
 				"PAYMENTTERM_ID" : get_previous_rev_data.PAYMENTTERM_ID,
@@ -154,14 +165,22 @@ def create_new_revision(Opertion,cartrev):
 				"PRICINGPROCEDURE_ID" : get_previous_rev_data.PRICINGPROCEDURE_ID,
 				"PRICINGPROCEDURE_NAME" : get_previous_rev_data.PRICINGPROCEDURE_NAME,
 				"PRICINGPROCEDURE_RECORD_ID" :get_previous_rev_data.PRICINGPROCEDURE_RECORD_ID,
+				"ACCTAXCAT_ID": get_previous_rev_data.ACCTAXCAT_ID,
+				"ACCTAXCAT_DESCRIPTION" : get_previous_rev_data.ACCTAXCAT_DESCRIPTION,
+				"ACCTAXCLA_DESCRIPTION" : get_previous_rev_data.ACCTAXCLA_DESCRIPTION,
+				"ACCTAXCLA_ID" : get_previous_rev_data.ACCTAXCLA_ID,
+				"CANCELLATION_PERIOD_NOTPER" : get_previous_rev_data.CANCELLATION_PERIOD_NOTPER,
+				"PRICELIST_DESCRIPTION" : get_previous_rev_data.PRICELIST_DESCRIPTION,
+				"PRICELIST_ID" : get_previous_rev_data.PRICELIST_ID,
 				"CANCELLATION_PERIOD":"180",
-				"CANCELLATION_PERIOD_NOTPER":"0",
+				"CANCELLATION_PERIOD_NOTPER":"",
 				"CONTRACT_VALID_FROM":get_previous_rev_data.CONTRACT_VALID_FROM,
 				"CONTRACT_VALID_TO":get_previous_rev_data.CONTRACT_VALID_TO,
 				"COMPANY_ID":get_previous_rev_data.COMPANY_ID,
 				"COMPANY_NAME":get_previous_rev_data.COMPANY_NAME,
 				"COMPANY_RECORD_ID":get_previous_rev_data.COMPANY_RECORD_ID,
-				"HLV_ORG_BUN":"AGS - SSC"
+				"HLV_ORG_BUN":"AGS - SSC",
+				"TRANSACTION_TYPE":"O-QUOTE"
 			}
 
 		quote_revision_table_info.AddRow(quote_rev_data)
@@ -190,7 +209,7 @@ def create_new_revision(Opertion,cartrev):
 			##Calling the iflow for quote header writeback to cpq to c4c code ends...
 			
 			#update SAQTIP start
-			Sql.RunQuery("""UPDATE SAQTIP SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
+			# Sql.RunQuery("""UPDATE SAQTIP SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#update SAQTIP end
 			
 			#CLONE ALL OBJECTS 
@@ -216,6 +235,8 @@ def create_new_revision(Opertion,cartrev):
 						insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = str(col.COLUMN_NAME) if selectcols == '' else selectcols + "," + str(col.COLUMN_NAME)
 				insertcols += " )"
+				insertcols  = insertcols.replace("PRIMARY","[PRIMARY]")
+				selectcols = selectcols.replace("PRIMARY","[PRIMARY]")
 				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no))
 				finalquery=insertval + insertcols +' '+ selectval + selectcols
 				Trace.Write(finalquery)
@@ -224,11 +245,15 @@ def create_new_revision(Opertion,cartrev):
 			## SAQSCO (QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) MAPPED INTO  SAQSCE (QTESRVCOB_RECORD_ID):
 			updatestatement = """UPDATE B SET B.QTESRVCOB_RECORD_ID = A.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID FROM SAQSCO A JOIN SAQSCE B ON A.EQUIPMENT_ID=B.EQUIPMENT_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.FABLOCATION_ID=B.FABLOCATION_ID AND A.QUOTE_ID=B.QUOTE_ID AND A.SERIAL_NO=B.SERIAL_NO WHERE A.QTEREV_ID={} AND B.QTEREV_ID={} AND A.QUOTE_RECORD_ID=''{}'' AND B.QUOTE_RECORD_ID=''{}'' """.format(int(newrev_inc),int(newrev_inc),str(quote_contract_recordId),str(quote_contract_recordId))
 
+			##SAQFEQ (QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID) MAPPED TO SAQSCO (QTEREVFEQ_RECORD_ID)
+			updatestatement2 = """UPDATE SAQSCO SET QTEREVFEQ_RECORD_ID = QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQSCO INNER JOIN SAQFEQ ON SAQSCO.QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID AND SAQSCO.FABLOCATION_ID = SAQFEQ.FABLOCATION_ID AND SAQSCO.GREENBOOK = SAQFEQ.GREENBOOK AND SAQSCO.EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID  WHERE SAQSCO.QUOTE_RECORD_ID = ''{}'' AND SAQSCO.QTEREV_ID  = ''{}'' """.format(str(quote_contract_recordId),int(newrev_inc))
+
 			### SAQTSV (QUOTE_SERVICE_RECORD_ID) MAPPED INTO  SAQTSE (QTESRV_RECORD_ID):
 			updatestatement1 = """UPDATE B SET B.QTESRV_RECORD_ID = A.QUOTE_SERVICE_RECORD_ID FROM SAQTSV A JOIN SAQTSE B ON A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID=B.QTEREV_RECORD_ID AND A.QUOTE_ID=B.QUOTE_ID  WHERE A.QTEREV_ID={} AND B.QTEREV_ID={} AND A.QUOTE_RECORD_ID=''{}'' AND B.QUOTE_RECORD_ID=''{}'' """.format(int(newrev_inc),int(newrev_inc),str(quote_contract_recordId),str(quote_contract_recordId))
 
 			query_result = SqlHelper.GetFirst("sp_executesql @statement = N'" + str(updatestatement) + "'")
 			query_result1 = SqlHelper.GetFirst("sp_executesql @statement = N'" + str(updatestatement1) + "'")
+			query_result2 = SqlHelper.GetFirst("sp_executesql @statement = N'" + str(updatestatement2) + "'")
 			Trace.Write(query_result)
 			## END CLONE OBJECT SAQSCO TO SAQSCE
 			
@@ -300,6 +325,7 @@ def set_active_revision(Opertion,cartrev):
 		get_rev_info_details = Sql.GetFirst("select QTEREV_ID,CART_ID,ADDUSR_RECORD_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and QUOTE_REVISION_RECORD_ID = '"+str(recid)+"'")
 		gtcart_idval = get_rev_info_details.CART_ID
 		Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=recid,newrev_inc= get_rev_info_details.QTEREV_ID,QuoteRecordId=quote_contract_recordId,active_rev = 1))
+		Quote.SetGlobal("quote_revision_record_id",recid)
 		GETCARTID=SqlHelper.GetFirst("sp_executesql @t = N'update CART set ACTIVE_REV =''0'' WHERE CART_ID in (select distinct top 10 CART_REVISIONS.CART_ID as ID from CART_REVISIONS (nolock) INNER JOIN CART2 (nolock) ON CART_REVISIONS.CART_ID = CART2.CartId AND CART_REVISIONS.VISITOR_ID = CART2.OwnerId INNER JOIN CART(NOLOCK) ON CART.CART_ID = CART2.CartId and CART.USERID = CART2.OwnerId WHERE CART2.CartCompositeNumber = ''"+ str(Quote.CompositeNumber)+ "'') '")
 		UPDATEACTIVE = SqlHelper.GetFirst("sp_executesql @t=N'update CART set ACTIVE_REV =''1'' where CART_ID = ''"+str(gtcart_idval)+"'' and USERID =''"+str(User.Id)+"'' '")
 		NRev = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)

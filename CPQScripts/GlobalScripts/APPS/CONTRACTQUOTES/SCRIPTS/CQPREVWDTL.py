@@ -12,6 +12,7 @@ Sql = SQL()
 import SYCNGEGUID as CPQID
 import CQVLDRIFLW
 import CQCPQC4CWB
+import time
 import CQREVSTSCH
 
 # import CMGTRULRAC as CMRUL
@@ -77,7 +78,7 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 	PModel = "disabled"
 	sec_rec_id = "B0B5E48B-DC63-4B1A-95AC-695973D3AA06"
 	Oppp_SECT = Sql.GetList(
-		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE PRIMARY_OBJECT_NAME = 'SAOPQT' ORDER BY DISPLAY_ORDER"
+		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT (NOLOCK) WHERE PRIMARY_OBJECT_NAME = 'SAOPQT' ORDER BY DISPLAY_ORDER"
 	)
 	for sect in Oppp_SECT:
 		sec_str += '<div id="container" class="wdth100 margtop10 g4 ' + str(sect.RECORD_ID) + '">'
@@ -90,7 +91,7 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 		)
 
 		Oppp_SEFL = Sql.GetList(
-			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,API_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,API_NAME FROM SYSEFL (NOLOCK) WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
 		)
 		for sefl in Oppp_SEFL:
 			sec_str += '<div id="sec_' + str(sect.RECORD_ID) + '" class= "sec_' + str(sect.RECORD_ID) + ' collapse in">'
@@ -104,14 +105,14 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 			)
 			sefl_api = sefl.API_FIELD_NAME
 			object_name = sefl.API_NAME
-			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
+			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD (NOLOCK) WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
 			data_type = syobjd_obj.DATA_TYPE
-			col_name = Sql.GetFirst("SELECT * FROM SAOPQT WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
+			col_name = Sql.GetFirst("SELECT * FROM SAOPQT (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
 			if col_name:
 				if sefl_api == "CpqTableEntryModifiedBy":
 					current_obj_value = col_name.CpqTableEntryModifiedBy
 					current_user = Sql.GetFirst(
-						"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + ""
+						"SELECT USERNAME FROM USERS (NOLOCK) WHERE ID = " + str(current_obj_value) + ""
 					).USERNAME
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
@@ -184,7 +185,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 		primary_objname = "SAQTRV"
 
 	Oppp_SECT = Sql.GetList(
-		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE SECTION_DESC = '' AND PRIMARY_OBJECT_NAME = '{primary_objname}'  and RECORD_ID not in ('AED0A92A-8644-46AE-ACF0-90D6E331E506') ORDER BY DISPLAY_ORDER".format(primary_objname = primary_objname)
+		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT (NOLOCK) WHERE SECTION_DESC = '' AND PRIMARY_OBJECT_NAME = '{primary_objname}'  and RECORD_ID not in ('AED0A92A-8644-46AE-ACF0-90D6E331E506') ORDER BY DISPLAY_ORDER".format(primary_objname = primary_objname)
 	)
 	for sect in Oppp_SECT:
 		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(sect.RECORD_ID) + '">'
@@ -214,11 +215,12 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 
 
 		Oppp_SEFL = Sql.GetList(
-			"SELECT TOP 1000 SYSEFL.FIELD_LABEL, SYSEFL.API_FIELD_NAME,SYSEFL.RECORD_ID,SYSEFL.DISPLAY_ORDER,SYOBJD.DATA_TYPE,SYOBJD.FORMULA_DATA_TYPE,SYOBJD.CURRENCY_INDEX FROM SYSEFL JOIN SYOBJD ON SYOBJD.API_NAME = SYSEFL.API_FIELD_NAME AND SYOBJD.OBJECT_NAME = SYSEFL.API_NAME WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+			"SELECT TOP 1000 SYSEFL.FIELD_LABEL, SYSEFL.API_FIELD_NAME,SYSEFL.RECORD_ID,SYSEFL.DISPLAY_ORDER,SYOBJD.DATA_TYPE,SYOBJD.FORMULA_DATA_TYPE,SYOBJD.CURRENCY_INDEX FROM SYSEFL (NOLOCK) JOIN SYOBJD ON SYOBJD.API_NAME = SYSEFL.API_FIELD_NAME AND SYOBJD.OBJECT_NAME = SYSEFL.API_NAME WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
 		)
 		for sefl in Oppp_SEFL:
 			sec_str += '<div id="sec_' + str(sect.RECORD_ID) + '" class=  "sec_' + str(sect.RECORD_ID) + ' collapse in "> '
 			sec_str += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
+			Trace.Write("FIELD_LABEL_CHK "+str(sefl.FIELD_LABEL))
 			sec_str += (
 				"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
 				+ str(sefl.FIELD_LABEL)
@@ -235,7 +237,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				col_name = Sql.GetFirst("SELECT * from CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '{contract_record_id}' ".format(contract_record_id= str(contract_record_id) ))
 				
 			else:
-				col_name = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "' ") 
+				col_name = Sql.GetFirst("SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "' ") 
 			if col_name:
 				if objd_datatype =="CURRENCY" or objd_formulatype == "CURRENCY":
 					#Trace.Write('@@@SEFL_API** --> '+str(sefl_api))
@@ -243,6 +245,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					current_obj_value = eval("col_name." + sefl_api)
 					decimal_val = 3
 					try:
+						Trace.Write("current_obj_value--"+str(current_obj_value))
 						curr_symbol_obj = Sql.GetFirst("select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 " + curr_index + " from "+ str(primary_objname)+ " where QUOTE_RECORD_ID = '"+ str(Quote)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'  ) ")
 						if curr_symbol_obj is not None:
 							if curr_symbol_obj != "":
@@ -273,7 +276,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				elif sefl_api == "CpqTableEntryModifiedBy":
 					current_obj_value = col_name.CpqTableEntryModifiedBy	
 					current_user = Sql.GetFirst(
-						"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + ""
+						"SELECT USERNAME FROM USERS (NOLOCK) WHERE ID = " + str(current_obj_value) + ""
 					).USERNAME
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' title = '"+ str(current_user)+"' value = '"
@@ -368,6 +371,29 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ '" class="custom" '
 						+ 'disabled checked><span class="lbl"></span></div>'
 					)
+				elif sefl_api=="PAYMENTTERM_NAME_ISCHANGED":
+					act_status = (eval("col_name." + str(sefl_api)))
+					Trace.Write("sefl_api"+str(sefl_api))
+					Trace.Write("act_status"+str(act_status))
+					if act_status == True  or act_status == 1:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled checked><span class="lbl"></span></div>'
+						)						
+					else:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled ><span class="lbl"></span></div>'
+						)
+					
 				elif sefl_api in ["INTERNAL_NOTES","CUSTOMER_NOTES"]:
 					#Trace.Write('At line 289-->err'+str(sefl_api))
 					sec_str += (
@@ -452,7 +478,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				AND SYSEFL.API_FIELD_NAME = SYOBJD.API_NAME
 				WHERE SYSEFL.RECORD_ID = '{0}' AND UP.USER_ID ='{1}' AND SYSEFL.SECTION_RECORD_ID = '{2}'""".format(str(sefl.RECORD_ID), str(User.Id),str(sect.RECORD_ID)))
 			if permission_chk_query:
-				if str(permission_chk_query.PERMISSION) == "EDITABLE" and str(col_name.REVISION_STATUS).upper() != "APPROVED":
+				if str(permission_chk_query.PERMISSION) == "EDITABLE" and str(col_name.REVISION_STATUS).upper() != "APR-APPROVED":
 					edit_lock_icon = "fa fa-pencil"
 				else:
 					edit_lock_icon = "fa fa-lock"  
@@ -516,7 +542,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		"SPECIALIST_REVIEW",
 		"COMMENT",    
 	]
-	dynamic_sect = Sql.GetList("SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE SECTION_DESC = '' AND PRIMARY_OBJECT_NAME = 'SAQCBC' AND SECTION_NAME NOT IN ('BASIC INFORMATION','AUDIT INFORMATION') ORDER BY DISPLAY_ORDER")
+	dynamic_sect = Sql.GetList("SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT (NOLOCK) WHERE SECTION_DESC = '' AND PRIMARY_OBJECT_NAME = 'SAQCBC' AND SECTION_NAME NOT IN ('BASIC INFORMATION','AUDIT INFORMATION') ORDER BY DISPLAY_ORDER")
 	for sect in dynamic_sect:
 		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(sect.RECORD_ID) + '">'
 		sec_str += '<div onclick="dyn_main_sec_collapse_arrow(this)" data-target="" id="dyn1577" data-toggle="collapse" class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"><label data-bind="html: hint" class="onlytext"><div class="height_auto"><div id="ctr_drop" class="btn-group dropdown cbc_ctr_drop"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="'+str(sect.RECORD_ID)+'" class="dropdown-item" href="#" onclick="cbcEDIT(this)">EDIT</a></li></ul></div></div>'+str(sect.SECTION_NAME)+'</div></label> </div>'		
@@ -560,7 +586,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="IF THE CUSTOMER HAS A MASTER SERVICE AGREEMENT" and str(value.CHECKLIST_ID) in ['5','6','7','8','9','10','11','12','12.1','12.2','12.3']:
+			elif sect.SECTION_NAME =="IF THE CUSTOMER HAS A MASTER SERVICE AGREEMENT" and str(value.CHECKLIST_ID) in ['5','6','7','8','9','10','10.1','10.2','10.3']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -580,7 +606,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="VALIDATE CANCELLATION FOR CONVENIENCE DAYS IN CRM ARE RECORDED ACCORDING TO TS&CS IN THE BOOKING PACKAGE (I.E. SOW, PO, CL, MSA, ETC...) AND ENTER 0, NA, OR THE NUMBER OF DAYS BASED ON THESE RULES:(DO NOT INCLUDE POSS CANCELLATION TERMS WITH SERVICE TERMS. IF MULTIPLE CANCELLATION TERMS FOR SERVICE PRODUCTS, SPLIT OUT)" and str(value.CHECKLIST_ID) in ['13','14','15','16','17']:
+			elif sect.SECTION_NAME =="VALIDATE CANCELLATION FOR CONVENIENCE DAYS IN CRM ARE RECORDED ACCORDING TO TS&CS IN THE BOOKING PACKAGE (I.E. SOW, PO, CL, MSA, ETC...) AND ENTER 0, NA, OR THE NUMBER OF DAYS BASED ON THESE RULES:(DO NOT INCLUDE POSS CANCELLATION TERMS WITH SERVICE TERMS. IF MULTIPLE CANCELLATION TERMS FOR SERVICE PRODUCTS, SPLIT OUT)" and str(value.CHECKLIST_ID) in ['11','12','13','14','15']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -600,7 +626,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="EQUIPMENT NUMBERS" and str(value.CHECKLIST_ID) in ['18']:
+			elif sect.SECTION_NAME =="EQUIPMENT NUMBERS" and str(value.CHECKLIST_ID) in ['16']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -620,7 +646,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="CUSTOMER PURCHASE ORDER OR SIGNED AGREEMENT" and str(value.CHECKLIST_ID) in ['19','20','21','22','23']:
+			elif sect.SECTION_NAME =="CUSTOMER PURCHASE ORDER OR SIGNED AGREEMENT" and str(value.CHECKLIST_ID) in ['17','18','19','20','21']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -640,7 +666,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="BILL PLAN VERIFICATION" and str(value.CHECKLIST_ID) in ['24','25']:
+			elif sect.SECTION_NAME =="BILL PLAN VERIFICATION" and str(value.CHECKLIST_ID) in ['22','23']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -660,7 +686,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="NSOS/UPGRADES" and str(value.CHECKLIST_ID) in ['26','27']:
+			elif sect.SECTION_NAME =="NSOS/UPGRADES" and str(value.CHECKLIST_ID) in ['24','25']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -680,7 +706,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="MULTI-ELEMENT ARRANGEMENT" and str(value.CHECKLIST_ID) in ['28','28.1','28.2','28.3']:
+			elif sect.SECTION_NAME =="MULTI-ELEMENT ARRANGEMENT" and str(value.CHECKLIST_ID) in ['26','26.1','26.2','26.3']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -690,6 +716,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str +=('<td class="wid_90"></td>')
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"></a></div></td>')
 					sec_str += '</tr>'
+					
 				else:
 					sec_str +='<tr class ="cbc_parent">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -699,7 +726,6 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
-
 		sec_str += '</tbody></table></div>'
 		
 	values_lists = ""
@@ -714,47 +740,75 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 						
 	return sec_str
 
-def editcbc(Qt_rec_id, Quote, MODE):	
+def editcbc(Qt_rec_id, Quote, MODE):
+	update_rev_cbc_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-PREPARING CBC' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=Quote,quote_revision_rec_id=quote_revision_record_id)
+	Sql.RunQuery(update_rev_cbc_status)	
 	for val in values:
 		if '.' not in val['CHECKLIST_ID']:
 			val['COMMENT'] = val['COMMENT'].replace("'", "").replace("<", "").replace(">", "")
 			Sql.RunQuery("UPDATE SAQCBC SET SERVICE_CONTRACT = '{service_contract}',SPECIALIST_REVIEW = '{specialist_review}',COMMENT = '{comment}' WHERE CHECKLIST_ID = '{checklist_id}' AND QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' ".format(checklist_id = val['CHECKLIST_ID'] if val['CHECKLIST_ID'] !="" else "",service_contract = val['SERVICE_CONTRACT'],specialist_review = val['SPECIALIST_REVIEW'],comment = val['COMMENT'],quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
-			
+	get_all_checklist=Sql.GetFirst("SELECT COUNT(*) as cnt FROM SAQCBC (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND SERVICE_CONTRACT=0 AND SPECIALIST_REVIEW=0 AND CHECKLIST_ID NOT IN('4.1','4.2','4.3','4.4','10.1','10.2','10.3','26.1','26.2','26.3')".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+	if get_all_checklist.cnt == "0":
+		update_rev_cb_complete_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-CBC COMPLETED' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=Quote,quote_revision_rec_id=quote_revision_record_id)
+		Sql.RunQuery(update_rev_cb_complete_status)
+	else:
+		Trace.Write('no--11')
+	#if popupquery:
+		#popupquery_value = popupquery.cnt
+		#A055S000P01-17166 start
+		#update_rev_cb_complete_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-CBC COMPLETED' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=Quote,quote_revision_rec_id=quote_revision_record_id)
+		#Sql.RunQuery(update_rev_cb_complete_status)
+		# 	
+	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote,quote_revision_record_id)
+	time.sleep(3) #A055S000P01-16535
+	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote,quote_revision_record_id)
 	return True
 
 def countcbc(Qt_rec_id, Quote, MODE):
-	popupquery=Sql.GetFirst("SELECT COUNT(*) as cnt FROM SAQCBC WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND SERVICE_CONTRACT='False' AND SPECIALIST_REVIEW='FALSE' AND CHECKLIST_ID NOT IN('4.1','4.2','4.3','4.4','12.1','12.2','12.3','28.1','28.2','28.3')".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+	popupquery=Sql.GetFirst("SELECT COUNT(*) as cnt FROM SAQCBC (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND SERVICE_CONTRACT='False' AND SPECIALIST_REVIEW='FALSE' AND CHECKLIST_ID NOT IN('4.1','4.2','4.3','4.4','10.1','10.2','10.3','26.1','26.2','26.3')".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	popupquery_value = popupquery.cnt
+	#A055S000P01-17166 start
+	update_rev_status = "UPDATE SAQTRV SET WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST',REVISION_STATUS = 'CBC-CBC COMPLETED' where QUOTE_RECORD_ID='{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id=Quote,quote_revision_rec_id=quote_revision_record_id)
+	#Sql.RunQuery(update_rev_status)
+	#A055S000P01-17166 end
+	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote,quote_revision_record_id)
+	time.sleep(3) #A055S000P01-16535
+	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote,quote_revision_record_id)
 	return popupquery_value
+#A055S000P01-17166 start
+
+
 
 def savecbc(Qt_rec_id, Quote_rec_id, MODE):
 	#CBD POPUP FUNCTIONALITY ADDED UPDATE QUERY
-	Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'SUBMITTED FOR BOOKING' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))	
-	Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
-	get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
+	Sql.RunQuery("UPDATE SAQTRV SET REVISION_STATUS = 'CBC-CBC COMPLETED',WORKFLOW_STATUS = 'CLEAN BOOKING CHECKLIST' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))	
+	
+	#Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'BOOKED' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
+	get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
 	##FPM QUOTE SCENARIO
 	getfpm_quote_type = Sql.GetFirst("SELECT DOCTYP_ID,QUOTE_ID,QTEREV_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}' AND DOCTYP_ID = 'ZWK1' ".format(Quote_rec_id,quote_revision_record_id))
 	if getfpm_quote_type:
 		##Validation For Quote items
 		get_quote_items = Sql.GetFirst("SELECT * FROM SAQRIT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID ='{}'".format(Quote_rec_id,quote_revision_record_id))
 		if get_quote_items:
-			Log.Info("====> QTPOSTACRM for FPM called from ==> "+str(getfpm_quote_type.QUOTE_ID)+'--'+str(getfpm_quote_type.QTEREV_ID))
+			#Log.Info("====> QTPOSTACRM for FPM called from ==> "+str(getfpm_quote_type.QUOTE_ID)+'--'+str(getfpm_quote_type.QTEREV_ID))
 			ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':getfpm_quote_type.QUOTE_ID,'REVISION_ID':getfpm_quote_type.QTEREV_ID, 'Fun_type':'CPQ_TO_ECC'})
 	##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
 	CQREVSTSCH.Revisionstatusdatecapture(Quote_rec_id,quote_revision_record_id)
 
 	#Added query and condition to restrict calling contract creation webservice based on document type = ZWK1(Scripting logic to prevent ZWK1 quote from being pushed to CRM) - start
-	revision_document_type_object = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
+	revision_document_type_object = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
 	if revision_document_type_object:
 		if revision_document_type_object.DOCTYP_ID != "ZWK1" and revision_document_type_object.DOCTYP_ID != "":
 			crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(get_quote_details.QUOTE_ID),'REVISION_ID':str(get_quote_details.QTEREV_ID),'Fun_type':'cpq_to_crm'})
 	#Added query and condition to restrict calling contract creation webservice based on document type = ZWK1(Scripting logic to prevent ZWK1 quote from being pushed to CRM) - end	
 	
 	##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
-	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote,quote_revision_record_id)
+	time.sleep(3) #A055S000P01-16535
+	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote,quote_revision_record_id)
 	return True
-
+#A055S000P01-17166 end
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
@@ -766,7 +820,7 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 	#editclick = "CommonEDIT(this)"
 	edit_action = ""
 	Oppp_SECT = Sql.GetList(
-		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE PRIMARY_OBJECT_NAME = 'SAQTRV' and RECORD_ID = 'AED0A92A-8644-46AE-ACF0-90D6E331E506' ORDER BY DISPLAY_ORDER"
+		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT (NOLOCK) WHERE PRIMARY_OBJECT_NAME = 'SAQTRV' and RECORD_ID = 'AED0A92A-8644-46AE-ACF0-90D6E331E506' ORDER BY DISPLAY_ORDER"
 	)
 	for sect in Oppp_SECT:
 		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(sect.RECORD_ID) + '">'
@@ -818,14 +872,14 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 				)
 			sefl_api = sefl.API_FIELD_NAME
 			object_name = sefl.API_NAME
-			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
+			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD (NOLOCK) WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
 			data_type = syobjd_obj.DATA_TYPE
-			col_name = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
+			col_name = Sql.GetFirst("SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
 			if col_name:
 				if sefl_api == "CpqTableEntryModifiedBy":
 					current_obj_value = col_name.CpqTableEntryModifiedBy
 					current_user = Sql.GetFirst(
-						"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + ""
+						"SELECT USERNAME FROM USERS (NOLOCK) WHERE ID = " + str(current_obj_value) + ""
 					).USERNAME
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
@@ -892,10 +946,10 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 
 				sec_str += "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 			sec_str += "<div class='col-md-3' style='display:none;'> <span class='' data-bind='attr:{'id': $data.name()}' id=''>  </div>"
-			permission_chk_query = Sql.GetFirst("SELECT PERMISSION FROM SYOBJD where OBJECT_NAME = 'SAQTRV' and API_NAME = '"+str(sefl_api)+"'")
+			permission_chk_query = Sql.GetFirst("SELECT PERMISSION FROM SYOBJD (NOLOCK) where OBJECT_NAME = 'SAQTRV' and API_NAME = '"+str(sefl_api)+"'")
 				
 			if permission_chk_query:
-				if str(permission_chk_query.PERMISSION) == "EDITABLE" and str(col_name.REVISION_STATUS).upper() != "APPROVED":
+				if str(permission_chk_query.PERMISSION) == "EDITABLE" and str(col_name.REVISION_STATUS).upper() != "APR-APPROVED":
 					edit_lock_icon = "fa fa-pencil"
 				else:
 					edit_lock_icon = "fa fa-lock"  
@@ -1230,7 +1284,7 @@ def constructapprovalchaininformation(MODE,record_id):
 	cancel_save = ""
 	#sec_rec_id = "B0B5E48B-DC63-4B1A-95AC-695973D3AA06"    
 	Oppp_SECT = Sql.GetList(
-		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE PRIMARY_OBJECT_NAME = 'ACAPCH' ORDER BY DISPLAY_ORDER"
+		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT (NOLOCK) WHERE PRIMARY_OBJECT_NAME = 'ACAPCH' ORDER BY DISPLAY_ORDER"
 	)
 	for sect in Oppp_SECT:
 		sec_str += '<div id="container" class="wdth100 ' + str(sect.RECORD_ID) + '">'        
@@ -1275,7 +1329,7 @@ def constructapprovalchaininformation(MODE,record_id):
 		
 
 		Oppp_SEFL = Sql.GetList(
-			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,API_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,API_NAME FROM SYSEFL (NOLOCK) WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
 		)
 		
 		for sefl in Oppp_SEFL:
@@ -1290,15 +1344,15 @@ def constructapprovalchaininformation(MODE,record_id):
 			)
 			sefl_api = sefl.API_FIELD_NAME			
 			object_name = sefl.API_NAME
-			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
+			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD (NOLOCK) WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
 			data_type = syobjd_obj.DATA_TYPE
-			col_name = Sql.GetFirst("SELECT * FROM ACAPCH WHERE APPROVAL_CHAIN_RECORD_ID = '"+str(record_id)+"'")
+			col_name = Sql.GetFirst("SELECT * FROM ACAPCH (NOLOCK) WHERE APPROVAL_CHAIN_RECORD_ID = '"+str(record_id)+"'")
 												
 			if col_name:
 				if sefl_api == "CpqTableEntryModifiedBy":
 					current_obj_value = col_name.CpqTableEntryModifiedBy
 					current_user = Sql.GetFirst(
-						"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + ""
+						"SELECT USERNAME FROM USERS (NOLOCK) WHERE ID = " + str(current_obj_value) + ""
 					).USERNAME
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
@@ -1497,8 +1551,8 @@ elif ACTION == "LEGALSOW_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
 		contract_id = Sql.GetFirst("SELECT CONTRACT_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '"+str(contract_record_id)+"'")
-		quote_id = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
-		Quote = quote_id.MASTER_TABLE_QUOTE_RECORD_ID
+		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
+		Quote = quote_id.QUOTE_RECORD_ID
 	elif TreeParam == "Quote Information":
 		Quote = Quote.GetGlobal("contract_quote_record_id")
 	#Trace.Write("Quote---->" + str(Quote))
@@ -1525,8 +1579,8 @@ elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
 		contract_id = Sql.GetFirst("SELECT CONTRACT_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '"+str(contract_record_id)+"'")
-		quote_id = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
-		Quote = quote_id.MASTER_TABLE_QUOTE_RECORD_ID
+		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
+		Quote = quote_id.QUOTE_RECORD_ID
 	elif TreeParam == "Quote Information":
 		Quote = Quote.GetGlobal("contract_quote_record_id")
 	#Trace.Write("Quote---->" + str(Quote))

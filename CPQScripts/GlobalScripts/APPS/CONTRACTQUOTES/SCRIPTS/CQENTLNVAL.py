@@ -86,9 +86,9 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 					#flag_excluse=1
 					break
 		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
-		if str(get_ent_val).upper() == "OFFERING + EQUIPMENT":
+		if str(get_ent_val).upper() == "STR-OFFBGBEQ OBJ-EQ":
 			level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
-		elif str(get_ent_val).upper() == "OFFERING + GREENBOOK + GR EQUI":
+		elif str(get_ent_val).upper() in ('STR-OFFBGB OBJ-GREQ PRD-GRPT','STR-OFFBGB OBJ-GREQ','STR-OFFBGB OBJ-EQ','STR-OFFBGR OBJ-GREQ','STR-OFFBGB OBJ-ASKT',"STR-OFFBGBKTGCPCND OBJ-GPAS","STR-OFFBGBPMCMGCPCND OBJ-AS","STR-OFFBGBSMGCPCBD OBJ-AS"):
 			level_name = 'OFFERING FAB GREENBOOK LEVEL'
 		else:
 			level_name = 'OFFERING LEVEL'
@@ -157,9 +157,9 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 					#flag_excluse=1
 					break
 		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
-		if str(get_ent_val).upper() == "OFFERING + EQUIPMENT":
+		if str(get_ent_val).upper()  == "STR-OFFBGBEQ OBJ-EQ":
 			level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
-		elif str(get_ent_val).upper() == "OFFERING + GREENBOOK + GR EQUI":
+		elif str(get_ent_val).upper() in ('STR-OFFBGB OBJ-GREQ PRD-GRPT','STR-OFFBGB OBJ-GREQ','STR-OFFBGB OBJ-EQ','STR-OFFBGR OBJ-GREQ','STR-OFFBGB OBJ-ASKT','STR-OFFBGBPMCMGCPCND OBJ-AS','STR-OFFBGBSMGCPCBD OBJ-AS','STR-OFFBGBKTGCPCND OBJ-GPAS'):
 			level_name = 'OFFERING FAB GREENBOOK LEVEL'
 		else:
 			level_name = 'OFFERING LEVEL'
@@ -176,7 +176,7 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 	elif ent_level_table == "SAQGPE":
 		Trace.Write('107-gpe---get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 		get_clicked_greenbook = Product.GetGlobal("TreeParentLevel1")
-		level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
+		level_name = 'OFFERING FAB GREENBOOK LEVEL'
 	else:
 		Trace.Write('107-else---get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
@@ -194,7 +194,7 @@ def entitlement_attributes_editability_request(partnumber,inserted_value_list,en
 			#get_attr_non_editable_fields = Sql.GetFirst("select EDITABLE from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and EDITABLE = 'False'")
 			
 		else:
-			get_attr_editable_fields_qery= Sql.GetFirst("select PRENLI.EDITABLE from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and PRENGB.EDITABLE = 'FALSE'")
+			get_attr_editable_fields_qery= Sql.GetFirst("select PRENLI.EDITABLE from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and PRENLI.EDITABLE = 'FALSE'")
 			#get_attr_non_editable_fields = Sql.GetFirst("select PRENLI.EDITABLE from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"' and EDITABLE = 'False'")
 		if get_attr_editable_fields_qery:
 			#if get_attr_editable_fields.EDITABLE == 'TRUE':
@@ -460,8 +460,106 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 								"field":["SVSPCT","Service Split %","AGS_Z0105_PQB_SVSPPC"]
 								},
 								{
+								"field":["SWPKTA","Swap Kits (Applied Provided)","AGS_{}_STT_SWKTAP".format(partnumber)]
+								},
+								{
 								"field":["SPSPCT","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
 								},
+								##saqite column
+								{
+								"field":["BASE_FEE","Base Fee","AGS_{}_PQB_BASFEE".format(partnumber)]
+								},
+								{
+								"field":["BILLING_CONDITION","Billing Condition","AGS_{}_PQB_BILCND".format(partnumber)]
+								},
+								{
+								"field":["BILLING_CYCLE","Billing Cycle","AGS_{}_PQB_BILCYC".format(partnumber)]
+								},
+								{
+								"field":["LOW_QTY_PART","Consignment Fee-Low Qty Parts","AGS_{}_TSC_OCFLQP".format(partnumber)]
+								},
+								{
+								"field":["CONCOV","Contract Coverage","AGS_{}_CVR_CNTCOV".format(partnumber)]
+								},
+								{
+								"field":["COO_RED_GUAR","Coo Reduction Guarantees","AGS_{}_GEN_CORDGU".format(partnumber)]
+								},
+								{
+								"field":["COMMIT_CONSIGNED_PART","Cust. Commit-Consigned Parts","AGS_{}_GEN_CUPCCP".format(partnumber)]
+								},
+								{
+								"field":["COMMIT_REQUEST_PART","Cust. Commit-On Request Parts","AGS_{}_GEN_CUPCRP".format(partnumber)]
+								},
+								{
+								"field":["CUST_PURCH_COMMIT","Customer Purchase Commit","AGS_{}_GEN_CUPRCM".format(partnumber)]
+								},
+								{
+								"field":["FORECAST_REDIS_FREQ","Fcst Redistribution-Frequency","AGS_{}_GEN_FRREFQ".format(partnumber)]
+								},
+								{
+								"field":["FORECAST_ADJ_FREQ","Fcst Adjustment - Frequency","AGS_{}_GEN_FRADFQ".format(partnumber)]
+								},
+								# {
+								# "field":["IDLE_DURATION","Idle Duration","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								# {
+								# "field":["IDLE_NOTICE","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								# {
+								# "field":["IDLING_EXCEP","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								{
+								"field":["KPI_ON_REQUEST","KPI - ≥90% On Request","AGS_{}_KPI_ONRPRT".format(partnumber)]
+								},
+								{
+								"field":["KPI_MONTHLY_CON","KPI - Monthly Consigned","AGS_{}_KPI_CONPRT".format(partnumber)]
+								},
+								# {
+								# "field":["MAX_OF_TOOLS","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								{
+								"field":["MISC_TERM","Miscellaneous terms","AGS_{}_GEN_MSCTRM".format(partnumber)]
+								},
+								{
+								"field":["ONSITE_CONSPRT","On-Site Consigned parts","AGS_{}_TSC_ONSTCP".format(partnumber)]
+								},
+								{
+								"field":["WAF_SPEC_INP","On Wafer Specs Input","AGS_{}_KPI_ONWFSP".format(partnumber)]
+								},
+								{
+								"field":["CREDIT_CONSIGNED_PART","Perf. Credit - Consigned Parts","AGS_{}_KPI_PCTKCP".format(partnumber)]
+								},
+								# {
+								# "field":["CREDIT_NTE_CON","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								{
+								"field":["CREDIT_NTE_REQ","Perf. Credit NTE - On Request","AGS_{}_KPI_PCTHOR".format(partnumber)]
+								},
+								{
+								"field":["CREDIT_REQUEST_PART","Perf. Credit-On Request Parts","AGS_{}_KPI_PCTKRP".format(partnumber)]
+								},
+								{
+								"field":["PM_QTY_CRD","PM Quantity Credit %","AGS_{}_PQB_PMQCPC".format(partnumber)]
+								},
+								{
+								"field":["RPRCUS_OWNPRT","Repair Cust Owned Parts","AGS_{}_TSC_CUOWPN".format(partnumber)]
+								},
+								{
+								"field":["REPONSE_TIME","Response Time","AGS_{}_CVR_RSPTIM".format(partnumber)]
+								},
+								{
+								"field":["SCHEDULE_PART","Sched Parts 24 hr Commitment","AGS_{}_KPI_KPSCPT".format(partnumber)]
+								},
+								# {
+								# "field":["SOFT_MNT_FEE","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								{
+								"field":["UNSCHEDULED_PART","Unscheduled Parts 7 day commit","AGS_{}_KPI_KPUSPT".format(partnumber)]
+								},
+								# {
+								# "field":["WARM_HOT_IDLE","Spares Split %","AGS_{}_PQB_SPSPPC".format(partnumber)]
+								# },
+								
 						]
 			
 	if get_equipment:
@@ -472,14 +570,20 @@ def entitlemnt_attr_update(partnumber,entitlement_table, where):
 				addtional_whr = " AND GREENBOOK = '{}' AND EQUIPMENT_ID = '{}'".format(ent_rec.GREENBOOK,ent_rec.EQUIPMENT_ID )
 			elif entitlement_table == 'SAQGPE':
 				addtional_whr = " AND GREENBOOK = '{}' AND GOT_CODE = '{}' AND PM_ID = '{}'".format(ent_rec.GREENBOOK,ent_rec.GOT_CODE,  ent_rec.PM_ID)
+			sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(entitlement_table)))
+			tables_column = [col_name.COLUMN_NAME for col_name in sqlobj]
 			get_xml_dict,dict_val = _construct_dict_xml(ent_rec.ENTITLEMENT_XML)
 			Trace.Write("dict_val--"+str(dict_val))
 			for entitlement_detail in entitlement_details:
 				entitlement_table_col = entitlement_detail['field'][0]
 				entitlement_id = entitlement_detail['field'][2]
-				if entitlement_id in dict_val.keys():
+				if entitlement_id == 'AGS_Z0092_TSC_CONSUM':
+					entitlement_id = 'AGS_Z0092_TSC_CONADD' 
+				if entitlement_id in dict_val.keys() and entitlement_table_col in tables_column:
 					entitlement_disp_val = dict_val[entitlement_id]
-					if entitlement_disp_val:
+					if entitlement_disp_val and entitlement_disp_val not in (None,'None') :
+						if entitlement_table_col in ('SPSPCT','SVSPCT') and "%" in entitlement_disp_val:
+							entitlement_disp_val = entitlement_disp_val.replace("%","")
 						update_values += ", {} = '{}' ".format(entitlement_table_col, entitlement_disp_val  ) 
 					else:
 						update_values += ", {} = NULL ".format(entitlement_table_col, entitlement_disp_val  )

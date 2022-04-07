@@ -146,7 +146,7 @@ def CommonTreeViewHTMLDetail(
 			if objh_obj is not None:
 				ObjectName = str(objh_obj.OBJECT_NAME)
 				
-	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SAQRIB","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV","SAQTSV","SAQSFB","SAQSGB","SAQDOC"]:
+	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SAQRIB","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV","SAQTSV","SAQSFB","SAQSGB","SAQDOC","SAQFBL"]:
 			canedit = "TRUE"
 	if Product.GetGlobal("TreeParentLevel0") == "Billing":
 		ObjectName = "SAQRIB"
@@ -291,11 +291,12 @@ def CommonTreeViewHTMLDetail(
 	#section level permissions start	
 	if ( ObjectName == "SYSECT" or ObjectName == "SYSEFL") and (crnt_prd_val == "SY"):		
 		#Below query is in the logic to remove duplicate if the user is in more than one profile
-		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT WHERE SYSECT.RECORD_ID IN (SELECT DISTINCT SECTION_RECORD_ID FROM SYPRSN (NOLOCK) JOIN USERS_PERMISSIONS (NOLOCK) up ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID WHERE SYPRSN.TAB_RECORD_ID = '' AND SYPRSN.VISIBLE = 'True' AND UP.USER_ID = '"
-			+ str(get_user_id)
-			+ "') AND SYSECT.PRIMARY_OBJECT_NAME = '"
-			+ str(ObjectName)
-			+ "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
+		# QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT WHERE SYSECT.RECORD_ID IN (SELECT DISTINCT SECTION_RECORD_ID FROM SYPRSN (NOLOCK) JOIN USERS_PERMISSIONS (NOLOCK) up ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID WHERE SYPRSN.TAB_RECORD_ID = '' AND SYPRSN.VISIBLE = 'True' AND UP.USER_ID = '"
+		# 	+ str(get_user_id)
+		# 	+ "') AND SYSECT.PRIMARY_OBJECT_NAME = '"
+		# 	+ str(ObjectName)
+		# 	+ "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
+		QStr1 = ("SELECT TOP 1000 * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '"+ str(ObjectName)+ "' ORDER BY ABS (DISPLAY_ORDER)")
 		# QStr1 = (
 		# 	"SELECT TOP 1000 SYSECT.* FROM SYSECT WITH (NOLOCK)"
 		# 	+ " JOIN SYPRSN (NOLOCK) ON SYPRSN.SECTION_RECORD_ID = SYSECT.RECORD_ID"
@@ -458,26 +459,41 @@ def CommonTreeViewHTMLDetail(
 		action_visible_obj = ""
 		SecEdiApp = ["SYSTEM ADMIN", "SALES"]
 		if current_prod not in SecEdiApp:
+			# action_visible_obj = Sql.GetFirst(
+			# 	"""
+			# 						SELECT
+			# 							SYPRSN.*
+			# 						FROM
+			# 							SYPRSN (NOLOCK)
+			# 						JOIN
+			# 							USERS_PERMISSIONS UP (NOLOCK) ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
+			# 						WHERE
+			# 							SYPRSN.SECTION_RECORD_ID = '{Section_Rec_Id}' AND
+			# 							UP.USER_ID = '{User_Record_Id}' AND
+			# 							SYPRSN.EDITABLE = 0
+			# 						""".format(
+			# 		Section_Rec_Id=sec.RECORD_ID, User_Record_Id=get_user_id
+			# 	)
+			# )
 			action_visible_obj = Sql.GetFirst(
 				"""
 									SELECT
-										SYPRSN.*
+										SYSECT.*
 									FROM
-										SYPRSN (NOLOCK)
-									JOIN
-										USERS_PERMISSIONS UP (NOLOCK) ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
+										SYSECT (NOLOCK)
 									WHERE
-										SYPRSN.SECTION_RECORD_ID = '{Section_Rec_Id}' AND
-										UP.USER_ID = '{User_Record_Id}' AND
-										SYPRSN.EDITABLE = 0
+										RECORD_ID = '{Section_Rec_Id}' 
 									""".format(
-					Section_Rec_Id=sec.RECORD_ID, User_Record_Id=get_user_id
+					Section_Rec_Id=sec.RECORD_ID
 				)
 			)
 
 		if action_visible_obj:
-			if action_visible_obj.OBJECT_RECORD_ID:
-				action_visible_str = action_visible_obj.OBJECT_RECORD_ID
+			try:
+				if action_visible_obj.OBJECT_RECORD_ID:
+					action_visible_str = action_visible_obj.OBJECT_RECORD_ID
+			except:
+				Trace.Write("Exception: Expando object has no attribute OBJECT_RECORD_ID")
 		if ObjectName == "SYOBFD":
 			editable_permission = "TRUE"
 		Trace.Write("editable_permission==="+str(editable_permission))
@@ -1783,7 +1799,8 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					# 		+ str(current_obj_api_name)
 					# 		+ "' "
 					# 	)
-					else:						
+					else:	
+						Trace.Write("current_obj_api_name_chk "+str(current_obj_api_name))					
 						sec_str += "<td>"
 						sec_str += (
 							'<select id="'
@@ -1935,7 +1952,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					# 		)								
 					# else:
 					Trace.Write("else 1812"+str(current_obj_api_name))
-					if current_obj_api_name=='CANCELLATION_PERIOD_NOTPER':
+					if current_obj_api_name=='CANCELLATION_PERIOD':
 						len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"' 
 						Trace.Write('@421'+current_obj_api_name) 
 					else :
@@ -2287,11 +2304,15 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					)
 				else:	
 					Trace.Write('2032---'+ str(current_obj_api_name) +str(MODE))
+					if current_obj_api_name=='CANCELLATION_PERIOD_NOTPER':
+						len_restrict= 'oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="3"' 
+					else :
+						len_restrict=""
 					if str(MODE) == "EDIT":				
 						sec_str += (
 							'<td><input id="'
 							+ str(current_obj_api_name)
-							+ '" type="text" value="'
+							+ '" type="text" '+len_restrict+' value="'
 							+ current_obj_value.lstrip()
 							+ '" title="'
 							+ current_obj_value
@@ -2324,7 +2345,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						sec_str += (
 							'<td><input id="'
 							+ str(current_obj_api_name)
-							+ '" type="text" value="'
+							+ '" type="text" '+len_restrict+' value="'
 							+ current_obj_value.lstrip()
 							+ '" title="'
 							+ current_obj_value

@@ -1768,7 +1768,7 @@ if str(RecordNo) != "":
 	
 	apiData = BuildAPIXMLBody(RecordNo, Login_Domain)
 	
-	ws = WebServiceHelper.Load("http://sandbox.webcomcpq.com/wsAPI/wssrv.asmx")
+	ws = WebServiceHelper.Load("http://rssandbox.webcomcpq.com/wsAPI/wssrv.asmx")
 	data = XmlHelper.Load(apiData)
 	## TODO : Move login details to configuration table
 	username = str(Login_Username) + "#" + str(Login_Domain)

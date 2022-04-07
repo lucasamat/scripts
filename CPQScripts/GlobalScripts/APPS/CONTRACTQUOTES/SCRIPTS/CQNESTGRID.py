@@ -64,7 +64,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		"EQUIPMENT_STATUS",
 		"PLATFORM",
 		"MNT_PLANT_ID",
-		"FABLOCATION_ID",
+		#"FABLOCATION_ID",
 		"WARRANTY_START_DATE",
 		"WARRANTY_END_DATE",
 		"TEMP_TOOL"
@@ -686,6 +686,619 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 	Action_Str += str(Page_End)
 	Action_Str += " of"
 	#Trace.Write("Action_Str--->"+str(Action_Str))
+	return (
+		table_header,
+		data_list,
+		table_id,	
+		filter_control_function,
+		NORECORDS,
+		dbl_clk_function,
+		cv_list,
+		filter_level_list,
+		DropDownList,
+		RelatedDrop_str,
+		Test,
+		Action_Str,
+		QueryCount,
+		page
+	)
+
+def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
+	if str(PerPage) == "" and str(PageInform) == "":
+		Page_start = 1
+		Page_End = 10
+		PerPage = 10
+		PageInform = "1___10___10"
+	else:
+		Page_start = int(PageInform.split("___")[0])
+		Page_End = int(PageInform.split("___")[1])
+		PerPage = PerPage
+	TreeParam = Product.GetGlobal("TreeParam")
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+	TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+	parentlevel4 = Product.GetGlobal("TreeParentLevel4")
+	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+	data_list = []
+	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010":
+		obj_idval = "SYOBJ_1177076_SYOBJ_1177076"
+		rec_id = "SYOBJ_1177076"
+		obj_id = "SYOBJ-1177076"
+		ObjectName = "SAQGPM"
+		key_column = "QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID"
+		Columns = [
+		"QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID",
+		"PM_ID",
+		"GREENBOOK",
+		"DEVICE_NODE",
+		"PROCESS_TYPE",
+		"GOT_CODE",
+		"PM_NAME",
+		"KIT_NUMBER",
+		"SSCM_PM_FREQUENCY",
+		"PM_FREQUENCY"
+	]
+	elif str(TreeSuperParentParam)=="Approvals":
+		obj_idval = "SYOBJ_01023_SYOBJ_01023"
+		rec_id = "SYOBJ-01023"
+		obj_id = "SYOBJ-01023"
+		ObjectName = "ACACST"
+		key_column = "APPROVAL_CHAIN_STEP_RECORD_ID"
+		Columns = [
+		"APPROVAL_CHAIN_STEP_RECORD_ID",
+		"APROBJ_LABEL",
+		"UNANIMOUS_CONSENT",
+		"REQUIRE_EXPLICIT_APPROVAL",
+		"ADVANCED_CONDITION",
+		"CONDITIONS_MET",
+		"ENABLE_SMARTAPPROVAL",
+		"ACTIVE"
+	]
+
+		
+	else:
+		key_column = "QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"
+		obj_idval = "SYOBJ_1177055_SYOBJ_1177055"
+		rec_id = "SYOBJ_1177055"
+		obj_id = "SYOBJ-1177055"
+		ObjectName = "SAQGPA"
+		Columns = [
+		"QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID",
+		"EQUIPMENT_DESCRIPTION",
+		"EQUIPMENT_ID",
+		"ASSEMBLY_ID",
+		"GOT_CODE",
+		"PM_ID",
+		"PM_NAME",
+		"SSCM_PM_FREQUENCY",
+		"PM_FREQUENCY",
+		"KIT_ID",
+		"KIT_NAME",
+		"KIT_NUMBER",
+		"TKM_FLAG"
+	]
+	objh_getid = Sql.GetFirst(
+		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
+	)
+	if objh_getid:
+		obj_id = objh_getid.RECORD_ID
+	objs_obj = Sql.GetFirst(
+		"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id) + "' "
+	)
+	can_edit = str(objs_obj.CAN_EDIT)
+	can_add = str(objs_obj.CAN_ADD)
+	can_delete = str(objs_obj.CAN_DELETE)
+	table_id = "table_event_parent"
+	table_header = (
+		'<table id="'
+		+ str(table_id)
+		+ '"  data-pagination="false" data-sortable="true" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
+	)
+	Objd_Obj = Sql.GetList(
+		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = '"+str(ObjectName)+"' "
+	)
+	attr_list = []
+	attrs_datatype_dict = {}
+	lookup_disply_list = []
+	lookup_str = ""
+	if Objd_Obj is not None:
+		attr_list = {}
+		for attr in Objd_Obj:
+			attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
+			attrs_datatype_dict[str(attr.API_NAME)] = str(attr.DATA_TYPE)
+			if attr.LOOKUP_API_NAME != "" and attr.LOOKUP_API_NAME is not None:
+				lookup_disply_list.append(str(attr.API_NAME))
+		checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX"]
+		lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+	lookup_str = ",".join(list(lookup_disply_list))
+	orderby = ""
+	if SortColumn != '' and SortColumnOrder !='':
+		orderby = SortColumn + " " + SortColumnOrder
+	else:
+		orderby = "CpqTableEntryId"
+	where_string = ""
+	if A_Keys != "" and A_Values != "":
+		A_Keys = list(A_Keys)
+		A_Values = list(A_Values)
+		for key, value in zip(A_Keys, A_Values):
+			if value.strip():
+				if where_string:
+					where_string += " AND "
+				where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
+	if str(where_string):
+		where_string = " AND "+str(where_string)
+	if TreeTopSuperParentParam == "Product Offerings":
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GOT_CODE,PM_ID,PM_NAME,KIT_ID,KIT_NAME,KIT_NUMBER,SSCM_PM_FREQUENCY,PM_FREQUENCY,TKM_FLAG from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeParentParam)
+			+ "' and GREENBOOK = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeParentParam)
+			+ "' and GREENBOOK = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
+		)
+	elif TreeSuperParentParam == "Product Offerings":
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GOT_CODE,PM_ID,PM_NAME,KIT_ID,KIT_NAME,KIT_NUMBER,SSCM_PM_FREQUENCY,PM_FREQUENCY,TKM_FLAG from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeParam)
+			+ "'  and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeParam)
+			+ "' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
+		)
+	elif parentlevel4 == "Product Offerings":
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GOT_CODE,PM_ID,PM_NAME,KIT_ID,KIT_NAME,KIT_NUMBER,SSCM_PM_FREQUENCY,PM_FREQUENCY,TKM_FLAG from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeTopSuperParentParam)
+			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeTopSuperParentParam)
+			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
+		)
+	elif ObjectName == "SAQGPM" and (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,GREENBOOK,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,KIT_NUMBER,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from "+str(ObjectName)+" (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeSuperParentParam)
+			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeSuperParentParam)
+			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
+		)
+	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, APPROVAL_CHAIN_STEP_RECORD_ID, APROBJ_LABEL, UNANIMOUS_CONSENT, REQUIRE_EXPLICIT_APPROVAL, ADVANCED_CONDITION,CONDITIONS_MET, ENABLE_SMARTAPPROVAL, ACTIVE from "+str(ObjectName)+" (NOLOCK) where APRCHN_ID = '"
+			+ str(TreeParentParam)
+			+ "' and APRCHNSTP_NUMBER = 1 "
+			+ str(where_string) 
+			+ ") m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where APRCHN_ID = '"
+			+ str(TreeParentParam)
+			+ "' and APRCHNSTP_NUMBER = 1 "
+			+ str(where_string)
+		)
+	if QueryCountObj is not None:
+		QueryCount = QueryCountObj.cnt
+	parent_obj = Sql.GetList(Qstr)
+	for par in parent_obj:
+		data_id = eval("par."+str(key_column))
+		Action_str = (
+			'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+			+ str(data_id)
+			+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+			'<li><a class="dropdown-item" id="deletebtn" data-target="#cont_CommonModalDelete" data-toggle="modal" onclick="CommonDelete(this, \''+str(ObjectName)+'#'+ data_id +'\', \'WARNING\')" href="#">DELETE</a></li>'
+		)
+		if can_edit.upper() == "TRUE":
+			Action_str += (
+				'<li style="display:none" ><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Move_to_parent_obj_edit(this)">EDIT</a></li>'
+			)
+		if can_delete.upper() == "TRUE":
+			Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+		Action_str += "</ul></div></div>"
+		data_dict = {}
+		data_dict["ids"] = str(data_id)
+		data_dict["ACTIONS"] = str(Action_str)
+		data_dict[key_column] = CPQID.KeyCPQId.GetCPQId(
+			ObjectName, data_id
+		)
+		if ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
+			data_dict["APROBJ_LABEL"] = ('<abbr id ="" title="' + str(par.APROBJ_LABEL) + '">' + str(par.APROBJ_LABEL) + "</abbr>") 
+			data_dict["UNANIMOUS_CONSENT"] = str(par.UNANIMOUS_CONSENT)
+			data_dict["REQUIRE_EXPLICIT_APPROVAL"] = str(par.REQUIRE_EXPLICIT_APPROVAL)
+			data_dict["ADVANCED_CONDITION"] = ('<abbr id ="" title="' + str(par.ADVANCED_CONDITION) + '">' + str(par.ADVANCED_CONDITION) + "</abbr>")
+			data_dict["CONDITIONS_MET"] = ('<abbr id ="" title="' + str(par.CONDITIONS_MET) + '">' + str(par.CONDITIONS_MET) + "</abbr>")
+			data_dict["ENABLE_SMARTAPPROVAL"] = str(par.ENABLE_SMARTAPPROVAL)
+			data_dict["ACTIVE"] = str(par.ACTIVE)
+			
+		else: 
+			if str(ObjectName) == "SAQGPA":
+				data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
+				data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
+				data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
+				data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
+				data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
+				data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+				data_dict["KIT_ID"] = ('<abbr id ="" title="' + str(par.KIT_ID) + '">' + str(par.KIT_ID) + "</abbr>")
+				data_dict["KIT_NAME"] = ('<abbr id ="" title="' + str(par.KIT_NAME) + '">' + str(par.KIT_NAME) + "</abbr>")
+				data_dict["TKM_FLAG"] = str(par.TKM_FLAG)
+
+			elif str(ObjectName) == "SAQGPM":
+				data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
+				data_dict["DEVICE_NODE"] = ('<abbr id ="" title="' + str(par.DEVICE_NODE) + '">' + str(par.DEVICE_NODE) + "</abbr>")
+				data_dict["PROCESS_TYPE"] = ('<abbr id ="" title="' + str(par.PROCESS_TYPE) + '">' + str(par.PROCESS_TYPE) + "</abbr>")
+				data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
+				data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
+				data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+				
+			
+			data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
+			data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
+			data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
+
+		data_list.append(data_dict)
+	
+	hyper_link = []
+	hyper_link.append(key_column)
+	hyper_link.append('PM_FREQUENCY')
+	table_header += "<tr>"
+	table_header += (
+		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
+		+ str(table_id)
+		+ '">Search</button></th>'
+	)
+	table_header += '<th data-field="SELECT" class="wid45" data-checkbox="true"></th>'
+	for key, invs in enumerate(list(Columns)):
+		invs = str(invs).strip()
+		qstring = attr_list.get(str(invs)) or ""
+		if qstring == "":
+			qstring = invs.replace("_", " ")
+		if checkbox_list is not None and invs in checkbox_list:
+			table_header += (
+				'<th  data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-align="center" data-formatter="CheckboxFieldRelatedList" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+		elif hyper_link is not None and invs in hyper_link:            
+			if invs=="PM_FREQUENCY":
+				data_formatter = "PMFrequencyBulkEditHyperLink" if str(ObjectName)=="SAQGPA" else ""
+			else:
+				data_formatter = "EquipHyperLinkTreeLink"
+			table_header += (
+				'<th data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-title-tooltip="'+str(qstring)+'" data-formatter="'+str(data_formatter)+'" data-sortable="true"'+ str(qstring)+'"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+		else:            
+			table_header += (
+				'<th  data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input"  data-title-tooltip="'+str(qstring)+'" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+
+	table_header += "</tr>"
+	table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
+	table_ids = "#" + str(table_id)
+	filter_control_function = ""
+	tbl_id = table_id
+	values_list = ""
+	for key, invs in enumerate(list(Columns)):
+		table_ids = "#" + str(table_id)
+		filter_clas = "#" + str(table_id) + " .bootstrap-table-filter-control-" + str(invs)
+		values_list += "var " + str(invs) + ' = $("' + str(filter_clas) + '").val(); '
+		values_list += "ATTRIBUTE_VALUEList.push(" + str(invs) + "); "
+
+	filter_class = "#Act_" + str(table_id)
+	filter_control_function += (
+	'$("'
+	+ filter_class
+	+ '").click( function(){ var table_id = $(this).closest("table").attr("id"); ATTRIBUTE_VALUEList = []; '
+	+ str(values_list)
+	+ ' var attribute_value = $(this).val(); cpq.server.executeScript("CQNESTGRID", {"TABNAME":"Events Parent", "ACTION":"PRODUCT_ONLOAD_FILTER", "ATTRIBUTE_NAME": '
+	+ str(list(Columns))
+	+ ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList }, function(dataset) {debugger; data2 = dataset[1];  data1 = dataset[0]; data3 = dataset[2]; console.log("len ---->"+data1.length);  try { if(data1.length > 0) { $("#'
+	+ str(tbl_id)
+	+ '").bootstrapTable("load", data1 );$("#noRecDisp").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) { console.log("if_chk_j"); document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;}} else{ console.log("else_chk_j"); $("#' + str(tbl_id) + '").bootstrapTable("load", data1  );$("#' + str(tbl_id) + '").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;} }} catch(err){} }); filter_search_click();$(".JColResizer").mousedown(function(){ $("thead.fullHeadFirst").css("cssText","z-index: 2;border-top: 1px solid rgb(220, 220, 220);top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","none"); });$(".JColResizer").mouseup(function(){ var th_width_resize = [];$("#table_event_parent thead.fullHeadFirst tr th").each(function(index){var wid = $(this).css("width"); if(index ==0 || index ==1){th_width_resize.push("60px");}else{th_width_resize.push(wid);}}); $("thead.fullHeadFirst").css("cssText","position: fixed;z-index: 2;border-top: 1px solid rgb(220, 220, 220); top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","table-header-group");$("#table_event_parent thead.fullHeadFirst tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);});$("#table_event_parent thead.fullHeadSecond tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);}); });});')
+	
+	local_variable = "PM_FrequencyBulkedit" 
+	cls = "eq(2)"
+	table_ids = '#'+table_id
+	dbl_clk_function = (
+		'$("'
+		+ str(table_ids)
+		+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+		+ str(table_ids)
+		+ '\ th.bs-checkbox div.th-inner").before("<div style=\'padding:0; border-bottom: 1px solid #dcdcdc;\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
+		+ str(table_ids)
+		+ "\").on('sort.bs.table', function (e, name, order) {  console.log('Parent sort.bs.table ====> ', e); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
+		+ str(table_id)
+		+ "_SortColumn', name); localStorage.setItem('"
+		+ str(table_id)
+		+ "_SortColumnOrder', order); NestedContainerSorting(name, order, '"
+		+ str(table_id)
+		+ "'); }); "
+		)
+	dbl_clk_function += (
+		'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
+		+ str(table_ids)
+		+ '").on("check.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
+		+ str(cls)
+		+ '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+		+ str(table_ids)
+		+ '").on("check-all.bs.table", function (e) { var table = $("'
+		+ str(table_ids)
+		+ '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(4)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+		+ str(table_ids)
+		+ '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
+		+ str(table_ids)
+		+ '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:'
+		+ str(cls)
+		+ '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
+		)
+	if str(ObjectName)!="SAQGPM":
+		dbl_clk_function += (
+			'localStorage.setItem("cont_table_id","'+str(table_id)+'");$("'
+			+ str(table_ids)
+			+ '").on("dbl-click-cell.bs.table", onClickCell); $("'
+			+ str(table_ids)
+			+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom");if ($("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")) { localStorage.setItem("selectall","yes");}else{localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if (localStorage.getItem("selectall") != "yes"){localStorage.setItem("selectall","no")};} }); function onClickCell(event, field, value, row, $element) { if(localStorage.getItem("InlineEdit")=="YES"){ return ;}var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'
+			+ str(cls)
+			+ '").text().trim());  data1 = $element.closest("tr").find("td:'
+			+ str(cls)
+			+ '").text(); localStorage.setItem("multiedit_save_date", data1);localStorage.setItem("PartsSelectedId",data1); reco_id = removeDuplicates(reco); }else{reco_id=$element.closest("tr").find("td:'
+			+ str(cls)
+			+ '").text().trim(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);localStorage.setItem("PM_selectedId",reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
+			+ str(table_id)
+			+ '"); value = value.replace(/<[^>]*>?/gm,""); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
+			+ str(table_id)
+			+ '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { localStorage.setItem("saqico_title", field);data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1;localStorage.setItem("'+str(local_variable)+'","yes");localStorage.setItem("EDIT_OBJ","'+str(ObjectName)+'");  document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }TreeParentParam = localStorage.getItem("CommonTreeParentParam");TreeParam = localStorage.getItem("CommonTreeParam");var sparePartsBulkSAVEBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-save-btn");var sparePartsBulkEDITBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-edit-btn");var sparePartsBulkAddBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-add-modal-btn");if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }'
+			)  
+	NORECORDS = ""
+	if len(data_list) == 0:
+		NORECORDS = "NORECORDS"
+
+	DropDownList = []
+	filter_level_list = []
+	filter_clas_name = ""
+	cv_list = []
+	TableclassName = "form-control" + table_id
+	for key, col_name in enumerate(list(Columns)):
+		StringValue_list = []
+		objss_obj = Sql.GetFirst(
+			"SELECT API_NAME, DATA_TYPE, FORMULA_LOGIC, PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
+			+ str(ObjectName)
+			+ "' and API_NAME = '"
+			+ str(col_name)
+			+ "'"
+		)
+		try:
+			FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
+			FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
+			FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
+			ins_obj = Sql.GetFirst(
+				"SELECT API_NAME, DATA_TYPE,PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
+				+ str(FORMULA_table)
+				+ "' and API_NAME = '"
+				+ str(FORMULA_col)
+				+ "'"
+			)
+			if str(objss_obj.PICKLIST).upper() == "TRUE":
+				filter_level_data = "select"
+				filter_clas_name = (
+					'<div id = "'
+					+ str(table_id)
+					+ "_RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ '" class="form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ " RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ ' "></div>'
+				)
+				filter_level_list.append(filter_level_data)
+			else:
+				filter_level_data = "input"
+				filter_clas_name = (
+					'<input type="text" class="width100_vis form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ '">'
+				)
+				filter_level_list.append(filter_level_data)
+		except:
+			if str(objss_obj.PICKLIST).upper() == "TRUE":
+				filter_level_data = "select"
+				filter_clas_name = (
+					'<div id = "'
+					+ str(table_id)
+					+ "_RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ '" class="form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ " RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ ' "></div>'
+				)
+				filter_level_list.append(filter_level_data)
+
+			filter_level_data = "input"
+			filter_clas_name = (
+				'<input type="text" class="width100_vis form-control bootstrap-table-filter-control-' + str(col_name) + '">'
+			)
+			filter_level_list.append(filter_level_data)
+		cv_list.append(filter_clas_name)
+		if filter_level_data == "select":
+			try:
+				xcd = Sql.GetFirst(
+					"SELECT (STUFF((SELECT DISTINCT ', ' + CAST("
+					+ str(col_name)
+					+ " AS CHAR(100)) FROM "
+					+ str(ObjectName)
+					+ " FOR XML PATH('') ), 1, 2, '')  ) AS StringValue"
+				)
+			except:
+				xcd = Sql.GetFirst(
+					"SELECT (STUFF((SELECT DISTINCT ', ' + CAST("
+					+ str(col_name)
+					+ " AS CHAR(100)) FROM "
+					+ str(ObjectName)
+					+ " FOR XML PATH('') ), 1, 2, '')  ) AS StringValue"
+				)
+			if str(xcd.StringValue) is not None and str(xcd.StringValue) != "":
+				if str(xcd.StringValue).find(",") != -1:
+					StringValue_list = [ins.strip() for ins in str(xcd.StringValue).split(",") if ins.strip() != ""]
+				else:
+					StringValue_list.append(str(xcd.StringValue))
+			else:
+				StringValue_list = [""]
+			StringValue_list = list(set(StringValue_list))
+			DropDownList.append(StringValue_list)
+		elif filter_level_data == "checkbox":
+			DropDownList.append(["True", "False"])
+		else:
+			DropDownList.append("")
+	RelatedDrop_str = (
+		"try { if( document.getElementById('"
+		+ str(table_id)
+		+ "') ) { var listws = document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control')[i].innerHTML = data6[i];  } for (j = 0; j < listws.length; j++) { if (data7[j] == 'select') { if (data8[j]) { var dataAdapter = new $.jqx.dataAdapter(data8[j]); $('#"
+		+ str(table_id)
+		+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, autoDropDownHeight: true }); } } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control')[i].innerHTML = data6[i];  } for (j = 0; j < listws.length; j++) { if (data7[j] == 'select') { if (data8[j]) { var dataAdapter = new $.jqx.dataAdapter(data8[j]); $('#"
+		+ str(table_id)
+		+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, autoDropDownHeight: true }); } } } }, 5000); }"
+	)
+	page = ""
+	if QueryCount < int(PerPage):
+		page = str(Page_start) + " - " + str(QueryCount)
+	else:
+		page = str(Page_start) + " - " + str(Page_End)
+	Test = (
+		'<div class="col-md-12 brdr listContStyle pad2height30" ><div class="col-md-4 pager-numberofitem clear-padding"><span class="pager-number-of-items-item noofitem" id="'
+		+ str(table_id)
+		+ '___NumberofItem" >'
+		+ str(page)
+		+ ' of</span><span class="pager-number-of-items-item fltltpad2mrg0" id="'
+		+ str(table_id)
+		+ '___totalItemCount" >'
+		+ str(QueryCount)
+		+ '</span><div class="clear-padding fltltmrgtp3" ><div  class="pull-right vertmidtxtrht"><select onchange="PageFunctestChild(this,\'Quote\',\'\',\'table_event_parent\')" id="'
+		+ str(table_id)
+		+ '___PageCountValue" class="form-control wid65vermiddisinbmarl5"><option value="10" selected>10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option><option value="200">200</option></select> </div></div></div><div class="col-xs-8 col-md-4  clear-padding disinpad10txtcen"  data-bind="visible: totalItemCount"><div class="clear-padding col-xs-12 col-sm-6 col-md-12 bor0" ><ul class="pagination pagination"><li class="disabled"><a href="#" onclick="FirstPageLoad_paginationChild(\'Quote\',\'\',\'table_event_parent\')"><i class="fa fa-caret-left font14whtbld" ></i><i class="fa fa-caret-left font14" ></i></a></li><li class="disabled"><a href="#" onclick="Previous12334Child(\'Quote\',\'\',\'table_event_parent\')"><i class="fa fa-caret-left font14" ></i>PREVIOUS</a></li><li class="disabled"><a href="#" class="disabledPage" onclick="Next12334Child(\'Quote\',\'\',\'table_event_parent\')">NEXT<i class="fa fa-caret-right font14" ></i></a></li><li class="disabled"><a href="#" onclick="LastPageLoad_paginationChild(\'Quote\',\'\',\'table_event_parent\')" class="disabledPage"><i class="fa fa-caret-right font14"></i><i class="fa fa-caret-right font14whtbld"></i></a></li></ul></div> </div> <div class="col-md-4 pr_page_pad"> <span id="'
+		+ str(table_id)
+		+ '___page_count" class="currentPage page_right_content">1</span><span class="page_right_content pad_rt_2">Page </span></div></div>'
+	)
+	if QueryCount < int(PerPage):
+		PerPage = str(QueryCount)
+	else:
+		PerPage = str(PerPage)   
+	if Page_End > QueryCount:
+		Page_End = QueryCount
+	else:
+		Page_End = Page_End
+	Action_Str = ""
+	Action_Str += str(Page_start)+" - "
+	Action_Str += str(Page_End)
+	Action_Str += " of"
 	return (
 		table_header,
 		data_list,
@@ -1667,15 +2280,15 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		#"QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID",
 		"INCLUDED",
 		"EQUIPMENTCATEGORY_ID",
-		"SERIAL_NUMBER",
+		#"SERIAL_NUMBER",
 		"ASSEMBLY_ID",
 		"ASSEMBLY_DESCRIPTION",
 		"ASSEMBLYTYPE_ID",
 		"GOT_CODE",
 		"MNT_PLANT_ID",
 		"FABLOCATION_ID",
-		"WARRANTY_START_DATE",
-		"WARRANTY_END_DATE"
+		#"WARRANTY_START_DATE",
+		#"WARRANTY_END_DATE"
 	]
 	Objd_Obj = Sql.GetList(
 		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = 'SAQFEA'"
@@ -2221,6 +2834,454 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 		Page_End = Page_End
 	# Trace.Write("Page_start----->"+str(Page_start))     
 	# Trace.Write("Page_End----->"+str(Page_End))    
+	Action_Str = ""
+	Action_Str += str(Page_start)+" - "
+	Action_Str += str(Page_End)
+	Action_Str += " of"
+
+	return (
+		table_header,
+		chld_list,
+		table_id,
+		filter_control_function,
+		NORECORDS,
+		dbl_clk_function,
+		cv_list,
+		filter_level_list,
+		DropDownList,
+		RelatedDrop_str,
+		Test,
+		Action_Str,
+	)
+
+def GetEventsChild(recid, PerPage, PageInform, A_Keys, A_Values):
+		
+	TreeParam = Product.GetGlobal("TreeParam")
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+	parentlevel4 = Product.GetGlobal("TreeParentLevel4")
+	Trace.Write("TreeParam--"+str(TreeParam)+"TreeParentParam"+str(TreeParentParam)+"TreeSuperParentParam"+str(TreeSuperParentParam)+"parentlevel4"+str(parentlevel4))
+	if str(PerPage) == "" and str(PageInform) == "":
+		Page_start = 1
+		Page_End = 10
+		PerPage = 10
+		PageInform = "1___10___10"
+	else:
+		Page_start = int(PageInform.split("___")[0])
+		Page_End = int(PageInform.split("___")[1])
+		PerPage = PerPage
+	QueryCount = ""
+	chld_list = []
+	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+	if str(TreeSuperParentParam)=="Approvals":
+		obj_idval = "SYOBJ-1177047_SYOBJ-1177047"
+		obj_id1 = "SYOBJ-1177047"
+		ObjectName = "ACACSF"
+		Columns = [
+		"APRCHNSTP_TESTEDFIELD_RECORD_ID",
+		"TSTOBJ_LABEL",
+		"TSTOBJ_TESTEDFIELD_LABEL",
+		"CMPOBJ_LABEL",
+		"CMPOBJ_FIELD_LABEL",
+		"CMP_DATATYPE",
+		"CMP_OPERATOR",
+		"CMP_VALUE"
+	]
+	else:
+		obj_idval = "SYOBJ_00007_SYOBJ_00007"
+		obj_id1 = "SYOBJ-00007"
+		ObjectName = "SAQSKP"
+		Columns = [
+		"QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID",
+		"KIT_ID",
+		"KIT_NAME",
+		"KIT_NUMBER",
+		"TKM_FLAG"
+	]
+	CpqTableEntryId = recid.split("-")[1].lstrip("0")
+	objh_getid = Sql.GetFirst(
+		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id1) + "'"
+	)
+	if objh_getid:
+		obj_id1 = objh_getid.RECORD_ID
+	if str(TreeSuperParentParam)=="Approvals":
+		can_edit1 = "TRUE"
+		can_add1 = "FALSE"
+		can_delete1 = "TRUE"
+	else:
+		objs_obj1 = Sql.GetFirst(
+			"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id1) + "' "
+		)
+		can_edit1 = str(objs_obj1.CAN_EDIT)
+		can_add1 = str(objs_obj1.CAN_ADD)
+		can_delete1 = str(objs_obj1.CAN_DELETE)
+	table_id = "table_events_child_"+str(recid)
+	table_header = (
+		'<table id="'
+		+ str(table_id)
+		+ '" data-pagination="false" data-sortable="true" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
+	)
+	
+	Objd_Obj = Sql.GetList(
+		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = '" + str(ObjectName) + "' "
+	)
+	attr_list = []
+	attrs_datatype_dict = {}
+	lookup_disply_list = []
+	lookup_str = ""
+	if Objd_Obj is not None:
+		attr_list = {}
+		for attr in Objd_Obj:
+			attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
+			attrs_datatype_dict[str(attr.API_NAME)] = str(attr.DATA_TYPE)
+			if attr.LOOKUP_API_NAME != "" and attr.LOOKUP_API_NAME is not None:
+				lookup_disply_list.append(str(attr.API_NAME))
+		checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX"]
+		lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+	lookup_str = ",".join(list(lookup_disply_list))
+	
+	if str(TreeTopSuperParentParam) in ("Comprehensive Services","Complementary Products"):
+		columns = "PM_ID,SERVICE_ID,KIT_ID,KIT_NUMBER,QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID "
+		objname = "SAQGPM"
+	elif str(TreeSuperParentParam)=="Approvals":
+		columns = "APPROVAL_CHAIN_STEP_RECORD_ID, APRCHN_ID, APRCHNSTP_NUMBER "
+		objname = "ACACST"
+	else:
+		Trace.Write("saqgpa object")
+		columns = "ASSEMBLY_ID,EQUIPMENT_ID,PM_ID,SERVICE_ID,KIT_ID,KIT_NUMBER,QTEREVPME_RECORD_ID"
+		objname = "SAQGPA"
+	if str(TreeSuperParentParam)=="Approvals":
+		hyper_link = ["APRCHNSTP_TESTEDFIELD_RECORD_ID"]
+		Parent_event = Sql.GetFirst(
+			"select "+str(columns)+" from "+str(objname)+" (NOLOCK) where  CpqTableEntryId = '{CpqTableEntryId}' ".format(
+				CpqTableEntryId=CpqTableEntryId
+			)
+		)
+	else:
+		hyper_link = ["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID"]
+		Parent_event = Sql.GetFirst(
+			"select "+str(columns)+" from "+str(objname)+" (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND CpqTableEntryId = '{CpqTableEntryId}' ".format(
+				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+				RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
+				EquipmentId=recid,CpqTableEntryId=CpqTableEntryId
+			)
+		)
+	if Parent_event:
+		Trace.Write("objname---"+str(objname))
+		if str(objname) == "SAQGPA":
+			child_obj_recid = Sql.GetList(
+				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,KIT_NAME,KIT_NUMBER,TKM_FLAG from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND ASSEMBLY_ID = '"
+				+ str(Parent_event.ASSEMBLY_ID)
+				+ "' AND EQUIPMENT_ID = '"+str(Parent_event.EQUIPMENT_ID)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND (KIT_ID = '"+str(Parent_event.KIT_ID)+"' or KIT_ID IS NULL) AND (KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' or KIT_NUMBER IS NULL) AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QTEREVPME_RECORD_ID)+"' )m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)
+			)
+			QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND ASSEMBLY_ID = '"
+				+ str(Parent_event.ASSEMBLY_ID)
+				+ "' AND EQUIPMENT_ID = '"+str(Parent_event.EQUIPMENT_ID)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND (KIT_ID = '"+str(Parent_event.KIT_ID)+"' or KIT_ID IS NULL) AND (KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' or KIT_NUMBER IS NULL)  AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QTEREVPME_RECORD_ID)+"' "
+			)
+		elif str(objname)=="ACACST":
+			child_obj_recid = Sql.GetList(
+				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY APRCHNSTP_TESTEDFIELD_RECORD_ID) AS ROW, APRCHNSTP_TESTEDFIELD_RECORD_ID,TSTOBJ_LABEL,TSTOBJ_TESTEDFIELD_LABEL,CMPOBJ_LABEL,CMPOBJ_FIELD_LABEL,CMP_DATATYPE,CMP_OPERATOR,CMP_VALUE from ACACSF (NOLOCK) where APRCHN_ID = '"+str(Parent_event.APRCHN_ID)+"'  AND APRCHNSTP_NUMBER = '"+str(Parent_event.APRCHNSTP_NUMBER)+"'  )m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)
+			)
+			QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from ACACSF (NOLOCK) where APRCHN_ID = '"+str(Parent_event.APRCHN_ID)+"'  AND APRCHNSTP_NUMBER = '"+str(Parent_event.APRCHNSTP_NUMBER)+"' "
+			)
+
+		else:
+			child_obj_recid = Sql.GetList(
+				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,KIT_NAME,KIT_NUMBER,TKM_FLAG from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND (KIT_ID = '"+str(Parent_event.KIT_ID)+"' or KIT_ID IS NULL) AND (KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' or KIT_NUMBER IS NULL) AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID)+"' )m where m.ROW BETWEEN "+ str(Page_start)+ " and "+ str(Page_End)
+			)
+			QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQSKP (NOLOCK) where QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"'  AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND PM_ID = '"+str(Parent_event.PM_ID)+"' AND SERVICE_ID = '"+str(Parent_event.SERVICE_ID)+"' AND (KIT_ID = '"+str(Parent_event.KIT_ID)+"' or KIT_ID IS NULL) AND (KIT_NUMBER = '"+str(Parent_event.KIT_NUMBER)+"' or KIT_NUMBER IS NULL) AND QTEGBKPME_RECORD_ID = '"+str(Parent_event.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID)+"' "
+			)
+		chld_list = []
+		QueryCount = ""
+		if QueryCountObj is not None:
+			QueryCount = QueryCountObj.cnt
+		# Data construction for table.
+		for child in child_obj_recid:
+			if str(objname)=="ACACST":
+				data_id = str(child.APRCHNSTP_TESTEDFIELD_RECORD_ID) + "|ACACSF"	
+			else:
+				data_id = str(child.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) + "|SAQSKP"
+
+			chld_dict = {}
+			Action_str1 = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a  data-toggle="modal" data-target="#cont_viewModalSection" id="'
+				+ str(data_id)
+				+ '" class="dropdown-item cur_sty" href="#"  onclick="cont_relatedlist_openview(this) ">VIEW</a></li>'
+			)
+			if can_edit1.upper() == "TRUE":
+				Action_str1 += (
+					'<li style="display:none" ><a data-toggle="modal" data-target="#cont_viewModalSection" id="'
+					+ str(data_id)
+					+ '"  class="dropdown-item cur_sty" href="#"  onclick="cont_relatedlist_openedit(this)">EDIT</a></li>'
+				)
+			if can_delete1.upper() == "TRUE":
+				Action_str1 += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+			if can_add1.upper() == "TRUE":
+				Action_str1 += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+			Action_str1 += "</ul></div></div>"
+
+			chld_dict["ids"] = str(data_id)
+			chld_dict["ACTIONS"] = str(Action_str1)
+			if str(TreeSuperParentParam)=="Approvals":
+				ObjectName = "ACACSF"
+				chld_dict["APRCHNSTP_TESTEDFIELD_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+					"ACACSF", str(child.APRCHNSTP_TESTEDFIELD_RECORD_ID)
+				)
+				chld_dict["TSTOBJ_LABEL"] =('<abbr id ="" title="' + str(child.TSTOBJ_LABEL) + '">' + str(child.TSTOBJ_LABEL) + "</abbr>")
+				chld_dict["TSTOBJ_TESTEDFIELD_LABEL"] =('<abbr id ="" title="' + str(child.TSTOBJ_TESTEDFIELD_LABEL) + '">' + str(child.TSTOBJ_TESTEDFIELD_LABEL) + "</abbr>")
+				chld_dict["CMPOBJ_LABEL"] = ('<abbr id ="" title="' + str(child.CMPOBJ_LABEL) + '">' + str(child.CMPOBJ_LABEL) + "</abbr>")
+				chld_dict["CMPOBJ_FIELD_LABEL"] = ('<abbr id ="" title="' + str(child.CMPOBJ_FIELD_LABEL) + '">' + str(child.CMPOBJ_FIELD_LABEL) + "</abbr>")
+				chld_dict["CMP_DATATYPE"] = ('<abbr id ="" title="' + str(child.CMP_DATATYPE) + '">' + str(child.CMP_DATATYPE) + "</abbr>")
+				chld_dict["CMP_OPERATOR"] = ('<abbr id ="" title="' + str(child.CMP_OPERATOR) + '">' + str(child.CMP_OPERATOR) + "</abbr>")
+				chld_dict["CMP_VALUE"] = ('<abbr id ="" title="' + str(child.CMP_VALUE) + '">' + str(child.CMP_VALUE) + "</abbr>")
+				
+			else:
+				ObjectName = "SAQSKP"
+				chld_dict["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+					"SAQSKP", str(child.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID)
+				)
+				chld_dict["KIT_ID"] =('<abbr id ="" title="' + str(child.KIT_ID) + '">' + str(child.KIT_ID) + "</abbr>") 
+				chld_dict["KIT_NUMBER"] =('<abbr id ="" title="' + str(child.KIT_NUMBER) + '">' + str(child.KIT_NUMBER) + "</abbr>") 
+				chld_dict["KIT_NAME"] = ('<abbr id ="" title="' + str(child.KIT_NAME) + '">' + str(child.KIT_NAME) + "</abbr>") 
+				chld_dict["TKM_FLAG"] = child.TKM_FLAG
+			chld_list.append(chld_dict)
+
+	# Table formation.
+	table_header += "<tr>"
+	table_header += (
+		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
+		+ str(table_id)
+		+ '">Search</button></th>'
+	)
+	table_header += '<th data-field="SELECT" class="wid45" data-checkbox="true"></th>'
+	#Trace.Write("table header-------------"+str(table_header))
+	for key, invs in enumerate(list(Columns)):
+		invs = str(invs).strip()
+		qstring = attr_list.get(str(invs)) or ""
+		if qstring == "":
+			qstring = invs.replace("_", " ")
+		if checkbox_list is not None and invs in checkbox_list:
+			table_header += (
+				'<th data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-align="center" data-formatter="CheckboxFieldRelatedList" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+		elif hyper_link is not None and invs in hyper_link:
+			table_header += (
+				'<th data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-formatter="eventChildHyperLink" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+		else:
+			table_header += (
+				'<th data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+	table_header += "</tr>"
+	table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
+	table_ids = "#" + str(table_id)
+	filter_control_function = ""
+	tbl_id = table_id
+	values_list = ""
+	for key, invs in enumerate(list(Columns)):
+		table_ids = "#" + str(table_id)
+		filter_clas = "#" + str(table_id) + " .bootstrap-table-filter-control-" + str(invs)
+		values_list += "var " + str(invs) + ' = $("' + str(filter_clas) + '").val(); '
+		values_list += "ATTRIBUTE_VALUEList.push(" + str(invs) + "); "
+	filter_class = "#Act_" + str(table_id)
+	filter_control_function += (
+		'$("'
+		+ filter_class
+		+ '").click( function(){ debugger; var table_id = $(this).closest("table").attr("id"); ATTRIBUTE_VALUEList = []; '
+		+ str(values_list)
+		+ ' var attribute_value = $(this).val(); cpq.server.executeScript("CQNESTGRID", {"TABNAME":"Equipments child", "ACTION":"PRODUCT_ONLOAD_FILTER", "ATTRIBUTE_NAME": '
+		+ str(list(Columns))
+		+ ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList, "REC_ID":"'
+		+ str(recid)
+		+ '" }, function(dataset) { data2 = dataset[1];  data1 = dataset[0]; data3 = dataset[2]; console.log("len ---->"+data1.length);  try { if(data1.length > 0) { $("#'+ str(tbl_id) + '").bootstrapTable("load", data1 );$("#noRecDisp").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;}} else{ $("#' + str(tbl_id) + '").bootstrapTable("load", data1  );$("#' + str(tbl_id) + '").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;} }} catch(err){} }); filter_search_click();$(".JColResizer").mousedown(function(){ $("thead.fullHeadFirst").css("cssText","z-index: 2;border-top: 1px solid rgb(220, 220, 220);top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","none"); });$(".JColResizer").mouseup(function(){ var th_width_resize = [];$("#table_equipment_child thead.fullHeadFirst tr th").each(function(index){var wid = $(this).css("width"); if(index ==0 || index ==1){th_width_resize.push("60px");}else{th_width_resize.push(wid);}}); $("thead.fullHeadFirst").css("cssText","position: fixed;z-index: 2;border-top: 1px solid rgb(220, 220, 220); top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","table-header-group");$("#table_equipment_child thead.fullHeadFirst tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);});$("#table_equipment_child thead.fullHeadSecond tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);}); });});'
+	)
+	
+	dbl_clk_function = (
+		'$("'
+		+ str(table_ids)
+		+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+		+ str(table_ids)
+		+ '\ th.bs-checkbox div.th-inner").before("<div style=\'padding:0; border-bottom: 1px solid #dcdcdc;\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $("'
+		+ str(table_ids)
+		+ "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
+		+ str(table_id)
+		+ "_SortColumn', name); localStorage.setItem('"
+		+ str(table_id)
+		+ "_SortColumnOrder', order); NestedContainerSorting(name, order, '"
+		+ str(table_id)
+		+ "'); }); "
+		)
+	NORECORDS = ""
+	if len(chld_list) == 0:
+		NORECORDS = "NORECORDS"
+
+	DropDownList = []
+	filter_level_list = []
+	filter_clas_name = ""
+	cv_list = []
+	TableclassName = "form-control" + table_id
+	for key, col_name in enumerate(list(Columns)):
+		StringValue_list = []
+		objss_obj = Sql.GetFirst(
+			"SELECT API_NAME, DATA_TYPE, FORMULA_LOGIC FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
+			+ str(ObjectName)
+			+ "' and API_NAME = '"
+			+ str(col_name)
+			+ "'"
+		)
+		try:
+			FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
+			FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
+			FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
+			ins_obj = Sql.GetFirst(
+				"SELECT API_NAME, DATA_TYPE,PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
+				+ str(FORMULA_table)
+				+ "' and API_NAME = '"
+				+ str(FORMULA_col)
+				+ "'"
+			)
+			if str(objss_obj.PICKLIST).upper() == "TRUE":
+				filter_level_data = "select"
+				filter_clas_name = (
+					'<div id = "'
+					+ str(table_id)
+					+ "_RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ '" class="form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ " RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ ' "></div>'
+				)
+				filter_level_list.append(filter_level_data)
+			else:
+				filter_level_data = "input"
+				filter_clas_name = (
+					'<input type="text" class="width100_vis form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ '">'
+				)
+				filter_level_list.append(filter_level_data)
+		except:
+			filter_level_data = "input"
+			filter_clas_name = (
+				'<input type="text" class="width100_vis form-control bootstrap-table-filter-control-' + str(col_name) + '">'
+			)
+			filter_level_list.append(filter_level_data)
+		cv_list.append(filter_clas_name)
+		if filter_level_data == "select":
+			try:
+				xcd = Sql.GetFirst(
+					"SELECT (STUFF((SELECT DISTINCT ', ' + CAST("
+					+ str(col_name)
+					+ " AS CHAR(100)) FROM "
+					+ str(ObjectName)
+					+ " (NOLOCK) where QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID = '"
+					+ str(recid)
+					+ "' FOR XML PATH('') ), 1, 2, '')  ) AS StringValue"
+				)
+			except:
+				xcd = Sql.GetFirst(
+					"SELECT (STUFF((SELECT DISTINCT ', ' + CAST("
+					+ str(col_name)
+					+ " AS CHAR(100)) FROM "
+					+ str(ObjectName)
+					+ " (NOLOCK) FOR XML PATH('') ), 1, 2, '')  ) AS StringValue"
+				)
+			if str(xcd.StringValue) is not None and str(xcd.StringValue) != "":
+				if str(xcd.StringValue).find(",") != -1:
+					StringValue_list = [ins.strip() for ins in str(xcd.StringValue).split(",") if ins.strip() != ""]
+				else:
+					StringValue_list.append(str(xcd.StringValue))
+			else:
+				StringValue_list = [""]
+			StringValue_list = list(set(StringValue_list))
+			DropDownList.append(StringValue_list)
+		elif filter_level_data == "checkbox":
+			DropDownList.append(["True", "False"])
+		else:
+			DropDownList.append("")
+	RelatedDrop_str = (
+		"try { if( document.getElementById('"
+		+ str(table_id)
+		+ "') ) { var listws = document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control')[i].innerHTML = datachld6[i];  } for (j = 0; j < listws.length; j++) { if (datachld7[j] == 'select') { if (data8[j]) { var dataAdapter = new $.jqx.dataAdapter(datachld8[j]); $('#"
+		+ str(table_id)
+		+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, autoDropDownHeight: true }); } } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control')[i].innerHTML = datachld6[i];  } for (j = 0; j < listws.length; j++) { if (datachld7[j] == 'select') { if (data8[j]) { var dataAdapter = new $.jqx.dataAdapter(datachld8[j]); $('#"
+		+ str(table_id)
+		+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, autoDropDownHeight: true }); } } } }, 5000); } try { setTimeout(function(){ $('#"
+		+ str(table_id)
+		+ "').colResizable({ resizeMode:'overflow'}); }, 3000); } catch(err){}"
+	)
+	page = ""
+	if QueryCount < int(PerPage):
+		page = str(Page_start) + " - " + str(QueryCount)
+	else:
+		page = str(Page_start) + " - " + str(Page_End)
+	Test = (
+		'<div class="col-md-12 brdr listContStyle pad2height30" ><div class="col-md-4 pager-numberofitem clear-padding"><span class="pager-number-of-items-item noofitem"  id="'
+		+ str(table_id)
+		+ '___NumberofItem" >'
+		+ str(page)
+		+ ' of </span><span class="pager-number-of-items-item fltltpad2mrg0" id="'
+		+ str(table_id)
+		+ '___totalItemCount"  >'
+		+ str(QueryCount)
+		+ '</span><div class="clear-padding fltltmrgtp3" ><div  class="pull-right vertmidtxtrht"><select onchange="PageFunctestChild(this,\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')" id="'
+		+ str(table_id)
+		+ '___PageCountValue"  class="form-control wid65vermiddisinbmarl5"><option value="10" selected>10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option><option value="200">200</option></select> </div></div></div><div class="col-xs-8 col-md-4  clear-padding disinpad10txtcen"  data-bind="visible: totalItemCount"><div class="clear-padding col-xs-12 col-sm-6 col-md-12 bor0" ><ul class="pagination pagination"><li class="disabled"><a href="#" onclick="FirstPageLoad_paginationChild(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')"><i class="fa fa-caret-left font14whtbld" ></i><i class="fa fa-caret-left font14" ></i></a></li><li class="disabled"><a href="#" onclick="Previous12334Child(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')"><i class="fa fa-caret-left font14" ></i>PREVIOUS</a></li><li class="disabled"><a href="#" class="disabledPage" onclick="Next12334Child(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')">NEXT<i class="fa fa-caret-right font14" ></i></a></li><li class="disabled"><a href="#" onclick="LastPageLoad_paginationChild(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')" class="disabledPage"><i class="fa fa-caret-right font14"></i><i class="fa fa-caret-right font14whtbld"></i></a></li></ul></div> </div> <div class="col-md-4 pr_page_pad"> <span id="'
+		+ str(table_id)
+		+ '___page_count"  class="currentPage page_right_content">1</span><span class="page_right_content pad_rt_2">Page </span></div></div>'
+	)
+
+	if QueryCount < int(PerPage):
+		PerPage = str(QueryCount)
+	else:
+		PerPage = str(PerPage)   
+	if Page_End > QueryCount:
+		Page_End = QueryCount
+	else:
+		Page_End = Page_End
 	Action_Str = ""
 	Action_Str += str(Page_start)+" - "
 	Action_Str += str(Page_End)
@@ -3405,6 +4466,301 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
 
 	return data_list,QueryCount,page 
 
+def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
+		
+	if str(PerPage) == "" and str(PageInform) == "":
+		Page_start = 1
+		Page_End = 10
+		PerPage = 10
+		PageInform = "1___10___10"
+	else:
+		Page_start = int(PageInform.split("___")[0])
+		Page_End = int(PageInform.split("___")[1])
+		PerPage = PerPage
+	QueryCount = ""
+	TreeParam = Product.GetGlobal("TreeParam")
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+	TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+	parentlevel4 =  Product.GetGlobal("TreeParentLevel4")
+	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+	ATTRIBUTE_VALUE_STR = ""
+	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010":
+		rec_id = "SYOBJ_1177076"
+		obj_id = "SYOBJ-1177076"
+		ObjectName = "SAQGPM"
+	elif str(TreeSuperParentParam) == "Approvals":
+		obj_idval = "SYOBJ_01023_SYOBJ_01023"
+		rec_id = "SYOBJ-01023"
+		obj_id = "SYOBJ-01023"
+		ObjectName = "ACACST"
+	else:
+		rec_id = "SYOBJ_1177055"
+		obj_id = "SYOBJ-1177055"
+		ObjectName = "SAQGPA"
+	Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
+	for quer_key, quer_value in enumerate(Dict_formation):
+		x_picklistcheckobj = Sql.GetFirst(
+			"SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME = '" + str(ObjectName) + "' AND API_NAME = '" + str(quer_value) + "'"
+		)
+		x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
+		if Dict_formation.get(quer_value) != "":
+			quer_values = str(Dict_formation.get(quer_value)).strip()
+			if str(quer_values).upper() == "TRUE":
+				quer_values = "TRUE"
+			elif str(quer_values).upper() == "FALSE":
+				quer_values = "FALSE"
+			if str(quer_values).find(",") == -1:
+				if x_picklistcheck == "TRUE":
+					ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
+				else:
+					ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
+			else:
+				quer_values = quer_values.split(",")
+				quer_values = tuple(list(quer_values))
+				ATTRIBUTE_VALUE_STR += str(quer_value) + " in " + str(quer_values) + " and "
+			if str(quer_value) == 'QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID':                
+				if str(str(quer_values)).find("-") == -1:                            
+					ATTRIBUTE_VALUE_STR = (" CpqTableEntryId = '"+ str(quer_values)+ "' and ")                            
+				else:
+					xa_str = str(quer_values).split("-")[1]                            
+					ATTRIBUTE_VALUE_STR = (" CpqTableEntryId = '"+ str(xa_str)+ "' and ")    
+
+	data_list = []
+	objh_getid = Sql.GetFirst(
+		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
+	)
+	if objh_getid:
+		obj_id = objh_getid.RECORD_ID
+	objs_obj = Sql.GetFirst(
+		"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id) + "' "
+	)
+	can_edit = str(objs_obj.CAN_EDIT)
+	can_clone = str(objs_obj.CAN_ADD)
+	can_delete = str(objs_obj.CAN_DELETE)
+
+	orderby = ""
+	if SortColumn != '' and SortColumnOrder !='':
+		orderby = SortColumn + " " + SortColumnOrder
+	else:
+		orderby = "CpqTableEntryId"
+	if TreeTopSuperParentParam == "Product Offerings":
+		parent_obj = Sql.GetList(
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,KIT_NUMBER,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m "
+		)
+		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParentParam)+"' and GREENBOOK = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
+		)
+		if Count:
+			QueryCount = Count.cnt
+	elif TreeSuperParentParam == "Product Offerings":
+		parent_obj = Sql.GetList(
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,KIT_NUMBER,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1'))m "
+		)
+		Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' and SERVICE_ID  = '"+str(TreeParam)+"' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
+		)
+		if Count:
+			QueryCount = Count.cnt
+	elif parentlevel4 == "Product Offerings":
+		parent_obj = Sql.GetList(
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,PM_ID,PM_NAME,KIT_NUMBER,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeTopSuperParentParam)
+			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m "
+		)
+
+		Count = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from SAQGPA (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeTopSuperParentParam)
+			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
+		)
+
+		if Count:
+			QueryCount = Count.cnt
+	elif (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID,GREENBOOK,DEVICE_NODE,PROCESS_TYPE,GOT_CODE,KIT_NUMBER,PM_ID,PM_NAME,SSCM_PM_FREQUENCY,PM_FREQUENCY from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeSuperParentParam)
+			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeSuperParentParam)
+			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
+		)
+	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals" :
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, APPROVAL_CHAIN_STEP_RECORD_ID, APROBJ_LABEL, UNANIMOUS_CONSENT, REQUIRE_EXPLICIT_APPROVAL, ADVANCED_CONDITION,CONDITIONS_MET, ENABLE_SMARTAPPROVAL, ACTIVE from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" APRCHN_ID = '"
+			+ str(TreeParentParam)
+			+ "' and APRCHNSTP_NUMBER = 1 ) m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+
+		QueryCount = ""
+
+		QueryCountObj = Sql.GetFirst(
+			"select count(CpqTableEntryId) as cnt from "+str(ObjectName)+" (NOLOCK) where "+str(ATTRIBUTE_VALUE_STR)+" APRCHN_ID = '"
+			+ str(TreeParentParam)
+			+ "' and APRCHNSTP_NUMBER = 1 "
+		)
+	if QueryCountObj is not None:
+		QueryCount = QueryCountObj.cnt
+	parent_obj = Sql.GetList(Qstr)
+	for par in parent_obj:
+		
+		data_dict = {}
+		if str(ObjectName) == "SAQGPA":
+			data_id = str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)        
+			Action_str = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+			)
+			if can_edit.upper() == "TRUE":
+				Action_str += (
+					'<li ><a class="dropdown-item cur_sty" href="#" id="'
+					+ str(data_id)
+					+ '" onclick="Commonteree_view_RL(this)">EDIT</a></li>'
+				)
+			if can_delete.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+			if can_clone.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+
+			Action_str += "</ul></div></div>"
+			data_dict["ids"] = str(data_id)
+			data_dict["ACTIONS"] = str(Action_str)
+			data_dict["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+				"SAQGPA", str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+			)
+			data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
+			data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
+			data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
+			data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
+			data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>")
+			data_dict["DEVICE_NODE"] = ('<abbr id ="" title="' + str(par.DEVICE_NODE) + '">' + str(par.DEVICE_NODE) + "</abbr>")
+			data_dict["PROCESS_TYPE"] = ('<abbr id ="" title="' + str(par.PROCESS_TYPE) + '">' + str(par.PROCESS_TYPE) + "</abbr>")
+			data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
+			data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
+			data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+			data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
+			data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
+			data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
+			data_list.append(data_dict)
+		elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
+			data_id = str(par.APPROVAL_CHAIN_STEP_RECORD_ID)        
+			Action_str = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+			)
+			if can_edit.upper() == "TRUE":
+				Action_str += (
+					'<li ><a class="dropdown-item cur_sty" href="#" id="'
+					+ str(data_id)
+					+ '" onclick="Commonteree_view_RL(this)">EDIT</a></li>'
+				)
+			if can_delete.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+			if can_clone.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+
+			Action_str += "</ul></div></div>"
+			data_dict["ids"] = str(data_id)
+			data_dict["ACTIONS"] = str(Action_str)
+			data_dict["APPROVAL_CHAIN_STEP_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+				"ACACST", str(par.APPROVAL_CHAIN_STEP_RECORD_ID)
+			)
+			data_dict["APROBJ_LABEL"] = ('<abbr id ="" title="' + str(par.APROBJ_LABEL) + '">' + str(par.APROBJ_LABEL) + "</abbr>") 
+			data_dict["UNANIMOUS_CONSENT"] = str(par.UNANIMOUS_CONSENT)
+			data_dict["REQUIRE_EXPLICIT_APPROVAL"] = str(par.REQUIRE_EXPLICIT_APPROVAL)
+			data_dict["ADVANCED_CONDITION"] = ('<abbr id ="" title="' + str(par.ADVANCED_CONDITION) + '">' + str(par.ADVANCED_CONDITION) + "</abbr>")
+			data_dict["CONDITIONS_MET"] = ('<abbr id ="" title="' + str(par.CONDITIONS_MET) + '">' + str(par.CONDITIONS_MET) + "</abbr>")
+			data_dict["ENABLE_SMARTAPPROVAL"] = str(par.ENABLE_SMARTAPPROVAL)
+			data_dict["ACTIVE"] = str(par.ACTIVE)
+			data_list.append(data_dict)
+		else:
+			data_id = str(par.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID)
+			Action_str = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+			)
+			if can_edit.upper() == "TRUE":
+				Action_str += (
+					'<li ><a class="dropdown-item cur_sty" href="#" id="'
+					+ str(data_id)
+					+ '" onclick="Commonteree_view_RL(this)">EDIT</a></li>'
+				)
+			if can_delete.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+			if can_clone.upper() == "TRUE":
+				Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+
+			Action_str += "</ul></div></div>"
+			data_dict["ids"] = str(data_id)
+			data_dict["ACTIONS"] = str(Action_str)
+			data_dict["QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+				"SAQGPM", str(par.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID)
+			)
+			#data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>") 
+			#data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>")
+			#data_dict["ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(par.ASSEMBLY_ID) + '">' + str(par.ASSEMBLY_ID) + "</abbr>")
+			data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
+			#data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>")
+			data_dict["DEVICE_NODE"] = ('<abbr id ="" title="' + str(par.DEVICE_NODE) + '">' + str(par.DEVICE_NODE) + "</abbr>")
+			data_dict["PROCESS_TYPE"] = ('<abbr id ="" title="' + str(par.PROCESS_TYPE) + '">' + str(par.PROCESS_TYPE) + "</abbr>")
+			data_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(par.GOT_CODE) + '">' + str(par.GOT_CODE) + "</abbr>")
+			data_dict["PM_ID"] = ('<abbr id ="" title="' + str(par.PM_ID) + '">' + str(par.PM_ID) + "</abbr>")
+			data_dict["PM_NAME"] = ('<abbr id ="" title="' + str(par.PM_NAME) + '">' + str(par.PM_NAME) + "</abbr>")
+			data_dict["KIT_NUMBER"] = ('<abbr id ="" title="' + str(par.KIT_NUMBER) + '">' + str(par.KIT_NUMBER) + "</abbr>")
+			data_dict["SSCM_PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.SSCM_PM_FREQUENCY) + '">' + str(par.SSCM_PM_FREQUENCY) + "</abbr>")
+			data_dict["PM_FREQUENCY"] = ('<abbr id ="" title="' + str(par.PM_FREQUENCY) + '">' + str(par.PM_FREQUENCY) + "</abbr>")
+			data_list.append(data_dict)
+
+	page = ""
+	if QueryCount == 0:
+		page = str(QueryCount) + " - " + str(QueryCount) + " of "
+	elif QueryCount < int(PerPage):
+		page = str(Page_start) + " - " + str(QueryCount) + " of "
+	else:
+		page = str(Page_start) + " - " + str(Page_End)+ " of "
+	
+	return data_list,QueryCount,page 
+
 def GetContractEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 
 	if str(PerPage) == "" and str(PageInform) == "":
@@ -3857,7 +5213,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	obj_id = "SYOBJ-00974"
 	if str(SortColumn) == "SSCM_PM_FREQUENCY" or str(SortColumn) == "PM_FREQUENCY":
 		sort_by = " ORDER BY CAST("+str(SortColumn)+" AS FLOAT) "+str(SortColumnOrder)
-	elif str(SortColumn)!='' and str(SortColumnOrder)!='':
+	elif SortColumn and SortColumnOrder:
 		sort_by = " ORDER BY "+str(SortColumn)+" "+str(SortColumnOrder)
 	else:
 		sort_by = ' ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID'
@@ -3931,21 +5287,21 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,ASSEMBLY_ID,GOT_CODE,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) AS ROW, SAQSAP.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,SAQSAP.EQUIPMENT_DESCRIPTION,SAQSAP.EQUIPMENT_ID,SAQSAP.SERIAL_NO,SAQSAP.GOT_CODE,SAQSAP.ASSEMBLY_ID,SAQSAP.KIT_ID,SAQSAP.KIT_NAME,SAQSAP.PM_ID,SAQSAP.PM_NAME,SAQSAP.TKM_FLAG,SAQSAP.KIT_NUMBER,SAQSAP.ANNUAL_FREQUENCY_BASE,SAQSAP.SSCM_PM_FREQUENCY,SAQSAP.PM_FREQUENCY from SAQSAP (NOLOCK) INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = SAQSAP.QTESRVCOA_RECORD_ID where SAQSAP.QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
-			+ "' and QTEREV_RECORD_ID = '"
+			+ "' and SAQSAP.QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
-			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ) m where m.ROW BETWEEN "
+			+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End) + " "+ str(sort_by)
 		)
 		QueryCountObj = Sql.GetFirst(
-			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = SAQSAP.QTESRVCOA_RECORD_ID where SAQSAP.QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
-			+ "' and QTEREV_RECORD_ID = '"
+			+ "' and SAQSAP.QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
-			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' "
+			+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') "
 		)
 	elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
 		offset = int(Page_start)-1
@@ -3956,7 +5312,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam).split('-')[0]
-			+ "' "+str(sort_by)+" OFFSET "+str(offset)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
+			+ "' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(sort_by)+" OFFSET "+str(offset)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
 		)
 		QueryCountObj = Sql.GetFirst(
 			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where "+str(where_string)+" QUOTE_RECORD_ID = '"
@@ -3965,7 +5321,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam).split('-')[0]
-			+ "' "
+			+ "' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
 		)
 		
 	if QueryCountObj is not None:
@@ -4054,7 +5410,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			)
 		elif hyper_link is not None and invs in hyper_link:            
 			if invs == "PM_FREQUENCY":
-				data_formatter = "PMFrequencyBulkEditHyperLink" if quote_status.REVISION_STATUS!="APPROVED" else ""
+				data_formatter = "PMFrequencyBulkEditHyperLink" if quote_status.REVISION_STATUS!="APR-APPROVED" else ""
 			elif invs=="QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID":
 				data_formatter = "PreventiveMaintainenceHyperLinkTreeLink" 
 			else:
@@ -4112,17 +5468,6 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	### editablity in Grid 
 	if TopSuperParentParam in ('Comprehensive Services','Complementary Products'): 
 		cls = "eq(2)"
-		# dbl_clk_function = ( 
-		# 	'var checkedRows=[]; debugger;localStorage.setItem("multiedit_checkbox_clicked", []); $("'
-		# 	+ str(table_ids)
-		# 	+ '").on("dbl-click-cell.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
-		# 	+ str(cls)
-		# 	+ '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
-		# 	+ str(table_ids)
-		# 	+ '").on("check-all.bs.table", function (e) { var table = $("'
-		# 	+ str(table_ids)
-		# 	+ '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });  '
-		# ) 
 		# buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>" 
 		# dbl_clk_function = (	 
 		# 	'$("'	
@@ -4147,7 +5492,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ "_SortColumnOrder', order); }); "	
 		)
 	else:
-		if TreeParentParam in ('Comprehensive Services','Complementary Products'):
+		if TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeSuperParentParam in ('Comprehensive Services','Complementary Products'):
 			cls = "eq(2)"
 			dbl_clk_function += (
 				'$("'	
@@ -4155,9 +5500,9 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 				+ '").on("dbl-click-cell.bs.table", onClickCell);'
 			)
 			dbl_clk_function += (
-				'function onClickCell(event, field, value, row, $element) { if(localStorage.getItem("InlineEdit")=="YES"){ return ;} var reco_id="";reco_id=$element.closest("tr").find("td:'	
+				'function onClickCell(event, field, value, row, $element) { if(localStorage.getItem("InlineEdit")=="YES"){ return ;} var reco_id= localStorage.getItem("multiedit_checkbox_clicked");reco_id= reco_id.split(",");var selectedId = $element.closest("tr").find("td:'	
 				+ str(cls)	
-				+ '").text().trim();console.log("reco_id2--",reco_id);reco_id=reco_id; reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);  localStorage.setItem("table_id_RL_edit", "SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63");console.log("field--",field);console.log("value--",value);edit_index = $("'+str(table_ids)+'").find("[data-field="+ field +"]").index()+1;localStorage.setItem("edit_index",edit_index); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger;  data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }   var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); }  }); }'
+				+ '").text().trim();reco_id.push(selectedId);reco_id = removeDuplicates(reco_id);console.log("reco_id2--",reco_id);localStorage.setItem("multiedit_save_date", reco_id);localStorage.setItem("PM_selectedId",selectedId);  localStorage.setItem("table_id_RL_edit", "SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63");console.log("field--",field);console.log("value--",value);edit_index = $("'+str(table_ids)+'").find("[data-field="+ field +"]").index()+1;localStorage.setItem("edit_index",edit_index); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger;localStorage.setItem("PM_FrequencyBulkedit","yes");  data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }   var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); }  }); }'
 			)
 		dbl_clk_function += ('$(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
 			+ str(table_ids)
@@ -4172,6 +5517,25 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ "_SortColumnOrder', order); PmEventsNestedContainerSorting(name, order, '"
 			+ str(table_id)
 			+ "','"+str(ASSEMBLYID)+"','"+str(EQUIPMENTID)+"'); }); "
+		)
+	dbl_clk_function += (
+		'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
+		+ str(table_ids)
+		+ '").on("check.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
+		+ str(cls)
+		+ '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+		+ str(table_ids)
+		+ '").on("check-all.bs.table", function (e) { var table = $("'
+		+ str(table_ids)
+		+ '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:'
+		+ str(cls)
+		+ '").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+		+ str(table_ids)
+		+ '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
+		+ str(table_ids)
+		+ '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:'
+		+ str(cls)
+		+ '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
 		)
 	Trace.Write("7777 dbl_clk_function --->"+str(dbl_clk_function))
 	NORECORDS = ""
@@ -4809,13 +6173,26 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ str(ContractRecordId)            
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ORDER BY "+str(orderby)+" "
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ORDER BY "+str(orderby)+" "
 			)
 			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)            
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ")
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ")
+		elif TreeSuperParentParam == "Comprehensive Services" or TreeSuperParentParam == "Complementary Products":
+			parent_obj = Sql.GetList(
+				"select top "+str(PerPage)+" SAQSAP.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,SAQSAP.EQUIPMENT_DESCRIPTION,SAQSAP.EQUIPMENT_ID,SAQSAP.SERIAL_NO,SAQSAP.GOT_CODE,SAQSAP.ASSEMBLY_ID,SAQSAP.KIT_ID,SAQSAP.KIT_NAME,SAQSAP.PM_ID,SAQSAP.PM_NAME,SAQSAP.TKM_FLAG,SAQSAP.KIT_NUMBER,SAQSAP.ANNUAL_FREQUENCY_BASE,SAQSAP.SSCM_PM_FREQUENCY,SAQSAP.PM_FREQUENCY from SAQSAP (NOLOCK) INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = SAQSAP.QTESRVCOA_RECORD_ID where SAQSAP.QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and SAQSAP.QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') ORDER BY "+str(orderby)+" "
+			)
+			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = SAQSAP.QTESRVCOA_RECORD_ID where SAQSAP.QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and SAQSAP.QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') ")
 		if Count:
 			QueryCount = Count.cnt
 	else:
@@ -4847,7 +6224,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ str(ContractRecordId)
 				+ "'  and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "'  AND SERVICE_ID = '"+str(TreeParam)+"' ORDER BY "+str(orderby)+" "
+				+ "'  AND SERVICE_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ORDER BY "+str(orderby)+" "
 			)
 			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where "
 				+ str(ATTRIBUTE_VALUE_STR)
@@ -4855,7 +6232,20 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ")
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ")
+		elif TreeSuperParentParam == "Comprehensive Services" or TreeSuperParentParam == "Complementary Products":
+			parent_obj = Sql.GetList(
+				"select top "+str(PerPage)+" SAQSAP.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,SAQSAP.EQUIPMENT_DESCRIPTION,SAQSAP.EQUIPMENT_ID,SAQSAP.SERIAL_NO,SAQSAP.GOT_CODE,SAQSAP.ASSEMBLY_ID,SAQSAP.KIT_ID,SAQSAP.KIT_NAME,SAQSAP.PM_ID,SAQSAP.PM_NAME,SAQSAP.TKM_FLAG,SAQSAP.KIT_NUMBER,SAQSAP.ANNUAL_FREQUENCY_BASE,SAQSAP.SSCM_PM_FREQUENCY,SAQSAP.PM_FREQUENCY from SAQSAP (NOLOCK) INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = SAQSAP.QTESRVCOA_RECORD_ID where "+str(ATTRIBUTE_VALUE_STR)+" 1=1 AND SAQSAP.QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and SAQSAP.QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') ORDER BY "+str(orderby)+" "
+			)
+			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = SAQSAP.QTESRVCOA_RECORD_ID where "+str(ATTRIBUTE_VALUE_STR)+" 1=1 AND SAQSAP.QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and SAQSAP.QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' AND SAQSAP.SERVICE_ID = '"+str(TreeParentParam).split('-')[0]+"' AND SAQSCA.GREENBOOK = '"+str(TreeParam)+"' AND (SAQSAP.PM_FREQUENCY_EDITABLE = 'True' OR SAQSAP.PM_FREQUENCY_EDITABLE = '1') ")
 		if Count:
 			QueryCount = Count.cnt
 
@@ -6161,6 +7551,505 @@ def GetAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	)
 
 
+
+def GetFtsAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
+	Trace.Write("recid---"+str(recid))
+	TreeParam = Product.GetGlobal("TreeParam")
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+	
+	if str(PerPage) == "" and str(PageInform) == "":
+		Page_start = 1
+		Page_End = 10
+		PerPage = 10
+		PageInform = "1___10___10"
+	else:
+		Page_start = int(PageInform.split("___")[0])
+		Page_End = int(PageInform.split("___")[1])
+		PerPage = PerPage
+	chld_list = []
+	Parent_Equipmentid = ""
+	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+	obj_idval = "SYOBJ-1177055_SYOBJ-1177055"
+	obj_id1 = "SYOBJ-1177055"
+	objh_getid = Sql.GetFirst(
+		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id1) + "'"
+	)
+	if objh_getid:
+		obj_id1 = objh_getid.RECORD_ID
+	objs_obj1 = Sql.GetFirst(
+		"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id1) + "' "
+	)
+	can_edit1 = str(objs_obj1.CAN_EDIT)
+	can_add1 = str(objs_obj1.CAN_ADD)
+	can_delete1 = str(objs_obj1.CAN_DELETE)
+	table_id = "fts_obj_child_" +str(recid)
+	table_header = (
+		'<table id="'
+		+ str(table_id)
+		+ '" data-pagination="false" data-sortable="true" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
+	)
+	Columns = ["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID","ASSEMBLY_ID", "ASSEMBLY_DESCRIPTION", "EQUIPMENT_DESCRIPTION", "GOT_CODE"]
+	Objd_Obj = Sql.GetList(
+		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = 'SAQGPA'"
+	)
+	attr_list = []
+	attrs_datatype_dict = {}
+	lookup_disply_list = []
+	lookup_str = ""
+	if Objd_Obj is not None:
+		attr_list = {}
+		for attr in Objd_Obj:
+			attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
+			attrs_datatype_dict[str(attr.API_NAME)] = str(attr.DATA_TYPE)
+			if attr.LOOKUP_API_NAME != "" and attr.LOOKUP_API_NAME is not None:
+				lookup_disply_list.append(str(attr.API_NAME))
+		checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX"]
+		lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+	lookup_str = ",".join(list(lookup_disply_list))
+	Parent_Equipmentid = Sql.GetFirst(
+		"""select EQUIPMENT_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and EQUIPMENT_ID = '{recid}' and QTEREV_RECORD_ID = '{RevisionRecordId}'
+		""".format(
+			ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=recid
+		)
+	)
+	if Parent_Equipmentid:
+		EquipmentID = Parent_Equipmentid.EQUIPMENT_ID
+		if TreeSuperParentParam == 'Product Offerings':
+			child_obj_recid = Sql.GetList(
+				"select top 10 QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeParam}' ".format(
+					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),Parent_Equipmentid=recid, TreeParam=TreeParam
+				)
+			)
+
+			QueryCountObj = Sql.GetFirst(
+				"select count(QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID) as cnt from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' and EQUIPMENT_ID ='"
+				+ str(recid)
+				+ "'and SERVICE_ID ='"
+				+ str(TreeParam)
+				+ "'"
+			)    
+		elif TreeSuperParentParam in ('Comprehensive Services','Complementary Products'):
+			child_obj_recid = Sql.GetList(
+				"select top 10 QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeParentParam}' ".format(
+					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),Parent_Equipmentid=recid, TreeParam=TreeParam, TreeParentParam=TreeParentParam
+				)
+			)
+
+			QueryCountObj = Sql.GetFirst(
+				"select count(QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID) as cnt from SAQGPA (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' and EQUIPMENT_ID ='"
+				+ str(recid)
+				+ "'and SERVICE_ID ='"
+				+ str(TreeParentParam)
+				+ "' and GREENBOOK = '"+str(TreeParam)+"' "
+			)    	
+		if QueryCountObj is not None:
+			QueryCount = QueryCountObj.cnt
+		# Data construction for table.
+		for child in child_obj_recid:
+			
+			data_id = str(child.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+			chld_dict = {}
+			Action_str1 = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a  data-toggle="modal" data-target="#cont_viewModalSection" id="'
+				+ str(data_id)
+				+ '" class="" href="#"  onclick="cont_relatedlist_openview(this) ">VIEW</a></li>'
+			)
+			if can_edit1.upper() == "TRUE":
+				Action_str1 += (
+					'<li style="display:none" ><a data-toggle="modal" data-target="#cont_viewModalSection" id="'
+					+ str(data_id)
+					+ '"  class="dropdown-item cur_sty" href="#"  onclick="cont_relatedlist_openedit(this)">EDIT</a></li>'
+				)
+			if can_delete1.upper() == "TRUE":
+				Action_str1 += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+			if can_add1.upper() == "TRUE":
+				Action_str1 += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+			Action_str1 += "</ul></div></div>"
+
+			# data formation in Dictonary format.
+			chld_dict["ids"] = str(data_id)
+			chld_dict["ACTIONS"] = str(Action_str1)
+			chld_dict["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+				"SAQGPA", str(child.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+			)
+			chld_dict["EQUIPMENT_ID"] = str(child.EQUIPMENT_ID)
+			chld_dict["ASSEMBLY_ID"] = str(child.ASSEMBLY_ID)
+			chld_dict["ASSEMBLY_DESCRIPTION"] = str(child.ASSEMBLY_DESCRIPTION)
+			chld_dict["EQUIPMENT_DESCRIPTION"] = str(child.EQUIPMENT_DESCRIPTION)
+			chld_dict["GOT_CODE"] = str(child.GOT_CODE)
+			#chld_dict["MODULE_ID"] = str(child.MODULE_ID)
+			#chld_dict["MODULE_NAME"] = str(child.MODULE_NAME)
+			chld_list.append(chld_dict)
+
+	# Table formation.
+	#hyper_link = ["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"]
+	hyper_link = [" "]
+	table_header += "<tr>"
+	table_header += (
+		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
+		+ str(table_id)
+		+ '">Search</button></th>'
+	)
+	table_header += '<th data-field="SELECT" class="wid45" data-checkbox="true"></th>'
+	for key, invs in enumerate(list(Columns)):
+		invs = str(invs).strip()
+		qstring = attr_list.get(str(invs)) or ""
+		if qstring == "":
+			qstring = invs.replace("_", " ")
+		if checkbox_list is not None and invs in checkbox_list:
+			table_header += (
+				'<th data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-align="center" data-formatter="CheckboxFieldRelatedList" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+		elif hyper_link is not None and invs in hyper_link:
+			table_header += (
+				'<th data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-align="left" data-formatter="coveredobjectchildHyperLink" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+		else:
+			table_header += (
+				'<th data-field="'
+				+ str(invs)
+				+ '" data-filter-control="input" data-sortable="true"><abbr title="'
+				+ str(qstring)
+				+ '">'
+				+ str(qstring)
+				+ "</abbr></th>"
+			)
+	table_header += "</tr>"
+	table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
+	table_ids = "#" + str(table_id)
+	filter_control_function = ""
+	values_list = ""
+	for key, invs in enumerate(list(Columns)):
+		table_ids = "#" + str(table_id)
+		filter_clas = "#" + str(table_id) + " .bootstrap-table-filter-control-" + str(invs)
+		values_list += "var " + str(invs) + ' = $("' + str(filter_clas) + '").val(); '
+		values_list += "ATTRIBUTE_VALUEList.push(" + str(invs) + "); "
+	filter_class = "#Act_" + str(table_id)
+	filter_control_function += (
+		'$("'
+		+ filter_class
+		+ '").click( function(){ var table_id = $(this).closest("table").attr("id"); ATTRIBUTE_VALUEList = []; '
+		+ str(values_list)
+		+ ' var attribute_value = $(this).val(); cpq.server.executeScript("CQNESTGRID", {"TABNAME":"Fts Assemblies Child", "ACTION":"PRODUCT_ONLOAD_FILTER", "ATTRIBUTE_NAME": '
+		+ str(list(Columns))
+		+ ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList, "RECID":"'
+		+ str(recid)
+		+ '" }, function(data) { $("'
+		+ str(table_ids)
+		+ '").bootstrapTable("load", data ); }); filter_search_click();$(".JColResizer").mousedown(function(){ $("thead.fullHeadFirst").css("cssText","z-index: 2;border-top: 1px solid rgb(220, 220, 220);top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","none"); });$(".JColResizer").mouseup(function(){ var th_width_resize = [];$("#table_fts_assemblies_child thead.fullHeadFirst tr th").each(function(index){var wid = $(this).css("width"); if(index ==0 || index ==1){th_width_resize.push("60px");}else{th_width_resize.push(wid);}}); $("thead.fullHeadFirst").css("cssText","position: fixed;z-index: 2;border-top: 1px solid rgb(220, 220, 220); top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","table-header-group");$("#table_fts_assemblies_child thead.fullHeadFirst tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);});$("#table_fts_assemblies_child thead.fullHeadSecond tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);}); });});'
+	)
+	dbl_clk_function = (
+		'$("'
+		+ str(table_ids)
+		+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+		+ str(table_ids)
+		+ '\ th.bs-checkbox div.th-inner").before("<div style=\'padding:0; border-bottom: 1px solid #dcdcdc;\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
+		+ str(table_ids)
+		+ "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
+		+ str(table_id)
+		+ "_SortColumn', name); localStorage.setItem('"
+		+ str(table_id)
+		+ "_SortColumnOrder', order); NestedContainerSorting(name, order, '"
+		+ str(table_id)
+		+ "','"
+		+str(recid)+"'); }); "
+		)
+
+	NORECORDS = ""
+	if len(chld_list) == 0:
+		NORECORDS = "NORECORDS"
+
+	ObjectName = "SAQGPA"
+	DropDownList = []
+	filter_level_list = []
+	filter_clas_name = ""
+	cv_list = []
+	TableclassName = "form-control" + table_id
+	for key, col_name in enumerate(list(Columns)):
+		StringValue_list = []
+		objss_obj = Sql.GetFirst(
+			"SELECT API_NAME, DATA_TYPE, FORMULA_LOGIC FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
+			+ str(ObjectName)
+			+ "' and API_NAME = '"
+			+ str(col_name)
+			+ "'"
+		)
+		try:
+			FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
+			FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
+			FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
+			ins_obj = Sql.GetFirst(
+				"SELECT API_NAME, DATA_TYPE,PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
+				+ str(FORMULA_table)
+				+ "' and API_NAME = '"
+				+ str(FORMULA_col)
+				+ "'"
+			)
+			if str(objss_obj.PICKLIST).upper() == "TRUE":
+				filter_level_data = "select"
+				filter_clas_name = (
+					'<div id = "'
+					+ str(table_id)
+					+ "_RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ '" class="form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ " RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ ' "></div>'
+				)
+				filter_level_list.append(filter_level_data)
+			else:
+				filter_level_data = "input"
+				filter_clas_name = (
+					'<input type="text" class="width100_vis form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ '">'
+				)
+				filter_level_list.append(filter_level_data)
+		except:
+			"""if str(objss_obj.PICKLIST).upper() == "TRUE":
+				filter_level_data = "select"
+				filter_clas_name = (
+					'<div id = "'
+					+ str(table_id)
+					+ "_RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ '" class="form-control bootstrap-table-filter-control-'
+					+ str(col_name)
+					+ " RelatedMutipleCheckBoxDrop_"
+					+ str(key)
+					+ ' "></div>'
+				)
+				filter_level_list.append(filter_level_data)"""
+
+			filter_level_data = "input"
+			filter_clas_name = (
+				'<input type="text" class="width100_vis form-control bootstrap-table-filter-control-' + str(col_name) + '">'
+			)
+			filter_level_list.append(filter_level_data)
+		cv_list.append(filter_clas_name)
+		if filter_level_data == "select":
+			try:
+				xcd = Sql.GetFirst(
+					"SELECT (STUFF((SELECT DISTINCT ', ' + CAST("
+					+ str(col_name)
+					+ " AS CHAR(100)) FROM "
+					+ str(ObjectName)
+					+ " (NOLOCK) where QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID = '"
+					+ str(recid)
+					+ "' FOR XML PATH('') ), 1, 2, '')  ) AS StringValue"
+				)
+			except:
+				xcd = Sql.GetFirst(
+					"SELECT (STUFF((SELECT DISTINCT ', ' + CAST("
+					+ str(col_name)
+					+ " AS CHAR(100)) FROM "
+					+ str(ObjectName)
+					+ " (NOLOCK) FOR XML PATH('') ), 1, 2, '')  ) AS StringValue"
+				)
+			if str(xcd.StringValue) is not None and str(xcd.StringValue) != "":
+				if str(xcd.StringValue).find(",") != -1:
+					StringValue_list = [ins.strip() for ins in str(xcd.StringValue).split(",") if ins.strip() != ""]
+				else:
+					StringValue_list.append(str(xcd.StringValue))
+			else:
+				StringValue_list = [""]
+			StringValue_list = list(set(StringValue_list))
+			DropDownList.append(StringValue_list)
+		elif filter_level_data == "checkbox":
+			DropDownList.append(["True", "False"])
+		else:
+			DropDownList.append("")
+	RelatedDrop_str = (
+		"try { if( document.getElementById('"
+		+ str(table_id)
+		+ "') ) { var listws = document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control')[i].innerHTML = datachld6[i];  } for (j = 0; j < listws.length; j++) { if (datachld7[j] == 'select') { if (data8[j]) { var dataAdapter = new $.jqx.dataAdapter(datachld8[j]); $('#"
+		+ str(table_id)
+		+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, autoDropDownHeight: true }); } } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+		+ str(table_id)
+		+ "').getElementsByClassName('filter-control')[i].innerHTML = datachld6[i];  } for (j = 0; j < listws.length; j++) { if (datachld7[j] == 'select') { if (data8[j]) { var dataAdapter = new $.jqx.dataAdapter(datachld8[j]); $('#"
+		+ str(table_id)
+		+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, autoDropDownHeight: true }); } } } }, 5000); } try { setTimeout(function(){ $('#"
+		+ str(table_id)
+		+ "').colResizable({ resizeMode:'overflow'}); }, 3000); } catch(err){}"
+	)
+	page = ""
+	if QueryCount < int(PerPage):
+		page = str(Page_start) + " - " + str(QueryCount)
+	else:
+		page = str(Page_start) + " - " + str(Page_End)
+	Test = (
+		'<div class="col-md-12 brdr listContStyle pad2height30" ><div class="col-md-4 pager-numberofitem clear-padding"><span class="pager-number-of-items-item noofitem" id="'
+		+ str(table_id)
+		+ '___NumberofItem" >'
+		+ str(page)
+		+ ' of </span><span class="pager-number-of-items-item fltltpad2mrg0" id="'
+		+ str(table_id)
+		+ '___totalItemCount" >'
+		+ str(QueryCount)
+		+ '</span><div class="clear-padding fltltmrgtp3" ><div  class="pull-right vertmidtxtrht"><select onchange="PageFunctestChild(this,\'Quotes\')" id="'+str(table_id)+'___PageCountValue"  class="form-control wid65vermiddisinbmarl5"><option value="10" selected>10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option><option value="200">200</option></select> </div></div></div><div class="col-xs-8 col-md-4  clear-padding disinpad10txtcen"  data-bind="visible: totalItemCount"><div class="clear-padding col-xs-12 col-sm-6 col-md-12 bor0" ><ul class="pagination pagination"><li class="disabled"><a href="#" onclick="FirstPageLoad_paginationChild(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')"><i class="fa fa-caret-left font14whtbld" ></i><i class="fa fa-caret-left font14" ></i></a></li><li class="disabled"><a href="#" onclick="Previous12334Child(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')"><i class="fa fa-caret-left font14" ></i>PREVIOUS</a></li><li class="disabled"><a href="#" class="disabledPage" onclick="Next12334Child(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')">NEXT<i class="fa fa-caret-right font14" ></i></a></li><li class="disabled"><a href="#" onclick="LastPageLoad_paginationChild(\'Quote\',\'\',\''
+		+str(table_id)
+		+'\')" class="disabledPage"><i class="fa fa-caret-right font14"></i><i class="fa fa-caret-right font14whtbld"></i></a></li></ul></div> </div> <div class="col-md-4 pr_page_pad"> <span id="'+str(table_id)+'___page_count" class="currentPage page_right_content">1</span><span class="page_right_content pad_rt_2">Page </span></div></div>'
+	)
+	Action_Str = ""
+	Action_Str = "1 - "
+	Action_Str += str(PerPage)
+	Action_Str += " of"
+
+	return (
+		table_header,
+		chld_list,
+		table_id,
+		filter_control_function,
+		NORECORDS,
+		dbl_clk_function,
+		cv_list,
+		filter_level_list,
+		DropDownList,
+		RelatedDrop_str,
+		Test,
+		Action_Str,
+	)
+
+
+def GetFtsAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID):
+	TreeParam = Product.GetGlobal("TreeParam")
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+	# FablocationId = Product.GetGlobal("TreeParam")
+	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+	ATTRIBUTE_VALUE_STR = ""
+	Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
+	for quer_key, quer_value in enumerate(Dict_formation):
+		x_picklistcheckobj = Sql.GetFirst(
+			"SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQGPA' AND API_NAME = '" + str(quer_value) + "'"
+		)
+		if x_picklistcheckobj:
+			x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
+			if Dict_formation.get(quer_value) != "":
+				quer_values = str(Dict_formation.get(quer_value)).strip()
+				if str(quer_values).upper() == "TRUE":
+					quer_values = "TRUE"
+				elif str(quer_values).upper() == "FALSE":
+					quer_values = "FALSE"
+				if str(quer_values).find(",") == -1:
+					if x_picklistcheck == "TRUE":
+						ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
+					else:
+						ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
+				else:
+					quer_values = quer_values.split(",")
+					quer_values = tuple(list(quer_values))
+					ATTRIBUTE_VALUE_STR += str(quer_value) + " in " + str(quer_values) + " and "
+
+	data_list = []
+	rec_id = "SYOBJ-1177055"
+	obj_id = "SYOBJ-1177055"
+	objh_getid = Sql.GetFirst(
+		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
+	)
+	if objh_getid:
+		obj_id = objh_getid.RECORD_ID
+	objs_obj = Sql.GetFirst(
+		"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id) + "' "
+	)
+	can_edit = str(objs_obj.CAN_EDIT)
+	can_clone = str(objs_obj.CAN_ADD)
+	can_delete = str(objs_obj.CAN_DELETE)
+	if ATTRIBUTE_VALUE is None or ATTRIBUTE_VALUE == "" or ATTRIBUTE_VALUE_STR is None or ATTRIBUTE_VALUE_STR == "":
+		parent_obj = Sql.GetList(
+			"select QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeParam}'".format(
+				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, TreeParam=TreeParam
+			)
+		)
+	else:
+		parent_obj = Sql.GetList(
+			"select QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE, EQUIPMENT_DESCRIPTION from SAQGPA (NOLOCK) where  "
+			+ str(ATTRIBUTE_VALUE_STR)
+			+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{TreeParam}' ".format(ATTRIBUTE_VALUE_STR = ATTRIBUTE_VALUE_STR,
+				ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), recid=RECID, TreeParam=TreeParam,TreeSuperParentParam = TreeSuperParentParam
+			)
+		)
+
+	for par in parent_obj:
+		data_dict = {}
+		data_id = str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+
+		Action_str = (
+			'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+			+ str(data_id)
+			+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+		)
+		if can_edit.upper() == "TRUE":
+			Action_str += (
+				'<li style="display:none" ><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Move_to_parent_obj_edit(this)">EDIT</a></li>'
+			)
+		if can_delete.upper() == "TRUE":
+			Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+		if can_clone.upper() == "TRUE":
+			Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+
+		Action_str += "</ul></div></div>"
+		data_dict = {}
+		data_dict["ids"] = str(data_id)
+		data_dict["ACTIONS"] = str(Action_str)
+		#data_dict["INCLUDED"] = str(par.INCLUDED)
+		data_dict["QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
+			"SAQGPA", str(par.QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID)
+		)
+		data_dict["EQUIPMENT_ID"] = str(par.EQUIPMENT_ID)
+		data_dict["ASSEMBLY_ID"] = str(par.ASSEMBLY_ID)
+		data_dict["ASSEMBLY_DESCRIPTION"] = str(par.ASSEMBLY_DESCRIPTION)
+		data_dict["EQUIPMENT_DESCRIPTION"] = str(par.EQUIPMENT_DESCRIPTION)
+		data_dict["GOT_CODE"] = str(par.GOT_CODE)
+		#data_dict["MODULE_ID"] = str(par.MODULE_ID)
+		#data_dict["MODULE_NAME"] = str(par.MODULE_NAME)
+		data_list.append(data_dict)
+
+	return data_list
+
+
+
 def GetAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID):
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -6175,22 +8064,23 @@ def GetAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID):
 		x_picklistcheckobj = Sql.GetFirst(
 			"SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQSCA' AND API_NAME = '" + str(quer_value) + "'"
 		)
-		x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
-		if Dict_formation.get(quer_value) != "":
-			quer_values = str(Dict_formation.get(quer_value)).strip()
-			if str(quer_values).upper() == "TRUE":
-				quer_values = "TRUE"
-			elif str(quer_values).upper() == "FALSE":
-				quer_values = "FALSE"
-			if str(quer_values).find(",") == -1:
-				if x_picklistcheck == "TRUE":
-					ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
+		if x_picklistcheckobj:
+			x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
+			if Dict_formation.get(quer_value) != "":
+				quer_values = str(Dict_formation.get(quer_value)).strip()
+				if str(quer_values).upper() == "TRUE":
+					quer_values = "TRUE"
+				elif str(quer_values).upper() == "FALSE":
+					quer_values = "FALSE"
+				if str(quer_values).find(",") == -1:
+					if x_picklistcheck == "TRUE":
+						ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
+					else:
+						ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
 				else:
-					ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
-			else:
-				quer_values = quer_values.split(",")
-				quer_values = tuple(list(quer_values))
-				ATTRIBUTE_VALUE_STR += str(quer_value) + " in " + str(quer_values) + " and "
+					quer_values = quer_values.split(",")
+					quer_values = tuple(list(quer_values))
+					ATTRIBUTE_VALUE_STR += str(quer_value) + " in " + str(quer_values) + " and "
 
 	data_list = []
 	rec_id = "SYOBJ_00929"
@@ -6573,7 +8463,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 	#     else: 
 	Columns = [
 		"QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID",
-		"EQUIPMENT_CATEGORY_DESCRIPTION",
+		"EQUIPMENTCATEGORY_DESCRIPTION",
 		"EQUIPMENT_ID",
 		"SERIAL_NO",
 		"CUSTOMER_TOOL_ID",
@@ -6632,7 +8522,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -6651,7 +8541,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -6672,7 +8562,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -6692,7 +8582,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "'  and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -6712,7 +8602,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "'  and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -6734,7 +8624,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 				Qstr = (
 					"select top "
 					+ str(PerPage)
-					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 					+ str(ContractRecordId)
 					+ "' and QTEREV_RECORD_ID = '"
 					+ str(RevisionRecordId)
@@ -6753,7 +8643,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 				Qstr = (
 					"select top "
 					+ str(PerPage)
-					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 					+ str(ContractRecordId)
 					+ "'  and QTEREV_RECORD_ID = '"
 					+ str(RevisionRecordId)
@@ -6772,7 +8662,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 				Qstr = (
 					"select top "
 					+ str(PerPage)
-					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 					+ str(ContractRecordId)
 					+ "'  and QTEREV_RECORD_ID = '"
 					+ str(RevisionRecordId)
@@ -6795,7 +8685,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -6815,7 +8705,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -6991,7 +8881,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		data_dict["SNDFBL_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.SNDFBL_ID) + "</abbr>") 
 		data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>") 
 		data_dict["SERIAL_NO"] = ('<abbr id ="" title="' + str(par.SERIAL_NO) + '">' + str(par.SERIAL_NO) + "</abbr>") 
-		data_dict["EQUIPMENT_CATEGORY_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_CATEGORY_DESCRIPTION) + '">' + str(par.EQUIPMENT_CATEGORY_DESCRIPTION) + "</abbr>") 
+		data_dict["EQUIPMENTCATEGORY_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + '">' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + "</abbr>") 
 		data_dict["CUSTOMER_TOOL_ID"] = ('<abbr id ="" title="' + str(par.CUSTOMER_TOOL_ID) + '">' + str(par.CUSTOMER_TOOL_ID) + "</abbr>") 
 		data_dict["EQUIPMENT_STATUS"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_STATUS) + '">' + str(par.EQUIPMENT_STATUS) + "</abbr>") 
 		data_dict["MNT_PLANT_ID"] = ('<abbr id ="" title="' + str(par.MNT_PLANT_ID) + '">' + str(par.MNT_PLANT_ID) + "</abbr>") 
@@ -7003,25 +8893,25 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		#data_dict["CONTRACT_END_DATE"] = ('<abbr id ="" title="' + str(par.CONTRACT_END_DATE) + '">' + str(par.CONTRACT_END_DATE) + "</abbr>")
 		data_list.append(data_dict)
 	Trace.Write('data_list--'+str(data_list))
-	Hyperlink = " "
-	if(Product.GetGlobal("TreeParam") == 'Z0009' or Product.GetGlobal("TreeParentLevel0") == 'Z0009' or Product.GetGlobal("TreeParam") == 'Z0010' or Product.GetGlobal("TreeParentLevel0") == 'Z0010'):
-		get_entitlement_xml =SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId=Quote.GetGlobal("quote_revision_record_id"), service_id = 'Z0009' ))
-		if get_entitlement_xml:
-			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-			pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
-			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Event Based|Flex Event Based)</ENTITLEMENT_DISPLAY_VALUE>')
-			updateentXML = get_entitlement_xml.ENTITLEMENT_XML
-			for m in re.finditer(pattern_tag, updateentXML):
-				sub_string = m.group(1)
-				get_ent_id =re.findall(pattern_id,sub_string)
-				get_ent_name=re.findall(pattern_name,sub_string)
-				if get_ent_id and get_ent_name:
-					Hyperlink = "No"
-					break
-	if Hyperlink == "No":
-		hyper_link = [" "]
-	else:
-		hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
+	# Hyperlink = " "
+	# if(Product.GetGlobal("TreeParam") == 'Z0009' or Product.GetGlobal("TreeParentLevel0") == 'Z0009' or Product.GetGlobal("TreeParam") == 'Z0010' or Product.GetGlobal("TreeParentLevel0") == 'Z0010'):
+	# 	get_entitlement_xml =SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{service_id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId=Quote.GetGlobal("quote_revision_record_id"), service_id = 'Z0009' ))
+	# 	if get_entitlement_xml:
+	# 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+	# 		pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
+	# 		pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Event Based|Flex Event Based)</ENTITLEMENT_DISPLAY_VALUE>')
+	# 		updateentXML = get_entitlement_xml.ENTITLEMENT_XML
+	# 		for m in re.finditer(pattern_tag, updateentXML):
+	# 			sub_string = m.group(1)
+	# 			get_ent_id =re.findall(pattern_id,sub_string)
+	# 			get_ent_name=re.findall(pattern_name,sub_string)
+	# 			if get_ent_id and get_ent_name:
+	# 				Hyperlink = "No"
+	# 				break
+	# if Hyperlink == "No":
+	# 	hyper_link = [" "]
+	# else:
+	hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
 	table_header += "<tr>"
 	table_header += (
 		'<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
@@ -8150,7 +10040,7 @@ def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				+ str(TreeParentParam)
 				+ "'"
 			)
-		elif (TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products") and TreeParentParam != "Receiving Equipment":
+		elif (TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products") and TreeParentParam != "Receiving Equipment" and TreeParam != "Add-On Products":
 			child_obj_recid = Sql.GetList(
 				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,EQUIPMENTTYPE_ID,GOT_CODE,EQUIPMENT_DESCRIPTION,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}' AND FABLOCATION_ID = '{fab}') m where m.ROW BETWEEN ".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
@@ -8175,6 +10065,30 @@ def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				+ str(TreeSuperParentParam)
 				+ "' AND FABLOCATION_ID = '"
 				+ str(TreeParentParam)
+				+ "'"
+			)
+		elif TreeParam == "Add-On Products" and (TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products"):
+			child_obj_recid = Sql.GetList(
+				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,EQUIPMENTTYPE_ID,GOT_CODE,EQUIPMENT_DESCRIPTION,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{treeparam}') m where m.ROW BETWEEN ".format(
+					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+					RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
+					Parent_Equipmentid=Parent_Equipmentid,
+					treeparam=TreeSuperParentParam
+				)
+				+ str(Page_start)
+				+ " and "
+				+ str(Page_End)
+			)
+
+			QueryCountObj = Sql.GetFirst(
+				"select count(CpqTableEntryId) as cnt from SAQSCA (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "'and EQUIPMENT_ID ='"
+				+ str(Parent_Equipmentid)
+				+ "'and SERVICE_ID ='"
+				+ str(TreeSuperParentParam)
 				+ "'"
 			)
 		elif TreeParentParam == "Receiving Equipment":
@@ -8627,7 +10541,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		Trace.Write("empty search")
 		if TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products":
 			parent_obj = Sql.GetList(
-				"SELECT TOP "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION,SNDFBL_ID,WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+				"SELECT TOP "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION,SNDFBL_ID,WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -8658,7 +10572,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			if TreeTopSuperParentParam == "Product Offerings":
 				if TreeParam == "Receiving Equipment":
 					parent_obj = Sql.GetList(
-						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION,WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where  QUOTE_RECORD_ID = '"
+						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION,WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where  QUOTE_RECORD_ID = '"
 						+ str(ContractRecordId)
 						+ "' and QTEREV_RECORD_ID = '"
 						+ str(RevisionRecordId)
@@ -8689,7 +10603,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 					else:
 						equipment_column = " EQUIPMENTCATEGORY_ID "
 					parent_obj = Sql.GetList(
-						"SELECT TOP "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+						"SELECT TOP "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 						+ str(ContractRecordId)
 						+ "' and QTEREV_RECORD_ID = '"
 						+ str(RevisionRecordId)
@@ -8729,7 +10643,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 
 				if TreeParam == "Receiving Equipment":
 					parent_obj = Sql.GetList(
-						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' AND SERVICE_TYPE = '"+ str(TreeTopSuperParentParam)+ "' AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' ORDER BY "  + str(orderby))
+						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' AND SERVICE_TYPE = '"+ str(TreeTopSuperParentParam)+ "' AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' ORDER BY "  + str(orderby))
 
 					QueryCountObj = Sql.GetFirst(
 						"SELECT count(*) as cnt from SAQSCO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' AND SERVICE_TYPE = '"+ str(TreeTopSuperParentParam)+ "' AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' "  
@@ -8739,7 +10653,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 
 				elif TreeParentParam == "Receiving Equipment":
 					parent_obj = Sql.GetList(
-						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where "
+						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where "
 						+ str(ATTRIBUTE_VALUE_STR)
 						+ " 1=1 and QUOTE_RECORD_ID = '"
 						+ str(ContractRecordId)
@@ -8771,7 +10685,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 						QueryCount = QueryCountObj.cnt
 				else:            
 					parent_obj = Sql.GetList(
-						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 						+ str(ContractRecordId)
 						+ "' and QTEREV_RECORD_ID = '"
 						+ str(RevisionRecordId)
@@ -8809,7 +10723,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		Trace.Write("search with condition123")
 		if TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products":
 			parent_obj = Sql.GetList(
-				"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION,SNDFBL_ID,WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where "
+				"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION,SNDFBL_ID,WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where "
 				+ str(ATTRIBUTE_VALUE_STR)
 				+ " 1=1 and QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
@@ -8843,7 +10757,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			if TreeTopSuperParentParam == "Product Offerings":
 				if TreeParam == "Receiving Equipment":
 					parent_obj = Sql.GetList(
-						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION,WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where "
+						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION,WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where "
 						+ str(ATTRIBUTE_VALUE_STR)
 						+ " 1=1 and QUOTE_RECORD_ID = '"
 						+ str(ContractRecordId)
@@ -8879,7 +10793,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 					else:
 						equipment_column = " EQUIPMENTCATEGORY_ID "
 					parent_obj = Sql.GetList(
-						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where "
+						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where "
 						+ str(ATTRIBUTE_VALUE_STR)
 						+ " 1=1 and QUOTE_RECORD_ID = '"
 						+ str(ContractRecordId)
@@ -8923,7 +10837,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 
 				if TreeParam == "Receiving Equipment":
 					parent_obj = Sql.GetList(
-						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' AND SERVICE_TYPE = '"+ str(TreeTopSuperParentParam)+ "' AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' ORDER BY "  + str(orderby))
+						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,TEMP_TOOL,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' AND SERVICE_TYPE = '"+ str(TreeTopSuperParentParam)+ "' AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' ORDER BY "  + str(orderby))
 
 					QueryCountObj = Sql.GetFirst(
 						"SELECT count(*) as cnt from SAQSCO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' AND SERVICE_TYPE = '"+ str(TreeTopSuperParentParam)+ "' AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' "  
@@ -8933,7 +10847,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 
 				elif TreeParentParam == "Receiving Equipment":
 					parent_obj = Sql.GetList(
-						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where "
+						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,TEMP_TOOL,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT from SAQSCO (NOLOCK) where "
 						+ str(ATTRIBUTE_VALUE_STR)
 						+ " 1=1 and QUOTE_RECORD_ID = '"
 						+ str(ContractRecordId)
@@ -8967,7 +10881,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 						QueryCount = QueryCountObj.cnt
 				else:             
 					parent_obj = Sql.GetList(
-						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where "
+						"SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+",WARRANTY_END_DATE_ALERT,TEMP_TOOL from SAQSCO (NOLOCK) where "
 						+ str(ATTRIBUTE_VALUE_STR)
 						+ " 1=1 and QUOTE_RECORD_ID = '"
 						+ str(ContractRecordId)
@@ -9032,6 +10946,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			"SAQSCO", str(par.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)
 		)
 		data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>") 
+		data_dict["EQUIPMENTCATEGORY_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + '">' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + "</abbr>") 
 		data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>")
 		data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>") 
 		data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>") 
@@ -10640,6 +12555,8 @@ if ACTION == "LOAD":
 	A_Values = []
 	if TABNAME == "Equipment Parent":
 		ApiResponse = ApiResponseFactory.JsonResponse(GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values))
+	elif TABNAME == "Events Parent":
+		ApiResponse = ApiResponseFactory.JsonResponse(GetEventsMaster(PerPage, PageInform, A_Keys, A_Values))
 	elif TABNAME == "Sending Equipment Parent":
 		ApiResponse = ApiResponseFactory.JsonResponse(GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values))
 	elif TABNAME == "Sending Equipment Parent Pagination":
@@ -10675,6 +12592,16 @@ if ACTION == "LOAD":
 		Trace.Write("PerPage" + str(PerPage))
 		Trace.Write("PageInform" + str(PageInform))
 		ApiResponse = ApiResponseFactory.JsonResponse(GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values))
+	elif TABNAME == "Event Master Pagination":
+		A_Keys = list(Param.ATTRIBUTE_NAME)
+		A_Values = list(Param.ATTRIBUTE_VALUE)
+		PerPage = Param.PerPage
+		PageInform = Param.PageInform
+		Trace.Write("Keys" + str(list(A_Keys)))
+		Trace.Write("Values" + str(list(A_Values)))
+		Trace.Write("PerPage" + str(PerPage))
+		Trace.Write("PageInform" + str(PageInform))
+		ApiResponse = ApiResponseFactory.JsonResponse(GetEventsMaster(PerPage, PageInform, A_Keys, A_Values))
 	elif TABNAME == "Preventive Maintainence Parent Pagination":
 		A_Keys = list(Param.ATTRIBUTE_NAME)
 		A_Values = list(Param.ATTRIBUTE_VALUE)
@@ -10743,13 +12670,19 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
 	elif TABNAME == "Equipment Parent":
 		Trace.Write("EDITWORK")
 		ApiResponse = ApiResponseFactory.JsonResponse(GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))
+	elif TABNAME == "Events Parent":
+		ApiResponse = ApiResponseFactory.JsonResponse(GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))
 	elif TABNAME == "Contract Equipment Parent":
 		ApiResponse = ApiResponseFactory.JsonResponse(GetContractEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))
 	elif TABNAME == "Preventive Maintainence Parent":
 		ApiResponse = ApiResponseFactory.JsonResponse(QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,ASSEMBLYID,EQUIPMENTID,SortPerPage,SortPageInform))
 	elif TABNAME == "Preventive Maintainence child Filter":
 		RECID = Param.REC_ID
-		ApiResponse = ApiResponseFactory.JsonResponse(QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,ASSEMBLYID,EQUIPMENTID,KITID,KITNUMBER,SortPerPage,SortPageInform))        
+		ApiResponse = ApiResponseFactory.JsonResponse(QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,ASSEMBLYID,EQUIPMENTID,KITID,KITNUMBER,SortPerPage,SortPageInform))      
+	elif TABNAME == "Events Child Filter":
+		ApiResponse = ApiResponseFactory.JsonResponse(
+			GetEventsChild(CHILDEQUIPMENT, PerPage, PageInform, A_Keys, A_Values)
+		)  
 	elif TABNAME == "Equipments child": 
 		Trace.Write("111111111")
 		try:
@@ -10763,6 +12696,10 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
 		Trace.Write("inside assembly child filter")
 		RECID = Param.RECID
 		ApiResponse = ApiResponseFactory.JsonResponse(GetAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID))
+	elif TABNAME == "Fts Assemblies Child":
+		RECID = Param.RECID
+		Trace.Write("record id-----------"+str(RECID))
+		ApiResponse = ApiResponseFactory.JsonResponse(GetFtsAssembliesChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID))
 	elif TABNAME == "Covered Object Parent":
 		Trace.Write("trace for tabname during search----" + str(TABNAME))
 		ApiResponse = ApiResponseFactory.JsonResponse(GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))
@@ -10818,6 +12755,10 @@ elif ACTION == "CHILDLOAD":
 		ApiResponse = ApiResponseFactory.JsonResponse(
 			GetEquipmentChild(ATTRIBUTE_NAME, PerPage, PageInform, A_Keys, A_Values)
 		)
+	elif TABNAME == "Events child":
+		ApiResponse = ApiResponseFactory.JsonResponse(
+			GetEventsChild(ATTRIBUTE_NAME, PerPage, PageInform, A_Keys, A_Values)
+		)
 	elif TABNAME == "Sending Equipment child":
 		ApiResponse = ApiResponseFactory.JsonResponse(
 			GetSendingEquipmentChild(ATTRIBUTE_NAME, PerPage, PageInform, A_Keys, A_Values)
@@ -10825,6 +12766,10 @@ elif ACTION == "CHILDLOAD":
 	elif TABNAME == "Assemblies Child":
 		ApiResponse = ApiResponseFactory.JsonResponse(
 			GetAssembliesChild(ATTRIBUTE_NAME, PerPage, PageInform, A_Keys, A_Values)
+		)
+	elif TABNAME == "Fts Assemblies Child":
+		ApiResponse = ApiResponseFactory.JsonResponse(
+		GetFtsAssembliesChild(ATTRIBUTE_NAME, PerPage, PageInform, A_Keys, A_Values)
 		)
 	elif TABNAME == "Preventive Maintainence child":
 		ApiResponse = ApiResponseFactory.JsonResponse(

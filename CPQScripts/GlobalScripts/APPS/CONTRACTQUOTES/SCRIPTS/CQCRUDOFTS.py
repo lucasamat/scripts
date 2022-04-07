@@ -328,7 +328,7 @@ def receiving_fablocation_insert(values,all_values,A_Keys,A_Values):
     if values:
         record_ids = []
         if all_values:
-            query_string = "select  FAB_LOCATION_RECORD_ID, FAB_LOCATION_ID, FAB_LOCATION_NAME from MAFBLC (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID AND MAFBLC.SALESORG_ID = '{salesorg_id}' AND MAFBLC.ACCOUNT_ID = '{acc}' WHERE  SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')".format(
+            query_string = "select  FAB_LOCATION_RECORD_ID, FAB_LOCATION_ID, FAB_LOCATION_NAME from MAFBLC (NOLOCK) WHERE MAFBLC.SALESORG_ID = '{salesorg_id}' AND MAFBLC.ACCOUNT_ID = '{acc}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')".format(
                     salesorg_id = salesorg_id,
                     acc=Product.GetGlobal("stp_account_id"),
                     QuoteRecordId=contract_quote_record_id,
@@ -432,7 +432,8 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
     if values:
         record_ids = []
         if all_values:
-            query_string = "select QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID, SND_EQUIPMENT_ID, SND_EQUIPMENT_DESCRIPTION, GREENBOOK, PLATFORM from SAQASE (NOLOCK) WHERE  ISNULL(GREENBOOK, '') <> '' AND  QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND  SND_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' )".format(
+            query_string = "select QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID, SND_EQUIPMENT_ID, SND_EQUIPMENT_DESCRIPTION, GREENBOOK, PLATFORM from SAQASE (NOLOCK) WHERE  ISNULL(GREENBOOK, '') <> '' AND  QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND  SND_EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND  FABLOCATION_ID = '{receiving_fab_id}')".format(
+                    receiving_fab_id = Product.GetGlobal("receiving_fab_id"),
                     QuoteRecordId=contract_quote_record_id,
                     RevisionRecordId=quote_revision_record_id
                 )			
@@ -525,8 +526,8 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                         '{relocation_equp_type}' AS RELOCATION_EQUIPMENT_TYPE,
                                         SAQASE.TECHNOLOGY
                                         FROM SYSPBT (NOLOCK)
-                                        JOIN SAQASE (NOLOCK) ON SYSPBT.BATCH_RECORD_ID = SAQASE.SND_EQUIPMENT_RECORD_ID JOIN MAEQCT(NOLOCK)
-                                        ON SAQASE.EQUIPMENTCATEGORY_ID = MAEQCT.EQUIPMENTCATEGORY_ID
+                                        JOIN SAQASE (NOLOCK) ON SYSPBT.BATCH_RECORD_ID = SAQASE.SND_EQUIPMENT_RECORD_ID AND SYSPBT.QUOTE_RECORD_ID = SAQASE.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQASE.QTEREV_RECORD_ID
+                                        JOIN MAEQCT(NOLOCK)ON SAQASE.EQUIPMENTCATEGORY_ID = MAEQCT.EQUIPMENTCATEGORY_ID
                                         WHERE 
                                         SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}'
                                         AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
@@ -702,10 +703,10 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
         Sql.RunQuery("""UPDATE SAQFEA SET FABLOCATION_ID = '{fab_id}',FABLOCATION_NAME = '{fab_name}',FABLOCATION_RECORD_ID = '{fab_record_id}',MNT_PLANT_ID = '{plant_id}',MNT_PLANT_RECORD_ID = '{plant_record_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID IS NULL AND MNT_PLANT_ID IS NULL""".format(fab_id = fab_object.FAB_LOCATION_ID ,fab_name = fab_object.FAB_LOCATION_NAME,fab_record_id = fab_object.FAB_LOCATION_RECORD_ID,plant_id = fab_object.MNT_PLANT_ID,plant_record_id = fab_object.MNT_PLANT_RECORD_ID,QuoteRecId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id))
         
         
-        Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-                                    BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id
-                                )
-                            )
+        # Sql.RunQuery("""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+        #                             BatchGroupRecordId=batch_group_record_id,RevisionRecordId=quote_revision_record_id
+        #                         )
+        #                     )
 
 
 

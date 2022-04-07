@@ -249,18 +249,6 @@ def CoveredObjEntitlement():
 					QuoteRecordId=Qt_rec_id,
 					RevisionRecordId=rev_rec_id)
 					)
-	#creating backup table for saqgpe table insert...
-	getQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
-	saqsge_backup_table = "saqsge_backup_table_{}".format(getQuoteId.QUOTE_ID) 
-
-	drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
-
-
-	saqsge_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSGE.GREENBOOK,SAQSGE.GREENBOOK_RECORD_ID,SAQSGE.SERVICE_RECORD_ID,SAQSGE.QUOTE_RECORD_ID,SAQSGE.QTEREV_RECORD_ID,SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,SAQSGE.ENTITLEMENT_XML,SAQSGE.CONFIGURATION_STATUS INTO "+str(saqsge_backup_table)+" FROM SAQSGE (NOLOCK) WHERE SAQSGE.QUOTE_RECORD_ID = ''{}'' AND SAQSGE.QTEREV_RECORD_ID = ''{}'' AND SAQSGE.SERVICE_ID = ''{}'' '".format(Qt_rec_id,rev_rec_id,TreeParam))
-
-	Sql.RunQuery("""UPDATE SAQGPE SET ENTITLEMENT_XML = saqsge_backup_table.ENTITLEMENT_XML,CONFIGURATION_STATUS = saqsge_backup_table.CONFIGURATION_STATUS FROM  {saqsge_backup_table} (NOLOCK)  saqsge_backup_table JOIN SAQGPE ON saqsge_backup_table.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND saqsge_backup_table.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND saqsge_backup_table.SERVICE_RECORD_ID = SAQGPE.SERVICE_RECORD_ID AND saqsge_backup_table.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPE.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQGPE.ENTITLEMENT_XML,'') = '' """.format(saqsge_backup_table = str(saqsge_backup_table),QuoteRecordId=Qt_rec_id,RevisionRecordId=rev_rec_id,TreeParam=TreeParam))
-
-	drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
 
 	
 	# get_cnt_SAQSAE = Sql.GetFirst("""SELECT count(*) as cnt 
@@ -285,9 +273,23 @@ def CoveredObjEntitlement():
 
 	except:
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW")
+	
+	#creating backup table for saqgpe table insert...
+	getQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
+	saqsge_backup_table = "saqsge_backup_table_{}".format(getQuoteId.QUOTE_ID) 
+
+	drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
+
+
+	saqsge_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSGE.GREENBOOK,SAQSGE.GREENBOOK_RECORD_ID,SAQSGE.SERVICE_RECORD_ID,SAQSGE.QUOTE_RECORD_ID,SAQSGE.QTEREV_RECORD_ID,SAQSGE.QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,SAQSGE.ENTITLEMENT_XML,SAQSGE.CONFIGURATION_STATUS INTO "+str(saqsge_backup_table)+" FROM SAQSGE (NOLOCK) WHERE SAQSGE.QUOTE_RECORD_ID = ''{}'' AND SAQSGE.QTEREV_RECORD_ID = ''{}'' AND SAQSGE.SERVICE_ID = ''{}'' '".format(Qt_rec_id,rev_rec_id,TreeParam))
+
+	Sql.RunQuery("""UPDATE SAQGPE SET ENTITLEMENT_XML = saqsge_backup_table.ENTITLEMENT_XML,CONFIGURATION_STATUS = saqsge_backup_table.CONFIGURATION_STATUS FROM  {saqsge_backup_table} (NOLOCK)  saqsge_backup_table JOIN SAQGPE ON saqsge_backup_table.QUOTE_RECORD_ID = SAQGPE.QUOTE_RECORD_ID AND saqsge_backup_table.QTEREV_RECORD_ID = SAQGPE.QTEREV_RECORD_ID AND saqsge_backup_table.SERVICE_RECORD_ID = SAQGPE.SERVICE_RECORD_ID AND saqsge_backup_table.GREENBOOK_RECORD_ID = SAQGPE.GREENBOOK_RECORD_ID WHERE SAQGPE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQGPE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPE.SERVICE_ID = '{TreeParam}' AND ISNULL(SAQGPE.ENTITLEMENT_XML,'') = '' """.format(saqsge_backup_table = str(saqsge_backup_table),QuoteRecordId=Qt_rec_id,RevisionRecordId=rev_rec_id,TreeParam=TreeParam))
+
+	drop_saqsge_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsge_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsge_backup_table)+" END  ' ")
+	
 	try:
 		##saqgpe ent columns update
-		for rec_table in ['SAQSGE','SAQSCE','SAQGPE']:
+		for rec_table in ['SAQSGE','SAQSCE','SAQGPE','SAQTSE']:
 			ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'ENTITLEMENT_COLUMN_UPDATE',
 														'partnumber':TreeParam,
 														'where_cond' :where_condition, 
@@ -574,7 +576,7 @@ def covobjrenewal():
 			Sql.RunQuery("""DELETE FROM SAQSAE WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId=ContractRecordId,RevisionRecordId=rev_rec_id,ServiceId=ProductPartnumber))
 			# Duplicate records removed from assembly level entitlement in offering - Start
 			SAQSAE_ent_renewal = """INSERT SAQSAE (KB_VERSION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,QTESRVCOA_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_XML,QTESRVCOE_RECORD_ID,QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT IQ.*,M.ENTITLEMENT_XML,M.QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID as QTESRVCOE_RECORD_ID FROM ( SELECT DISTINCT SAQTSE.KB_VERSION,SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQTSE.QTEREV_RECORD_ID,SAQTSE.QTEREV_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQTSE.CPS_MATCH_ID,SAQSCA.GREENBOOK,SAQSCA.GREENBOOK_RECORD_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_DESCRIPTION,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID as QTESRVCOA_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID FROM SAQTSE (NOLOCK) JOIN (SELECT * FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_RECORD_ID = '{ContractId}' AND SAQSCA.QTEREV_RECORD_ID = '{revision_rec_id}') SAQSCA ON SAQTSE.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTSE.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID AND SAQTSE.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID WHERE SAQTSE.QUOTE_RECORD_ID = '{ContractId}' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.SERVICE_ID = '{serviceId}') IQ JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID )IQ""".format(UserId=User.Id,  ContractId=ContractRecordId, serviceId=ProductPartnumber, revision_rec_id = rev_rec_id)
-			Log.Info('SAQSAE_ent_renewal--393--renewal----'+str(SAQSAE_ent_renewal))
+			#Log.Info('SAQSAE_ent_renewal--393--renewal----'+str(SAQSAE_ent_renewal))
 			Sql.RunQuery(SAQSAE_ent_renewal)
 			SAQIEN_query = """
 				INSERT SAQIEN 
@@ -706,7 +708,7 @@ def covobjrenewal():
 					deletequery = Sql.RunQuery("DELETE FROM SAQSCE where WHERE ENTITLEMENT_ID = '{EntName}' and SERVICE_ID = '{ServiceId}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' and EQUIPMENT_ID = '{EquipmentId}'".format(EntName = str(val.ENTITLEMENT_ID), ServiceId=ProductPartnumber,QuoteRecordId=ContractRecordId,EquipmentId = str(eqp.EQUIPMENT_ID)))
 			for key,value in zip(attributeList,attributevalueList):
 				if key not in qtqscelist:
-					Log.Info(key)                    
+					#Log.Info(key)                    
 					GetAttDetail = SqlHelper.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,A.STANDARD_ATTRIBUTE_NAME FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}'".format(key,value))
 					tbrow = {}
 					tbrow["QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID"]= qtqscedetail.QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID
@@ -754,7 +756,7 @@ def covobjrenewal_two():
 					JOIN SAQICO (NOLOCK) ON (CTCIEN.SERVICE_ID= SAQICO.SERVICE_ID AND SAQICO.EQUIPMENT_RECORD_ID = CTCIEN.EQUIPMENT_RECORD_ID) JOIN SAQTSE (NOLOCK) ON (SAQICO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND CTCIEN.SERVICE_ID= SAQTSE.SERVICE_ID AND CTCIEN.ENTITLEMENT_NAME = SAQTSE.ENTITLEMENT_NAME)  
 					WHERE CTCIEN.CONTRACT_ID = '{ContractId}' AND CTCIEN.SERVICE_ID = '{serviceId}' AND SAQICO.QUOTE_RECORD_ID = '{ContractRecordId}'
 				) IQ""".format(UserId=User.Id, configurationId=configurationId, cpsmatchId='1', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId)
-		Log.Info(SAQIEN)
+		#Log.Info(SAQIEN)
 		Sql.RunQuery(SAQIEN)        
 
 def SparepartsItem():
@@ -778,7 +780,7 @@ def SparepartsItem():
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}' 
 				) IQ
 				""".format(UserId=userId, QuoteRecordId= Qt_rec_id, ServiceId=TreeParam)
-		Log.Info("---416---"+str(SAQIEN))
+		#Log.Info("---416---"+str(SAQIEN))
 		Sql.RunQuery(SAQIEN)
 	#insert to SAQSPT
 	SAQSPE_query = """
@@ -817,7 +819,7 @@ def SparepartsItem():
 
 def quote_SAQICOupdate(cart_id,cart_user_id):
 	
-	Log.Info('648---CQROLLDOWN-----')
+	#Log.Info('648---CQROLLDOWN-----')
 	quote_item_covered_obj_delete= """DELETE QT__SAQICO 
 								FROM QT__SAQICO 
 								JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = QT__SAQICO.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = QT__SAQICO.QUOTE_RECORD_ID  
@@ -915,7 +917,7 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 	check_spare = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQIFP where QUOTE_RECORD_ID = '{Qt_rec_id}' and SERVICE_ID ='Z0100'".format(Qt_rec_id = Qt_rec_id))
 	if check_spare:
 		if check_spare.SERVICE_DESCRIPTION:
-			Log.Info('735------inide spar-----'+str(check_spare.SERVICE_DESCRIPTION))
+			#Log.Info('735------inide spar-----'+str(check_spare.SERVICE_DESCRIPTION))
 			serv_desct = ' WITH '+ check_spare.SERVICE_DESCRIPTION
 		else:
 			serv_desct = ""
@@ -997,64 +999,64 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 			TAX_PER=gettotal_bundle_query.TAX_PER
 		if gettotal_bundle_query.TAX:
 			TAX=gettotal_bundle_query.TAX
-		Log.Info('2655--inside iff--qery-----'+str("""INSERT QT__SAQICO (
-						QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,
-						FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, ITEM_LINE_ID, 
-						QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALE_PRICE, SERIAL_NO,
-						SERVICE_DESCRIPTION, SERVICE_ID,EXTENDED_PRICE, SERVICE_RECORD_ID, TECHNOLOGY, 
-						BD_MARGIN,	
-						BD_MARGIN_RECORD_ID, CUSTOMER_TOOL_ID,	EQUIPMENTCATEGORY_ID,	
-						EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME,	
-						MNT_PLANT_RECORD_ID,	SALE_DISCOUNT, 
-						SALES_MARGIN, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID,
-						GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, SUBTOTAL, TAX,  ownerId, cartId
-					) 
-					SELECT 
-						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, 
-						SAQICO.EQUIPMENT_DESCRIPTION, 
-						SAQICO.EQUIPMENT_ID, 
-						SAQICO.EQUIPMENT_RECORD_ID,                     
-						SAQICO.FABLOCATION_ID, 
-						SAQICO.FABLOCATION_NAME, 
-						SAQICO.FABLOCATION_RECORD_ID, 
-						SAQICO.LINE, 
-						SAQICO.QUOTE_ID, 
-						SAQICO.QTEITM_RECORD_ID, 
-						SAQICO.QUOTE_NAME, 
-						SAQICO.QUOTE_RECORD_ID, 
-						SAQICO.SALES_PRICE, 
-						SAQICO.SERIAL_NO,
-						SAQICO.SERVICE_DESCRIPTION + '{service_desc}' as SERVICE_DESCRIPTION, 
-						SAQICO.SERVICE_ID, 
-						{ext_price} as EXTENDED_PRICE,
-						SAQICO.SERVICE_RECORD_ID,						
-						SAQICO.TECHNOLOGY, 
-						SAQICO.CUSTOMER_TOOL_ID,	
-						SAQICO.EQUIPMENTCATEGORY_ID,	
-						SAQICO.EQUIPMENTCATEGORY_RECORD_ID,	
-						SAQICO.EQUIPMENT_STATUS,	
-						SAQICO.MNT_PLANT_ID,	
-						SAQICO.MNT_PLANT_NAME,	
-						SAQICO.MNT_PLANT_RECORD_ID,
-						'' AS SALES_PRICE_MARGIN,		
-						SAQICO.SALESORG_ID,	
-						SAQICO.SALESORG_NAME,	
-						SAQICO.SALESORG_RECORD_ID,	
-						SAQICO.GREENBOOK,	
-						SAQICO.GREENBOOK_RECORD_ID,
-						SAQICO.EQUIPMENT_LINE_ID,
-						SAQICO.EXTENDED_PRICE as SUBTOTAL,				
-						{TAX} as TAX,
-						{UserId} as ownerId,
-						{CartId} as cartId
-					FROM SAQICO (NOLOCK) 
-					JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID                
-					WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}' and SAQICO.SERVICE_ID='{Service_id}' """.format(
-					CartId=cart_id,
-					UserId=cart_user_id,
-					QuoteRecordId=Qt_rec_id,
-					Service_id =getserid.SERVICE_ID,TAX=TAX,service_desc=service_desc,ext_price=ext_pric,
-							)))
+		# Log.Info('2655--inside iff--qery-----'+str("""INSERT QT__SAQICO (
+		# 				QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,
+		# 				FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, ITEM_LINE_ID, 
+		# 				QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALE_PRICE, SERIAL_NO,
+		# 				SERVICE_DESCRIPTION, SERVICE_ID,EXTENDED_PRICE, SERVICE_RECORD_ID, TECHNOLOGY, 
+		# 				BD_MARGIN,	
+		# 				BD_MARGIN_RECORD_ID, CUSTOMER_TOOL_ID,	EQUIPMENTCATEGORY_ID,	
+		# 				EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME,	
+		# 				MNT_PLANT_RECORD_ID,	SALE_DISCOUNT, 
+		# 				SALES_MARGIN, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID,
+		# 				GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, SUBTOTAL, TAX,  ownerId, cartId
+		# 			) 
+		# 			SELECT 
+		# 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, 
+		# 				SAQICO.EQUIPMENT_DESCRIPTION, 
+		# 				SAQICO.EQUIPMENT_ID, 
+		# 				SAQICO.EQUIPMENT_RECORD_ID,                     
+		# 				SAQICO.FABLOCATION_ID, 
+		# 				SAQICO.FABLOCATION_NAME, 
+		# 				SAQICO.FABLOCATION_RECORD_ID, 
+		# 				SAQICO.LINE, 
+		# 				SAQICO.QUOTE_ID, 
+		# 				SAQICO.QTEITM_RECORD_ID, 
+		# 				SAQICO.QUOTE_NAME, 
+		# 				SAQICO.QUOTE_RECORD_ID, 
+		# 				SAQICO.SALES_PRICE, 
+		# 				SAQICO.SERIAL_NO,
+		# 				SAQICO.SERVICE_DESCRIPTION + '{service_desc}' as SERVICE_DESCRIPTION, 
+		# 				SAQICO.SERVICE_ID, 
+		# 				{ext_price} as EXTENDED_PRICE,
+		# 				SAQICO.SERVICE_RECORD_ID,						
+		# 				SAQICO.TECHNOLOGY, 
+		# 				SAQICO.CUSTOMER_TOOL_ID,	
+		# 				SAQICO.EQUIPMENTCATEGORY_ID,	
+		# 				SAQICO.EQUIPMENTCATEGORY_RECORD_ID,	
+		# 				SAQICO.EQUIPMENT_STATUS,	
+		# 				SAQICO.MNT_PLANT_ID,	
+		# 				SAQICO.MNT_PLANT_NAME,	
+		# 				SAQICO.MNT_PLANT_RECORD_ID,
+		# 				'' AS SALES_PRICE_MARGIN,		
+		# 				SAQICO.SALESORG_ID,	
+		# 				SAQICO.SALESORG_NAME,	
+		# 				SAQICO.SALESORG_RECORD_ID,	
+		# 				SAQICO.GREENBOOK,	
+		# 				SAQICO.GREENBOOK_RECORD_ID,
+		# 				SAQICO.EQUIPMENT_LINE_ID,
+		# 				SAQICO.EXTENDED_PRICE as SUBTOTAL,				
+		# 				{TAX} as TAX,
+		# 				{UserId} as ownerId,
+		# 				{CartId} as cartId
+		# 			FROM SAQICO (NOLOCK) 
+		# 			JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID                
+		# 			WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}' and SAQICO.SERVICE_ID='{Service_id}' """.format(
+		# 			CartId=cart_id,
+		# 			UserId=cart_user_id,
+		# 			QuoteRecordId=Qt_rec_id,
+		# 			Service_id =getserid.SERVICE_ID,TAX=TAX,service_desc=service_desc,ext_price=ext_pric,
+		# 					)))
 		Sql.RunQuery("""INSERT QT__SAQICO (
 						QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,
 						FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, ITEM_LINE_ID,  QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALE_PRICE, SERIAL_NO,

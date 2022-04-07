@@ -396,17 +396,35 @@ def GSCONTLOOKUPPOPUP(
             
 
             elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(TreeParentParam) == "Approval Chain Steps":
-                Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(TRACKEDTESTEDOBJECT))
-                object_name = Header_Obj.OBJECT_NAME
-                if Header_Obj is not None:
+                if LOOKUP_ID == "TRKOBJ_TRACKEDFIELD_LABEL":
                     VAL_Str = (
                         "SELECT top 1000 "
                         + str(API_NAME_str)
                         + " FROM "
                         + str(TABLEID)
-                        + " WHERE OBJECT_NAME = '{}'".format(object_name)
+                        + " WHERE OBJECT_NAME IN ( select DISTINCT TSTOBJ_LABEL from ACACSF where APRCHN_RECORD_ID ='{}')".format(KEYDATA)
                     )
-                VAL_Obj = Sql.GetList(VAL_Str)
+                    VAL_Obj = Sql.GetList(VAL_Str)
+                elif LOOKUP_ID == "TSTOBJ_TESTEDFIELD_LABEL":
+                    VAL_Str = (
+                        "SELECT top 1000 "
+                        + str(API_NAME_str)
+                        + " FROM "
+                        + str(TABLEID))
+                    VAL_Obj = Sql.GetList(VAL_Str)
+                
+                else:
+                    Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(TRACKEDTESTEDOBJECT))
+                    object_name = Header_Obj.OBJECT_NAME
+                    if Header_Obj is not None:
+                        VAL_Str = (
+                            "SELECT top 1000 "
+                            + str(API_NAME_str)
+                            + " FROM "
+                            + str(TABLEID)
+                            + " WHERE OBJECT_NAME = '{}'".format(object_name)
+                        )
+                    VAL_Obj = Sql.GetList(VAL_Str)
             elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and (str(SegmentsClickParam) == "Approval Chain Status Mappings" or str(TreeParentParam) == "Approval Chain Status Mappings"):
                 Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(MAPPINGSAPPROVALOBJECT))
                 object_name = Header_Obj.OBJECT_NAME
@@ -795,19 +813,38 @@ def GSCONTLOOKUPPOPUPFILTER(
                             )
                     VAL_Obj = Sql.GetList(VAL_Str)
                 elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(TreeParentParam) == "Approval Chain Steps":
-                    Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(TRACKEDTESTEDOBJECT))
-                    object_name = Header_Obj.OBJECT_NAME
-                    if Header_Obj is not None:
+                    if LOOKUP_ID == "TRKOBJ_TRACKEDFIELD_LABEL":
                         VAL_Str = (
                             "SELECT top 1000 "
                             + str(COLUMNS_NAME)
                             + " FROM "
                             + str(TABLEID)
                             + " WHERE "
-                            + str(ATTRIBUTE_VALUE_STR)
-                            + "and OBJECT_NAME = '{}'".format(object_name)
+                            + str(ATTRIBUTE_VALUE_STR) 
+                            + " and OBJECT_NAME IN ( select DISTINCT TSTOBJ_LABEL from ACACSF where APRCHN_RECORD_ID ='{}')".format(KEYDATA)
                         )
-                    VAL_Obj = Sql.GetList(VAL_Str)
+                        VAL_Obj = Sql.GetList(VAL_Str)
+                    elif LOOKUP_ID == "TSTOBJ_TESTEDFIELD_LABEL":
+                        VAL_Str = (
+                            "SELECT top 1000 "
+                            + str(COLUMNS_NAME)
+                            + " FROM "
+                            + str(TABLEID))
+                        VAL_Obj = Sql.GetList(VAL_Str)
+                    else:
+                        Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(TRACKEDTESTEDOBJECT))
+                        object_name = Header_Obj.OBJECT_NAME
+                        if Header_Obj is not None:
+                            VAL_Str = (
+                                "SELECT top 1000 "
+                                + str(COLUMNS_NAME)
+                                + " FROM "
+                                + str(TABLEID)
+                                + " WHERE "
+                                + str(ATTRIBUTE_VALUE_STR)
+                                + " and OBJECT_NAME = '{}'".format(object_name)
+                            )
+                        VAL_Obj = Sql.GetList(VAL_Str)
                 elif str(TABLEID) == "SYPFTY":
                     ContractRecordId = str(Quote.GetGlobal("contract_quote_record_id"))
                     quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")

@@ -585,8 +585,8 @@ def POPUPLISTVALUEADDNEW(
 					ObjectName,
 					receiving_account_id,
 					sales_org_id,
-              		contract_quote_record_id,
-                	quote_revision_record_id
+					contract_quote_record_id,
+					quote_revision_record_id
 					)
 				)	
 			else:
@@ -594,11 +594,11 @@ def POPUPLISTVALUEADDNEW(
 				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID AND MAFBLC.SALESORG_ID = '{}' WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'AND QTEREV_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
 					ObjectName, 
 					sales_org_id,
-     				contract_quote_record_id,
-         			quote_revision_record_id,
-            		where_string,
-              		contract_quote_record_id,
-                	quote_revision_record_id
+					contract_quote_record_id,
+					quote_revision_record_id,
+					where_string,
+					contract_quote_record_id,
+					quote_revision_record_id
 				)
 			)
 
@@ -2381,22 +2381,21 @@ def POPUPLISTVALUEADDNEW(
 			new_value_dict = {}
 			ObjectName = "PRLPBE"
 			table_id = "nso_addnew"            
-
 			Header_details = {
 				"PRICEBOOK_ENTRIES_RECORD_ID": "KEY",
 				"GREENBOOK": "GREENBOOK",
 				"DIVISION_ID": "DIVISION",
-                "BUSINESS_UNIT": "BU",
-                "POSS_NSO_PART_ID": "AGS POSS ID",
-                "POSS_NSO_DESCRIPTION": "POSS FOR NSO DESCRIPTION"
+				"BUSINESS_UNIT": "BU",
+				#"POSS_NSO_PART_ID": "AGS POSS ID",
+				#"POSS_NSO_DESCRIPTION": "POSS FOR NSO DESCRIPTION"
 			}
 			ordered_keys = [
 				"PRICEBOOK_ENTRIES_RECORD_ID",
 				"GREENBOOK",
 				"DIVISION_ID",
-                "BUSINESS_UNIT",
-                "POSS_NSO_PART_ID",
-                "POSS_NSO_DESCRIPTION"
+				"BUSINESS_UNIT",
+				#"POSS_NSO_PART_ID",
+				#"POSS_NSO_DESCRIPTION"
 			]
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -2455,7 +2454,7 @@ def POPUPLISTVALUEADDNEW(
 						+ "</th>"
 					)
 			sec_str += '</tr></thead><tbody class ="user_id" ></tbody></table>'
-			sec_str += '<div id="nso_footer"></div>'
+			sec_str += '<div id="nso_addnew_footer"></div>'
 			values_list = ""
 			values_lists = ""
 			a_test = []
@@ -2481,11 +2480,11 @@ def POPUPLISTVALUEADDNEW(
 					+ str(RECORDID)
 					+ "\", 'RECORDFEILD':  \""
 					+ str(RECORDFEILD)
-					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList,'PerPage':PerPage,'PageInform':PageInform}, function(data) {  debugger; date_field  = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5];data15 = data[15]; data16 = data[16]; try { if(date_field.length > 0) { $(\""
+					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList,'PerPage':PerPage,'PageInform':PageInform}, function(data) {  debugger; var date_field  = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5];data15 = data[15]; data16 = data[16]; try { if(date_field != 'NORECORDS') { $(\""
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); $("#noRecDisp").remove();if (document.getElementById("RecordsStartAndEnd")){document.getElementById("RecordsStartAndEnd").innerHTML = data15;}; if (document.getElementById("TotalRecordsCount")) {document.getElementById("TotalRecordsCount").innerHTML = data16;} } else{ $("'
 					+ str(table_ids)
-					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#'+str(table_ids)+'").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("'+str(table_ids)+' > tbody").html("<tr class=\'noRecDisp\'><td colspan=\'7\' class=\'txt_al_lt_imp\'>No Records to Display</td></tr>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field != "NORECORDS") { $("'
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); } else{ $("'
 					+ str(table_ids)
@@ -3547,13 +3546,15 @@ def POPUPLISTVALUEADDNEW(
 					"ZAFTYPE":"ZAF TYPE",
 					"UNBL_INGL_CURR": "CREDIT AMOUNT",
 					"CREDIT_APPLIED": "APPLIED CREDIT",
+					"ZAFNOTE": "NOTES",
 				}
 				ordered_keys = [
 					#"ADD_ON_PRODUCT_RECORD_ID",
 					"CREDITVOUCHER_RECORD_ID",
 					"ZAFTYPE",
 					"UNBL_INGL_CURR",
-					"CREDIT_APPLIED"
+					"CREDIT_APPLIED",
+					"ZAFNOTE",
 				]
 				Objd_Obj = Sql.GetList(
 					"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -3653,7 +3654,7 @@ def POPUPLISTVALUEADDNEW(
 
 				pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count)
 
-				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC WHERE ZUONR = '"+str(account_id)+"'")
+				Pagination_M = Sql.GetFirst("select count(SACRVC.CpqTableEntryId) as count from SACRVC (NOLOCK) LEFT JOIN SACVNT (NOLOCK) ON SACRVC.BUKRS = SACVNT.BUKRS AND SACRVC.HKONT = SACVNT.HKONT AND SACRVC.BELNR = SACVNT.BELNR AND SACRVC.ZUONR = SACVNT.ZUONR AND SACRVC.GJAHR = SACVNT.GJAHR AND SACRVC.BUZEI = SACVNT.BUZEI AND SACRVC.MANDT = SACVNT.MANDT WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '"+str(account_id)+"'")
 
 				# order_by = "order by SACRVC.COMP_PRDOFR_NAME ASC"
 
@@ -3678,9 +3679,9 @@ def POPUPLISTVALUEADDNEW(
 				if where_string:
 					where_string += " AND"
 				# where_string += """ PRDOFR_ID = '{}' AND PRDOFR_DOCTYP = '{}' AND COMP_PRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeSuperParentParam),str(getDocType.DOCTYP_ID),contract_quote_record_id,quote_revision_record_id)
-
+				ordered_keys.remove("ZAFNOTE")
 				table_data = Sql.GetList(
-					"select {} from SACRVC (NOLOCK) WHERE ZUONR = '{}' ".format(
+					"select {} from SACRVC (NOLOCK) WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '{}' ".format(
 						", ".join(ordered_keys),str(account_id)
 						# "WHERE " + where_string if where_string else "",
 						# order_by,
@@ -3689,11 +3690,11 @@ def POPUPLISTVALUEADDNEW(
 				)
 				
 				table_data = Sql.GetList(
-				"select {} from SACRVC (NOLOCK) WHERE ZUONR = '{}' ".format(
+				"select {} from SACRVC (NOLOCK) WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '{}' ".format(
 					", ".join(ordered_keys), str(account_id),str(TreeParentParam),str(ADDON_PRD_ID), contract_quote_record_id,quote_revision_record_id
 				)
 				)
-				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) WHERE ZUONR = '"+str(account_id)+"'")
+				QueryCountObj = Sql.GetFirst("select count(*) as cnt from SACRVC(NOLOCK) LEFT JOIN SACVNT (NOLOCK) ON SACRVC.BUKRS = SACVNT.BUKRS AND SACRVC.HKONT = SACVNT.HKONT AND SACRVC.BELNR = SACVNT.BELNR AND SACRVC.ZUONR = SACVNT.ZUONR AND SACRVC.GJAHR = SACVNT.GJAHR AND SACRVC.BUZEI = SACVNT.BUZEI AND SACRVC.MANDT = SACVNT.MANDT WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '"+str(account_id)+"'")
 
 				if QueryCountObj is not None:
 					QryCount = QueryCountObj.cnt
@@ -3706,14 +3707,31 @@ def POPUPLISTVALUEADDNEW(
 						new_value_dict = {}
 
 						for data in row_data:
+							Trace.Write("data_chk_J "+str(data))
 							if str(data.Key) == "CREDITVOUCHER_RECORD_ID":
 								pop_val = str(data.Value) + "|addcredits"
 								cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 								new_value_dict[data.Key] = cpqidval
 							else:
-								new_value_dict[data.Key] = data.Value
+								new_value_dict[data.Key] = '<abbr title="'+str(data.Value)+'">'+str(data.Value)+'</abbr>'
+
 							new_value_dict["pop_val"] = pop_val
+						credit_notes = []
+
+						credit_notes_query = Sql.GetList("SELECT SACVNT.ZAFNOTE AS NOTES FROM SACRVC (NOLOCK) INNER JOIN SACVNT (NOLOCK) ON SACRVC.BUKRS = SACVNT.BUKRS AND SACRVC.HKONT = SACVNT.HKONT AND SACRVC.BELNR = SACVNT.BELNR AND SACRVC.ZUONR = SACVNT.ZUONR AND SACRVC.GJAHR = SACVNT.GJAHR AND SACRVC.BUZEI = SACVNT.BUZEI AND SACRVC.MANDT = SACVNT.MANDT WHERE REPLACE(LTRIM(REPLACE(KUNAG,'0',' ')),' ','0') = '"+str(account_id)+"'")
+						if credit_notes_query:
+							for notes in credit_notes_query:
+								credit_notes.append(notes.NOTES)
+							credit_notes_str = str(credit_notes).replace(","," ").replace("'","").replace("[","").replace("]","")
+							Trace.Write("Credit_Notes_chk_list "+str(credit_notes_str))
+							
+							# new_value_dict["ZAFNOTE"] = credit_notes_str
+							new_value_dict["ZAFNOTE"] = '<abbr title="'+str(credit_notes_str)+'">'+ str(credit_notes_str) + '</abbr>'
+
+						else:
+							new_value_dict["ZAFNOTE"] = ""
 						date_field.append(new_value_dict)
+						Trace.Write("date_field_chk_j "+str(date_field))
 				QueryCount = len(date_field)
 
 				pagination_total_count = 0
@@ -3868,6 +3886,13 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_id)
 					+ "',"+str(a_test)+",ATTRIBUTE_VALUEList,'"+str(TABLEID)+"','"+str(RECORDID)+"','"+str(RECORDFEILD)+"'); }); "
 					)
+				# dbl_clk_function += (
+				# 	'console.log("selecting---"); $("'
+				# 	+ str(table_ids)
+				# 	+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+				# 	+ str(table_ids)
+				# 	+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
+				# )
 				dbl_clk_function += (
 					'console.log("selecting---"); $("'
 					+ str(table_ids)
@@ -4654,10 +4679,14 @@ def POPUPLISTVALUEADDNEW(
 				"EQUIPMENT_DESCRIPTION":"EQUIPMENT_DESCRIPTION",
 				"EQUIPMENTCATEGORY_DESCRIPTION":"EQUIPMENT CATEGORY DESCRIPTION",
 				"SERIAL_NUMBER": "SERIAL NUMBER",
+				"CUSTOMER_TOOL_ID":"CUSTOMER TOOL ID",
 				"GREENBOOK": "GREENBOOK",
 				"PLATFORM": "PLATFORM",
+				"WAFER_SIZE":"WAFER SIZE",
 				"FABLOCATION_ID": "FAB LOCATION ID",
 				"FABLOCATION_NAME": "FAB LOCATION NAME",
+				"KPU":"KPU",
+				"TECHNOLOGY":"TECHNOLOGY",
 				"TEMP_TOOL":"TEMP TOOL"
 			}
 			ordered_keys = [
@@ -4666,10 +4695,14 @@ def POPUPLISTVALUEADDNEW(
 				"EQUIPMENT_DESCRIPTION",
 				"EQUIPMENTCATEGORY_DESCRIPTION",
 				"SERIAL_NUMBER",
+				"CUSTOMER_TOOL_ID",
 				"GREENBOOK",
 				"PLATFORM",
+				"WAFER_SIZE",
 				"FABLOCATION_ID",
 				"FABLOCATION_NAME",
+				"KPU",
+				"TECHNOLOGY",
 				"TEMP_TOOL"
 			]
 			Objd_Obj = Sql.GetList(
@@ -7118,11 +7151,15 @@ def POPUPLISTVALUEADDNEW(
 				#     + "'"
 				# )
 				if StepRecordId:
+					if ObjectName == "ACACSF":
+						aprchstp = "APRCHNSTP_RECORD_ID"
+					else:
+						aprchstp = "APPROVAL_CHAIN_STEP_RECORD_ID"
 					result = ScriptExecutor.ExecuteGlobal(
 						"SYPARCEFMA",
 						{
 							"Object": str(ObjectName),
-							"API_Name": "APPROVAL_CHAIN_STEP_RECORD_ID",
+							"API_Name": aprchstp,
 							"API_Value": str(StepRecordId.APPROVAL_CHAIN_STEP_RECORD_ID),
 						},
 					)
@@ -7259,7 +7296,7 @@ def POPUPLISTVALUEADDNEW(
 												+ header
 												+ "</abbr></th>"
 											)
-										table_header += "</tr></thead><tbody>"
+										table_header += "</tr></thead><tbody class ='user_id'>"
 										for row, inx in enumerate(dep_list):
 											table_header += (
 												'<tr class="iconhvr" id = "' + str(ObjectName) + "__" + str(row) + '">'
@@ -7524,7 +7561,9 @@ def POPUPLISTVALUEADDNEW(
 						"DELEGATED_APPROVER_ID",
 						"DELEGATION_END",
 						"DELEGATION_START",
-						"TAB_ID"
+						"TAB_ID",
+						"CPQTABLEENTRYMODIFIEDBY",
+						"CPQTABLEENTRYDATEMODIFIED"
 					]:
 						add_style = "display: none;"
 
@@ -7971,6 +8010,26 @@ def POPUPLISTVALUEADDNEW(
 							Tier_List1 = []
 							Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")
 							Tier_List1 = sorted(Tier_List)
+							service_id_query=SqlHelper.GetList("select SERVICE_ID FROM  SAQTSV (NOLOCK) where QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
+							service_ids= []
+
+							for i in service_id_query:
+								service_ids.append(i.SERVICE_ID)
+								Trace.Write("service_ids--->"+str(service_ids))
+							if "Z0007" not in service_ids:
+								try:
+									Trace.Write("Tier_List1"+str(Tier_List1))
+									Tier_List1.remove("SENDING ACCOUNT")
+									Tier_List1.remove("RECEIVING ACCOUNT")
+								except:
+									Trace.Write("EXCEPTION Occured")
+							elif "Z0007" in service_ids:
+								try:
+									Trace.Write("Tier_List2"+str(Tier_List2))
+									Tier_List1.remove("SENDING ACCOUNT")
+									Tier_List1.remove("RECEIVING ACCOUNT")
+								except:
+									Trace.Write("EXCEPTION Occured")
 							Trace.Write('4063--Tier_List1-----'+str(TabName))
 							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND CPQ_PARTNER_FUNCTION != 'RECEIVING ACCOUNT'".format(contract_quote_record_id,quote_revision_record_id))
 							if str(TabName) == "Quote":
@@ -7980,7 +8039,10 @@ def POPUPLISTVALUEADDNEW(
 									for acnt in send_n_receive_acnt:
 										list_of_role.append(acnt.CPQ_PARTNER_FUNCTION)
 										if acnt.CPQ_PARTNER_FUNCTION == "SENDING ACCOUNT" or acnt.CPQ_PARTNER_FUNCTION == "RECEIVING ACCOUNT":
-											Tier_List1.remove(acnt.CPQ_PARTNER_FUNCTION)
+											try:
+												Tier_List1.remove(acnt.CPQ_PARTNER_FUNCTION)
+											except:
+												Trace.Write("Error occured while removing C4C partner function")
 									# if "SENDING ACCOUNT" not in list_of_role and "RECEIVING ACCOUNT" not in list_of_role:
 									# 	Tier_List1.remove("RECEIVING ACCOUNT")
 							Trace.Write("CHKNG_J "+str(Tier_List1))

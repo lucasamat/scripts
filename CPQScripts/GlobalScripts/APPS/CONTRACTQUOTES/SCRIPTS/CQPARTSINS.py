@@ -2,7 +2,7 @@
 #   __script_name : CQPARTSINS.py
 #   __script_description : THIS SCRIPT IS USED TO CONNECT WITH HANA TABLES TO PULL PARTS AND LOADED INTO CPQ.
 #   __primary_author__ : Suriyanarayanan Pazhani
-#   __create_date :09-01-2022
+#   __create_date :09-01-2022 
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import Webcom.Configurator.Scripting.Test.TestProduct
@@ -41,17 +41,17 @@ class SyncFPMQuoteAndHanaDatabase:
         spare_parts_temp_table_name = re.sub(r'-','_',spare_parts_temp_table_name)
         self.columns = re.sub(r'\"|\{','',self.columns)
         self.columns = re.sub(r',,',',',self.columns)
-        Log.Info("Columns--->"+str(self.columns))
-        Log.Info("Values---->"+str(self.records))
-        Log.Info("TempTableName--->"+str(spare_parts_temp_table_name))
-        Trace.Write("Spare_part_insert")
+        #Log.Info("Columns--->"+str(self.columns))
+        #Log.Info("Values---->"+str(self.records))
+        #Log.Info("TempTableName--->"+str(spare_parts_temp_table_name))
+        #Trace.Write("Spare_part_insert")
         try:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")			
             spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
             #spare_parts_existing_records_delete = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM SAQSPT WHERE QUOTE_RECORD_ID = ''"+str(self.quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_id)+"'' ' ")
             temp_table_count = SqlHelper.GetFirst("SELECT count(*) as CNT FROM {}".format(str(spare_parts_temp_table_name)))
-            Log.Info("TempTablecount--->"+str(temp_table_count.CNT))
-            Log.Info("saqspt+++"+str("""
+            #Log.Info("TempTablecount--->"+str(temp_table_count.CNT))
+            '''Log.Info("saqspt+++"+str("""
                             INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,STPACCOUNT_ID, SHPACCOUNT_ID,GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
                                 CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID,
@@ -128,8 +128,8 @@ class SyncFPMQuoteAndHanaDatabase:
                                 SAQTSV.SALESORG_ID as SALESORG_ID,
                                 SAQTSV.SALESORG_RECORD_ID as SALESORG_RECORD_ID,
                                 0.00 as SALESUOM_CONVERSION_FACTOR,
-                                MAMTRL.UNIT_OF_MEASURE as SALESUOM_ID,
-                                MAMTRL.UOM_RECORD_ID as SALESUOM_RECORD_ID, 
+                                CASE WHEN MAMSOP.SALESUOM_ID<>'' THEN MAMSOP.SALESUOM_ID ELSE MAMTRL.UNIT_OF_MEASURE END as SALESUOM_ID,
+                                CASE WHEN MAMSOP.SALESUOM_RECORD_ID<>'' THEN MAMSOP.SALESUOM_RECORD_ID ELSE MAMTRL.UOM_RECORD_ID END as SALESUOM_RECORD_ID, 
                                 CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN NULL ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
                                 SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
                                 SAQTSV.SERVICE_ID as SERVICE_ID,
@@ -144,8 +144,8 @@ class SyncFPMQuoteAndHanaDatabase:
                                 SAQTSV.PAR_SERVICE_ID as PAR_SERVICE_ID,
                                 SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,
                                 TEMP_TABLE.RETURN_TYPE AS RETURN_TYPE,
-                                TEMP_TABLE.ODCC_FLAG AS ODCC_FLAG,
-                                TEMP_TABLE.ODCC_FLAG_DESCRIPTION as ODCC_FLAG_DESCRIPTION,
+                                CASE WHEN TEMP_TABLE.ODCC_FLAG='ZZZ' THEN null ELSE TEMP_TABLE.ODCC_FLAG END AS ODCC_FLAG,
+                                CASE WHEN TEMP_TABLE.ODCC_FLAG='ZZZ' THEN null ELSE TEMP_TABLE.ODCC_FLAG_DESCRIPTION END as ODCC_FLAG_DESCRIPTION,
                                 CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER='"EMPTY"' THEN null ELSE TEMP_TABLE.PARENT_PART_NUMBER END AS PAR_PART_NUMBER,
                                 TEMP_TABLE.Material_Eligibility AS EXCHANGE_ELIGIBLE,
                                 CASE WHEN TEMP_TABLE.Customer_Eligibility='X' THEN 'True' ELSE 'False' END AS CUSTOMER_ELIGIBLE,
@@ -156,14 +156,14 @@ class SyncFPMQuoteAndHanaDatabase:
 		                        CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
 		                        TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
                                 TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
-                                {GLOBALCURR} as GLOBAL_CURRENCY,
-                                {GLOBALCURR_REC} as GLOBAL_CURRENCY_RECORD_ID,
+                                '{GLOBALCURR}' as GLOBAL_CURRENCY,
+                                '{GLOBALCURR_REC}' as GLOBAL_CURRENCY_RECORD_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
                             JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
                             JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.SERVICE_ID = '{ServiceId}'
                             JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
-                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') <> '05' AND TEMP_TABLE.PARENT_PART_NUMBER NOT IN(SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')) IQ
+                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND MAMSOP.MATERIALSTATUS_ID NOT IN('05','02') AND TEMP_TABLE.PARENT_PART_NUMBER NOT IN(SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')) IQ
                             """.format(
                                         TempTable=spare_parts_temp_table_name,
                                         ServiceId=self.service_id,									
@@ -173,9 +173,9 @@ class SyncFPMQuoteAndHanaDatabase:
                                         GLOBALCURR=self.global_curr,
                                         GLOBALCURR_REC=self.global_curr_recid
                                     )
-            ))
+            ))'''
             Sql.RunQuery("""
-                            INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,PROD_INSP_MEMO,SHELF_LIFE,PRICING_STATUS,STPACCOUNT_ID, SHPACCOUNT_ID,GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
+                            INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,PROD_INSP_MEMO,SHELF_LIFE,PRICING_STATUS,STPACCOUNT_ID, SHPACCOUNT_ID,MATERIALSTATUS_ID,GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
                                 CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID,
                                 BASEUOM_ID,
@@ -228,6 +228,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 PRICING_STATUS,
                                 STPACCOUNT_ID,
                                 SHPACCOUNT_ID,
+                                MATERIALSTATUS_ID,
                                 GLOBAL_CURRENCY,
                                 GLOBAL_CURRENCY_RECORD_ID,
                                 {UserId} as CPQTABLEENTRYADDEDBY, 
@@ -254,8 +255,140 @@ class SyncFPMQuoteAndHanaDatabase:
                                 SAQTSV.SALESORG_ID as SALESORG_ID,
                                 SAQTSV.SALESORG_RECORD_ID as SALESORG_RECORD_ID,
                                 0.00 as SALESUOM_CONVERSION_FACTOR,
-                                MAMTRL.UNIT_OF_MEASURE as SALESUOM_ID,
-                                MAMTRL.UOM_RECORD_ID as SALESUOM_RECORD_ID, 
+                                CASE WHEN MAMSOP.SALESUOM_ID<>'' THEN MAMSOP.SALESUOM_ID ELSE MAMTRL.UNIT_OF_MEASURE END as SALESUOM_ID,
+                                CASE WHEN MAMSOP.SALESUOM_RECORD_ID<>'' THEN MAMSOP.SALESUOM_RECORD_ID ELSE MAMTRL.UOM_RECORD_ID END as SALESUOM_RECORD_ID, 
+                                CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN NULL ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
+                                SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
+                                SAQTSV.SERVICE_ID as SERVICE_ID,
+                                SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
+                                0.00 as UNIT_PRICE,
+                                MAMSOP.MATPRIGRP_ID as MATPRIGRP_ID,
+                                MAMSOP.MATPRIGRP_RECORD_ID as MATPRIGRP_RECORD_ID,
+                                'MONTHLY' as DELIVERY_INTERVAL,
+                                SAQTMT.CONTRACT_VALID_FROM as VALID_FROM_DATE, 
+                                SAQTMT.CONTRACT_VALID_TO as VALID_TO_DATE,
+                                SAQTSV.PAR_SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,
+                                SAQTSV.PAR_SERVICE_ID as PAR_SERVICE_ID,
+                                SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,
+                                TEMP_TABLE.RETURN_TYPE AS RETURN_TYPE,
+                                CASE WHEN TEMP_TABLE.ODCC_FLAG='ZZZ' THEN null ELSE TEMP_TABLE.ODCC_FLAG END AS ODCC_FLAG,
+                                CASE WHEN TEMP_TABLE.ODCC_FLAG='ZZZ' THEN null ELSE TEMP_TABLE.ODCC_FLAG_DESCRIPTION END as ODCC_FLAG_DESCRIPTION,
+                                CASE WHEN ISNULL(TEMP_TABLE.CHILD_PART_NUMBER,'')='' THEN null ELSE TEMP_TABLE.PARENT_PART_NUMBER END AS PAR_PART_NUMBER,
+                                TEMP_TABLE.Material_Eligibility AS EXCHANGE_ELIGIBLE,
+                                CASE WHEN TEMP_TABLE.Customer_Eligibility='X' THEN 'True' ELSE 'False' END AS CUSTOMER_ELIGIBLE,
+                                'True' as CUSTOMER_PARTICIPATE,
+                                'True' as CUSTOMER_ACCEPT_PART,
+                                CASE WHEN TEMP_TABLE.YEAR_1_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_1_DEMAND END AS YEAR_1_DEMAND,
+                                CASE WHEN TEMP_TABLE.YEAR_2_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_2_DEMAND END AS YEAR_2_DEMAND,
+                                CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
+                                CASE WHEN TEMP_TABLE.PROD_INSP_MEMO='' THEN null ELSE TEMP_TABLE.PROD_INSP_MEMO END AS PROD_INSP_MEMO,
+                                CASE WHEN TEMP_TABLE.SHELF_LIFE='' THEN null ELSE TEMP_TABLE.SHELF_LIFE END AS SHELF_LIFE,
+                                '' AS PRICING_STATUS,
+		                        TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
+                                TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
+                                MAMSOP.MATERIALSTATUS_ID AS MATERIALSTATUS_ID,
+                                '{GLOBALCURR}' as GLOBAL_CURRENCY,
+                                '{GLOBALCURR_REC}' as GLOBAL_CURRENCY_RECORD_ID
+                            FROM {TempTable} TEMP_TABLE(NOLOCK)
+                            JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = TEMP_TABLE.PARENT_PART_NUMBER
+                            JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
+                            JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.SERVICE_ID = '{ServiceId}'
+                            JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
+                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') NOT IN('05','02') AND TEMP_TABLE.PARENT_PART_NUMBER NOT IN(SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')) IQ
+                            """.format(
+                                        TempTable=spare_parts_temp_table_name,
+                                        ServiceId=self.service_id,									
+                                        QuoteRecordId=self.quote_record_id,
+                                        RevisionRecordId=self.quote_revision_id,
+                                        UserId=User.Id,
+                                        GLOBALCURR=self.global_curr,
+                                        GLOBALCURR_REC=self.global_curr_recid
+                                    )
+            )
+            #only child records insert
+            Sql.RunQuery("""
+                            INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,PROD_INSP_MEMO,SHELF_LIFE,PRICING_STATUS,STPACCOUNT_ID, SHPACCOUNT_ID,MATERIALSTATUS_ID,GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
+                            SELECT DISTINCT 
+                                CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID,
+                                BASEUOM_ID,
+                                BASEUOM_RECORD_ID,
+                                CUSTOMER_PART_NUMBER,
+                                CUSTOMER_PART_NUMBER_RECORD_ID,
+                                DELIVERY_MODE,
+                                EXTENDED_UNIT_PRICE,
+                                PART_DESCRIPTION,
+                                PART_NUMBER,
+                                PART_RECORD_ID,
+                                PRDQTYCON_RECORD_ID,
+                                QUANTITY,
+                                QUOTE_ID,
+                                QUOTE_NAME,
+                                QUOTE_RECORD_ID,
+                                QTEREV_ID,
+                                QTEREV_RECORD_ID,
+                                SALESORG_ID,
+                                SALESORG_RECORD_ID,
+                                SALESUOM_CONVERSION_FACTOR,
+                                SALESUOM_ID,
+                                SALESUOM_RECORD_ID, 
+                                SCHEDULE_MODE,
+                                SERVICE_DESCRIPTION,
+                                SERVICE_ID,
+                                SERVICE_RECORD_ID,
+                                UNIT_PRICE,
+                                MATPRIGRP_ID,
+                                MATPRIGRP_RECORD_ID,
+                                DELIVERY_INTERVAL,
+                                VALID_FROM_DATE, 
+                                VALID_TO_DATE,
+                                PAR_SERVICE_DESCRIPTION,
+                                PAR_SERVICE_ID,
+                                PAR_SERVICE_RECORD_ID,
+                                RETURN_TYPE,
+                                ODCC_FLAG,
+                                ODCC_FLAG_DESCRIPTION,
+                                PAR_PART_NUMBER,
+                                EXCHANGE_ELIGIBLE,
+                                CUSTOMER_ELIGIBLE,
+                                CUSTOMER_PARTICIPATE,
+                                CUSTOMER_ACCEPT_PART,
+                                YEAR_1_DEMAND,
+                                YEAR_2_DEMAND,
+                                YEAR_3_DEMAND,
+                                PROD_INSP_MEMO,
+                                SHELF_LIFE,
+                                PRICING_STATUS,
+                                STPACCOUNT_ID,
+                                SHPACCOUNT_ID,
+                                MATERIALSTATUS_ID,
+                                GLOBAL_CURRENCY,
+                                GLOBAL_CURRENCY_RECORD_ID,
+                                {UserId} as CPQTABLEENTRYADDEDBY, 
+                                GETDATE() as CPQTABLEENTRYDATEADDED
+                            FROM (
+                            SELECT 
+                                DISTINCT
+                                MAMTRL.UNIT_OF_MEASURE as BASEUOM_ID,
+                                MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
+                                NULL AS CUSTOMER_PART_NUMBER,
+                                MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
+                                CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN NULL ELSE 'OFFSITE' END AS DELIVERY_MODE,
+                                0.00 as EXTENDED_UNIT_PRICE,
+                                MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
+                                CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER!='' THEN TEMP_TABLE.CHILD_PART_NUMBER ELSE MAMTRL.SAP_PART_NUMBER END AS PART_NUMBER,
+                                MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
+                                '' as PRDQTYCON_RECORD_ID,
+                                CASE WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' THEN NULL ELSE TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY END as QUANTITY,
+                                SAQTMT.QUOTE_ID as QUOTE_ID,
+                                SAQTMT.QUOTE_NAME as QUOTE_NAME,
+                                SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
+                                SAQTMT.QTEREV_ID as QTEREV_ID,
+                                SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
+                                SAQTSV.SALESORG_ID as SALESORG_ID,
+                                SAQTSV.SALESORG_RECORD_ID as SALESORG_RECORD_ID,
+                                0.00 as SALESUOM_CONVERSION_FACTOR,
+                                CASE WHEN MAMSOP.SALESUOM_ID<>'' THEN MAMSOP.SALESUOM_ID ELSE MAMTRL.UNIT_OF_MEASURE END as SALESUOM_ID,
+                                CASE WHEN MAMSOP.SALESUOM_RECORD_ID<>'' THEN MAMSOP.SALESUOM_RECORD_ID ELSE MAMTRL.UOM_RECORD_ID END as SALESUOM_RECORD_ID, 
                                 CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN NULL ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
                                 SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
                                 SAQTSV.SERVICE_ID as SERVICE_ID,
@@ -285,6 +418,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 'ACQUIRING' AS PRICING_STATUS,
 		                        TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
                                 TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
+                                MAMSOP.MATERIALSTATUS_ID as MATERIALSTATUS_ID,
                                 '{GLOBALCURR}' as GLOBAL_CURRENCY,
                                 '{GLOBALCURR_REC}' as GLOBAL_CURRENCY_RECORD_ID
                             FROM {TempTable} TEMP_TABLE(NOLOCK)
@@ -292,7 +426,7 @@ class SyncFPMQuoteAndHanaDatabase:
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
                             JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.SERVICE_ID = '{ServiceId}'
                             JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
-                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') <> '05' AND TEMP_TABLE.PARENT_PART_NUMBER NOT IN(SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')) IQ
+                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') NOT IN('05','02') AND ISNULL(TEMP_TABLE.CHILD_PART_NUMBER,'') <>'' AND NOT EXISTS(SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND TEMP_TABLE.CHILD_PART_NUMBER = PART_NUMBER)) IQ
                             """.format(
                                         TempTable=spare_parts_temp_table_name,
                                         ServiceId=self.service_id,									
@@ -303,21 +437,25 @@ class SyncFPMQuoteAndHanaDatabase:
                                         GLOBALCURR_REC=self.global_curr_recid
                                     )
             )
-            #spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+            spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
             #self.validation_for_arp_carp()
         except Exception:
-            #spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
+            spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
             Log.Info("Exception in Query insertion in SAQSPT")
         
     def update_records_saqspt(self):
-        Log.Info("soldot"+self.account_info['SOLD TO'])
+        #Log.Info("soldot"+self.account_info['SOLD TO'])
+        
         update_customer_pn = """UPDATE SAQSPT SET SAQSPT.CUSTOMER_PART_NUMBER = M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN MAMSAC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,sales_id = self.sales_org_id,stp_acc_id=str(self.account_info['SOLD TO']),quote_revision_rec_id =self.quote_revision_id)
         Sql.RunQuery(update_customer_pn)
 
-        update_uom_recs = """UPDATE SAQSPT SET SAQSPT.BASEUOM_ID = M.UNIT_OF_MEASURE,SAQSPT.BASEUOM_RECORD_ID = M.UOM_RECORD_ID FROM SAQSPT S INNER JOIN MAMTRL M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE   S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,quote_revision_rec_id =self.quote_revision_id)
-        Sql.RunQuery(update_uom_recs)
+        #UPDATESAQSPT
+        #update_customer_part ="""UPDATE SAQSPT SET S.CUSTOMER_PART_NUMBER =M.CUSTOMER_PART_NUMBER FROM SAQSPT S INNER JOIN SAQSPT M ON S.PART_NUMBER =M.PART_NUMBER WHERE M.SALESORG_ID = '{sales_id}' and M.ACCOUNT_ID='{stp_acc_id}' AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,sales_id = self.sales_org_id,stp_acc_id=str(self.account_info['SOLD TO']),quote_revision_rec_id =self.quote_revision_id)
 
-        update_salesuom_conv= """UPDATE SAQSPT SET SAQSPT.SALESUOM_CONVERSION_FACTOR = M.CONVERSION_QUANTITY FROM SAQSPT S INNER JOIN MAMUOC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE S.BASEUOM_ID=M.BASEUOM_ID AND  S.SALESUOM_ID=M.CONVERSIONUOM_ID AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id ,quote_revision_rec_id =self.quote_revision_id)
+        #update_uom_recs = """UPDATE SAQSPT SET SAQSPT.BASEUOM_ID = M.UNIT_OF_MEASURE,SAQSPT.BASEUOM_RECORD_ID = M.UOM_RECORD_ID FROM SAQSPT S INNER JOIN MAMTRL M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE   S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,quote_revision_rec_id =self.quote_revision_id)
+        #Sql.RunQuery(update_uom_recs)
+
+        update_salesuom_conv= """UPDATE SAQSPT SET SAQSPT.SALESUOM_CONVERSION_FACTOR = M.BASE_QUANTITY FROM SAQSPT S INNER JOIN MAMUOC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE S.BASEUOM_ID=M.BASEUOM_ID AND  S.SALESUOM_ID=M.CONVERSIONUOM_ID AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id ,quote_revision_rec_id =self.quote_revision_id)
         Sql.RunQuery(update_salesuom_conv)
 
     def insert_delivery_schedule(self):
@@ -454,7 +592,7 @@ class SyncFPMQuoteAndHanaDatabase:
                     temp_value +=','+ele.group(2) if ele.group(2) !='' else None
                     if ele.group(1) == '"CHILD_PART_NUMBER"':
                         childvalue = str(ele.group(2))
-                        if re.search(r'6000-',childvalue):
+                        if re.search(r'6000-|W$',childvalue):
                             child_temp_value +=','+"''"
                             child_temp_flag=1
                     else:
@@ -495,7 +633,7 @@ class SyncFPMQuoteAndHanaDatabase:
         Trace.Write('Delete Child called!!!')
         Sql.RunQuery("DELETE FROM SAQSPT WHERE PAR_PART_NUMBER != '' AND QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
         
-        Sql.RunQuery("UPDATE SAQSPT SET CUSTOMER_ACCEPT_PART='False' WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
+        Sql.RunQuery("UPDATE SAQSPT SET CUSTOMER_ACCEPT_PART='False',CUSTOMER_PARTICIPATE='False' WHERE QUOTE_RECORD_ID = '"+str(self.quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_id)+"' AND SERVICE_ID = '"+str(self.service_id)+"'")
 
     def delete_child_records_6kw_partlist(self,Part_Numbers):
         part_list=tuple(Part_Numbers)

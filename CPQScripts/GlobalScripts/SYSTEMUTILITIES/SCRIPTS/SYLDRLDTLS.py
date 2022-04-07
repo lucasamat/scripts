@@ -236,26 +236,44 @@ class SYLDRLDTLS:
                     Section_Rec_Id=sec.RECORD_ID
                 )
             )
-            action_visible_obj = Sql.GetFirst(
-                """
-                                        SELECT top 1
-                                            SYPRSN.*,SYSECT.DISPLAY_ORDER
-                                        FROM
-                                            SYPRSN (NOLOCK) JOIN SYSECT ON SYSECT.RECORD_ID = SYPRSN.SECTION_RECORD_ID
-                                        JOIN
-                                            USERS_PERMISSIONS (NOLOCK) ON USERS_PERMISSIONS.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
-                                        WHERE
-                                            SYPRSN.SECTION_RECORD_ID='{Section_Rec_Id}' AND
-                                            USERS_PERMISSIONS.USER_ID='{User_Record_Id}' AND
-                                            SYPRSN.EDITABLE = 0
-                                            ORDER BY
-                                            SYSECT.DISPLAY_ORDER
-                                            """.format(
-                    Section_Rec_Id=sec.RECORD_ID, User_Record_Id=get_user_id
-                )
-            )
+            # action_visible_obj = Sql.GetFirst(
+            #     """
+            #                             SELECT top 1
+            #                                 SYPRSN.*,SYSECT.DISPLAY_ORDER
+            #                             FROM
+            #                                 SYPRSN (NOLOCK) JOIN SYSECT ON SYSECT.RECORD_ID = SYPRSN.SECTION_RECORD_ID
+            #                             JOIN
+            #                                 USERS_PERMISSIONS (NOLOCK) ON USERS_PERMISSIONS.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
+            #                             WHERE
+            #                                 SYPRSN.SECTION_RECORD_ID='{Section_Rec_Id}' AND
+            #                                 USERS_PERMISSIONS.USER_ID='{User_Record_Id}' AND
+            #                                 SYPRSN.EDITABLE = 0
+            #                                 ORDER BY
+            #                                 SYSECT.DISPLAY_ORDER
+            #                                 """.format(
+            #         Section_Rec_Id=sec.RECORD_ID, User_Record_Id=get_user_id
+            #     )
+            # )
+            # action_visible_obj = Sql.GetFirst(
+            #     """
+            #                             SELECT top 1
+            #                                 SYPRSN.*,SYSECT.DISPLAY_ORDER
+            #                             FROM
+            #                                 SYPRSN (NOLOCK) JOIN SYSECT ON SYSECT.RECORD_ID = SYPRSN.SECTION_RECORD_ID
+            #                             JOIN
+            #                                 USERS_PERMISSIONS (NOLOCK) ON USERS_PERMISSIONS.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
+            #                             WHERE
+            #                                 SYPRSN.SECTION_RECORD_ID='{Section_Rec_Id}' AND
+            #                                 USERS_PERMISSIONS.USER_ID='{User_Record_Id}' AND
+            #                                 SYPRSN.EDITABLE = 0
+            #                                 ORDER BY
+            #                                 SYSECT.DISPLAY_ORDER
+            #                                 """.format(
+            #         Section_Rec_Id=sec.RECORD_ID, User_Record_Id=get_user_id
+            #     )
+            # )
 
-            '''action_visible_obj = Sql.GetFirst("""
+            action_visible_obj = Sql.GetFirst("""
                                         SELECT
                                             SYSECT.*
                                         FROM
@@ -264,7 +282,7 @@ class SYLDRLDTLS:
                                         WHERE
                                             SYSECT.RECORD_ID='{Section_Rec_Id}'
                                             ORDER BY SYSECT.DISPLAY_ORDER
-                                        """.format(Section_Rec_Id=sec.RECORD_ID))'''
+                                        """.format(Section_Rec_Id=sec.RECORD_ID))
             if action_visible_obj is not None:
                 if str(action_visible_obj.SECTION_RECORD_ID):
                     action_visible_str = str(action_visible_obj.SECTION_RECORD_ID)
@@ -668,7 +686,6 @@ class SYLDRLDTLS:
                             + '" class="form-control related_popup_css" ></td>'
                         )
                     elif data_type == "FORMULA" and MODE == "EDIT" and formula_data_type != "CHECKBOX":
-                        Log.Info(str(lookup_val) + "354--------formaula" + str(current_obj_value))
                         if current_obj_api_name in lookup_val and str(readonly) != "readonly":
                             sec_str += (
                                 '<td><input id="'

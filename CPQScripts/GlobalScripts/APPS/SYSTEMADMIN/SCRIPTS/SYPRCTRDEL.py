@@ -30,8 +30,8 @@ def nativeProfileDelete(PROFILE_RECORD_ID):
 		Login_Password = str(LOGIN_CREDENTIALS.Password)
 		Login_Domain = str(LOGIN_CREDENTIALS.Domain)
 
-	sandboxBaseURL = "https://sandbox.webcomcpq.com"
-	authenticationUrl = sandboxBaseURL+'/api/rd/v1/Core/Login?username='+Login_Username+'&password='+Login_Password+'&domain='+Login_Domain
+	rssandboxBaseURL = "https://rssandbox.webcomcpq.com"
+	authenticationUrl = rssandboxBaseURL+'/api/rd/v1/Core/Login?username='+Login_Username+'&password='+Login_Password+'&domain='+Login_Domain
 	authRequest = WebRequest.Create(str(authenticationUrl))
 	authRequest.Method = 'POST'
 	authRequest.CookieContainer = CookieContainer()
@@ -52,11 +52,11 @@ def nativeProfileDelete(PROFILE_RECORD_ID):
 
 	data='grant_type=password&username='+Login_Username+'&password='+Login_Password+'&domain='+Login_Domain+''
 	#Trace.Write('53--data-----'+str(data))
-	authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
+	authenticationapitokenUrl = "https://rssandbox.webcomcpq.com/basic/api/token"
 	authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
 	authRequesttoken.Method = 'DELETE'
 	webclienttoken = System.Net.WebClient()
-	webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+	webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
 	webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
 	webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie]= coookies
 	webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
@@ -70,9 +70,9 @@ def nativeProfileDelete(PROFILE_RECORD_ID):
 		
 	}'''%(PROFILE_RECORD_ID)
 	#Trace.Write('188-------------datasave----'+str(datasave))
-	setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+str(int(PROFILE_RECORD_ID))
+	setPermissionURL = rssandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+str(int(PROFILE_RECORD_ID))
 	webclient = System.Net.WebClient()
-	webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+	webclient.Headers[System.Net.HttpRequestHeader.Host] = "rssandbox.webcomcpq.com"
 	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
 	webclient.Headers[System.Net.HttpRequestHeader.Cookie]= coookies
 	webclient.Headers.Add("X-CSRF-Token", xcrf)

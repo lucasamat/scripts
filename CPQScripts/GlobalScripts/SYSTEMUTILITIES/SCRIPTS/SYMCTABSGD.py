@@ -292,19 +292,26 @@ class CONTAINER:
                         tot_names = ""
                         PRIMARY_OBJECT_NAMes = str(sql.PRIMARY_OBJECT_NAME).strip()
                         #syproh permissions start
-                        data_obj = Sql.GetFirst(
-                            "SELECT S.RECORD_ID,S.CONTAINER_NAME,S.COLUMNS,S.CAN_DELETE,S.CAN_EDIT FROM SYOBJS S (NOLOCK) INNER JOIN SYPROH P ON P.OBJECT_NAME = S.CONTAINER_NAME INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = P.PROFILE_RECORD_ID WHERE S.NAME='Tab list' AND S.OBJ_REC_ID = '"
-                            + str(sql.PRIMARY_OBJECT_RECORD_ID)
-                            + "' AND UP.USER_ID = '"
-                            + str(userid)
-                            + "' and P.VISIBLE=1"
-                        )
+                        # data_obj = Sql.GetFirst(
+                        #     "SELECT S.RECORD_ID,S.CONTAINER_NAME,S.COLUMNS,S.CAN_DELETE,S.CAN_EDIT FROM SYOBJS S (NOLOCK) INNER JOIN SYPROH P ON P.OBJECT_NAME = S.CONTAINER_NAME INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = P.PROFILE_RECORD_ID WHERE S.NAME='Tab list' AND S.OBJ_REC_ID = '"
+                        #     + str(sql.PRIMARY_OBJECT_RECORD_ID)
+                        #     + "' AND UP.USER_ID = '"
+                        #     + str(userid)
+                        #     + "' and P.VISIBLE=1"
+                        # )
+                        # data_obj = Sql.GetFirst(
+                        #     "SELECT S.RECORD_ID,S.CONTAINER_NAME,S.COLUMNS,S.CAN_DELETE,S.CAN_EDIT FROM SYOBJS S (NOLOCK) INNER JOIN SYPROH P ON P.OBJECT_NAME = S.CONTAINER_NAME INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = P.PROFILE_RECORD_ID WHERE S.NAME='Tab list' AND S.OBJ_REC_ID = '"
+                        #     + str(sql.PRIMARY_OBJECT_RECORD_ID)
+                        #     + "' AND UP.USER_ID = '"
+                        #     + str(userid)
+                        #     + "' and P.VISIBLE=1"
+                        # )
                         #syproh permissions end
-                        '''data_obj = Sql.GetFirst(
+                        data_obj = Sql.GetFirst(
                             "SELECT S.RECORD_ID,S.CONTAINER_NAME,S.COLUMNS,S.CAN_DELETE,S.CAN_EDIT FROM SYOBJS S (NOLOCK) WHERE S.NAME='Tab list' AND S.OBJ_REC_ID = '"
                             + str(sql.PRIMARY_OBJECT_RECORD_ID)
                             + "'"
-                        )'''
+                        )
                         if data_obj is not None:
                             # if tab_name == "Quotes":
                             #     name_obj = Sql.GetList(
@@ -1558,17 +1565,17 @@ class CONTAINER:
                                 obj_ids = section_obj.PRIMARY_OBJECT_RECORD_ID
                                 
                                 #SYPROH Permissions start
-                                objsk_obj = Sql.GetFirst(
-                                    "SELECT P.CAN_ADD,S.CAN_CLONE, P.CAN_EDIT,P.CAN_DELETE FROM SYPROH P inner join SYOBJS S on S.OBJ_REC_ID = P.OBJECT_RECORD_ID inner join users_permissions up on up.permission_id = P.PROFILE_RECORD_ID WHERE S.NAME = 'Tab list' AND S.OBJ_REC_ID = '{0}' and P.VISIBLE = 1 and up.user_id='{1}'".format(
-                                        str(obj_ids), str(userid)
-                                    )
-                                )
+                                # objsk_obj = Sql.GetFirst(
+                                #     "SELECT P.CAN_ADD,S.CAN_CLONE, P.CAN_EDIT,P.CAN_DELETE FROM SYPROH P inner join SYOBJS S on S.OBJ_REC_ID = P.OBJECT_RECORD_ID inner join users_permissions up on up.permission_id = P.PROFILE_RECORD_ID WHERE S.NAME = 'Tab list' AND S.OBJ_REC_ID = '{0}' and P.VISIBLE = 1 and up.user_id='{1}'".format(
+                                #         str(obj_ids), str(userid)
+                                #     )
+                                # )
                                 #SYPROH Permissions end
-                                '''objsk_obj = Sql.GetFirst(
+                                objsk_obj = Sql.GetFirst(
                                     "SELECT S.CAN_ADD,S.CAN_CLONE, S.CAN_EDIT,S.CAN_DELETE FROM SYOBJH P inner join SYOBJS S on S.OBJ_REC_ID = P.RECORD_ID WHERE S.NAME = 'Tab list' AND S.OBJ_REC_ID = '{0}'".format(
                                         str(obj_ids)
                                     )
-                                )'''
+                                )
 
                                 if objsk_obj is not None:
                                     
@@ -1730,34 +1737,35 @@ class CONTAINER:
                                                                         )
                                                                     if product_id != "" and product_id is not None:
                                                                         product_num = str(product_id.PRODUCT_ID)
-                                                                        gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
-                                                                        if gettabvisibility.visible == 1:
-                                                                            idval = RECORD_ID + "|" + tab_val
-                                                                            newRow[rowName] = (
-                                                                                "<a href='/Configurator.aspx?pid="
-                                                                                + str(product_num)
-                                                                                + "' id='"
-                                                                                + str(idval)
-                                                                                + "' class='cur_sty' onclick='Move_to_parent_obj(this)'><abbr id='"
-                                                                                + str(row_value)
-                                                                                + "' title='"
-                                                                                + str(row_value)
-                                                                                + "'>"
-                                                                                + str(row_value)
-                                                                                + "</abbr></a>"
-                                                                            )
+                                                                        # gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
+                                                                        # gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
+                                                                        # if gettabvisibility.visible == 1:
+                                                                        #     idval = RECORD_ID + "|" + tab_val
+                                                                        #     newRow[rowName] = (
+                                                                        #         "<a href='/Configurator.aspx?pid="
+                                                                        #         + str(product_num)
+                                                                        #         + "' id='"
+                                                                        #         + str(idval)
+                                                                        #         + "' class='cur_sty' onclick='Move_to_parent_obj(this)'><abbr id='"
+                                                                        #         + str(row_value)
+                                                                        #         + "' title='"
+                                                                        #         + str(row_value)
+                                                                        #         + "'>"
+                                                                        #         + str(row_value)
+                                                                        #         + "</abbr></a>"
+                                                                        #     )
                                                                             
-                                                                        else:
-                                                                            idval = RECORD_ID + "|" + tab_val
-                                                                            newRow[rowName] = (
-                                                                                "<abbr id='"
-                                                                                + str(row_value)
-                                                                                + "' title='"
-                                                                                + str(row_value)
-                                                                                + "'>"
-                                                                                + str(row_value)
-                                                                                + "</abbr>"
-                                                                            )
+                                                                        # else:
+                                                                        idval = RECORD_ID + "|" + tab_val
+                                                                        newRow[rowName] = (
+                                                                            "<abbr id='"
+                                                                            + str(row_value)
+                                                                            + "' title='"
+                                                                            + str(row_value)
+                                                                            + "'>"
+                                                                            + str(row_value)
+                                                                            + "</abbr>"
+                                                                        )
                                                                             
                                                                     else:
                                                                         idval = RECORD_ID + "|" + lookup_val.strip()
@@ -1776,11 +1784,11 @@ class CONTAINER:
 
                                                             else:
                                                                 #hyperlink permissions start
-                                                                gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
+                                                                # gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
                                                                 if tab_val in list_of_tabs:
-                                                                    if gettabvisibility:
+                                                                    if 1=1:
                                                                         #Trace.Write('1420-gettabvisibility------'+str(gettabvisibility.VISIBLE))
-                                                                        if gettabvisibility.VISIBLE == 1:
+                                                                        if 1 == 1:
                                                                             
                                                                             idval = RECORD_ID + "|" + tab_val.strip()
                                                                             row_value = str(eval("data." + col_name))
@@ -1812,8 +1820,8 @@ class CONTAINER:
                                                                             
                                                                     else:
                                                                         
-                                                                        gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
-                                                                        if gettabvisibility.visible == 1:
+                                                                        # gettabvisibility = Sql.GetFirst("select VISIBLE FROM SYPRTB (NOLOCK) TB  INNER JOIN cpq_permissions (NOLOCK) cp ON cp.permission_id = TB.PROFILE_RECORD_ID INNER JOIN users_permissions (NOLOCK) up on up.permission_id = cp.permission_id where up.user_id = '"+str(userid)+"' and TB.TAB_ID = '"+str(tab_val.strip())+"'")
+                                                                        if 1 == 1:
                                                                             idval = RECORD_ID + "|" + tab_val.strip()
                                                                             row_value = str(eval("data." + col_name))
                                                                             newRow[rowName] = (
@@ -2371,6 +2379,29 @@ class CONTAINER:
         except:
             tab_name = Param.CurrentTab
         tabcolumns_list = []
+        # section_qstns_visble_obj = Sql.GetList(
+        #     """
+        #                     SELECT SYSECT.RECORD_ID AS SECTION_REC_ID, SYSEFL.RECORD_ID, SYOBJD.DATA_TYPE, SYSEFL.API_NAME
+        #                     FROM SYTABS (NOLOCK) 
+        #                     JOIN SYPAGE (NOLOCK) ON SYTABS.PAGE_RECORD_ID = SYPAGE.RECORD_ID
+        #                     JOIN SYSECT (NOLOCK) ON SYSECT.TAB_RECORD_ID = SYPAGE.RECORD_ID AND SYSECT.TAB_NAME = SYPAGE.TAB_NAME
+        #                     JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID=SYSECT.RECORD_ID 
+        #                     JOIN SYOBJD (NOLOCK) ON  SYOBJD.API_NAME = SYSEFL.API_NAME  AND   SYOBJD.OBJECT_NAME = SYSEFL.API_NAME 
+        #                     JOIN
+        #                         SYPRSN (NOLOCK)  ON SYPRSN.SECTION_RECORD_ID = SYSECT.RECORD_ID 
+        #                     JOIN 
+        #                         USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
+        #                     WHERE
+        #                         LTRIM(RTRIM(SYTABS.TAB_LABEL)) = '{Tab_Text}' AND 
+        #                         LTRIM(RTRIM(SYTABS.APP_LABEL)) ='{APP_LABEL}' AND
+        #                         ISNULL(SYSECT.SECTION_NAME,'') != '' AND
+        #                         ISNULL(SYSECT.PRIMARY_OBJECT_NAME,'') != ''  AND
+        #                         UP.USER_ID = '{User_Record_Id}' AND 
+        #                         SYPRSN.VISIBLE = 0
+        #                     """.format(
+        #         Tab_Text=tab_name, APP_LABEL=productName, User_Record_Id=get_user_id
+        #     )
+        # )
         section_qstns_visble_obj = Sql.GetList(
             """
                             SELECT SYSECT.RECORD_ID AS SECTION_REC_ID, SYSEFL.RECORD_ID, SYOBJD.DATA_TYPE, SYSEFL.API_NAME
@@ -2379,25 +2410,48 @@ class CONTAINER:
                             JOIN SYSECT (NOLOCK) ON SYSECT.TAB_RECORD_ID = SYPAGE.RECORD_ID AND SYSECT.TAB_NAME = SYPAGE.TAB_NAME
                             JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID=SYSECT.RECORD_ID 
                             JOIN SYOBJD (NOLOCK) ON  SYOBJD.API_NAME = SYSEFL.API_NAME  AND   SYOBJD.OBJECT_NAME = SYSEFL.API_NAME 
-                            JOIN
-                                SYPRSN (NOLOCK)  ON SYPRSN.SECTION_RECORD_ID = SYSECT.RECORD_ID 
-                            JOIN 
-                                USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID
+                           
                             WHERE
                                 LTRIM(RTRIM(SYTABS.TAB_LABEL)) = '{Tab_Text}' AND 
                                 LTRIM(RTRIM(SYTABS.APP_LABEL)) ='{APP_LABEL}' AND
                                 ISNULL(SYSECT.SECTION_NAME,'') != '' AND
-                                ISNULL(SYSECT.PRIMARY_OBJECT_NAME,'') != ''  AND
-                                UP.USER_ID = '{User_Record_Id}' AND 
-                                SYPRSN.VISIBLE = 0
+                                ISNULL(SYSECT.PRIMARY_OBJECT_NAME,'') != '' 
                             """.format(
-                Tab_Text=tab_name, APP_LABEL=productName, User_Record_Id=get_user_id
+                Tab_Text=tab_name, APP_LABEL=productName
             )
         )
-
+        # question_visible_obj = Sql.GetList(
+        #     """
+        #                     SELECT TOP 1000 SYPRSF.SECTIONFIELD_RECORD_ID, MO.DATA_TYPE,MQ.API_NAME
+        #                     FROM SYTABS (NOLOCK) MT
+        #                     JOIN SYPAGE (NOLOCK) PG ON PG.RECORD_ID = MT.PAGE_RECORD_ID
+        #                     JOIN SYSECT (NOLOCK) MS ON MS.TAB_RECORD_ID = PG.RECORD_ID
+                            
+        #                     JOIN SYSEFL (NOLOCK) MQ ON MQ.SECTION_RECORD_ID = MS.RECORD_ID
+                            
+        #                     JOIN SYOBJD (NOLOCK) MO ON MO.API_NAME = MQ.API_NAME
+        #                     AND MO.OBJECT_NAME = MQ.API_NAME
+        #                     JOIN
+        #                         SYPRSN (NOLOCK)  ON SYPRSN.SECTION_RECORD_ID = MS.RECORD_ID 
+        #                     JOIN
+        #                         SYPRSF (NOLOCK)  ON SYPRSF.SECTIONFIELD_RECORD_ID = MQ.RECORD_ID 
+        #                     JOIN 
+        #                         USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
+                            
+        #                     AND ISNULL(MQ.FIELD_LABEL,'') != ''
+        #                     AND UP.USER_ID = '{User_Record_Id}'
+        #                     AND LTRIM(RTRIM(MT.TAB_NAME)) = '{Tab_Text}'
+        #                     AND (SYPRSN.VISIBLE = 0 OR SYPRSF.VISIBLE = 0)
+        #                     AND LTRIM(RTRIM(MT.APP_LABEL)) ='{APP_LABEL}'
+        #                     AND ISNULL(MS.SECTION_NAME,'') != ''
+        #                     ORDER BY ABS(MQ.DISPLAY_ORDER)
+        #                     """.format(
+        #         Tab_Text=tab_name, APP_LABEL=productName, User_Record_Id=get_user_id
+        #     )
+        # )
         question_visible_obj = Sql.GetList(
             """
-                            SELECT TOP 1000 SYPRSF.SECTIONFIELD_RECORD_ID, MO.DATA_TYPE,MQ.API_NAME
+                            SELECT TOP 1000 MQ.RECORD_ID, MO.DATA_TYPE,MQ.API_NAME
                             FROM SYTABS (NOLOCK) MT
                             JOIN SYPAGE (NOLOCK) PG ON PG.RECORD_ID = MT.PAGE_RECORD_ID
                             JOIN SYSECT (NOLOCK) MS ON MS.TAB_RECORD_ID = PG.RECORD_ID
@@ -2406,22 +2460,16 @@ class CONTAINER:
                             
                             JOIN SYOBJD (NOLOCK) MO ON MO.API_NAME = MQ.API_NAME
                             AND MO.OBJECT_NAME = MQ.API_NAME
-                            JOIN
-                                SYPRSN (NOLOCK)  ON SYPRSN.SECTION_RECORD_ID = MS.RECORD_ID 
-                            JOIN
-                                SYPRSF (NOLOCK)  ON SYPRSF.SECTIONFIELD_RECORD_ID = MQ.RECORD_ID 
-                            JOIN 
-                                USERS_PERMISSIONS (NOLOCK) UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
+                            
                             
                             AND ISNULL(MQ.FIELD_LABEL,'') != ''
-                            AND UP.USER_ID = '{User_Record_Id}'
                             AND LTRIM(RTRIM(MT.TAB_NAME)) = '{Tab_Text}'
-                            AND (SYPRSN.VISIBLE = 0 OR SYPRSF.VISIBLE = 0)
+                          
                             AND LTRIM(RTRIM(MT.APP_LABEL)) ='{APP_LABEL}'
                             AND ISNULL(MS.SECTION_NAME,'') != ''
                             ORDER BY ABS(MQ.DISPLAY_ORDER)
                             """.format(
-                Tab_Text=tab_name, APP_LABEL=productName, User_Record_Id=get_user_id
+                Tab_Text=tab_name, APP_LABEL=productName
             )
         )
         if section_qstns_visble_obj is not None:

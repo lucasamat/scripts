@@ -380,7 +380,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 		nCustomSPAUnits
 	) = nAdjSPAUnits = nSpotPriceGpa = nCustomGPAUnits = nAdjGPAUnits = Points_curr_ex_rate_date = Points_curr_ex_rate = ""
 	TableName = ObjectName
-	Trace.Write("TableName" + str(TableName))
+	Trace.Write("TableName=====>" + str(TableName))
 	CURRENCY_SYMBOL = Sql.GetFirst("SELECT CURRENCY_RECORD_ID FROM PRCURR(NOLOCK) WHERE CURRENCY = 'USD'")
 	#CURRENCY_SYMBOL_VALUE = CURRENCY_SYMBOL.CURRENCY_RECORD_ID
 
@@ -747,15 +747,23 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
 						newdict.update(dictc)
 						tableInfo = Sql.GetTable(str(TableName))
-						if subtab_name != "Legal SoW":
-							newdict["SLSDIS_PRICE_INGL_CURR"] = re.sub('USD','',newdict["SLSDIS_PRICE_INGL_CURR"])
-							newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
-							newdict["CEILING_PRICE_INGL_CURR"] = re.sub('USD','',newdict["CEILING_PRICE_INGL_CURR"])
+						Trace.Write('subtab_name---'+str(subtab_name))
+						#get_previous_payment_term =Sql.GetFirst("SELECT PAYMENTTERM_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_record_id}' AND QTEREV_RECORD_ID ='{quote_revision_record_id}'".format(contract_quote_record_id =contract_quote_record_id,quote_revision_record_id =quote_revision_record_id))
+						#payment_term_name_previous = get_previous_payment_term.PAYMENTTERM_ID
+						if subtab_name not in  ("Legal SoW","Basic Information"):
+							#newdict["SLSDIS_PRICE_INGL_CURR"] = re.sub('USD','',newdict["SLSDIS_PRICE_INGL_CURR"])
+							#current_payment_term = newdict.get("PAYMENTTERM_ID")
+							#if current_payment_term != payment_term_name_previous:
+							#	Trace.Write("current_payment_term"+str(current_payment_term))
+							#	Trace.Write("payment_term_name_previous"+str(payment_term_name_previous))
+							#	newdict["PAYMENTTERM_NAME_ISCHANGED"] = 'True'
+							#newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
+							#newdict["CEILING_PRICE_INGL_CURR"] = re.sub('USD','',newdict["CEILING_PRICE_INGL_CURR"])
 							# newdict["NET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["NET_PRICE_INGL_CURR"])
 							newdict["TAX_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["TAX_AMOUNT_INGL_CURR"])
-							newdict["TARGET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["TARGET_PRICE_INGL_CURR"])
-							newdict["NET_VALUE_INGL_CURR"] = re.sub('USD','',newdict["NET_VALUE_INGL_CURR"])
-							newdict["DISCOUNT_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["DISCOUNT_AMOUNT_INGL_CURR"])
+							#newdict["TARGET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["TARGET_PRICE_INGL_CURR"])
+							#newdict["NET_VALUE_INGL_CURR"] = re.sub('USD','',newdict["NET_VALUE_INGL_CURR"])
+							#newdict["DISCOUNT_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["DISCOUNT_AMOUNT_INGL_CURR"])
 							newdict["CANCELLATION_PERIOD_EXCEPTION"] = "" if newdict["CANCELLATION_PERIOD"]!="EXCEPTION" else newdict["CANCELLATION_PERIOD_EXCEPTION"]
 							exchange_rate_type = newdict.get("EXCHANGE_RATE_TYPE")
 							exchange_rate_object = Sql.GetFirst("SELECT  EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_RECORD_ID FROM PREXRT(NOLOCK) WHERE FROM_CURRENCY = '{}' AND TO_CURRENCY = '{}' AND EXCHANGE_RATE_TYPE = '{}' ".format(newdict.get("GLOBAL_CURRENCY"),newdict.get("DOC_CURRENCY"),newdict.get("EXCHANGE_RATE_TYPE")))
@@ -772,7 +780,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						get_rev_val =  newdict.get("QTEREV_ID")
 						get_approved_date = newdict.get("REV_APPROVE_DATE")
 						get_status = newdict.get("REVISION_STATUS")
-						if sql_cpq.REVISION_STATUS !="APPROVED" and get_status == "APPROVED":
+						if sql_cpq.REVISION_STATUS !="APR-APPROVED" and get_status == "APR-APPROVED":
 							Trace.Write('Mail Triggering for Contract Manager')
 							result = ScriptExecutor.ExecuteGlobal("ACSECTACTN", {"ACTION": "CBC_MAIL_TRIGGER"})
 						if getactive == 'false':
@@ -789,11 +797,29 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 						Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
 						Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
+						#getpaymentterm changes
+						
+
 						##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 						CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
 						time.sleep(5)
 						CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
-						if get_status.upper() == "APPROVED":
+						#A055S000P01-17165 started
+						if get_status.upper() in ("APR-REJECTED","APR-RECALLED","APR-APPROVAL PENDING","APR-APPROVED"):
+							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+						if get_status.upper() in ("OPD-PREPARING QUOTE DOCUMENTS","OPD-CUSTOMER ACCEPTED","OPD-CUSTOMER REJECTED"):
+							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+						if get_status.upper() in ("LGL-PREPARING LEGAL SOW","LGL-LEGAL SOW ACCEPTED","LGL-LEGAL SOW REJECTED"):
+							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'LEGAL SOW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+						if get_status.upper() in ("PRI-PRICING"):
+							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+						if get_status.upper() in ("PRR-ON HOLD PRICING"):
+							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING REVIEW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+						if get_status.upper() in ("CFG-CONFIGURING","CFG-ACQUIRING","CFG-ON HOLD -COSTING"):
+							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURATION' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+						#A055S000P01-17165 Rejected
+						if get_status.upper() == "APR-APPROVED":
+							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 							##Updating the Revision Approved Date while changing the status to Approved...
 							if get_approved_date == "":
 								RevisionApprovedDate = datetime.now().date()
@@ -804,7 +830,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 					if TreeParam == "Quote Information":
 
-						contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
+						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 						product_offering_contract_validity = Sql.GetFirst("SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id)))
@@ -813,17 +839,18 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 						# min_validity_date = Sql.GetFirst("SELECT MIN(CONTRACT_VALID_FROM) AS CONTRACT_VALID_TO FROM SAQSFB (NOLOCK) WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id)))
 
-						service_contract_update = "UPDATE SAQTSV SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+						service_contract_update = "UPDATE SAQTSV SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+
+						quote_contract_update = "UPDATE SAQTMT SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+
+						fab_contract_update = "UPDATE SAQSFB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+
+						greenbook_contract_update = "UPDATE SAQSGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
 
-						fab_contract_update = "UPDATE SAQSFB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+						equipment_contract_update = "UPDATE SAQSCO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
-						greenbook_contract_update = "UPDATE SAQSGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
-
-
-						equipment_contract_update = "UPDATE SAQSCO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
-
-						assembly_contract_update = "UPDATE SAQSCA SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+						assembly_contract_update = "UPDATE SAQSCA SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
 						# saqitm_contract_update = "UPDATE SAQITM SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
@@ -831,7 +858,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 						# saqigb_contract_update = "UPDATE SAQIGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
-						saqico_contract_update = "UPDATE SAQICO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+						saqico_contract_update = "UPDATE SAQICO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID  NOT LIKE '%W%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
 						# saqtrv_contract_update = "UPDATE SAQTRV SET CONTRACT_VALID_FROM = '{min_validity_date}' , CONTRACT_VALID_TO = '{max_validity_date}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(max_validity_date= max_validity_date.CONTRACT_VALID_FROM, min_validity_date =   min_validity_date.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
@@ -840,10 +867,20 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						Sql.RunQuery(greenbook_contract_update)
 						Sql.RunQuery(equipment_contract_update)
 						Sql.RunQuery(assembly_contract_update)
-						# Sql.RunQuery(saqitm_contract_update)
+						Sql.RunQuery(quote_contract_update)
+						
+						#update dirty flag start
+						get_saqico_data = Sql.GetFirst("SELECT * from SAQICO  WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+						if get_saqico_data:
+							if get_saqico_data.CONTRACT_VALID_FROM != product_offering_contract_validity.CONTRACT_VALID_FROM or get_saqico_data.CONTRACT_VALID_TO != product_offering_contract_validity.CONTRACT_VALID_TO:
+								Sql.RunQuery("UPDATE SAQTRV SET DIRTY_FLAG='{}',REVISION_STATUS='CFG-CONFIGURING',WORKFLOW_STATUS='CONFIGURE' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(True,contract_quote_record_id,quote_revision_record_id))
+						#update dirty flag end
+
+
+						
 						# Sql.RunQuery(saqifl_contract_update)
 						# Sql.RunQuery(saqigb_contract_update)
-						Sql.RunQuery(saqico_contract_update)
+						#Sql.RunQuery(saqico_contract_update)
 						# Sql.RunQuery(saqtrv_contract_update)
 
 					# elif TableName == "SAQIGB":
@@ -1248,6 +1285,15 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Trace.Write('533-----------'+str(TableName))
 							Sql.Upsert(tableInfo)
 						# sectional edit error message - ends
+							if TableName == "SAQFBL":
+								fab_id = TreeParam.split("-")[0]
+								#Trace.Write("fab_id"+str(fab_id))
+								try:					
+									where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND FABLOCATION_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id,fab_id)	
+									quality = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": contract_quote_record_id ,"level":"QUALITY_FAB","user_id": User.Id, "quote_rev_id":quote_revision_record_id})
+
+								except:
+									Trace.Write("EXCEPT----QUALITY DRIVER IFLOW")
 
 						
 						if Product.GetGlobal("TreeParentLevel1") == "Product Offerings":
@@ -1479,7 +1525,6 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 					#A055S000P01-4393 end
 					getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"), quote_revision_record_id))
 					if getdate:
-						Log.Info("SYSECTSAVE - SAQSGB")
 						billing_query = "UPDATE SAQRIB SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}'  WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, Product.GetGlobal('contract_quote_record_id'),quote_revision_record_id)
 						Sql.RunQuery(billing_query)
 
@@ -1497,11 +1542,11 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 						update_contract_date_cov_obj_level = "UPDATE SAQSCO SET CONTRACT_VALID_FROM = '{}', CONTRACT_VALID_TO = '{}'  WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, Product.GetGlobal('contract_quote_record_id'),quote_revision_record_id)
 						Sql.RunQuery(update_contract_date_cov_obj_level)
-					import ACVIORULES
-					violationruleInsert = ACVIORULES.ViolationConditions()
-					header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTMT'")
-					if header_obj:
-						violationruleInsert.InsertAction(header_obj.RECORD_ID, Product.GetGlobal("contract_quote_record_id"), "SAQTMT")
+					# import ACVIORULES
+					# violationruleInsert = ACVIORULES.ViolationConditions()
+					# header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTMT'")
+					# if header_obj:
+					# 	violationruleInsert.InsertAction(header_obj.RECORD_ID, Product.GetGlobal("contract_quote_record_id"), "SAQTMT")
 					# import ACVIORULES
 					# violationruleInsert = ACVIORULES.ViolationConditions()
 					# header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTMT'")
@@ -1792,6 +1837,9 @@ elif TreeParam == "Approval Chain Information":
 	
 elif TreeSuperParentParam == "Constraints":
 	ObjectName = "SYOBJC"
+elif TreeParentParam == "Fab Locations":
+	ObjectName = "SAQFBL"
+
 	
 elif TableId is not None:
 	objr_obj = Sql.GetFirst("select * FROM SYOBJR where SAPCPQ_ATTRIBUTE_NAME = '" + str(TableId) + "' ")

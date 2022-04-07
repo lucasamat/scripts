@@ -523,8 +523,11 @@ class ConfigUpdateScript:
 				#if action_visible_obj is not None:
 					#for record in action_visible_obj:
 				Trace.Write('At 453')
-				res=[record.RECORD_ID for record in action_visible_obj]
-				Trace.Write('##res--->'+str(res))
+				if action_visible_obj:
+					res=[record.RECORD_ID for record in action_visible_obj]
+					Trace.Write('##res--->'+str(res))
+				else:
+					res =[]
 		return res
 		#return []
 
@@ -533,7 +536,7 @@ class ConfigUpdateScript:
 		try:
 			getRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}'".format(Quote.CompositeNumber))
 			quote_revision_record_id = getRevision.QUOTE_REVISION_RECORD_ID
-			getQuote = Sql.GetFirst("SELECT COUNT(SAQTMT.OWNER_NAME) AS CNT FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QTEREV_RECORD_ID = SAQTRV.QUOTE_REVISION_RECORD_ID WHERE SAQTRV.QUOTE_REVISION_RECORD_ID='{}' AND SAQTMT.OWNER_NAME='{}' AND SAQTRV.REVISION_STATUS='{}'".format(quote_revision_record_id,User.Name,'REJECTED'))
+			getQuote = Sql.GetFirst("SELECT COUNT(SAQTMT.OWNER_NAME) AS CNT FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QTEREV_RECORD_ID = SAQTRV.QUOTE_REVISION_RECORD_ID WHERE SAQTRV.QUOTE_REVISION_RECORD_ID='{}' AND SAQTMT.OWNER_NAME='{}' AND SAQTRV.REVISION_STATUS='{}'".format(quote_revision_record_id,User.Name,'APR-REJECTED'))
 			return getQuote.CNT
 		except:
 			pass
@@ -559,7 +562,7 @@ class ConfigUpdateScript:
 		Trace.Write('At line 476')
 		# This function call only add recall button if Quote Owner & User are same.
 		recall_button_flag = self.recall_button_validate()
-  
+
 		return BannerContent, EditLockIcon, CpqIdConvertion, RequiredFieldSymbol, CurrencySymbol,restrict_section_edit, recall_button_flag
 
 configobj = ConfigUpdateScript()
@@ -577,5 +580,4 @@ if hasattr(Param, "keyData_val"):
 			pass
 	# Changes for sales app primary banner load - End
 	ApiResponse = ApiResponseFactory.JsonResponse(configobj.ConfiguratorCall(keyData_val))
-
 

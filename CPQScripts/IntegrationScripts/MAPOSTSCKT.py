@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO INSERT SSCM Kit BOM DATA TO CPQ(SYINPL) TABLE.
 #   __primary_author__ : BAJI
 #   __create_date :
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import sys
 import datetime 
@@ -26,54 +26,57 @@ try:
 	LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF (nolock) where EXTERNAL_TABLE_NAME ='KITBOM_GETMETHOD'")
 	
 	webRequest = str(LOGIN_CRE.URL)
-
-	def GetNewRequest(targetUrl, Btoken):
-
-		newRequest = HttpWebRequest.Create(targetUrl)
-		newRequest.AllowAutoRedirect = 0
-		newRequest.Headers.Add("AUTHORIZATION", Btoken)
-		newRequest.Method = 'GET'
-		newRequest.ContentLength = 0
-		newRequest.ContentType = 'application/json'
-
-		return newRequest
-
-	Oauth_info = SqlHelper.GetFirst("SELECT  DOMAIN,URL FROM SYCONF where EXTERNAL_TABLE_NAME ='OAUTH'")
-
-	requestdata =Oauth_info.DOMAIN
-	webclient = System.Net.WebClient()
-	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
-	response = webclient.UploadString(Oauth_info.URL,str(requestdata))
-
-	response = eval(response)
-	access_token = response['access_token']
-	Btoken = "Bearer " + access_token
-
-	rew = GetNewRequest(webRequest, Btoken)
-	resp = rew.GetResponse()
-
-	streamReader = StreamReader(resp.GetResponseStream())
-	jsonData = streamReader.ReadToEnd()				
-
-	conv_data = jsonData.replace("'",'%%').replace('QTQICO','MAKTPT')
+	Check_flag = 1
 	
-	Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
+	while Check_flag == 1:
+
+		def GetNewRequest(targetUrl, Btoken):
+
+			newRequest = HttpWebRequest.Create(targetUrl)
+			newRequest.AllowAutoRedirect = 0
+			newRequest.Headers.Add("AUTHORIZATION", Btoken)
+			newRequest.Headers.Add("Environment-Identifier", 'X')
+			newRequest.Method = 'GET'
+			newRequest.ContentLength = 0
+			newRequest.ContentType = 'application/json'
+
+			return newRequest
+
+		Oauth_info = SqlHelper.GetFirst("SELECT  DOMAIN,URL FROM SYCONF where EXTERNAL_TABLE_NAME ='OAUTH'")
+
+		requestdata =Oauth_info.DOMAIN
+		webclient = System.Net.WebClient()
+		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+		response = webclient.UploadString(Oauth_info.URL,str(requestdata))
+
+		response = eval(response)
+		access_token = response['access_token']
+		Btoken = "Bearer " + access_token
+
+		rew = GetNewRequest(webRequest, Btoken)
+		resp = rew.GetResponse()
+
+		streamReader = StreamReader(resp.GetResponseStream())
+		jsonData = streamReader.ReadToEnd()				
+
+		conv_data = jsonData.replace("'",'%%').replace('QTQICO','MAKTPT')
+		l =  conv_data.rindex("%%")
+		f = conv_data.index("%%")+2
+
+		if '[]' not in conv_data[f:l]:
+		
+			Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
+					
+			primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,INTEGRATION_NAME,CpqTableEntryDateModified)  select ''"+conv_data[f:l]+ "'',''SSCM_TO_CPQ_KITBOM_DATA'',GETDATE() ' ")
+		else:
+			Check_flag = 0
 			
-	primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,INTEGRATION_NAME,CpqTableEntryDateModified)  select ''"+conv_data+ "'',''SSCM_TO_CPQ_KITBOM_DATA'',GETDATE() ' ")
 			
-			
-	ApiResponse = ApiResponseFactory.JsonResponse(
-		{
-			"Response": [
-				{
-					"Status": "200",
-					"Message": "Data Sucessfully Uploaded ."
-				}
-			]
-		}
-	)
+	Resp_msg = """{"Response": [{"Status": "200","Message": "SSCM_TO_CPQ_KITBOM_DATA Data Sucessfully Uploaded ."				}]}	"""
+	Result = Resp_msg
 
 except:		
 	Log.Info("MAPOSTSCKT ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("MAPOSTSCKT ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
+	error_info = {"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]}
+	Result  = str(error_info)
