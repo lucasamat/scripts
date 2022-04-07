@@ -931,9 +931,9 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 				Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
-				script = (
-					"SELECT "
-					+ str(API_NAMES)
+				if TreeParam == "Quote Items":
+					script = (
+					"SELECT NET_VALUE_INGL_CURR,TAX_AMOUNT_INGL_CURR,ESTVAL_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,CNTMRG_INGL_CURR,TOTAL_MARGIN_PERCENT"
 					+ " FROM "
 					+ str(ObjectName)
 					+ " (NOLOCK) WHERE "
@@ -942,7 +942,20 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					+ str(RECORD_ID)
 					+ "'"
 					+ ""
-				)
+					)
+				else:
+					script = (
+						"SELECT "
+						+ str(API_NAMES)
+						+ " FROM "
+						+ str(ObjectName)
+						+ " (NOLOCK) WHERE "
+						+ str(autoNumber)
+						+ " = '"
+						+ str(RECORD_ID)
+						+ "'"
+						+ ""
+					)
 			elif ObjectName == "SAQRIB" and TreeParentParam == "Billing":
 				RECORD_ID = RECORD_ID.split("|")[0]
 				Trace.Write("test746--867-----TreeParam-----"+str(TreeParam))
