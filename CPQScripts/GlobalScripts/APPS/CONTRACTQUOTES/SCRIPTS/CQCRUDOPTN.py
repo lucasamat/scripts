@@ -936,6 +936,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT(NOLOCK) where SAP_PART_NUMBER = '{}' AND POES ='{}'".format(service_id,get_poes.POES))
 					if document_type_obj:
 						row_values_doctyp = {"DOCTYP_ID": document_type_obj.DOCTYP_ID,"DOCTYP_RECORD_ID": document_type_obj.DOCTYP_RECORD_ID}
+						Trace.Write("row_detail -------------->"+str(row_detail))
 						row_detail.update(row_values_doctyp)
 						offering_table_info.AddRow(row_detail)
 						Sql.Upsert(offering_table_info)
