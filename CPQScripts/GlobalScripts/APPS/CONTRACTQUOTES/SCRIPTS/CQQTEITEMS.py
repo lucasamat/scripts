@@ -496,6 +496,13 @@ try:
 except:
     Trace.Write("except hot")
     Hot = ""
+GetPOES = Sql.GetFirst("SELECT POES FROM SAQTMT(NOLOCK) WHERE QTEREV_RECORD_ID  = '{}' AND MASTER_TABLE_QUOTE_RECORD_ID  = '{}' ".format(quote_revision_record_id,quote_record_id))
+
+if GetPOES:
+
+    if SubtabName == "Summary" and GetPOES == 1:
+
+        ApiResponse = ApiResponseFactory.JsonResponse(LoadQuoteSummary())
 if Action == "NOTICE ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
     Trace.Write("276")
     ApiResponse = ApiResponseFactory.JsonResponse(NoticeOnChange(IdleNotice))
@@ -518,11 +525,5 @@ elif SubtabName == "Summary" and Action == "SAVE":
     ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
 if SubtabName == "Items" and Action == "Edit":
     ApiResponse = ApiResponseFactory.JsonResponse(EditItems())
-GetPOES = Sql.GetFirst("SELECT POES FROM SAQTMT(NOLOCK) WHERE QTEREV_RECORD_ID  = '{}' AND MASTER_TABLE_QUOTE_RECORD_ID  = '{}' ".format(quote_revision_record_id,quote_record_id))
 
-if GetPOES:
-
-    if SubtabName == "Summary" and GetPOES == 1:
-
-        ApiResponse = ApiResponseFactory.JsonResponse(LoadQuoteSummary())
 
