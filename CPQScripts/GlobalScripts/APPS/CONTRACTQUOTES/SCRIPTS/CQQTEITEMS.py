@@ -515,7 +515,7 @@ if Action == "COLD ONCHANGE" and Cold == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(ColdOnChange(Cold))
 if Action == "HOT ONCHANGE" and Hot == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(HotOnChange(Hot))
-if SubtabName == "Summary" and Action == "VIEW":
+if SubtabName == "Summary" and Action == "VIEW" and GetPOES.POES != 1:
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
 elif SubtabName == "Summary" and Action == "EDIT":
     ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdling())
