@@ -443,16 +443,15 @@ def LoadQuoteSummary():
     values["CNTMRG_INGL_CURR"] = GetDetails.CNTMRG_INGL_CURR
     values["TOTAL_MARGIN_PERCENT"] = GetDetails.TOTAL_MARGIN_PERCENT
     for x,y in values.items():
-        sec_str += (
-                    '<td><input id="'
-                    + str(x)
-                    + '" type="text" value="'
-                    + str(y)
-                    + '" title="'
-                    + str(y)
-                    + ""
-                    + '" class="form-control related_popup_css" disabled></td>'
-                    )
+        sec_str += '''<div id="sec_5802398A-50DA-40C7-8C80-99149E0C2561" class="sec_5802398A-50DA-40C7-8C80-99149E0C2561 collapse in ">
+        <div style="height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;" data-bind="attr: {" id ':'mat '+stdattrcode(),'class ':="" iswholerow()="" ?="" 'g4="" except_sec="" removehorline="" iconhvr '="" :="" 'g1="" } '="" id="mat1578" class="g4  except_sec removeHorLine iconhvr"><div class="col-md-5">	<abbr data-bind="attr:{" title':label} '="" title="'''+str(x)+'''"> <label class="col-md-11 pull-left" style="padding: 5px 5px;margin: 0;" data-bind="html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), " pull-left':="" hint()="" } '="">'''+str(x)+'''</label> </abbr> <a href="#" title="" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'''+str(x)+'''" class="col-md-1 bgcccwth10" style="text-align:right;padding: 7px 5px;color:green;" data-original-title=""><i title="'''+str(x)+'''" class="fa fa-info-circle fltlt"></i></a> </div><div class="col-md-3 pad-0"> <input type="text" id="'''+str(x)+'''" title="'''+str(y)+'''" value="'''+str(y)+'''" 'title ':userinput},="" incrementaltabindex,="" enable:="" isenabled'="" class="form-control" style="height: 28px;border-top: 0 !important;border-bottom: 0 !important;" tabindex="" disabled=""> </div>
+        <div class="col-md-3" style="display:none;"> <span class="" data-bind="attr:{" id ':="" $data.name()}'="" id="">  </span></div>
+        <div class="col-md-1" style="float: right;">
+            <div class="col-md-12 editiconright">
+                <a href="#" onclick="editclick_row(this)" class="editclick"> <i class="fa fa-lock" aria-hidden="true"></i></a>
+            </div>
+        </div>
+        </div>'''
     return sec_str	
 try:
     SubtabName = Param.SUBTAB
