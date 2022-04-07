@@ -55,9 +55,17 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 	def get_results(self, table_total_rows=0, colums='*'):		
 		start = 1
 		end = 1000
+		col=colums
+		All_col=col.split(",")
+		rpl_col ={'CONSUMABLE/NON CONSUMABLE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART': 'CUSTOMER_ACCEPT_PART','CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY'}
+		xls_col=rpl_col.get
+		All_value = [xls_col(val,val) for val in All_col]
+		col=','.join(All_col)
+		cols=str(col)
+
 		All_value=colums.split(",")
 		Trace.Write(str(All_value))
-		replace_col ={'CONSUMABLE/NON CONSUMABLE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':"CASE WHEN CUSTOMER_ACCEPT_PART =True OR CUSTOMER_ACCEPT_PART =TRUE THEN 'Yes' ELSE 'No' END AS CUSTOMER_ACCEPT_PART",'CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY','EXCHANGE_ELIGIBLE':"CASE WHEN EXCHANGE_ELIGIBLE =True OR EXCHANGE_ELIGIBLE =TRUE THEN 'Yes' ELSE 'No' END AS EXCHANGE_ELIGIBLE",'CUSTOMER_PARTICIPATE':"CASE WHEN CUSTOMER_PARTICIPATE = True  OR CUSTOMER_PARTICIPATE = TRUE  THEN 'Yes' ELSE 'No' END AS CUSTOMER_PARTICIPATE",'CUSTOMER_ELIGIBLE':"CASE WHEN CUSTOMER_ELIGIBLE = True  OR CUSTOMER_ELIGIBLE= TRUE   THEN 'Yes' ELSE 'No' END AS CUSTOMER_ELIGIBLE"}
+		replace_col ={'CONSUMABLE/NON CONSUMABLE':'MATPRIGRP_ID','CUSTOMER WILL ACCPET W/6K PART':"CASE WHEN CUSTOMER_ACCEPT_PART ='True' OR CUSTOMER_ACCEPT_PART ='TRUE' THEN 'Yes' ELSE 'No' END AS CUSTOMER_ACCEPT_PART",'CUSTOMER ANNUAL COMMIT':'CUSTOMER_ANNUAL_QUANTITY','EXCHANGE_ELIGIBLE':"CASE WHEN EXCHANGE_ELIGIBLE ='True' OR EXCHANGE_ELIGIBLE ='TRUE' THEN 'Yes' ELSE 'No' END AS EXCHANGE_ELIGIBLE",'CUSTOMER_PARTICIPATE':"CASE WHEN CUSTOMER_PARTICIPATE = 'True'  OR CUSTOMER_PARTICIPATE = 'TRUE'  THEN 'Yes' ELSE 'No' END AS CUSTOMER_PARTICIPATE",'CUSTOMER_ELIGIBLE':"CASE WHEN CUSTOMER_ELIGIBLE = 'True'  OR CUSTOMER_ELIGIBLE= TRUE   THEN 'Yes' ELSE 'No' END AS CUSTOMER_ELIGIBLE"}
 		xls_col=replace_col.get
 		All_value = [xls_col(val,val) for val in All_value]
 		colums=','.join(All_value)
@@ -65,14 +73,14 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 		#source_object_primary_key_column_obj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(self.object_name))				
 		while start < table_total_rows:
 			query_string_with_pagination = """
-							SELECT DISTINCT {Columns} FROM (
-								SELECT DISTINCT {Columns}, ROW_NUMBER()OVER(ORDER BY CpqTableEntryId) AS SNO FROM (
+							SELECT DISTINCT {Cols} FROM (
+								SELECT DISTINCT {Cols}, ROW_NUMBER()OVER(ORDER BY CpqTableEntryId) AS SNO FROM (
 									SELECT DISTINCT {Columns}, CpqTableEntryId
 									FROM {TableName} (NOLOCK)
 									WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'
 									) IQ)OQ
 							WHERE SNO>={Skip_Count} AND SNO<={Fetch_Count}              
-							""".format(Columns=colums, TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param, Skip_Count=start, Fetch_Count=end)
+							""".format(Cols=cols,Columns=colums, TableName=self.object_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param, Skip_Count=start, Fetch_Count=end)
 
 			table_data = Sql.GetList(query_string_with_pagination)
 
