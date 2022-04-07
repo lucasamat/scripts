@@ -79,7 +79,7 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 			if table_data is not None:				
 				for row_data in table_data:
 					data = [row_obj.Value for row_obj in row_data]
-					data = ['Yes' if val =='TRUE'or val =='True' else 'No' if val == 'FALSE' or val =='False' else val for val in data]
+					data = ['Yes' if str(val) =='TRUE'or str(val) =='True' else 'No' if str(val) == 'FALSE' or str(val) =='False' else val for val in data]
 					Trace.Write("DATA++"+str(data))
 					yield data
 			start += 1000		
