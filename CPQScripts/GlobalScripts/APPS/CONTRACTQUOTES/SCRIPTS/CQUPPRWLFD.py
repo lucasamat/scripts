@@ -149,7 +149,7 @@ class ContractQuoteItemAnnualizedPricing:
 		if 'USRPRC' not in updated_fields:
 			Sql.RunQuery("UPDATE SAQICO SET USRPRC = TRGPRC FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE = '{LineId}' {WhereCondition}".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id, WhereCondition =  where_condition))
 		if 'TGADJP' not in updated_fields:
-			Sql.RunQuery("UPDATE SAQICO SET TGADJP = (TRGPRC - USRPRC) / TRGPRC * -1 FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE = '{LineId}' {WhereCondition}".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id, WhereCondition =  where_condition))
+			Sql.RunQuery("UPDATE SAQICO SET TGADJP = ((TRGPRC - USRPRC) / TRGPRC * -1) * 100 FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE = '{LineId}' {WhereCondition}".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id, WhereCondition =  where_condition))
 		else:	
 			Sql.RunQuery("UPDATE SAQICO SET USRPRC = TRGPRC * (TGADJP / 100) FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND LINE = '{LineId}' {WhereCondition}".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, LineId=line_id, WhereCondition =  where_condition))
 		#CNTPRC - Contractual Price
