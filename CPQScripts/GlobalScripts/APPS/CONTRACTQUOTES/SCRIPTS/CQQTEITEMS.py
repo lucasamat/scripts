@@ -500,7 +500,7 @@ GetPOES = Sql.GetFirst("SELECT POES FROM SAQTMT(NOLOCK) WHERE QTEREV_RECORD_ID  
 
 if GetPOES:
 
-    if SubtabName == "Summary" and GetPOES == 1:
+    if SubtabName == "Summary" and (GetPOES.POES == 1):
 
         ApiResponse = ApiResponseFactory.JsonResponse(LoadQuoteSummary())
 if Action == "NOTICE ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
