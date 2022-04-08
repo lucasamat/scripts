@@ -2626,10 +2626,7 @@ class SyncQuoteAndCustomTables:
                                                     FROM
                                                         SAQFEQ (NOLOCK)
                                                         JOIN MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID
-                                                        AND MAEQUP.SALESORG_RECORD_ID = SAQFEQ.SALESORG_RECORD_ID
-                                                        JOIN MAEQTY (NOLOCK) ON MAEQTY.EQUIPMENT_TYPE_ID = MAEQUP.EQUIPMENTTYPE_ID
                                                     WHERE
-                                                        MAEQTY.COSTING_RELEVANT = 'True'
                                                         AND ISNULL(MAEQUP.SERIAL_NO, '') = ''
                                                         AND SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
                                                         AND SAQFEQ.QTEREV_RECORD_ID = '{quote_revision_id}'
@@ -3376,10 +3373,7 @@ class SyncQuoteAndCustomTables:
                                             SAQFEQ (NOLOCK)
                                             JOIN MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID
                                             AND MAEQUP.FABLOCATION_ID = SAQFEQ.FABLOCATION_ID
-                                            AND MAEQUP.SALESORG_RECORD_ID = SAQFEQ.SALESORG_RECORD_ID
-                                            JOIN MAEQTY (NOLOCK) ON MAEQTY.EQUIPMENT_TYPE_ID = MAEQUP.EQUIPMENTTYPE_ID
                                         WHERE
-                                            MAEQTY.COSTING_RELEVANT = 'True'
                                             AND ISNULL(MAEQUP.SERIAL_NO, '') = ''
                                             AND SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
                                             AND SAQFEQ.QTEREV_RECORD_ID = '{quote_revision_id}'
