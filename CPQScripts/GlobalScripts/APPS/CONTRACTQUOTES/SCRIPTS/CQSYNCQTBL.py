@@ -2041,7 +2041,7 @@ class SyncQuoteAndCustomTables:
                                     )
                                 )
                         # A055S000P01-8690 endss..
-
+                        #MULTIPLE CONTACT FROM C4C to CPQ Completed
                         if payload_json.get("SAQICT"):
                             for employees in payload_json.get("SAQICT"):
                                 employee_obj = Sql.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where CRM_EMPLOYEE_ID = '{crm_employee_id}'".format(crm_employee_id=employees.get("CRM_EMPLOYEE_ID")))
