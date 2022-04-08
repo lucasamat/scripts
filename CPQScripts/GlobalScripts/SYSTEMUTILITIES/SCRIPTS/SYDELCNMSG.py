@@ -285,13 +285,13 @@ class DeleteConfirmPopup:
             GetEquipment = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQFEQ WHERE QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = '{}'".format(RecordId.split("#")[1]))
             Objects = ["SAQFEQ","SAQFEA","SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQICO","SAQSCE","SAQSAE"]
             for obj in Objects:
-                a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND EQUIPMENT_ID = '{Eq}' AND SERVICE_ID = '{ServiceId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),Eq=GetEquipment.EQUIPMENT_ID,ServiceId=ServiceId,quote_revision_record_id=quote_revision_record_id))
+                a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND EQUIPMENT_ID = '{Eq}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),Eq=GetEquipment.EQUIPMENT_ID,quote_revision_record_id=quote_revision_record_id))
         else:
             if GetCount.cnt == 1:
                 Trace.Write("Only one equipment")
-                Objects = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQICO","SAQSFB","SAQSCE","SAQSAE","SAQSGE","SAQSFE","SAQIEN"]
+                Objects = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQICO","SAQSFB","SAQSCE","SAQSAE","SAQSGE","SAQSFE","SAQIEN","SAQSGB"]
                 for obj in Objects:
-                    a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND SERVICE_ID LIKE '%{ServiceId}%' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),ServiceId=ServiceId,quote_revision_record_id=quote_revision_record_id))
+                    a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id))
 
         
         return True
