@@ -282,7 +282,7 @@ class DeleteConfirmPopup:
         GetCount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQFEQ WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         if GetCount.cnt >1:
             Trace.Write("More than one equipment")
-            GetEquipment = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQFEQ WHERE QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = '{}'".format(RecordId.split("#")[1]))
+            GetEquipment = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQFEQ WHERE QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = '{}'".format(ObjName.split("#")[1]))
             Objects = ["SAQFEQ","SAQFEA","SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQICO","SAQSCE","SAQSAE"]
             for obj in Objects:
                 a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND EQUIPMENT_ID = '{Eq}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),Eq=GetEquipment.EQUIPMENT_ID,quote_revision_record_id=quote_revision_record_id))
