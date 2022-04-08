@@ -3374,7 +3374,7 @@ class SyncQuoteAndCustomTables:
                                             JOIN MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID
                                             AND MAEQUP.FABLOCATION_ID = SAQFEQ.FABLOCATION_ID
                                         WHERE
-                                            AND ISNULL(MAEQUP.SERIAL_NO, '') = ''
+                                            ISNULL(MAEQUP.SERIAL_NO, '') = ''
                                             AND SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
                                             AND SAQFEQ.QTEREV_RECORD_ID = '{quote_revision_id}'
                                             AND ISNULL(SAQFEQ.TEMP_TOOL, '') = ''
