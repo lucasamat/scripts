@@ -1100,11 +1100,9 @@ class ViolationConditions:
 
                 arr.append(1 if QueryResult else 0)
 
-            if result.CONDITIONS_MET in ["ANY", "ALL"]:
-                if (1 in arr) and result.CONDITIONS_MET == "ANY":
+                if (all(arr) and result.CONDITION_MET=='ALL') or (any(arr) and result.CONDITION_MET=='ANY'):
                     return 1
-                if len(arr) == arr.count(1) and result.CONDITIONS_MET == "ALL":
-                    return 1
+               
                 return None
 
             else:
