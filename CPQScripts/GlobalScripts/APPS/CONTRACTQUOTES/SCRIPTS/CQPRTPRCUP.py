@@ -188,7 +188,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 					quantity[0]=1
 				quantity[0] = int(quantity[0])
 				curr_attr = currency_attribute
-				if salesUOM[0] !='':
+				if salesUOM[0] =='':
 					salesUOM[0] ='EA'
 				if salesUOM[0] !='':
 					salesuom_attr = '"quantity":{"value":'+str(quantity[0])+',"unit":"'+str(ISOCode[salesUOM[0]])+'"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(partids[0])+'","baseUnit":"EA","alternateProductUnits": [{"alternateUnitName": "'+str(ISOCode[salesUOM[0]])+'","numerator": "'+str(salesUOMConvs)+'","denominator": "1"}]}'
