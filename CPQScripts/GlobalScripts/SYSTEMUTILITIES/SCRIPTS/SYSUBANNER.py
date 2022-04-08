@@ -99,7 +99,7 @@ def Related_Sub_Banner(
     
     #elif quote_status.QUOTE_STATUS != 'APPROVED':
     #else:     
-    Trace.Write('status----->'+str(revision_status))
+    Trace.Write('status----->'+str(revision_status.REVISION_STATUS))
     dynamic_Button = None
     add_button = ""
     # Getting page details
