@@ -6372,9 +6372,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					BatchGroupRecordId=kwargs.get('batch_group_record_id')
 					))
 
-		delete_obj_list = ["MAEAPM_INBOUND","MAKTPT_INBOUND"]
-		for object in delete_obj_list:
-			Sql.RunQuery("DELETE FROM {} WHERE QUOTE_ID='{}' and SERVICE_ID = '{}' AND QTEREV_ID = '{}' ".format(object,self.contract_quote_id, self.tree_param,self.quote_revision_id))
+		# delete_obj_list = ["MAEAPM_INBOUND","MAKTPT_INBOUND"]
+		# for object in delete_obj_list:
+		# 	Sql.RunQuery("DELETE FROM {} WHERE QUOTE_ID='{}' and SERVICE_ID = '{}' AND QTEREV_ID = '{}' ".format(object,self.contract_quote_id, self.tree_param,self.quote_revision_id))
 			# self._process_query("""INSERT SAQGPE (
 			# 		CPS_CONFIGURATION_ID,
 			# 		CPS_MATCH_ID,
@@ -6576,12 +6576,12 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								else:
 									self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
 									pm_event_flag=1
-						if self.tree_param == 'Z0009' or self.tree_param == 'Z0010':
+						if self.tree_param == 'Z0009' or self.tree_param == 'Z0010' or self.tree_param == 'Z0128':
 							# quote_type_attribute_value =re.findall(pattern_name,sub_string)
 							#Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value)+" - "+str(pm_event_attribute_value))
 							if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
 								additional_where = ""
-								if self.tree_param == 'Z0010':
+								if self.tree_param == 'Z0010' or self.tree_param == 'Z0128':
 									self.tools_from_ui = "No"
 									
 									self.applied_preventive_maintainence_quote_type_changed = "Yes"
