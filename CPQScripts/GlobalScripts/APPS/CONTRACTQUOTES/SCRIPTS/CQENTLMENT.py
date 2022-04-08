@@ -1228,7 +1228,6 @@ class Entitlements:
 						if key in ( "AGS_{}_NET_PRMALB".format(serviceId)) and str(tableName) in ('SAQTSE'):
 							##To get the quote type of the attribute to delete the events table and their child tables based on the quote type...
 							where_string = ''
-							import re
 							service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.ContractRecordId,RevisionRecordId=self.revision_recordid,service_id = serviceId))
 							if service_entitlement_object is not None:
 								pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
