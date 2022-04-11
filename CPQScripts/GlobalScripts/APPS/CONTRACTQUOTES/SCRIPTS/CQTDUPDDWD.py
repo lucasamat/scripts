@@ -122,6 +122,8 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 				else:
 					col[0:2]=[]
 					col=[x for x in col if "DELIVERY" not in x]
+					col.insert(14,'DELIVERY_MODE')
+					
 					Trace.Write("@Z0110_columns"+str(col))
 				table_columns=col
 
