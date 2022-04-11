@@ -1,75 +1,50 @@
 # =========================================================================================================================================
-#   __script_name : SYUGUIDKEY.PY
-#   __script_description : THIS SCRIPT IS USED TO CONVERT THE RECORD ID TO GUID
-#   __primary_author__ :
-#   __create_date : 26/08/2020
+#   __script_name : SYCNGEGUID.PY
+#   __script_description : THIS SCRIPT IS USED TO GET THE CPQTABLEENTRYID OR RECORD_ID FROM A TABLE.
+#                          THIS SCRIPT IS CALLED IN CHANGE_RECORDID_TO_CPQID GLOBAL SCRIPT WHEN CONVERTING THE GUID TO TABLE NAME_RECORD ID
+#   __primary_author__ : JOE EBENEZER
+#   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-from SYDATABASE import sql_get_first
-import Webcom.Configurator.Scripting.Test.TestProduct
-
-import SYCNGEGUID as CPQ
-
-test_product = Webcom.Configurator.Scripting.Test.test_product()
-product_name = Product.Name
-current_tab = test_product.CurrentTab
 
 
-def cpqid():
-    attr_name = ""
-    cpq_record_id = ""
-    current_module_obj = sql_get_first("SELECT * FROM SYAPPS (NOLOCK) WHERE APP_LABEL like '%{}%' ".format(product_name))
-    if current_module_obj:
-        tab_obj = sql_get_first(
-            "SELECT * FROM SYTABS (NOLOCK) WHERE SAPCPQ_ALTTAB_NAME = '{}' and APP_LABEL = '{}' ".format(
-                current_tab, current_module_obj.APP_LABEL
-            )
-        )
-        if tab_obj:
-            section_obj = sql_get_first(
-                """
-                SELECT
-                    SYSECT.*
-                FROM
-                    SYSECT (NOLOCK)
-                    INNER JOIN SYPAGE (NOLOCK) ON SYPAGE.RECORD_ID = SYSECT.PAGE_RECORD_ID
-                WHERE
-                    SYPAGE.TAB_RECORD_ID = '{}'
-                    and SYSECT.SECTION_NAME = 'BASIC INFORMATION'
-                    """.format(
-                    tab_obj.RECORD_ID
+from SYDATABASE import SQL
+#import Webcom.Configurator.Scripting.Test.TestProduct
+Sql = SQL()
+
+
+class KeyCPQId:
+    @staticmethod
+    def GetCPQId(TABLEID, REC_ID):
+        KeyId = ""
+        if TABLEID != "":
+
+            RecNameObj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH WITH (NOLOCK) WHERE OBJECT_NAME = '" + TABLEID + "'")
+            if RecNameObj is not None:
+                RecName = str(RecNameObj.RECORD_NAME)
+                RecIDObj = Sql.GetFirst(
+                    "SELECT CpqTableEntryId FROM " + TABLEID + " (NOLOCK) WHERE " + RecName + "='" + REC_ID + "' "
                 )
-            )
-            if section_obj:
-                sql_obj = sql_get_first(
-                    "SELECT OBJECT_NAME,RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}' ".format(
-                        section_obj.PRIMARY_OBJECT_NAME.strip()
-                    )
+                if RecIDObj is not None:
+                    CPQID = RecIDObj.CpqTableEntryId
+                    if CPQID != "":
+                        KeyId = str(TABLEID) + "-" + str(CPQID).rjust(5, "0")
+        return KeyId
+
+    @staticmethod
+    def GetKEYId(TABLEID, KeyId):
+        RecID = ""
+        if TABLEID != "":
+            RecNameObj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH WITH (NOLOCK) WHERE OBJECT_NAME = '" + TABLEID + "'")
+            if RecNameObj is not None:
+                CPQID = KeyId.split("-")[1].lstrip("0") if "-" in KeyId else KeyId  ###jira id 6303
+                RecName = str(RecNameObj.RECORD_NAME)
+                RecIDObj = Sql.GetFirst(
+                    "SELECT " + RecName + " AS RECID FROM " + TABLEID + " (NOLOCK) WHERE CpqTableEntryId='" + CPQID + "' "
                 )
-                if sql_obj:
-                    table_name = sql_obj.OBJECT_NAME
-                    qstn_obj = sql_get_first(
-                        ""
-                        """
-                        SELECT
-                            RECORD_ID,
-                            FIELD_LABEL
-                        FROM
-                            SYSEFL WITH (NOLOCK)
-                        WHERE
-                            API_NAME = '{}'
-                            and FIELD_LABEL = 'Key'
-                            and SECTION_RECORD_ID = '{}'
-                        """.format(
-                            table_name, section_obj.RECORD_ID
-                        )
-                    )
-                    if qstn_obj:
-                        qstnrecordid = str(qstn_obj.RECORD_ID).replace("-", "_").replace(" ", "")
-                        attr_name = "QSTN_{}".format(qstnrecordid)
-                        key_value = Product.Attributes.GetByName(attr_name).GetValue()
-                        cpq_record_id = CPQ.KeyCPQId.GetCPQId(str(table_name), str(key_value))
-    return attr_name, cpq_record_id
+                if RecIDObj is not None:
+                    RecID = str(RecIDObj.RECID)
+        return RecID
 
 
-ApiResponse = ApiResponseFactory.JsonResponse(cpqid())
+KeyCPQId = KeyCPQId()
