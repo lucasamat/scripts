@@ -3251,7 +3251,7 @@ def Related_Sub_Banner(
                     sec_rel_sub_bnr+= ""
                 else:
                     Trace.Write("Mul_chk_H "+str(multi_buttons))
-                    if str(multi_buttons) != "" and subTabName == "NSO Catalog":
+                    if str(multi_buttons) != "" and (subTabName == "NSO Catalog" or subTabName == "Credits"):
                         for btn in multi_buttons:
                             sec_rel_sub_bnr+= str(btn)
                     else:
