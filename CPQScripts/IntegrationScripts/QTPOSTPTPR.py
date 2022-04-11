@@ -414,7 +414,7 @@ try:
                                 """.format(rev=revision_rec_id, QuoteRecordId=contract_quote_record_id,exch_rate = exch_rate))
                         
                         Sql.RunQuery("""UPDATE SAQRIT SET UNIT_PRICE  = UNIT_PRICE_INGL_CURR *"""+str(exch_rate)+""" FROM SAQRIT
-                                        WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(total_unit=GetSum.TOTAL_UNIT, QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
+                                        WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}' AND SERVICE_ID = 'Z0100'""".format(QuoteRecordId=contract_quote_record_id,rev =revision_rec_id))
                         
                         ###calling script for saqris,saqtrv insert
                         CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":QUOTE})
