@@ -10,7 +10,7 @@
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import sql_get_first, sql_get_list, sql_get_table, sql_run_query, sql_delete, sql_upsert,SQL
 import re
-
+Sql = SQL()
 # ----------------------------node visibility query based on sales employee--------------------------------------- #
 get_node_visibility = sql_get_first(
     """
