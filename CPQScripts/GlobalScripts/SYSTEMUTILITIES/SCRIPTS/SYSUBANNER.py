@@ -3242,7 +3242,7 @@ def Related_Sub_Banner(
                     Trace.Write('3241---Multi_buttons')
                     for btn in multi_buttons:
                         Trace.Write('3095-3243-----btn--'+str(btn))
-                        if 'EXPORT' in str(btn)
+                        if 'EXPORT' in str(btn):
                             
                             dropdown_multi_btn_str += '<li>'+str(btn)+'</li>'
                             sec_rel_sub_bnr += (dropdown_multi_btn_str)
