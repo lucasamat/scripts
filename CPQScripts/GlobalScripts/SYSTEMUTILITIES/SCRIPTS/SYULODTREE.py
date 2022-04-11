@@ -758,7 +758,7 @@ class TreeView:
                             NodeApiName = findChildOne.NODE_DISPLAY_NAME
                             DynamicQuery = findChildOne.DYNAMIC_NODEDATA_QUERY
                             PageRecId = str(findChildOne.NODE_PAGE_RECORD_ID)
-                            ordersBy = findChildOne.ORDERS_BY
+                            ordersBy = sfindChildOne.ORDERS_BY
                             nodeId = str(findChildOne.NODE_ID)
                             where_string = " 1=1 "
                             if parobj and ACTION != "ADDNEW":
