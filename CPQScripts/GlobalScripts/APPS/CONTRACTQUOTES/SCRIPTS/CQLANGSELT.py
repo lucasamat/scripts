@@ -780,7 +780,7 @@ def _insert_subtotal_by_offerring_quote_table():
 			Quote.GetCustomField('QD_BILL_PARTY_NAME').Content = str(get_bill_to_details.EMAIL)
 		if str(get_bill_to_details.PHONE):
 			Quote.GetCustomField('QD_BILL_PHONE').Content = str(get_bill_to_details.PHONE)
-	get_pay_to_details = Sql.GetFirst("SELECT PARTY_NAME,ADDRESS,EMAIL,PHONE from SAQTIP where QUOTE_RECORD_ID = '{qt_rec_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}'  and CPQ_PARTNER_FUNCTION='PAY TO'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	get_pay_to_details = Sql.GetFirst("SELECT PARTY_NAME,ADDRESS,EMAIL,PHONE from SAQTIP where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}'  and CPQ_PARTNER_FUNCTION='PAY TO'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
 	if get_pay_to_details:
 		if str(get_pay_to_details.PARTY_NAME):
 			Quote.GetCustomField('QD_PAY_PARTY_NAME').Content = str(get_pay_to_details.PARTY_NAME)
