@@ -874,7 +874,7 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 			object_name = sefl.API_NAME
 			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD (NOLOCK) WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
 			data_type = syobjd_obj.DATA_TYPE
-			col_name = Sql.GetFirst("SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
+			col_name = Sql.GetFirst("SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' AND ACTIVE = 1")
 			if col_name:
 				if sefl_api == "CpqTableEntryModifiedBy":
 					current_obj_value = col_name.CpqTableEntryModifiedBy
@@ -1551,7 +1551,7 @@ elif ACTION == "LEGALSOW_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
 		contract_id = Sql.GetFirst("SELECT CONTRACT_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '"+str(contract_record_id)+"'")
-		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
+		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"' AND ACTIVE = 1")
 		Quote = quote_id.QUOTE_RECORD_ID
 	elif TreeParam == "Quote Information":
 		Quote = Quote.GetGlobal("contract_quote_record_id")
@@ -1579,7 +1579,7 @@ elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
 		contract_id = Sql.GetFirst("SELECT CONTRACT_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '"+str(contract_record_id)+"'")
-		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
+		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"' AND ACTIVE = 1")
 		Quote = quote_id.QUOTE_RECORD_ID
 	elif TreeParam == "Quote Information":
 		Quote = Quote.GetGlobal("contract_quote_record_id")
