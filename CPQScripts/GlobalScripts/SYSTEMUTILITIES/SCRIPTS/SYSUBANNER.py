@@ -91,7 +91,7 @@ def Related_Sub_Banner(
         quote_status = ''    
     #if quote_status:
     try:
-        revision_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        revision_status = Sql.GetFirst("SELECT REVISION_STATUS,WORKFLOW_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
     except:
         revision_status = ''
 
@@ -119,7 +119,7 @@ def Related_Sub_Banner(
             get_quote_revision_history_status = Sql.GetFirst("SELECT REVSTS_CHANGE_DATE FROM SAQRSH WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND REVISION_STATUS = 'PRI-PRICING'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
             
             
-            get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS,CONTRACT_VALID_FROM FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+            get_quote_status = Sql.GetFirst("SELECT REVISION_STATUS,WORKFLOW_STATUS,CONTRACT_VALID_FROM FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
             Trace.Write("get_quote_status--> "+str(get_quote_status.REVISION_STATUS))
             if get_quote_revision_history_status:
                 get_diff_days = abs((get_quote_revision_history_status.REVSTS_CHANGE_DATE-get_quote_status.CONTRACT_VALID_FROM).Days)
