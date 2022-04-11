@@ -3237,7 +3237,7 @@ def Related_Sub_Banner(
                     #Trace.Write('3095--sec_rel_sub_bnr--'+str(sec_rel_sub_bnr))
                 else:
                     sec_rel_sub_bnr += str(add_button)
-            elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.WORKFLOW_STATUS in ('APPROVALS','CLEAN BOOKING CHECKLIST','LEGAL SOW','QUOTE DOCUMENTS'):
+            elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.WORKFLOW_STATUS in ('APPROVALS','CLEAN BOOKING CHECKLIST','LEGAL SOW','QUOTE DOCUMENTS'.'BOOKED'):
                 if str(multi_buttons) != "":
                     Trace.Write('3241---Multi_buttons')
                     for btn in multi_buttons:
