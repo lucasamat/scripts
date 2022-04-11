@@ -2431,7 +2431,7 @@ def Related_Sub_Banner(
         FifthValue = ""
         SixthLable = ''
         SixthValue = ''
-    elif ObjName == "SAQRGG" and (subTabName == "Events" or subTabName == 'Kit Details' or subTabName == 'BoM'):
+    elif ObjName == "SAQRGG" and (subTabName == "Events" or subTabName == 'Kit Details'):
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeSuperParentParam)
         SecondLable = "Greenbook"
