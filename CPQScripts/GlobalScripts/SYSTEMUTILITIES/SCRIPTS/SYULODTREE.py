@@ -752,7 +752,7 @@ class TreeView:
         try:
             user_id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
             salesteam_obj = Sql.GetList(
-                "SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' AND MEMBER_ID = '{UserId}'".format(
+                " SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qte_rec_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' AND MEMBER_ID = '{UserId}'".format(
                     qte_rec_id=contract_quote_record_id, revision_rec_id=quote_revision_record_id, UserId=user_id
                 )
             )
