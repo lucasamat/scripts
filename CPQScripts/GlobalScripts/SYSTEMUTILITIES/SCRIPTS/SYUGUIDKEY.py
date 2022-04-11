@@ -5,67 +5,71 @@
 #   __create_date : 26/08/2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-from SYDATABASE import SQL
+from SYDATABASE import sql_get_first
 import Webcom.Configurator.Scripting.Test.TestProduct
-Sql = SQL()
+
 import SYCNGEGUID as CPQ
 
-ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
-Trace = Trace  # pylint: disable=E0602
-Log = Log  # pylint: disable=E0602
-Webcom = Webcom  # pylint: disable=E0602
-Product = Product  # pylint: disable=E0602
-ApiResponseFactory = ApiResponseFactory  # pylint: disable=E0602
-TagParserProduct = TagParserProduct  # pylint: disable=E0602
-
-TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
-Product_name = Product.Name
-current_tab = str(TestProduct.CurrentTab)
+test_product = Webcom.Configurator.Scripting.Test.test_product()
+product_name = Product.Name
+current_tab = test_product.CurrentTab
 
 
-def CPQID():
-    ATTR_NAME = ""
-    CPQRecordID = ""
-    CURRENT_MODULE_OBJ = Sql.GetFirst("SELECT * FROM SYAPPS (NOLOCK) WHERE APP_LABEL like '%" + str(Product_name) + "%' ")
-    if CURRENT_MODULE_OBJ is not None:
-        tab_obj = Sql.GetFirst(
-            "SELECT * FROM SYTABS (NOLOCK) WHERE SAPCPQ_ALTTAB_NAME = '"
-            + str(current_tab)
-            + "' and APP_LABEL = '"
-            + str(CURRENT_MODULE_OBJ.APP_LABEL)
-            + "' "
-        )
-        if tab_obj is not None:
-            section_obj = Sql.GetFirst(
-                "SELECT SYSECT. * FROM SYSECT (NOLOCK) INNER JOIN SYPAGE (NOLOCK) ON SYPAGE.RECORD_ID = SYSECT.PAGE_RECORD_ID WHERE SYPAGE.TAB_RECORD_ID = '"
-                + str(tab_obj.RECORD_ID)
-                + "' and SYSECT.SECTION_NAME = 'BASIC INFORMATION' "
+def cpqid():
+    attr_name = ""
+    cpq_record_id = ""
+    current_module_obj = sql_get_first("SELECT * FROM SYAPPS (NOLOCK) WHERE APP_LABEL like '%{}%' ".format(product_name))
+    if current_module_obj:
+        tab_obj = sql_get_first(
+            "SELECT * FROM SYTABS (NOLOCK) WHERE SAPCPQ_ALTTAB_NAME = '{}' and APP_LABEL = '{}' ".format(
+                current_tab, current_module_obj.APP_LABEL
             )
-            if section_obj is not None:
-                SqlObj = Sql.GetFirst(
-                    "SELECT OBJECT_NAME,RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '"
-                    + str(section_obj.PRIMARY_OBJECT_NAME.strip())
-                    + "' "
+        )
+        if tab_obj:
+            section_obj = sql_get_first(
+                """
+                SELECT
+                    SYSECT.*
+                FROM
+                    SYSECT (NOLOCK)
+                    INNER JOIN SYPAGE (NOLOCK) ON SYPAGE.RECORD_ID = SYSECT.PAGE_RECORD_ID
+                WHERE
+                    SYPAGE.TAB_RECORD_ID = '{}'
+                    and SYSECT.SECTION_NAME = 'BASIC INFORMATION'
+                    """.format(
+                    tab_obj.RECORD_ID
                 )
-                if SqlObj is not None:
-                    Table_Name = str(SqlObj.OBJECT_NAME)
-                    QstnObj = Sql.GetFirst(
-                        "SELECT RECORD_ID,FIELD_LABEL FROM SYSEFL WITH (NOLOCK) WHERE API_NAME = '"
-                        + Table_Name
-                        + "' and FIELD_LABEL = 'Key' and SECTION_RECORD_ID = '"
-                        + str(section_obj.RECORD_ID)
-                        + "' "
+            )
+            if section_obj:
+                sql_obj = sql_get_first(
+                    "SELECT OBJECT_NAME,RECORD_NAME FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = '{}' ".format(
+                        section_obj.PRIMARY_OBJECT_NAME.strip()
                     )
-                    if QstnObj is not None:
-                        QSTNRECORDID = str(QstnObj.RECORD_ID).replace("-", "_").replace(" ", "")
-                        ATTR_NAME = "QSTN_" + str(QSTNRECORDID)
-                        KeyValue = Product.Attributes.GetByName(str(ATTR_NAME)).GetValue()
-                        CPQRecordID = CPQ.KeyCPQId.GetCPQId(str(Table_Name), str(KeyValue))
-    return ATTR_NAME, CPQRecordID
+                )
+                if sql_obj:
+                    table_name = sql_obj.OBJECT_NAME
+                    qstn_obj = sql_get_first(
+                        ""
+                        """
+                        SELECT
+                            RECORD_ID,
+                            FIELD_LABEL
+                        FROM
+                            SYSEFL WITH (NOLOCK)
+                        WHERE
+                            API_NAME = '{}'
+                            and FIELD_LABEL = 'Key'
+                            and SECTION_RECORD_ID = '{}'
+                        """.format(
+                            table_name, section_obj.RECORD_ID
+                        )
+                    )
+                    if qstn_obj:
+                        qstnrecordid = str(qstn_obj.RECORD_ID).replace("-", "_").replace(" ", "")
+                        attr_name = "QSTN_{}".format(qstnrecordid)
+                        key_value = Product.Attributes.GetByName(attr_name).GetValue()
+                        cpq_record_id = CPQ.KeyCPQId.GetCPQId(str(table_name), str(key_value))
+    return attr_name, cpq_record_id
 
 
-ApiResponse = ApiResponseFactory.JsonResponse(CPQID())
-
-TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
-current_tab = str(TestProduct.CurrentTab)
-
+ApiResponse = ApiResponseFactory.JsonResponse(cpqid())
