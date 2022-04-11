@@ -1870,7 +1870,7 @@ def Related_Sub_Banner(
             FourthValue = str(EquipmentId)
             FifthLable = "Serial Number"
             FifthValue = str(SerialNumber)
-        elif(str(ObjName)=="SAQRGG" and (subTabName == 'Details' or subTabName == 'Events')):
+        elif(str(ObjName)=="SAQRGG" and (subTabName == 'Details' or subTabName == 'Events'or subTabName == 'Kit Detials')):
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(TreeSuperParentParam)
             SecondLable = "Product Offering Description"
