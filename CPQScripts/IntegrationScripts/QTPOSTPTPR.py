@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO UPDATE PART PRICING RESPONCE FROM CPS TO CPQ.
 #   __primary_author__ : BAJI
 #   __create_date :
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED 
 # ==========================================================================================================================================
 import clr
 #clr.AddReference("System.Net")
