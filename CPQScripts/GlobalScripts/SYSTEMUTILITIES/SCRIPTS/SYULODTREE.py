@@ -2515,6 +2515,7 @@ class TreeView:
                                 "Z0007",
                                 "Z0010",
                                 "Z0016",
+                                "Z0128"
                             ):
                                 Quote.SetGlobal("SERVICE", NodeText)
                             # PROFILE EXPLORER
@@ -2591,7 +2592,7 @@ class TreeView:
                                                 serviceid = NodeText
                                             Subwhere_string += " AND SERVICE_ID = '{}' ".format(serviceid)
                                             Quote.SetGlobal("SERVICE", serviceid)
-                                        if NodeText in ("Z0091", "Z0009", "Z0092", "Z0035", "Z0016", "Z0007", "Z0016_AG", "Z0007_AG"):
+                                        if NodeText in ("Z0091", "Z0009", "Z0092", "Z0035", "Z0016", "Z0007", "Z0016_AG", "Z0007_AG","Z0128"):
                                             Subwhere_string += " AND SERVICE_ID = '{}' ".format(NodeText)
                                             Quote.SetGlobal("SERVICE", NodeText)
                                         elif addon_obj:
