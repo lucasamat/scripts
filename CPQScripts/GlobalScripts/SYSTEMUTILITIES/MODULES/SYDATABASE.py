@@ -179,22 +179,22 @@ def sql_get_table(table_name):
     return Sql.GetTable(table_name)
 
 
-def sql_get_first(cls, query):
+def sql_get_first(query):
     """This function is the public api to access the sql GetFirst method"""
     return Sql.GetFirst(query)
 
 
-def sql_upsert(cls, tableInfo):
+def sql_upsert(tableInfo):
     """This function is the public api to access the sql Upsert method"""
     return Sql.Upsert(tableInfo)
 
 
-def sql_delete(cls, tableInfo):
+def sql_delete(tableInfo):
     """This function is the public api to access the sql Delete method"""
     return Sql.Delete(tableInfo)
 
 
-def sql_run_query(cls, query):
+def sql_run_query(query):
     """This function is the public api to access the sql RunQuery method"""
     return Sql.RunQuery(query)
 
