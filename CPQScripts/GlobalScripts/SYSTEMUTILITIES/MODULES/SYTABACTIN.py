@@ -20,19 +20,17 @@ class TableAction:
         Param : row : row : Row to be Added
         """
         table_info = sql_get_table(table_name)
-         """datetime_value = datetime.datetime.now()
-        Get_UserID = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
-        try:
-            row.pop("CPQTABLEENTRYADDEDBY")
-            row.pop("CPQTABLEENTRYDATEADDED")
-            row.pop("CpqTableEntryModifiedBy")
-            row.pop("CpqTableEntryDateModified")
-        except:
-            Trace.Write("EXCEPTION : NOTHING TO POP")
-        row["CPQTABLEENTRYADDEDBY"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
-        row["CPQTABLEENTRYDATEADDED"] = datetime_value
-        row["CpqTableEntryModifiedBy"] = str(Get_UserID)
-        row["CpqTableEntryDateModified"] = datetime_value"""  
+        # Don't remove
+        # datetime_value = datetime.datetime.now()
+        # Get_UserID = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
+        # row.pop("CPQTABLEENTRYADDEDBY",None)
+        # row.pop("CPQTABLEENTRYDATEADDED",None)
+        # row.pop("CpqTableEntryModifiedBy",None)
+        # row.pop("CpqTableEntryDateModified",None)
+        # row["CPQTABLEENTRYADDEDBY"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
+        # row["CPQTABLEENTRYDATEADDED"] = datetime_value
+        # row["CpqTableEntryModifiedBy"] = str(Get_UserID)
+        # row["CpqTableEntryDateModified"] = datetime_value  
         table_info.AddRow(row)
         sql_upsert(table_info)
 
