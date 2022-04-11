@@ -750,6 +750,46 @@ def _insert_subtotal_by_offerring_quote_table():
 		get_items_details_obj_insert.Save()
 	#insrt_item_details = ("""INSERT QT__QT_SAQRIT (LINE,FABLOCATION_ID,OBJECT_ID,EQUIPMENT_ID,GREENBOOK,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,SERVICE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,ESTVAL_INGL_CURR,NET_PRICE_INGL_CURR,ownerId, cartId) select SAQRIT.LINE,SAQRIT.FABLOCATION_ID,SAQRIT.OBJECT_ID,SAQRIT.OBJECT_ID as EQUIPMENT_ID,SAQRIT.GREENBOOK,SAQRIT.SERVICE_DESCRIPTION,SAQRIT.SERVICE_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.QUOTE_ID,SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_ID,SAQRIT.QTEREV_RECORD_ID,SAQRIT.ESTVAL_INGL_CURR,SAQRIT.NET_VALUE_INGL_CURR,{UserId} as ownerId,{CartId} as cartId from SAQRIT (NOLOCK)  where SAQRIT.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIT.QTEREV_RECORD_ID= '{rev_rec_id}'""".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
 	#Sql.RunQuery(insrt_item_details)
+	get_sold_to_details = Sql.GetFirst("SELECT PARTY_NAME,ADDRESS,EMAIL,PHONE from SAQTIP where QUOTE_RECORD_ID = '{qt_rec_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}'  and CPQ_PARTNER_FUNCTION='SOLD TO'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_sold_to_details:
+		if str(get_sold_to_details.PARTY_NAME):
+			Quote.GetCustomField('QD_SOLD_PARTY_NAME').Content = str(get_sold_to_details.PARTY_NAME)
+		if str(get_sold_to_details.ADDRESS):
+			Quote.GetCustomField('QD_SOLD_ADDRESS').Content = str(get_sold_to_details.ADDRESS)
+		if str(get_sold_to_details.EMAIL):
+			Quote.GetCustomField('QD_SOLD_PARTY_NAME').Content = str(get_sold_to_details.EMAIL)
+		if str(get_sold_to_details.PHONE):
+			Quote.GetCustomField('QD_SOLD_PHONE').Content = str(get_sold_to_details.PHONE)
+	get_ship_to_details = Sql.GetFirst("SELECT PARTY_NAME,ADDRESS,EMAIL,PHONE from SAQTIP where QUOTE_RECORD_ID = '{qt_rec_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}'  and CPQ_PARTNER_FUNCTION='SHIP TO'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_ship_to_details:
+		if str(get_ship_to_details.PARTY_NAME):
+			Quote.GetCustomField('QD_SHIP_PARTY_NAME').Content = str(get_ship_to_details.PARTY_NAME)
+		if str(get_ship_to_details.ADDRESS):
+			Quote.GetCustomField('QD_SHIP_ADDRESS').Content = str(get_ship_to_details.ADDRESS)
+		if str(get_ship_to_details.EMAIL):
+			Quote.GetCustomField('QD_SHIP_PARTY_NAME').Content = str(get_ship_to_details.EMAIL)
+		if str(get_ship_to_details.PHONE):
+			Quote.GetCustomField('QD_SHIP_PHONE').Content = str(get_ship_to_details.PHONE)
+	get_bill_to_details = Sql.GetFirst("SELECT PARTY_NAME,ADDRESS,EMAIL,PHONE from SAQTIP where QUOTE_RECORD_ID = '{qt_rec_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}'  and CPQ_PARTNER_FUNCTION='BILL TO'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_bill_to_details:
+		if str(get_bill_to_details.PARTY_NAME):
+			Quote.GetCustomField('QD_BILL_PARTY_NAME').Content = str(get_bill_to_details.PARTY_NAME)
+		if str(get_bill_to_details.ADDRESS):
+			Quote.GetCustomField('QD_BILL_ADDRESS').Content = str(get_bill_to_details.ADDRESS)
+		if str(get_bill_to_details.EMAIL):
+			Quote.GetCustomField('QD_BILL_PARTY_NAME').Content = str(get_bill_to_details.EMAIL)
+		if str(get_bill_to_details.PHONE):
+			Quote.GetCustomField('QD_BILL_PHONE').Content = str(get_bill_to_details.PHONE)
+	get_pay_to_details = Sql.GetFirst("SELECT PARTY_NAME,ADDRESS,EMAIL,PHONE from SAQTIP where QUOTE_RECORD_ID = '{qt_rec_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}'  and CPQ_PARTNER_FUNCTION='PAY TO'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_pay_to_details:
+		if str(get_pay_to_details.PARTY_NAME):
+			Quote.GetCustomField('QD_PAY_PARTY_NAME').Content = str(get_pay_to_details.PARTY_NAME)
+		if str(get_pay_to_details.ADDRESS):
+			Quote.GetCustomField('QD_PAY_ADDRESS').Content = str(get_pay_to_details.ADDRESS)
+		if str(get_pay_to_details.EMAIL):
+			Quote.GetCustomField('QD_PAY_PARTY_NAME').Content = str(get_pay_to_details.EMAIL)
+		if str(get_pay_to_details.PHONE):
+			Quote.GetCustomField('QD_PAY_PHONE').Content = str(get_pay_to_details.PHONE)
 
 	get_revision_details = Sql.GetFirst("SELECT REVISION_DESCRIPTION,REV_EXPIRE_DATE,EXCHANGE_RATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,CUSTOMER_NOTES,PAYMENTTERM_NAME,GLOBAL_CURRENCY from SAQTRV where QUOTE_RECORD_ID = '{qt_rec_id}'".format(qt_rec_id = contract_quote_record_id))
 	Quote.GetCustomField('Currency').Content = str(get_revision_details.GLOBAL_CURRENCY)
