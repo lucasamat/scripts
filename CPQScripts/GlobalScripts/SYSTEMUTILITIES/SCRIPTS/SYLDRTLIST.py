@@ -3501,14 +3501,14 @@ class SYLDRTLIST:
                                 Trace.Write("CHKZ_J_3_1"+str(value1234))
                                 new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + str(value1234) + '">' + str(imgValue) + "</abbr>")
                             else:
-                                if not re.match(r'[A-Za-z0-9]',str(value1234)):
+                                if not re.match(r'[A-Za-z0-9]',value1234):
                                     Trace.Write("encode character")
                                     Trace.Write("key_value ---"+str(key_value))
                                     # Trace.Write(value1234.encode('utf-8'))
                                     # Trace.Write(value1234.decode('utf-8'))
                                     #Trace.Write(value1234.encode('utf-8').decode('utf-8'))
                                     try:
-                                        value1234 = str(value1234).encode('utf-8').decode('utf-8')
+                                        value1234 = value1234.encode('utf-8').decode('utf-8')
                                     except:
                                         value1234 = value1234
                                     value1234 = re.sub(r'\[|\]|\"','',str(value1234))
