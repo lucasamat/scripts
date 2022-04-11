@@ -3224,7 +3224,7 @@ def Related_Sub_Banner(
             Trace.Write('### _ Multi_buttons'+str(type(multi_buttons)))
             if str(subTabName)=="Events" and revision_status.REVISION_STATUS != 'APR-APPROVED':
                 sec_rel_sub_bnr += str(add_button)
-            elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products":
+            elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.REVISION_STATUS != 'APR-APPROVED':
                 if str(multi_buttons) != "":
                     #Trace.Write('### _ 3094----Multi_buttons'+str(type(multi_buttons)))
                     for btn in multi_buttons:
@@ -3234,6 +3234,23 @@ def Related_Sub_Banner(
                     dropdown_multi_btn_str += '''</ul></div></div>'''
                     #Trace.Write('3095--dropdown_multi_btn_str--'+str(dropdown_multi_btn_str))
                     sec_rel_sub_bnr += (dropdown_multi_btn_str)
+                    #Trace.Write('3095--sec_rel_sub_bnr--'+str(sec_rel_sub_bnr))
+                else:
+                    sec_rel_sub_bnr += str(add_button)
+            elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products":
+                if str(multi_buttons) != "":
+                    #Trace.Write('### _ 3094----Multi_buttons'+str(type(multi_buttons)))
+                    for btn in multi_buttons:
+                        Trace.Write('3095-3243-----btn--'+str(btn))
+                        if 'EXPORT' in str(btn)
+                            
+                            dropdown_multi_btn_str += '<li>'+str(btn)+'</li>'
+                            sec_rel_sub_bnr += (dropdown_multi_btn_str)
+                        else:
+
+                            dropdown_multi_btn_str += '''</ul></div></div>'''
+                    #Trace.Write('3095--dropdown_multi_btn_str--'+str(dropdown_multi_btn_str))
+                    #sec_rel_sub_bnr += (dropdown_multi_btn_str)
                     #Trace.Write('3095--sec_rel_sub_bnr--'+str(sec_rel_sub_bnr))
                 else:
                     sec_rel_sub_bnr += str(add_button)
