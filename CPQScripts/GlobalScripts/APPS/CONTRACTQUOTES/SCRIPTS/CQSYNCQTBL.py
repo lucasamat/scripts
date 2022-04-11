@@ -2143,7 +2143,7 @@ class SyncQuoteAndCustomTables:
                                         "COUNTRY": salesorg_country.COUNTRY,
                                         "COUNTRY_RECORD_ID": salesorg_country.COUNTRY_RECORD_ID,
                                         "STATE": employee_obj.STATE,
-                                        "STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
+                                        "STATE_RECORD_ID": employee_obj.STATE_RECORD_ID if employee_obj else "",
                                         "CITY": employee_obj.CITY,
                                         "POSTAL_CODE": employee_obj.POSTAL_CODE,
                                         "PARTNERFUNCTION_RECORD_ID": partner_function_obj.PARTNERFUNCTION_RECORD_ID,
