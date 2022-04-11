@@ -1870,7 +1870,7 @@ def Related_Sub_Banner(
             FourthValue = str(EquipmentId)
             FifthLable = "Serial Number"
             FifthValue = str(SerialNumber)
-        elif(str(ObjName)=="SAQRGG" and (subTabName == 'Details' or subTabName == 'Events'or subTabName == 'Kit Detials')):
+        elif(str(ObjName)=="SAQRGG" and (subTabName == 'Details' or subTabName == 'Events' or subTabName == 'Kit Detials')):
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(TreeSuperParentParam)
             SecondLable = "Product Offering Description"
@@ -2431,7 +2431,7 @@ def Related_Sub_Banner(
         FifthValue = ""
         SixthLable = ''
         SixthValue = ''
-    elif ObjName == "SAQRGG" and subTabName == "Events":
+    elif ObjName == "SAQRGG" and (subTabName == "Events" or subTabName == 'Kit Details'):
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeSuperParentParam)
         SecondLable = "Greenbook"
