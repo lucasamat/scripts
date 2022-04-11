@@ -2043,9 +2043,7 @@ class SYLDRTLIST:
                             + str(PerPage)
                             + " "
                             + str(select_obj_str)
-                            + ",CpqTableEntryId from ( select  ROW_NUMBER() OVER(order by "
-                            + str(Wh_API_NAMEs)
-                            + ") AS ROW, S.* from "
+                            + ",CpqTableEntryId from ( select  ROW_NUMBER() OVER(order by PAR_SERVICE_ID) AS ROW, S.* from "
                             + str(ObjectName)
                             + " S (nolock) INNER JOIN MAADPR MA ON MA.COMP_PRDOFR_ID=S.SERVICE_ID"
                             + str(Qustr)
@@ -2542,9 +2540,7 @@ class SYLDRTLIST:
                         + str(PerPage)
                         + " "
                         + str(select_obj_str)
-                        + ",CpqTableEntryId from ( select ROW_NUMBER() OVER(order by "
-                        + str(Wh_API_NAMEs)
-                        + ") AS ROW, S.* from "
+                        + ",CpqTableEntryId from ( select ROW_NUMBER() OVER(order by PAR_SERVICE_ID)  AS ROW, S.* from "
                         + str(ObjectName)
                         + " S (nolock) INNER JOIN MAADPR MA ON MA.COMP_PRDOFR_ID=S.SERVICE_ID"
                         + str(Qustr)
