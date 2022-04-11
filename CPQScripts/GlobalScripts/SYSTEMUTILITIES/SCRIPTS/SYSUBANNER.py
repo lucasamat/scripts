@@ -2,7 +2,7 @@
 #   __script_name : SYSUBANNER.PY
 #   __script_description : THIS SCRIPT IS USED TO LOAD THE SUB BANNER FOR THE RELATED LISTS BASED ON HIERARCHY.
 #   __primary_author__ : JOE EBENEZER
-#   __create_date : 28/08/2020
+#   __create_date : 28/08/2020 
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
