@@ -2129,6 +2129,7 @@ class SyncQuoteAndCustomTables:
                                         "PARTNERTYPE_ID": partner_function_obj.PARTNERTYPE_ID,
                                         "PARTNERTYPE_DESCRIPTION": partner_function_obj.PARTNERTYPE_DESCRIPTION,
                                         "CRM_PARTNERFUNCTION": partner_function_obj.CRM_PARTNERFUNCTION,
+                                        "CRM_CONTACT_ID": employee_obj.CRM_CONTACT_ID,
                                     }
                                     quote_involved_party_contact_table_info.AddRow(contact_info_update)
                                     Sql.Upsert(quote_involved_party_contact_table_info)
