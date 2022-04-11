@@ -3404,7 +3404,7 @@ class TreeView:
 
     def PMSATree(self, TreeParam):
         flag = 0
-        if str(Quote.GetGlobal("SERVICE")) == "Z0009" or str(Quote.GetGlobal("SERVICE")) == "Z0010":
+        if str(Quote.GetGlobal("SERVICE")) == "Z0009" or str(Quote.GetGlobal("SERVICE")) == "Z0010" or str(Quote.GetGlobal("SERVICE")) == "Z0128":
             TableName = "SAQTSE"
             contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
             quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
