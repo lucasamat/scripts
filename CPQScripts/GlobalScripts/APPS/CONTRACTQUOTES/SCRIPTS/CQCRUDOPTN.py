@@ -4436,7 +4436,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				included = 1 if self.tree_param  == 'Sending Equipment' else "''"
 			)
 		)
-		if self.tree_param in ("Z0009","Z0010") and kwargs.get('quotetype_value_for_offering').upper() != "TOOL BASED":
+		if self.tree_param in ("Z0009","Z0010","Z0128") and kwargs.get('quotetype_value_for_offering').upper() != "TOOL BASED":
 			self.entitlement_level = self.entitlement_level if self.entitlement_level else "OFFERING LEVEL"
 			self.entitlement_level_value = self.entitlement_level_value if self.entitlement_level_value else self.tree_param
 			ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id),'LEVEL':str(kwargs.get('entitlement_level')),'VALUE': str(kwargs.get('entitlement_level_value'))})
