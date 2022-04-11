@@ -3512,7 +3512,7 @@ class SYLDRTLIST:
                                     except:
                                         value1234 = value1234
                                     value1234 = re.sub(r'\[|\]|\"','',value1234)
-                                    Trace.Write("CHKZ_J_3_1"+str(value1234))
+                                    Trace.Write("CHKZ_J_3_1"+value1234)
                                     new_dict[str(value123)] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")
                                 else:
                                     if data_type_val == "DATE":
