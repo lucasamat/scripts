@@ -400,9 +400,8 @@ def equipment_fab_ent_rolldown():
 		get_fab =Sql.GetFirst("SELECT QUALITY_REQUIRED FROM SAQFBL(NOLOCK) {}".format(str(where_condition)))
 		updateentXML = updating_xml(entxmldict,updateentXML,entl_id,get_fab.QUALITY_REQUIRED,rec.SERVICE_ID)
 		#Trace.Write("updateentXML"+str(updateentXML))
-		Sql.RunQuery( "UPDATE SAQSCE SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}' AND EQUIPMENT_RECORD_ID ='{}'".format(updateentXML.replace("'","''"),where_condition ,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID, rec.EQUIPMENT_RECORD_ID))
-
-
+		for roll_obj in ['SAQSCE','SAQSAE']:
+			Sql.RunQuery("UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}' AND EQUIPMENT_RECORD_ID ='{}'".format(roll_obj,updateentXML.replace("'","''"),where_condition ,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID, rec.EQUIPMENT_RECORD_ID))
 
 try:
 	if LEVEL == 'SERVICE_LEVEL':
