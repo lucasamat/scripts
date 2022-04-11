@@ -671,6 +671,9 @@ class SYLDRTLIST:
             else:
                 select_obj_str = str(obj_str)
             #select_obj_str = select_obj_str.replace("PRIMARY","[PRIMARY]")
+            select_obj_str = re.sub(r'YEAR_1_DEMAND','CAST(YEAR_1_DEMAND AS INT) AS YEAR_1_DEMAND',select_obj_str)
+            select_obj_str = re.sub(r'YEAR_2_DEMAND','CAST(YEAR_2_DEMAND AS INT) AS YEAR_2_DEMAND',select_obj_str)
+            select_obj_str = re.sub(r'YEAR_3_DEMAND','CAST(YEAR_3_DEMAND AS INT) AS YEAR_3_DEMAND',select_obj_str)
             Trace.Write('obj_str-->'+str(obj_str))
             Trace.Write('select_obj_str-->'+str(select_obj_str))
             name = select_obj_str.split(",")
