@@ -3237,6 +3237,21 @@ def Related_Sub_Banner(
                     Trace.Write('3095--sec_rel_sub_bnr--'+str(sec_rel_sub_bnr))
                 else:
                     sec_rel_sub_bnr += str(add_button)
+            elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products":
+                if str(multi_buttons) != "":
+                    Trace.Write('### _ 3094----Multi_buttons'+str(type(multi_buttons)))
+                    for btn in multi_buttons:
+                        Trace.Write('3095--btn--'+str(btn))
+                        if "export-spare-parts-data-as-excel" in str(btn):
+                            Trace.Write('3246-----btn--'+str(btn))
+                            dropdown_multi_btn_str += '<li>'+str(btn)+'</li>'
+                        #sec_rel_sub_bnr += (btn)
+                    dropdown_multi_btn_str += '''</ul></div></div>'''
+                    Trace.Write('3095--dropdown_multi_btn_str--'+str(dropdown_multi_btn_str))
+                    sec_rel_sub_bnr += (dropdown_multi_btn_str)
+                    Trace.Write('3095--sec_rel_sub_bnr--'+str(sec_rel_sub_bnr))
+                else:
+                    sec_rel_sub_bnr += str(add_button)
             elif str(subTabName)=="Periods":
                 sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and str(subTabName)!="Exclusions" and str(subTabName)!="New Parts" and str(subTabName)!="Inclusions":
