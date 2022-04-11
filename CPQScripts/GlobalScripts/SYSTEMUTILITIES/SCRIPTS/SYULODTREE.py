@@ -2389,7 +2389,7 @@ class TreeView:
                                                             RelatedId = "SYOBJR-00011"
                                                             RelatedName = "Events"
                                                             break
-                                        elif subTabName == "Events" and Quote.GetGlobal("SERVICE") == "Z0010":
+                                        elif subTabName == "Events" and (Quote.GetGlobal("SERVICE") == "Z0010" or Quote.GetGlobal("SERVICE") == "Z0128"):##added the code to show the events nested grid for Z0128 product offerings...
                                             ObjRecId = "0975E1E2-9D30-4928-AB0A-4DA54537A67A"
                                             RelatedId = "SYOBJR-95556"
                                             RelatedName = "Events"
