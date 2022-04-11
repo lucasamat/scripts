@@ -721,7 +721,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	data_list = []
-	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010":
+	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010" or str(TreeSuperParentParam)=="Z0128":
 		obj_idval = "SYOBJ_1177076_SYOBJ_1177076"
 		rec_id = "SYOBJ_1177076"
 		obj_id = "SYOBJ-1177076"
@@ -909,7 +909,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(TreeTopSuperParentParam)
 			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
-	elif ObjectName == "SAQGPM" and (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
+	elif ObjectName == "SAQGPM" and (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010" or TreeSuperParentParam == "Z0128"):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
@@ -4486,7 +4486,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	ATTRIBUTE_VALUE_STR = ""
-	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010":
+	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010" or str(TreeSuperParentParam)=="Z0128":
 		rec_id = "SYOBJ_1177076"
 		obj_id = "SYOBJ-1177076"
 		ObjectName = "SAQGPM"
@@ -4590,7 +4590,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 
 		if Count:
 			QueryCount = Count.cnt
-	elif (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
+	elif (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010" or TreeSuperParentParam == "Z0128"):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
