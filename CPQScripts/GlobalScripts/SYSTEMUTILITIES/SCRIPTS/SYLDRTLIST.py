@@ -3184,8 +3184,8 @@ class SYLDRTLIST:
                                         #Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')" id ="ADDNEW__SYOBJR_98871_SYOBJ_002649">MARK PRIMARY</a></li>')
                                     elif str(ObjectName) =='SAQSPT':
                                         pass
-                                    elif str(ObjectName) == 'SAQRIS':
-                                        Action_str += ('<li><a class="dropdown-item" href="#" onclick="edit_configuration(this)">EDIT CONFIGURATION</a></li>')
+                                    # elif str(ObjectName) == 'SAQRIS':
+                                    #     Action_str += ('<li><a class="dropdown-item" href="#" onclick="edit_configuration(this)">EDIT CONFIGURATION</a></li>')
                                     else:
                                         Action_str += ('<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>')
                                 elif str(current_tab).upper() == "PROFILE":
