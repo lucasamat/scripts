@@ -2952,8 +2952,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								"TEMP_TOOL": eqp.TEMP_TOOL,
 								# "POSS_COST": nso_data.POSS_COST,
 								# "POSS_PRICE": nso_data.POSS_PRICE,
-								"EXTENDED_POSS_COST": float(poss_cost) * 1,
-								"EXTENDED_POSS_PRICE": float(poss_price) * 1
+								# "EXTENDED_POSS_COST": float(poss_cost) * 1,
+								# "EXTENDED_POSS_PRICE": float(poss_price) * 1
 							} 
 							nso_table_info.AddRow(nso_table)
 							Sql.Upsert(nso_table_info)
