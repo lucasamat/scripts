@@ -3583,11 +3583,12 @@ class SYLDRTLIST:
                                         seg_pric[value123] = value1234.replace(curr_symbol, "").replace(" ", "")
                                         seg_pric["PRICE_FACTOR"] = PriceFactor
                                     else:										
-                                        #Trace.Write(str(value1234)+'---3067---'+str(value123))
-                                        if str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'NET_PRICE':							
-                                            new_dict[value123] = (
-                                                '<input id ="' + key_value + '" value="' + value1234 + '" style="border: 0px solid;" disabled> </input>'
-                                            )										
+                                        Trace.Write(str(value1234)+'---3586---'+str(value123))
+                                        if str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'LINE':							
+                                            Trace.Write("Checking condition for SAQICO ")
+                                            #new_dict[value123] = (
+                                            #    '<input id ="' + key_value + '" value="' + #value1234 + '" style="border: 0px solid;" disabled> </#input>'
+                                            #)										
                                         #the Billing Matrix based on the Warranty Date  start
                                         if str(value123) == "WARRANTY_END_DATE" and RECORD_ID != "SYOBJR-00009":
                                             #Trace.Write('getindication--3075---'+str(getindication))
