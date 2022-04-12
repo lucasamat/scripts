@@ -2124,9 +2124,9 @@ class SyncQuoteAndCustomTables:
                                     tablerow = contact_master_table_update
                                     tableInfo.AddRow(tablerow)
                                     Sql.Upsert(tableInfo)       
-                                if employee_obj:
-                                    employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where CRM_EMPLOYEE_ID = '{crm_employee_id}'".format(crm_employee_id=employees.get("CRM_EMPLOYEE_ID")))
-                                    contact_master_table = Sql.GetFirst("SELECT * FROM SACONT (NOLOCK) WHERE CONTACT_ID = '{contact_id}'".format(contact_id=employees.get("PRIMARY_CONTACT_ID")))
+                                employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where CRM_EMPLOYEE_ID = '{crm_employee_id}'".format(crm_employee_id=employees.get("CRM_EMPLOYEE_ID")))
+                                contact_master_table = Sql.GetFirst("SELECT * FROM SACONT (NOLOCK) WHERE CONTACT_ID = '{contact_id}'".format(contact_id=employees.get("PRIMARY_CONTACT_ID")))
+                                if employee_obj and contact_master_table:
                                     quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
                                     contact_info_update = {
                                         "QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
