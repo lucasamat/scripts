@@ -2100,7 +2100,7 @@ class SyncQuoteAndCustomTables:
                                 if contact_master_table is None:
                                     employee_obj = Sql.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where CRM_EMPLOYEE_ID = '{crm_employee_id}'".format(crm_employee_id=employees.get("CRM_EMPLOYEE_ID")))
                                     contact_master_table_update = {"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
-                                                                    "ADDRESS": employee_obj.ADDRESS_1 or " ",
+                                                                    "ADDRESS": employee_obj.ADDRESS_1 or "",
                                                                     "CITY": employee_obj.CITY,
                                                                     "CONTACT_ID": employees.get("PRIMARY_CONTACT_ID"),
                                                                     "CONTACT_NAME": employee_obj.EMPLOYEE_NAME or NULL,
