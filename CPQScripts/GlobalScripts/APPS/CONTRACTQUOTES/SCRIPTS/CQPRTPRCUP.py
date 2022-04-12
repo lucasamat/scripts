@@ -223,10 +223,10 @@ if part_query or ancillary_part_query or fpm_part_query:
 					if q<=0 or q=='':
 						q=1
 					q=int(q)
+					prefixZero=''
 					if re.match(r'^\d+$',p):
 						totallen = len(p)
 						remaining = 18-totallen
-						prefixZero=''
 						for x in range(remaining):
 							prefixZero = str(prefixZero) + str(0)
 						p = str(prefixZero)+str(p)
