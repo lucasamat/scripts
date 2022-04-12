@@ -5782,6 +5782,8 @@ class SYLDRTLIST:
                     else:                        
                         Wh_API_NAMEs = str(SortColumn) + " " + str(SortColumnOrder).upper()
                 ATTRIBUTE_VALUE_STR = ""
+                if ObjectName =='SAQSPT':
+                    ATTRIBUTE_VALUE = ['ERROR' if col.endswith('ERROR') else 'ACQUIRED' if col.endswith('ACQUIRED') else 'ACQUIRING' if col.endswith('ACQUIRING') else col for col in ATTRIBUTE_VALUE]
                 Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))		
                             
 
