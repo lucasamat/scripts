@@ -193,7 +193,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 				salesUOMs= salesUOM[0] or 'EA'
 				itemleveldivison=PartDivisions[str(partids[0])]
 				prefixZero=''
-    			if re.match(r'^\d+$',partids[0]):
+				if re.match(r'^\d+$',partids[0]):
 					totallen = len(partids[0])
 					remaining = 18-totallen
 					for x in range(remaining):
