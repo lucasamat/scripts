@@ -701,8 +701,22 @@ class SyncFPMQuoteAndHanaDatabase:
         Log.Info("CQPARTIFLW inside")        
         Sql.RunQuery("""UPDATE SAQTRV SET WORKFLOW_STATUS='PRICING REVIEW',REVISION_STATUS='CFG-ACQUIRING' WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(QuoteRecordId=self.quote_record_id,rev = (self.quote_revision_id)))
 
+        Msg_table_value = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE OBJECT_RECORD_ID ='SYOBJ-00272' and MESSAGE_LEVEL = 'WARNING'")
+        if Msg_table_value:
+            msg_txt = (
+					'<div  class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infor_icon_green.svg" alt="Warning">'
+					+ str(Msg_table_value.MESSAGE_LEVEL)
+					+ " : "
+					+ str(Msg_table_value.MESSAGE_CODE)
+					+ " : "
+					+ str(Msg_table_value.MESSAGE_TEXT)
+					+ "</label></div></div>"
+				)
+        else:
+            msg_txt =""
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
-    
+
+        return msg_txt
        
 Log.Info("CQPARTINS script called --> from CPI")
 Log.Info("Param.CPQ_Column----QuoteID---"+str(Param.CPQ_Columns["QuoteID"]))
