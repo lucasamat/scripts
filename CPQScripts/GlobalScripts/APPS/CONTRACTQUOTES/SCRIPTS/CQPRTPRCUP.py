@@ -122,7 +122,7 @@ PartDivisions={}
 
 part_divisionlist = SqlHelper.GetList("SELECT SAP_PART_NUMBER, DIVISION_ID FROM MAMTRL WHERE SAP_PART_NUMBER IN (SELECT PART_NUMBER FROM SAQSPT WHERE QUOTE_ID='{quote}')".format(quote=QUOTE))
 for obj in part_divisionlist:
-	part_divisionlist[obj.SAP_PART_NUMBER]=obj.DIVISION_ID
+	PartDivisions[str(obj.SAP_PART_NUMBER)]=str(obj.DIVISION_ID)
 
 price_list = SqlHelper.GetFirst("SELECT  PRICEGROUP_ID, PRICELIST_ID FROM  SASAAC (NOLOCK) WHERE  SALESORG_ID ='"+str(salesorg)+"'AND ACCOUNT_ID='"+str(account_info['SOLD TO'])+"' AND DIVISION_ID ='"+str(div)+"'   AND DISTRIBUTIONCHANNEL_ID ='"+str(dis)+"'")
 
@@ -191,7 +191,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 				quantity[0] = int(quantity[0])
 				curr_attr = currency_attribute
 				salesUOMs= salesUOM[0] or 'EA'
-				itemleveldivison=part_divisionlist[str(partids[0])]
+				itemleveldivison=PartDivisions[str(partids[0])]
 				if re.match(r'^\d+$',partids[0]):
 					totallen = len(partids[0])
 					remaining = 18-totallen
@@ -219,7 +219,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 					s=val[3] or account_info['SHIP TO']
 					salesUOMs=val[4] or 'EA'
 					salesUOMConvs=int(val[5] or 1)
-					itemleveldivison=part_divisionlist[str(p)]
+					itemleveldivison=PartDivisions[str(p)]
 					if q<=0 or q=='':
 						q=1
 					q=int(q)
