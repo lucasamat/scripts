@@ -9321,7 +9321,7 @@ class SYLDRTLIST:
                     value123 = a[0].replace("[", "").lstrip()
                     valu = ",".join(a[1:])
                     value1234 = valu.replace("]", "").lstrip()
-                    Trace.Write("value1234_chkz "+str(value1234))
+                    #Trace.Write("value1234_chkz "+str(value1234))
                     if value1234 == "ACQUIRED" or value1234 == "PRICED":
                         value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg> "+str(value1234))
                     if value1234 == "APPROVAL REQUIRED":
