@@ -375,7 +375,7 @@ def fts_zoo7_insert(total_months=1, billing_date='',billing_end_date ='', amount
 				SAQRIT.GLOBAL_CURRENCY_RECORD_ID,
 				{BillingDate} as BILLING_DATE,
 				'{amount_column_split}' as BILLING_YEAR,
-                SAQRIT.DOC_CURRENCY,
+				SAQRIT.DOC_CURRENCY,
 				SAQSCO.EQUIPMENT_DESCRIPTION,
 				SAQSCO.EQUIPMENT_ID,
 				SAQSCO.EQUIPMENT_RECORD_ID,
@@ -505,7 +505,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					SAQSCO.QUOTE_RECORD_ID,
 					SAQSCO.QTEREV_ID,
 					SAQSCO.QTEREV_RECORD_ID,
-                    SAQRIT.DOC_CURRENCY,
+					SAQRIT.DOC_CURRENCY,
 					{BillingDate} as BILLING_DATE,
 					'{amount_column_split}' as BILLING_YEAR,
 					SAQRIT.GLOBAL_CURRENCY,
@@ -615,7 +615,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					SAQRIT.GLOBAL_CURRENCY_RECORD_ID,
 					{BillingDate} as BILLING_DATE,
 					'{amount_column_split}' as BILLING_YEAR,
-                    SAQRIT.DOC_CURRENCY,
+					SAQRIT.DOC_CURRENCY,
 					SAQSCO.EQUIPMENT_DESCRIPTION,
 					SAQSCO.EQUIPMENT_ID,
 					SAQSCO.EQUIPMENT_RECORD_ID,
@@ -1349,6 +1349,34 @@ def billingmatrix_create():
 															), amount_column="YEAR_"+str((count/12) + 1),
 															entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict,get_milestones_data_dict=get_milestones_data_dict)
 									count += 1
+
+				elif str(get_ent_bill_cycle).upper() == "WEEKLY":
+					if billing_day in (29,30,31):
+						if start_date.month == 2:
+							isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
+							end_day = 29 if isLeap(start_date.year) else 28
+							start_date = start_date.replace(day=end_day)
+						elif start_date.month in (4, 6, 9, 11) and billing_day == 31:
+							start_date = start_date.replace(day=30)
+						else:
+							start_date = start_date.replace(day=billing_day)
+					else:
+						start_date = start_date.replace(day=billing_day)
+					end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
+					diff1 = end_date - start_date
+					get_totalweeks,remainder = divmod(diff1.days,7)
+					countweeks =0
+					for index in range(0, get_totalweeks):
+						countweeks += 1
+						billing_week_end = start_date + datetime.timedelta(days=(7*countweeks))
+						
+						insert_items_billing_plan(total_months=total_months, 
+												billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
+													Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
+													),billing_end_date="DATEADD(month, {Month_add}, '{BillingDateAdd}')".format(
+													Month_add=index, BillingDateAdd=billing_week_end.strftime('%m/%d/%Y')
+													), amount_column="YEAR_"+str((index/52) + 1),
+													entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 				elif str(get_ent_bill_cycle).upper() == "QUARTELY":
 					ct_start_date =contract_start_date
 					ct_end_date =contract_end_date
