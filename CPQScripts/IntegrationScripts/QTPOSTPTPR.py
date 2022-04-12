@@ -140,6 +140,9 @@ try:
                 #Log.Info("456 Itemidinfo --->"+str(i))
                 QUOTE = str(Itemidinfo[1])
                 currencyType = str(Itemidinfo[3])
+                prefixZero = Itemidinfo[4] or ''
+                isocode_salesuom = str(Itemidinfo[5]) or 'EA'
+                numerator =  int(Itemidinfo[6]) or 1
                 contract_quote_record_id = None		
                 Taxrate = ''
                 Taxvalue = ''		
@@ -219,7 +222,15 @@ try:
                                 break
                 #Log.Info("core_credit_amount--->"+str(core_credit_amount))
                 #insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"]))
-                insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"],i["netValue"]))
+                if len(prefixZero)>0:
+                    Itemidinfo[0]=re.sub(prefixZero,'',Itemidinfo[0])
+                
+                if str(i["netPriceUnit"]) != str(isocode_salesuom) and int(i["netPriceUnitValue"]) == 1:
+                    i["netPrice"] = i["netPrice"] * numerator
+                elif str(i["netPriceUnit"]) != str(isocode_salesuom) and int(i["netPriceUnitValue"]) > 1:
+                    i["netPrice"] = (i["netPrice"] / int(i["netPriceUnitValue"])) * numerator
+                    
+                insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"],i["netValue"],i["grossValue"],i["freightValue"],i["netPrice"],i["netPriceUnit"],i["netPriceUnitValue"]))
                 
                 Log.Info("UNIT_PRICE---22---"+str(insert_data))
                 #Log.Info("4521 batch_group_record_id --->"+str(batch_group_record_id))
@@ -233,7 +244,7 @@ try:
                     getpartsdata = Sql.GetFirst("select * from SAQSPT where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
                     
                 if getpartsdata or get_ancillary_spare:
-                    Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE,CORE_CREDIT_PRICE,TAX_VALUE,TAX) VALUES {}".format(', '.join(map(str, insert_data))))			
+                    Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE,CORE_CREDIT_PRICE,TAX_VALUE,NET_VALUE,GROSS_VALUE,FREIGHT_VALUE,NET_PRICE,NET_PRICE_UNIT,NET_PRICE_UNIT_VALUE) VALUES {}".format(', '.join(map(str, insert_data))))			
                     #Log.Info('getpartsdata -->'+str(getpartsdata.PART_NUMBER))
                 
                     if getpartsdata:
@@ -252,7 +263,7 @@ try:
                                 """.format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
                             '''
                             Sql.RunQuery("""UPDATE SAQIFP
-                                    SET PRICING_STATUS = CASE WHEN SYSPBT.UNIT_PRICE IS NULL THEN 'ERROR' WHEN SYSPBT.UNIT_PRICE = '0.00000' THEN 'ERROR' ELSE 'ACQUIRED' END,TAX = SYSPBT.TAX_VALUE,EXTENDED_PRICE = SYSPBT.TAX,UNIT_PRICE = SYSPBT.UNIT_PRICE
+                                    SET PRICING_STATUS = CASE WHEN SYSPBT.UNIT_PRICE IS NULL THEN 'ERROR' WHEN SYSPBT.UNIT_PRICE = '0.00000' THEN 'ERROR' ELSE 'ACQUIRED' END,TAX = SYSPBT.TAX_VALUE,EXTENDED_PRICE = SYSPBT.NET_VALUE,UNIT_PRICE = SYSPBT.UNIT_PRICE
                                     FROM SAQIFP 				
                                     JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQIFP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID
                                     WHERE SAQIFP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
@@ -286,12 +297,12 @@ try:
                             # 		JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID
                             # 		WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
                             # 	""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))	
-                            Sql.RunQuery("""UPDATE SAQSPT SET PRICING_STATUS = CASE WHEN SYSPBT.UNIT_PRICE IS NULL THEN 'ERROR' WHEN SYSPBT.UNIT_PRICE = '0.00000' THEN 'ERROR' ELSE 'ACQUIRED' END, UNIT_PRICE = SYSPBT.UNIT_PRICE ,CORE_CREDIT_PRICE = CASE WHEN SYSPBT.CORE_CREDIT_PRICE = '' THEN NULL ELSE SYSPBT.CORE_CREDIT_PRICE END,TAX_AMOUNT_INGL_CURR=SYSPBT.TAX_VALUE,EXTENDED_UNIT_PRICE = SYSPBT.TAX FROM SAQSPT 				
+                            Sql.RunQuery("""UPDATE SAQSPT SET PRICING_STATUS = CASE WHEN SYSPBT.UNIT_PRICE IS NULL THEN 'ERROR' WHEN SYSPBT.UNIT_PRICE = '0.00000' THEN 'ERROR' ELSE 'ACQUIRED' END, UNIT_PRICE = SYSPBT.UNIT_PRICE ,CORE_CREDIT_PRICE = CASE WHEN SYSPBT.CORE_CREDIT_PRICE = '' THEN NULL ELSE SYSPBT.CORE_CREDIT_PRICE END,TAX_AMOUNT_INGL_CURR=SYSPBT.TAX_VALUE,EXTENDED_UNIT_PRICE = SYSPBT.NET_VALUE FROM SAQSPT 				
                                     JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID
                                     WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' 
                                 """.format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
                             Sql.RunQuery("""UPDATE SAQIFP
-                                SET PRICING_STATUS = CASE WHEN SYSPBT.UNIT_PRICE IS NULL THEN 'ERROR' WHEN SYSPBT.UNIT_PRICE = '0.00000' THEN 'ERROR' ELSE 'ACQUIRED' END,TAX_AMOUNT_INGL_CURR = SYSPBT.TAX_VALUE,UNIT_PRICE_INGL_CURR = SYSPBT.UNIT_PRICE,EXTPRI_INGL_CURR = SYSPBT.TAX FROM SAQIFP 				
+                                SET PRICING_STATUS = CASE WHEN SYSPBT.UNIT_PRICE IS NULL THEN 'ERROR' WHEN SYSPBT.UNIT_PRICE = '0.00000' THEN 'ERROR' ELSE 'ACQUIRED' END,TAX_AMOUNT_INGL_CURR = SYSPBT.TAX_VALUE,UNIT_PRICE_INGL_CURR = SYSPBT.UNIT_PRICE,EXTPRI_INGL_CURR = SYSPBT.NET_VALUE FROM SAQIFP 				
                                 JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQIFP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID
                                 WHERE SAQIFP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
                             """.format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
