@@ -697,7 +697,8 @@ class SyncFPMQuoteAndHanaDatabase:
         return msg_app_txt
         
     def CQPARTIFLW_iflow(self):
-        
+
+        Log.Info("CQPARTIFLW inside")        
         Sql.RunQuery("""UPDATE SAQTRV SET WORKFLOW_STATUS='PRICING REVIEW',REVISION_STATUS='CFG-ACQUIRING' WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(QuoteRecordId=self.quote_record_id,rev =str(self.quote_revision_id))
 
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
