@@ -466,6 +466,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 		get_val = 4
 	elif str(get_billing_cycle).upper() == "ANNUALLY":				
 		get_val = 1
+    elif str(get_billing_cycle).upper() == "WEEKLY":				
+		get_val = 52
 	else:				
 		get_val =12
 	amount_column_split = amount_column.replace('_',' ')
@@ -1370,7 +1372,7 @@ def billingmatrix_create():
 						countweeks += 1
 						billing_week_end = start_date + datetime.timedelta(days=(7*countweeks))
 						
-						insert_items_billing_plan(total_months=total_months, 
+						insert_items_billing_plan(total_months=get_totalweeks, 
 												billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 													Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 													),billing_end_date="DATEADD(month, {Month_add}, '{BillingDateAdd}')".format(
