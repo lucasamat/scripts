@@ -120,7 +120,7 @@ price_listtype=''
 price_groupid=''
 PartDivisions={}
 
-part_divisionlist = SqlHelper.GetList("SELECT SAP_PART_NUMBER, DIVISION_ID FROM MAMTRL WHERE SAP_PART_NUMBER IN (SELECT PART_NUMBER FROM SAQSPT WHERE QUOTE_ID='{quote}')").format(quote=QUOTE)
+part_divisionlist = SqlHelper.GetList("SELECT SAP_PART_NUMBER, DIVISION_ID FROM MAMTRL WHERE SAP_PART_NUMBER IN (SELECT PART_NUMBER FROM SAQSPT WHERE QUOTE_ID='{quote}')".format(quote=QUOTE))
 for obj in part_divisionlist:
 	part_divisionlist[str(obj.SAP_PART_NUMBER)]=str(obj.DIVISION_ID)
 
