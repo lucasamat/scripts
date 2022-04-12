@@ -579,7 +579,7 @@ class EntitlementView():
 										select_option = ""
 										default = 'selected'
 										selected_option = ' title="Select" '
-									VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
+									VAR1 += '<option id = "'+str(attrSysId)+'_select"  value="select" ' +str(default)+' style= "display:none;"> </option>'
 									for value in STDVALUES:
 										if value.SYSTEM_ID in dropdowndisallowlist:
 											disallow_style = "style = 'display:none'"
@@ -741,10 +741,7 @@ class EntitlementView():
 					'''dbl_clk_function += (
 						"try {var getentedict = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset--prev value---',this.value);$('"+str(table_ids)+"').find(':input(:disabled)').prop('disabled', false);$('"+str(table_ids)+" tbody  tr td select option').css('background-color','lightYellow');$('"+str(table_ids)+" tbody  tr td input').css('background-color','lightYellow');$('"+str(table_ids)+"  tbody tr td select').addClass('light_yellow');$('"+str(table_ids)+" .disable_edit').addClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');});}catch {console.log('error---')}"
 					)'''
-					try:
-						insertservice = insertservice.encode("ascii", "ignore").decode("ascii")
-					except:
-						Trace.Write('747--')
+				
 					tbrow = {}
 					tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"] = str(Guid.NewGuid()).upper()
 					tbrow["QUOTE_ID"] = QUOTE_ID
@@ -1093,7 +1090,7 @@ class EntitlementView():
 												default = 'selected'
 											Trace.Write(str(attrSysId)+'--attrSysId----'+str(val.ENTITLEMENT_ID)+'-----982------>'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 											Trace.Write(str(attributes_disallowed_list)+'---dropdowndisallowlist----'+str(dropdowndisallowlist))
-											VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
+											VAR1 += '<option id = "'+str(attrSysId)+'_select" value="select" ' +str(default)+' style= "display:none;"> </option>'
 											for value in standard_attr_values:
 												if value.SYSTEM_ID in dropdowndisallowlist:												
 													disallow_style = "style = 'display:none'"
@@ -1421,7 +1418,7 @@ class EntitlementView():
 											select_option = ""
 											default = 'selected'
 											selected_option = ' title="Select" '
-										VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
+										VAR1 += '<option id = "'+str(attrSysId)+'_select" value="select" ' +str(default)+' style= "display:none;"> </option>'
 										for value in standard_attr_values:
 											selected = ""
 											if value.SYSTEM_ID in dropdowndisallowlist:

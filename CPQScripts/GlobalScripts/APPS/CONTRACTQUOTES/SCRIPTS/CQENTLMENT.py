@@ -468,6 +468,7 @@ class Entitlements:
 		attributedefaultvalue = []
 		attribute_non_defaultvalue = get_attr_leve_based_list = []
 		dropdownallowlist_selected = []
+		dropdownallowlist_unselected =[]
 		where = pricemethodupdate = get_tool_desc = ""
 		configg_status =''
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
@@ -542,6 +543,7 @@ class Entitlements:
 		#get_conflict_message = ''
 		dropdownallowlist = []
 		dropdownallowlist_selected = []
+		dropdownallowlist_unselected =[]
 		dropdowndisallowlist = []
 		attributes_service_sublist = []
 		approval_list = {}
@@ -635,6 +637,8 @@ class Entitlements:
 											for i in prdvalue["values"]:
 												if i['value']:
 													dropdownallowlist_selected.append(str(prdvalue["id"])+'_'+str(i['value']))
+										else:
+											dropdownallowlist_unselected.append(str(prdvalue["id"]) )
 										if prdvalue["possibleValues"]:
 											for i in prdvalue["possibleValues"]:
 
@@ -875,6 +879,8 @@ class Entitlements:
 										for i in prdvalue["values"]:
 											if i['value']:
 												dropdownallowlist_selected.append(str(prdvalue["id"])+'_'+str(i['value']))
+									else:
+										dropdownallowlist_unselected.append(str(prdvalue["id"]))
 									if prdvalue["possibleValues"]:
 										for i in prdvalue["possibleValues"]:
 
@@ -2283,11 +2289,11 @@ class Entitlements:
 			# 	# 	+ "</label></div></div>"
 			# 	# )
 			try:
-				msg_text = '<div class="emp_notifiy" style="display: none;"><div class="col-md-12 page_alert_notifi" id="PageAlert"><div class="row modulesecbnr brdr" onclick="call_vertical_scrl()" data-toggle="collapse" data-target="#alertnotify" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div id="alertnotify" class="col-md-12  alert-notification  brdr collapse in"><div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '+str(cps_conflict)+' </label></div></div> </div></div></div>'
+				msg_text = '<div class="emp_notifiy" style="display: none;"><div class="col-md-12 page_alert_notifi" id="PageAlert"><div class="row modulesecbnr brdr" onclick="call_vertical_scrl()" data-toggle="collapse" data-target=".alertnotify" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div id="alertnotify" class="col-md-12 alertnotify alert-notification  brdr collapse in"><div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '+str(cps_conflict)+' </label></div></div> </div></div></div>'
 			except:
 				pass
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
-		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesdisrequired_list,attriburesrequired_list,str(cps_error),str(msg_text)
+		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesdisrequired_list,attriburesrequired_list,str(cps_error),str(msg_text), dropdownallowlist_unselected
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
@@ -2931,7 +2937,7 @@ except:
 	previous_val =""
 
 try:
-	scheduled_parts = Param.scheduled_parts
+	scheduled_parts = Param.scheduled_parts 
 except:
 	scheduled_parts = ""
 Trace.Write("subtabName : " + str(subtabName)+".. EntitlementType : "+str(EntitlementType)+"Action : "+str(ACTION))
