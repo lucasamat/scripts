@@ -5,7 +5,6 @@ import datetime
 import sys
 import ACVIORULES
 
-
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
 input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
 Qt_rec_id = input_data[0]
@@ -21,14 +20,12 @@ user_name = User.UserName
 
 
 # A055S000P01-3924-billing matrix creation start
-
-
 def _insert_billing_matrix():
     sql_run_query(
         """
-	INSERT
-		SAQRIB (
-			QUOTE_BILLING_PLAN_RECORD_ID,
+    INSERT
+        SAQRIB (
+        QUOTE_BILLING_PLAN_RECORD_ID,
 			BILLING_END_DATE,
 			BILLING_DAY,
 			BILLING_START_DATE,
@@ -2407,7 +2404,6 @@ def _quote_items_greenbook_summary_insert():
 
 
 def billingmatrix_create():
-    # Trace.Write('4739---------------')
     _quote_items_greenbook_summary_insert()
     billing_plan_obj = sql_get_list(
         "SELECT DISTINCT PRDOFR_ID,BILLING_START_DATE,BILLING_END_DATE,BILLING_DAY FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(
@@ -2429,15 +2425,13 @@ def billingmatrix_create():
                 QuoteRecordId=contract_quote_rec_id, RevisionRecordId=quote_revision_rec_id
             )
         )
-        # Trace.Write('4739---------4744------')
+
         for val in billing_plan_obj:
             if billing_plan_obj:
                 contract_start_date = val.BILLING_START_DATE
                 contract_end_date = val.BILLING_END_DATE
-                start_date = datetime.datetime.strptime(
-                    UserPersonalizationHelper.ToUserFormat(contract_start_date), "%m/%d/%Y"
-                )
-                # start_date = str(contract_start_date).split(' ')[0]
+                start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), "%m/%d/%Y")
+
                 billing_day = int(val.BILLING_DAY)
                 get_service_val = val.PRDOFR_ID
                 get_billing_cycle = sql_get_first(
@@ -2450,43 +2444,64 @@ def billingmatrix_create():
                 if get_billing_cycle:
                     updateentXML = get_billing_cycle.ENTITLEMENT_XML
                     pattern_tag = re.compile(r"(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)")
+
                     pattern_id = re.compile(
-                        r"<ENTITLEMENT_ID>(AGS_"
-                        + str(get_service_val)
-                        + "_PQB_BILCYC|AGS_"
-                        + str(get_service_val)
-                        + "_PQB_BILTYP)</ENTITLEMENT_ID>"
+                        r"<ENTITLEMENT_ID>(AGS_{}_PQB_BILCYC|AGS_{}_PQB_BILTYP)</ENTITLEMENT_ID>".format(get_service_val, get_service_val)
                     )
-                    # pattern_id_billing_type = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILTYP|AGS_'+str(get_service_val)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
+
                     pattern_name = re.compile(r"<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>")
                     for m in re.finditer(pattern_tag, updateentXML):
                         sub_string = m.group(1)
                         get_ent_id = re.findall(pattern_id, sub_string)
-                        # get_ent_bill_type = re.findall(pattern_id_billing_type,sub_string)
+
                         get_ent_val = re.findall(pattern_name, sub_string)
                         if get_ent_id:
                             get_ent_val = str(get_ent_val[0])
                             get_billling_data_dict[get_ent_id[0]] = str(get_ent_val)
-                            # get_ent_bill_cycle = str(get_ent_val)
+
                             for data, val in get_billling_data_dict.items():
-                                if "AGS_" + str(get_service_val) + "_PQB_BILCYC" in data:
+                                if "AGS_{}_PQB_BILCYC".format(get_service_val) in data:
                                     get_ent_bill_cycle = val
-                                elif "AGS_" + str(get_service_val) + "_PQB_BILTYP" in data:
+                                elif "AGS_{}_PQB_BILTYP".format(get_service_val) in data:
                                     get_billing_type = val
-                            # if 	'AGS_'+str(get_service_val)+'_PQB_BILCYC' == str(get_ent_id[0]):
-                            # 	get_ent_val = str(get_ent_val)
-                            # 	Trace.Write(str(get_ent_val)+'---get_ent_name---'+str(get_ent_id[0]))
-                            # 	#get_ent_bill_cycle = get_ent_val
-                            # else:
-                            # 	get_ent_billing_type_value = str(get_ent_val)
-                # Log.Info(str(get_billing_type)+'--475--'+str(get_ent_bill_cycle))
+
                 billing_month_end = 0
                 entitlement_obj = sql_get_first(
-                    "select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(
+                    """
+                    select
+                        convert(
+                            xml,
+                            replace(
+                                replace(
+                                    replace(
+                                        replace(
+                                            replace(replace(ENTITLEMENT_XML, '&', ';#38'), '''', ';#39'),
+                                            ' < ',
+                                            ' &lt; '
+                                        ),
+                                        ' > ',
+                                        ' &gt; '
+                                    ),
+                                    '_>',
+                                    '_&gt;'
+                                ),
+                                '_<',
+                                '_&lt;'
+                            )
+                        ) as ENTITLEMENT_XML,
+                        QUOTE_RECORD_ID,
+                        SERVICE_ID
+                    from
+                        SAQTSE (nolock)
+                    where
+                        QUOTE_RECORD_ID = '{QuoteRecordId}'
+                        AND QTEREV_RECORD_ID = '{RevisionRecordId}'
+                    """.format(
                         QuoteRecordId=contract_quote_rec_id, RevisionRecordId=quote_revision_rec_id
                     )
                 )
-                if str(get_ent_bill_cycle).upper() == "ONE ITEM PER QUOTE":
+
+                if get_ent_bill_cycle.upper() == "ONE ITEM PER QUOTE":
                     if billing_day in (29, 30, 31):
                         if start_date.month == 2:
                             isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
@@ -2498,9 +2513,7 @@ def billingmatrix_create():
                             start_date = start_date.replace(day=billing_day)
                     else:
                         start_date = start_date.replace(day=billing_day)
-                    end_date = datetime.datetime.strptime(
-                        UserPersonalizationHelper.ToUserFormat(contract_end_date), "%m/%d/%Y"
-                    )
+                    end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), "%m/%d/%Y")
                     # end_date = str(contract_end_date).split(' ')[0]
                     diff1 = end_date - start_date
 
@@ -2511,9 +2524,9 @@ def billingmatrix_create():
 
                     total_months = years * 12 + months
                     for index in range(0, total_months + 1):
-                        Trace.Write("index--" + str(index))
+                        Trace.Write("index--{}".format(index))
                         billing_month_end += 1
-                        if str(index) in ["0", "12", "24", "36", "48"]:
+                        if index in (0, 12, 24, 36, 48):
                             insert_item_per_billing(
                                 total_months=total_months,
                                 billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
@@ -2522,7 +2535,7 @@ def billingmatrix_create():
                                 billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
                                     Month_add=billing_month_end, BillingDate=start_date.strftime("%m/%d/%Y")
                                 ),
-                                amount_column="YEAR_" + str((index / 12) + 1),
+                                amount_column="YEAR_{}".format((index / 12) + 1),
                                 entitlement_obj=entitlement_obj,
                                 service_id=get_service_val,
                                 get_ent_val_type=get_ent_bill_cycle,
@@ -2530,7 +2543,7 @@ def billingmatrix_create():
                                 get_billling_data_dict=get_billling_data_dict,
                             )
 
-                elif str(get_ent_bill_cycle).upper() == "MONTHLY":
+                elif get_ent_bill_cycle.upper() == "MONTHLY":
                     if billing_day in (29, 30, 31):
                         if start_date.month == 2:
                             isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
@@ -2542,9 +2555,7 @@ def billingmatrix_create():
                             start_date = start_date.replace(day=billing_day)
                     else:
                         start_date = start_date.replace(day=billing_day)
-                    end_date = datetime.datetime.strptime(
-                        UserPersonalizationHelper.ToUserFormat(contract_end_date), "%m/%d/%Y"
-                    )
+                    end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), "%m/%d/%Y")
                     # end_date = str(contract_end_date).split(' ')[0]
                     diff1 = end_date - start_date
 
@@ -2589,30 +2600,24 @@ def billingmatrix_create():
                         if get_milestone_details:
                             updateentXML = get_milestone_details.ENTITLEMENT_XML
                             pattern_tag = re.compile(r"(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)")
-                            pattern_id = re.compile(
-                                r"<ENTITLEMENT_ID>(AGS_Z0007_PQB_MILEST|AGS_"
-                                + str(get_service_val)
-                                + "_PQB_MILST1|AGS_"
-                                + str(get_service_val)
-                                + "_PQB_MILST2|AGS_"
-                                + str(get_service_val)
-                                + "_PQB_MILST3|AGS_"
-                                + str(get_service_val)
-                                + "_PQB_MIL3DS|AGS_"
-                                + str(get_service_val)
-                                + "_PQB_MIL1DS|AGS_"
-                                + str(get_service_val)
-                                + "_PQB_MIL2DS|AGS_"
-                                + str(get_service_val)
-                                + "_PQB_MIL3BD|AGS_"
-                                + str(get_service_val)
-                                + "_PQB_MIL2BD|AGS_"
-                                + str(get_service_val)
-                                + "_PQB_MIL1BD)</ENTITLEMENT_ID>"
-                            )
-                            pattern_name = re.compile(
-                                r"<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>"
-                            )
+                            compile_string_pattern = "<ENTITLEMENT_ID>({})</ENTITLEMENT_ID>"
+                            list_data = [
+                                "AGS_Z0007_PQB_MILEST",
+                                "AGS_{}_PQB_MILST1",
+                                "AGS_{}_PQB_MILST2",
+                                "AGS_{}_PQB_MILST3",
+                                "AGS_{}_PQB_MIL3DS",
+                                "AGS_{}_PQB_MIL1DS",
+                                "AGS_{}_PQB_MIL2DS",
+                                "AGS_{}_PQB_MIL3BD",
+                                "AGS_{}_PQB_MIL2BD",
+                                "AGS_{}_PQB_MIL1BD",
+                            ]
+
+                            pattern_id_string = "|".join(i.format(get_service_val) for i in list_data)
+                            pattern_id_string = compile_string_pattern.format(pattern_id_string)
+                            pattern_id = re.compile(r"{}".format(pattern_id_string))
+                            pattern_name = re.compile(r"<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>")
                             for m in re.finditer(pattern_tag, updateentXML):
                                 sub_string = m.group(1)
                                 get_ent_id = re.findall(pattern_id, sub_string)
@@ -2620,6 +2625,7 @@ def billingmatrix_create():
                                 if get_ent_id:
                                     get_ent_val = str(get_ent_val[0])
                                     get_milestones_data_dict[get_ent_id[0]] = str(get_ent_val)
+
                         for data, val in get_milestones_data_dict.items():
                             count = 0
                             if ("AGS_Z0007_PQB_MIL3BD", "AGS_Z0007_PQB_MIL2BD", "AGS_Z0007_PQB_MIL1BD") in data:
@@ -2633,7 +2639,7 @@ def billingmatrix_create():
                                         billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
                                             Month_add=billing_month_end, BillingDate=val.strftime("%m/%d/%Y")
                                         ),
-                                        amount_column="YEAR_" + str((count / 12) + 1),
+                                        amount_column="YEAR_{}".format((count / 12) + 1),
                                         entitlement_obj=entitlement_obj,
                                         service_id=get_service_val,
                                         get_ent_val_type=get_ent_bill_cycle,
@@ -2642,7 +2648,7 @@ def billingmatrix_create():
                                         get_milestones_data_dict=get_milestones_data_dict,
                                     )
                                     count += 1
-                elif str(get_ent_bill_cycle).upper() == "QUARTELY":
+                elif get_ent_bill_cycle.upper() == "QUARTELY":
                     ct_start_date = contract_start_date
                     ct_end_date = contract_end_date
                     if ct_start_date > ct_end_date:
@@ -2668,25 +2674,7 @@ def billingmatrix_create():
                             get_ent_billing_type_value=get_ent_billing_type_value,
                             get_billling_data_dict=get_billling_data_dict,
                         )
-                # elif str(get_ent_bill_cycle).upper() == "ONE ITEM PER QUOTE":
-                # 	end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
-                # 	diff1 = end_date - start_date
-                # 	Trace.Write('diff1--'+str(diff1))
-                # 	avgyear = 365.00    # even leap years have 12 months
-                # 	years, remainder = divmod(diff1.days, avgyear)
-                # 	years = int(years)
 
-                # 	Trace.Write('years--'+str(years))
-                # 	for index in range(1, years+1):
-                # 		billing_month_end += 1
-                # 		Trace.Write('billing_month_end--'+str(index))
-                # 		insert_items_billing_plan(total_months='',
-                # 									billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
-                # 										Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
-                # 										),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
-                # 										Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
-                # 										), amount_column="YEAR_"+str(index + 1),
-                # 										entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
                 else:
                     Trace.Write("get_ent_val--- " + str(get_ent_bill_cycle))
                     if billing_day in (29, 30, 31):
@@ -2700,9 +2688,7 @@ def billingmatrix_create():
                             start_date = start_date.replace(day=billing_day)
                     else:
                         start_date = start_date.replace(day=billing_day)
-                    end_date = datetime.datetime.strptime(
-                        UserPersonalizationHelper.ToUserFormat(contract_end_date), "%m/%d/%Y"
-                    )
+                    end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), "%m/%d/%Y")
                     diff1 = end_date - start_date
 
                     avgyear = 365.2425  # pedants definition of a year length with leap years
@@ -2719,26 +2705,23 @@ def billingmatrix_create():
                             billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
                                 Month_add=billing_month_end, BillingDate=start_date.strftime("%m/%d/%Y")
                             ),
-                            amount_column="YEAR_" + str((index) + 1),
+                            amount_column="YEAR_{}".format((index) + 1),
                             entitlement_obj=entitlement_obj,
                             service_id=get_service_val,
                             get_ent_val_type=get_ent_val,
                             get_ent_billing_type_value=get_ent_billing_type_value,
                             get_billling_data_dict=get_billling_data_dict,
                         )
-                # self.insert_quote_items_billing_plan()
 
 
 # A055S000P01-3924-billing matrix creation end
-
-
 if contract_quote_rec_id:
     ApiResponse = ApiResponseFactory.JsonResponse(_insert_billing_matrix())
-    # _insert_billing_matrix()
+
     # Approval Trigger - Start
-    # import ACVIORULES
     violationruleInsert = ACVIORULES.ViolationConditions()
     header_obj = sql_get_first("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+
     if header_obj:
         violationruleInsert.InsertAction(header_obj.RECORD_ID, quote_revision_rec_id, "SAQTRV")
     # Approval Trigger - End
