@@ -1411,7 +1411,5 @@ if contract_quote_rec_id:
 	violationruleInsert = ACVIORULES.ViolationConditions()
 	header_obj = SqlHelper.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
 	if header_obj:			
-		violationruleInsert.InsertAction(
-		header_obj.RECORD_ID,quote_revision_rec_id, "SAQTRV"
-		)
+		violationruleInsert.InsertAction(header_obj.RECORD_ID,quote_revision_rec_id, "SAQTRV")
 	# Approval Trigger - End
