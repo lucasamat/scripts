@@ -18,8 +18,8 @@ get_total_qty =0
 def remove_list(t):
 	return t[3:]
 get_billig_date_list = []
-def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
-	Trace.Write(str(totalyear)+'---BULK EDIT SAVE BILLING MATRIX--inside function---GET_DICT----'+str(GET_DICT))
+def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,TreeParam,TreeParentParam):
+	Trace.Write(str(TreeParam)+'--TreeParentParam---'+str(TreeParentParam)+'---BULK EDIT SAVE BILLING MATRIX--inside function---GET_DICT----'+str(GET_DICT))
 	count = 0
 	for val in GET_DICT:
 		count += 1
@@ -189,6 +189,14 @@ try:
 except:
 	getedited_amt = ""
 try:
+	TreeParentParam = Param.TreeParentParam
+except:
+	TreeParentParam = ""
+try:
+	TreeParam = Param.TreeParam
+except:
+	TreeParam = ""
+try:
 	deliverydict =list(Param.deliverydict)
 	#totalyear = Param.totalyear
 	#getedited_amt = Param.getedited_amt
@@ -204,4 +212,4 @@ except:
 if deliveryEdit == "DELIVERYEDIT":
 	ApiResponse = ApiResponseFactory.JsonResponse(DELIVERYEDIT_SAVE(deliverydict,totalyear,getedited_amt,deliveryEdit))
 else:
-	ApiResponse = ApiResponseFactory.JsonResponse(BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,))
+	ApiResponse = ApiResponseFactory.JsonResponse(BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,TreeParam,TreeParentParam))
