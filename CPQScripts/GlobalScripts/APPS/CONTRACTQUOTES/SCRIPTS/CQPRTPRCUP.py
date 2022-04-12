@@ -122,7 +122,7 @@ PartDivisions={}
 
 part_divisionlist = SqlHelper.GetList("SELECT SAP_PART_NUMBER, DIVISION_ID FROM MAMTRL WHERE SAP_PART_NUMBER IN (SELECT PART_NUMBER FROM SAQSPT WHERE QUOTE_ID='{quote}')".format(quote=QUOTE))
 for obj in part_divisionlist:
-	part_divisionlist[str(obj.SAP_PART_NUMBER)]=str(obj.DIVISION_ID)
+	part_divisionlist[obj.SAP_PART_NUMBER]=obj.DIVISION_ID
 
 price_list = SqlHelper.GetFirst("SELECT  PRICEGROUP_ID, PRICELIST_ID FROM  SASAAC (NOLOCK) WHERE  SALESORG_ID ='"+str(salesorg)+"'AND ACCOUNT_ID='"+str(account_info['SOLD TO'])+"' AND DIVISION_ID ='"+str(div)+"'   AND DISTRIBUTIONCHANNEL_ID ='"+str(dis)+"'")
 
