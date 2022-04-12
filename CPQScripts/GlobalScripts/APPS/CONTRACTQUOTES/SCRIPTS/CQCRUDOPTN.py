@@ -2914,10 +2914,10 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							# 	poss_cost = nso_data.POSS_COST
 							# else:
 							# 	poss_cost = 0
-							if nso_data.POSS_PRICE:
-								poss_price = nso_data.POSS_PRICE
-							else:
-								poss_price = 0
+							# if nso_data.POSS_PRICE:
+							# 	poss_price = nso_data.POSS_PRICE
+							# else:
+							# 	poss_price = 0
 							# Trace.Write("poss_price "+str(poss_price)+" poss_cost "+str(poss_cost))
 							nso_table = {
 								"QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -2951,7 +2951,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								"SERIAL_NO": eqp.SERIAL_NO,
 								"TEMP_TOOL": eqp.TEMP_TOOL,
 								# "POSS_COST": nso_data.POSS_COST,
-								"POSS_PRICE": nso_data.POSS_PRICE,
+								# "POSS_PRICE": nso_data.POSS_PRICE,
 								"EXTENDED_POSS_COST": float(poss_cost) * 1,
 								"EXTENDED_POSS_PRICE": float(poss_price) * 1
 							} 
