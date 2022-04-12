@@ -14,7 +14,7 @@ REVISION_rec_ID = input_data[-1]
 contract_quote_rec_id = input_data[0] if input_data else ""
 quote_revision_rec_id = input_data[-1] if input_data else ""
 
-_CYCLE_CONFIG = {"MONTHLY": 12, "QUARTERLY": 4, "ANNUALLY": 1}
+_CYCLE_CONFIG = {"MONTHLY": 12, "QUARTERLY": 4, "ANNUALLY": 1, "WEEKLY": 52}
 
 user_id = str(User.Id)
 user_name = User.UserName
@@ -2688,7 +2688,7 @@ def billingmatrix_create():
                 # 										), amount_column="YEAR_"+str(index + 1),
                 # 										entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
                 else:
-                    Trace.Write("get_ent_val---" + str(get_ent_bill_cycle))
+                    Trace.Write("get_ent_val--- " + str(get_ent_bill_cycle))
                     if billing_day in (29, 30, 31):
                         if start_date.month == 2:
                             isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
