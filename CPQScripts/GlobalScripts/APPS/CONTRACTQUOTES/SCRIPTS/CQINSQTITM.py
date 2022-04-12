@@ -2088,7 +2088,7 @@ class ContractQuoteItem:
 						if self.quote_service_entitlement_type in ('STR-OFFBGREQPODV OBJ-EQ','STR-OFFBGBEQ OBJ-EQ'):
 							Trace.Write("---===self.quote_service_entitlement_type"+str(self.quote_service_entitlement_type))
 							self.source_object_name = 'SAQSCE'
-						elif self.quote_service_entitlement_type in ('STR-OFFBGB OBJ-GREQ PRD-GRPT','STR-OFFBGB OBJ-GREQ','STR-OFFBGB OBJ-EQ','STR-OFFBGR OBJ-GREQ','STR-OFFBGB OBJ-ASKT'):
+						elif self.quote_service_entitlement_type in ('STR-OFFBGB OBJ-GREQ PRD-GRPT','STR-OFFBGB OBJ-GREQ','STR-OFFBGB OBJ-EQ','STR-OFFBGR OBJ-GREQ','STR-OFFBGB OBJ-ASKT','STR-OFFBGBCRSOGL OBJ-GREQ'):
 							self.source_object_name = 'SAQSGE'
 						elif self.quote_service_entitlement_type in ('OFFERING+CONSIGNED+ON REQUEST','STR-OF PRD-GRPT'):
 							self.source_object_name = 'SAQTSE'
