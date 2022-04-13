@@ -20,17 +20,6 @@ class TableAction:
         Param : row : row : Row to be Added
         """
         table_info = sql_get_table(table_name)
-        # Don't remove
-        # datetime_value = datetime.datetime.now()
-        # Get_UserID = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
-        # row.pop("CPQTABLEENTRYADDEDBY",None)
-        # row.pop("CPQTABLEENTRYDATEADDED",None)
-        # row.pop("CpqTableEntryModifiedBy",None)
-        # row.pop("CpqTableEntryDateModified",None)
-        # row["CPQTABLEENTRYADDEDBY"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
-        # row["CPQTABLEENTRYDATEADDED"] = datetime_value
-        # row["CpqTableEntryModifiedBy"] = str(Get_UserID)
-        # row["CpqTableEntryDateModified"] = datetime_value  
         table_info.AddRow(row)
         sql_upsert(table_info)
 
@@ -44,10 +33,9 @@ class TableAction:
         """
         table_info = sql_get_table(table_name)
         primary_query_items = sql_get_list("SELECT * FROM {} WHERE {} = '{}'".format(table_name, primary, row))
-        if primary_query_items:
-            for primaryItem in primary_query_items:
-                table_info.AddRow(primaryItem)
-                sql_delete(table_info)
+        for primaryItem in primary_query_items:
+            table_info.AddRow(primaryItem)
+            sql_delete(table_info)
 
     @staticmethod
     def Update(table_name, primary, row):
