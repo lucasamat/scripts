@@ -3583,7 +3583,7 @@ class SyncQuoteAndCustomTables:
                                         Quote_id=Quote.GetGlobal("contract_quote_record_id"),
                                         qtrv_id=Quote.GetGlobal("quote_revision_record_id"),
                                     )
-                                    Sql.RunQuery(saqsco_update)
+                                    #Sql.RunQuery(saqsco_update)
                                     coverd_object_temp_table_drop = SqlHelper.GetFirst(
                                         "sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"
                                         + str(coverd_object_temp_table_name)
