@@ -4381,6 +4381,19 @@ class SYLDRTLIST:
                                 + str(qstring)
                                 + "</th>"
                                 )
+                        elif str(RECORD_ID)=="SYOBJR-98882" and str(invs) =="QUANTITY" :
+                            data_formatter = "NSOBulkEditHyperLink" if getRevision.REVISION_STATUS!="APR-APPROVED" else ""
+                            table_header += (
+                                '<th  data-field="'
+                                + str(invs)
+                                + '" data-filter-control="input" data-align="right" data-title-tooltip="'
+                                + str(qstring)
+                                + '" data-formatter="'+str(data_formatter)+'" data-sortable="true" '
+                                + rowspan
+                                +'>'
+                                + str(qstring)
+                                + "</th>"
+                                )
                         elif invs != "EQUIPMENT_LINE_ID" and invs != "LINE":             
                             table_header += (
                                 '<th  data-field="'
