@@ -230,7 +230,7 @@ try:
                 elif str(i["netPriceUnit"]) != str(isocode_salesuom) and int(i["netPriceUnitValue"]) > 1:
                     i["netPrice"] = (i["netPrice"] / int(i["netPriceUnitValue"])) * numerator
                     
-                insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"],i["netValue"],i["grossValue"],i["freightValue"],i["netPrice"],i["netPriceUnit"],i["netPriceUnitValue"]))
+                insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-5], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"],i["netValue"],i["grossValue"],i["freightValue"],i["netPrice"],i["netPriceUnit"],i["netPriceUnitValue"]))
                 
                 Log.Info("UNIT_PRICE---22---"+str(insert_data))
                 #Log.Info("4521 batch_group_record_id --->"+str(batch_group_record_id))
@@ -244,7 +244,7 @@ try:
                     getpartsdata = Sql.GetFirst("select * from SAQSPT where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
                     
                 if getpartsdata or get_ancillary_spare:
-                    Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE,CORE_CREDIT_PRICE,TAX_VALUE,NET_VALUE,GROSS_VALUE,FREIGHT_VALUE,NET_PRICE,NET_PRICE_UNIT,NET_PRICE_UNIT_VALUE) VALUES {}".format(', '.join(map(str, insert_data))))			
+                    Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE,CORE_CREDIT_PRICE,TAX_VALUE,NET_VALUE,GROSS_VALUE,FREIGHT_VALUE,NET_PRICE,NET_PRICE_UNIT,NET_PRICE_UNIT_VALUE) VALUES {}".format(', '.join(map(str, insert_data))))
                     #Log.Info('getpartsdata -->'+str(getpartsdata.PART_NUMBER))
                 
                     if getpartsdata:
