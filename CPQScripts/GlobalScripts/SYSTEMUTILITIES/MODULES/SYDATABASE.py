@@ -12,7 +12,7 @@
 import datetime
 
 
-class Sql:
+class _Sql:
     """Model to handle custom table transactions.
     :cause:
         Writing this as a class method as we all the functions are independent of one another
@@ -41,7 +41,7 @@ class Sql:
         except Exception as e:
             cls.exceptMessage = "SYDATABASE : GetList : EXCEPTION : UNABLE TO GET LIST : {} : EXCEPTION E : {}".format(query, e)
             Trace.Write(cls.exceptMessage)
-            return None
+            return []
 
     @classmethod
     def GetFirst(cls, query):
@@ -161,7 +161,7 @@ class Sql:
             return None
 
 
-class SQL(Sql):
+class SQL(_Sql):
     pass
 
 
@@ -171,32 +171,32 @@ class SQL(Sql):
 
 def sql_get_list(query):
     """This function is the public api to access the sql get list method"""
-    return Sql.GetList(query)
+    return _Sql.GetList(query)
 
 
 def sql_get_table(table_name):
     """This function is the public api to access the sql GetTable method"""
-    return Sql.GetTable(table_name)
+    return _Sql.GetTable(table_name)
 
 
 def sql_get_first(query):
     """This function is the public api to access the sql GetFirst method"""
-    return Sql.GetFirst(query)
+    return _Sql.GetFirst(query)
 
 
-def sql_upsert(tableInfo):
+def sql_upsert(table_info):
     """This function is the public api to access the sql Upsert method"""
-    return Sql.Upsert(tableInfo)
+    return _Sql.Upsert(table_info)
 
 
-def sql_delete(tableInfo):
+def sql_delete(table_info):
     """This function is the public api to access the sql Delete method"""
-    return Sql.Delete(tableInfo)
+    return _Sql.Delete(table_info)
 
 
 def sql_run_query(query):
     """This function is the public api to access the sql RunQuery method"""
-    return Sql.RunQuery(query)
+    return _Sql.RunQuery(query)
 
 
 # ----------------------------------------- end of public methods------------------------------------------------#
