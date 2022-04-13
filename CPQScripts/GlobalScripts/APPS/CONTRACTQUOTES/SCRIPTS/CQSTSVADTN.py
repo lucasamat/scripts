@@ -55,7 +55,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		
 		#VC offerring[SAQTSE]
 		get_complete_list = []
-		get_vc_offerring_info = Sql.GetList(" SELECT  CONFIGURATION_STATUS,SERVICE_ID  FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and CONFIGURATION_STATUS = 'COMPLETE' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+		get_vc_offerring_info = Sql.GetList(" SELECT  DISTINCT CONFIGURATION_STATUS,SERVICE_ID  FROM SAQSGE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and CONFIGURATION_STATUS = 'COMPLETE' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 		if get_vc_offerring_info:
 			for val in get_vc_offerring_info:
 				if  val.CONFIGURATION_STATUS:
