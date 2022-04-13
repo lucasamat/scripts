@@ -471,15 +471,39 @@ class SYLDRTLIST:
                     
                     try:
                         if TreeParam not in ("Z0009","Z0123"):
-                            get_year_max = Sql.GetFirst("SELECT max(CpqTableEntryId) as cpqid,SUM("+get_ttl_amt+") as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' GROUP BY GREENBOOK,SERVICE_ID,EQUIPMENT_ID")
-                            get_total_amt = Sql.GetFirst("SELECT  EQUIPMENT_ID,GREENBOOK,"+get_ttl_amt+" as billval,ANNUAL_BILLING_AMOUNT from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' and CpqTableEntryId = '"+str(get_year_max.cpqid)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' GROUP BY EQUIPMENT_ID,SERVICE_ID,ANNUAL_BILLING_AMOUNT,"+get_ttl_amt+",GREENBOOK")
-                            get_diff = get_total_amt.ANNUAL_BILLING_AMOUNT-get_year_max.billval
-                            rem_add_year = get_total_amt.billval+get_diff
-                            update_billing_val = "UPDATE SAQIBP SET "+get_ttl_amt+"={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=get_year_max.cpqid,quote_revision_rec_id=quote_revision_record_id)
-                            Sql.RunQuery(update_billing_val)
-                            if get_ttl_amt == 'ESTVAL_INDT_CURR' and TreeParam == 'Z0117':
-                                update_billing_val_psma = "UPDATE SAQIBP SET ESTVAL_INDT_CURR ={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=get_year_max.cpqid,quote_revision_rec_id=quote_revision_record_id)
-                                Sql.RunQuery(update_billing_val_psma)
+                            get_round_val = 2
+                            getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
+                            getcurrencysymbol = Sql.GetFirst("""SELECT ROUNDING_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY_RECORD_ID = '{currencysymbol}' """.format(currencysymbol = getcurrency.GLOBAL_CURRENCY_RECORD_ID))
+                            get_round_val = getcurrencysymbol.ROUNDING_DECIMAL_PLACES
+                            Trace.Write('get_round_val--'+str(get_round_val))
+                            get_year_max = Sql.GetList("SELECT max(CpqTableEntryId) as cpqid,SUM("+get_ttl_amt+") as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' GROUP BY GREENBOOK,SERVICE_ID,EQUIPMENT_ID")
+                            for val in get_year_max:
+                                get_total_amt = Sql.GetFirst("SELECT  EQUIPMENT_ID,GREENBOOK,"+get_ttl_amt+" as billval,ANNUAL_BILLING_AMOUNT from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' and CpqTableEntryId = '"+str(val.cpqid)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' GROUP BY EQUIPMENT_ID,SERVICE_ID,ANNUAL_BILLING_AMOUNT,"+get_ttl_amt+",GREENBOOK")
+                                get_diff = get_total_amt.ANNUAL_BILLING_AMOUNT-val.billval
+                                rem_add_year = get_total_amt.billval+get_diff
+                                update_billing_val = "UPDATE SAQIBP SET "+get_ttl_amt+"={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=val.cpqid,quote_revision_rec_id=quote_revision_record_id)
+                                Sql.RunQuery(update_billing_val)
+                                Trace.Write('--get_ttl_amt----'+str(get_ttl_amt))
+                                if str(get_ttl_amt).strip() == "BILLING_VALUE":
+                                    Trace.Write('--get_ttl_amt--475--'+str(get_ttl_amt))
+                                    update_billing_val_curry = "UPDATE SAQIBP SET BILLING_VALUE_INGL_CURR={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=val.cpqid,quote_revision_rec_id=quote_revision_record_id)
+                                    Sql.RunQuery(update_billing_val_curry)
+                                if get_ttl_amt == 'ESTVAL_INDT_CURR' and TreeParam == 'Z0117':
+                                    update_billing_val_psma = "UPDATE SAQIBP SET ESTVAL_INDT_CURR ={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=val.cpqid,quote_revision_rec_id=quote_revision_record_id)
+                                    Sql.RunQuery(update_billing_val_psma)
+                        elif TreeParam  in ("Z0123"):
+                            get_round_val = 2
+                            getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
+                            getcurrencysymbol = Sql.GetFirst("""SELECT ROUNDING_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY_RECORD_ID = '{currencysymbol}' """.format(currencysymbol = getcurrency.GLOBAL_CURRENCY_RECORD_ID))
+                            get_round_val = getcurrencysymbol.ROUNDING_DECIMAL_PLACES
+                            Trace.Write('get_round_val--'+str(get_round_val))
+                            get_year_max = Sql.GetList("SELECT max(CpqTableEntryId) as cpqid,SUM("+get_ttl_amt+") as billval from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'  and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' GROUP BY LINE")
+                            for val in get_year_max:
+                                get_total_amt = Sql.GetFirst("SELECT  EQUIPMENT_ID,GREENBOOK,"+get_ttl_amt+" as billval,ANNUAL_BILLING_AMOUNT,LINE from SAQIBP where QUOTE_RECORD_ID= '"+str(contract_quote_record_id)+"' and BILLING_YEAR= '"+str(SubTab)+"' and SERVICE_ID= '"+str(TreeParam)+"' and CpqTableEntryId = '"+str(val.cpqid)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' GROUP BY EQUIPMENT_ID,SERVICE_ID,ANNUAL_BILLING_AMOUNT,"+get_ttl_amt+",GREENBOOK,LINE")
+                                get_diff = get_total_amt.ANNUAL_BILLING_AMOUNT-val.billval
+                                rem_add_year = get_total_amt.billval+get_diff
+                                update_billing_val = "UPDATE SAQIBP SET "+get_ttl_amt+"={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=val.cpqid,quote_revision_rec_id=quote_revision_record_id)
+                                Sql.RunQuery(update_billing_val)
                     except:
                         pass
                 if item_billing_plans_obj:
