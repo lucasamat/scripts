@@ -926,10 +926,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 	value_list = []
 	VALUE1 = []
 	VALUE2 =[]
-	try:
-		selected_rows = RECORDID.split(",") if RECORDID is not None else None
-	except:
-		selected_rows = ""
+	selected_rows = RECORDID.split(",")
 	Trace.Write("SELECT_ALL_CHK "+str(SELECTALL))
 	clicked = CLICKEDID.split("_")
 	obj_id = clicked[2] + "-" + clicked[3] + "-" + clicked[4] + "-" + clicked[5] + "-" + clicked[6]
