@@ -121,6 +121,7 @@ def create_new_revision(Opertion,cartrev):
 				"REV_CREATE_DATE":current_date.strftime('%m/%d/%Y'),
 				"REV_EXPIRE_DATE":'',
 				"REVISION_STATUS":"CFG-CONFIGURING",
+				"WORKFLOW_STATUS": "CONFIGURE",
 				"QTEREV_ID":newrev_inc,
 				"QTEREV_RECORD_ID":quote_revision_id, 
 				"REV_APPROVE_DATE":'',
