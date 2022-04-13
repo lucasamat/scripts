@@ -870,7 +870,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						Sql.RunQuery(quote_contract_update)
 						
 						#update dirty flag start
-						get_saqico_data = Sql.GetFirst("SELECT * from SAQICO  WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+						get_saqico_data = Sql.GetFirst("SELECT * from SAQRIT  WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 						if get_saqico_data:
 							if get_saqico_data.CONTRACT_VALID_FROM != product_offering_contract_validity.CONTRACT_VALID_FROM or get_saqico_data.CONTRACT_VALID_TO != product_offering_contract_validity.CONTRACT_VALID_TO:
 								Sql.RunQuery("UPDATE SAQTRV SET DIRTY_FLAG='{}',REVISION_STATUS='CFG-CONFIGURING',WORKFLOW_STATUS='CONFIGURE' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(True,contract_quote_record_id,quote_revision_record_id))
