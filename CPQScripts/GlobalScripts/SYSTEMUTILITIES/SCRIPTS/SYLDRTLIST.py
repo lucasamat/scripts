@@ -4728,7 +4728,9 @@ class SYLDRTLIST:
         else:
             if str(RECORD_ID) == "SYOBJR-98882":
                 dbl_clk_function += (' const card = document.querySelector("'+str(table_ids)+' > tbody > tr"); card.addEventListener("dblclick",function(e){ NSOBulkUpdate(this) });') 
-                dbl_clk_function += (' $("'
+                dbl_clk_function += ('$("'
+                    + str(table_ids)
+                    + ' th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
                     + str(table_ids)
                     + '").on("sort.bs.table", function (e, name, order) {  currenttab = $("ul#carttabs_head .active").text().trim(); localStorage.setItem("'
                     + str(table_id)
