@@ -191,7 +191,10 @@ if part_query or ancillary_part_query or fpm_part_query:
 				quantity[0] = int(quantity[0])
 				curr_attr = currency_attribute
 				salesUOMs= salesUOM[0] or 'EA'
-				itemleveldivison=PartDivisions[str(partids[0])]
+				try:
+					itemleveldivison = PartDivisions[str(p)]
+				except:
+					itemleveldivison = '99'
 				prefixZero=''
 				if re.match(r'^\d+$',partids[0]):
 					totallen = len(partids[0])
@@ -219,7 +222,10 @@ if part_query or ancillary_part_query or fpm_part_query:
 					s=val[3] or account_info['SHIP TO']
 					salesUOMs=val[4] or 'EA'
 					salesUOMConvs=int(val[5] or 1)
-					itemleveldivison=PartDivisions[str(p)]
+					try:
+						itemleveldivison = PartDivisions[str(p)]
+					except:
+						itemleveldivison = '99'
 					if q<=0 or q=='':
 						q=1
 					q=int(q)
