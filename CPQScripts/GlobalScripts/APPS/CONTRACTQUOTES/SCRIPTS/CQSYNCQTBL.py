@@ -2531,7 +2531,7 @@ class SyncQuoteAndCustomTables:
                                                 quote_rev_id=quote_rev_id,
                                             )
                                         )
-
+                                    ##Removed the serial number is null condition in SAQFEA table insert for HPQC 178 Defect....
                                     equipment_assembly_temp_insert = Sql.RunQuery(
                                         """
                                             INSERT
@@ -2608,8 +2608,7 @@ class SyncQuoteAndCustomTables:
                                                         SAQFEQ (NOLOCK)
                                                         JOIN MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID
                                                     WHERE
-                                                        AND ISNULL(MAEQUP.SERIAL_NO, '') = ''
-                                                        AND SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
+                                                        SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
                                                         AND SAQFEQ.QTEREV_RECORD_ID = '{quote_revision_id}'
                                                         AND SAQFEQ.TEMP_TOOL = 'True'
                                                 ) A
@@ -3279,6 +3278,7 @@ class SyncQuoteAndCustomTables:
                                         quote_rev_id=quote_rev_id,
                                     )
                                 )
+                                ##Removed the serial number is null condition in SAQFEA table insert for HPQC 178 Defect....
                                 query = """
                                     INSERT
                                     SAQFEA (
@@ -3355,8 +3355,7 @@ class SyncQuoteAndCustomTables:
                                             JOIN MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID
                                             AND MAEQUP.FABLOCATION_ID = SAQFEQ.FABLOCATION_ID
                                         WHERE
-                                            ISNULL(MAEQUP.SERIAL_NO, '') = ''
-                                            AND SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
+                                            SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
                                             AND SAQFEQ.QTEREV_RECORD_ID = '{quote_revision_id}'
                                             AND ISNULL(SAQFEQ.TEMP_TOOL, '') = ''
                                     ) A
