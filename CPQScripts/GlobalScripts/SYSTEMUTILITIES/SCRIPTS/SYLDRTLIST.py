@@ -4780,7 +4780,8 @@ class SYLDRTLIST:
                     )
                 else:
                     if str(RECORD_ID) == "SYOBJR-98882":
-                        dbl_clk_function += ('$("'+str(table_ids)+'").on("dbl-click-cell.bs.table", NSOBulkUpdate(this));')  
+                        # dbl_clk_function += ('$("'+str(table_ids)+'").on("dbl-click-cell.bs.table", NSOBulkUpdate(this));')  
+                        dbl_clk_function +=""
                 dbl_clk_function += (' $("'
                     + str(table_ids)
                     + '").on("sort.bs.table", function (e, name, order) {  currenttab = $("ul#carttabs_head .active").text().trim(); localStorage.setItem("'
