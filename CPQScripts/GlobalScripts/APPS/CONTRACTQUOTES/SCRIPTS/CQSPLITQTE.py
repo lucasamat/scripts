@@ -660,6 +660,24 @@ def servicelevel_split_green(seid):
 	THEN INSERT(QUOTE_REVISION_ITEM_OBJECT_RECORD_ID,CUSTOMER_TOOL_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,KPU,LINE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERIAL_NUMBER,TECHNOLOGY,TOOL_CONFIGURATION,WAFER_SIZE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 	VALUES (NEWID(),CUSTOMER_TOOL_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,KPU,LINE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUOTE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERIAL_NUMBER,TECHNOLOGY,TOOL_CONFIGURATION,WAFER_SIZE,'{UserName}','{datetimenow}','{UserId}','{datetimenow}');""".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id,UserId=user_id,UserName=user_name,datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
 	Sql.RunQuery(saqrioinsert)
+	# A055S000P01-17876 - Start
+	# Service Contractual Cost
+	Sql.RunQuery("""UPDATE SAQICO SET SVCTCS = CNTCST * SVSPCT,
+				SVCTPR = CNTPRC * SVSPCT,
+				SVCTMG = ((CNTPRC * SVSPCT) - (CNTCST * SVSPCT)) * 100
+				FROM SAQICO (NOLOCK) 
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes'
+			""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=parent_service_id)
+	)
+	# Spares Contractual Cost
+	Sql.RunQuery("""UPDATE SAQICO SET SPCTCS = CNTCST * SPSPCT,
+					SPCTPR = CNTPRC * SPSPCT,
+					SPCTMG = ((SPCTPR - SPCTCS) - (CNTPRC * SPSPCT)) * 100
+					FROM SAQICO (NOLOCK) 
+					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes'
+				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=parent_service_id)
+	)
+	# A055S000P01-17876 - End
 	annaul_line_insert = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":contract_quote_rec_id, "ContractQuoteRevisionRecordId":quote_revision_rec_id, "ServiceId":splitservice_id, "ActionType":'INSERT_LINE_ITEMS'})
 	#Updating net price for Annualised grid
 	update_annual_grid_split_service = """UPDATE SAQICO SET SAQICO.NET_PRICE_INGL_CURR = CAST(CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) FROM SAQICO X(NOLOCK) INNER JOIN (SELECT NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' Group By NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID )A ON X.QTEITM_RECORD_ID = A.QUOTE_REVISION_CONTRACT_ITEM_ID AND X.SERVICE_ID = A.SERVICE_ID WHERE X.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND X.QTEREV_RECORD_ID ='{quote_revision_rec_id}' """.format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
@@ -693,29 +711,53 @@ def servicelevel_split_green(seid):
 	document_years_adjustments ="UPDATE SAQRIT SET YEAR_1 = YEAR_1 + (NET_PRICE - (ISNULL(YEAR_1,0)+ISNULL(YEAR_2,0)+ISNULL(YEAR_3,0)+ISNULL(YEAR_4,0)+ISNULL(YEAR_5,0))) FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
 	Sql.RunQuery(document_years_adjustments)
 	#CQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":get_c4c_quote_id.QUOTE_ID}) 
-	Sql.RunQuery("""UPDATE SAQICO SET SVCTCS = CNTCST * SVSPCT,
-					SVCTPR = CNTPRC * SVSPCT,
-					SVCTMG = ((CNTPRC * SVSPCT) - (CNTCST * SVSPCT)) * 100
+	# A055S000P01-17876 - Start
+	Sql.RunQuery("""UPDATE SAQICO SET 
+					SPSPCT = P_SAQICO.SPSPCT,
+					SPCTPR = P_SAQICO.SPCTPR,
+					SPCTCS = P_SAQICO.SPCTCS,
+					SPCTMG = P_SAQICO.SPCTMG,	
+					SVSPCT = P_SAQICO.SVSPCT,
+					SVCTPR = P_SAQICO.SVCTPR,
+					SVCTCS = P_SAQICO.SVCTCS,
+					SVCTMG = P_SAQICO.SVCTMG,
+					STATUS = P_SAQICO.STATUS			
 					FROM SAQICO (NOLOCK) 
-					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes'
+					JOIN (SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID,FABLOCATION_ID,GREENBOOK,SPSPCT,SPCTPR,SPCTCS,SPCTMG,SVSPCT,SVCTPR,SVCTCS,SVCTMG,STATUS FROM SAQICO WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ParentServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes') P_SAQICO ON P_SAQICO.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND P_SAQICO.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND P_SAQICO.FABLOCATION_ID = SAQICO.FABLOCATION_ID AND P_SAQICO.GREENBOOK = SAQICO.GREENBOOK
+					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'No'
+				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id,ParentServiceId=parent_service_id)
+	)
+	
+	# 105 - Contractual Cost & Contractual Price
+	Sql.RunQuery("""UPDATE SAQICO SET CNTCST = SPCTCS,
+					CNTPRC = SPCTPR					
+					FROM SAQICO (NOLOCK) 
+					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'No'
 				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id)
+	)
+	Sql.RunQuery("""UPDATE SAQICO SET TNTVGC = CASE WHEN ISNULL(SAQICO.SPQTEV,'No') = 'No' THEN CNTPRC ELSE SPCTPR END,
+					TNTMGC = CASE WHEN ISNULL(SAQICO.SPQTEV,'No') = 'No' THEN CNTPRC - CNTCST ELSE SPCTPR - SPCTCS END,
+					TNTMPC = CASE WHEN ISNULL(SAQICO.SPQTEV,'No') = 'No' THEN (CNTPRC - CNTCST) / CNTPRC ELSE (SPCTPR - SPCTCS) / SPCTPR END
+					FROM SAQICO (NOLOCK) 
+					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' 
+				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id)
 	)
 
-	Sql.RunQuery("""UPDATE SAQICO SET SPCTCS = CNTCST * SPSPCT,
-					SPCTPR = CNTPRC * SPSPCT,
-					SPCTMG = ((SPCTPR - SPCTCS) - (CNTPRC * SPSPCT)) * 100
-					FROM SAQICO (NOLOCK) 
-					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes'
-				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id)
-	)
+	#TAXVGC - Tax Amount (Global Currency) 
+	Sql.RunQuery("UPDATE SAQICO SET TAXVGC = TNTVGC * (ISNULL(TAXVTP,0)/100) FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id))
+	
+	#TAMTGC - Total Amount (Global Currency) 
+	Sql.RunQuery("UPDATE SAQICO SET TAMTGC = TNTVGC + ISNULL(TAXVGC,0) FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id))
 
-	Sql.RunQuery("""UPDATE SAQICO SET TNTVGC = CASE WHEN ISNULL(SAQICO.SPQTEV,'No') = 'Yes' THEN CNTPRC ELSE SPCTPR END,
-					TNTMGC = CASE WHEN ISNULL(SAQICO.SPQTEV,'No') = 'Yes' THEN CNTPRC - CNTCST ELSE SPCTPR - SPCTCS END,
-					TNTMPC = CASE WHEN ISNULL(SAQICO.SPQTEV,'No') = 'Yes' THEN (CNTPRC - CNTCST) / CNTPRC ELSE (SPCTPR - SPCTCS) / SPCTPR END
-					FROM SAQICO (NOLOCK) 
-					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'
-				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id)
-	)
+	Sql.RunQuery("UPDATE SAQICO SET YEAR_1 = TNTVDC, YEAR_1_INGL_CURR = TNTVGC FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'No' AND ISNULL(CNTYER,'') = 'YEAR 1'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id))
+
+	Sql.RunQuery("UPDATE SAQICO SET YEAR_2 = TNTVDC, YEAR_2_INGL_CURR = TNTVGC FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'No' AND ISNULL(CNTYER,'') = 'YEAR 2'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id))
+
+	Sql.RunQuery("UPDATE SAQICO SET YEAR_3 = TNTVDC, YEAR_3_INGL_CURR = TNTVGC FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'No' AND ISNULL(CNTYER,'') = 'YEAR 3'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id))
+
+	Sql.RunQuery("UPDATE SAQICO SET YEAR_4 = TNTVDC, YEAR_4_INGL_CURR = TNTVGC FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'No' AND ISNULL(CNTYER,'') = 'YEAR 4'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id))
+
+	Sql.RunQuery("UPDATE SAQICO SET YEAR_5 = TNTVDC, YEAR_5_INGL_CURR = TNTVGC FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'No' AND ISNULL(CNTYER,'') = 'YEAR 5'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id))
 
 ##To update the SAQTRV table after clicking the split button..
 ##adding the pricing column  values from SAQRIS table...
