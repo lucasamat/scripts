@@ -9880,7 +9880,7 @@ class SYLDRTLIST:
 
     def SPARE_PARTS_ORDERING(self,select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs):
             
-        Trace.Write("new_PRICING_STATUS--->"+str(select_obj_str))
+        Trace.Write("new_PRICING_STATUS--->"+str(select_obj_str)" @@"+str(Qustr)+"@@"+str(Page_start)+"Page_End"+str(Page_End)+"@@"+str(Wh_API_NAMEs))
 
 
         if "CpqTableEntryId" in str(Wh_API_NAMEs) or "QUOTE_RECORD_ID" in str(Wh_API_NAMEs):
