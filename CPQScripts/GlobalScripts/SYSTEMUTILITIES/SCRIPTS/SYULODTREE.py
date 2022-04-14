@@ -3342,7 +3342,7 @@ class TreeView:
             RelDict = {}
             RelDict.update({"Related": RelatedList})
             SubTabDict.update({subTabName: RelDict})
-            # Trace.Write("SubTabDict------>"+str(SubTabDict))
+        Trace.Write("SubTabDict------>"+str(SubTabDict))
         return SubTabDict
 
     def getPageRelatedDetails(self, subTabName, pageType, objRecId, ObjectRecId, querystr):
