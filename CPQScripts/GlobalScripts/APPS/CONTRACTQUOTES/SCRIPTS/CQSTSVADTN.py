@@ -137,9 +137,9 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			if str(getsalesorg_info).upper() != "NONE" and get_service_info.COUNT > 0 and get_fab_info.COUNT > 0  and get_involved_parties_info.COUNT > 0  and get_sales_team_info.COUNT > 0  and 'F' not in get_complete_list and 'F' not in tool_check and 'F' not in Z0110_check and 'F' not in Addon_check:
 				update_workflow_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING',WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)	
 				Sql.RunQuery(update_workflow_status)
-			else:
+			#else:
 				#A055S000P01-17893 start
-				error_msg = "You have incomplete configuration. Please correct all configuration errors and try again"
+				#error_msg = "You have incomplete configuration. Please correct all configuration errors and try again"
 				#A055S000P01-17893 end
 		#AO55S000P01-17018 Starts
 		#get pricing status from saqico-A055S000P01-17164 start
@@ -224,6 +224,13 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 		if str(get_workflow_status.REVISION_STATUS) == "LGL-PREPARING LEGAL SOW" and str(get_workflow_status.CLM_AGREEMENT_NUM) == "":
 			error_msg = "You will not be able to complete the stage until the Legal SoW in CLM is executed"
+	#A055S000P01-17891 start
+	get_workflow_banner_msg = Sql.GetFirst("SELECT MESSAGE_TEXT from SYMSGS where  OBJECTFIELD_APINAME = '{msg_wf}' and MESSAGE_TYPE = 'WORKFLOW'".format(msg_wf=status))
+	if get_workflow_banner_msg and Text == "COMPLETE STAGE":
+		error_msg = get_workflow_banner_msg.MESSAGE_TEXT
+	else:
+		error_msg = ''
+	#A055S000P01-17891 end
 	if quote_item_insert == 'yes' and Text == "COMPLETE STAGE":
 		service_id_query = Sql.GetList("SELECT SAQTSV.*,MAMTRL.MATERIALCONFIG_TYPE FROM SAQTSV INNER JOIN MAMTRL ON SAP_PART_NUMBER = SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'  ".format(contract_quote_rec_id,quote_revision_record_id))
 		if service_id_query:
