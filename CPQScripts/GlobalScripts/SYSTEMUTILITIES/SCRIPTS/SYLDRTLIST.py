@@ -641,8 +641,10 @@ class SYLDRTLIST:
                     attrs_datatype_dict[str(attr.API_NAME)] = str(attr.DATA_TYPE)
                     if attr.FIELD_SHORT_LABEL is not None and str(attr.FIELD_SHORT_LABEL) != "":
                         attr_list[str(attr.API_NAME)] = str(attr.FIELD_SHORT_LABEL)
+                        fields_labels[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
                     else:
                         attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
+                        fields_labels[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
                     #Trace.Write("attr_list_j"+str(attr_list))
                     if (attr.LOOKUP_API_NAME and 
                         str(attr.LOOKUP_API_NAME) != ""
@@ -3922,6 +3924,7 @@ class SYLDRTLIST:
                 invs = str(invs).strip()
                 Trace.Write("keyval---"+str(key)+ "--"+str(invs))
                 qstring = attr_list.get(str(invs)) or ""
+                hovertext = fields_labels.get(str(invs)) or ""
                 if qstring == "":
                     qstring = invs.replace("_", " ")
             
@@ -4395,6 +4398,20 @@ class SYLDRTLIST:
                                 + str(qstring)
                                 + "</th>"
                                 )
+                        elif str(RECORD_ID) == "SYOBJR-98872":
+                            table_header += (
+                                '<th  data-field="'
+                                + str(invs)
+                                + '" data-filter-control="input" data-align="right" data-title-tooltip="'
+                                + str(hovertext)
+                                + '" data-sortable="true" '
+                                + str(visible)
+                                + ' '
+                                + rowspan
+                                + '>'
+                                + str(qstring)
+                                + "</th>"
+                            )
                         elif invs != "EQUIPMENT_LINE_ID" and invs != "LINE":             
                             table_header += (
                                 '<th  data-field="'
@@ -4462,6 +4479,20 @@ class SYLDRTLIST:
                                 + rowspan
                                 +'>'
                                 + str("STATUS")
+                                + "</th>"
+                            )
+                        elif str(RECORD_ID) == "SYOBJR-98872":
+                            table_header += (
+                                '<th  data-field="'
+                                + str(invs)
+                                + '" data-filter-control="input" data-align="center" data-title-tooltip="'
+                                + str(hovertext)
+                                + '" data-sortable="true" '
+                                + str(visible)
+                                + ' '
+                                + rowspan
+                                +'>'
+                                + str(qstring)
                                 + "</th>"
                             )
                         elif str(RECORD_ID) == "SYOBJR-98881" and str(invs) == "DELIVERY_DATE":
@@ -4642,7 +4673,18 @@ class SYLDRTLIST:
                                 + "</th>"
                             )
                         
-                        
+                        elif str(RECORD_ID) == "SYOBJR-98872":
+                            table_header += (
+                                '<th  data-field="'
+                                + str(invs)
+                                + '" data-filter-control="input" class="cust_billing_name" data-title-tooltip="'
+                                + str(hovertext)
+                                + '" data-sortable="true" '
+                                + rowspan
+                                +'>'
+                                + str(qstring)
+                                + "</th>"
+                            )
                         else:
                             Trace.Write('4710--qstring----'+ str(qstring))                  
                             table_header += (
