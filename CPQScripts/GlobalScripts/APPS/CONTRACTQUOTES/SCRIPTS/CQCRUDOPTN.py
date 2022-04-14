@@ -6329,8 +6329,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						if self.tree_param == 'Z0009' or self.tree_param == 'Z0010' or self.tree_param == 'Z0128':
 							# quote_type_attribute_value =re.findall(pattern_name,sub_string)
 							Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value)+" - "+str(pm_event_attribute_value))
-							if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
-								Trace.Write("quote_type_attribute_value---"+str(quote_type_attribute_value))
+							if quote_type_attribute_value.upper() != 'TOOL BASED' and quote_type_attribute_value != "" and quote_type_attribute_value is not None:##Checking the Quote type before calling the events insert....
 								additional_where = ""
 								if self.tree_param == 'Z0010' or self.tree_param == 'Z0128':
 									self.tools_from_ui = "No"
@@ -6487,7 +6486,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							if self.tree_param == 'Z0009' or self.tree_param == 'Z0010':
 								# quote_type_attribute_value =re.findall(pattern_name,sub_string)
 								# Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value))
-								if quote_type_attribute_value.upper() != ['TOOL BASED'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
+								if quote_type_attribute_value.upper() != 'TOOL BASED' and quote_type_attribute_value != "" and quote_type_attribute_value is not None:##Checking the Quote type before calling the events insert....
 									#applied_preventive_maintainence_quote_type_changed = "Yes"
 									additional_where = ""
 									if (self.tree_param in ("Z0009") and "Included - All PM" in pm_event_attribute_value):
