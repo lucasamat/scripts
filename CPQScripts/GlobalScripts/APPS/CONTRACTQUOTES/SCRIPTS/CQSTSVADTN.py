@@ -200,6 +200,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			status = "CUSTOMER REJECTED"
 		elif get_workflow_status.WORKFLOW_STATUS == "PRICING":
 			status = "PRICING"
+		
 		elif get_workflow_status.WORKFLOW_STATUS == "APPROVALS" and get_workflow_status.REVISION_STATUS not in  ("APR-APPROVED"):
 			status = "APPROVALS"
 		elif get_workflow_status.WORKFLOW_STATUS == "APPROVALS" and get_workflow_status.REVISION_STATUS =="APR-APPROVED":
