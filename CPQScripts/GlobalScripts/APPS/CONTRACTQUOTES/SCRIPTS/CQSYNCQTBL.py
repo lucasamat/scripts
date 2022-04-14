@@ -1440,6 +1440,11 @@ class SyncQuoteAndCustomTables:
                                     "ACCOUNT_NAME": custom_fields_detail.get("STPAccountName"),
                                     "ACCOUNT_TYPE": account_obj.ACCOUNT_TYPE,
                                     "C4C_QTEOBJ_ID": custom_fields_detail.get("C4C_Quote_Object_ID"),
+                                    "SIGFP_OPP_ID":custom_fields_detail.get("SIGFPOpportunityID"), ##A055S000P01-18093 code starts..
+                                    "SIGFP_OPR_NAME":custom_fields_detail.get("SIGFPOpportunityName"),
+                                    "SIGFP_QUOTE_ID":custom_fields_detail.get("SIGFPQuoteID"),
+                                    "SIGFP_QUOTE_DATE":custom_fields_detail.get("SIGFPQuoteDate"),
+                                    "LOW_ID":custom_fields_detail.get("LowID") ##A055S000P01-18093 code ends..
                                 }
                                 quote_opportunity_table_info.AddRow(opportunity_quote_data)
                     # A055S000P01-12754 code starts...
