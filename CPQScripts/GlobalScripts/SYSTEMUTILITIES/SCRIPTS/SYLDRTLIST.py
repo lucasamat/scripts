@@ -4290,7 +4290,7 @@ class SYLDRTLIST:
                             + str(qstring)
                             + "</th>"
                         )
-                    elif str(RECORD_ID) == "SYOBJR-98872": 
+                    elif str(RECORD_ID) in ("SYOBJR-98872","SYOBJR-00009"): 
                         table_header += (
                             '<th  data-field="'
                             + str(invs)
@@ -4412,7 +4412,7 @@ class SYLDRTLIST:
                                 + str(qstring)
                                 + "</th>"
                                 )
-                        elif str(RECORD_ID) == "SYOBJR-98872" and invs != "LINE":
+                        elif str(RECORD_ID) in ("SYOBJR-98872","SYOBJR-00009") and invs != "LINE":
                             table_header += (
                                 '<th  data-field="'
                                 + str(invs)
@@ -4495,7 +4495,7 @@ class SYLDRTLIST:
                                 + str("STATUS")
                                 + "</th>"
                             )
-                        elif str(RECORD_ID) == "SYOBJR-98872":
+                        elif str(RECORD_ID) in ("SYOBJR-98872","SYOBJR-00009"):
                             table_header += (
                                 '<th  data-field="'
                                 + str(invs)
@@ -4687,7 +4687,7 @@ class SYLDRTLIST:
                                 + "</th>"
                             )
                         
-                        elif str(RECORD_ID) == "SYOBJR-98872":
+                        elif str(RECORD_ID) in ("SYOBJR-98872","SYOBJR-00009"):
                             table_header += (
                                 '<th  data-field="'
                                 + str(invs)
