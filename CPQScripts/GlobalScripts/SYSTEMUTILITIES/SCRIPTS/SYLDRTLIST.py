@@ -4481,20 +4481,20 @@ class SYLDRTLIST:
                                 + str("STATUS")
                                 + "</th>"
                             )
-                        # elif str(RECORD_ID) == "SYOBJR-98872":
-                        #     table_header += (
-                        #         '<th  data-field="'
-                        #         + str(invs)
-                        #         + '" data-filter-control="input" data-align="center" data-title-tooltip="'
-                        #         + str(hovertext)
-                        #         + '" data-sortable="true" '
-                        #         + str(visible)
-                        #         + ' '
-                        #         + rowspan
-                        #         +'>'
-                        #         + str(qstring)
-                        #         + "</th>"
-                        #     )
+                        elif str(RECORD_ID) == "SYOBJR-98872":
+                            table_header += (
+                                '<th  data-field="'
+                                + str(invs)
+                                + '" data-filter-control="input" data-align="center" title="'
+                                + str(hovertext)
+                                + '" data-sortable="true" '
+                                + str(visible)
+                                + ' '
+                                + rowspan
+                                +'>'
+                                + str(qstring)
+                                + "</th>"
+                            )
                         elif str(RECORD_ID) == "SYOBJR-98881" and str(invs) == "DELIVERY_DATE":
                             data_formatter = "deliveryDateLink" if getRevision.REVISION_STATUS!="APR-APPROVED" else ""
                             table_header += (
@@ -4673,18 +4673,18 @@ class SYLDRTLIST:
                                 + "</th>"
                             )
                         
-                        # elif str(RECORD_ID) == "SYOBJR-98872":
-                        #     table_header += (
-                        #         '<th  data-field="'
-                        #         + str(invs)
-                        #         + '" data-filter-control="input" class="cust_billing_name" data-title-tooltip="'
-                        #         + str(hovertext)
-                        #         + '" data-sortable="true" '
-                        #         + rowspan
-                        #         +'>'
-                        #         + str(qstring)
-                        #         + "</th>"
-                        #     )
+                        elif str(RECORD_ID) == "SYOBJR-98872":
+                            table_header += (
+                                '<th  data-field="'
+                                + str(invs)
+                                + '" data-filter-control="input" class="cust_billing_name" title="'
+                                + str(hovertext)
+                                + '" data-sortable="true" '
+                                + rowspan
+                                +'>'
+                                + str(qstring)
+                                + "</th>"
+                            )
                         else:
                             Trace.Write('4710--qstring----'+ str(qstring))                  
                             table_header += (
