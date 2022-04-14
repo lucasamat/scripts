@@ -4398,7 +4398,7 @@ class SYLDRTLIST:
                                 + str(qstring)
                                 + "</th>"
                                 )
-                        elif str(RECORD_ID) == "SYOBJR-98872":
+                        elif str(RECORD_ID) == "SYOBJR-98872" and invs != "LINE":
                             table_header += (
                                 '<th  data-field="'
                                 + str(invs)
