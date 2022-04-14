@@ -7014,7 +7014,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 					gettransactionmessage += 'This Quote has the following notifications:'
 					gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> 99999 | NEW COST MODEL VERSIONS AVAILABLE | There are new cost model versions available from SSCM. In order to update the costs and prices, please revision the quote.</label></div></div>')
 			
-        #Trace.Write('gettransactionmessage---'+str(gettransactionmessage))
+		#Trace.Write('gettransactionmessage---'+str(gettransactionmessage))
 		# if ent_message_query:
 		# 	#for val in obj_list:
 		# 	tablename = 'SAQTSE'
