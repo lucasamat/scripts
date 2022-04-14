@@ -1415,7 +1415,7 @@ class SyncQuoteAndCustomTables:
                                         "SIGFP_OPP_ID":custom_fields_detail.get("SIGFPOpportunityID"),
                                         "SIGFP_OPR_NAME":custom_fields_detail.get("SIGFPOpportunityName"),
                                         "SIGFP_QUOTE_ID":custom_fields_detail.get("SIGFPQuoteID"),
-                                        #"SIGFP_QUOTE_DATE":custom_fields_detail.get("SIGFPQuoteDate"),
+                                        "SIGFP_QUOTE_DATE":custom_fields_detail.get("SIGFPQuoteDate"),
                                         "LOW_ID":custom_fields_detail.get("LowID"),
                                     }
                                     master_opportunity_table_info.AddRow(master_opportunity_data)
