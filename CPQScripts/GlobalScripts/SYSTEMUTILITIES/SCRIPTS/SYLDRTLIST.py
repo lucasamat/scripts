@@ -4398,20 +4398,20 @@ class SYLDRTLIST:
                                 + str(qstring)
                                 + "</th>"
                                 )
-                        # elif str(RECORD_ID) == "SYOBJR-98872":
-                        #     table_header += (
-                        #         '<th  data-field="'
-                        #         + str(invs)
-                        #         + '" data-filter-control="input" data-align="right" data-title-tooltip="'
-                        #         + str(hovertext)
-                        #         + '" data-sortable="true" '
-                        #         + str(visible)
-                        #         + ' '
-                        #         + rowspan
-                        #         + '>'
-                        #         + str(qstring)
-                        #         + "</th>"
-                        #     )
+                        elif str(RECORD_ID) == "SYOBJR-98872":
+                            table_header += (
+                                '<th  data-field="'
+                                + str(invs)
+                                + '" data-filter-control="input" data-align="right" title="'
+                                + str(hovertext)
+                                + '" data-sortable="true" '
+                                + str(visible)
+                                + ' '
+                                + rowspan
+                                + '>'
+                                + str(qstring)
+                                + "</th>"
+                            )
                         elif invs != "EQUIPMENT_LINE_ID" and invs != "LINE":             
                             table_header += (
                                 '<th  data-field="'
