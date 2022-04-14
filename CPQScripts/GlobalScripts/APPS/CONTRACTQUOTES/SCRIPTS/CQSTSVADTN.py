@@ -219,7 +219,9 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			status = "CBC-COMPLETED"
 		elif get_workflow_status.WORKFLOW_STATUS == "CLEAN BOOKING CHECKLIST" and get_workflow_status.REVISION_STATUS not in  ("CBC-CBC COMPLETED"):
 			status = "CLEAN BOOKING CHECKLIST"
-		elif get_workflow_status.WORKFLOW_STATUS == "BOOKED":
+		elif get_workflow_status.REVISION_STATUS == "BOK-CONTRACT BOOKED" and get_workflow_status.WORKFLOW_STATUS =="BOOKED":
+			status = "BOOKEDCONTRACT"
+		elif get_workflow_status.WORKFLOW_STATUS == "BOOKED" and get_workflow_status.REVISION_STATUS not in ("BOOKED"):
 			status = "BOOKED"
 		else:
 			status = "CONFIGURE"
