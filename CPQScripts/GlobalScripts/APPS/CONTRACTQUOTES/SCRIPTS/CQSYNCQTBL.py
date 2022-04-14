@@ -145,6 +145,7 @@ class SyncQuoteAndCustomTables:
         _map_data = {}
         for fi, eld in self.field_mapping:
             _map_data[fi] = self.format(eld)
+            Log.Info("custom fields--"+str(_map_data[fi]))
         return _map_data
 
     @staticmethod
