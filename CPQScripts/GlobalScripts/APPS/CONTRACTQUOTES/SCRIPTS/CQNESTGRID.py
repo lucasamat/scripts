@@ -882,7 +882,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(TreeParam)
 			+ "' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
-	elif parentlevel4 == "Product Offerings":
+	elif parentlevel4 == "Product Offerings": ##A055S000P01-17959 added the greenbook in query condition to show the records in event level... 
 		Qstr = (
 			"select top "
 			+ str(PerPage)
@@ -891,8 +891,10 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
-			+ str(TreeTopSuperParentParam)
-			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
+			+ str(TreeTopSuperParentParam) 
+			+ "' and GREENBOOK = '"
+			+ str(TreeSuperParentParam) 
+			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -907,6 +909,8 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeTopSuperParentParam)
+			+ "' and GREENBOOK = '"
+			+ str(TreeSuperParentParam) 
 			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
 	elif ObjectName == "SAQGPM" and (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010" or TreeSuperParentParam == "Z0128"):
@@ -4565,7 +4569,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		)
 		if Count:
 			QueryCount = Count.cnt
-	elif parentlevel4 == "Product Offerings":
+	elif parentlevel4 == "Product Offerings": ##A055S000P01-17959 added the greenbook in query condition to show the records in event level... 
 		parent_obj = Sql.GetList(
 			"select top "
 			+ str(PerPage)
@@ -4575,7 +4579,9 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeTopSuperParentParam)
-			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m "
+			+ "' and GREENBOOK = '"
+			+ str(TreeSuperParentParam) 
+			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m "
 		)
 
 		Count = Sql.GetFirst(
@@ -4585,6 +4591,8 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeTopSuperParentParam)
+			+ "' and GREENBOOK = '"
+			+ str(TreeSuperParentParam) 
 			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
 		)
 
