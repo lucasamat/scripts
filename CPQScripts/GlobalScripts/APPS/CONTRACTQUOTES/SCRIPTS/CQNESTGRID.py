@@ -913,7 +913,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(TreeSuperParentParam) 
 			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
-	elif ObjectName == "SAQGPM" and (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010" or TreeSuperParentParam == "Z0128"):
+	elif ObjectName == "SAQGPM" and (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010" or TreeSuperParentParam == "Z0128"):##A055S000P01-17959 added the greenbook in query condition to show the records in got code level...
 		Qstr = (
 			"select top "
 			+ str(PerPage)
@@ -923,6 +923,8 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
+			+ "' and GREENBOOK = '"
+			+ str(TreeParentParam) 
 			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
@@ -938,7 +940,9 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
-			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
+			+ "' and GREENBOOK = '"
+			+ str(TreeParentParam) 
+			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
 	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
 		Qstr = (
@@ -4598,7 +4602,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 
 		if Count:
 			QueryCount = Count.cnt
-	elif (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010" or TreeSuperParentParam == "Z0128"):
+	elif (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010" or TreeSuperParentParam == "Z0128"):##A055S000P01-17959 added the greenbook in query condition to show the records in got code level...
 		Qstr = (
 			"select top "
 			+ str(PerPage)
@@ -4608,6 +4612,8 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
+			+ "' and GREENBOOK = '"
+			+ str(TreeParentParam) 
 			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
@@ -4623,6 +4629,8 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
+			+ "' and GREENBOOK = '"
+			+ str(TreeParentParam) 
 			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
 		)
 	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals" :
