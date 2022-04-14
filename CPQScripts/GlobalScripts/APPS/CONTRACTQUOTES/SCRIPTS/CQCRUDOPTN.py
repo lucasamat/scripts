@@ -6330,6 +6330,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							# quote_type_attribute_value =re.findall(pattern_name,sub_string)
 							Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value)+" - "+str(pm_event_attribute_value))
 							if quote_type_attribute_value != ['Tool based'] and quote_type_attribute_value != "" and quote_type_attribute_value is not None:
+								Trace.Write("quote_type_attribute_value---"+str(quote_type_attribute_value))
 								additional_where = ""
 								if self.tree_param == 'Z0010' or self.tree_param == 'Z0128':
 									self.tools_from_ui = "No"
