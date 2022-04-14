@@ -558,7 +558,7 @@ def servicelevel_split_equip(seid):
 
 	Sql.RunQuery("""UPDATE SAQICO SET 
 					SPSPCT = SPSPCT,
-					SPCTPR = SPCTPR
+					SPCTPR = SPCTPR,
 					SPCTCS = SPCTCS,
 					SPCTMG = SPCTMG,	
 					SVSPCT = SVSPCT,
