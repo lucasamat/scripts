@@ -1140,7 +1140,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 										SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
 										SAQTSV.SALESORG_ID as SALESORG_ID,
 										SAQTSV.SALESORG_RECORD_ID as SALESORG_RECORD_ID,
-										0.00 as SALESUOM_CONVERSION_FACTOR,
+										1.00 as SALESUOM_CONVERSION_FACTOR,
 										MAMTRL.UNIT_OF_MEASURE as SALESUOM_ID,
 										MAMTRL.UOM_RECORD_ID as SALESUOM_RECORD_ID, 
 										'{schedule_mode}' as SCHEDULE_MODE,
