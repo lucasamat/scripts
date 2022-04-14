@@ -145,7 +145,6 @@ class SyncQuoteAndCustomTables:
         _map_data = {}
         for fi, eld in self.field_mapping:
             _map_data[fi] = self.format(eld)
-            Log.Info("custom fields--"+str(_map_data[fi]))
         return _map_data
 
     @staticmethod
@@ -527,6 +526,7 @@ class SyncQuoteAndCustomTables:
                 quote_involved_party_table_info = Sql.GetTable("SAQTIP")
                 quote_opportunity_table_info = Sql.GetTable("SAOPQT")
                 custom_fields_detail = self._get_custom_fields_detail()
+                Log.Info("custom fields--"+str(custom_fields_detail)
                 start_date = self.get_formatted_date(
                     custom_fields_detail.get("QuoteStartDate").year,
                     custom_fields_detail.get("QuoteStartDate").month,
