@@ -62,7 +62,7 @@ SAQTIP_INFO = SqlHelper.GetList(""" SELECT CPQ_PARTNER_FUNCTION, PARTY_ID FROM S
 for keyobj in SAQTIP_INFO:
 	account_info[keyobj.CPQ_PARTNER_FUNCTION] = keyobj.PARTY_ID
 
-GetPricingProcedure = Sql.GetFirst("SELECT DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY,COUNTRY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID,EXCHANGE_RATE_TYPE, GLOBAL_CURRENCY, ACCTAXCLA_ID, PAYMENTTERM_ID, INCOTERM_ID, COMPANY_ID, DOCTYP_ID,CONTRACT_VALID_FROM FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}' ".format(QUOTE,revision))
+GetPricingProcedure = Sql.GetFirst("SELECT QUOTE_RECORD_ID,DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY,COUNTRY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID,EXCHANGE_RATE_TYPE, GLOBAL_CURRENCY, ACCTAXCLA_ID, PAYMENTTERM_ID, INCOTERM_ID, COMPANY_ID, DOCTYP_ID,CONTRACT_VALID_FROM FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}' ".format(QUOTE,revision))
 if GetPricingProcedure is not None:
 	Trace.Write('inside----'+str(GetPricingProcedure))
 	PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
@@ -272,6 +272,24 @@ if part_query or ancillary_part_query or fpm_part_query:
 			L=0
 else:
 	Log.Info('150----to call pricing here---quote table insert----')
+	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+	if LOGIN_CREDENTIALS is not None:
+		Login_Username = str(LOGIN_CREDENTIALS.Username)
+		Login_Password = str(LOGIN_CREDENTIALS.Password)
+		authorization = Login_Username+":"+Login_Password
+		binaryAuthorization = UTF8.GetBytes(authorization)
+		authorization = Convert.ToBase64String(binaryAuthorization)
+		authorization = "Basic " + authorization
+
+
+		webclient = System.Net.WebClient()
+		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+		
+		result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= GetPricingProcedure.QUOTE_RECORD_ID,Rev_Id = revision)
+		
+		LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
+		Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 	'''
 	price = []
 	#QUOTE = ''
