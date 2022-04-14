@@ -4796,7 +4796,7 @@ class SYLDRTLIST:
                     + str(table_id)
                     + '_SortColumn", name); localStorage.setItem("'
                     + str(table_id)
-                    + '_SortColumnOrder", order); RelatedContainerSorting(name, order, "'
+                    + 'asec", order); RelatedContainerSorting(name, order, "'
                     + str(table_id)
                     + '"); }); '
                 )    
