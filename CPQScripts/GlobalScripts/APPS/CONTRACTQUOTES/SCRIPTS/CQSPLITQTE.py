@@ -633,6 +633,7 @@ def servicelevel_split_green(seid):
 	splitservice_id = split_service.SERVICE_ID
 	splitservice_name = split_service.SERVICE_DESCRIPTION
 	splitservice_recid = split_service.SERVICE_RECORD_ID
+	parent_service_id = split_service.PAR_SERVICE_ID
 	equipments_count = 0
 	item_number_saqrit_start = 0
 	item_number_saqrit_inc = 0
