@@ -4289,7 +4289,21 @@ class SYLDRTLIST:
                             +'>'
                             + str(qstring)
                             + "</th>"
-                        ) 
+                        )
+                    elif str(RECORD_ID) == "SYOBJR-98872": 
+                        table_header += (
+                            '<th  data-field="'
+                            + str(invs)
+                            + '" data-filter-control="input" title="'
+                            + str(hovertext)
+                            + '" data-sortable="true" '
+                            + str(footer_text_formatter)
+                            + ' '
+                            + rowspan
+                            +'>'
+                            + str(qstring)
+                            + "</th>"
+                        )                    
                     else:
                         Trace.Write('invs-50--'+str(invs))   
                         table_header += (
