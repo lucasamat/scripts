@@ -80,7 +80,7 @@ class SYLDRTLIST:
             ObjectName
         ) = dbl_clk_function = col = text = texts = Qury_str = QuryCount_str = table_ids = lookup_str = curr_symbol_obj = curr_symbol = decimal_place = SAQICO_dbl_clk_function =  ""
 
-        Action_permission, related_list_permissions, attr_list, attrs_datatype_dict = ({} for i in range(4))
+        Action_permission, related_list_permissions, attr_list,fields_labels, attrs_datatype_dict = ({} for i in range(5))
 
         (
             list_of_tabs,
