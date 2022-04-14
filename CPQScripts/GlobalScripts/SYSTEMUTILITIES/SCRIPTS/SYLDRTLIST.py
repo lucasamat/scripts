@@ -1451,7 +1451,7 @@ class SYLDRTLIST:
                             assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
                             on_hold_costing = '<img title="CFG-ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
                             on_hold_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
-                            offline_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
+                            offline_pricing = '<img title="OFFLINE PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
                             TreeParentParam = Product.GetGlobal("TreeParentLevel1")							
                             try:
                                 if str(TreeParentParam.split("-")[4]):
@@ -5108,6 +5108,8 @@ class SYLDRTLIST:
                         string_value = string.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg> ERROR")
                     if string == "ASSEMBLY IS MISSING":
                         string_value = string.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
+                    if string == "OFFLINE PRICING":
+                        string_value = string.replace("OFFLINE PRICING","<img title='OFFLINE PRICING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg> OFFLINE PRICING")
                     if string == "CFG-ON HOLD - COSTING":
                         Trace.Write("cmng_inside_on_hold_1 "+str(value1234))
                         string_value = string.replace("CFG-ON HOLD - COSTING","<img title='CFG-ON HOLD - COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg> CFG-ON HOLD - COSTING")
@@ -6748,7 +6750,7 @@ class SYLDRTLIST:
                             assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
                             on_hold_costing = '<img title="CFG-ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
                             on_hold_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
-                            offline_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
+                            offline_pricing = '<img title="OFFLINE PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
                             if getyears == 1:
                                 col_year =  'YEAR_1'
                             elif getyears == 2:
@@ -6896,7 +6898,7 @@ class SYLDRTLIST:
                             assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
                             on_hold_costing = '<img title="CFG-ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
                             on_hold_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
-                            offline_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
+                            offline_pricing = '<img title="OFFLINE PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
                             TreeParentParam = Product.GetGlobal("TreeParentLevel1")
                             
                             try:
@@ -8435,7 +8437,7 @@ class SYLDRTLIST:
                                 assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
                                 on_hold_costing = '<img title="CFG-ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
                                 on_hold_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
-                                offline_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
+                                offline_pricing = '<img title="OFFLINE PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
                                 TreeParentParam = Product.GetGlobal("TreeParentLevel1")
                                 
                                 try:
