@@ -196,6 +196,8 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 			status = "PRICING REVIEW"
 		elif get_workflow_status.REVISION_STATUS == "CFG-ON HOLD - COSTING":
 			status = "CFGCOST"
+		elif get_workflow_status.REVISION_STATUS == "OPD-CUSTOMER REJECTED":
+			status = "CUSTOMER REJECTED"
 		elif get_workflow_status.WORKFLOW_STATUS == "PRICING":
 			status = "PRICING"
 		elif get_workflow_status.WORKFLOW_STATUS == "APPROVALS" and get_workflow_status.REVISION_STATUS not in  ("APR-APPROVED"):
