@@ -1446,6 +1446,7 @@ class SyncQuoteAndCustomTables:
                                     "SIGFP_QUOTE_DATE":custom_fields_detail.get("SIGFPQuoteDate"),
                                     "LOW_ID":custom_fields_detail.get("LowID") ##A055S000P01-18093 code ends..
                                 }
+                                Log.Info("opportunity_quote_data---"+str(opportunity_quote_data))
                                 quote_opportunity_table_info.AddRow(opportunity_quote_data)
                     # A055S000P01-12754 code starts...
                     if (
