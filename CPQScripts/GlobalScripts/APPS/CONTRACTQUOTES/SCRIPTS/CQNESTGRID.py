@@ -393,6 +393,8 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 				+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 				'<li><a class="dropdown-item" id="deletebtn" data-target="#cont_CommonModalDelete" data-toggle="modal" onclick="CommonDelete(this, \'SAQFEA#'+ data_id +'\', \'WARNING\')" href="#">DELETE</a></li>'
 			)
+		else:
+			Action_str = ""
 		if can_edit.upper() == "TRUE":
 			Action_str += (
 				'<li style="display:none" ><a class="dropdown-item cur_sty" href="#" id="'
