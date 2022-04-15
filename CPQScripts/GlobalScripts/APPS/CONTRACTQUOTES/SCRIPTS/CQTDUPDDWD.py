@@ -318,7 +318,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 								SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
 								SAQTSV.SALESORG_ID as SALESORG_ID,
 								SAQTSV.SALESORG_RECORD_ID as SALESORG_RECORD_ID,
-								CASE WHEN TEMP_SALESUOM_CONVERSION_FACTOR= 0.00 THEN 1.00 ELSE TEMP_TABLE.SALESUOM_CONVERSION_FACTOR AS SALESUOM_CONVERSION_FACTOR,
+								CASE WHEN TEMP_TABLE.SALESUOM_CONVERSION_FACTOR= 0.00 THEN 1.00 ELSE TEMP_TABLE.SALESUOM_CONVERSION_FACTOR AS SALESUOM_CONVERSION_FACTOR,
 								CASE WHEN MAMSOP.SALESUOM_ID<>'' THEN MAMSOP.SALESUOM_ID ELSE MAMTRL.UNIT_OF_MEASURE END as SALESUOM_ID,
 								CASE WHEN MAMSOP.SALESUOM_RECORD_ID<>'' THEN MAMSOP.SALESUOM_RECORD_ID ELSE MAMTRL.UOM_RECORD_ID END as SALESUOM_RECORD_ID,
 								TEMP_TABLE.DELIVERY_MODE AS DELIVERY_MODE,
@@ -649,8 +649,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				Trace.Write("colums"+str(self.columns))
 
 				old_part_numbers=Sql.GetList("SELECT DISTINCT PART_NUMBER FROM SAQSPT WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(Columns=(self.columns), QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.tree_param))
-
-				Trace.Write(old_part_numbers)
+				Trace.Write("old"+str(old_part_numbers))
 				val=set(add_part_numbers)
 				New_part_numbers=[x for  x in old_part_numbers if x not in val]
 
