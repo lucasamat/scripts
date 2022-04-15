@@ -385,13 +385,14 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		#Trace.Write("count---->" + str(QueryCount))
 	parent_obj = Sql.GetList(Qstr)
 	for par in parent_obj:
-		data_id = str(par.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID)        
-		Action_str = (
-			'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
-			+ str(data_id)
-			+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
-			'<li><a class="dropdown-item" id="deletebtn" data-target="#cont_CommonModalDelete" data-toggle="modal" onclick="CommonDelete(this, \'SAQFEA#'+ data_id +'\', \'WARNING\')" href="#">DELETE</a></li>'
-		)
+		data_id = str(par.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID) 
+		if TreeParam != 'Fab Locations':       
+			Action_str = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+				'<li><a class="dropdown-item" id="deletebtn" data-target="#cont_CommonModalDelete" data-toggle="modal" onclick="CommonDelete(this, \'SAQFEA#'+ data_id +'\', \'WARNING\')" href="#">DELETE</a></li>'
+			)
 		if can_edit.upper() == "TRUE":
 			Action_str += (
 				'<li style="display:none" ><a class="dropdown-item cur_sty" href="#" id="'
