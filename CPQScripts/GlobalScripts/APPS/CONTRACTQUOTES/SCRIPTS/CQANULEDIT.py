@@ -61,7 +61,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue12 = "ATKNPI"
 				record_list.append(editvalue11)
 				record_list.append(editvalue12)
-			if(line_values.AMNCPE == "ACTIVE"):
+			if(line_values.AMNCPE == "1"):
 				editvalue13="AMNCCI"
 				editvalue14="AMNPPI"
 				record_list.append(editvalue13)
