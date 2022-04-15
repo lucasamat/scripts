@@ -203,8 +203,3 @@ except:
 	parameters['auto_update_flag'] = "False"
 contract_quote_item_obj = ContractQuoteItemAnnualizedPricing(**parameters)
 contract_quote_item_obj._do_opertion()
-
-
-
-
-
