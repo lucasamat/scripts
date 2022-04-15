@@ -129,6 +129,7 @@ class ContractQuoteItem:
 		return True
 
 	def _quote_items_assembly_insert(self, update=True):
+		##A055S000P01-17453 code starts....
 		import re
 		quotetype_value_for_offering =''
 		service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,service_id = self.service_id))
@@ -219,6 +220,7 @@ class ContractQuoteItem:
 				SAQGPA_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQGPA_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQGPA_BKP)+" END  ' ")
 				SAQICO_BKP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQICO_BKP)+"'' ) BEGIN DROP TABLE "+str(SAQICO_BKP)+" END  ' ")
 				Log.Info("Occured Exception In Quote Item Assembly Insert For The Quote: {} And Revision: {}".format(self.contract_quote_id, self.contract_quote_revision_id))
+		##A055S000P01-17453 code ends..
 
 	def _construct_dict_xml(self,updateentXML):
 		entxmldict = {}
