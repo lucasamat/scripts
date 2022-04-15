@@ -166,7 +166,8 @@ try:
 				authorization = "Bearer " + access_token
 				webclient = System.Net.WebClient()
 				webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
-				webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;	
+				webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+				webclient.Headers.Add("Environment-Identifier", "X")	
 
 				crm_response = webclient.UploadString(str(LOGIN_CRE.URL),Final_xml)	
 				
