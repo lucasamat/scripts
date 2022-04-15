@@ -313,7 +313,7 @@ class DeleteConfirmPopup:
                         Trace.Write("Only one equipment")
                         Objects = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQSFB","SAQSCE","SAQSAE","SAQSGE","SAQSFE","SAQSGB"]
                         for obj in Objects:
-                            a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND FABLOCATION_ID = '{TreeParentParam}' AND GREENBOOK = '{TreeParam}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id,TreeParentParam=TreeParentParam,TreeParam=TreeParam))
+                            a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND GREENBOOK = '{TreeParam}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id,TreeParentParam=TreeParentParam,TreeParam=TreeParam))
 
             else:
                 Sql.RunQuery("UPDATE SAQTRV SET DIRTY_FLAG = 1 WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
