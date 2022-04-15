@@ -44,6 +44,7 @@ try:
 
 	#Log.Info("44444 Quote_Id--->"+str(Quote_Id))
 	#Log.Info("44444 Revision_Id--->"+str(Revision_Id))
+	#Log.Info("44444 Level--->"+str(Level))
 
 
 	primaryQuerysession =  SqlHelper.GetFirst("SELECT NEWID() AS A")
@@ -52,6 +53,7 @@ try:
 
 	sessionid = SqlHelper.GetFirst("SELECT NEWID() AS A")
 	timestamp_sessionid = "'" + str(sessionid.A) + "'"
+	RTKM_INPUT_QUERY = None
 
 	if str(Level) == 'OFFERING LEVEL':
 
@@ -125,9 +127,9 @@ try:
 								
 							for record_dict in Tbl_data:
 							
-								splt_info = """ ''{TOOL_ID}'',''{Assembly_ID}'',''{PM_Event}'',''{PM_Freq}'',''{KIT_ID}'',''{KIT_Number}'',''{Seedstock_Cost}'',''{Logistics_Cost}'',''{TKM_Cost_Per_Event}'',''{Modi_date}'',''{KIT_MASTER_ID}'',''{APPLICATION}'',''{CLEANING_REGION}'',''{CUSTOMER_MARKETING_NAME}'',''{DEVICE}'',''{PROCESS_TYPE}'',''{SERVICE_COMPLEXITY}'',''{TECH_NODE}'',''{HW_TYPE}'',''{ARCM_Module_ID}'',''{RFP_Edit}'',''{Maintenance_Event_Level}'',''{KIT_CleaningCoating_Differentiation}'',''{QUOTE_ID}'',''{SERVICE_ID}'',''{SESSION_ID}'',''{MODULE_VERSION_ID}'' ,''{Event_Period}''  """.format(TOOL_ID = record_dict['TOOL_ID'],Assembly_ID = str(record_dict['Assembly_ID']),PM_Event = str(record_dict['PM_Event']),PM_Freq = record_dict['PM_Freq'],KIT_ID= str(record_dict['KIT_ID']),KIT_Number = str(record_dict['KIT_Number']),Seedstock_Cost = str(record_dict['Seedstock_Cost']),Logistics_Cost = str(record_dict['Logistics_Cost']),TKM_Cost_Per_Event = str(record_dict['TKM_Cost_Per_Event']),Modi_date = str(Modi_date),KIT_MASTER_ID= record_dict['KIT_MASTER_ID'],APPLICATION = record_dict['APPLICATION'],CLEANING_REGION = str(record_dict['CLEANING_REGION']),CUSTOMER_MARKETING_NAME = str(record_dict['CUSTOMER_MARKETING_NAME']),DEVICE = str(record_dict['DEVICE']),PROCESS_TYPE= str(record_dict['PROCESS_TYPE']),SERVICE_COMPLEXITY = str(record_dict['SERVICE_COMPLEXITY']),TECH_NODE = str(record_dict['TECH_NODE']),HW_TYPE = str(record_dict['HW_TYPE']),ARCM_Module_ID = str(record_dict['ARCM_Module_ID']),RFP_Edit = str(record_dict['RFP_Edit']),Maintenance_Event_Level = str(record_dict['Maintenance_Event_Level']),KIT_CleaningCoating_Differentiation = str(record_dict['KIT_CleaningCoating_Differentiation']),QUOTE_ID = str(record_dict['QUOTE_ID']),SERVICE_ID = str(record_dict['SERVICE_ID']),SESSION_ID = str(record_dict['SESSION_ID']) ,MODULE_VERSION_ID = str(record_dict['MODULE_VERSION_ID']),Event_Period = str(record_dict['Event_Period']))
+								splt_info = """ ''{TOOL_ID}'',''{Assembly_ID}'',''{PM_Event}'',''{PM_Freq}'',''{KIT_ID}'',''{KIT_Number}'',''{Seedstock_Cost}'',''{Logistics_Cost}'',''{TKM_Cost_Per_Event}'',''{Modi_date}'',''{KIT_MASTER_ID}'',''{APPLICATION}'',''{CLEANING_REGION}'',''{CUSTOMER_MARKETING_NAME}'',''{DEVICE}'',''{PROCESS_TYPE}'',''{SERVICE_COMPLEXITY}'',''{TECH_NODE}'',''{HW_TYPE}'',''{ARCM_Module_ID}'',''{RFP_Edit}'',''{Maintenance_Event_Level}'',''{KIT_CleaningCoating_Differentiation}'',''{QUOTE_ID}'',''{SERVICE_ID}'',''{SESSION_ID}'',''{MODULE_VERSION_ID}'' ,''{Event_Period}''  """.format(TOOL_ID = record_dict['TOOL_ID'],Assembly_ID = str(record_dict['Assembly_ID']),PM_Event = str(record_dict['PM_Event']),PM_Freq = record_dict['PM_Freq'],KIT_ID= str(record_dict['KIT_ID']),KIT_Number = str(record_dict['KIT_Number']),Seedstock_Cost = str(record_dict['Seedstock_Cost']),Logistics_Cost = str(record_dict['Logistics_Cost']),TKM_Cost_Per_Event = record_dict['TKM_Cost_Per_Event'],Modi_date = str(Modi_date),KIT_MASTER_ID= record_dict['KIT_MASTER_ID'],APPLICATION = record_dict['APPLICATION'],CLEANING_REGION = record_dict['CLEANING_REGION'],CUSTOMER_MARKETING_NAME = record_dict['CUSTOMER_MARKETING_NAME'],DEVICE = record_dict['DEVICE'],PROCESS_TYPE= record_dict['PROCESS_TYPE'],SERVICE_COMPLEXITY = record_dict['SERVICE_COMPLEXITY'],TECH_NODE = record_dict['TECH_NODE'],HW_TYPE = record_dict['HW_TYPE'],ARCM_Module_ID = record_dict['ARCM_Module_ID'],RFP_Edit = record_dict['RFP_Edit'],Maintenance_Event_Level = record_dict['Maintenance_Event_Level'],KIT_CleaningCoating_Differentiation = record_dict['KIT_CleaningCoating_Differentiation'],QUOTE_ID = record_dict['QUOTE_ID'],SERVICE_ID = str(record_dict['SERVICE_ID']),SESSION_ID = str(record_dict['SESSION_ID']) ,MODULE_VERSION_ID = record_dict['MODULE_VERSION_ID'],Event_Period = record_dict['Event_Period'])
 								
-								primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAEAPM_INBOUND (QTEREV_ID,EQUIPMENT_ID,ASSEMBLY_ID,PM_NAME,PM_FREQUENCY,KIT_ID,KIT_NUMBER,SEEDSTOCK_COST,LOGISTICS_COST,TKM_COST_PER_EVENT,cpqtableentrydatemodified,KIT_MASTER_ID,APPLICATION,REGION,CUSTOMER_MARKETING_NAME,DEVICE,PROCESS_TYPE,SERVICE_COMPLEXITY,TECHNOLOGY_NODE,HW_TYPE,ARCM_MODULE_ID,RFP_EDIT,PM_LEVEL,CLEAN_COATING,QUOTE_ID,SERVICE_ID,SESSION_ID,MODULE_VERSION_ID,EVENT_PERIOD)  select ''"+str(Revision_Id)+ "'',"+str(splt_info)+ " ' ")
+								primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAEAPM_INBOUND (QTEREV_ID,EQUIPMENT_ID,ASSEMBLY_ID,PM_NAME,PM_FREQUENCY,KIT_ID,KIT_NUMBER,SEEDSTOCK_COST,LOGISTICS_COST,TKM_COST_PER_EVENT,cpqtableentrydatemodified,KIT_MASTER_ID,APPLICATION,REGION,CUSTOMER_MARKETING_NAME,DEVICE,PROCESS_TYPE,SERVICE_COMPLEXITY,TECHNOLOGY_NODE,HW_TYPE,ARCM_MODULE_ID,RFP_EDIT,PM_LEVEL,CLEAN_COATING,QUOTE_ID,SERVICE_ID,SESSION_ID,MODULE_VERSION_ID,EVENT_PERIOD)  select ''"+str(Revision_Id)+ "'',"+splt_info+ " ' ")
 								
 								if 'BOM' in record_dict:
 									
@@ -147,10 +149,26 @@ try:
 				+ "'',''"+ str(User.Id)
 				+ "'',GETDATE(),CONVERT(VARCHAR(1000),NEWID()),KIT_ID FROM (SELECT DISTINCT MAKTPT_INBOUND.KIT_ID AS KIT_NAME,MAKTPT_INBOUND.KIT_ID FROM MAKTPT_INBOUND (NOLOCK)  LEFT JOIN MAMKIT (NOLOCK) ON MAKTPT_INBOUND.KIT_ID = MAMKIT.KIT_ID WHERE MAMKIT.KIT_ID IS NULL)SUB_MAMKIT '")
 				
+				#PM Upload 
+				primaryQueryItems = SqlHelper.GetFirst(
+				""
+				+ str(Parameter.QUERY_CRITERIA_1)
+				+ " MAPMEV(ACTIVE,PM_NAME,PM_ID,MNTEVT_LEVEL,CPQTABLEENTRYADDEDBY,ADDUSR_RECORD_ID,CPQTABLEENTRYDATEADDED,PM_RECORD_ID) SELECT  SUB_SGPMNT.* ,''"+ str(User.UserName)
+				+ "'',''"+ str(User.Id)
+				+ "'',GETDATE(),CONVERT(VARCHAR(1000),NEWID()) FROM (SELECT DISTINCT ''TRUE'' AS ACTIVE,PM_NAME,PM_NAME AS PM_ID,CASE WHEN PM_LEVEL =''Sched Maint'' THEN ''Scheduled Maintenance'' ELSE PM_LEVEL END AS MNTEVT_LEVEL FROM MAEAPM_INBOUND(NOLOCK))SUB_SGPMNT LEFT JOIN MAPMEV (NOLOCK) ON SUB_SGPMNT.PM_NAME = MAPMEV.PM_NAME WHERE MAPMEV.PM_NAME IS NULL  '")
+				
 				primaryQueryItems = SqlHelper.GetFirst(
 				""
 				+ str(Parameter2.QUERY_CRITERIA_1)
 				+ " MAKTPT FROM MAKTPT JOIN MAKTPT_INBOUND  ON MAKTPT.KIT_ID = MAKTPT_INBOUND.KIT_ID WHERE ISNULL(PROCESS_STATUS,'''')= ''READY FOR UPLOAD'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"'  '")
+				
+				#Kit Number Upload
+				primaryQueryItems = SqlHelper.GetFirst(
+				""
+				+ str(Parameter.QUERY_CRITERIA_1)
+				+ " MATKTN(KIT_ID,KIT_NAME,KIT_NUMBER,KIT_RECORD_ID,CPQTABLEENTRYADDEDBY,ADDUSR_RECORD_ID,CPQTABLEENTRYDATEADDED,TOOL_KIT_NUMBER_RECORD_ID) SELECT MAMKIT.KIT_ID,MAMKIT.KIT_NAME,SUB_MAMKIT.KIT_NUMBER,MAMKIT.KIT_RECORD_ID,''"+ str(User.UserName)
+				+ "'',''"+ str(User.Id)
+				+ "'',GETDATE(),CONVERT(VARCHAR(1000),NEWID()) FROM (SELECT DISTINCT KIT_ID as KIT_ID,KIT_NUMBER  FROM MAEAPM_INBOUND(NOLOCK))SUB_MAMKIT  JOIN MAMKIT (NOLOCK) ON SUB_MAMKIT.KIT_ID = MAMKIT.KIT_ID LEFT JOIN MATKTN (NOLOCK)M ON SUB_MAMKIT.KIT_ID = M.KIT_ID AND SUB_MAMKIT.KIT_NUMBER = M.KIT_NUMBER WHERE M.KIT_NUMBER IS NULL AND ISNULL(SUB_MAMKIT.KIT_NUMBER,'''')<>'''' '")
 				
 				primaryQueryItems = SqlHelper.GetFirst(
 				""
