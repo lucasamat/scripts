@@ -6377,7 +6377,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									else:
 										self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id,additional_where = additional_where)
 										pm_event_flag=1
-							if self.tree_param == 'Z0009' or self.tree_param == 'Z0010':
+							if self.tree_param == 'Z0009' or self.tree_param == 'Z0010' or self.tree_param == 'Z0128':
 								# quote_type_attribute_value =re.findall(pattern_name,sub_string)
 								# Trace.Write("quote_type_attribute_value_chk "+str(quote_type_attribute_value))
 								if quote_type_attribute_value.upper() != 'TOOL BASED' and quote_type_attribute_value != "" and quote_type_attribute_value is not None:##Checking the Quote type before calling the events insert....
