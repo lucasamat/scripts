@@ -2940,7 +2940,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								"GREENBOOK": nso_data.GREENBOOK,
 								"GREENBOOK_RECORD_ID": nso_data.GREENBOOK_RECORD_ID,
 								"POSS_NSO_DESCRIPTION": nso_data.PRODUCT_DESCRIPTION,
-								"POSS_NSO_PART_ID": nso_data.PRODUCT_ID,
+								"POSS_NSO_PART_ID": nso_data.PRODUCT_ID, #A055S000P01-18196
 								"SERVICE_DESCRIPTION": eqp.SERVICE_DESCRIPTION,
 								"SERVICE_ID": eqp.SERVICE_ID,
 								"SERVICE_RECORD_ID": eqp.SERVICE_RECORD_ID,

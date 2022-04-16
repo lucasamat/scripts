@@ -857,7 +857,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 								key = str(k.QUOTE_REV_PO_PRODUCT_LIST_ID)
 							# else:
 							# 	edt_str = "NO"
-						elif obj_obj == 'SAQSCN':
+						elif obj_obj == 'SAQSCN':#A055S000P01-18196
 							field = "Enter Updated Quantity to add to NSO Catalog..."
 							label = "UPDATED QUANTITY" 
 							input_id = "updatedQuantity"

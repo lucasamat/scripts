@@ -4400,7 +4400,7 @@ class SYLDRTLIST:
                                 + str(qstring)
                                 + "</th>"
                                 )
-                        elif str(RECORD_ID)=="SYOBJR-98882" and str(invs) =="QUANTITY" :
+                        elif str(RECORD_ID)=="SYOBJR-98882" and str(invs) =="QUANTITY" :#A055S000P01-18196
                             data_formatter = "NSOBulkEditHyperLink" if getRevision.REVISION_STATUS!="APR-APPROVED" else ""
                             table_header += (
                                 '<th  data-field="'
@@ -4784,7 +4784,7 @@ class SYLDRTLIST:
             )
 
         else:
-            if str(RECORD_ID) == "SYOBJR-98882":
+            if str(RECORD_ID) == "SYOBJR-98882":#A055S000P01-18196
                 dbl_clk_function += (' const card = document.querySelector("'+str(table_ids)+' > tbody > tr"); card.addEventListener("dblclick",function(event){ var ele = event.target.closest("td"); NSOBulkUpdate(ele,"doubleclick") });') 
                 dbl_clk_function += ('$("'
                     + str(table_ids)
