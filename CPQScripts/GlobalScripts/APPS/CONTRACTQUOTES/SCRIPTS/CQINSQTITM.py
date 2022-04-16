@@ -1460,6 +1460,10 @@ class ContractQuoteItem:
 			# 			WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'  ) SAQSCN ON SAQRIT.QUOTE_RECORD_ID = SAQSCN.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQSCN.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = SAQSCN.SERVICE_ID AND SAQICO.GRNBOK  = SAQSCN.GREENBOOK AND SAQRIT.EQUIPMENT_ID = SAQICO.EQUPID AND SAQSCN.POSS_NSO_PART_ID = SAQRIT.POSS_NSO_PART_ID
 			# 		WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' """.format( QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId= self.service_id, pricing_field_doc= pricing_field_doc,pricing_field_gl = pricing_field_gl, exch_rate = float(self.exchange_rate) ))	
 
+		elif self.service_id == 'Z0048':
+			for obj in ['SAQICO','SAQRIT']:
+				Sql.RunQuery("UPDATE {obj} SET STATUS = 'ACQUIRED' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'  ".format(QuoteRecordId= self.contract_quote_record_id ,QuoteRevisionRecordId =self.contract_quote_revision_record_id, ServiceId= self.service_id, obj = obj))
+		
 		#SBTCST - Sub Total Cost
 		Sql.RunQuery("UPDATE SAQICO SET SBTCST = ISNULL(TCWISS,0) + (ISNULL(CAVVCI,0) + ISNULL(UIMVCI,0) + ISNULL(ATGKEC,0) + ISNULL(AMNCCI,0) + ISNULL(HEDBIC,0) + ISNULL(NWPTOC,0) + ISNULL(NUMLCI,0) + ISNULL(SPCCLC,0) + ISNULL(SPCCCI,0)) FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		
