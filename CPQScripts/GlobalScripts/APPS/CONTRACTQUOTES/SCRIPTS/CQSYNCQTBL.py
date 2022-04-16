@@ -1391,7 +1391,6 @@ class SyncQuoteAndCustomTables:
                                         "SIGFP_QUOTE_DATE":custom_fields_detail.get("SIGFPQuoteDate"),
                                         "LOW_ID":custom_fields_detail.get("LowID"),
                                     }
-                                    Log.Info("@1394 Opportunity data -->"+str(master_opportunity_data))
                                     master_opportunity_table_info.AddRow(master_opportunity_data)
                                     Sql.Upsert(master_opportunity_table_info)
                                     opportunity_obj = Sql.GetFirst(
@@ -1422,7 +1421,6 @@ class SyncQuoteAndCustomTables:
                                     "LOW":custom_fields_detail.get("LOW"),
                                     "LOW_ID":custom_fields_detail.get("LowID") ##A055S000P01-18093 code ends..
                                 }
-                                Log.Info("opportunity_quote_data---"+str(opportunity_quote_data))
                                 quote_opportunity_table_info.AddRow(opportunity_quote_data)
                     # A055S000P01-12754 code starts...
                     if (
