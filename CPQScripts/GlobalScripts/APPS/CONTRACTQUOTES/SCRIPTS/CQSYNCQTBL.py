@@ -1418,7 +1418,6 @@ class SyncQuoteAndCustomTables:
                                     "SIGFP_OPR_NAME":custom_fields_detail.get("SIGFPOpportunityName"),
                                     "SIGFP_QUOTE_ID":custom_fields_detail.get("SIGFPQuoteID"),
                                     "SIGFP_QUOTE_DATE":custom_fields_detail.get("SIGFPQuoteDate"),
-                                    "LOW":custom_fields_detail.get("LOW"),
                                     "LOW_ID":custom_fields_detail.get("LowID") ##A055S000P01-18093 code ends..
                                 }
                                 Log.Info("opportunity_quote_data---"+str(opportunity_quote_data))
