@@ -133,7 +133,7 @@ class Entitlements:
 						if get_ent_type:
 							if get_ent_type.ENTITLEMENT_TYPE:
 								ent_type = get_ent_type.ENTITLEMENT_TYPE
-						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and ent_type.upper() not in ('VALUE DRIVER','VALUE DRIVER COEFFICIENT'):
+						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and ent_type.upper() not in ('VALUE DRIVER COEFFICIENT'):
 							Trace.Write('row--'+str(row.ENTITLEMENT_ID)+str(row.IS_DEFAULT))
 							try:
 								requestdata = '{"characteristics":['								
