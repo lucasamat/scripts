@@ -1391,6 +1391,7 @@ class SyncQuoteAndCustomTables:
                                         "SIGFP_QUOTE_DATE":custom_fields_detail.get("SIGFPQuoteDate"),
                                         "LOW_ID":custom_fields_detail.get("LowID"),
                                     }
+                                    Log.Info("@1394 Opportunity data -->"+str(master_opportunity_data))
                                     master_opportunity_table_info.AddRow(master_opportunity_data)
                                     Sql.Upsert(master_opportunity_table_info)
                                     opportunity_obj = Sql.GetFirst(
