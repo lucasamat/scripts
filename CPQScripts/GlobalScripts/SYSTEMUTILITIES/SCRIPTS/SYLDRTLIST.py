@@ -456,7 +456,7 @@ class SYLDRTLIST:
                                                         FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND BILLING_YEAR= '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'
                                                         GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ """.format(
                                                             contract_quote_record_id,SubTab,TreeParam, quote_revision_record_id))
-                    elif TreeParam == "Z0009":
+                    elif TreeParam in ("Z0009","Z0105"):
                         item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
                                     AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
                                                         FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'
