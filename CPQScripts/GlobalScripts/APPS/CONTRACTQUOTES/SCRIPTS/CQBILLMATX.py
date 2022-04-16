@@ -4,7 +4,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import datetime
 import sys
-#import ACVIORULES
+
 
 Sql = SQL()
 
@@ -466,7 +466,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 		get_val = 4
 	elif str(get_billing_cycle).upper() == "ANNUALLY":				
 		get_val = 1
-    elif str(get_billing_cycle).upper() == "WEEKLY":				
+	elif str(get_billing_cycle).upper() == "WEEKLY":				
 		get_val = 52
 	else:				
 		get_val =12
@@ -1438,8 +1438,4 @@ def billingmatrix_create():
 if contract_quote_rec_id:
 	ApiResponse = ApiResponseFactory.JsonResponse(_insert_billing_matrix())
 	#_insert_billing_matrix()
-	# violationruleInsert = ACVIORULES.ViolationConditions()
-	# header_obj = SqlHelper.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-	# if header_obj:			
-	# 	violationruleInsert.InsertAction(header_obj.RECORD_ID,quote_revision_rec_id, "SAQTRV")
-	# Approval Trigger - End
+	
