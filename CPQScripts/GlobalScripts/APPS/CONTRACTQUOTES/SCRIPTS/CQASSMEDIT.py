@@ -187,7 +187,7 @@ def child_ent_request(tableName,where,serviceId):
 						
 					webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
 						
-					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and row.ENTITLEMENT_VALUE_CODE != 0:
+					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and row.ENTITLEMENT_VALUE_CODE != 0 and '_PQB_QTITST' not in row.ENTITLEMENT_ID:
 						Trace.Write('row--'+str(row.ENTITLEMENT_ID))
 						try:
 							requestdata = '{"characteristics":['
@@ -234,7 +234,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 	#NewValue = 'Chamber based'
 	get_equp_xml = Sql.GetFirst("select distinct CPS_MATCH_ID,ENTITLEMENT_XML,CPS_CONFIGURATION_ID FROM {} where {}".format(table_name,whereReq))
 	#get_query = Sql.GetFirst("select EQUIPMENT_ID FROM SAQSCO where {} {}".format(whereReq,add_where))
-	if get_equp_xml and NewValue.upper() not in ('SELECT','UNDEFINED'):
+	if get_equp_xml and NewValue.upper() not in ('SELECT','UNDEFINED') and '_PQB_QTITST' not in AttributeID:
 		Trace.Write('inside----')
 		cpsConfigID,cpsmatchID = child_ent_request(table_name,whereReq,service_id)
 		# cpsmatchID = get_equp_xml.CPS_MATCH_ID
