@@ -1489,6 +1489,7 @@ class SYLDRTLIST:
                             partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
                             assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
                             on_hold_costing = '<img title="CFG-ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
+                            on_hold_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
                             offline_pricing = '<img title="OFFLINE PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
                             1622
                             qt_rec_id = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
@@ -1528,7 +1529,6 @@ class SYLDRTLIST:
                                 )
                             #A055S000P01-4578 starts
                             elif TreeParam == "Quote Items":
-                                Trace.Write("b1")
                                 Qury_str = (
                                     "select top "
                                         + str(PerPage)
