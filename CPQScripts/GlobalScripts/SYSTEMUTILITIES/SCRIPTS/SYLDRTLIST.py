@@ -1489,7 +1489,8 @@ class SYLDRTLIST:
                             partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
                             assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
                             on_hold_costing = '<img title="CFG-ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
-                            on_hold_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
+                            offline_pricing = '<img title="OFFLINE PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
+                            1622
                             qt_rec_id = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
                             contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
                             if TreeParentParam == "Quote Items": 
@@ -1513,7 +1514,7 @@ class SYLDRTLIST:
                                 Qury_str = (
                                     "select top "
                                         + str(PerPage)
-                                        + " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'CFG-ON HOLD - COSTING' THEN '"+on_hold_costing+"' WHEN STATUS = 'PRR-ON HOLD PRICING' THEN '"+on_hold_pricing+"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_ID,SERVICE_ID,"+col_year+",SERIAL_NO, GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, SALES_DISCOUNT_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select * from SAQICO (NOLOCK) where QUOTE_ID = '"
+                                        + " CASE  WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'CFG-ON HOLD - COSTING' THEN '"+on_hold_costing+"' WHEN STATUS = 'PRR-ON HOLD PRICING' THEN '"+on_hold_pricing+"' WHEN STATUS = 'OFFLINE PRICING' THEN '"+offline_pricing+"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY IS MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_ID,SERVICE_ID,"+col_year+",SERIAL_NO, GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, SALES_DISCOUNT_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId,ASSEMBLY_ID from ( select * from SAQICO (NOLOCK) where QUOTE_ID = '"
                                         + str(qt_rec_id.QUOTE_ID)
                                         + "' AND SERVICE_ID = '"
                                         + str(LineAndEquipIDList)
@@ -6077,6 +6078,8 @@ class SYLDRTLIST:
                                         quer_values = "APPROVAL REQUIRED"
                                     elif 'ERROR' in quer_values:
                                         quer_values = "ERROR"
+                                    elif 'OFFLINE PRICING' in quer_values:
+                                        quer_values = "OFFLINE PRICING"
                                     ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "   
                                 elif str(quer_value) == 'STATUS' and str(RECORD_ID) == 'SYOBJR-98872':
                                     remove_tag =re.compile(r'<[^>]+>')
@@ -6189,6 +6192,8 @@ class SYLDRTLIST:
                                         quer_values[i] = "APPROVAL REQUIRED"
                                     elif 'ERROR' in quer_values[i]:
                                         quer_values[i] = "ERROR"
+                                    elif 'OFFLINE PRICING' in quer_values[i]:
+                                        quer_values[i] = "OFFLINE PRICING"
                                 quer_values = tuple(quer_values)
                                 
                                 ATTRIBUTE_VALUE_STR += "(" + str(quer_value) + " in " + str(quer_values) + ") and "                                          
