@@ -339,8 +339,8 @@ class Entitlements:
 		Fullresponse =''
 		cps_error = ''
 		cps_conflict = ''
-		LEVEL = ''
-		VALUE = ''
+		LEVEL = ''##A055S000P01-16862 code starts..
+		VALUE = ''##A055S000P01-16862 code ends..
 		Trace.Write(str(type(NewValue))+'----NewValue')
 		if not type(NewValue) is 'str' and multiselect_flag == 'true':
 			NewValue = list(NewValue)	
@@ -397,8 +397,8 @@ class Entitlements:
 		else:
 			##addon product condition is added
 			if ((self.treesuperparentparam == 'Product Offerings' or (self.treeparentparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements'):
-				LEVEL = "OFFERING LEVEL"
-				VALUE = str(self.treeparam)
+				LEVEL = "OFFERING LEVEL" #A055S000P01-16862 code starts..
+				VALUE = str(self.treeparam) #A055S000P01-16862 code ends..
 				tableName = 'SAQTSE'
 				serviceId = self.treeparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
@@ -409,8 +409,8 @@ class Entitlements:
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)	
 			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
-				LEVEL = "GREENBOOK LEVEL"
-				VALUE = str(self.treeparam)
+				LEVEL = "GREENBOOK LEVEL" #A055S000P01-16862 code starts..
+				VALUE = str(self.treeparam) #A055S000P01-16862 code ends..
 				tableName = 'SAQSGE'
 				parentObj = 'SAQTSE'
 				if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
@@ -429,8 +429,8 @@ class Entitlements:
 				
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
-				LEVEL = "EQUIPMENT LEVEL"
-				VALUE = str(EquipmentId)
+				LEVEL = "EQUIPMENT LEVEL" #A055S000P01-16862 code starts..
+				VALUE = str(EquipmentId) #A055S000P01-16862 code ends..
 				tableName = 'SAQSCE'
 				serviceId = self.treeparentparam
 				parentObj = 'SAQSGE'
@@ -1231,7 +1231,7 @@ class Entitlements:
 								except Exception as e:
 									Trace.Write("Exception While running CQCRUDOPTN "+str(e))
 						Trace.Write("PMevents changes started "+str(key)+" - "+str(tableName))
-						if key in ( "AGS_{}_NET_PRMALB".format(serviceId)) and str(tableName) in ('SAQTSE'):
+						if key in ( "AGS_{}_NET_PRMALB".format(serviceId)) and str(tableName) in ('SAQTSE'):##A055S000P01-16862 code starts....
 							##To get the quote type of the attribute to delete the events table and their child tables based on the quote type...
 							where_string = ''
 							service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.ContractRecordId,RevisionRecordId=self.revision_recordid,service_id = serviceId))
@@ -1300,7 +1300,7 @@ class Entitlements:
 							except Exception as e:
 								Trace.Write("Exception While running CQCRUDOPTN "+str(e))
 							Trace.Write("script called J")
-
+						##A055S000P01-16862 code ends...
 						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004','Z0009') :
 							#ancillary_object = 'A6200'
 							if entitlement_value.upper() == "YES":
