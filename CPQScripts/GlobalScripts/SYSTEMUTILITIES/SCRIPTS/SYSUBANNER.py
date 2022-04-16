@@ -2471,7 +2471,7 @@ def Related_Sub_Banner(
         ThirdValue = str(TreeParam)
         FourthLable = "Assembly ID"
         FourthValue = str(AssemblyId)  
-    elif ObjName in ("SAQSGB","SAQSCA") and TreeTopSuperParentParam == "Product Offerings" and (subTabName in("Assembly Details","Assembly Entitlements","Events","Kit Details","BoM")):
+    elif ObjName in ("SAQSGB","SAQSCA") and TreeTopSuperParentParam == "Product Offerings" and (subTabName in("Assembly Details","Assembly Entitlements","Kit Details","BoM")):
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeParentParam)
