@@ -35,8 +35,8 @@ def _entitlement_parent_inherit(OfferingRow_detail):
 	contract_quote_rec_id = OfferingRow_detail.QUOTE_RECORD_ID
 	quote_revision_rec_id = OfferingRow_detail.QTEREV_RECORD_ID
 	service_id = OfferingRow_detail.ADNPRD_ID
-	get_parent_xml = Sql.GetFirst("SELECT * FROM SAQTSE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_rec_id, quote_revision_rec_id ,par_service_id) )
-	getall_recid = Sql.GetFirst("SELECT * FROM SAQTSE WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' ".format(contract_quote_rec_id, quote_revision_rec_id, service_id ,par_service_id) )
+	get_parent_xml = Sql.GetFirst("SELECT * FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_rec_id, quote_revision_rec_id ,par_service_id) )
+	getall_recid = Sql.GetFirst("SELECT * FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' ".format(contract_quote_rec_id, quote_revision_rec_id, service_id ,par_service_id) )
 	get_parent_dict = {}
 	get_service_xml_dict = {}
 	assign_xml = ""
@@ -45,9 +45,7 @@ def _entitlement_parent_inherit(OfferingRow_detail):
 	if getall_recid:
 		get_service_xml_dict =  _construct_dict_xml(getall_recid.ENTITLEMENT_XML)
 	if get_parent_dict and get_service_xml_dict:
-		for key,value in get_service_xml_dict.items():
-			#temp_val = value
-			#if key in get_parent_dict.keys() :
+		for key,value in get_service_xml_dict.items():			
 			if 'AGS_{}_PQB_BILTYP'.format(par_service_id) in get_parent_dict.keys() and key == 'AGS_Z0116_PQB_BILTYP':
 				value = get_parent_dict['AGS_{}_PQB_BILTYP'.format(par_service_id)]
 				value = value.replace(par_service_id,service_id)
@@ -98,9 +96,7 @@ def _addon_service_level_entitlement(OfferingRow_detail):
 	attributesallowedlst = list(set(attributesallowedlst))
 	overallattributeslist = list(set(overallattributeslist))		
 	HasDefaultvalue=False
-
 	ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
-
 	ent_val_code = ''
 	get_toolptip = ""
 	addon_entitlement_object = Sql.GetFirst("select count(SAQTSE.CpqTableEntryId) as cnt from SAQTSE(nolock) inner join SAQSAO on SAQTSE.SERVICE_ID = SAQSAO.ADNPRD_ID AND SAQTSE.PAR_SERVICE_ID = SAQSAO.SERVICE_ID AND SAQTSE.QUOTE_RECORD_ID = SAQSAO.QUOTE_RECORD_ID and SAQTSE.QTEREV_RECORD_ID = SAQSAO.QTEREV_RECORD_ID WHERE SAQTSE.PAR_SERVICE_ID = '{}' AND SAQSAO.QUOTE_RECORD_ID = '{}' and SAQSAO.QTEREV_RECORD_ID = '{}' AND SAQTSE.SERVICE_ID = '{}'".format(OfferingRow_detail.SERVICE_ID,OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.QTEREV_RECORD_ID, OfferingRow_detail.ADNPRD_ID))
@@ -112,8 +108,7 @@ def _addon_service_level_entitlement(OfferingRow_detail):
 				HasDefaultvalue=True					
 				STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
 				ent_disp_val = attributevalues[attrs]
-				ent_val_code = attributevalues[attrs]
-				#Trace.Write("ent_disp_val----"+str(ent_disp_val))
+				ent_val_code = attributevalues[attrs]				
 			else:					
 				HasDefaultvalue=False
 				ent_disp_val = ""
@@ -128,21 +123,7 @@ def _addon_service_level_entitlement(OfferingRow_detail):
 			if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
 				get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 				ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
-			# getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.QUOTE_RECORD_ID)+"'")
-			# if getslaes_value:
-			# 	getquote_sales_val = getslaes_value.SALESORG_ID
-			# get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
-			# get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 			
-			#A055S000P01-7401 START
-			# if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.ADNPRD_ID) ) and ent_disp_val != '':
-			# 	val = ""
-			# 	if str(ent_disp_val) == 'Comprehensive':
-			# 		val = "COMPREHENSIVE SERVICES"
-			# 	elif str(ent_disp_val) == 'Complementary':
-			# 		val = "COMPLEMENTARY PRODUCTS"
-			# 	Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.QTEREV_RECORD_ID,OfferingRow_detail.ADNPRD_ID))
-			#A055S000P01-7401 END
 			DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 			insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 				<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -198,16 +179,7 @@ def _addon_service_level_entitlement(OfferingRow_detail):
 		Sql.RunQuery(insert_qtqtse_query)
 		if OfferingRow_detail.ADNPRD_ID == 'Z0116':
 			_entitlement_parent_inherit(OfferingRow_detail)
-		# try:
-		# 	Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
-		# 	where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(OfferingRow_detail.QUOTE_RECORD_ID, OfferingRow_detail.QTEREV_RECORD_ID, OfferingRow_detail.ADNPRD_ID)
-		# 	# CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
-			
-		# 	predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": OfferingRow_detail.QUOTE_RECORD_ID ,"level":"SERVICE_LEVEL", "treeparam":OfferingRow_detail.ADNPRD_ID,"user_id": user_id, "quote_rev_id":OfferingRow_detail.QTEREV_RECORD_ID})
-
-		# except:
-		# 	Trace.Write("EXCEPT---PREDEFINED DRIVER IFLOW")
-
+		
 def _addon_equipment_insert(OfferingRow_detail,greenbook):
 	Sql.RunQuery(
 				"""
@@ -303,7 +275,7 @@ def _addon_equipment_insert(OfferingRow_detail,greenbook):
 						KPU,
 						QTEREV_ID
 						FROM SAQSCO (NOLOCK)
-						WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND SERVICE_ID ='{par_service_id}' AND GREENBOOK = '{greenbook}' AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND PAR_SERVICE_ID ='{par_service_id}' AND SERVICE_ID ='{serviceid}' AND GREENBOOK = '{greenbook}')
+						WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{par_service_id}' AND GREENBOOK = '{greenbook}' AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND PAR_SERVICE_ID ='{par_service_id}' AND SERVICE_ID ='{serviceid}' AND GREENBOOK = '{greenbook}')
 												
 					""".format(
 						par_service_id = OfferingRow_detail.SERVICE_ID,
@@ -350,8 +322,8 @@ def _addon_rolldown_entitlement(OfferingRow_detail,greenbook):
 													'where_cond' :where_condition, 
 													'ent_level_table': rec_table
 													})
-def addon_operations(OfferingRow_detail,greenbook):
-	Trace.Write("CQADDONPRD entitlement insert")
+													
+def addon_operations(OfferingRow_detail,greenbook):	
 	_addon_service_level_entitlement(OfferingRow_detail)
 	_addon_equipment_insert(OfferingRow_detail,greenbook)
 	_addon_rolldown_entitlement(OfferingRow_detail,greenbook)
