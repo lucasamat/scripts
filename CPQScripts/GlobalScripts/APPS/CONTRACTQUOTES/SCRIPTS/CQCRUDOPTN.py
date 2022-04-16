@@ -6175,7 +6175,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						if quotetype_id:
 							quotetype_value =re.findall(quote_type_attribute_value,sub_string)
 							quotetype_value_for_offering = str(quotetype_value[0]).upper()
-				self._insert_quote_service_covered_assembly(entitlement_level_value = self.entitlement_level_value,entitlement_level = self.entitlement_level,batch_group_record_id=batch_group_record_id,quotetype_value_for_offering= quotetype_value_for_offering)
+				####A055S000P01-16862 code starts...
+				self._insert_quote_service_covered_assembly(entitlement_level_value = self.entitlement_level_value,entitlement_level = self.entitlement_level,batch_group_record_id=batch_group_record_id,quotetype_value_for_offering= quotetype_value_for_offering) ####A055S000P01-16862 code ends...
 				self._insert_quote_service_fab_location(batch_group_record_id=batch_group_record_id)
 				#SAQSCA_end_time = time.time()
 				
