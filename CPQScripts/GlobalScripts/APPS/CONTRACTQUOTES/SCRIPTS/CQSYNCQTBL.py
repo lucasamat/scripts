@@ -1623,6 +1623,7 @@ class SyncQuoteAndCustomTables:
                             "QTEREV_ID": quote_rev_id,
                         })
                     quote_salesorg_table_info.AddRow(salesorg_data)
+                    Log.Info("@@1626 Salesorg_data--->"+str(salesorg_data))
                     Sql.Upsert(quote_salesorg_table_info)
                     quote_table_info.AddRow(contract_quote_data)
                     Sql.Upsert(quote_table_info)
