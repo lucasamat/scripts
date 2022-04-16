@@ -14,7 +14,7 @@ input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
 Qt_rec_id = input_data[0]
 REVISION_rec_ID = input_data[-1]
 
-
+Log.Info('17--BILLING MATRIX-QUOTE _ID-'+str(Qt_rec_id))
 try:
 	contract_quote_rec_id = input_data[0]
 	#contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
