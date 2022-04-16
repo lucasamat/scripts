@@ -242,7 +242,7 @@ def create_new_revision(Opertion,cartrev):
 				
 				# A055S000P01-17876 - Start
 				service_level_where_condition = ''
-				if cloneobjectname == 'SAQTSV'::
+				if cloneobjectname == 'SAQTSV':
 					service_level_where_condition = " AND SERVICE_ID != 'Z0105'"
 				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no)) + service_level_where_condition
 				# A055S000P01-17876 - End
