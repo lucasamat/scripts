@@ -239,8 +239,9 @@ def create_new_revision(Opertion,cartrev):
 				insertcols += " )"
 				insertcols  = insertcols.replace("PRIMARY","[PRIMARY]")
 				selectcols = selectcols.replace("PRIMARY","[PRIMARY]")
-				service_level_where_condition = ''
+				
 				# A055S000P01-17876 - Start
+				service_level_where_condition = ''
 				if cloneobject[cloneobjectname] == 'SAQTSV'::
 					service_level_where_condition = " AND SERVICE_ID != 'Z0105'"
 				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no)) + service_level_where_condition
