@@ -7,9 +7,9 @@
 # ==========================================================================================================================================
 from SYDATABASE import SQL
 Sql = SQL()
-import sys
-import datetime
+from datetime import datetime
 import re
+
 User_name = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
 User_Id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
 
@@ -186,7 +186,7 @@ def _addon_service_level_entitlement(OfferingRow_detail):
 		tbrow["SALESORG_NAME"]=OfferingRow_detail.SALESORG_NAME
 		tbrow["CPS_MATCH_ID"] = 1
 		tbrow["CPQTABLEENTRYADDEDBY"] = User_Id
-		tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
+		tbrow["CPQTABLEENTRYDATEADDED"] = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
 		tbrow["QTEREV_RECORD_ID"] = OfferingRow_detail.QTEREV_RECORD_ID
 		tbrow["QTEREV_ID"] = OfferingRow_detail.QTEREV_ID
 		tbrow["CONFIGURATION_STATUS"] = configuration_status
