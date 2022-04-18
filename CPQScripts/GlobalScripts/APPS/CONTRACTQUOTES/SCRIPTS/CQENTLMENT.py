@@ -245,7 +245,7 @@ class Entitlements:
 					requestdata += '{"value":"'+str(previous_val)+'","selected":false}'
 				else:
 					if attr_datatype.upper() == 'DATE':
-						NewValue = datetime.datetime.strptime(NewValue, "%d/%m/%Y").strftime("%Y-%m-%d")
+						NewValue = datetime.datetime.strptime(NewValue, "%m/%d/%Y").strftime("%Y-%m-%d")
 					requestdata += '{"value":"' + NewValue + '","selected":true}'
 					Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
 			requestdata += ']}]}'
