@@ -3091,9 +3091,7 @@ class SYLDRTLIST:
                         elif ObjectName == "SAQSPT":
                             Trace.Write("##@@")
                             contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
-                            quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
-
-                            reprice_btn = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and CpqTableEntryId = '"+str(value1234)+"'")
+                            reprice_btn = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(contract_quote_rec_id)+"' and CpqTableEntryId = '"+str(value1234)+"'")
                             if reprice_btn.PRICING_STATUS == 'ERROR' or reprice_btn.PRICING_STATUS not in ('ACQUIRING','ACQUIRED'):
                                 Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="reprice_parts(this)">REPRICE</a></li>'
 
