@@ -238,7 +238,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 						p = str(prefixZero)+str(p)
 					curr_attr2 = currency_attribute
 					if salesUOMs !='':
-						salesuom_attr = '"quantity":{"value":'+str(q)+',"unit":"'+str(ISOCode[salesUOMs])+'"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(p)+'","baseUnit":"EA","alternateProductUnits": [{"alternateUnitName": "'+str(ISOCode[salesUOMs])+'","numerator": "'+str(salesUOMConvs)+'","denominator": 1}]}'
+						salesuom_attr = '"quantity":{"value":'+str(q)+',"unit":"'+str(ISOCode[salesUOMs])+'"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(p)+'","baseUnit":"EA","alternateProductUnits": [{"alternateUnitName": "'+str(ISOCode[salesUOMs])+'","numerator": "'+str(salesUOMConvs)+'","denominator": "1"}]}'
 				
 					if r in ('CCM','CCO','CUM','CUO'):
 						curr_attr2 += ','+'{"name":"KOMP-ZZ_ODCC_ELIGIBILITY_FLAG","values":["'+str(r)+'"]}'
