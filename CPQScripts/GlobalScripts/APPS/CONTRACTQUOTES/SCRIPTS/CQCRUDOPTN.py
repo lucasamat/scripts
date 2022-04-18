@@ -5611,9 +5611,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					BatchGroupRecordId=kwargs.get('batch_group_record_id')
 					))
 
-		delete_obj_list = ["MAEAPM_INBOUND","MAKTPT_INBOUND"]
-		for object in delete_obj_list:
-			Sql.RunQuery("DELETE FROM {} WHERE QUOTE_ID='{}' and SERVICE_ID = '{}' AND QTEREV_ID = '{}' ".format(object,self.contract_quote_id, self.tree_param,self.quote_revision_id))
+		# delete_obj_list = ["MAEAPM_INBOUND","MAKTPT_INBOUND"]
+		# for object in delete_obj_list:
+		# 	Sql.RunQuery("DELETE FROM {} WHERE QUOTE_ID='{}' and SERVICE_ID = '{}' AND QTEREV_ID = '{}' ".format(object,self.contract_quote_id, self.tree_param,self.quote_revision_id))
 			# self._process_query("""INSERT SAQGPE (
 			# 		CPS_CONFIGURATION_ID,
 			# 		CPS_MATCH_ID,
