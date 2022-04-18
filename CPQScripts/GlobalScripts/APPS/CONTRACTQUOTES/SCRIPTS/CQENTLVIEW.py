@@ -763,7 +763,9 @@ class EntitlementView():
 					tbrow["KB_VERSION"] = Fullresponse["kbKey"]["version"]
 					tbrow["CPQTABLEENTRYADDEDBY"] = userId
 					tbrow["CPQTABLEENTRYDATEADDED"] = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-
+					Trace.Write('@766-------')
+					Trace.Write(tbrow)
+					Trace.Write(str(tbrow))
 					columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 					values = ', '.join("'" + x + "'" for x in tbrow.values())
 					insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)				
