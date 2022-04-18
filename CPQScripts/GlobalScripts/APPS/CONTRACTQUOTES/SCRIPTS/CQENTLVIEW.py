@@ -764,10 +764,7 @@ class EntitlementView():
 					tbrow["CPQTABLEENTRYADDEDBY"] = userId
 					tbrow["CPQTABLEENTRYDATEADDED"] = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 					columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
-					# for x in tbrow.values():
-					# 	x = x.encode('ascii','ignore').decode('ascii')
-					# 	values = ', '.join("'"+x+"'")
-					values = u', '.join("'" + str(x.encode('ascii','ignore').decode('ascii')) + "'" for x in tbrow.values())
+					values = u', '.join("'" + str(x)+ "'" for x in tbrow.values())
 					insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)				
 				Sql.RunQuery(insert_qtqtse_query)
 				# if objname_ent == "SAQSAO":
