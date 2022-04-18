@@ -430,7 +430,7 @@ def EditItems():
         line.append(str(x.LINE))
     
     return str(line)
-
+# A055S000P01-17863 START
 def LoadQuoteSummary():
     sec_str = ""
     GetDetails = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR,TAX_AMOUNT_INGL_CURR,ESTVAL_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,CNTMRG_INGL_CURR,TOTAL_MARGIN_PERCENT FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_record_id))
@@ -457,6 +457,7 @@ def LoadQuoteSummary():
         </div>
         </div>'''
     return sec_str	
+# A055S000P01-17863 END
 try:
     SubtabName = Param.SUBTAB
 except:
@@ -499,6 +500,7 @@ try:
 except:
     Trace.Write("except hot")
     Hot = ""
+# A055S000P01-17863 START
 GetPOES = Sql.GetFirst("SELECT POES FROM SAQTMT(NOLOCK) WHERE QTEREV_RECORD_ID  = '{}' AND MASTER_TABLE_QUOTE_RECORD_ID  = '{}' ".format(quote_revision_record_id,quote_record_id))
 
 if GetPOES:
@@ -506,6 +508,7 @@ if GetPOES:
     if SubtabName == "Summary" and (GetPOES.POES == 1):
 
         ApiResponse = ApiResponseFactory.JsonResponse(LoadQuoteSummary())
+# A055S000P01-17863 END
 if Action == "NOTICE ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
     Trace.Write("276")
     ApiResponse = ApiResponseFactory.JsonResponse(NoticeOnChange(IdleNotice))
