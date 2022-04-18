@@ -3837,7 +3837,7 @@ class SyncQuoteAndCustomTables:
             QuoteRecordId=contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
             RevisionId=quote_rev_id,
             RevisionRecordId=quote_revision_id,
-            is_primary="1" if employee.get("PRIMARY").upper() == "TRUE" else "0",
+            is_primary="1" if employee.get("PRIMARY") and employee.get("PRIMARY").upper() == "TRUE" else "0",
         )
         Sql.RunQuery(query)
         created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")

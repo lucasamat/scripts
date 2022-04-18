@@ -117,7 +117,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             QuoteRecordId=quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
                             RevisionId=quote_rev_id,
                             RevisionRecordId=quote_revision_record_id,
-                            is_primary = "1" if employee.get("PRIMARY").upper()=="TRUE" else "0"
+                            is_primary="1" if employee.get("PRIMARY") and employee.get("PRIMARY").upper() == "TRUE" else "0",
                             )
                         )
     Sql.RunQuery(query)
