@@ -110,6 +110,10 @@ def insert_item_per_billing(total_months=1, billing_date='',billing_end_date =''
 	else:				
 		get_val =12
 	amount_column_split = amount_column.replace('_',' ')
+	get_round_val = 2
+	getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_rec_id)+"' ")
+	getcurrencysymbol = Sql.GetFirst("""SELECT ROUNDING_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY_RECORD_ID = '{currencysymbol}' """.format(currencysymbol = getcurrency.GLOBAL_CURRENCY_RECORD_ID))
+	get_round_val = getcurrencysymbol.ROUNDING_DECIMAL_PLACES
 	if service_id == "Z0117":
 
 		get_total_sum  = Sql.GetFirst("SELECT SUM({amount_column}) as estsum FROM SAQRIT WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'  and SERVICE_ID='Z0117'".format(QuoteRecordId=contract_quote_rec_id,
@@ -164,7 +168,7 @@ def insert_item_per_billing(total_months=1, billing_date='',billing_end_date =''
 					RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
 					BillingDate=billing_date,
 					get_val=get_val,
-					service_id = service_id,billing_type =get_billing_type,amount_column=get_total_sum.estsum,amount_column_split=amount_column_split))
+					service_id = service_id,billing_type =get_billing_type,amount_column=get_total_sum.estsum,amount_column_split=amount_column_split,get_round_val=get_round_val))
 			Sql.RunQuery("""INSERT SAQIBP (					
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,DOC_CURRENCY,ESTVAL_INDT_CURR,
 						QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
