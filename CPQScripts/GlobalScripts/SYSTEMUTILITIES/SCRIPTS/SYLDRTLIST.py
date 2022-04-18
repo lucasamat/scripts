@@ -3277,6 +3277,7 @@ class SYLDRTLIST:
                         
                         if value1234 == "ACQUIRED" or value1234 == "PRICED":
                             if RECORD_ID == 'SYOBJR-00005':
+                                Trace.Write("ACQ@@@")
                                 value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg'> ")
                             else:
                                 value1234 = value1234.replace(value1234,"<img title='"+str(value1234).title()+"' src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg'> "+str(value1234))
@@ -3285,6 +3286,7 @@ class SYLDRTLIST:
                             value1234 = value1234.replace("APPROVAL REQUIRED","<img title='Approval Required' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg> APPROVAL REQUIRED")
                         if value1234 == "ACQUIRING":
                             if RECORD_ID == 'SYOBJR-00005':
+
                                 value1234 = value1234.replace("ACQUIRING","<img title='Acquiring' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>")
                             else:
                                 value1234 = value1234.replace("ACQUIRING","<img title='Acquiring' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg> ACQUIRING")
