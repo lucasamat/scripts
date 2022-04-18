@@ -10,6 +10,8 @@ import re
 from SYDATABASE import SQL
 import datetime
 
+
+
 Sql = SQL()
 input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
 Qt_rec_id = input_data[0]
