@@ -1,15 +1,16 @@
+#===================================================================================================================#======================
+#   __script_name : CQBILLMATX.PY
+#   __script_description : THIS SCRIPT IS USED TO GENERATE BILL PLAN DETAILS AND ITEMS
+#   __primary_author__ : SRIJAYDHURGA
+#   __create_date :08/30/2021
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+# #====================================================================================================================#======================
 
 import re
-import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import datetime
-import sys
-
 
 Sql = SQL()
-
-
-TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
 input_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
 Qt_rec_id = input_data[0]
 REVISION_rec_ID = input_data[-1]
