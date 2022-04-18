@@ -44,6 +44,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             WHEN 'Z5' THEN 'SALES REP'
                             WHEN 'ZCM' THEN 'CONTRACT MANAGER'
                             WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            WHEN 'Z11' THEN 'PRICING PERSON'
                             ELSE 'FOB'
                             END ) AS C4C_PARTNERFUNCTION_ID,
                             (SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -57,6 +58,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             WHEN 'Z5' THEN 'SALES REP'
                             WHEN 'ZCM' THEN 'CONTRACT MANAGER'
                             WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            WHEN 'Z11' THEN 'PRICING PERSON'
                             ELSE 'FOB'
                             END ) AS CRM_PARTNERFUNCTION_ID,
                             (SELECT TOP 1 PARTNERFUNCTION_DESCRIPTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -70,6 +72,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             WHEN 'Z5' THEN 'SALES REP'
                             WHEN 'ZCM' THEN 'CONTRACT MANAGER'
                             WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            WHEN 'Z11' THEN 'PRICING PERSON'
                             ELSE 'FOB'
                             END ) AS PARTNERFUNCTION_DESC,
                             (SELECT TOP 1 PARTNERFUNCTION_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -83,6 +86,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             WHEN 'Z5' THEN 'SALES REP'
                             WHEN 'ZCM' THEN 'CONTRACT MANAGER'
                             WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            WHEN 'Z11' THEN 'PRICING PERSON'
                             ELSE 'FOB'
                             END ) AS PARTNERFUNCTION_ID,
                             (SELECT TOP 1 PARTNERFUNCTION_RECORD_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -96,6 +100,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             WHEN 'Z5' THEN 'SALES REP'
                             WHEN 'ZCM' THEN 'CONTRACT MANAGER'
                             WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            WHEN 'Z11' THEN 'PRICING PERSON'
                             ELSE 'FOB'
                             END ) AS PARTNERFUNCTION_RECORD_ID,
                             SAEMPL.EMAIL,
