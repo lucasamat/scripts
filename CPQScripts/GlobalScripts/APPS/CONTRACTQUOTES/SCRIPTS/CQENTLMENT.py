@@ -1337,8 +1337,7 @@ class Entitlements:
 							else:
 								ancillary_object_dict['Z0048'] = "DELETE"
 						#(key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId in ("Z0035")) or
-						elif "AGS_Z0091" in key:
-							Quote.SetGlobal("EntApprovals","Yes")
+						
 						elif "GEN_IDLALW" in key:
 							Log.Info("TOOL IDLING VALUE"+str(entitlement_value))
 							if entitlement_value == "Yes":
