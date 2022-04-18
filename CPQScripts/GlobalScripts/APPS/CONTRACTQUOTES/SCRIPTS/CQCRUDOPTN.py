@@ -6539,9 +6539,7 @@ node_object = Factory(node_type)(
 	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,new_part=new_part,tool_type=tool_type,inclusion = inclusion,applied_preventive_maintainence_quote_type_changed = applied_preventive_maintainence_quote_type_changed,pmevents_changes_insert= pmevents_changes_insert,pm_entlmnt_val=pm_entlmnt_val,entitlement_value = entitlement_value,tools_from_ui = tools_from_ui,entitlement_level = entitlement_level,entitlement_level_value = entitlement_level_value
 )
 
-if opertion == "INSERT":
-	node_object._insert_billing_matrix()
-elif opertion == "ADD":
+if opertion == "ADD":
 	node_object._create()
 elif opertion == "UPDATE":
 	node_object._update()
