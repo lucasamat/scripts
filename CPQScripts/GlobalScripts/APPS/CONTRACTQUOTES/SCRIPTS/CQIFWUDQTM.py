@@ -923,6 +923,10 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 	else:				
 		get_val =12
 	amount_column_split = amount_column.replace('_',' ')
+	get_round_val = 2
+	getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_rec_id)+"' ")
+	getcurrencysymbol = Sql.GetFirst("""SELECT ROUNDING_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY_RECORD_ID = '{currencysymbol}' """.format(currencysymbol = getcurrency.GLOBAL_CURRENCY_RECORD_ID))
+	get_round_val = getcurrencysymbol.ROUNDING_DECIMAL_PLACES
 	if service_id  in ('Z0091W'):
 		amount_column = 'NET_VALUE_INGL_CURR'
 	#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5	
@@ -941,8 +945,8 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					{billing_end_date} as BILLING_END_DATE,
 					{BillingDate} as BILLING_START_DATE,
 					{amount_column}  AS ANNUAL_BILLING_AMOUNT,
-					ISNULL({amount_column}, 0) / {get_val}  as BILLING_VALUE,
-					{amount_column}   as  BILLING_VALUE_INGL_CURR,
+					CAST(ROUND(ISNULL({amount_column},0),{get_round_val})/ {get_val} AS DECIMAL(10,{get_round_val}))   as BILLING_VALUE,
+					CAST(ROUND(ISNULL({amount_column},0),{get_round_val})/ {get_val} AS DECIMAL(10,{get_round_val}))    as  BILLING_VALUE_INGL_CURR,
 					'{billing_type}' as BILLING_TYPE,
 					SAQRIT.LINE AS LINE,
 					SAQSCO.QUOTE_ID,
@@ -977,7 +981,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 					RevisionRecordId=quote_revision_rec_id,
 					BillingDate=billing_date,billing_end_date=billing_end_date,
 					get_val=get_val,
-					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
+					service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split,get_round_val=get_round_val))
 		Sql.RunQuery(""" INSERT SAQIBP (
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID,DOC_CURRENCY, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
 					QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,GLOBAL_CURRENCY,GLOBALCURRENCY_RECORD_ID,
