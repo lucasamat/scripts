@@ -3308,7 +3308,7 @@ class SYLDRTLIST:
                             value1234 = value1234.replace("PRR-ON HOLD PRICING","<img title='PRR-ON HOLD PRICING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
                         if value1234 == "NOT PRICED":
                             if RECORD_ID == 'SYOBJR-00005':
-                                value1234 = value1234.replace("NOT PRICED","<img title='NOT PRICED' src=/mt/appliedmaterials_tst/Additionalfiles/no-price.svg>")
+                                value1234 = value1234.replace("NOT PRICED","<img title='NOT PRICED' class ='img-noprice' src=/mt/appliedmaterials_tst/Additionalfiles/no-price.svg>")
                         if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "CFG-ON HOLD - COSTING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED" and value1234 != "PRR-ON HOLD PRICING":                        
                             value1234 = value1234
                         if value123 == objRecName:
