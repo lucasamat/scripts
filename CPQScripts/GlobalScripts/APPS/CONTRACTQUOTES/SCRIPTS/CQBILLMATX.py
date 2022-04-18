@@ -217,7 +217,7 @@ def insert_item_per_billing(total_months=1, billing_date='',billing_end_date =''
 						RevisionRecordId=quote_revision_rec_id,
 						BillingDate=billing_date,billing_end_date=billing_end_date,
 						get_val=get_val,
-						service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
+						service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split,get_round_val=get_round_val))
 		else:
 			Sql.RunQuery("""INSERT SAQIBP (
 					
