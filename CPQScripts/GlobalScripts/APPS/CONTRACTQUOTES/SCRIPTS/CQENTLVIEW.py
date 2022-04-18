@@ -1039,7 +1039,7 @@ class EntitlementView():
 							imgstr =""
 							#Trace.Write("inserted_value_list--"+str(inserted_value_list))
 							standard_attr_values = Sql.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
-										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID,A.STANDARD_ATTRIBUTE_DATA_TYPE
 
 										, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
 
@@ -1304,18 +1304,18 @@ class EntitlementView():
 											# 		imgstr  = ""
 											# else:
 											# 	imgstr  = ""
-											if str(attrSysId) in ("AGS_REL_STDATE",'AGS_Z0007_GEN_RELDAT','AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
-												datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
-												if attrSysId == 'AGS_Z0007_GEN_RELDAT':
-													datepicker = "onclick_datepicker('" + attrSysId + "')"
-												elif attrSysId in ('AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
-													datepicker = "onclick_datepicker('" + attrSysId + "')"	
+											if standard_attr_values.STANDARD_ATTRIBUTE_DATA_TYPE:
+												#datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
+												#if attrSysId == 'AGS_Z0007_GEN_RELDAT':
+												datepicker = "onclick_datepicker('" + attrSysId + "')"
+												# elif attrSysId in ('AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
+												# 	datepicker = "onclick_datepicker('" + attrSysId + "')"	
 												sec_str1 += (
 													'<input  class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"   style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 													+ str(attr_value)
-													+ '" value = "'+str(attr_value)+'"  onchange="editent_bt(this)" title="'+str(attr_value)+'"  disabled>'
+													+ '" value = "'+str(attr_value)+'"  title="'+str(attr_value)+'"  disabled>'
 													+ "</input> "
 												)
 												# sec_str1 += (
