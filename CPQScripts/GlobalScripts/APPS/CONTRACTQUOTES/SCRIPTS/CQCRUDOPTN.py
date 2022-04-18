@@ -4759,7 +4759,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		if(kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes" or  kwargs.get('pmevents_changes_insert') == "Yes")and kwargs.get('tools_from_ui') != "Yes":
 			self.entitlement_level = self.entitlement_level if self.entitlement_level else "OFFERING LEVEL"
 			self.entitlement_level_value = self.entitlement_level_value if self.entitlement_level_value else self.tree_param
-			if kwargs.get('pmevents_changes_insert') == "Yes":
+			if (kwargs.get('applied_preventive_maintainence_quote_type_changed') == "Yes" or kwargs.get('pmevents_changes_insert') == "Yes"):
 				ScriptExecutor.ExecuteGlobal('QTPOSTPKIT',{'QUOTE_ID':str(self.contract_quote_id),'REVISION_ID':str(self.quote_revision_id),'LEVEL':str(self.entitlement_level),'VALUE':str(self.entitlement_level_value)})
 			delete_obj_list = ["SAQSAP","SAQSKP"]
 			for object in delete_obj_list:
