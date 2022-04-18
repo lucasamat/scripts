@@ -167,6 +167,7 @@ class Entitlements:
 		return newConfigurationid,cpsmatchID
 
 	def EntitlementRequest(self,cpsConfigID=None,cpsmatchID=None,AttributeID=None,NewValue=None,field_type=None,attr_datatype = None,product_id = None):
+		Trace.Write("attr_datatype-"+str(attr_datatype))
 		if type(NewValue) is 'str' and multiselect_flag != 'true':
 			NewValue = NewValue.replace("'","''")
 			# if NewValue == 'Select':
@@ -812,7 +813,7 @@ class Entitlements:
 				else:
 					Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
 			else:
-				Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+				Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,get_attr_datatype,product_obj.PRD_ID)
 			
 				Trace.Write("Fullresponse--"+str(Fullresponse))
 				Product.SetGlobal('Fullresponse',str(Fullresponse))
@@ -2096,9 +2097,9 @@ class Entitlements:
 						attribute_code = ''
 						if get_ent_type:
 							if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-								Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+								Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',get_attr_datatype,product_obj.PRD_ID)
 						else:
-							Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+							Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',get_attr_datatype,product_obj.PRD_ID)
 						if Fullresponse and cpsmatc_incr:
 							Trace.Write("Fullresponse"+str(Fullresponse))
 							Trace.Write("tableName--894---"+str(tableName))
