@@ -433,7 +433,7 @@ def EditItems():
 # A055S000P01-17863 START
 def LoadQuoteSummary():
     sec_str = ""
-    GetDetails = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR,TAX_AMOUNT_INGL_CURR,ESTVAL_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,CNTMRG_INGL_CURR,TOTAL_MARGIN_PERCENT FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_record_id))
+    GetDetails = Sql.GetFirst("SELECT ISNULL(NET_VALUE_INGL_CURR,0.00) AS NET_VALUE_INGL_CURR,ISNULL(TAX_AMOUNT_INGL_CURR,0.00) AS TAX_AMOUNT_INGL_CURR,ISNULL(ESTVAL_INGL_CURR,0.00) AS ESTVAL_INGL_CURR,ISNULL(TOTAL_AMOUNT_INGL_CURR,0.00) AS TOTAL_AMOUNT_INGL_CURR,ISNULL(CNTMRG_INGL_CURR,0.00) AS CNTMRG_INGL_CURR,ISNULL(TOTAL_MARGIN_PERCENT,0.00) AS TOTAL_MARGIN_PERCENT FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_record_id))
 
     values = []
     values.append("Total Excluding Tax/VAT/GST_" + str(GetDetails.NET_VALUE_INGL_CURR) + " USD")
@@ -443,8 +443,8 @@ def LoadQuoteSummary():
     values.append("Total Margin_"+ str(GetDetails.CNTMRG_INGL_CURR) + " USD")
     values.append("Total Margin Pct_"+ str(GetDetails.TOTAL_MARGIN_PERCENT) + " %")
     sec_str = """ <div onclick="dyn_main_sec_collapse_arrow(this)" data-bind="attr: {'data-toggle':'collapse','data-target':'.col'+stdAttrCode(), 
-			'id':'dyn'+stdAttrCode(),'class': isWholeRow() ? 'g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer' : 'g1 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer'}" data-target=".sec_5802398A-50DA-40C7-8C80-99149E0C2561" id="dyn1577" data-toggle="collapse" class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"> 
-			<label data-bind="html: hint" class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="5802398A-50DA-40C7-8C80-99149E0C2561" class="dropdown-item" href="#" onclick="QuoteSummaryEdit(this)">EDIT</a></li></ul></div></div>QUOTE SUMMARY</div></label> </div>"""
+            'id':'dyn'+stdAttrCode(),'class': isWholeRow() ? 'g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer' : 'g1 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer'}" data-target=".sec_5802398A-50DA-40C7-8C80-99149E0C2561" id="dyn1577" data-toggle="collapse" class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"> 
+            <label data-bind="html: hint" class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="5802398A-50DA-40C7-8C80-99149E0C2561" class="dropdown-item" href="#" onclick="QuoteSummaryEdit(this)">EDIT</a></li></ul></div></div>QUOTE SUMMARY</div></label> </div>"""
     for x in values:
         sec_str += '''
         <div id="sec_5802398A-50DA-40C7-8C80-99149E0C2561" class="sec_5802398A-50DA-40C7-8C80-99149E0C2561 collapse in ">
