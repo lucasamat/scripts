@@ -1405,6 +1405,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						else:
 							value = ALLVALUES
 						# Credit Adjustment while Editing
+						Trace.Write("current_credit--- "+str(current_credit)+"value--- "+str(value))
 						if current_credit > value:
 							credit_applied = current_credit - value
 							unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR + value
