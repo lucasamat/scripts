@@ -1397,7 +1397,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					Sql = SQL()
 					if len(TITLE.split(','))==1:
 						current_credit_query = Sql.GetFirst("SELECT {column},CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE {rec_name} = '{rec_id}'".format(column=TITLE.split(',')[0],rec_name = objh_head,rec_id = sql_obj.QUOTE_REV_CREDIT_VOUCHER_RECORD_ID))
-						sacrcv_rec_query = Sql.GetFirst("SELECT CRTAPP_INGL_CURR,UNBL_INGL_CURR FROM SACRVC (NOLOCK) WHERE CREDITVOUCHER_RECORD_ID = '"+str(deleted_rec_query.CREDITVOUCHER_RECORD_ID)+"'")
+						sacrcv_rec_query = Sql.GetFirst("SELECT CRTAPP_INGL_CURR,UNBL_INGL_CURR FROM SACRVC (NOLOCK) WHERE CREDITVOUCHER_RECORD_ID = '"+str(current_credit_query.CREDITVOUCHER_RECORD_ID)+"'")
 						current_credit = current_credit_query.CREDIT_APPLIED_INGL_CURR
 						Sql.RunQuery("""UPDATE SAQRCV SET {column} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_REV_CREDIT_VOUCHER_RECORD_ID))
 
