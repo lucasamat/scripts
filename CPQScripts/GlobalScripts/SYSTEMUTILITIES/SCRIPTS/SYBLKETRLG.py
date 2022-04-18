@@ -1410,8 +1410,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 							if float(current_credit) > float(value):
 								credit_applied = sacrcv_rec_query.CRTAPP_INGL_CURR - float(value)
 								unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR + float(value)
-								Sql.RunQuery("UPDATE SACRVC SET CRTAPP_INGL_CURR = '"+str(credit_applied)+"',UNBL_INGL_CURR = '"+str(unapplied_balance)+"' WHERE CREDITVOUCHER_RECORD_ID = '"+str(current_credit_query.CREDITVOUCHER_RECORD_ID)+"'")
-								Trace.Write("SACRVC UPDATED")
+								# Sql.RunQuery("UPDATE SACRVC SET CRTAPP_INGL_CURR = '"+str(credit_applied)+"',UNBL_INGL_CURR = '"+str(unapplied_balance)+"' WHERE CREDITVOUCHER_RECORD_ID = '"+str(current_credit_query.CREDITVOUCHER_RECORD_ID)+"'")
+								# Trace.Write("SACRVC UPDATED")
+							elif float(current_credit) < float(value):
+								credit_applied = sacrcv_rec_query.CRTAPP_INGL_CURR + float(value)
+								unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR - float(value)
+							Sql.RunQuery("UPDATE SACRVC SET CRTAPP_INGL_CURR = '{}',UNBL_INGL_CURR = '{}' WHERE CREDITVOUCHER_RECORD_ID = '{}'".format(credit_applied,unapplied_balance,current_credit_query.CREDITVOUCHER_RECORD_ID))
 						except:
 							Trace.Write("Exception at credits--- ")
 
