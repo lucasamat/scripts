@@ -266,7 +266,7 @@ def insert_item_per_billing(total_months=1, billing_date='',billing_end_date =''
 					WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'   and SAQRIT.ESTIMATED_VALUE  IS NOT NULL  AND SAQRIT.OBJECT_ID IS NOT NULL )A """.format(
 					UserId=user_id, QuoteRecordId=contract_quote_rec_id,
 					RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
-					BillingDate=billing_date,
+					BillingDate=billing_date,get_round_val=get_round_val,
 					get_val=get_val,
 					service_id = service_id,billing_type =get_billing_type,amount_column=get_total_sum.estsum,amount_column_split=amount_column_split))
 			Sql.RunQuery("""INSERT SAQIBP (					
@@ -316,7 +316,7 @@ def insert_item_per_billing(total_months=1, billing_date='',billing_end_date =''
 						UserId=user_id, QuoteRecordId=contract_quote_rec_id,
 						RevisionRecordId=quote_revision_rec_id,
 						BillingDate=billing_date,billing_end_date=billing_end_date,
-						get_val=get_val,
+						get_val=get_val,get_round_val=get_round_val,
 						service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 
 
