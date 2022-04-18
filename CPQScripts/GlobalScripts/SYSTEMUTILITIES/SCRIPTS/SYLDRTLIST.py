@@ -307,10 +307,9 @@ class SYLDRTLIST:
                             rem_list_sp = ["NEW_PART"]
                             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])							
                         
-                        '''if RECORD_ID == "SYOBJR-00009":
-                        # 	Trace.Write("QUOTE_ITEM_COVERED_OBJECT_RECORD_ID=======")         
-                            rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
-                            Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])'''
+                        #if RECORD_ID == "SYOBJR-00009":        
+                        #    rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID"]
+                        #    Columns = str([ele for ele in  eval(Columns) if ele not in #rem_list_sp])
                         if RECORD_ID == 'SYOBJR-00005' and str(TreeParam)=="Z0110":
                             columns_string = Columns
                             Columns = []
@@ -588,7 +587,7 @@ class SYLDRTLIST:
                         WHERE
                             SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{RECORD_ID}' AND
                             SYOBJR.VISIBLE = 1
-                           
+                        
                             """.format(
                 RECORD_ID=str(RECORD_ID)
             )
@@ -3302,7 +3301,6 @@ class SYLDRTLIST:
                             value1234 = value1234.replace("CFG-ON HOLD - COSTING","<img title='CFG-ON HOLD - COSTING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
                         if value1234 ==  "PRR-ON HOLD PRICING":
                             value1234 = value1234.replace("PRR-ON HOLD PRICING","<img title='PRR-ON HOLD PRICING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
-                        if value1234 == "PARTIALLY PRICED":
                         if value1234 == "NOT PRICED":
                             Trace.Write("@@@Price")
                             if RECORD_ID == 'SYOBJR-00005':
