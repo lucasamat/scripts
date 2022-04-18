@@ -3303,6 +3303,10 @@ class SYLDRTLIST:
                         if value1234 ==  "PRR-ON HOLD PRICING":
                             value1234 = value1234.replace("PRR-ON HOLD PRICING","<img title='PRR-ON HOLD PRICING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
                         if value1234 == "PARTIALLY PRICED":
+                        if value1234 == "NOT PRICED":
+                            if RECORD_ID == 'SYOBJR-00005':
+                                value1234 = value1234.replace("PRR-ON HOLD PRICING","<img title='PRR-ON HOLD PRICING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
+                        
                             value1234 = value1234.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
                         if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "CFG-ON HOLD - COSTING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED" and value1234 != "PRR-ON HOLD PRICING":                        
                             value1234 = value1234
