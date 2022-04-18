@@ -1304,7 +1304,7 @@ class EntitlementView():
 											# 		imgstr  = ""
 											# else:
 											# 	imgstr  = ""
-											if standard_attr_values.STANDARD_ATTRIBUTE_DATA_TYPE:
+											if str(attrSysId) in ("AGS_REL_STDATE",'AGS_Z0007_GEN_RELDAT','AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
 												#datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 												#if attrSysId == 'AGS_Z0007_GEN_RELDAT':
 												datepicker = "onclick_datepicker('" + attrSysId + "')"
