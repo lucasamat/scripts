@@ -3088,6 +3088,13 @@ class SYLDRTLIST:
                                 Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="edit_desc(this)">EDIT DESC</a></li>'
                             else:
                                 Action_str += '' 
+                        elif ObjectName == "SAQSPT":
+                            contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+                            quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
+
+                            reprice_btn = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and CpqTableEntryId = '"+str(value1234)+"'")
+                            if PRICING_STATUS.reprice_btn == 'ERROR':
+                                Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="reprice_parts(this)">REPRICE</a></li>'
 
                         elif ObjectName == "SAQDOC":
                             contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
@@ -5899,7 +5906,7 @@ class SYLDRTLIST:
                         Wh_API_NAMEs = str(SortColumn) + " " + str(SortColumnOrder).upper()
                 ATTRIBUTE_VALUE_STR = ""
                 if ObjectName =='SAQSPT':
-                    ATTRIBUTE_VALUE = ['ERROR' if col.endswith('ERROR') else 'ACQUIRED' if col.endswith('ACQUIRED') else 'ACQUIRING' if col.endswith('ACQUIRING') else col for col in ATTRIBUTE_VALUE]
+                    ATTRIBUTE_VALUE = ['NOT PRICED' if col.endswith('NOT PRICED') else 'ERROR' if col.endswith('ERROR') else 'ACQUIRED' if col.endswith('ACQUIRED') else 'ACQUIRING' if col.endswith('ACQUIRING') else col for col in ATTRIBUTE_VALUE]
                 Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))		
                             
 
@@ -9421,6 +9428,7 @@ class SYLDRTLIST:
                                     + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE</a></li>'
                                 )
                     elif ObjectName == "SAQSPT":
+                        if 
                         Action_str += (
                                     '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
                                     + str(onclick)
