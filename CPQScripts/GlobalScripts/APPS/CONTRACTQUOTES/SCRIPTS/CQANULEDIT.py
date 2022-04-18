@@ -67,7 +67,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue14="AMNPPI"
 				record_list.append(editvalue13)
 				record_list.append(editvalue14)
-		annual_dict[str(line_values.LINE)] = record_list
+		annual_dict[str(line_values.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID)] = record_list
 	Trace.Write("dictdictdict"+str(annual_dict)) 
 	return str(annual_dict)
 
