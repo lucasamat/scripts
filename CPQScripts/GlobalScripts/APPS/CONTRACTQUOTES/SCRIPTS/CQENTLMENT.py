@@ -166,7 +166,7 @@ class Entitlements:
 		ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		return newConfigurationid,cpsmatchID
 
-	def EntitlementRequest(self,cpsConfigID=None,cpsmatchID=None,AttributeID=None,NewValue=None,field_type=None,product_id = None):
+	def EntitlementRequest(self,cpsConfigID=None,cpsmatchID=None,AttributeID=None,NewValue=None,field_type=None,attr_datatype = None,product_id = None):
 		if type(NewValue) is 'str' and multiselect_flag != 'true':
 			NewValue = NewValue.replace("'","''")
 			# if NewValue == 'Select':
@@ -243,6 +243,8 @@ class Entitlements:
 				if (not NewValue) and previous_val:					
 					requestdata += '{"value":"'+str(previous_val)+'","selected":false}'
 				else:
+					if attr_datatype.upper() == 'DATE':
+						NewValue = datetime.datetime.strptime(NewValue, "%d/%m/%Y").strftime("%Y-%m-%d")
 					requestdata += '{"value":"' + NewValue + '","selected":true}'
 					Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
 			requestdata += ']}]}'
@@ -470,6 +472,7 @@ class Entitlements:
 		dropdownallowlist_selected = []
 		dropdownallowlist_unselected =[]
 		where = pricemethodupdate = get_tool_desc = ""
+		get_attr_datatype = ''
 		configg_status =''
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
 		if Gettabledata:
@@ -547,11 +550,7 @@ class Entitlements:
 		dropdowndisallowlist = []
 		attributes_service_sublist = []
 		approval_list = {}
-		if EntitlementType == 'Dropdown':
-			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
-			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
-			#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
-			get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC
+		get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC,STANDARD_ATTRIBUTE_DATA_TYPE 
 												FROM TAB_PRODUCTS
 												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
 												LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
@@ -559,19 +558,29 @@ class Entitlements:
 												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
 												
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
+		if get_datatype:
+			if get_datatype.STANDARD_ATTRIBUTE_DATA_TYPE:
+				get_attr_datatype = get_datatype.STANDARD_ATTRIBUTE_DATA_TYPE
+		if EntitlementType == 'Dropdown':
+			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
+			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
+			#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
+			
 			#restriction for value driver call to CPS start
 			if 'Z0046' in AttributeID and serviceId == 'Z0091':
 				serviceId = 'Z0046'
 			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+			
 			if get_ent_type:
 				if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-					Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)				
+					Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,get_attr_datatype,product_obj.PRD_ID)				
 					Trace.Write("Fullresponse--"+str(Fullresponse))
 					Product.SetGlobal('Fullresponse',str(Fullresponse))
 					#restriction for value driver call to CPS end
 					#Trace.Write("=======>>> attr_mapping_dict"+str(self.attr_code_mapping))
 					if get_datatype:
 						get_tool_desc = get_datatype.ATTRDESC
+
 					'''GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 					if GetDefault.PRICE_METHOD:
 						pricemethodupdate = GetDefault.PRICE_METHOD
@@ -803,7 +812,7 @@ class Entitlements:
 				else:
 					Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
 			else:
-				Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+				Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
 			
 				Trace.Write("Fullresponse--"+str(Fullresponse))
 				Product.SetGlobal('Fullresponse',str(Fullresponse))
@@ -2087,9 +2096,9 @@ class Entitlements:
 						attribute_code = ''
 						if get_ent_type:
 							if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-								Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+								Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
 						else:
-							Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+							Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
 						if Fullresponse and cpsmatc_incr:
 							Trace.Write("Fullresponse"+str(Fullresponse))
 							Trace.Write("tableName--894---"+str(tableName))
