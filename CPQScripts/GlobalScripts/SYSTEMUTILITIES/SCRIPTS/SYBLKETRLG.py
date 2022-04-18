@@ -1406,9 +1406,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 							value = ALLVALUES
 						# Credit Adjustment while Editing
 						Trace.Write("current_credit--- "+str(current_credit)+"value--- "+str(value))
-						if current_credit > value:
-							credit_applied = current_credit - value
-							unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR + value
+						try:
+							if current_credit > value:
+								credit_applied = current_credit - value
+								unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR + value
+						except:
+							Trace.Write("Exception at credits--- ")
 						# deleted_rec_query = Sql.GetFirst("SELECT CREDIT_APPLIED_INGL_CURR,CREDITVOUCHER_RECORD_ID FROM SAQRCV (NOLOCK) WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID = '"+str(RecordId)+"'")
 						# sacrcv_rec_query = Sql.GetFirst("SELECT CRTAPP_INGL_CURR,UNBL_INGL_CURR FROM SACRVC (NOLOCK) WHERE CREDITVOUCHER_RECORD_ID = '"+str(deleted_rec_query.CREDITVOUCHER_RECORD_ID)+"'")
 						# credit_applied = sacrcv_rec_query.CRTAPP_INGL_CURR - deleted_rec_query.CREDIT_APPLIED_INGL_CURR
