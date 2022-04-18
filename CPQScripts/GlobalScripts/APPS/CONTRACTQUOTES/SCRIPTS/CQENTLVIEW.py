@@ -1311,9 +1311,9 @@ class EntitlementView():
 												elif attrSysId in ('AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
 													datepicker = "onclick_datepicker('" + attrSysId + "')"	
 												sec_str1 += (
-													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
+													'<input  class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
-													+ '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
+													+ '" type="text"  onchange="editent_bt(this)" style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 													+ str(attr_value)
 													+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'
 													+ "</input> "
