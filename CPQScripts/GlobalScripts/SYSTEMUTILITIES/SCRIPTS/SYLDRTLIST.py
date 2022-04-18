@@ -9427,8 +9427,7 @@ class SYLDRTLIST:
                                     + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE</a></li>'
                                 )
                     elif ObjectName == "SAQSPT":
-                        if 
-                        Action_str += (
+                         Action_str += (
                                     '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
                                     + str(onclick)
                                     + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE</a></li>'
