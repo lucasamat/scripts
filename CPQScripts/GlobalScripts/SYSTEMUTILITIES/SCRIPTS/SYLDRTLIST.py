@@ -3089,11 +3089,12 @@ class SYLDRTLIST:
                             else:
                                 Action_str += '' 
                         elif ObjectName == "SAQSPT":
+                            Trace.Write("##@@")
                             contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
                             quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
 
                             reprice_btn = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and CpqTableEntryId = '"+str(value1234)+"'")
-                            if PRICING_STATUS.reprice_btn == 'ERROR':
+                            if reprice_btn.PRICING_STATUS == 'ERROR' or reprice_btn.PRICING_STATUS not in ('ACQUIRING','ACQUIRED'):
                                 Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="reprice_parts(this)">REPRICE</a></li>'
 
                         elif ObjectName == "SAQDOC":
@@ -3118,8 +3119,6 @@ class SYLDRTLIST:
                                 Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW CONTACT</a></li>'
                             elif ObjectName== "SAQTIP":
                                 Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW ACCOUNT</a></li>'
-                            elif ObjectName == "SAQSPT":
-                                pass
                             elif ObjectName != "SAQIBP" and ObjectName != "SAQSCN":								
                                 Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
                             elif ObjectName == "SAQSAO":
