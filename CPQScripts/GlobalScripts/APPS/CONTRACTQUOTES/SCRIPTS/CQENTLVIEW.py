@@ -1313,9 +1313,9 @@ class EntitlementView():
 												sec_str1 += (
 													'<input  class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
-													+ '" type="text"  onchange="editent_bt(this)" style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
+													+ '" type="text"   style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 													+ str(attr_value)
-													+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'
+													+ '" value = "'+str(attr_value)+'"  onchange="editent_bt(this)" title="'+str(attr_value)+'"  disabled>'
 													+ "</input> "
 												)
 												# sec_str1 += (
