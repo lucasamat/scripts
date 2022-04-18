@@ -767,7 +767,7 @@ class EntitlementView():
 					Trace.Write(str(tbrow))
 					columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 					for x in tbrow.values():
-						Trace.Write('@770----'+x)
+						x = x.encode('ascii','ignore').decode('ascii')
 						values = ', '.join("'"+x+"'")
 					#values = ', '.join("'" + x + "'" for x in tbrow.values())
 					insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)				
