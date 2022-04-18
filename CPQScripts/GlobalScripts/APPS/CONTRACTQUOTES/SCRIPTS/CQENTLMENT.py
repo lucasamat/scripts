@@ -167,7 +167,7 @@ class Entitlements:
 		return newConfigurationid,cpsmatchID
 
 	def EntitlementRequest(self,cpsConfigID=None,cpsmatchID=None,AttributeID=None,NewValue=None,field_type=None,attr_datatype = None,product_id = None):
-		Trace.Write("attr_datatype-"+str(attr_datatype))
+		Trace.Write("attr_datatype-"+str(attr_datatype)+'-'+str(NewValue))
 		if type(NewValue) is 'str' and multiselect_flag != 'true':
 			NewValue = NewValue.replace("'","''")
 			# if NewValue == 'Select':
