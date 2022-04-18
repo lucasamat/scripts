@@ -1410,6 +1410,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 							if float(current_credit) > float(value):
 								added_balance = float(current_credit) - float(value)
 								credit_applied = sacrcv_rec_query.CRTAPP_INGL_CURR - float(value)
+								Trace.Write("Credit_applied--- "+str(sacrcv_rec_query.UNBL_INGL_CURR)+"added_balance--- "+str(added_balance))
 								unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR + float(added_balance)
 								# Sql.RunQuery("UPDATE SACRVC SET CRTAPP_INGL_CURR = '"+str(credit_applied)+"',UNBL_INGL_CURR = '"+str(unapplied_balance)+"' WHERE CREDITVOUCHER_RECORD_ID = '"+str(current_credit_query.CREDITVOUCHER_RECORD_ID)+"'")
 								# Trace.Write("SACRVC UPDATED")
