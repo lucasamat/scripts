@@ -1417,7 +1417,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 							elif float(current_credit) < float(value):
 								added_credit = float(value) - float(current_credit)
 								credit_applied = sacrcv_rec_query.CRTAPP_INGL_CURR + float(added_credit)
-								unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR - float(value)
+								unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR - float(added_credit)
 							Sql.RunQuery("UPDATE SACRVC SET CRTAPP_INGL_CURR = '{}',UNBL_INGL_CURR = '{}' WHERE CREDITVOUCHER_RECORD_ID = '{}'".format(credit_applied,unapplied_balance,current_credit_query.CREDITVOUCHER_RECORD_ID))
 						except:
 							Trace.Write("Exception at credits--- ")
