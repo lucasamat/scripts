@@ -760,7 +760,6 @@ def editcbc(Qt_rec_id, Quote, MODE):
 		#Sql.RunQuery(update_rev_cb_complete_status)
 		# 	
 	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote,quote_revision_record_id)
-	time.sleep(3) #A055S000P01-16535
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote,quote_revision_record_id)
 	return True
 
