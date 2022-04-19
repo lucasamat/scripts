@@ -4789,23 +4789,23 @@ class SYLDRTLIST:
             )
 
         else:
-            if str(RECORD_ID) == "SYOBJR-98882":#A055S000P01-18196
-                dbl_clk_function += (' const card = document.querySelector("'+str(table_ids)+' > tbody > tr"); card.addEventListener("dblclick",function(event){ var ele = event.target.closest("td"); NSOBulkUpdate(ele,"doubleclick") });') 
-                dbl_clk_function += ('$("'
-                    + str(table_ids)
-                    + ' th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom");$("'
-                    + str(table_ids)
-                    + '").on("all.bs.table", function (e, name, args) { $("'+str(table_ids)+' input[name=\'btSelectItem\']:checkbox").is(":checked")) { if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block"); }localStorage.setItem("selectall","yes");}if (!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checkbox").is(":checked")){$("button#delete_parts").css("display","none");localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block");}if (localStorage.getItem("selectall") != "yes"){localStorage.setItem("selectall","no")};} if(!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){$("button#delete_parts").css("display","none");} $(".bs-checkbox input").addClass("custom");if ( $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
-                    + str(table_ids)
-                    + '").on("sort.bs.table", function (e, name, order) {  currenttab = $("ul#carttabs_head .active").text().trim(); localStorage.setItem("'
-                    + str(table_id)
-                    + '_SortColumn", name); localStorage.setItem("'
-                    + str(table_id)
-                    + '_SortColumnOrder", order); RelatedContainerSorting(name, order, "'
-                    + str(table_id)
-                    + '"); }); '
-                )     
-            elif RECORD_ID != "SYOBJR-00009":
+            # if str(RECORD_ID) == "SYOBJR-98882":#A055S000P01-18196
+            #     dbl_clk_function += (' const card = document.querySelector("'+str(table_ids)+' > tbody > tr"); card.addEventListener("dblclick",function(event){ var ele = event.target.closest("td"); NSOBulkUpdate(ele,"doubleclick") });') 
+            #     dbl_clk_function += ('$("'
+            #         + str(table_ids)
+            #         + ' th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom");$("'
+            #         + str(table_ids)
+            #         + '").on("all.bs.table", function (e, name, args) { $("'+str(table_ids)+' input[name=\'btSelectItem\']:checkbox").is(":checked")) { if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block"); }localStorage.setItem("selectall","yes");}if (!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checkbox").is(":checked")){$("button#delete_parts").css("display","none");localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block");}if (localStorage.getItem("selectall") != "yes"){localStorage.setItem("selectall","no")};} if(!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){$("button#delete_parts").css("display","none");} $(".bs-checkbox input").addClass("custom");if ( $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
+            #         + str(table_ids)
+            #         + '").on("sort.bs.table", function (e, name, order) {  currenttab = $("ul#carttabs_head .active").text().trim(); localStorage.setItem("'
+            #         + str(table_id)
+            #         + '_SortColumn", name); localStorage.setItem("'
+            #         + str(table_id)
+            #         + '_SortColumnOrder", order); RelatedContainerSorting(name, order, "'
+            #         + str(table_id)
+            #         + '"); }); '
+            #     )     
+            if RECORD_ID != "SYOBJR-00009":
                 if RECORD_ID == "SYOBJR-95556":
                     local_variable = "PM_FrequencyBulkedit" 
                 else:
