@@ -1419,7 +1419,6 @@ def Related_Sub_Banner(
                     entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
                     if entitlement_obj:
                         entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-                        import re
                         quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
                         quote_type_id = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(TreeParam)+'[^>]*?_PQB_QTETYP</ENTITLEMENT_ID>')
                         quote_type_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
@@ -3267,7 +3266,7 @@ def Related_Sub_Banner(
                         else:
 
                             dropdown_multi_btn_str += '''</ul></div></div>'''
-                 
+                
                 else:
                     sec_rel_sub_bnr += str(add_button)
             elif str(subTabName)=="Periods":
@@ -3311,10 +3310,11 @@ def Related_Sub_Banner(
                     if ('SPLIT' in btn or 'EDIT' in btn) and subTabName =='Items':
                         if 'SPLIT' in btn:   
                             get_entitlement_xml =Sql.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
+                            
                             if get_entitlement_xml:
+                                split_flag = 0
                                 for get_service in get_entitlement_xml:
                                     entitlement_service = get_service.ENTITLEMENT_XML
-                                    import re
                                     quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
                                     split_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_PQB_SPLQTE</ENTITLEMENT_ID>')
                                     split_value = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
@@ -3322,9 +3322,10 @@ def Related_Sub_Banner(
                                         sub_string = m.group(1)
                                         split_1 =re.findall(split_pattern,sub_string)
                                         split_2 = re.findall(split_value,sub_string)
-                                        if split_1 and split_2:
+                                        if split_1 and split_2 and split_flag == 0:
                                             Trace.Write("a"+str(get_service.SERVICE_ID))
                                             sec_rel_sub_bnr += (btn)
+                                            split_flag = 1
                                             break
                         if 'EDIT' in btn:
                             billing_variable_visible = Sql.GetFirst("""SELECT BILLING_TYPE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND BILLING_TYPE in ('VARIABLE','Variable')""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
