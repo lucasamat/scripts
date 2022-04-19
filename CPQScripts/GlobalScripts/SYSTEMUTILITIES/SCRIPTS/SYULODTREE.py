@@ -2405,6 +2405,28 @@ class TreeView:
                                         if item_billing_plan_obj is not None:
                                             if str(NodeText) == "Z0117":
                                                 years = item_billing_plan_obj.cnt
+                                            elif str(NodeText) == "Z0010":
+                                                #A055S000P01-17627 start
+                                                get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =contract_quote_record_id,qt_rev_id=quote_revision_record_id,get_service = str(NodeText).strip()))
+                                                if get_billing_cycle:
+                                                    updateentXML = get_billing_cycle.ENTITLEMENT_XML
+                                                    pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                                                    pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(NodeText)+'_PQB_BILCYC)</ENTITLEMENT_ID>')
+                                                    pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+                                                    for m in re.finditer(pattern_tag, updateentXML):
+                                                        sub_string = m.group(1)
+                                                        get_ent_id = re.findall(pattern_id,sub_string)						
+                                                        get_ent_val= re.findall(pattern_name,sub_string)
+                                                        if get_ent_id:
+                                                            get_ent_val = str(get_ent_val[0])
+                                                            if get_ent_val.upper()  == "WEEKLY":
+                                                                Trace.Write('24277---')
+                                                            else:
+                                                                quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
+                                                                years = quotient + (1 if remainder > 0 else 0)
+                                                                if not years:
+                                                                    years = 1
+                                                #A055S000P01-17627 end
                                             else:
                                                 quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
                                                 years = quotient + (1 if remainder > 0 else 0)
