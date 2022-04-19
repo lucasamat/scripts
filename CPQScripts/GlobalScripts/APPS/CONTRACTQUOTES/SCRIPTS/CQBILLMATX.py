@@ -1360,9 +1360,9 @@ def billingmatrix_create():
                         
                         insert_items_billing_plan(total_months=get_totalweeks, 
                                                 billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
-                                                    Month=index, BillingDate=billing_start_date.strftime('%m/%d/%Y')
+                                                    Month=0, BillingDate=billing_start_date.strftime('%m/%d/%Y')
                                                     ),billing_end_date="DATEADD(month, {Month_add}, '{BillingDateAdd}')".format(
-                                                    Month_add=index, BillingDateAdd=billing_week_end.strftime('%m/%d/%Y')
+                                                    Month_add=0, BillingDateAdd=billing_week_end.strftime('%m/%d/%Y')
                                                     ), amount_column="YEAR_"+str((index/52) + 1),
                                                     entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
                         billing_start_date = start_date + datetime.timedelta(days=(7*countweeks))
