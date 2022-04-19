@@ -971,6 +971,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 							key="CpqTableEntryId"
 							val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 						qury_str+=" "+key+" LIKE '%"+val+"%' AND "
+			Trace.Write('Select ALL -->'+str(SELECTALL)+' obj_name-->'+str(obj_name)+' TITLE-->'+str(TITLE))
 			if(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQSAP" and TITLE == "PM_FREQUENCY"):
 				if str(TreeTopSuperParentParam)=="Product Offerings":
 					Sql.RunQuery("""UPDATE A SET A.PM_FREQUENCY = {value} FROM SAQSAP A
