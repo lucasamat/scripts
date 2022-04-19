@@ -3249,9 +3249,11 @@ def Related_Sub_Banner(
                             sec_rel_sub_bnr += str(btn)
 
                     #sec_rel_sub_bnr += (btn)
+                    if acq_status.cnt==0:
+                        sec_rel_sub_bnr += (dropdown_multi_btn_str)
                     dropdown_multi_btn_str += '''</ul></div></div>'''
                     #Trace.Write('3095--dropdown_multi_btn_str--'+str(dropdown_multi_btn_str))
-                    sec_rel_sub_bnr += (dropdown_multi_btn_str)
+                    
                     #Trace.Write('3095--sec_rel_sub_bnr--'+str(sec_rel_sub_bnr))
                 else:
                     sec_rel_sub_bnr += str(add_button)
