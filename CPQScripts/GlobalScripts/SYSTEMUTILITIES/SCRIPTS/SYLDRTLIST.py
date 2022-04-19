@@ -101,7 +101,7 @@ class SYLDRTLIST:
         TreeParam = Product.GetGlobal("TreeParam")
         TreeParentParam = Product.GetGlobal("TreeParentLevel0")
         TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-        get_billing_types = get_ttl_amt = ''  
+        get_billing_types = get_ttl_amt = get_billing_cycle_weekly = ''  
         if str(PerPage) == "" and str(PageInform) == "":
             Page_start = 1
             Page_End = PerPage = 10
@@ -449,6 +449,20 @@ class SYLDRTLIST:
                                                             contract_quote_record_id, quote_revision_record_id, start, end))
                 else:
                     Trace.Write('TreeParam----'+str(TreeParam)+'--SubTab---'+str(SubTab))
+                    
+                    get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =contract_quote_record_id,qt_rev_id=quote_revision_record_id,get_service = str(TreeParam).strip()))
+                    if get_billing_cycle:
+                        updateentXML = get_billing_cycle.ENTITLEMENT_XML
+                        pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+                        pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(TreeParam)+'_PQB_BILCYC)</ENTITLEMENT_ID>')
+                        pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+                        for m in re.finditer(pattern_tag, updateentXML):
+                            sub_string = m.group(1)
+                            get_ent_id = re.findall(pattern_id,sub_string)						
+                            get_ent_val= re.findall(pattern_name,sub_string)
+                            if get_ent_id:
+                                get_billing_cycle_weekly= get_ent_val
+                                   
                     if TreeParam == "Z0117":
                         item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
                                     AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
@@ -461,6 +475,16 @@ class SYLDRTLIST:
                                                         FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'
                                                         GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
                                                             contract_quote_record_id,TreeParam, quote_revision_record_id, start, end))
+                    #A055S000P01-17627 start
+                    elif get_billing_cycle_weekly.upper() == "WEEKLY":
+                        end = int(SubTab.split(' ')[-1]) * 52
+                        start = end - 52 + 1
+                        item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
+                                    AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
+                                                        FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'
+                                                        GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+                                                            contract_quote_record_id,TreeParam, quote_revision_record_id, start, end))
+                    #A055S000P01-17627 end
                     else:
                         item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
                                     AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
