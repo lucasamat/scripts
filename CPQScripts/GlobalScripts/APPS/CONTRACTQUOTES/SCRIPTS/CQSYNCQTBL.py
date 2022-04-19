@@ -2249,7 +2249,7 @@ class SyncQuoteAndCustomTables:
                                                 COUNTRY,
                                                 COUNTRY_RECORD_ID,
                                                 MNT_PLANT_ID,
-                                                '' as MNT_PLANT_NAME,
+                                                MNT_PLANT_NAME,
                                                 MNT_PLANT_RECORD_ID,
                                                 SALESORG_ID,
                                                 SALESORG_NAME,
