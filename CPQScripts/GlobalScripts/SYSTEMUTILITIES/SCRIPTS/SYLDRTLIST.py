@@ -461,7 +461,7 @@ class SYLDRTLIST:
                             get_ent_id = re.findall(pattern_id,sub_string)						
                             get_ent_val= re.findall(pattern_name,sub_string)
                             if get_ent_id:
-                                get_billing_cycle_weekly= get_ent_val
+                                get_billing_cycle_weekly= str(get_ent_val[0])
                                    
                     if TreeParam == "Z0117":
                         item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
