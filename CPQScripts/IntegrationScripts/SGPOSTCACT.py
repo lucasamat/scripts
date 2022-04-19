@@ -17,7 +17,7 @@ try:
     S = SqlHelper.GetFirst("sp_executesql @T=N'update saacnt_inbound set account_id = convert(bigint,account_id)  where isnumeric(account_id)=1  ' ")
     S = SqlHelper.GetFirst("sp_executesql @T=N'update saacnt_inbound set contact_id = convert(bigint,contact_id)  where isnumeric(contact_id)=1  ' ")
     S = SqlHelper.GetFirst("sp_executesql @T=N'update saacnt_inbound set PAR_ACCOUNT_ID = convert(bigint,PAR_ACCOUNT_ID)  where isnumeric(PAR_ACCOUNT_ID)=1  ' ")
-    S=SqlHelper.GetFirst("sp_executesql @T=N'update saacnt set legacy_fbl_id = convert(bigint,legacy_fbl_id) where isnumeric(legacy_fbl_id)=1 and legacy_fbl_id not like ''%-%''  '")
+    
     
     
     #MARKING DUPLICATES       
@@ -151,7 +151,7 @@ try:
     + "  SAACNT_INBOUND SET INTEGRATION_STATUS = ''READY FOR UPLOAD'' WHERE ISNULL(ERROR,'''')='''' AND INTEGRATION_STATUS = ''Inprogress'' ' ")   
     
     UpdateQueryItems = SqlHelper.GetFirst(
-    "sp_executesql @T=N'INSERT SABLBK(BLUEBOOK,DESCRIPTION,BLUEBOOK_RECORD_ID)  SELECT AGS_BLUEBOOK,AGS_BLUEBOOK AS DE,CONVERT(VARCHAR(100),NEWID()) FROM (SELECT AGS_BLUEBOOK FROM SAACNT_INBOUND(NOLOCK) WHERE ISNULL(AGS_BLUEBOOK,'''')<>'''')A LEFT JOIN SABLBK B ON A.AGS_BLUEBOOK = B.BLUEBOOK WHERE BLUEBOOK IS NULL  ' ")   
+    "sp_executesql @T=N'INSERT SABLBK(BLUEBOOK,DESCRIPTION,BLUEBOOK_RECORD_ID)  SELECT AGS_BLUEBOOK,AGS_BLUEBOOK AS DE,CONVERT(VARCHAR(100),NEWID()) FROM (SELECT DISTINCT AGS_BLUEBOOK FROM SAACNT_INBOUND(NOLOCK) WHERE ISNULL(AGS_BLUEBOOK,'''')<>'''')A LEFT JOIN SABLBK B ON A.AGS_BLUEBOOK = B.BLUEBOOK WHERE BLUEBOOK IS NULL  ' ")   
     
     #SAACNT
     #Update  
@@ -288,6 +288,8 @@ try:
     ""
     + str(Parameter1.QUERY_CRITERIA_1)
     + "  SAACNT_INBOUND SET INTEGRATION_STATUS = ''UPLOADED'' WHERE INTEGRATION_STATUS=''READY FOR UPLOAD''' ")
+    
+    S=SqlHelper.GetFirst("sp_executesql @T=N'update saacnt set legacy_fbl_id = convert(bigint,legacy_fbl_id) where isnumeric(legacy_fbl_id)=1 and legacy_fbl_id not like ''%-%''  '")
 
     primaryQueryItems = SqlHelper.GetFirst(
                         ""
