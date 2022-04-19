@@ -802,7 +802,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 						##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 						CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
-						time.sleep(5)
+						#time.sleep(5)
 						CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
 						#A055S000P01-17165 started
 						if get_status.upper() in ("APR-REJECTED","APR-RECALLED","APR-APPROVAL PENDING","APR-APPROVED"):
