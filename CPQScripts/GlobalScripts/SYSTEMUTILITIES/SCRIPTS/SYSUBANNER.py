@@ -3241,7 +3241,7 @@ def Related_Sub_Banner(
                         status= Sql.GetList("""select PRICING_STATUS from SAQSPT(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
                         Trace.Write('3244--'+str(status))
                         if 'ACQUIRING'  not in status :
-                            if ('ADD PARTS','INLINE EDIT','BULK ADD','BULK UPDATE') in btn:
+                            if ('ADD PARTS','INLINE EDIT','BULK ADD','BULK UPDATE','DELETE') in str(btn):
                                 Trace.Write("Accc"+str(btn))
                                 dropdown_multi_btn_str += '<li>'+str(btn)+'</li>'
                             else:
