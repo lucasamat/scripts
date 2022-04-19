@@ -3117,7 +3117,7 @@ class SYLDRTLIST:
                             contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
                             reprice_btn = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(contract_quote_rec_id)+"' and CpqTableEntryId = '"+str(value1234)+"'")
                             if reprice_btn.PRICING_STATUS == 'ERROR' or reprice_btn.PRICING_STATUS not in ('ACQUIRING','ACQUIRED'):
-                                Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="reprice_parts(this)">REPRICE</a></li>'
+                                Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="pricing(this)">REPRICE</a></li>'
 
                         elif ObjectName == "SAQDOC":
                             contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
@@ -9449,9 +9449,11 @@ class SYLDRTLIST:
                                 Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'
                     elif ObjectName == "SAQDLT":
                         Action_str += ""
-                        # Action_str += (
-                        #     '<li><a class="dropdown-item" href="#" onclick="replace_cont_manager(this)">REPLACE</a></li>'
-                        # ) 
+                    elif ObjectName == "SAQSPT":
+                        contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
+                        reprice_btn = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(contract_quote_rec_id)+"' and CpqTableEntryId = '"+str(value1234)+"'")
+                        if reprice_btn.PRICING_STATUS == 'ERROR' or reprice_btn.PRICING_STATUS not in ('ACQUIRING','ACQUIRED'):
+                            Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="pricing(this)">REPRICE</a></li>'
                     else:
                         Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'    
                 if str(Action_permission.get("Delete")).upper() == "TRUE":
