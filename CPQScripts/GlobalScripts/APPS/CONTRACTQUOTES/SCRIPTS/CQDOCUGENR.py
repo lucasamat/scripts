@@ -917,7 +917,7 @@ def submit_to_customer(doc_rec_id):
 			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'APR-SUBMITTED TO CUSTOMER', WORKFLOW_STATUS = 'QUOTE DOCUMENTS'  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 			Sql.RunQuery(update_revision_status)
 			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-			time.sleep(3) #A055S000P01-16535
+			#time.sleep(3) #A055S000P01-16535
 			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))	
 	return True
 #A055S000P01-17165 start
@@ -932,7 +932,7 @@ def customer_accepted(doc_rec_id):
 			update_revision_status = "UPDATE SAQTRV SET REVISION_STATUS = 'OPD-CUSTOMER ACCEPTED' , WORKFLOW_STATUS = 'QUOTE DOCUMENTS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 			Sql.RunQuery(update_revision_status)
 			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-			time.sleep(3) #A055S000P01-16535
+			#time.sleep(3) #A055S000P01-16535
 			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))	
 	return True
 
