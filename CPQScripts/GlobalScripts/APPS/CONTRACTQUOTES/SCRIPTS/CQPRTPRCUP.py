@@ -98,6 +98,27 @@ account_info['globalCurrency']= '{"name":"KOMK-HWAER","values":["'+str(glb_curr)
 if doctype_id=='ZWK1':
 	div = '56'
 
+#GET ZZEXE FLAG 
+partLists=[]
+PartList={}
+partList=''
+totalParts=SqlHelper.GetList("""SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}'""".format(QUOTE,revision))
+for ele in totalParts:
+    partLists.append(ele.PART_NUMBER)
+
+partList=str(partLists)
+partList = re.sub(r'\[','(',partList)
+partList = re.sub(r'\]',')',partList)
+
+requestData = '{"query":"SELECT (MATNR||'+"':'"+"||ZZEXE) AS exFlag from A668 where VKORG = '{}' AND MATNR  IN {}".format(str(salesorg),str(partList)+'"}')
+responseData = webclient.UploadString("https://x-tenant-hanadbhelper.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com",requestData)
+responseData=re.sub(r'"EXFLAG":','',str(responseData))
+Log.Info("exflagResponse==>"+str(responseData))
+pattern_tag = re.compile(r'"([^>]*?):([^>]*?)"')
+for values in re.finditer(pattern_tag, str(responseData)):
+    PartList[str(values.group(1))]=str(values.group(2))
+
+
 #GET ISOCODE 
 ISOCode={}
 getIsocode=SqlHelper.GetList("""SELECT DISTINCT UOM, UOM_ISO_CODE FROM MAMUOM (NOLOCK)""")
@@ -191,10 +212,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 				quantity[0] = int(quantity[0])
 				curr_attr = currency_attribute
 				salesUOMs= salesUOM[0] or 'EA'
-				try:
-					itemleveldivison = PartDivisions[str(p)]
-				except:
-					itemleveldivison = '99'
+				itemleveldivison = PartDivisions.get(str(p)) or '99'
 				prefixZero=''
 				if re.match(r'^\d+$',partids[0]):
 					totallen = len(partids[0])
@@ -208,8 +226,9 @@ if part_query or ancillary_part_query or fpm_part_query:
 				if str_odcc_flag in ('CCM','CCO','CUM','CUO'):
 					curr_attr += ','+'{"name":"KOMP-ZZ_ODCC_ELIGIBILITY_FLAG","values":["'+str(str_odcc_flag)+'"]}'
 				
+				zzexeFlag=PartList.get(str(partids[0])) or ''
 				itemid = str(partids[0])+";"+str(QUOTE)+";"+str(quantity[0])+";"+str(currencies)+";"+str(prefixZero)+";"+str(ISOCode[salesUOMs] or 'EA')+";"+str(salesUOMConvs or 1)
-				item_string = '{"itemId":"'+str(itemid)+'","externalId":null,'+str(salesuom_attr)+',"attributes":[{"name":"KOMK-LAND1","values":["'+str(country)+'"]},{"name":"KOMP-KPOSN","values":["10"]},{"name":"KOMV-KSCHL","values":[""]},{"name":"KOMP-ZZEXE","values":[""]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMK-KUNNR","values":["00'+account_info['SOLD TO']+'"]},{"name":"KOMK-KUNWE","values":["00'+str(shipto_details)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(itemleveldivison)+'"]},{"name":"KOMP-PMATN","values":["'+str(partids[0])+'"]},{"name":"KOMP-ZZPSTR_COUNTER","values":["1"]},{"name":"KOMK-ZZSPART","values":["'+str(div)+'"]},'+str(curr_attr)+',{"name":"KOMV-KDUPL","values":[""]},{"name":"KONV-KOAID","values":["A"]},{"name":"KOMP-ZZPRREASON","values":[""]},{"name":"KOMK-AUART","values":["ZQT1"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-ZZWFSTATUS","values":[""]},{"name":"KOMP-UEPOS","values":["0000"]},{"name":"KOMP-FAREG","values":[""]},{"name":"KOMP-EVRWR","values":["X"]},{"name":"KOMK-KURST","values":["'+str(exch)+'"]},{"name":"KOMP-MGAME","values":["1.00"]},{"name":"KOMP-TAXM1","values":["1"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-ZZKTOKD","values":["KUNA"]},{"name":"KOMK-BUKRS","values":["'+str(company_id)+'"]},{"name":"KOMV-KKURS","values":["1.00"]},{"name":"KONP-KNTYP","values":["L"]},{"name":"KOMK-ZTERM","values":["'+str(payterm_id)+'"]},{"name":"KOMK-INCO1","values":["'+str(incoterm_id)+'"]},{"name":"KOMK-AUART_SD","values":["ZQT1"]},{"name":"KOMK-ALAND","values":["'+str(country)+'"]},{"name":"KOMP-WERKS","values":["8639"]},{"name":"KOMP-MWSBP","values":["0.00"]},{"name":"KOMP-PRSOK","values":["X"]},{"name":"KOMP-PSTYV","values":["ZAGN"]},{"name":"KOMP-SKTOF","values":["X"]},{"name":"KOMK-PLTYP","values":["'+str(price_listtype)+'"]},{"name":"KOMP-ZZMTLSEGMCODE","values":["A01-000"]},{"name":"KOMP-KONDM","values":["N"]},{"name":"KOMV-KNTYP","values":["G"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMP-BRTWR","values":["0.0"]},{"name":"KOMP-MGLME","values":["1.0"]},{"name":"KOMV-KPEIN","values":["1.0"]},{"name":"KOMK-FKART","values":[""]},{"name":"KOMK-ERDAT","values":["'+str(cvf)+'"]},{"name":"KOMV-KNUMV","values":[""]},{"name":"KOMK-VBTYP","values":["B"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(cvf_1)+'"},{"name":"KOMK-FBUDA","value":"'+str(cvf_1)+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
+				item_string = '{"itemId":"'+str(itemid)+'","externalId":null,'+str(salesuom_attr)+',"attributes":[{"name":"KOMK-LAND1","values":["'+str(country)+'"]},{"name":"KOMP-KPOSN","values":["10"]},{"name":"KOMV-KSCHL","values":[""]},{"name":"KOMP-ZZEXE","values":["'+str(zzexeFlag)+'"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMK-KUNNR","values":["00'+account_info['SOLD TO']+'"]},{"name":"KOMK-KUNWE","values":["00'+str(shipto_details)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(itemleveldivison)+'"]},{"name":"KOMP-PMATN","values":["'+str(partids[0])+'"]},{"name":"KOMP-ZZPSTR_COUNTER","values":["1"]},{"name":"KOMK-ZZSPART","values":["'+str(div)+'"]},'+str(curr_attr)+',{"name":"KOMV-KDUPL","values":[""]},{"name":"KONV-KOAID","values":["A"]},{"name":"KOMP-ZZPRREASON","values":[""]},{"name":"KOMK-AUART","values":["ZQT1"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-ZZWFSTATUS","values":[""]},{"name":"KOMP-UEPOS","values":["0000"]},{"name":"KOMP-FAREG","values":[""]},{"name":"KOMP-EVRWR","values":["X"]},{"name":"KOMK-KURST","values":["'+str(exch)+'"]},{"name":"KOMP-MGAME","values":["1.00"]},{"name":"KOMP-TAXM1","values":["1"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-ZZKTOKD","values":["KUNA"]},{"name":"KOMK-BUKRS","values":["'+str(company_id)+'"]},{"name":"KOMV-KKURS","values":["1.00"]},{"name":"KONP-KNTYP","values":["L"]},{"name":"KOMK-ZTERM","values":["'+str(payterm_id)+'"]},{"name":"KOMK-INCO1","values":["'+str(incoterm_id)+'"]},{"name":"KOMK-AUART_SD","values":["ZQT1"]},{"name":"KOMK-ALAND","values":["'+str(country)+'"]},{"name":"KOMP-WERKS","values":["8639"]},{"name":"KOMP-MWSBP","values":["0.00"]},{"name":"KOMP-PRSOK","values":["X"]},{"name":"KOMP-PSTYV","values":["ZAGN"]},{"name":"KOMP-SKTOF","values":["X"]},{"name":"KOMK-PLTYP","values":["'+str(price_listtype)+'"]},{"name":"KOMP-ZZMTLSEGMCODE","values":["A01-000"]},{"name":"KOMP-KONDM","values":["N"]},{"name":"KOMV-KNTYP","values":["G"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMP-BRTWR","values":["0.0"]},{"name":"KOMP-MGLME","values":["1.0"]},{"name":"KOMV-KPEIN","values":["1.0"]},{"name":"KOMK-FKART","values":[""]},{"name":"KOMK-ERDAT","values":["'+str(cvf)+'"]},{"name":"KOMV-KNUMV","values":[""]},{"name":"KOMK-VBTYP","values":["B"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(cvf_1)+'"},{"name":"KOMK-FBUDA","value":"'+str(cvf_1)+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
 				li.append(item_string)
 				s = ','.join(li)	
 				requestdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">  <soapenv:Body> <cpq_columns><root> {"docCurrency":"USD","locCurrency":"'+glb_curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(s)+']} </root> <CPSToken>'+str(response['access_token'])+'</CPSToken></cpq_columns> </soapenv:Body></soapenv:Envelope>'
@@ -222,10 +241,7 @@ if part_query or ancillary_part_query or fpm_part_query:
 					s=val[3] or account_info['SHIP TO']
 					salesUOMs=val[4] or 'EA'
 					salesUOMConvs=int(val[5] or 1)
-					try:
-						itemleveldivison = PartDivisions[str(p)]
-					except:
-						itemleveldivison = '99'
+					itemleveldivison = PartDivisions.get(str(p)) or 99
 					if q<=0 or q=='':
 						q=1
 					q=int(q)
@@ -243,7 +259,9 @@ if part_query or ancillary_part_query or fpm_part_query:
 					if r in ('CCM','CCO','CUM','CUO'):
 						curr_attr2 += ','+'{"name":"KOMP-ZZ_ODCC_ELIGIBILITY_FLAG","values":["'+str(r)+'"]}'
 					itemid = str(p)+";"+str(QUOTE)+";"+str(q)+";"+str(currencies)+";"+str(prefixZero)+";"+str(ISOCode[salesUOMs] or 'EA')+";"+str(salesUOMConvs or 1)
-					item_string = '{"itemId":"'+str(itemid)+'","externalId":null,'+str(salesuom_attr)+',"attributes":[{"name":"KOMK-LAND1","values":["'+str(country)+'"]},{"name":"KOMP-KPOSN","values":["10"]},{"name":"KOMV-KSCHL","values":[""]},{"name":"KOMP-ZZEXE","values":[""]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMK-KUNNR","values":["00'+account_info['SOLD TO']+'"]},{"name":"KOMK-KUNWE","values":["00'+str(s)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(itemleveldivison)+'"]},{"name":"KOMP-PMATN","values":["'+str(p)+'"]},{"name":"KOMP-ZZPSTR_COUNTER","values":["1"]},{"name":"KOMK-ZZSPART","values":["'+str(div)+'"]},'+str(curr_attr2)+',{"name":"KOMV-KDUPL","values":[""]},{"name":"KONV-KOAID","values":["A"]},{"name":"KOMP-ZZPRREASON","values":[""]},{"name":"KOMK-AUART","values":["ZQT1"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-ZZWFSTATUS","values":[""]},{"name":"KOMP-UEPOS","values":["0000"]},{"name":"KOMP-FAREG","values":[""]},{"name":"KOMP-EVRWR","values":["X"]},{"name":"KOMK-KURST","values":["'+str(exch)+'"]},{"name":"KOMP-MGAME","values":["1.00"]},{"name":"KOMP-TAXM1","values":["1"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-ZZKTOKD","values":["KUNA"]},{"name":"KOMK-BUKRS","values":["'+str(company_id)+'"]},{"name":"KOMV-KKURS","values":["1.00"]},{"name":"KONP-KNTYP","values":["L"]},{"name":"KOMK-ZTERM","values":["'+str(payterm_id)+'"]},{"name":"KOMK-INCO1","values":["'+str(incoterm_id)+'"]},{"name":"KOMK-AUART_SD","values":["ZQT1"]},{"name":"KOMK-ALAND","values":["'+str(country)+'"]},{"name":"KOMP-WERKS","values":["8639"]},{"name":"KOMP-MWSBP","values":["0.00"]},{"name":"KOMP-PRSOK","values":["X"]},{"name":"KOMP-PSTYV","values":["ZAGN"]},{"name":"KOMP-SKTOF","values":["X"]},{"name":"KOMK-PLTYP","values":["'+str(price_listtype)+'"]},{"name":"KOMP-ZZMTLSEGMCODE","values":["A01-000"]},{"name":"KOMP-KONDM","values":["N"]},{"name":"KOMV-KNTYP","values":["G"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMP-BRTWR","values":["0.0"]},{"name":"KOMP-MGLME","values":["1.0"]},{"name":"KOMV-KPEIN","values":["1.0"]},{"name":"KOMK-FKART","values":[""]},{"name":"KOMK-ERDAT","values":["'+str(cvf)+'"]},{"name":"KOMV-KNUMV","values":[""]},{"name":"KOMK-VBTYP","values":["B"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(cvf_1)+'"},{"name":"KOMK-FBUDA","value":"'+str(cvf_1)+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
+
+					zzexeFlag=PartList.get(str(p)) or ''
+					item_string = '{"itemId":"'+str(itemid)+'","externalId":null,'+str(salesuom_attr)+',"attributes":[{"name":"KOMK-LAND1","values":["'+str(country)+'"]},{"name":"KOMP-KPOSN","values":["10"]},{"name":"KOMV-KSCHL","values":[""]},{"name":"KOMP-ZZEXE","values":["'+str(zzexeFlag)+'"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMK-KUNNR","values":["00'+account_info['SOLD TO']+'"]},{"name":"KOMK-KUNWE","values":["00'+str(s)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(itemleveldivison)+'"]},{"name":"KOMP-PMATN","values":["'+str(p)+'"]},{"name":"KOMP-ZZPSTR_COUNTER","values":["1"]},{"name":"KOMK-ZZSPART","values":["'+str(div)+'"]},'+str(curr_attr2)+',{"name":"KOMV-KDUPL","values":[""]},{"name":"KONV-KOAID","values":["A"]},{"name":"KOMP-ZZPRREASON","values":[""]},{"name":"KOMK-AUART","values":["ZQT1"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-ZZWFSTATUS","values":[""]},{"name":"KOMP-UEPOS","values":["0000"]},{"name":"KOMP-FAREG","values":[""]},{"name":"KOMP-EVRWR","values":["X"]},{"name":"KOMK-KURST","values":["'+str(exch)+'"]},{"name":"KOMP-MGAME","values":["1.00"]},{"name":"KOMP-TAXM1","values":["1"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-ZZKTOKD","values":["KUNA"]},{"name":"KOMK-BUKRS","values":["'+str(company_id)+'"]},{"name":"KOMV-KKURS","values":["1.00"]},{"name":"KONP-KNTYP","values":["L"]},{"name":"KOMK-ZTERM","values":["'+str(payterm_id)+'"]},{"name":"KOMK-INCO1","values":["'+str(incoterm_id)+'"]},{"name":"KOMK-AUART_SD","values":["ZQT1"]},{"name":"KOMK-ALAND","values":["'+str(country)+'"]},{"name":"KOMP-WERKS","values":["8639"]},{"name":"KOMP-MWSBP","values":["0.00"]},{"name":"KOMP-PRSOK","values":["X"]},{"name":"KOMP-PSTYV","values":["ZAGN"]},{"name":"KOMP-SKTOF","values":["X"]},{"name":"KOMK-PLTYP","values":["'+str(price_listtype)+'"]},{"name":"KOMP-ZZMTLSEGMCODE","values":["A01-000"]},{"name":"KOMP-KONDM","values":["N"]},{"name":"KOMV-KNTYP","values":["G"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMP-BRTWR","values":["0.0"]},{"name":"KOMP-MGLME","values":["1.0"]},{"name":"KOMV-KPEIN","values":["1.0"]},{"name":"KOMK-FKART","values":[""]},{"name":"KOMK-ERDAT","values":["'+str(cvf)+'"]},{"name":"KOMV-KNUMV","values":[""]},{"name":"KOMK-VBTYP","values":["B"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(cvf_1)+'"},{"name":"KOMK-FBUDA","value":"'+str(cvf_1)+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
 					li.append(item_string)
 				s = ','.join(li)
 				
