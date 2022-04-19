@@ -972,7 +972,11 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 							val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 						qury_str+=" "+key+" LIKE '%"+val+"%' AND "
 			if(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQSAP" and TITLE == "PM_FREQUENCY"):
-				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParam,qury_str=qury_str))
+				if str(TreeTopSuperParentParam)=="Product Offerings":
+					Sql.RunQuery("""UPDATE A SET A.PM_FREQUENCY = {value} FROM SAQSAP A
+					INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = A.QTESRVCOA_RECORD_ID WHERE {qury_str} A.QUOTE_RECORD_ID = '{QuoteRecordId}' AND A.QTEREV_RECORD_ID = '{rev_rec_id}' AND A.SERVICE_ID = '{service_id}' AND SAQSCA.GREENBOOK = '{greenbook}' AND (A.PM_FREQUENCY_EDITABLE = 'True' OR A.PM_FREQUENCY_EDITABLE = '1') """.format(value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParentParam,greenbook = TreeParam,qury_str=qury_str))
+				else:	
+					Sql.RunQuery("""UPDATE A SAQSAP SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParam,qury_str=qury_str))
 				return ""
 			elif(SELECTALL=="PERIOD_BULKEDIT_ALL" and obj_name == "SAQRDS" and TITLE == "DELIVERY_DATE"):
 				Sql.RunQuery("""UPDATE SAQRDS SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,qury_str=qury_str))
