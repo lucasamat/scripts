@@ -2404,7 +2404,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 									MAEQUP.MNT_PLANT_ID,
 									MAEQUP.MNT_PLANT_NAME,
 									MAEQUP.WARRANTY_START_DATE,
-									MAEQUP.WARRANTY_END_DATE,
+									{warranty_end},
 									MAEQUP.SALESORG_ID,
 									MAEQUP.SALESORG_NAME,
 									MAEQUP.SALESORG_RECORD_ID,
@@ -2429,6 +2429,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								QuoteName=self.contract_quote_name,
 								RevisionId=self.quote_revision_id,
 								RevisionRecordId=self.quote_revision_record_id,
+								warranty_end = " NULL AS WARRANTY_END_DATE" if self.tool_type=="TEMP_TOOL" else " MAEQUP.WARRANTY_END_DATE ",
 								relocation_fab_type = "SENDING FAB" if "Sending Account -" in self.tree_param else "RECEIVING FAB" if "Receiving Account -" in self.tree_param else "",
 								relocation_equp_type = "SENDING EQUIPMENT" if "Sending Account -" in self.tree_param else "RECEIVING EQUIPMENT" if "Receiving Account -" in self.tree_param else "",
 						)
