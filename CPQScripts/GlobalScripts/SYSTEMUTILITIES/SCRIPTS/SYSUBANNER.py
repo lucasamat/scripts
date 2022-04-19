@@ -3235,7 +3235,7 @@ def Related_Sub_Banner(
                 sec_rel_sub_bnr += str(add_button)
             elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.WORKFLOW_STATUS in ('CONFIGURE','PRICING REVIEW','PRICING'):
                 if str(multi_buttons) != "":
-                    acq_status= Sql.GetFirst("""select count(PRICING_STATUS) as cnt from SAQSPT(NOLOCK) WHERE PRICING_STATUS ='ACQUIRING' QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
+                    acq_status= Sql.GetFirst("""select count(PRICING_STATUS) as cnt from SAQSPT(NOLOCK) WHERE PRICING_STATUS ='ACQUIRING' AND QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
                     
                     for btn in multi_buttons:
                         Trace.Write('3095--btn--'+str(btn))
