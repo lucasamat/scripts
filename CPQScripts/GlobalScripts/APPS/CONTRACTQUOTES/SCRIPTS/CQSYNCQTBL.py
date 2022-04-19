@@ -3590,7 +3590,7 @@ class SyncQuoteAndCustomTables:
                         Quote.GetGlobal("contract_quote_record_id"),
                         Quote.GetGlobal("quote_revision_record_id"),
                     )
-                    time.sleep(3)  # A055S000P01-16535
+                    #time.sleep(3)  # A055S000P01-16535
                     CQCPQC4CWB.writeback_to_c4c(
                         "opportunity_header",
                         Quote.GetGlobal("contract_quote_record_id"),
