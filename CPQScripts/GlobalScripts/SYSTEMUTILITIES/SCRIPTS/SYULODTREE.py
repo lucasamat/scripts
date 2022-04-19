@@ -2420,7 +2420,13 @@ class TreeView:
                                                         if get_ent_id:
                                                             get_ent_val = str(get_ent_val[0])
                                                             if get_ent_val.upper()  == "WEEKLY":
-                                                                Trace.Write('24277---')
+                                                                if item_billing_plan_obj.cnt <= 52:
+                                                                    years = 1
+                                                                    
+                                                                else:
+                                                                    quotient, remainder =  divmod(item_billing_plan_obj.cnt, 52)
+                                                                    Trace.Write('quotient--'+str(quotient))
+                                                                    years = quotient + (1 if remainder > 0 else 0)
                                                             else:
                                                                 quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
                                                                 years = quotient + (1 if remainder > 0 else 0)
