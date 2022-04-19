@@ -1351,6 +1351,7 @@ def billingmatrix_create():
                     end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
                     diff1 = end_date - start_date
                     get_totalweeks,remainder = divmod(diff1.days,7)
+					get_totalweeks = get_totalweeks + (1 if remainder > 0 else 0)
                     countweeks =0
                     billing_start_date = start_date
                     for index in range(0, get_totalweeks):
