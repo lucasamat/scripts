@@ -1218,7 +1218,6 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 
 					else:
-						
 						notification = 'Billing Start Date should be less than Billing End Date'
 						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
 						newdict.update(dictc)
@@ -1241,7 +1240,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 								if data in required_val:
 									for req in required_val:
 										Trace.Write("req_chk_j---"+str(req)+" tablerow_chk_j---"+str(tablerow))
-										if tablerow[req] == "":
+										if (tablerow[req] == "" or tablerow[req] == "Select"):
 											Trace.Write(
 												"955---------------------------"
 												+ str(datas)
