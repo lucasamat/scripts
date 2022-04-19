@@ -1057,7 +1057,7 @@ class EntitlementView():
 								# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
 								for val in GetXMLsecField:
 									try:
-										val.ENTITLEMENT_DISPLAY_VALUE = val.ENTITLEMENT_DISPLAY_VALUE.replace(';#38','&').replace("&lt;","<").replace("&gt;",">")
+										val.ENTITLEMENT_DISPLAY_VALUE = val.ENTITLEMENT_DISPLAY_VALUE.replace(';#38','&').replace("&lt;","<").replace("&gt;",">").replace('&apos;',"'")
 									except:
 										pass
 									try:
