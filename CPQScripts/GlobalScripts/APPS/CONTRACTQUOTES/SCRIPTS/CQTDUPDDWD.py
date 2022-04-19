@@ -671,6 +671,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 				for spare_record in xls_spare_records:
 					if spare_record[1] and spare_record[1] != "NULL" and spare_record[1] != "null":
 						spare_record[1]=str(spare_record[1])
+						Trace.Write(str(spare_record[1]))
 					else:
 						spare_record[1] =""
 
