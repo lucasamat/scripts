@@ -3235,12 +3235,11 @@ def Related_Sub_Banner(
                 sec_rel_sub_bnr += str(add_button)
             elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.WORKFLOW_STATUS in ('CONFIGURE','PRICING REVIEW','PRICING'):
                 if str(multi_buttons) != "":
+                    acq_status= Sql.GetFirst("""select count(PRICING_STATUS) as cnt from SAQSPT(NOLOCK) WHERE PRICING_STATUS ='ACQUIRING' QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
                     
                     for btn in multi_buttons:
                         Trace.Write('3095--btn--'+str(btn))
-                        status= Sql.GetList("""select PRICING_STATUS from SAQSPT(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
-                        Trace.Write('3244--'+str(status))
-                        if 'ACQUIRING'  not in status :
+                        if acq_status.CNT<0:
                             if 'ADD PARTS'in str(btn) or 'INLINE EDIT'in str(btn)or 'BULK ADD' in  str(btn) or 'BULK UPDATE'in str(btn) or 'DELETE' in str(btn):
                                 Trace.Write("Accc"+str(btn))
                                 dropdown_multi_btn_str += '<li>'+str(btn)+'</li>'
