@@ -5975,18 +5975,30 @@ class SYLDRTLIST:
                                         + str(Dict_formation.get(str(xa)))
                                         + "' "
                                     )
-                            else:								
-                                xa_str = Dict_formation.get(str(xa)).split("-")[1]
-                                
-                                J_str = (
+                            else:#18595 Code Starts
+                                if RECORD_ID == 'SYOBJR-98872' :
+                                    xa_str = Dict_formation.get(str(xa))
+                                    J_str = (
                                     "select "
                                     + str(xa)
                                     + " from "
                                     + str(ObjectName)
-                                    + " (nolock) where CpqTableEntryId = '"
-                                    + str(int(xa_str))
+                                    + " (nolock) where STATUS = '"
+                                    + str(Dict_formation.get(str(xa)))
                                     + "' "
-                                )
+                                    )#18595 Code Ends
+                                else:								
+                                    xa_str = Dict_formation.get(str(xa)).split("-")[1]
+                                    
+                                    J_str = (
+                                        "select "
+                                        + str(xa)
+                                        + " from "
+                                        + str(ObjectName)
+                                        + " (nolock) where CpqTableEntryId = '"
+                                        + str(int(xa_str))
+                                        + "' "
+                                    )
                         else:							
                             xa_str = []                        
                             for data in Dict_formation.get(str(xa)).split(","):
