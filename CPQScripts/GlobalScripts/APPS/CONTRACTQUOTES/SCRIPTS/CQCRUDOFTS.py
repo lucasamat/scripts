@@ -490,6 +490,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                     CpqTableEntryDateModified,
                                     RELOCATION_FAB_TYPE,
                                     RELOCATION_EQUIPMENT_TYPE,
+                                    WARRANTY_END_DATE,
                                     TECHNOLOGY
                                     ) SELECT
                                         CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
@@ -524,6 +525,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                         GETDATE() as CpqTableEntryDateModified,
                                         '{relocation_fab_type}' AS RELOCATION_FAB_TYPE,
                                         '{relocation_equp_type}' AS RELOCATION_EQUIPMENT_TYPE,
+                                        null as WARRANTY_END_DATE,
                                         SAQASE.TECHNOLOGY
                                         FROM SYSPBT (NOLOCK)
                                         JOIN SAQASE (NOLOCK) ON SYSPBT.BATCH_RECORD_ID = SAQASE.SND_EQUIPMENT_RECORD_ID AND SYSPBT.QUOTE_RECORD_ID = SAQASE.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQASE.QTEREV_RECORD_ID
