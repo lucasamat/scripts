@@ -3237,17 +3237,19 @@ def Related_Sub_Banner(
                 if str(multi_buttons) != "":
                     
                     for btn in multi_buttons:
-                        
                         Trace.Write('3095--btn--'+str(btn))
                         status= Sql.GetList("""select PRICING_STATUS from SAQSPT(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
                         Trace.Write('3244--'+str(status))
-                        if 'ACQUIRED' in status:
-                            Trace.Write("Accc")
-                        else:
-                            Trace.Write("error")
+                        if 'ACQUIRING'  not in status :
+                            if ('ADD PARTS','INLINE EDIT','BULK ADD','BULK UPDATE') in btn:
+                                Trace.Write("Accc"+str(btn))
+                                dropdown_multi_btn_str += '<li>'+str(btn)+'</li>'
+                            else:
+                                sec_rel_sub_bnr += str(btn)
+                        elif 'REFRESH' in btn:
+                            sec_rel_sub_bnr += str(btn)
 
-                        dropdown_multi_btn_str += '<li>'+str(btn)+'</li>'
-                        #sec_rel_sub_bnr += (btn)
+                    #sec_rel_sub_bnr += (btn)
                     dropdown_multi_btn_str += '''</ul></div></div>'''
                     #Trace.Write('3095--dropdown_multi_btn_str--'+str(dropdown_multi_btn_str))
                     sec_rel_sub_bnr += (dropdown_multi_btn_str)
