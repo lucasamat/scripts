@@ -85,11 +85,14 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 					get_quality_required_list.append('F')
 		else:
 			get_quality_required_list.append('F')
+
 		#get_quality_required  vlidations-end3A055S000P01-18587
 
 		tool_check = []
 		Z0110_check = []
-		
+		if 'F' in get_quality_required_list:
+			update_workflow_status_conf = "UPDATE SAQTRV SET REVISION_STATUS = 'CFG-CONFIGURING',WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)	
+			Sql.RunQuery(update_workflow_status_conf)
 		for tserv in get_tool_service_info:
 		
 			if str(tserv.SERVICE_ID) in ('Z0004', 'Z0004W', 'Z0009-TOOL', 'Z0010-TOOL', 'Z0035', 'Z0035W', 'Z0090', 'Z0091', 'Z0091W', 'Z0092', 'Z0092W', 'Z0099'):
@@ -149,7 +152,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		get_workflow_statusquery = Sql.GetFirst("SELECT WORKFLOW_STATUS FROM SAQTRV where WORKFLOW_STATUS = 'CONFIGURE' AND QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id))
 		if get_workflow_statusquery and get_workflow_statusquery.WORKFLOW_STATUS not in ("APPROVALS","LEGAL SOW","QUOTE-DOCUMENTS","CLEAN BOOKING CHECKLIST","BOOKED"):
 			Trace.Write('136----')
-			if str(getsalesorg_info).upper() != "NONE" and get_service_info.COUNT > 0 and get_fab_info.COUNT > 0  and get_involved_parties_info.COUNT > 0  and get_sales_team_info.COUNT > 0  and 'F' not in get_complete_list and 'F' not in tool_check and 'F' not in Z0110_check and 'F' not in Addon_check and 'F' not in get_quality_required_list:
+			if str(getsalesorg_info).upper() != "NONE" and get_service_info.COUNT > 0 and get_fab_info.COUNT > 0  and get_involved_parties_info.COUNT > 0  and get_sales_team_info.COUNT > 0  and 'F' not in get_complete_list and 'F' not in tool_check and 'F' not in Z0110_check and 'F' not in Addon_check :
 				update_workflow_status = "UPDATE SAQTRV SET REVISION_STATUS = 'CFG-ACQUIRING',WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)	
 				Sql.RunQuery(update_workflow_status)
 			#else:
