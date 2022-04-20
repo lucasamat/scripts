@@ -2390,8 +2390,7 @@ class SyncQuoteAndCustomTables:
                                                             FROM
                                                                 SPLITSTRING('{EquipmentIds}')
                                                         ) B ON MAEQUP.EQUIPMENT_ID = NAME
-                                                    WHERE
-                                                        ISNULL(SERIAL_NO, '') <> ''
+                                                    
                                                 ) A
                                             """.format(
                                                 UserId=User.Id,
@@ -2499,8 +2498,7 @@ class SyncQuoteAndCustomTables:
                                                             FROM
                                                                 SPLITSTRING('{EquipmentIds}')
                                                         ) B ON MAEQUP.EQUIPMENT_ID = NAME
-                                                    WHERE
-                                                        ISNULL(SERIAL_NO, '') <> ''
+                                                    
                                                 ) A
                                             """.format(
                                                 UserId=User.Id,
@@ -3057,8 +3055,7 @@ class SyncQuoteAndCustomTables:
                                                         SPLITSTRING('{EquipmentIds}')
                                                 ) B ON MAEQUP.EQUIPMENT_ID = NAME
                                             WHERE
-                                                ISNULL(SERIAL_NO, '') <> ''
-                                                AND FABLOCATION_ID = '{FabLocationId}'
+                                                 FABLOCATION_ID = '{FabLocationId}'
                                         ) A""".format(
                                             UserId=User.Id,
                                             UserName=User.Name,
@@ -3169,8 +3166,7 @@ class SyncQuoteAndCustomTables:
                                                         SPLITSTRING('{EquipmentIds}')
                                                 ) B ON MAEQUP.EQUIPMENT_ID = NAME
                                             WHERE
-                                                ISNULL(SERIAL_NO, '') <> ''
-                                                AND FABLOCATION_ID = '{FabLocationId}'
+                                                 FABLOCATION_ID = '{FabLocationId}'
                                         ) A""".format(
                                             UserId=User.Id,
                                             UserName=User.Name,
