@@ -110,14 +110,16 @@ partList=str(partLists)
 partList = re.sub(r'\[','(',partList)
 partList = re.sub(r'\]',')',partList)
 
-requestData = '{"query":"SELECT (MATNR||'+"':'"+"||ZZEXE) AS exFlag from A668 where VKORG = '{}' AND MATNR  IN {}".format(str(salesorg),str(partList)+'"}')
-responseData = webclient.UploadString("https://x-tenant-hanadbhelper.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com",requestData)
-responseData=re.sub(r'"EXFLAG":','',str(responseData))
-Log.Info("exflagResponse==>"+str(responseData))
-pattern_tag = re.compile(r'"([^>]*?):([^>]*?)"')
-for values in re.finditer(pattern_tag, str(responseData)):
-    PartList[str(values.group(1))]=str(values.group(2))
-
+try:
+	requestData = '{"query":"SELECT (MATNR||'+"':'"+"||ZZEXE) AS exFlag from A668 where VKORG = '{}' AND MATNR  IN {}".format(str(salesorg),str(partList)+'"}')
+	responseData = webclient.UploadString("https://x-tenant-hanadbhelper.c-1404e87.kyma.shoot.live.k8s-hana.ondemand.com",requestData)
+	responseData=re.sub(r'"EXFLAG":','',str(responseData))
+	Log.Info("exflagResponse==>"+str(responseData))
+	pattern_tag = re.compile(r'"([^>]*?):([^>]*?)"')
+	for values in re.finditer(pattern_tag, str(responseData)):
+		PartList[str(values.group(1))]=str(values.group(2))
+except:
+    Log.Info("EXFlag applicable for FPM")
 
 #GET ISOCODE 
 ISOCode={}
