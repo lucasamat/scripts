@@ -103,8 +103,8 @@ def quote_items_pricing(Qt_id):
 					ESTVAL_INGL_CURR = IQ.ESTVAL_INGL_CURR,
 					TOTAL_AMOUNT_INGL_CURR = IQ.TOTAL_AMOUNT_INGL_CURR,
 					TOTAL_AMOUNT = IQ.TOTAL_AMOUNT,
-					TOTAL_MARGIN = IQ.TOTAL_MARGIN,
-					STATUS = 'ACQUIRED' 
+					TOTAL_MARGIN = IQ.TOTAL_MARGIN
+					
 					FROM SAQRIT
 						INNER JOIN (SELECT SAQICO.QUOTE_RECORD_ID, SAQICO.QTEREV_RECORD_ID,SAQICO.SERVICE_ID,SAQICO.GRNBOK,SAQICO.EQUIPMENT_ID,SAQICO.LINE,
 								SUM(ISNULL(SAQICO.TNTVGC, 0)) as NET_VALUE_INGL_CURR,
@@ -156,7 +156,8 @@ def quote_items_pricing(Qt_id):
 	FROM SAQRIT (NOLOCK) 
 		INNER JOIN SAQICO ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND  SAQRIT.SERVICE_ID = SAQICO.SERVICE_ID AND SAQRIT.GREENBOOK = SAQICO.GRNBOK AND CNTYER = 'YEAR 5'  AND SAQRIT.LINE = SAQICO.LINE
 	WHERE  SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN {pricing_offering} AND CNTYER = 'YEAR 5' """.format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id,pricing_offering=pricing_offering  ))
-
+	if manual_pricing != 'True':
+		Sql.RunQuery("UPDATE SAQRIT SET STATUS = 'ACQUIRED' WHERE SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND SAQRIT.SERVICE_ID IN {pricing_offering}".format(quote_rec_id = contract_quote_record_id ,quote_revision_rec_id = contract_quote_revision_record_id,pricing_offering=pricing_offering  ))
 	##decimal rounding for SAQICO
 	#global currency
 	Sql.RunQuery("""UPDATE SAQICO 
