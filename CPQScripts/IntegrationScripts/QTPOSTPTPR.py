@@ -223,9 +223,9 @@ try:
                     Itemidinfo[0]=re.sub(prefixZero,'',Itemidinfo[0])
                 try:
                     if str(i["netPriceUnit"]) != str(isocode_salesuom) and int(float((i["netPriceUnitValue"]))) == 1:
-                        i["netPrice"] = i["netPrice"] * numerator
+                        i["netPrice"] = float(i["netPrice"]) * float(numerator)
                     elif str(i["netPriceUnit"]) != str(isocode_salesuom) and int(float(i["netPriceUnitValue"])) > 1:
-                        i["netPrice"] = (i["netPrice"] / int(float((i["netPriceUnitValue"])))) * numerator
+                        i["netPrice"] = (float(i["netPrice"]) / int(float((i["netPriceUnitValue"])))) * float(numerator)
                 except:
                     Log.Info("Item->I"+str(i))
                     
