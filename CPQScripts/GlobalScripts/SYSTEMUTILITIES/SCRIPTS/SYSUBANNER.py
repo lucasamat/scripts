@@ -3250,9 +3250,10 @@ def Related_Sub_Banner(
                             sec_rel_sub_bnr += str(btn)
 
                     #sec_rel_sub_bnr += (btn)
-                    if acq_status.cnt==0:
-                        sec_rel_sub_bnr += (dropdown_multi_btn_str)
+                    
                     dropdown_multi_btn_str += '''</ul></div></div>'''
+                    if acq_status.cnt==0:
+                        dropdown_multi_btn_str += (sec_rel_sub_bnr)
                     #Trace.Write('3095--dropdown_multi_btn_str--'+str(dropdown_multi_btn_str))
                     
                     #Trace.Write('3095--sec_rel_sub_bnr--'+str(sec_rel_sub_bnr))
@@ -3355,6 +3356,9 @@ def Related_Sub_Banner(
                     sec_rel_sub_bnr+= str(add_button)
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
         sec_rel_sub_bnr += "<div id = 'multibtn_drpdwn'></div>"
+        if dropdown_multi_btn_str:
+            sec_rel_sub_bnr = dropdown_multi_btn_str
+
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
 try:
     CurrentRecordId = Param.CurrentRecordId
