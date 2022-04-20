@@ -225,6 +225,8 @@ try:
                 if len(prefixZero)>0:
                     Itemidinfo[0]=re.sub(prefixZero,'',Itemidinfo[0])
                 try:
+                    Log.Info("NPU-->"+str(i["netPriceUnit"]))
+                    Log.Info("NPUV-->"+str(int(i["netPriceUnitValue"])))
                     if str(i["netPriceUnit"]) != str(isocode_salesuom) and int(i["netPriceUnitValue"]) == 1:
                         i["netPrice"] = i["netPrice"] * numerator
                     elif str(i["netPriceUnit"]) != str(isocode_salesuom) and int(i["netPriceUnitValue"]) > 1:
