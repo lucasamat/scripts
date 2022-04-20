@@ -52,7 +52,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 				editvalue8 = "CONSPI"
 				record_list.append(editvalue7)
 				record_list.append(editvalue8)
-			if(line_values.NCNSMB_ENT != 'Some Inclusions' or line_values.NCNSMB_ENT != 'Some Exclusions'):
+			if(line_values.NCNSMB_ENT == 'Some Inclusions' or line_values.NCNSMB_ENT == 'Some Exclusions'):
 				editvalue9 = "NONCCI"
 				editvalue10 = "NONCPI"
 				record_list.append(editvalue9)
