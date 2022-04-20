@@ -477,9 +477,11 @@ def servicelevel_split_equip(seid):
 	THEN INSERT(QUOTE_REVISION_ITEM_OBJECT_RECORD_ID,CUSTOMER_TOOL_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,KPU,LINE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERIAL_NUMBER,TECHNOLOGY,TOOL_CONFIGURATION,WAFER_SIZE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 	VALUES (NEWID(),CUSTOMER_TOOL_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,KPU,LINE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUOTE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERIAL_NUMBER,TECHNOLOGY,TOOL_CONFIGURATION,WAFER_SIZE,'{UserName}','{datetimenow}','{UserId}','{datetimenow}');""".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id,UserId=user_id,UserName=user_name,datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
 	Sql.RunQuery(saqrioinsert)
+	
+	# A055S000P01-17876 - Start	
 	parent_items_record_ids_str = ''
 	child_items_record_ids_str = ''
-	all_items_record_ids_str = ''
+	# all_items_record_ids_str = ''
 	parent_items_obj = Sql.GetList("SELECT QUOTE_REVISION_CONTRACT_ITEM_ID, LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=parent_service_id))
 	if parent_items_obj:
 		parent_items_record_ids_str = "','".join([parent_item_obj.QUOTE_REVISION_CONTRACT_ITEM_ID for parent_item_obj in parent_items_obj])
@@ -487,9 +489,8 @@ def servicelevel_split_equip(seid):
 	if child_items_obj:
 		child_items_record_ids_str = "','".join([child_item_obj.QUOTE_REVISION_CONTRACT_ITEM_ID for child_item_obj in child_items_obj])
 
-	if parent_items_record_ids_str and child_items_record_ids_str:
-		all_items_record_ids_str = parent_items_record_ids_str + "','" + child_items_record_ids_str
-	# A055S000P01-17876 - Start	
+	# if parent_items_record_ids_str and child_items_record_ids_str:
+	# 	all_items_record_ids_str = parent_items_record_ids_str + "','" + child_items_record_ids_str
 	# Service Contractual Cost
 	Sql.RunQuery("""UPDATE SAQICO SET SVCTCS = CNTCST * (SVSPCT/100),
 				SVCTPR = CNTPRC * (SVSPCT/100),
@@ -598,7 +599,7 @@ def servicelevel_split_green(seid):
 	splitservice_name = split_service.SERVICE_DESCRIPTION
 	splitservice_recid = split_service.SERVICE_RECORD_ID
 	# A055S000P01-17876 - Start
-	parent_service_id = split_service.PAR_SERVICE_ID
+	parent_service_id = seid
 	# A055S000P01-17876 - End
 	equipments_count = 0
 	item_number_saqrit_start = 0
@@ -628,25 +629,37 @@ def servicelevel_split_green(seid):
 	VALUES (NEWID(),CUSTOMER_TOOL_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,KPU,LINE,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,QUOTE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERIAL_NUMBER,TECHNOLOGY,TOOL_CONFIGURATION,WAFER_SIZE,'{UserName}','{datetimenow}','{UserId}','{datetimenow}');""".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id,UserId=user_id,UserName=user_name,datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
 	Sql.RunQuery(saqrioinsert)
 	# A055S000P01-17876 - Start
+	parent_items_record_ids_str = ''
+	child_items_record_ids_str = ''
+	# all_items_record_ids_str = ''
+	parent_items_obj = Sql.GetList("SELECT QUOTE_REVISION_CONTRACT_ITEM_ID, LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=parent_service_id))
+	if parent_items_obj:
+		parent_items_record_ids_str = "','".join([parent_item_obj.QUOTE_REVISION_CONTRACT_ITEM_ID for parent_item_obj in parent_items_obj])
+	child_items_obj = Sql.GetList("SELECT QUOTE_REVISION_CONTRACT_ITEM_ID, LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND PARQTEITM_LINE_RECORD_ID IN ('{ParentItemRecordIds}')".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id, ParentItemRecordIds=parent_items_record_ids_str))
+	if child_items_obj:
+		child_items_record_ids_str = "','".join([child_item_obj.QUOTE_REVISION_CONTRACT_ITEM_ID for child_item_obj in child_items_obj])
+
+	# if parent_items_record_ids_str and child_items_record_ids_str:
+	# 	all_items_record_ids_str = parent_items_record_ids_str + "','" + child_items_record_ids_str
 	# Service Contractual Cost
 	Sql.RunQuery("""UPDATE SAQICO SET SVCTCS = CNTCST * (SVSPCT/100),
 				SVCTPR = CNTPRC * (SVSPCT/100),
 				SVCTMG = ((CNTPRC * (SVSPCT/100)) - (CNTCST * (SVSPCT/100))) * 100
 				FROM SAQICO (NOLOCK) 
-				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes'
-			""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=parent_service_id)
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes' AND QTEITM_RECORD_ID IN ('{ItemRecordIds}')
+			""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=parent_service_id,ItemRecordIds=parent_items_record_ids_str)
 	)
 	# Spares Contractual Cost
 	Sql.RunQuery("""UPDATE SAQICO SET SPCTCS = CNTCST * (SPSPCT/100),
 					SPCTPR = CNTPRC * (SPSPCT/100),
 					SPCTMG = ((SPCTPR - (SPCTCS/100)) - (CNTPRC * (SPSPCT/100))) * 100
 					FROM SAQICO (NOLOCK) 
-					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes'
-				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=parent_service_id)
+					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes' AND QTEITM_RECORD_ID IN ('{ItemRecordIds}')
+				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=parent_service_id,ItemRecordIds=parent_items_record_ids_str)
 	)
 	# A055S000P01-17876 - End
 	annaul_line_insert = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":contract_quote_rec_id, "ContractQuoteRevisionRecordId":quote_revision_rec_id, "ServiceId":splitservice_id, "ActionType":'INSERT_LINE_ITEMS'})	
-	# A055S000P01-17876 - Start
+	# A055S000P01-17876 - Start	
 	Sql.RunQuery("""UPDATE SAQICO SET 
 					SPSPCT = P_SAQICO.SPSPCT,
 					SPCTPR = P_SAQICO.SPCTPR,
@@ -658,7 +671,12 @@ def servicelevel_split_green(seid):
 					SVCTMG = P_SAQICO.SVCTMG,
 					STATUS = P_SAQICO.STATUS			
 					FROM SAQICO (NOLOCK) 
-					JOIN (SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID,FABLOCATION_ID,GREENBOOK,SPSPCT,SPCTPR,SPCTCS,SPCTMG,SVSPCT,SVCTPR,SVCTCS,SVCTMG,STATUS FROM SAQICO WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ParentServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes') P_SAQICO ON P_SAQICO.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND P_SAQICO.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND P_SAQICO.FABLOCATION_ID = SAQICO.FABLOCATION_ID AND P_SAQICO.GREENBOOK = SAQICO.GREENBOOK
+					JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID
+												AND SAQRIT.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID
+												AND SAQRIT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
+												AND SAQRIT.GREENBOOK_RECORD_ID = SAQICO.GREENBOOK_RECORD_ID
+												AND SAQRIT.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID
+					JOIN (SELECT QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,FABLOCATION_ID,GREENBOOK,EQUIPMENT_ID,SPSPCT,SPCTPR,SPCTCS,SPCTMG,SVSPCT,SVCTPR,SVCTCS,SVCTMG,STATUS FROM SAQICO WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ParentServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'Yes') P_SAQICO ON P_SAQICO.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND P_SAQICO.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND P_SAQICO.FABLOCATION_ID = SAQICO.FABLOCATION_ID AND P_SAQICO.GREENBOOK = SAQICO.GREENBOOK AND P_SAQICO.QTEITM_RECORD_ID = SAQRIT.PARQTEITM_LINE_RECORD_ID 
 					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'No'
 				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id,ParentServiceId=parent_service_id)
 	)
@@ -667,8 +685,8 @@ def servicelevel_split_green(seid):
 	Sql.RunQuery("""UPDATE SAQICO SET CNTCST = SVCTCS,
 					CNTPRC = SVCTPR					
 					FROM SAQICO (NOLOCK) 
-					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'No'
-				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id)
+					WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQICO.SPQTEV,'No') = 'No' AND QTEITM_RECORD_ID IN ('{ItemRecordIds}')
+				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id,ItemRecordIds=child_items_record_ids_str)
 	)
 	Sql.RunQuery("""UPDATE SAQICO SET TNTVGC = CASE WHEN ISNULL(SAQICO.SPQTEV,'No') = 'No' THEN CNTPRC ELSE SPCTPR END,
 					TNTMGC = CASE WHEN ISNULL(SAQICO.SPQTEV,'No') = 'No' THEN CNTPRC - CNTCST ELSE SPCTPR - SPCTCS END,
