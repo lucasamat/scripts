@@ -4831,7 +4831,7 @@ class SYLDRTLIST:
                     + str(table_ids)
                     + '").on("all.bs.table", function (e, name, args) { if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checkbox").is(":checked")) { if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block"); }localStorage.setItem("selectall","yes");}if (!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checkbox").is(":checked")){$("button#delete_parts").css("display","none");localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block");}if (localStorage.getItem("selectall") != "yes"){localStorage.setItem("selectall","no")};} if(!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){$("button#delete_parts").css("display","none");} $(".bs-checkbox input").addClass("custom");});'
                 )
-            elif RECORD_ID == "SYOBJR-00009":
+            elif RECORD_ID != "SYOBJR-00009":
                 if RECORD_ID == "SYOBJR-95556":
                     local_variable = "PM_FrequencyBulkedit" 
                 else:
@@ -4892,7 +4892,7 @@ class SYLDRTLIST:
                     + '"); }); '
                 )    
             else:
-                Trace.Write('4512----')
+                Trace.Write('4512--Saqico--')
                 dbl_clk_function += (
                     'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
                     + str(table_ids)
