@@ -820,6 +820,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						if quote_status.REVISION_STATUS=='APR-APPROVED':
 							edt_str = "NO"
 						elif obj_obj in('SAQSAP','SAQGPA','SAQGPM','SAQICO'):
+							Trace.Write("EDIT______SAQICO")
 							if obj_obj=="SAQGPA":
 								recid = "QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"
 							elif obj_obj=="SAQGPM":
