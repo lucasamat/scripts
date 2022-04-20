@@ -3240,11 +3240,12 @@ def Related_Sub_Banner(
                     for btn in multi_buttons:
                         Trace.Write('3095--btn--'+str(btn))
                         if acq_status.cnt==0:
-                            if 'ADD PARTS'in str(btn) or 'INLINE EDIT'in str(btn)or 'BULK ADD' in  str(btn) or 'BULK UPDATE'in str(btn) or 'DELETE' in str(btn):
+                            if 'REFRESH'in str(btn) or 'PRICE'in str(btn)or 'EXPORT' in  str(btn) :
                                 Trace.Write("Accc"+str(btn))
-                                dropdown_multi_btn_str += '<li>'+str(btn)+'</li>'
-                            else:
                                 sec_rel_sub_bnr += str(btn)
+                            else:
+                                
+                                dropdown_multi_btn_str += '<li>'+str(btn)+'</li>'
                         elif 'REFRESH' in btn:
                             sec_rel_sub_bnr += str(btn)
 
