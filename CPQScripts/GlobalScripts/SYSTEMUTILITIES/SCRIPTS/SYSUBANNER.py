@@ -104,6 +104,7 @@ def Related_Sub_Banner(
     add_button = ""
     # Getting page details
     multi_buttons = []
+    dropdown_multi_btn_str = '''<div id="ctr_drop" class="btn-group dropdown dropdown_multi_btn_str"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'''
     Trace.Write('ObjName---103--'+str(ObjName))
     if ObjName == "SAQIGS" or ObjName == "SAQRIB":
         ObjName ="SAQRIB"
@@ -3234,7 +3235,6 @@ def Related_Sub_Banner(
                 sec_rel_sub_bnr += str(add_button)
             elif str(subTabName) == "Spare Parts" and str(TreeParentParam)=="Complementary Products" and revision_status.WORKFLOW_STATUS in ('CONFIGURE','PRICING REVIEW','PRICING'):
                 if str(multi_buttons) != "":
-                    dropdown_multi_btn_str = '''<div id="ctr_drop" class="btn-group dropdown dropdown_multi_btn_str"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'''
                     acq_status= Sql.GetFirst("""select count(PRICING_STATUS) as cnt from SAQSPT(NOLOCK) WHERE PRICING_STATUS ='ACQUIRING' AND QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(ContractRecordId =ContractRecordId,quote_revision_record_id =quote_revision_record_id))
                     
                     for btn in multi_buttons:
@@ -3252,8 +3252,8 @@ def Related_Sub_Banner(
                     #sec_rel_sub_bnr += (btn)
                     
                     dropdown_multi_btn_str += '''</ul></div></div>'''
-                    if acq_status.cnt==0:
-                        dropdown_multi_btn_str += (sec_rel_sub_bnr)
+                    if acq_status.cnt==0 :
+                        sec_rel_sub_bnr=dropdown_multi_btn_str + sec_rel_sub_bnr
                     #Trace.Write('3095--dropdown_multi_btn_str--'+str(dropdown_multi_btn_str))
                     
                     #Trace.Write('3095--sec_rel_sub_bnr--'+str(sec_rel_sub_bnr))
@@ -3356,6 +3356,8 @@ def Related_Sub_Banner(
                     sec_rel_sub_bnr+= str(add_button)
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
         sec_rel_sub_bnr += "<div id = 'multibtn_drpdwn'></div>"
+       
+
 
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
 try:
