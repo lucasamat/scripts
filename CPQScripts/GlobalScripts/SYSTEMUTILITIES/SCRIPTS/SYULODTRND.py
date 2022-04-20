@@ -915,6 +915,11 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				# 	+ str(RECORD_ID)
 				# 	+ "'"
 				# )
+				if "SAQICO-" in str(RECORD_ID): # To pass Cpqtableentryid in where condition if the record id is not line
+					RECORD_ID = RECORD_ID.split("-")[1].lstrip("0")
+					where_column = "CpqTableEntryId"
+				else:
+					where_column = "LINE"
 				script = (
 					"SELECT "
 					+ str(API_NAMES)
@@ -923,7 +928,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					+ " (NOLOCK) WHERE QUOTE_RECORD_ID "
 					+ " = '"
 					+ str(quote_record_id)
-					+ "' and LINE = '"+str(RECORD_ID)+"'"
+					+ "' and "+str(where_column)+" = '"+str(RECORD_ID)+"'"
 					+ ""
 				)
 			elif ObjectName == "SAQTRV":
