@@ -446,7 +446,7 @@ def servicelevel_split_equip(seid):
 	splitservice_name = split_service.SERVICE_DESCRIPTION
 	splitservice_recid = split_service.SERVICE_RECORD_ID
 	# A055S000P01-17876 - Start
-	parent_service_id = split_service.PAR_SERVICE_ID
+	parent_service_id = seid
 	# A055S000P01-17876 - End
 	equipments_count = 0
 	item_number_saqrit_start = 0
