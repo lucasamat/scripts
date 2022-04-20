@@ -221,13 +221,11 @@ try:
                 #insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-2], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"]))
                 if len(prefixZero)>0:
                     Itemidinfo[0]=re.sub(prefixZero,'',Itemidinfo[0])
-                try:
-                    if str(i["netPriceUnit"]) != str(isocode_salesuom) and int(float((i["netPriceUnitValue"]))) == 1:
+                
+                if str(i["netPriceUnit"]) != str(isocode_salesuom) and int(float((i["netPriceUnitValue"]))) == 1:
                         i["netPrice"] = float(i["netPrice"]) * float(numerator)
-                    elif str(i["netPriceUnit"]) != str(isocode_salesuom) and int(float(i["netPriceUnitValue"])) > 1:
+                elif str(i["netPriceUnit"]) != str(isocode_salesuom) and int(float(i["netPriceUnitValue"])) > 1:
                         i["netPrice"] = (float(i["netPrice"]) / int(float((i["netPriceUnitValue"])))) * float(numerator)
-                except:
-                    Log.Info("Item->I"+str(i))
                     
                 insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-5], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate),str(core_credit_amount),i["taxValue"],i["netValue"],i["grossValue"],i["freightValue"],i["netPrice"],i["netPriceUnit"],i["netPriceUnitValue"]))
                 
