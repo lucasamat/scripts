@@ -4831,15 +4831,13 @@ class SYLDRTLIST:
                     + str(table_ids)
                     + '").on("all.bs.table", function (e, name, args) { if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checkbox").is(":checked")) { if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block"); }localStorage.setItem("selectall","yes");}if (!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checkbox").is(":checked")){$("button#delete_parts").css("display","none");localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block");}if (localStorage.getItem("selectall") != "yes"){localStorage.setItem("selectall","no")};} if(!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){$("button#delete_parts").css("display","none");} $(".bs-checkbox input").addClass("custom");});'
                 )
-            elif RECORD_ID == "SYOBJR-00009":
+            elif RECORD_ID != "SYOBJR-00009":
                 if RECORD_ID == "SYOBJR-95556":
                     local_variable = "PM_FrequencyBulkedit" 
                 else:
                     if RECORD_ID == "SYOBJR-00005":
                         Trace.Write("Doubleclick")
                         cls = "eq(3)"
-
-
                     local_variable = "PartsListBulkedit"
                 Trace.Write('@4578_cls_chk '+str(cls))
                 Trace.Write('@4578'+str(local_variable)+''+str(RECORD_ID))
@@ -5349,7 +5347,7 @@ class SYLDRTLIST:
             dbl_clk_function += (
                 "try {var bildict = [];$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305').on('click-row.bs.table', function (e, row, $element) { $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305').find(':input(:disabled)').prop('disabled', false);$('#billingmatrix_save').css('display','block');$('#billingmatrix_cancel').css('display','block');$('#generatingbillingmatrix').css('display','none'); $('.billclassedit').parent().css('background-color','lightyellow');$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305  tbody  tr td input').css('background-color','lightyellow');$('#billingmatrix_save').css('display','block');$('#billingmatrix_cancel').css('display','block'); var BillingmatrixBtn = $('.secondary_highlight_panel').find('button#REFRESH_MATRIX'); var billsave = $('.secondary_highlight_panel').find('button#billingmatrix_save'); var billcan = $('.secondary_highlight_panel').find('button#billingmatrix_cancel'); if (BillingmatrixBtn.length == 1){ BillingmatrixBtn.remove() } $('#billingmatrix_save').css('display','block'); $('#billingmatrix_cancel').css('display','block');$('#input#billeditval_disable').attr('disabled', true);$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 tbody tr td input').change(function () {console.log('on change function--');var getbillamt = $(this).val();console.log('getbillamt-------',getbillamt);localStorage.setItem('getbillamt', getbillamt);var equipid = $(this).closest('tr').find('td:nth-child(4)').text();var annualamt_total = $(this).closest('tr').find('td:nth-child(9)').text();console.log('eduip-----',equipid);var test = $(this).closest('td').index();var getindex = test+1;var getheaderdate = $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 thead th:nth-child('+getindex+')').text();var getannualtotal = $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 thead th:nth-child('+getindex+')').text();console.log('getannualtotal----',getannualtotal);console.log('annualamt_total----',annualamt_total);var concate_data = equipid+ ' - '+getheaderdate+ '- '+getbillamt+' - '+annualamt_total;if(!bildict.includes(concate_data)){bildict.push(concate_data)};getbilldictdata = JSON.stringify(bildict);localStorage.setItem('getbilldictdata', getbilldictdata);}); })}catch (err){console.log('catch-----')}"
             )
-        '''if ObjectName == 'SAQICO':
+        if ObjectName == 'SAQICO':
             cls = "eq(3)"
             SAQICO_dbl_clk_function += (
                 'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
@@ -5373,7 +5371,7 @@ class SYLDRTLIST:
             # 	'$("'+ str(table_ids)+ '").on("dbl-click-cell.bs.table", onClickCell);
             #   '$("'+str(table_ids)+'").find("tbody").attr("ondblclick","annualized_editable()");
             SAQICO_dbl_clk_function += (    
-                '$("'+str(table_ids)+'").find("tbody").attr("ondblclick","annualized_editable()");$("'  
+                '$("'+ str(table_ids)+ '").on("dbl-click-cell.bs.table", onClickCell);$("'  
                 + str(table_ids)    
                 + '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'  
                 + str(table_ids)    
@@ -5413,7 +5411,7 @@ class SYLDRTLIST:
                     )	        
 
             
-            dbl_clk_function = SAQICO_dbl_clk_function'''		 
+            dbl_clk_function = SAQICO_dbl_clk_function	 
         if RECORD_ID == "SYOBJR-98872":
             dbl_clk_function = ""
             dbl_clk_function += (
