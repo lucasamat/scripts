@@ -1928,8 +1928,9 @@ class SyncQuoteAndCustomTables:
                                         tableInfo.AddRow(tablerow)
                                         Sql.Upsert(tableInfo)
                                     else:
-                                        c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(
+                                        c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}',CRM_EMPLOYEE_ID = '{crm_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(
                                             c4c_employee_id=employee.get("C4C_EMPLOYEE_ID"),
+                                            crm_employee_id=employee.get("CRM_EMPLOYEE_ID"),
                                             employee_id=employee.get("EMPLOYEE_ID"),
                                         )
                                         Sql.RunQuery(c4c_employee_update)
@@ -1986,8 +1987,9 @@ class SyncQuoteAndCustomTables:
                                             tableInfo.AddRow(tablerow)
                                             Sql.Upsert(tableInfo)
                                         else:
-                                            c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(
+                                            c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}',CRM_EMPLOYEE_ID = '{crm_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(
                                                 c4c_employee_id=employee.get("C4C_EMPLOYEE_ID"),
+                                                crm_employee_id=employee.get("CRM_EMPLOYEE_ID"),
                                                 employee_id=employee.get("EMPLOYEE_ID"),
                                             )
                                             Sql.RunQuery(c4c_employee_update)
