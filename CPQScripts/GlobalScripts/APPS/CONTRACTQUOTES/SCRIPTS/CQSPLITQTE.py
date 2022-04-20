@@ -11,33 +11,16 @@ import System.Net
 import sys
 import re
 from datetime import datetime
-from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Text.Encoding import UTF8
 from System import Convert
-from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 from SYDATABASE import SQL
+
 Sql = SQL()
 
-TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or "Sales"
 try:
 	contract_quote_rec_id = Quote.QuoteId
 except:
 	contract_quote_rec_id = ''
-
-try:
-	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-except:
-	quote_revision_record_id = ""
-
-try:
-	current_prod = Product.Name
-	
-except:
-	current_prod = "Sales"
-try:
-	TabName = TestProduct.CurrentTab
-except:
-	TabName = "Quotes"
 
 contract_quote_rec_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")
@@ -108,7 +91,6 @@ def _update_entitlement_values(par_service = ''):
 			assign_xml += value
 		Sql.RunQuery("UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}' AND SERVICE_ID ='Z0105'".format(assign_xml,contract_quote_rec_id, quote_revision_rec_id ,par_service) )
 	
-
 def _insert_service_level_entitlement(par_service=''):
 	splitservice_object = 'Z0105'
 	ent_disp_val = ent_val_code = ''
@@ -246,8 +228,7 @@ def _insert_service_level_entitlement(par_service=''):
 			except:
 				pass
 
-def _quote_items_entitlement_insert():
-	Trace.Write("Insert saqite")
+def _quote_items_entitlement_insert():	
 	service_id = 'Z0105'
 	source_object_name = 'SAQSCE'
 	join_condition_string = ''
@@ -344,9 +325,6 @@ def splitserviceinsert():
 	get_split_service_object = Sql.GetFirst("SELECT SERVICE_ID FROM SAQRIS WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = 'Z0105'".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
 	if not get_split_service_object:
 		get_subtotal_off_details = Sql.GetFirst("SELECT DISTINCT COMMITTED_VALUE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,DIVISION_ID,DIVISION_RECORD_ID,DOC_CURRENCY,DOCCURR_RECORD_ID,ESTIMATED_VALUE,GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID,(({equipmentservice_count} + ROW_NUMBER()OVER(ORDER BY(SAQRIS.CpqTableEntryId))) * {item_number_saqris_inc}) as LINE,NET_PRICE,NET_PRICE_INGL_CURR,NET_VALUE,NET_VALUE_INGL_CURR,PLANT_ID,PLANT_RECORD_ID,SERVICE_ID,SERVICE_RECORD_ID,QUANTITY,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,TAX_PERCENTAGE,TAX_AMOUNT,TAX_AMOUNT_INGL_CURR,UNIT_PRICE,UNIT_PRICE_INGL_CURR FROM SAQRIS WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,equipmentservice_count =equipmentservice_count,item_number_saqris_inc =item_number_saqris_inc))
-		
-		
-
 		primarykey = str(Guid.NewGuid()).upper()
 		tableInfo = Sql.GetTable("SAQRIS")
 		tablerow = {
@@ -399,7 +377,6 @@ def splitserviceinsert():
 
 	##equipment level entitlement insert
 	_insert_equipment_entitlement()
-
 	
 	##INSERT FOR SAQRIT
 	service_entitlement_objs = Sql.GetList("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM  SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}'""".format(contract_quote_rec_id=contract_quote_rec_id,quote_revision_rec_id=quote_revision_rec_id) )
@@ -423,12 +400,10 @@ def splitserviceinsert():
 				split_entitlement_display_value = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
 			if entitlement_display_value_tag_match and split_entitlement_display_value:
 				quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
-				if quote_service_entitlement_type == 'STR-OFFBGBEQ OBJ-EQ' and split_entitlement_display_value == ["Yes"]:
-					Trace.Write("1")
+				if quote_service_entitlement_type == 'STR-OFFBGBEQ OBJ-EQ' and split_entitlement_display_value == ["Yes"]:				
 					servicelevel_split_equip(service_entitlement_obj.SERVICE_ID)
 					break
-				elif quote_service_entitlement_type in ('STR-OFFBGB OBJ-GREQ PRD-GRPT','STR-OFFBGB OBJ-GREQ','STR-OFFBGB OBJ-EQ','STR-OFFBGR OBJ-GREQ','STR-OFFBGB OBJ-ASKT') and split_entitlement_display_value == ["Yes"]:
-					Trace.Write("2")
+				elif quote_service_entitlement_type in ('STR-OFFBGB OBJ-GREQ PRD-GRPT','STR-OFFBGB OBJ-GREQ','STR-OFFBGB OBJ-EQ','STR-OFFBGR OBJ-GREQ','STR-OFFBGB OBJ-ASKT') and split_entitlement_display_value == ["Yes"]:					
 					servicelevel_split_green(service_entitlement_obj.SERVICE_ID)
 					break
 		##saqite insert
@@ -441,21 +416,15 @@ def splitserviceinsert():
 		binaryAuthorization = UTF8.GetBytes(authorization)
 		authorization = Convert.ToBase64String(binaryAuthorization)
 		authorization = "Basic " + authorization
-
-
 		webclient = System.Net.WebClient()
 		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
-		
-		result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_rec_id,Rev_Id = quote_revision_rec_id)
-		
+		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;		
+		result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= contract_quote_rec_id,Rev_Id = quote_revision_rec_id)		
 		#LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
 		#Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 
-
 def servicelevel_split_equip(seid):
-	Trace.Write("SAQSCE_SPLIT"+str(seid))
-	#seid ="Z0091"
+	Trace.Write("SAQSCE_SPLIT"+str(seid))	
 	where_condition = "WHERE SERVICE_ID = ''"+str(seid)+"'' AND QUOTE_RECORD_ID = ''"+str(contract_quote_rec_id)+"'' and QTEREV_RECORD_ID = ''"+str(quote_revision_rec_id)+"''  "
 	get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id =contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id))
 	ent_temp = "ENT_SPLIT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
@@ -528,37 +497,7 @@ def servicelevel_split_equip(seid):
 	)
 	# A055S000P01-17876 - End
 	annaul_line_insert = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":contract_quote_rec_id, "ContractQuoteRevisionRecordId":quote_revision_rec_id, "ServiceId":splitservice_id, "ActionType":'INSERT_LINE_ITEMS'})
-	#Updating net price for Annualised grid
-	# update_annual_grid_split_service = """UPDATE SAQICO SET SAQICO.NET_PRICE_INGL_CURR = CAST(CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) FROM SAQICO X(NOLOCK) INNER JOIN (SELECT NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' Group By NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID )A ON X.QTEITM_RECORD_ID = A.QUOTE_REVISION_CONTRACT_ITEM_ID AND X.SERVICE_ID = A.SERVICE_ID WHERE X.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND X.QTEREV_RECORD_ID ='{quote_revision_rec_id}' """.format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(update_annual_grid_split_service)
-	# update_annual_grid_split_service_adjustment ="""Update XY SET XY.NET_PRICE_INGL_CURR = XY.NET_PRICE_INGL_CURR + (SELECT CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5))- CAST(sum(B.NET_PRICE_INGL_CURR)AS DECIMAL(13,5)) from SAQRIT A(NOLOCK) JOIN SAQICO B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID WHERE A.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND A.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND A.SERVICE_ID='{splitservice_id}' GROUP BY B.NET_PRICE_INGL_CURR,A.NET_PRICE_INGL_CURR) FROM SAQICO XY(NOLOCK) WHERE XY.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND XY.QTEREV_RECORD_ID ='{quote_revision_rec_id}'AND XY.SERVICE_ID='{splitservice_id}' AND XY.CpqTableEntryId = (SELECT MAX(Y.CpqTableEntryId) FROM SAQICO Y(NOLOCK) WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND Y.SERVICE_ID='{splitservice_id}')""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(update_annual_grid_split_service_adjustment)
-	# global_year_1 ="""UPDATE X SET X.YEAR_1_INGL_CURR = CASE A.[YEAR] WHEN 'YEAR 1' THEN CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5)) ELSE NULL END FROM SAQRIT X(NOLOCK) INNER JOIN (SELECT DISTINCT NET_PRICE_INGL_CURR,SERVICE_ID,QTEITM_RECORD_ID,[YEAR] FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' AND ISNULL([YEAR],'') = 'YEAR 1' GROUP BY NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,[YEAR] ,QTEITM_RECORD_ID)A ON X.QUOTE_REVISION_CONTRACT_ITEM_ID = A.QTEITM_RECORD_ID AND X.SERVICE_ID = A.SERVICE_ID""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(global_year_1)
-	# global_year_2 ="""UPDATE X SET X.YEAR_2_INGL_CURR = CASE A.[YEAR] WHEN 'YEAR 2' THEN CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5)) ELSE NULL END FROM SAQRIT X(NOLOCK) INNER JOIN (SELECT DISTINCT NET_PRICE_INGL_CURR,SERVICE_ID,QTEITM_RECORD_ID,[YEAR] FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' AND ISNULL([YEAR],'') = 'YEAR 2' GROUP BY NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,[YEAR] ,QTEITM_RECORD_ID)A ON X.QUOTE_REVISION_CONTRACT_ITEM_ID = A.QTEITM_RECORD_ID AND X.SERVICE_ID = A.SERVICE_ID""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(global_year_2)
-	# global_year_3 ="""UPDATE X SET X.YEAR_3_INGL_CURR = CASE A.[YEAR] WHEN 'YEAR 3' THEN CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5)) ELSE NULL END FROM SAQRIT X(NOLOCK) INNER JOIN (SELECT DISTINCT NET_PRICE_INGL_CURR,SERVICE_ID,QTEITM_RECORD_ID,[YEAR] FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' AND ISNULL([YEAR],'') = 'YEAR 3' GROUP BY NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,[YEAR] ,QTEITM_RECORD_ID)A ON X.QUOTE_REVISION_CONTRACT_ITEM_ID = A.QTEITM_RECORD_ID AND X.SERVICE_ID = A.SERVICE_ID""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(global_year_3)
-	# global_year_4 ="""UPDATE X SET X.YEAR_4_INGL_CURR = CASE A.[YEAR] WHEN 'YEAR 4' THEN CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5)) ELSE NULL END FROM SAQRIT X(NOLOCK) INNER JOIN (SELECT DISTINCT NET_PRICE_INGL_CURR,SERVICE_ID,QTEITM_RECORD_ID,[YEAR] FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' AND ISNULL([YEAR],'') = 'YEAR 4' GROUP BY NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,[YEAR] ,QTEITM_RECORD_ID)A ON X.QUOTE_REVISION_CONTRACT_ITEM_ID = A.QTEITM_RECORD_ID AND X.SERVICE_ID = A.SERVICE_ID""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(global_year_4)
-	# global_year_5 ="""UPDATE X SET X.YEAR_5_INGL_CURR = CASE A.[YEAR] WHEN 'YEAR 5' THEN CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5)) ELSE NULL END FROM SAQRIT X(NOLOCK) INNER JOIN (SELECT DISTINCT NET_PRICE_INGL_CURR,SERVICE_ID,QTEITM_RECORD_ID,[YEAR] FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' AND ISNULL([YEAR],'') = 'YEAR 5' GROUP BY NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,[YEAR] ,QTEITM_RECORD_ID)A ON X.QUOTE_REVISION_CONTRACT_ITEM_ID = A.QTEITM_RECORD_ID AND X.SERVICE_ID = A.SERVICE_ID""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(global_year_5)
-	# document_years="""UPDATE SAQRIT SET 
-	# 	SAQRIT.YEAR_1 = CASE WHEN YEAR_1_INGL_CURR IS NULL THEN NULL ELSE
-	# 	CAST(CAST(NET_PRICE AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) END,
-	# 	SAQRIT.YEAR_2 = CASE WHEN YEAR_2_INGL_CURR IS NULL THEN  NULL ELSE 
-	# 	CAST(CAST(NET_PRICE AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) END,
-	# 	SAQRIT.YEAR_3 = CASE WHEN YEAR_3_INGL_CURR IS NULL THEN  NULL ELSE 
-	# 	CAST(CAST(NET_PRICE AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) END,
-	# 	SAQRIT.YEAR_4 = CASE WHEN YEAR_4_INGL_CURR IS NULL THEN  NULL ELSE
-	# 	CAST(CAST(NET_PRICE AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) END,
-	# 	SAQRIT.YEAR_5 = CASE WHEN YEAR_5_INGL_CURR IS NULL THEN  NULL ELSE
-	# 	CAST(CAST(NET_PRICE AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) END
-	# 	FROM SAQRIT X(NOLOCK)
-	# 	WHERE X.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND X.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID ='{splitservice_id}' """.format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(document_years)
-	# document_years_adjustments ="UPDATE SAQRIT SET YEAR_1 = YEAR_1 + (NET_PRICE - (ISNULL(YEAR_1,0)+ISNULL(YEAR_2,0)+ISNULL(YEAR_3,0)+ISNULL(YEAR_4,0)+ISNULL(YEAR_5,0))) FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(document_years_adjustments)
+	
 	# A055S000P01-17876 - Start	
 	Sql.RunQuery("""UPDATE SAQICO SET 
 					SPSPCT = P_SAQICO.SPSPCT,
@@ -622,21 +561,15 @@ def servicelevel_split_equip(seid):
 	
 	# TOTAL_AMOUNT_INGL_CURR / TOTAL_AMOUNT / NET_VALUE_INGL_CURR / NET_VALUE
 	Sql.RunQuery("UPDATE SAQRIT SET TOTAL_AMOUNT_INGL_CURR = IQ.TAMTGC, TOTAL_AMOUNT = IQ.TAMTDC, NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR, NET_VALUE = IQ.NET_VALUE FROM SAQRIT (NOLOCK) JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID, SAQRIT.SERVICE_ID, SAQRIT.LINE, SUM(SAQICO.TAMTGC) as TAMTGC, SUM(SAQICO.TAMTDC) as TAMTDC, SUM(ISNULL(SAQICO.TNTVGC, 0)) as NET_VALUE_INGL_CURR, SUM(ISNULL(SAQICO.TNTVDC, 0)) as NET_VALUE FROM SAQRIT (NOLOCK) JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = SAQRIT.SERVICE_ID AND SAQICO.LINE = SAQRIT.LINE WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' GROUP BY SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.LINE) IQ ON IQ.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND IQ.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND IQ.SERVICE_ID = SAQRIT.SERVICE_ID AND IQ.LINE = SAQRIT.LINE WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id))
-
-	# TOTAL_AMOUNT
-	# Sql.RunQuery("UPDATE SAQRIT SET TOTAL_AMOUNT = IQ.TAMTDC FROM SAQRIT (NOLOCK) JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID, SAQRIT.SERVICE_ID, SAQRIT.LINE, sum(SAQICO.TAMTDC) as TAMTDC from SAQRIT (NOLOCK) JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = SAQRIT.SERVICE_ID AND SAQICO.LINE = SAQRIT.LINE WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' GROUP BY SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.LINE) IQ ON IQ.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND IQ.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND IQ.SERVICE_ID = SAQRIT.SERVICE_ID AND IQ.LINE = SAQRIT.LINE WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id))
-	# A055S000P01-17876 - End
-	
+	# A055S000P01-17876 - End	
 	#CQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":get_c4c_quote_id.QUOTE_ID})
-
 
 def servicelevel_split_green(seid):
 	Trace.Write("thisgreen service"+str(seid))
 	where_condition = "WHERE SERVICE_ID = ''"+str(seid)+"'' AND QUOTE_RECORD_ID = ''"+str(contract_quote_rec_id)+"'' and QTEREV_RECORD_ID = ''"+str(quote_revision_rec_id)+"''  "
 	get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}'".format(contract_quote_rec_id =contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id))
 	ent_temp = "ENT_SPLIT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
-
-	Trace.Write("aaaaaaa"+str(ent_temp))
+	
 	ent_child_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 
 	SqlHelper.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><FABLOCATION_ID>''+FABLOCATION_ID+''</FABLOCATION_ID><GREENBOOK>''+GREENBOOK+''</GREENBOOK><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(replace(replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; '' ),'' > '','' &gt; '' ),''_>'',''_&gt;''),''_<'',''_&lt;''),''&'','';#38''),''<10%'',''&lt;10%'')  as entitlement_xml from SAQSCE(nolock) "+str(where_condition)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_PRICE_IMPACT,IS_DEFAULT,ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CALCULATION_FACTOR INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',FABLOCATION_ID VARCHAR(100) ''FABLOCATION_ID'',GREENBOOK VARCHAR(100) ''GREENBOOK'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',PRICE_METHOD VARCHAR(100) ''PRICE_METHOD'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'') ; exec sys.sp_xml_removedocument @H; '")
@@ -701,39 +634,7 @@ def servicelevel_split_green(seid):
 				""".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=parent_service_id)
 	)
 	# A055S000P01-17876 - End
-	annaul_line_insert = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":contract_quote_rec_id, "ContractQuoteRevisionRecordId":quote_revision_rec_id, "ServiceId":splitservice_id, "ActionType":'INSERT_LINE_ITEMS'})
-	# #Updating net price for Annualised grid
-	# update_annual_grid_split_service = """UPDATE SAQICO SET SAQICO.NET_PRICE_INGL_CURR = CAST(CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) FROM SAQICO X(NOLOCK) INNER JOIN (SELECT NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' Group By NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_REVISION_CONTRACT_ITEM_ID )A ON X.QTEITM_RECORD_ID = A.QUOTE_REVISION_CONTRACT_ITEM_ID AND X.SERVICE_ID = A.SERVICE_ID WHERE X.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND X.QTEREV_RECORD_ID ='{quote_revision_rec_id}' """.format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(update_annual_grid_split_service)
-	# update_annual_grid_split_service_adjustment ="""Update XY SET XY.NET_PRICE_INGL_CURR = XY.NET_PRICE_INGL_CURR + (SELECT CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5))- CAST(sum(B.NET_PRICE_INGL_CURR)AS DECIMAL(13,5)) from SAQRIT A(NOLOCK) JOIN SAQICO B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID WHERE A.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND A.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND A.SERVICE_ID='{splitservice_id}' GROUP BY B.NET_PRICE_INGL_CURR,A.NET_PRICE_INGL_CURR) FROM SAQICO XY(NOLOCK) WHERE XY.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND XY.QTEREV_RECORD_ID ='{quote_revision_rec_id}'AND XY.SERVICE_ID='{splitservice_id}' AND XY.CpqTableEntryId = (SELECT MAX(Y.CpqTableEntryId) FROM SAQICO Y(NOLOCK) WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND Y.SERVICE_ID='{splitservice_id}')""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(update_annual_grid_split_service_adjustment)
-	# global_year_1 ="""UPDATE X SET X.YEAR_1_INGL_CURR = CASE A.[YEAR] WHEN 'YEAR 1' THEN CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5)) ELSE NULL END FROM SAQRIT X(NOLOCK) INNER JOIN (SELECT DISTINCT NET_PRICE_INGL_CURR,SERVICE_ID,QTEITM_RECORD_ID,[YEAR] FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' AND ISNULL([YEAR],'') = 'YEAR 1' GROUP BY NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,[YEAR] ,QTEITM_RECORD_ID)A ON X.QUOTE_REVISION_CONTRACT_ITEM_ID = A.QTEITM_RECORD_ID AND X.SERVICE_ID = A.SERVICE_ID""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(global_year_1)
-	# global_year_2 ="""UPDATE X SET X.YEAR_2_INGL_CURR = CASE A.[YEAR] WHEN 'YEAR 2' THEN CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5)) ELSE NULL END FROM SAQRIT X(NOLOCK) INNER JOIN (SELECT DISTINCT NET_PRICE_INGL_CURR,SERVICE_ID,QTEITM_RECORD_ID,[YEAR] FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' AND ISNULL([YEAR],'') = 'YEAR 2' GROUP BY NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,[YEAR] ,QTEITM_RECORD_ID)A ON X.QUOTE_REVISION_CONTRACT_ITEM_ID = A.QTEITM_RECORD_ID AND X.SERVICE_ID = A.SERVICE_ID""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(global_year_2)
-	# global_year_3 ="""UPDATE X SET X.YEAR_3_INGL_CURR = CASE A.[YEAR] WHEN 'YEAR 3' THEN CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5)) ELSE NULL END FROM SAQRIT X(NOLOCK) INNER JOIN (SELECT DISTINCT NET_PRICE_INGL_CURR,SERVICE_ID,QTEITM_RECORD_ID,[YEAR] FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' AND ISNULL([YEAR],'') = 'YEAR 3' GROUP BY NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,[YEAR] ,QTEITM_RECORD_ID)A ON X.QUOTE_REVISION_CONTRACT_ITEM_ID = A.QTEITM_RECORD_ID AND X.SERVICE_ID = A.SERVICE_ID""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(global_year_3)
-	# global_year_4 ="""UPDATE X SET X.YEAR_4_INGL_CURR = CASE A.[YEAR] WHEN 'YEAR 4' THEN CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5)) ELSE NULL END FROM SAQRIT X(NOLOCK) INNER JOIN (SELECT DISTINCT NET_PRICE_INGL_CURR,SERVICE_ID,QTEITM_RECORD_ID,[YEAR] FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' AND ISNULL([YEAR],'') = 'YEAR 4' GROUP BY NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,[YEAR] ,QTEITM_RECORD_ID)A ON X.QUOTE_REVISION_CONTRACT_ITEM_ID = A.QTEITM_RECORD_ID AND X.SERVICE_ID = A.SERVICE_ID""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(global_year_4)
-	# global_year_5 ="""UPDATE X SET X.YEAR_5_INGL_CURR = CASE A.[YEAR] WHEN 'YEAR 5' THEN CAST(A.NET_PRICE_INGL_CURR AS DECIMAL(13,5)) ELSE NULL END FROM SAQRIT X(NOLOCK) INNER JOIN (SELECT DISTINCT NET_PRICE_INGL_CURR,SERVICE_ID,QTEITM_RECORD_ID,[YEAR] FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}' AND ISNULL([YEAR],'') = 'YEAR 5' GROUP BY NET_PRICE_INGL_CURR,SERVICE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,[YEAR] ,QTEITM_RECORD_ID)A ON X.QUOTE_REVISION_CONTRACT_ITEM_ID = A.QTEITM_RECORD_ID AND X.SERVICE_ID = A.SERVICE_ID""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(global_year_5)
-	# document_years="""UPDATE SAQRIT SET 
-	# 	SAQRIT.YEAR_1 = CASE WHEN YEAR_1_INGL_CURR IS NULL THEN NULL ELSE
-	# 	CAST(CAST(NET_PRICE AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) END,
-	# 	SAQRIT.YEAR_2 = CASE WHEN YEAR_2_INGL_CURR IS NULL THEN  NULL ELSE 
-	# 	CAST(CAST(NET_PRICE AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) END,
-	# 	SAQRIT.YEAR_3 = CASE WHEN YEAR_3_INGL_CURR IS NULL THEN  NULL ELSE 
-	# 	CAST(CAST(NET_PRICE AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) END,
-	# 	SAQRIT.YEAR_4 = CASE WHEN YEAR_4_INGL_CURR IS NULL THEN  NULL ELSE
-	# 	CAST(CAST(NET_PRICE AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) END,
-	# 	SAQRIT.YEAR_5 = CASE WHEN YEAR_5_INGL_CURR IS NULL THEN  NULL ELSE
-	# 	CAST(CAST(NET_PRICE AS DECIMAL(13,5))/(SELECT count(*) FROM SAQICO Y(NOLOCK)WHERE Y.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND Y.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')AS DECIMAL(13,5)) END
-	# 	FROM SAQRIT X(NOLOCK)
-	# 	WHERE X.QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND X.QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID ='{splitservice_id}' """.format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(document_years)
-	# document_years_adjustments ="UPDATE SAQRIT SET YEAR_1 = YEAR_1 + (NET_PRICE - (ISNULL(YEAR_1,0)+ISNULL(YEAR_2,0)+ISNULL(YEAR_3,0)+ISNULL(YEAR_4,0)+ISNULL(YEAR_5,0))) FROM SAQRIT WHERE QUOTE_RECORD_ID = '{contract_quote_rec_id}' AND QTEREV_RECORD_ID ='{quote_revision_rec_id}' AND SERVICE_ID='{splitservice_id}')""".format(contract_quote_rec_id= contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,splitservice_id =splitservice_id)
-	# Sql.RunQuery(document_years_adjustments)
-	#CQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":get_c4c_quote_id.QUOTE_ID}) 
+	annaul_line_insert = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":contract_quote_rec_id, "ContractQuoteRevisionRecordId":quote_revision_rec_id, "ServiceId":splitservice_id, "ActionType":'INSERT_LINE_ITEMS'})	
 	# A055S000P01-17876 - Start
 	Sql.RunQuery("""UPDATE SAQICO SET 
 					SPSPCT = P_SAQICO.SPSPCT,
@@ -787,9 +688,6 @@ def servicelevel_split_green(seid):
 
 	# TOTAL_AMOUNT_INGL_CURR / TOTAL_AMOUNT / NET_VALUE_INGL_CURR / NET_VALUE
 	Sql.RunQuery("UPDATE SAQRIT SET TOTAL_AMOUNT_INGL_CURR = IQ.TAMTGC, TOTAL_AMOUNT = IQ.TAMTDC, NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR, NET_VALUE = IQ.NET_VALUE FROM SAQRIT (NOLOCK) JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID, SAQRIT.SERVICE_ID, SAQRIT.LINE, SUM(SAQICO.TAMTGC) as TAMTGC, SUM(SAQICO.TAMTDC) as TAMTDC, SUM(ISNULL(SAQICO.TNTVGC, 0)) as NET_VALUE_INGL_CURR, SUM(ISNULL(SAQICO.TNTVDC, 0)) as NET_VALUE from SAQRIT (NOLOCK) JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = SAQRIT.SERVICE_ID AND SAQICO.LINE = SAQRIT.LINE WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' GROUP BY SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.LINE) IQ ON IQ.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND IQ.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND IQ.SERVICE_ID = SAQRIT.SERVICE_ID AND IQ.LINE = SAQRIT.LINE WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id))
-
-	# TOTAL_AMOUNT
-	# Sql.RunQuery("UPDATE SAQRIT SET TOTAL_AMOUNT = IQ.TAMTDC FROM SAQRIT (NOLOCK) JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID, SAQRIT.SERVICE_ID, SAQRIT.LINE, sum(SAQICO.TAMTDC) as TAMTDC from SAQRIT (NOLOCK) JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = SAQRIT.SERVICE_ID AND SAQICO.LINE = SAQRIT.LINE WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' GROUP BY SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.LINE) IQ ON IQ.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND IQ.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND IQ.SERVICE_ID = SAQRIT.SERVICE_ID AND IQ.LINE = SAQRIT.LINE WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'".format(QuoteRecordId=contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id,ServiceId=splitservice_id))
 	# A055S000P01-17876 - End
 
 ##To update the SAQTRV table after clicking the split button..
