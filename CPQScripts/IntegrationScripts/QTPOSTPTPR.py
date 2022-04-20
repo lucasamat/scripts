@@ -202,10 +202,7 @@ try:
                 '''
                 core_credit_amount = ''
                 cust_participate = Sql.GetFirst("SELECT CUSTOMER_PARTICIPATE,ODCC_FLAG FROM SAQSPT WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(revision_rec_id)+"' AND PART_NUMBER = '"+str(Itemidinfo[0])+"' ")
-                #if cust_participate and str(cust_participate.CUSTOMER_PARTICIPATE).upper() == "TRUE" and str(cust_participate.ODCC_FLAG).upper() == "TRUE":
-                #conditions = response1['Entries'][0]['items'][0]['conditions']
                 if cust_participate:
-                    #Log.Info("CUST:::->"+str(cust_participate.ODCC_FLAG)+"<-->")
                     if cust_participate.ODCC_FLAG != '':
                         for condition in i['conditions']:
                             if condition['conditionType'] == "ZEEB":
