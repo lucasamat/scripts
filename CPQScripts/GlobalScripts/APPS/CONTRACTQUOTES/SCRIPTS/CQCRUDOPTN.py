@@ -4812,7 +4812,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					RevisionRecordId=self.quote_revision_record_id
 					)
 				)
-			##A055S000P01-17959 inserting the device node and process type as null by default...
+			##A055S000P01-17959 inserting the device node and process type as null by default...##HPQC DEFECT 471 Events not inserting issue , changed the join condition for saqgpm table insert...
 			self._process_query("""INSERT SAQGPM(CHAMBER_QUANTITY,
 					GOT_CODE,
 					GOTCODE_RECORD_ID,
@@ -4855,7 +4855,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					pmsa_pmevents.KIT_ID,
 					pmsa_pmevents.KIT_RECORD_ID,
 					pmsa_pmevents.KIT_NUMBER,
-					pmsa_pmevents.KIT_NUMBER_RECORD_ID,
+					pmsa_pmevents.TOOL_KIT_NUMBER_RECORD_ID,
 					pmsa_pmevents.SERVICE_ID,
 					pmsa_pmevents.SERVICE_DESCRIPTION,
 					pmsa_pmevents.SERVICE_RECORD_ID,
@@ -4875,18 +4875,18 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQRGG.GOTCODE_RECORD_ID,
 					SAQRGG.GREENBOOK,
 					SAQRGG.GREENBOOK_RECORD_ID,
-					MAEAPK.PM_ID,
+					MAPMEV.PM_ID,
 					MAEAPM_INBOUND.PM_NAME,
-					MAEAPK.PM_RECORD_ID,
+					MAPMEV.PM_RECORD_ID,
 					CASE WHEN MAEAPM_INBOUND.PM_LEVEL ='Sched Maint' THEN 'Scheduled Maintenance' ELSE MAEAPM_INBOUND.PM_LEVEL END AS PM_LEVEL ,
 					MAEAPM_INBOUND.KIT_ID,
-					MAEAPK.KIT_RECORD_ID,
+					MAMKIT.KIT_RECORD_ID,
 					MAEAPM_INBOUND.KIT_NUMBER,
-					MAEAPK.KIT_NUMBER_RECORD_ID,
+					MATKTN.TOOL_KIT_NUMBER_RECORD_ID,
 					SAQRGG.SERVICE_ID,
 					SAQRGG.SERVICE_DESCRIPTION,
 					SAQRGG.SERVICE_RECORD_ID,
-					MAEAPK.PM_FREQUENCY_EDITABLE as PM_FREQUENCY_EDITABLE,
+					MAEAPM_INBOUND.RFP_EDIT as PM_FREQUENCY_EDITABLE,
 					null as PROCESS_TYPE,
 					null as DEVICE_NODE,
 					'{QuoteId}' as QUOTE_ID,
@@ -4896,12 +4896,14 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQRGG.QTESRV_RECORD_ID as QTESRV_RECORD_ID,
 					SAQRGG.QTESRVGBK_RECORD_ID as QTESRVGBK_RECORD_ID,
 					SAQRGG.QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID as QTEREVGOT_RECORD_ID,
-					MAEAPK.TKM_FLAG
+					'1' as TKM_FLAG if self.tree_param == "Z0010" else '0'
 					FROM SAQRGG (NOLOCK) 
 					JOIN SAQSCO(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID AND SAQRGG.SERVICE_RECORD_ID = SAQSCO.SERVICE_RECORD_ID AND SAQRGG.GREENBOOK_RECORD_ID = SAQSCO.GREENBOOK_RECORD_ID
 					JOIN MAEQUP(NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQRGG.GOT_CODE = MAEQUP.GOT_CODE
 					JOIN MAEAPM_INBOUND(NOLOCK) ON MAEAPM_INBOUND.QUOTE_ID = SAQSCO.QUOTE_ID AND MAEAPM_INBOUND.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND MAEAPM_INBOUND.QTEREV_ID = SAQSCO.QTEREV_ID AND MAEAPM_INBOUND.SERVICE_ID = SAQSCO.SERVICE_ID AND MAEQUP.EQUIPMENT_ID = MAEAPM_INBOUND.ASSEMBLY_ID
-					JOIN MAEAPK(NOLOCK) ON MAEAPK.ASSEMBLY_ID = MAEQUP.EQUIPMENT_ID AND MAEAPM_INBOUND.PM_NAME = MAEAPK.PM_NAME {tkm_flag}
+					JOIN MAPMEV ON MAPMEV.PM_NAME = MAEAPM_INBOUND.PM_NAME
+					JOIN MAMKIT ON MAMKIT.KIT_ID = MAEAPM_INBOUND.KIT_ID
+					LEFT JOIN MATKTN ON MATKTN.KIT_NUMBER = MAEAPM_INBOUND.KIT_NUMBER AND MAMKIT.KIT_ID = MATKTN.KIT_ID
 					WHERE SAQRGG.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRGG.
 					QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRGG.SERVICE_ID = '{TreeParam}' AND  MAEAPM_INBOUND.PM_LEVEL IN {pm_level_value}) pmsa_pmevents  LEFT JOIN SAQGPM (NOLOCK) AS pm on pmsa_pmevents.QUOTE_RECORD_ID = pm.QUOTE_RECORD_ID AND pmsa_pmevents.QTEREV_RECORD_ID = pm.QTEREV_RECORD_ID AND pmsa_pmevents.SERVICE_RECORD_ID = pm.SERVICE_RECORD_ID AND pmsa_pmevents.GREENBOOK_RECORD_ID = pm.GREENBOOK_RECORD_ID and pmsa_pmevents.GOTCODE_RECORD_ID = pm.GOTCODE_RECORD_ID and pmsa_pmevents.PM_RECORD_ID = pm.PM_RECORD_ID
 					WHERE ISNULL(pm.PM_RECORD_ID,'') = '' """.format(
@@ -4911,8 +4913,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					QuoteRecordId=self.contract_quote_record_id,
 					RevisionId=self.quote_revision_id,
 					RevisionRecordId=self.quote_revision_record_id,
-					pm_level_value = ('Scheduled Maintenance','Sched Maint','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value').upper() != "TOOL BASED") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance'),
-					tkm_flag = "AND TKM_FLAG = 1" if self.tree_param == "Z0010" else ""
+					pm_level_value = ('Scheduled Maintenance','Sched Maint','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value').upper() != "TOOL BASED") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance')
 					)
 				)
 				# additional_where = kwargs.get('additional_where')
@@ -5267,7 +5268,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					BatchGroupRecordId=kwargs.get('batch_group_record_id')
 					)
 				)
-			##A055S000P01-17959 inserting the device node and process type as null by default...
+			##A055S000P01-17959 inserting the device node and process type as null by default...##HPQC DEFECT 471 Events not inserting issue , changed the join condition for saqgpm table insert...
 			self._process_query("""INSERT SAQGPM(CHAMBER_QUANTITY,
 					GOT_CODE,
 					GOTCODE_RECORD_ID,
@@ -5310,7 +5311,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					pmsa_pmevents.KIT_ID,
 					pmsa_pmevents.KIT_RECORD_ID,
 					pmsa_pmevents.KIT_NUMBER,
-					pmsa_pmevents.KIT_NUMBER_RECORD_ID,
+					pmsa_pmevents.TOOL_KIT_NUMBER_RECORD_ID,
 					pmsa_pmevents.SERVICE_ID,
 					pmsa_pmevents.SERVICE_DESCRIPTION,
 					pmsa_pmevents.SERVICE_RECORD_ID,
@@ -5330,18 +5331,18 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQRGG.GOTCODE_RECORD_ID,
 					SAQRGG.GREENBOOK,
 					SAQRGG.GREENBOOK_RECORD_ID,
-					MAEAPK.PM_ID,
+					MAPMEV.PM_ID,
 					MAEAPM_INBOUND.PM_NAME,
-					MAEAPK.PM_RECORD_ID,
+					MAPMEV.PM_RECORD_ID,
 					CASE WHEN MAEAPM_INBOUND.PM_LEVEL ='Sched Maint' THEN 'Scheduled Maintenance' ELSE MAEAPM_INBOUND.PM_LEVEL END AS PM_LEVEL ,
 					MAEAPM_INBOUND.KIT_ID,
-					MAEAPK.KIT_RECORD_ID,
+					MAMKIT.KIT_RECORD_ID,
 					MAEAPM_INBOUND.KIT_NUMBER,
-					MAEAPK.KIT_NUMBER_RECORD_ID,
+					MATKTN.TOOL_KIT_NUMBER_RECORD_ID,
 					SAQRGG.SERVICE_ID,
 					SAQRGG.SERVICE_DESCRIPTION,
 					SAQRGG.SERVICE_RECORD_ID,
-					MAEAPK.PM_FREQUENCY_EDITABLE as PM_FREQUENCY_EDITABLE,
+					MAEAPM_INBOUND.RFP_EDIT as PM_FREQUENCY_EDITABLE,
 					null as PROCESS_TYPE,
 					null as DEVICE_NODE,
 					'{QuoteId}' as QUOTE_ID,
@@ -5351,14 +5352,16 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQRGG.QTESRV_RECORD_ID as QTESRV_RECORD_ID,
 					SAQRGG.QTESRVGBK_RECORD_ID as QTESRVGBK_RECORD_ID,
 					SAQRGG.QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID as QTEREVGOT_RECORD_ID,
-					MAEAPK.TKM_FLAG as TKM_FLAG
+					'1' as TKM_FLAG if self.tree_param == "Z0010" else '0'
 					FROM SYSPBT (NOLOCK) 
 					JOIN SAQRGG(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SYSPBT.QTEREV_RECORD_ID
 					JOIN SAQSCO(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
 					AND SAQRGG.SERVICE_RECORD_ID = SAQSCO.SERVICE_RECORD_ID AND SAQRGG.GREENBOOK_RECORD_ID = SAQSCO.GREENBOOK_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID
 					JOIN MAEQUP(NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQRGG.GOT_CODE = MAEQUP.GOT_CODE
 					JOIN MAEAPM_INBOUND(NOLOCK) ON MAEAPM_INBOUND.QUOTE_ID = SAQSCO.QUOTE_ID AND MAEAPM_INBOUND.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND MAEAPM_INBOUND.QTEREV_ID = SAQSCO.QTEREV_ID AND MAEAPM_INBOUND.SERVICE_ID = SAQSCO.SERVICE_ID AND MAEQUP.EQUIPMENT_ID = MAEAPM_INBOUND.ASSEMBLY_ID
-					JOIN MAEAPK(NOLOCK) ON MAEAPK.ASSEMBLY_ID = MAEQUP.EQUIPMENT_ID AND MAEAPM_INBOUND.PM_NAME = MAEAPK.PM_NAME {tkm_flag}
+					JOIN MAPMEV ON MAPMEV.PM_NAME = MAEAPM_INBOUND.PM_NAME
+					JOIN MAMKIT ON MAMKIT.KIT_ID = MAEAPM_INBOUND.KIT_ID
+					LEFT JOIN MATKTN ON MATKTN.KIT_NUMBER = MAEAPM_INBOUND.KIT_NUMBER AND MAMKIT.KIT_ID = MATKTN.KIT_ID
 					WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.
 					QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRGG.SERVICE_ID = '{TreeParam}' AND  MAEAPM_INBOUND.PM_LEVEL IN {pm_level_value}) pmsa_pmevents  LEFT JOIN SAQGPM (NOLOCK) AS pm on pmsa_pmevents.QUOTE_RECORD_ID = pm.QUOTE_RECORD_ID AND pmsa_pmevents.QTEREV_RECORD_ID = pm.QTEREV_RECORD_ID AND pmsa_pmevents.SERVICE_RECORD_ID = pm.SERVICE_RECORD_ID AND pmsa_pmevents.GREENBOOK_RECORD_ID = pm.GREENBOOK_RECORD_ID and pmsa_pmevents.GOTCODE_RECORD_ID = pm.GOTCODE_RECORD_ID and pmsa_pmevents.PM_RECORD_ID = pm.PM_RECORD_ID
 					WHERE ISNULL(pm.PM_RECORD_ID,'') = '' """.format(
@@ -5369,8 +5372,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					RevisionId=self.quote_revision_id,
 					RevisionRecordId=self.quote_revision_record_id,
 					BatchGroupRecordId=kwargs.get('batch_group_record_id'),
-					pm_level_value = ('Scheduled Maintenance','Sched Maint','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value').upper() != "TOOL BASED") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance'),
-					tkm_flag = "AND TKM_FLAG = 1" if self.tree_param == "Z0010" else ""
+					pm_level_value = ('Scheduled Maintenance','Sched Maint','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value').upper() != "TOOL BASED") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance')
 					)
 				)
 			Sql.RunQuery("""UPDATE SAQGPM
