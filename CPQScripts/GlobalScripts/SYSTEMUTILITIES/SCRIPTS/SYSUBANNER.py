@@ -3358,6 +3358,9 @@ def Related_Sub_Banner(
         sec_rel_sub_bnr += "<div id = 'multibtn_drpdwn'></div>"
         if dropdown_multi_btn_str:
             sec_rel_sub_bnr = dropdown_multi_btn_str
+        else:
+            sec_rel_sub_bnr = sec_rel_sub_bnr.replace('''<div id="ctr_drop" class="btn-group dropdown dropdown_multi_btn_str"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">''','')
+
 
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
 try:
