@@ -2333,6 +2333,9 @@ class Entitlements:
 			except:
 				pass
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
+		value_driver_attr_qry = Sql.GetList("SELECT ENTITLEMENT_ID FROM PRENTL WHERE ENTITLEMENT_TYPE IN ('VALUE DRIVER','VALUE DRIVER COEFFICIENT') AND  SERVICE_ID = '"+str(serviceId)+"'")
+		value_driver_attr= [val.ENTITLEMENT_ID for val in value_driver_attr_qry]
+		dropdownallowlist_unselected = [dropdown_val for dropdown_val in dropdownallowlist_unselected if dropdown_val not in value_driver_attr ]
 		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesdisrequired_list,attriburesrequired_list,str(cps_error),str(msg_text), dropdownallowlist_unselected
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
