@@ -614,6 +614,7 @@ def billingmatrix_create():
 			
 def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	TreeParam = Product.GetGlobal("TreeParam")
+	Trace.Write("TITLE=========="+str(TITLE))
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
 	if "table_event_parent" in CLICKEDID:
@@ -816,7 +817,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 					if TITLE not in ('NET_PRICE','DISCOUNT','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY','NEW_PART','CUSTOMER_PART_NUMBER') and "DELIVERY_" not in TITLE:
 						Trace.Write("aaSaqico")
 						edt_str += "</div></td></tr></tbody></table>"
-						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
+						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>' 	
 					else:
 						
 						if quote_status.REVISION_STATUS=='APR-APPROVED':
