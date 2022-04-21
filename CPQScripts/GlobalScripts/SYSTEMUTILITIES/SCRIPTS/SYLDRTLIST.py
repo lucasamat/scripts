@@ -2090,7 +2090,7 @@ class SYLDRTLIST:
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     ##involved parties source fab ends
                     elif str(RECORD_ID) == "SYOBJR-98859":                        
-                        Qustr += " AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND MA.VISIBLE_INCONFIG = 'True'"
+                        Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND MA.VISIBLE_INCONFIG = 'True'"
                         Qury_str = (
                             "select DISTINCT top "
                             + str(PerPage)
@@ -2587,7 +2587,7 @@ class SYLDRTLIST:
                     QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                 ##involved parties source fab ends
                 elif str(RECORD_ID) == "SYOBJR-98859":
-                    Qustr += " AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND MA.VISIBLE_INCONFIG = 'True'"
+                    Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND MA.VISIBLE_INCONFIG = 'True'"
                     Qury_str = (
                         "select DISTINCT top "
                         + str(PerPage)
@@ -8420,7 +8420,25 @@ class SYLDRTLIST:
                             tabRecord = str(gettabres.RECORD_ID)
 
                         Qustr = " where SECTION_RECORD_ID = '" + str(tabRecord) + "'"
-
+                    elif str(RECORD_ID) == "SYOBJR-98859":
+                        Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND PAR_SERVICE_ID = '"+str(TreeSuperParentParam)+"' AND GREENBOOK = '"+str(TreeParentParam)+"' AND MA.VISIBLE_INCONFIG = 'True'"
+                        Qury_str = (
+                            "select DISTINCT top "
+                            + str(PerPage)
+                            + " "
+                            + str(select_obj_str)
+                            + ",CpqTableEntryId from ( select  ROW_NUMBER() OVER(order by PAR_SERVICE_ID) AS ROW, S.* from "
+                            + str(ObjectName)
+                            + " S (nolock) INNER JOIN MAADPR MA ON MA.COMP_PRDOFR_ID=S.SERVICE_ID"
+                            + str(Qustr)
+                            + " ) m where m.ROW BETWEEN "
+                            + str(Page_start)
+                            + " and "
+                            + str(Page_End)
+                            + ""
+                        )
+                        
+                        QuryCount_str = "select count(S.*) as cnt from " + str(ObjectName) + " S (nolock) INNER JOIN MAADPR MA ON MA.COMP_PRDOFR_ID=S.SERVICE_ID " + str(Qustr)
                     else:
                         TreeParam = Product.GetGlobal("TreeParam")
                         TreeParentParam = Product.GetGlobal("TreeParentLevel0") 
