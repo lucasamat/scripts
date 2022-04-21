@@ -85,26 +85,26 @@ def constructpricingsummary(Quote_rec_id,MODE,values):
 				editvalue2 ="BPTKPI"
 				record_list.append(editvalue1)
 				record_list.append(editvalue2)
-			allvalue_edit1="TRGPRC"
-			allvalue_edit2="SLSPRC"
-			allvalue_edit3="BDVPRC"
-			allvalue_edit4="CELPRC"
+			#allvalue_edit1="TRGPRC"
+			#allvalue_edit2="SLSPRC"
+			#allvalue_edit3="BDVPRC"
+			#allvalue_edit4="CELPRC"
 			allvalue_edit5="TGADJP"
 			allvalue_edit6="YOYPCT"
 			allvalue_edit7="USRPRC"
-			allvalue_edit8="BCHPGC"
-			allvalue_edit9="BCHDPT"
-			allvalue_edit10="CNTPRC"
-			record_list.append(allvalue_edit1)
-			record_list.append(allvalue_edit2)
-			record_list.append(allvalue_edit3)
-			record_list.append(allvalue_edit4)
+			#allvalue_edit8="BCHPGC"
+			#allvalue_edit9="BCHDPT"
+			#allvalue_edit10="CNTPRC"
+			#record_list.append(allvalue_edit1)
+			#record_list.append(allvalue_edit2)
+			#record_list.append(allvalue_edit3)
+			#record_list.append(allvalue_edit4)
 			record_list.append(allvalue_edit5)
 			record_list.append(allvalue_edit6)
 			record_list.append(allvalue_edit7)
-			record_list.append(allvalue_edit8)
-			record_list.append(allvalue_edit9)
-			record_list.append(allvalue_edit10)
+			#record_list.append(allvalue_edit8)
+			#record_list.append(allvalue_edit9)
+			#record_list.append(allvalue_edit10)
 		annual_dict_pricing[str(line_values.LINE)] = record_list
 	Trace.Write("dictdictdict"+str(annual_dict_pricing)) 
 	return str(annual_dict_pricing)
