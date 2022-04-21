@@ -116,6 +116,7 @@ CUSTOM_FIELDS_DETAIL = [
     ("SIGFPQuoteID","SIGFPQuoteID"),
     ("SIGFPQuoteDate","SIGFPQuoteDate"),
     ("LowID","LowID"),
+    ("OpportunityStatus","OpportunityStatus"),
 ]
 
 # ---------------------------------------------------CONFIGURATION------------------------------------------------ #
@@ -1399,6 +1400,7 @@ class SyncQuoteAndCustomTables:
                                             master_opportunity_data.get("OPPORTUNITY_RECORD_ID")
                                         )
                                     )
+                                Log.Info("opportunity_obj ===>" + str(custom_fields_detail.get("OpportunityStatus")))
                                 opportunity_quote_data = {
                                     "OPPORTUNITY_QUOTE_RECORD_ID": str(Guid.NewGuid()).upper(),
                                     "OPPORTUNITY_ID": opportunity_obj.OPPORTUNITY_ID,
