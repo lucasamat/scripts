@@ -2036,6 +2036,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"SALESORG_ID": self.salesorg_id,
 				"SALESORG_NAME": self.salesorg_name,
 				"SALESORG_RECORD_ID": self.salesorg_record_id,
+				"QTEREV_ID" : 0
 				# "CPQTABLEENTRYADDEDBY": self.userName,
 			}
 			get_greenbook = Sql.GetFirst("SELECT BUSINESS_UNITS_RECORD_ID FROM SABUUN WHERE BUSINESSUNIT_ID = '"+str(self.tree_parent_level_0)+"' ")
