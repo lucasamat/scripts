@@ -686,7 +686,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						)
 						Trace.Write("list(RECORDID)_CHECK__J "+str(len(list(RECORDID))))
 					elif TITLE == "SAPMMP":
-						edt_str += ('<div   class="row modulebnr brdr">BULK EDIT '+ str(field_lable).upper()+ ' <button type="button"   class="close fltrt" onclick="multiedit_RL_cancel();">X</button></div>')
+						edt_str += ('<div   class="row modulebnr brdr">BULK EDIT <button type="button"   class="close fltrt" onclick="multiedit_RL_cancel();">X</button></div>')
 						edt_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
 						edt_str += '<table class="wdth100" id="bulk_edit">'
 						edt_str += ('<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'+ str(field_lable)+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
