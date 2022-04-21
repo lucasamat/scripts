@@ -4892,8 +4892,8 @@ class SYLDRTLIST:
             else:
                 Trace.Write('4512--Saqico--')
                 dbl_clk_function += (
-                    'debugger; var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
-                    + str(table_ids)
+                    'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); debugger; $("'
+                    + str(table_ids) 
                     + '").on("check.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
                     + str(cls)
                     + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
@@ -4933,6 +4933,7 @@ class SYLDRTLIST:
                     + str(table_id)
                     + "'); }); "
                 )
+
         
 
         NORECORDS = ""
