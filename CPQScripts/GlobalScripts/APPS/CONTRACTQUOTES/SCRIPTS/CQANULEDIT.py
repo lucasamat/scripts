@@ -74,7 +74,7 @@ def constructcat4editablity(Quote_rec_id,MODE,values):
 
 
 def constructpricingsummary(Quote_rec_id,MODE,values):
-	get_all_lines =Sql.GetList("Select * from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND LINE IN ({values})".format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,values=",".join(values).replace("SAQICO-","")))
+	get_all_lines =Sql.GetList("Select * from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{contract_quote_rec_id}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' AND CpqTableEntryId IN ({values})".format(contract_quote_rec_id = contract_quote_rec_id,quote_revision_rec_id = quote_revision_rec_id,values=",".join(values).replace("SAQICO-","")))
 	annual_dict_pricing={}
 	for line_values in get_all_lines:
 		record_list=[]
