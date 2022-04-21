@@ -4896,7 +4896,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQRGG.QTESRV_RECORD_ID as QTESRV_RECORD_ID,
 					SAQRGG.QTESRVGBK_RECORD_ID as QTESRVGBK_RECORD_ID,
 					SAQRGG.QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID as QTEREVGOT_RECORD_ID,
-					'1' as TKM_FLAG if str(self.tree_param) == "Z0010" else '0'
+					{tkm_flag} as TKM_FLAG
 					FROM SAQRGG (NOLOCK) 
 					JOIN SAQSCO(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID AND SAQRGG.SERVICE_RECORD_ID = SAQSCO.SERVICE_RECORD_ID AND SAQRGG.GREENBOOK_RECORD_ID = SAQSCO.GREENBOOK_RECORD_ID
 					JOIN MAEQUP(NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQRGG.GOT_CODE = MAEQUP.GOT_CODE
@@ -4913,7 +4913,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					QuoteRecordId=self.contract_quote_record_id,
 					RevisionId=self.quote_revision_id,
 					RevisionRecordId=self.quote_revision_record_id,
-					pm_level_value = ('Scheduled Maintenance','Sched Maint','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value').upper() != "TOOL BASED") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance')
+					pm_level_value = ('Scheduled Maintenance','Sched Maint','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value').upper() != "TOOL BASED") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance'),
+					tkm_flag = (1 if str(self.tree_param) == "Z0010" else 0)
 					)
 				)
 				# additional_where = kwargs.get('additional_where')
@@ -5353,7 +5354,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQRGG.QTESRV_RECORD_ID as QTESRV_RECORD_ID,
 					SAQRGG.QTESRVGBK_RECORD_ID as QTESRVGBK_RECORD_ID,
 					SAQRGG.QUOTE_REV_PO_GREENBOOK_GOT_CODES_RECORD_ID as QTEREVGOT_RECORD_ID,
-					'1' as TKM_FLAG if str(self.tree_param) == "Z0010" else '0'
+					{tkm_flag} as TKM_FLAG
 					FROM SYSPBT (NOLOCK) 
 					JOIN SAQRGG(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SYSPBT.QTEREV_RECORD_ID
 					JOIN SAQSCO(NOLOCK) ON SAQRGG.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQRGG.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
@@ -5373,7 +5374,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					RevisionId=self.quote_revision_id,
 					RevisionRecordId=self.quote_revision_record_id,
 					BatchGroupRecordId=kwargs.get('batch_group_record_id'),
-					pm_level_value = ('Scheduled Maintenance','Sched Maint','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value').upper() != "TOOL BASED") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance')
+					pm_level_value = ('Scheduled Maintenance','Sched Maint','Chamber / Module PM') if(kwargs.get('quote_type_attribute_value').upper() != "TOOL BASED") else ('Scheduled Maintenance','Chamber / Module PM','Corrective Maintenance'),
+					tkm_flag = (1 if str(self.tree_param) == "Z0010" else 0)
 					)
 				)
 			Sql.RunQuery("""UPDATE SAQGPM
