@@ -4935,6 +4935,8 @@ class SYLDRTLIST:
                     + str(table_id)
                     + "'); }); "
                 )
+                
+                Trace.Write("dbl_clk_function"+str(dbl_clk_function))
             else:
                 Trace.Write('4939')
                 dbl_clk_function += (
