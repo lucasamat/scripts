@@ -4892,7 +4892,7 @@ class SYLDRTLIST:
             else:
                 Trace.Write('4512--Saqico--')
                 dbl_clk_function += (
-                    'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
+                    'debugger; var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
                     + str(table_ids)
                     + '").on("check.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
                     + str(cls)
