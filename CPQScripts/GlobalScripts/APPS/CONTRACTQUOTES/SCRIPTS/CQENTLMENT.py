@@ -133,7 +133,7 @@ class Entitlements:
 						if get_ent_type:
 							if get_ent_type.ENTITLEMENT_TYPE:
 								ent_type = get_ent_type.ENTITLEMENT_TYPE
-						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and ent_type.upper() not in ('VALUE DRIVER','VALUE DRIVER COEFFICIENT'):
+						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and (ent_type.upper() not in ('VALUE DRIVER','VALUE DRIVER COEFFICIENT') or row.ENTITLEMENT_ID == "AGS_{}_VAL_SVCCMP".format(serviceId)):
 							Trace.Write('row--'+str(row.ENTITLEMENT_ID)+str(row.IS_DEFAULT))
 							try:
 								requestdata = '{"characteristics":['								
@@ -573,7 +573,7 @@ class Entitlements:
 			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
 			
 			if get_ent_type:
-				if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
+				if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"] or AttributeID == "AGS_{}_VAL_SVCCMP".format(serviceId):
 					Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,get_attr_datatype,product_obj.PRD_ID)				
 					Trace.Write("Fullresponse--"+str(Fullresponse))
 					Product.SetGlobal('Fullresponse',str(Fullresponse))
@@ -2126,7 +2126,7 @@ class Entitlements:
 						cpsmatc_incr = ''
 						attribute_code = ''
 						if get_ent_type:
-							if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
+							if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"] or AttributeID == "AGS_{}_VAL_SVCCMP".format(serviceId):
 								Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',get_attr_datatype,product_obj.PRD_ID)
 						else:
 							Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',get_attr_datatype,product_obj.PRD_ID)
