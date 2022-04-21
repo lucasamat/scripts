@@ -671,7 +671,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 				field_lable = str(objd_obj.FIELD_LABEL)
 				datepicker = "onclick_datepicker('" + api_name + "')"
 				if SELECTALL != "noselection":
-					if TITLE not in ("NET_PRICE","PM_FREQUENCY","QUANTITY","CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_PART_NUMBER") and "DELIVERY_" not in TITLE:
+					if TITLE not in ("NET_PRICE","PM_FREQUENCY","QUANTITY","CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_PART_NUMBER","SAPMMP") and "DELIVERY_" not in TITLE:
 						edt_str += (
 							'<div   class="row modulebnr brdr">EDIT '
 							+ str(field_lable).upper()
@@ -685,6 +685,20 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
 						)
 						Trace.Write("list(RECORDID)_CHECK__J "+str(len(list(RECORDID))))
+					elif TITLE ="SAPMMP":
+						edt_str += (
+							'<div   class="row modulebnr brdr">BULK EDIT '
+							+ str(field_lable).upper()
+							+ ' <button type="button"   class="close fltrt" onclick="multiedit_RL_cancel();">X</button></div>'
+						)
+						edt_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+						edt_str += '<table class="wdth100" id="bulk_edit">'
+						edt_str += (
+							'<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'
+							+ str(field_lable)
+							+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
+						)
+
 					if len(list(RECORDID)) > 1:
 						Trace.Write("data_type_CHECK__J "+str(data_type))
 						if data_type.upper() == "TEXT":
@@ -814,10 +828,12 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 								+ str(VALUE)
 								+ '">'
 							)
-					if TITLE not in ('NET_PRICE','DISCOUNT','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY','NEW_PART','CUSTOMER_PART_NUMBER') and "DELIVERY_" not in TITLE:
+					if TITLE not in ('NET_PRICE','DISCOUNT','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY','NEW_PART','CUSTOMER_PART_NUMBER','SAPMMP') and "DELIVERY_" not in TITLE:
 						Trace.Write("aaSaqico")
 						edt_str += "</div></td></tr></tbody></table>"
 						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>' 	
+					elif TITLE in ('SAPMMP'):
+
 					else:
 						
 						if quote_status.REVISION_STATUS=='APR-APPROVED':
