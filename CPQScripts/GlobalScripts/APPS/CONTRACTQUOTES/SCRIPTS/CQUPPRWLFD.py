@@ -7,6 +7,9 @@
 # ==========================================================================================================================================
 
 import datetime
+import System.Net
+from System.Text.Encoding import UTF8
+from System import Convert
 from SYDATABASE import SQL
 Sql = SQL()
 
@@ -65,7 +68,24 @@ class ContractQuoteItemAnnualizedPricing:
 				items_status = [item_obj.STATUS for item_obj in items_obj]
 			if 'PRR-ON HOLD PRICING' not in items_status and 'OFFLINE PRICING' in items_status:
 				Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING REVIEW',REVISION_STATUS='PRR-ON HOLD PRICING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' ".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
+			# Billing Call
+			self._billing_call()
 			
+	def _billing_call(self):
+		LOGIN_CREDENTIALS = Sql.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+		if LOGIN_CREDENTIALS is not None:
+			Login_Username = str(LOGIN_CREDENTIALS.Username)
+			Login_Password = str(LOGIN_CREDENTIALS.Password)
+			authorization = Login_Username+":"+Login_Password
+			binaryAuthorization = UTF8.GetBytes(authorization)
+			authorization = Convert.ToBase64String(binaryAuthorization)
+			authorization = "Basic " + authorization
+			webclient = System.Net.WebClient()
+			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;		
+			result = '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>	<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= self.contract_quote_record_id,Rev_Id = self.contract_quote_revision_record_id)		
+			LOGIN_CRE = Sql.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='BILLING_MATRIX_ASYNC'")
+			Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 
 	def _rolldown_from_coeff_level(self, annual_line_record_id = None):
 		#SUMCOF - Sum of All Coefficient
