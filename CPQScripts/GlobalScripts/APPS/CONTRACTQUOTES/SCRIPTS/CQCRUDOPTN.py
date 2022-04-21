@@ -4939,7 +4939,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			drop_saqsco_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsco_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsco_backup_table)+" END  ' ")
 
 			saqsco_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSCO.QUOTE_RECORD_ID,SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,SAQSCO.QTEREV_RECORD_ID,SAQSCO.SERVICE_RECORD_ID,SAQSCO.SERVICE_ID,SAQSCO.EQUIPMENT_ID,SAQSCO.EQUIPMENT_DESCRIPTION,SAQSCO.EQUIPMENT_RECORD_ID INTO "+str(saqsco_backup_table)+" FROM SAQSCO(NOLOCK) WHERE SAQSCO.QUOTE_RECORD_ID = ''{}'' AND SAQSCO.QTEREV_RECORD_ID = ''{}'' AND  SAQSCO.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
-
+			##HPQC DEFECT 471 code starts...
 			self._process_query(
                 """INSERT SAQGPA (
                         ASSEMBLY_ID,
@@ -5043,6 +5043,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
                     RevisionRecordId=self.quote_revision_record_id
                     )
                 )
+			##HPQC DEFECT 471 code ends...
 			Sql.RunQuery("""UPDATE SAQGPA SET FABLOCATION_ID = MAEQUP.FABLOCATION_ID,
 							FABLOCATION_NAME = MAEQUP.FABLOCATION_NAME,
 							FABLOCATION_RECORD_ID = MAEQUP.FABLOCATION_RECORD_ID		
@@ -5396,7 +5397,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			drop_saqsco_backup_table = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(saqsco_backup_table)+"'' ) BEGIN DROP TABLE "+str(saqsco_backup_table)+" END  ' ")
 
 			saqsco_temp_table_insert = SqlHelper.GetFirst("sp_executesql @T=N'SELECT SAQSCO.QUOTE_RECORD_ID,SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,SAQSCO.QTEREV_RECORD_ID,SAQSCO.SERVICE_RECORD_ID,SAQSCO.SERVICE_ID,SAQSCO.EQUIPMENT_ID,SAQSCO.EQUIPMENT_DESCRIPTION,SAQSCO.EQUIPMENT_RECORD_ID INTO "+str(saqsco_backup_table)+" FROM SAQSCO(NOLOCK) WHERE SAQSCO.QUOTE_RECORD_ID = ''{}'' AND SAQSCO.QTEREV_RECORD_ID = ''{}'' AND  SAQSCO.SERVICE_ID = ''{}'' '".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
-
+			##HPQC DEFECT 471 code starts...
 			self._process_query(
                 """INSERT SAQGPA (
                         ASSEMBLY_ID,
@@ -5503,6 +5504,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
                     BatchGroupRecordId=kwargs.get('batch_group_record_id')
                     )
                 )
+			##HPQC DEFECT 471 code ends...
 			Sql.RunQuery("""UPDATE SAQGPA SET FABLOCATION_ID = MAEQUP.FABLOCATION_ID,
 							FABLOCATION_NAME = MAEQUP.FABLOCATION_NAME,
 							FABLOCATION_RECORD_ID = MAEQUP.FABLOCATION_RECORD_ID		
