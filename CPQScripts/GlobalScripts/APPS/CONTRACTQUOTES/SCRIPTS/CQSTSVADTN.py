@@ -63,7 +63,7 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 
 		# get_quality_required start validations#A055S000P01-18587
 		get_quality_required_list = []
-		get_quality_required = Sql.GetList("SELECT QUALITY_REQUIRED FROM SAQFBL where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_record_id))
+		get_quality_required = Sql.GetList("SELECT ISNULL(QUALITY_REQUIRED,'') as QUALITY_REQUIRED FROM SAQFBL where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_record_id))
 		if get_quality_required:
 			for val in get_quality_required:
 				if val.QUALITY_REQUIRED != '':
