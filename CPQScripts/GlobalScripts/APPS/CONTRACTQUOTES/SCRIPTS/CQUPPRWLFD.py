@@ -28,10 +28,13 @@ class ContractQuoteItemAnnualizedPricing:
 		if self.records:
 			self.records = eval(self.records)		
 			Trace.Write("-------------+++ "+str(self.records))	
+			price_updated_services = []
 			for data in self.records:
 				for annual_item_record_id, value in data.items():					
 					update_fields_str = ' ,'.join(["{} = {}".format(field_name,float(field_value.replace(" USD","")) if field_value else 0) for field_name, field_value in value.items()])					
-
+					annualaized_item_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQICO (NOLOCK) WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID = '{AnnaualItemRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, AnnaualItemRecordId=annual_item_record_id))
+					if annualaized_item_obj:
+						price_updated_services.append(annualaized_item_obj.SERVICE_ID)
 					Sql.RunQuery("""UPDATE SAQICO
 							SET {UpdateFields}	
 							FROM SAQICO (NOLOCK)							
@@ -56,7 +59,7 @@ class ContractQuoteItemAnnualizedPricing:
 							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID = '{AnnualItemRecordId}' AND (SAQICO.USRPRC < SAQICO.SLSPRC) AND (SAQICO.SLSPRC < SAQICO.BDVPRC)""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, AnnualItemRecordId=annual_item_record_id))
 			##roll up script call
 			try:
-				CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id,"manual_pricing":"True"})
+				CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":self.contract_quote_id,"manual_pricing":"True",'service_ids':list(set(price_updated_services))})
 			except:
 				Trace.Write("error in pricing roll up")
 			

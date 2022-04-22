@@ -7,6 +7,7 @@
 # ==========================================================================================================================================
 
 import datetime
+from CPQScripts.GlobalScripts.APPS.CONTRACTQUOTES.SCRIPTS.CQSTATUSBR import Param
 import Webcom.Configurator.Scripting.Test.TestProduct
 import sys
 import re
@@ -20,7 +21,7 @@ Sql = SQL()
 ScriptExecutor = ScriptExecutor
 from System.Text.Encoding import UTF8
 #Log.Info('quote_revision_record_id- '+str(quote_revision_record_id))
-def quote_items_pricing(Qt_id):
+def quote_items_pricing(Qt_id, service_ids=[]):
 	where_condition = ""
 	#quote_number = Qt_id[2:12]
 	Log.Info('quote_id---'+str(Qt_id)) 
@@ -93,6 +94,9 @@ def quote_items_pricing(Qt_id):
 		pricing_offering = pricing_offering + ('Z0123',)
 	if manual_pricing != 'True':
 		where_condition = " AND SAQRIT.SERVICE_ID IN {pricing_offering}".format(pricing_offering =pricing_offering)
+	
+	if manual_pricing == 'True' and service_ids:
+		pricing_offering = "('{}')".format("','".join(service_ids))
 	##updating saqrit
 	Sql.RunQuery("""UPDATE SAQRIT 
 					SET NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
@@ -122,6 +126,8 @@ def quote_items_pricing(Qt_id):
 	
 	##year field update for cpq pricing
 	#if manual_pricing != 'True':
+	
+		
 	Sql.RunQuery("""UPDATE SAQRIT 
 	SET YEAR_1 = CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVDC ELSE SAQICO.TNTVDC END,
 	YEAR_1_INGL_CURR =  CASE WHEN SAQRIT.BILLING_TYPE = 'Variable' THEN SAQICO.TENVGC ELSE SAQICO.TNTVGC END 
@@ -1828,12 +1834,16 @@ try:
 except:
 	manual_pricing = "False"
 try:
+	service_ids = Param.service_ids
+except Exception:
+	service_ids = []
+try:
 	if Action == 'Delete':
 		calling_function = quoteitemupdate(Qt_id)
 	# elif  Action == 'VOUCHER_UPDATE':
 	# 	voucher_amt_update(Qt_id)
 	else:    
-		calling_function = quote_items_pricing(Qt_id)
+		calling_function = quote_items_pricing(Qt_id, service_ids)
 		#voucher_amt_update(Qt_id)
 		
 	
