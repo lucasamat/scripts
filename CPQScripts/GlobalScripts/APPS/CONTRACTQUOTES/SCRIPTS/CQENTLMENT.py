@@ -273,16 +273,17 @@ class Entitlements:
 		#Trace.Write("ELSE = "+str(Product.GetGlobal("pre_ent_val")))
 		Trace.Write("requestdata---180---" + str(requestdata))
 		response2 = webclient.DownloadString(Request_URL)
-		#Trace.Write('response2--182---------'+str(response2))
+		Trace.Write('response2--182---------'+str(response2))
 		response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
 		#try:
 		if (not cps_error) and response2:
+			Trace.Write('iffff---'+str(response2))
 			response_temp = eval(response2)
 			if response_temp['conflicts']:
 				cps_conflict = str(response_temp['conflicts'][0]['explanation']).split('(ID')[0]
 		# except:
 		# 	pass
-		Trace.Write("requestdata---180---" + str(cps_error)+'--'+str(cps_conflict))
+		Trace.Write("cps_error---" + str(cps_error)+'--'+str(cps_conflict))
 		return eval(response2),cpsmatc_incr,attribute_code,cps_error,cps_conflict
 	
 	def get_product_attr_level_cps_pricing(self, characteristics_attr_values=None,serviceId =None):
