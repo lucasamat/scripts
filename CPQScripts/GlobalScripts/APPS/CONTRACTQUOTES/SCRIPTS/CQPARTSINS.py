@@ -577,6 +577,7 @@ class SyncFPMQuoteAndHanaDatabase:
             self.columns = 'QUOTE_RECORD_ID,QTEREV_RECORD_ID'
             value  = '''(\"{}\",\"{}\"'''.format(self.quote_record_id,self.quote_revision_id)
             col_flag = 0
+            '''
             for record in re.finditer(pattern, response):
                 #rec = re.sub(r'\{|\}','',record.group(1))
                 record_count +=1
@@ -616,8 +617,27 @@ class SyncFPMQuoteAndHanaDatabase:
                 else:
                     self.records += ', '+temp_value
                 temp_value =''
-                
+            ''' 
+            for record in re.finditer(pattern, response):
+                record_count +=1
+                rec = record.group(1)
+                temp_value = value
+                for ele in re.finditer(pattern2,rec):
+                    if col_flag == 0:
+                        self.columns +=','+ele.group(1)
+                    if ele.group(1) == '"PARENT_PART_NUMBER"':
+                        self.part_numbers.append(str(ele.group(2)))
+                    temp_value +=','+ele.group(2) if ele.group(2) !='' else None
+                temp_value +=')'
+                temp_value = re.sub(r"'",'"',temp_value)
+                temp_value = re.sub(r'"',"''",temp_value)
+                if self.records == '':
+                    self.records = temp_value
+                else:
+                    self.records += ', '+temp_value
+                temp_value =''
                 col_flag=1
+            
             Log.Info("Total Records from HANA::"+str(record_count))
             #Log.Info("Total Parts List:: " +str(self.part_numbers))
             if record_count >0:
