@@ -282,6 +282,7 @@ class Entitlements:
 				cps_conflict = str(response_temp['conflicts'][0]['explanation']).split('(ID')[0]
 		# except:
 		# 	pass
+		Trace.Write("requestdata---180---" + str(cps_error)+'--'+str(cps_conflict))
 		return eval(response2),cpsmatc_incr,attribute_code,cps_error,cps_conflict
 	
 	def get_product_attr_level_cps_pricing(self, characteristics_attr_values=None,serviceId =None):
@@ -2330,7 +2331,8 @@ class Entitlements:
 			# 	# )
 			try:
 				msg_text = '<div class="emp_notifiy" style="display: none;"><div class="col-md-12 page_alert_notifi" id="PageAlert"><div class="row modulesecbnr brdr" onclick="call_vertical_scrl()" data-toggle="collapse" data-target=".alertnotify" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div id="alertnotify" class="col-md-12 alertnotify alert-notification  brdr collapse in"><div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '+str(cps_conflict)+' </label></div></div> </div></div></div>'
-			except:
+			except Exception as e:
+				Trace.Write("error conf-"+str(e))
 				pass
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
 		value_driver_attr_qry = Sql.GetList("SELECT ENTITLEMENT_ID FROM PRENTL WHERE ENTITLEMENT_TYPE IN ('VALUE DRIVER','VALUE DRIVER COEFFICIENT') AND  SERVICE_ID = '"+str(serviceId)+"'")
