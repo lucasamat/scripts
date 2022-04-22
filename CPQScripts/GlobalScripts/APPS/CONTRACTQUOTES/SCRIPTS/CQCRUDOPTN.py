@@ -4564,7 +4564,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					LEFT JOIN MATKTN(NOLOCK) ON MATKTN.KIT_ID = MAEAPM_INBOUND.KIT_ID AND MATKTN.KIT_NUMBER = MAEAPK.KIT_NUMBER
 					JOIN MAPMEV(NOLOCK) ON MAPMEV.PM_NAME = MAEAPM_INBOUND.PM_NAME 
 					JOIN SAQTRV(NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID 
-					WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {additional_where} SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}' ) PM """.format(
+					WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}' ) PM """.format(
 					UserName=self.user_name,
 					TreeParam=self.tree_param,
 					QuoteId = self.contract_quote_id,
@@ -4654,7 +4654,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					LEFT JOIN MATKTN(NOLOCK) ON MATKTN.KIT_ID = MAEAPM_INBOUND.KIT_ID AND MATKTN.KIT_NUMBER = MAEAPK.KIT_NUMBER
 					JOIN MAPMEV(NOLOCK) ON MAPMEV.PM_NAME = MAEAPM_INBOUND.PM_NAME 
 					JOIN SAQTRV(NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID 
-					WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {additional_where} SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}' ) PM """.format(
+					WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCA.SERVICE_ID = '{TreeParam}' ) PM """.format(
 					UserName=self.user_name,
 					TreeParam=self.tree_param,
 					QuoteId = self.contract_quote_id,
