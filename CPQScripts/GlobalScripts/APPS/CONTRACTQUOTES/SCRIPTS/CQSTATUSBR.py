@@ -53,8 +53,8 @@ user_name = str(User.UserName)
 
 
 def Dynamic_Status_Bar(quote_item_insert,Text,edit_config):
-	if edit_config != "":
-		Sql.RunQuery("UPDATE SAQTRV SET DIRTY_FLAG='{}',REVISION_STATUS='CFG-CONFIGURING' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(edit_config,Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+	# if edit_config != "":
+	# 	Sql.RunQuery("UPDATE SAQTRV SET DIRTY_FLAG='{}',REVISION_STATUS='CFG-CONFIGURING' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(edit_config,Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 
 	if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
 		Trace.Write('SAQSPT delete=======')
