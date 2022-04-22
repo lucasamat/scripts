@@ -5372,7 +5372,7 @@ class SYLDRTLIST:
             # 	'$("'+ str(table_ids)+ '").on("dbl-click-cell.bs.table", onClickCell);
             #   '$("'+str(table_ids)+'").find("tbody").attr("ondblclick","annualized_editable()");
             SAQICO_dbl_clk_function += (    
-                '$("'+ str(table_ids)+ '").on("dbl-click-cell.bs.table", onClickCell);$("'  
+                '$("'+str(table_ids)+'").find("tbody").attr("ondblclick","annualized_editable()");$("'  
                 + str(table_ids)    
                 + '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'  
                 + str(table_ids)    
