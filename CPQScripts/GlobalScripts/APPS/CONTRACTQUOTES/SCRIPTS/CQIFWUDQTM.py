@@ -7,7 +7,7 @@
 # ==========================================================================================================================================
 
 import datetime
-from CPQScripts.GlobalScripts.APPS.CONTRACTQUOTES.SCRIPTS.CQSTATUSBR import Param
+#from CPQScripts.GlobalScripts.APPS.CONTRACTQUOTES.SCRIPTS.CQSTATUSBR import Param
 import Webcom.Configurator.Scripting.Test.TestProduct
 import sys
 import re
