@@ -4889,59 +4889,6 @@ class SYLDRTLIST:
                     + str(table_id)
                     + '"); }); '
                 )    
-            
-            elif RECORD_ID =="SYOBJR-00009":
-                cls = "eq(3)"
-                Trace.Write('4895--Saqico--')
-                local_variable ="Saqicoannualedit"
-                dbl_clk_function += (
-                    'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
-                    + str(table_ids)
-                    + '").on("check.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
-                    + str(cls)
-                    + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
-                    + str(table_ids)
-                    + '").on("check-all.bs.table", function (e) { var table = $("'
-                    + str(table_ids)
-                    + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(4)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
-                    + str(table_ids)
-                    + '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
-                    + str(table_ids)
-                    + '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:'
-                    + str(cls)
-                    + '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
-                )
-                dbl_clk_function += (
-                    'debugger; localStorage.setItem("cont_table_id","'+str(table_id)+'");$("'
-                    + str(table_ids)
-                    + '").on("dbl-click-cell.bs.table", onClickCell); $("'
-                    + str(table_ids)
-                    + '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom");if ($("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")) { if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block"); }localStorage.setItem("selectall","yes");}if (!$("'+str(table_ids)+' input[name=\'btSelectAll\']:checkbox").is(":checked")){$("button#delete_parts").css("display","none");localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block");}if (localStorage.getItem("selectall") != "yes"){localStorage.setItem("selectall","no")};} if(!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){$("button#delete_parts").css("display","none");}$(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
-                    + str(table_ids)
-                    + '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { if(localStorage.getItem("InlineEdit")=="YES"){ return ;}var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'
-                    + str(cls)
-                    + '").text().trim());  data1 = $element.closest("tr").find("td:'
-                    + str(cls)
-                    + '").text(); localStorage.setItem("multiedit_save_date", data1);localStorage.setItem("PartsSelectedId",data1); reco_id = removeDuplicates(reco); }else{reco_id=$element.closest("tr").find("td:'
-                    + str(cls)
-                    + '").text().trim(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);localStorage.setItem("PartsSelectedId",reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
-                    + str(table_id)
-                    + '"); value = value.replace(/<\/?[^>]+(>|$)/g,""); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
-                    + str(table_id)
-                    + '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) {localStorage.setItem("saqico_title", field);data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1;localStorage.setItem("'+str(local_variable)+'","yes");localStorage.setItem("EDIT_OBJ","'+str(ObjectName)+'");  document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }TreeParentParam = localStorage.getItem("CommonTreeParentParam");TreeParam = localStorage.getItem("CommonTreeParam");var sparePartsBulkSAVEBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-save-btn");var sparePartsBulkEDITBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-edit-btn");var sparePartsBulkAddBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-add-modal-btn");if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }'
-                )
-                dbl_clk_function += (' $("'
-                    + str(table_ids)
-                    + '").on("sort.bs.table", function (e, name, order) {  currenttab = $("ul#carttabs_head .active").text().trim(); localStorage.setItem("'
-                    + str(table_id)
-                    + '_SortColumn", name); localStorage.setItem("'
-                    + str(table_id)
-                    + 'asec", order); RelatedContainerSorting(name, order, "'
-                    + str(table_id)
-                    + '"); }); '
-                )
-                
-                Trace.Write("dbl_clk_function"+str(dbl_clk_function))
             else:
                 Trace.Write('4939')
                 dbl_clk_function += (
@@ -5401,7 +5348,7 @@ class SYLDRTLIST:
             dbl_clk_function += (
                 "try {var bildict = [];$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305').on('click-row.bs.table', function (e, row, $element) { $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305').find(':input(:disabled)').prop('disabled', false);$('#billingmatrix_save').css('display','block');$('#billingmatrix_cancel').css('display','block');$('#generatingbillingmatrix').css('display','none'); $('.billclassedit').parent().css('background-color','lightyellow');$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305  tbody  tr td input').css('background-color','lightyellow');$('#billingmatrix_save').css('display','block');$('#billingmatrix_cancel').css('display','block'); var BillingmatrixBtn = $('.secondary_highlight_panel').find('button#REFRESH_MATRIX'); var billsave = $('.secondary_highlight_panel').find('button#billingmatrix_save'); var billcan = $('.secondary_highlight_panel').find('button#billingmatrix_cancel'); if (BillingmatrixBtn.length == 1){ BillingmatrixBtn.remove() } $('#billingmatrix_save').css('display','block'); $('#billingmatrix_cancel').css('display','block');$('#input#billeditval_disable').attr('disabled', true);$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 tbody tr td input').change(function () {console.log('on change function--');var getbillamt = $(this).val();console.log('getbillamt-------',getbillamt);localStorage.setItem('getbillamt', getbillamt);var equipid = $(this).closest('tr').find('td:nth-child(4)').text();var annualamt_total = $(this).closest('tr').find('td:nth-child(9)').text();console.log('eduip-----',equipid);var test = $(this).closest('td').index();var getindex = test+1;var getheaderdate = $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 thead th:nth-child('+getindex+')').text();var getannualtotal = $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 thead th:nth-child('+getindex+')').text();console.log('getannualtotal----',getannualtotal);console.log('annualamt_total----',annualamt_total);var concate_data = equipid+ ' - '+getheaderdate+ '- '+getbillamt+' - '+annualamt_total;if(!bildict.includes(concate_data)){bildict.push(concate_data)};getbilldictdata = JSON.stringify(bildict);localStorage.setItem('getbilldictdata', getbilldictdata);}); })}catch (err){console.log('catch-----')}"
             )
-        '''if ObjectName == 'SAQICO':
+        if ObjectName == 'SAQICO':
             cls = "eq(3)"
             SAQICO_dbl_clk_function += (
                 'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
@@ -5465,7 +5412,7 @@ class SYLDRTLIST:
                     )	        
 
             
-            dbl_clk_function = SAQICO_dbl_clk_function''' 
+            dbl_clk_function = SAQICO_dbl_clk_function
         if RECORD_ID == "SYOBJR-98872":
             dbl_clk_function = ""
             dbl_clk_function += (
@@ -10009,7 +9956,7 @@ class SYLDRTLIST:
         else:
             PageInformS = str(Page_start) + " - " + str(Page_End) + " of"
         dbl_clk_function = ""
-        '''SAQICO_dbl_clk_function = ""
+        SAQICO_dbl_clk_function = ""
         if ObjectName == 'SAQICO':
             table_ids = "#SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F"
             cls = "eq(3)"
@@ -10060,7 +10007,7 @@ class SYLDRTLIST:
                 + "_SortColumnOrder', order); }); " 
             )   
                         
-            dbl_clk_function = SAQICO_dbl_clk_function'''
+            dbl_clk_function = SAQICO_dbl_clk_function
         return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 
     def SPARE_PARTS_ORDERING(self,select_obj_str, Qustr,PerPage, Page_start, Page_End,Wh_API_NAMEs):
