@@ -6361,7 +6361,30 @@ class ContractQuoteApprovalModel(ContractQuoteCrudOpertion):
 			"SYALLTABOP",
 			{"Primary_Data": str(self.contract_quote_record_id), "TabNAME": "Quote", "ACTION": "VIEW", "RELATED": ""},
 		) """
+class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
+	def __init__(self, **kwargs):
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'),
+											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
+		self.opertion = kwargs.get('opertion')
+		self.action_type = kwargs.get('action_type')
+		self.values = kwargs.get('values')
+		self.table_name = kwargs.get('table_name')
+		self.all_values = kwargs.get('all_values')		
+		self.node_id = ""
+	def _update(self):		
+		result = {}
+		for array_val in self.values:            
+			for data in array_val:
+				result[data.Key] = data.Value
 
+		Sql.RunQuery("""UPDATE SAQIBP
+					SET BILLING_DATE = '{NewBillingDate}'                    
+					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND BILLING_DATE = '{OldBillingDate}'""".format(
+					NewBillingDate=result.get('modified_date'), QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, 
+					OldBillingDate=result.get('billing_date')
+		))
+				
+		return True	
 
 def Factory(node=None):
 	"""Factory Method"""
@@ -6375,6 +6398,7 @@ def Factory(node=None):
 		"QUOTE LEVEL NOTIFICATION": ContractQuoteNoficationModel,
 		"QUOTE APPROVAL LEVEL NOTIFICATION":ContractQuoteNoficationApprovalModel,
 		"QUOTE APPROVAL MODEL":ContractQuoteApprovalModel,
+		"BILLING MATRIX MODEL": ContractQuoteBillingMatrixModel,
 		#"QUOTE ITEMS MODEL":ContractQuoteItemsModel,
 		"PARTS MODEL": PartsListModel,
 		#"CONTACT MODEL":QuoteContactModel
