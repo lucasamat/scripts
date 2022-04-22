@@ -686,6 +686,7 @@ class Entitlements:
 									characteristics_attr_values = Productvalue
 					#Trace.Write("-s"+str(serviceId)+'--tableName---'+str(tableName))
 					#Trace.Write("attributesallowedlst"+str(attributesallowedlst))
+					attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
 					get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 					attributesallowedlst = get_attr_leve_based_list
 					#Trace.Write(str(attributesallowedlst)+"--attributesallowedlst--durgaget_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
@@ -928,9 +929,10 @@ class Entitlements:
 										# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 							if Productattribute == "variantConditions":
 								characteristics_attr_values = Productvalue
+				attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
 				#Trace.Write("-s"+str(serviceId)+'--tableName---'+str(tableName))
 				#Trace.Write("attributesallowedlst"+str(attributesallowedlst))
-				Trace.Write('attributevalues_textbox---'+str(attributevalues_textbox))
+				#Trace.Write('attributevalues_textbox---'+str(attributevalues_textbox))
 				get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 				attributesallowedlst = get_attr_leve_based_list
 				#Trace.Write(str(attributesallowedlst)+"--attributesallowedlst--durgaget_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
@@ -1146,6 +1148,7 @@ class Entitlements:
 						configuration_status = Gettabledata.CONFIGURATION_STATUS
 			Trace.Write('524--787-whereReq--configuration_status--'+str(configuration_status))
 			#get
+			attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 			#Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
 			if "calc" in AttributeID:
