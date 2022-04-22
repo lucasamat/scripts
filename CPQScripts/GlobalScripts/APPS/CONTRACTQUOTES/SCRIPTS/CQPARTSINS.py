@@ -552,7 +552,7 @@ class SyncFPMQuoteAndHanaDatabase:
             record_count=0
             if cnt ==1:
                 response=res
-            #Log.Info("PrepareBackuptable----->2"+str(response))
+            Log.Info("PrepareBackuptable----->2"+str(response))
             response=response.replace("null",'""')
             response=response.replace("None",'""')
             response=response.replace("true",'1')
@@ -571,6 +571,7 @@ class SyncFPMQuoteAndHanaDatabase:
             response=response.replace("–",'-') 
             response = re.sub(r'\[|\]|\(|\)','',response)
             response = re.sub(r'Upfront \\u2013','Upfront -',response)
+            response = re.sub(r'uUpfront','Upfront',response)
             pattern = re.compile(r'(\{[^>]*?\})')
             #pattern2 = re.compile(r'\"([^>]*?)\"\:(\"[^>]*?\")')
             #pattern2 = re.compile(r"\'([^>]*?)\'\s*\:\s*([^>]*?)(?:\,|\})")
