@@ -724,6 +724,7 @@ class SyncQuoteAndCustomTables:
                             "QTEREV_RECORD_ID": quote_revision_id,
                             "QTEREV_ID": quote_rev_id,
                             "REVISION_DESCRIPTION": "REVISION 0 DESCRIPTION",
+                            "REVISION_NAME": "REVISION 0 DESCRIPTION",
                             "ACTIVE": get_rev_details.ACTIVE_REV,
                             "REV_CREATE_DATE": revision_start_date,
                             "REV_EXPIRE_DATE": "",
