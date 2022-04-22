@@ -656,7 +656,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
                     {amount_column} AS ANNUAL_BILLING_AMOUNT,
                     CAST(ROUND(ISNULL({amount_column},0),{get_round_val})/ {get_val} AS DECIMAL(10,{get_round_val}))  as BILLING_VALUE,
                     CAST(ROUND(ISNULL(SAQRIT.ESTVAL_INGL_CURR,0),{get_round_val})/ {get_val} AS DECIMAL(10,{get_round_val}))
-                      as  BILLING_VALUE_INGL_CURR,
+                    as  BILLING_VALUE_INGL_CURR,
                     '{billing_type}' as BILLING_TYPE,
                     SAQRIT.LINE AS LINE,
                     SAQRIT.QUOTE_ID,
@@ -1351,7 +1351,7 @@ def billingmatrix_create():
                     end_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_end_date), '%m/%d/%Y')
                     diff1 = end_date - start_date
                     get_totalweeks,remainder = divmod(diff1.days,7)
-					get_totalweeks = get_totalweeks + (1 if remainder > 0 else 0)
+                    get_totalweeks = get_totalweeks + (1 if remainder > 0 else 0)
                     countweeks =0
                     billing_start_date = start_date
                     for index in range(0, get_totalweeks):
