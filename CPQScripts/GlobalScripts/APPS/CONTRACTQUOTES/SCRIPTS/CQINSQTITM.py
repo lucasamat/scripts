@@ -2900,7 +2900,7 @@ class ContractQuoteItem:
 							IQ.GL_ACCOUNT_NO as GL_ACCOUNT_NO,
 							SAQTRV.GLOBAL_CURRENCY,
 							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-							ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
+							NULL as LINE,
 							null as OBJECT_ID,
 							'GREENBOOK' as OBJECT_TYPE,
 							null as FABLOCATION_ID,
