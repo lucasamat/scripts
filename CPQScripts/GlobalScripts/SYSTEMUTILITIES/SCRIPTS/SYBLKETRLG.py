@@ -646,7 +646,9 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	#if str(CLICKEDID) == "SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F" and (TreeParentParam != 'Quote Items' and TreeParentParam != ''):
 	#canedit = "FALSE"	
 	Trace.Write("@175----canedit,value-------->"+str(canedit)+','+str(VALUE))
-	if str(Product.GetGlobal("TreeParentLevel0")=="Complementary Products") and TITLE == "CUSTOMER_PART_NUMBER" and str(VALUE)!='':
+	if quote_status.REVISION_STATUS == "BOK-CONTRACT BOOKED":
+		edt_str = "NO"
+	elif str(Product.GetGlobal("TreeParentLevel0")=="Complementary Products") and TITLE == "CUSTOMER_PART_NUMBER" and str(VALUE)!='':
 		###Edit available only for empty value!!!
 		edt_str = "NO"
 	elif objh_obj is not None and str(canedit).upper() == "TRUE":
@@ -966,7 +968,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 	selected_rows_cpqid = []
 	rev_rec_id = Quote.GetGlobal("quote_revision_record_id")
 	objh_obj = Sql.GetFirst("select OBJECT_NAME, RECORD_NAME from SYOBJH where RECORD_ID = '" + str(obj_id) + "'")
-	if objh_obj is not None:
+	quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,quote_revision_record_id))
+	if quote_status.REVISION_STATUS !="BOK-CONTRACT BOOKED" and objh_obj is not None:
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
 		item_lines_record_ids = []
