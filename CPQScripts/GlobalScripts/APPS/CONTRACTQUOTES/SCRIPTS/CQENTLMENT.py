@@ -562,6 +562,15 @@ class Entitlements:
 												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
 												
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
+		get_text_attr = Sql.GetList("""SELECT SYSTEM_ID
+												FROM TAB_PRODUCTS
+												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+												LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+												LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+												
+												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC = 'Free Input, no Matching'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
+		get_text_attr_list = [attr.SYSTEM_ID for attr in get_text_attr]
 		if get_datatype:
 			if get_datatype.STANDARD_ATTRIBUTE_DATA_TYPE:
 				get_attr_datatype = get_datatype.STANDARD_ATTRIBUTE_DATA_TYPE
@@ -2169,7 +2178,7 @@ class Entitlements:
 													# else:
 													# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 							Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
-							
+							attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ]   
 							if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 								#try:								
 								Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
@@ -2334,7 +2343,7 @@ class Entitlements:
 			try:
 				msg_text = '<div class="emp_notifiy" style="display: none;"><div class="col-md-12 page_alert_notifi" id="PageAlert"><div class="row modulesecbnr brdr" onclick="call_vertical_scrl()" data-toggle="collapse" data-target=".alertnotify" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div id="alertnotify" class="col-md-12 alertnotify alert-notification  brdr collapse in"><div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '+str(cps_conflict)+' </label></div></div> </div></div></div>'
 			except Exception as e:
-				Trace.Write("error conf-"+str(e))
+				#Trace.Write("error conf-"+str(e))
 				pass
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
 		value_driver_attr_qry = Sql.GetList("SELECT ENTITLEMENT_ID FROM PRENTL WHERE ENTITLEMENT_TYPE IN ('VALUE DRIVER','VALUE DRIVER COEFFICIENT') AND  SERVICE_ID = '"+str(serviceId)+"'")
