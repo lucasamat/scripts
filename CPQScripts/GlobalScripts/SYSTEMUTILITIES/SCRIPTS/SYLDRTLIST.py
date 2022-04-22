@@ -4472,7 +4472,7 @@ class SYLDRTLIST:
                             )  
                         if invs == "LINE"and RECORD_ID != 'SYOBJR-98873' :
                             Trace.Write("CHKNG_J_07 "+str(qstring))
-                            if RECORD_ID == "SYOBJR-98877" or RECORD_ID == "SYOBJR-98872" or RECORD_ID == "SYOBJR-98876" or RECORD_ID == "SYOBJR-00009":
+                            if RECORD_ID == "SYOBJR-98877" or RECORD_ID == "SYOBJR-98872" or RECORD_ID == "SYOBJR-98876" or RECORD_ID == "SYOBJR-00009" or RECORD_ID == "SYOBJR-00007":
                                 table_header += (
                                     '<th  data-field="'
                                     + str(invs)
@@ -5267,7 +5267,7 @@ class SYLDRTLIST:
                 DropDownList.append("")
         if ObjectName == 'SAQIBP' and TreeParam != 'Quote Items':
             #footer_str = '<tfoot><tr><th colspan="7" id= "getbill1year" class="text-left">{}</th>{}</tr><tr><th colspan="7" id= "getbillyear" class="text-left">{}</th>{}</tr></tfoot>'.format("SUBTOTAL", footer,str(SubTab)+" Total",footer_tot)
-            footer_str = '<tfoot><tr><th colspan="7" id= "getbill1year" class="text-left">{}</th>{}</tr><tr></tr></tfoot>'.format("GRAND TOTAL", footer_tot)
+            footer_str = '<tfoot><tr><th colspan="8" id= "getbill1year" class="text-left">{}</th>{}</tr><tr></tr></tfoot>'.format("GRAND TOTAL", footer_tot)
         RelatedDrop_str = (
             "try { if( document.getElementById('"
             + str(table_id)
@@ -9946,7 +9946,7 @@ class SYLDRTLIST:
                             footer += '<th>0.00</th>'
         if ObjectName == 'SAQIBP' and TreeParam != 'Quote Items':
             #footer_str = '<tfoot><tr><th colspan="7" id= "getbillyear" class="text-left">{}</th>{}</tr></tfoot>'.format(str(SubTab)+" Total", footer)
-            footer_str = '<tfoot><tr><th colspan="7" id= "getbill1year" class="text-left">{}</th>{}</tr><tr></tr></tfoot>'.format("GRAND TOTAL", footer_tot)
+            footer_str = '<tfoot><tr><th colspan="8" id= "getbill1year" class="text-left">{}</th>{}</tr><tr></tr></tfoot>'.format("GRAND TOTAL", footer_tot)
             #footer_str = '<tfoot><tr><th colspan="7" id= "getbill1year" class="text-left">{}</th>{}</tr><tr><th colspan="9" id= "getbillyear" class="text-left">{}</th>{}</tr></tfoot>'.format("GRAND TOTAL", footer_tot,str(SubTab)+" Total",footer_tot)
             
         if QueryCount==0:
