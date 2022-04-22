@@ -3546,17 +3546,25 @@ def POPUPLISTVALUEADDNEW(
 				Header_details = {
 					"CREDITVOUCHER_RECORD_ID": "KEY",
 					"ZAFTYPE":"ZAF TYPE",
-					"UNBL_INGL_CURR": "CREDIT AMOUNT",
-					"CREDIT_APPLIED": "APPLIED CREDIT",
-					"ZAFNOTE": "NOTES",
+					"ZUONR": "CONTRACT IO/SYTEMS SALES ORDER ITEM ID",
+					"GJAHR": "Fiscal Year",
+					"ZAFEXPIRY_DATE": "EXP DATE",
+					"BELNR": "Document Number"
+					"UNBL_INGL_CURR": "VALUE",
+					"CREDIT_APPLIED": "APPLIED VALUE",
+					"ZAFNOTE": "NOTES"
 				}
 				ordered_keys = [
 					#"ADD_ON_PRODUCT_RECORD_ID",
 					"CREDITVOUCHER_RECORD_ID",
 					"ZAFTYPE",
+					"ZUONR",
+					"GJAHR",
+					"ZAFEXPIRY_DATE",
+					"BELNR"
 					"UNBL_INGL_CURR",
 					"CREDIT_APPLIED",
-					"ZAFNOTE",
+					"ZAFNOTE"
 				]
 				Objd_Obj = Sql.GetList(
 					"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
