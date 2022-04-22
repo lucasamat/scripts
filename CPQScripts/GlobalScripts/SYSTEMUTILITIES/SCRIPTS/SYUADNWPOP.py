@@ -3549,7 +3549,7 @@ def POPUPLISTVALUEADDNEW(
 					"ZUONR": "CONTRACT IO/SYTEMS SALES ORDER ITEM ID",
 					"GJAHR": "Fiscal Year",
 					"ZAFEXPIRY_DATE": "EXP DATE",
-					"BELNR": "Document Number"
+					"BELNR": "Document Number",
 					"UNBL_INGL_CURR": "VALUE",
 					"CREDIT_APPLIED": "APPLIED VALUE",
 					"ZAFNOTE": "NOTES"
@@ -3561,7 +3561,7 @@ def POPUPLISTVALUEADDNEW(
 					"ZUONR",
 					"GJAHR",
 					"ZAFEXPIRY_DATE",
-					"BELNR"
+					"BELNR",
 					"UNBL_INGL_CURR",
 					"CREDIT_APPLIED",
 					"ZAFNOTE"
