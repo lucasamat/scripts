@@ -68,6 +68,7 @@ class ContractQuoteItemAnnualizedPricing:
 			items_obj = Sql.GetList("SELECT ISNULL(STATUS,'') as STATUS FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{QuoteRevisionRecordId}'")
 			if items_obj:
 				items_status = [item_obj.STATUS for item_obj in items_obj]
+			Trace.Write("===========>"+str(items_status))
 			if 'CFG-ON HOLD - COSTING' in items_status:
 				Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE',REVISION_STATUS='CFG-ON HOLD - COSTING' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' ".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id))
 			elif 'PRR-ON HOLD PRICING' in items_status or 'OFFLINE PRICING' in items_status:
