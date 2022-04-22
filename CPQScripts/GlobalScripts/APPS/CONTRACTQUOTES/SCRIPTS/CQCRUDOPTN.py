@@ -6379,9 +6379,9 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 
 		Sql.RunQuery("""UPDATE SAQIBP
 					SET BILLING_DATE = '{NewBillingDate}'                    
-					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND BILLING_DATE = '{OldBillingDate}'""".format(
+					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND BILLING_DATE = '{OldBillingDate}' AND SERVICE_ID = '{ServiceId}'""".format(
 					NewBillingDate=result.get('modified_date'), QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, 
-					OldBillingDate=result.get('billing_date')
+					OldBillingDate=result.get('billing_date'),ServiceId =result.get('service_id')
 		))
 				
 		return True	
