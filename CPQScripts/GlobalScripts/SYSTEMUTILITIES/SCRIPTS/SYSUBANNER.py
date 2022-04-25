@@ -1100,10 +1100,9 @@ def Related_Sub_Banner(
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                     qte_fab_node = Sql.GetFirst("SELECT QUOTE_SERVICE_FAB_LOCATION_RECORD_ID FROM SAQSFB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if qte_fab_node:
-                        CurrentRecordId = qte_fab_node.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID                
-                                            
-                if str(ObjName) != "SYPROH":
-                    Trace.Write("Test668")
+                        CurrentRecordId = qte_fab_node.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID
+                if str(ObjName) not in ("SYPROH","SAQRIB"):
+                    Trace.Write("Test668--ObjName----"+str(ObjName)+'--TreeParam----'+str(TreeParam))
                     ValQuery = Sql.GetFirst(
                         "select "
                         + str(column)
@@ -1115,7 +1114,16 @@ def Related_Sub_Banner(
                         + str(CurrentRecordId) 
                         + "'"
                     )
-                    Trace.Write("check"+str(ValQuery))                
+                    Trace.Write("check"+str(ValQuery))
+                elif str(ObjName) == "SAQRIB":
+                    Trace.Write("Test668--ObjName----"+str(ObjName)+'--TreeParam----'+str(TreeParam))
+                    ValQuery = Sql.GetFirst(
+                        "select "
+                        + str(column)
+                        + " from "
+                        + str(ObjName)
+                        + " where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"' and SERVICE_ID = '"+str(TreeParam)+"'")
+                    Trace.Write("check"+str(ValQuery))   
                 else:
                     ValQuery = Sql.GetFirst(
                         "select "
