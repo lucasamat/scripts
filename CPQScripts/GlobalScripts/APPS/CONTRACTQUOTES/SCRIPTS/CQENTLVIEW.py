@@ -39,7 +39,7 @@ class EntitlementView():
 		TableObj = ""
 		ChangedList = totaldisallowlist = section_not_list = []
 		Trace.Write("EntitlementType"+str(EntitlementType))
-		
+		greenbok = ''
 		attributedefaultvalue = []
 		#Trace.Write('TreeSuperParentParam'+'--'+str(self.treesupertopparentparam)+'--'+str(self.treetopsuperparentparam))
 		objname_ent = "" ##add on product entitilement obj declare
@@ -174,6 +174,7 @@ class EntitlementView():
 		elif EntitlementType == "TOOLS":
 			TableObj = Sql.GetFirst("select * from SAQSCE (NOLOCK) where QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'")
 			ObjectName = "SAQSCE"
+			greenbok = self.treeparam
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
 		elif EntitlementType == "EVENT":
 			# if self.treetopsuperparentparam == 'Product Offerings':
@@ -196,6 +197,7 @@ class EntitlementView():
 			ObjectName = "SAQSGE"
 			#service = self.treesuperparentparam
 			service = self.treeparentparam
+			greenbok = self.treeparam
 			# TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' AND FABLOCATION_ID = '"+ str(self.treeparentparam) + "'")		
 			# where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' AND FABLOCATION_ID = '"+ str(self.treeparentparam) + "'"
 			TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' ")		
@@ -340,8 +342,11 @@ class EntitlementView():
 			Trace.Write('attributedefaultvalue--325----'+str(attributedefaultvalue))
 			#Trace.Write("validation_dict---"+str(validation_dict))
 			#editability contro strat
-			
-			get_attr_edit_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':overallattributeslist_visible,'action':'get_edit_attr_list'})
+			if ObjectName in ('SAQSCE','SAQSGE'):
+				get_visible_picklist = Sql.GetList("""SELECT * FROM PREGBV (NOLOCK) WHERE SERVICE_ID = '{}' and GREENBOOK = '{}'""".format( ProductPartnumber,greenbok ) )
+				get_visible_picklist_list = [pick_list.ENTITLEMENT_ID+'_'+pick_list.ENTITLEMENT_VALUE_CODE for pick_list in get_visible_picklist ]
+				dropdowndisallowlist = [pick_val for pick_val in dropdowndisallowlist if pick_val in get_visible_picklist_list]
+				get_attr_edit_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':overallattributeslist_visible,'action':'get_edit_attr_list'})
 			if get_attr_edit_based_list:
 				attributeEditlst = get_attr_edit_based_list[0]
 				Trace.Write('attributeReadonlylst--Z0091----'+str(attributeReadonlylst))
