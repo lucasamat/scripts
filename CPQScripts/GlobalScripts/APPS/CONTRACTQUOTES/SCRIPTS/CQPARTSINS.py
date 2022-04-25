@@ -763,7 +763,8 @@ except:
 fpm_obj = SyncFPMQuoteAndHanaDatabase()
 fpm_obj.fetch_quotebasic_info()
 if Parameter["Action"] == 'Price':
-    fpm_obj.CQPARTIFLW_iflow()
+    ApiResponse = ApiResponseFactory.JsonResponse(fpm_obj.CQPARTIFLW_iflow())
+    
 elif Parameter["Action"] == 'Delete':
     if Parameter["Delete_Partlist"]:
         fpm_obj.delete_child_records_6kw_partlist(Parameter["Delete_Partlist"])
