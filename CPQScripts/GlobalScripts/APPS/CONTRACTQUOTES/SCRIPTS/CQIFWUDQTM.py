@@ -1284,7 +1284,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 						get_val=get_val,
 						service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split,get_round_val=get_round_val))		
 	else:
-		Log.Info('1287---')	
+		
 		if service_id == "Z0010":
 			Sql.RunQuery("""INSERT SAQIBP (
 						
