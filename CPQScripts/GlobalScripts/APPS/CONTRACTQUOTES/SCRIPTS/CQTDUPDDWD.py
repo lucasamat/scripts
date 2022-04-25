@@ -691,6 +691,7 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 			# 	self.records.append(tuple(data))
 			# 	Trace.Write("data ====>>> "+str(list(data)))
 		self._insert_spare_parts()
+		self._message_txt()
 		#self.insert_delivery_schedule()
 		return "Import Success"
 
@@ -701,10 +702,8 @@ class ContractQuoteUploadTableData(ContractQuoteSpareOpertion):
 					'<div  class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infor_icon_green.svg" alt="Warning">'
 					+ "NUMBER OF PART NUMBER IMPORTED SUCCESSFULLY"
 					+ " : "
-					+ str(parts_imprted)
 					+ " : "
 					+ " PART NUMBER FAILED : "
-					+ str(parts_failed)
 					+ "</label></div></div>"
 				)
 		return msg_txt
