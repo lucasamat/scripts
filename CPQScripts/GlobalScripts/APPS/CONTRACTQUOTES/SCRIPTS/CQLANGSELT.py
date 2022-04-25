@@ -876,7 +876,7 @@ def _insert_subtotal_by_offerring_quote_table():
 			Quote.GetCustomField('taxtotal').Content = str(get_quotetotal.taxtotal)
 		if str(get_quotetotal.totamt):
 			Quote.GetCustomField('TL_NET_VALUE').Content = str(get_quotetotal.totamt)
-	
+	#QC 213 end
 	return True
 #Document XML end
 
