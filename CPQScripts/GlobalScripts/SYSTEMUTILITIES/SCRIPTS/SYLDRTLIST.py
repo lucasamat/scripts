@@ -4832,6 +4832,23 @@ class SYLDRTLIST:
                     + str(table_ids)
                     + '").on("all.bs.table", function (e, name, args) { if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checkbox").is(":checked")) { if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block"); }localStorage.setItem("selectall","yes");}if (!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checkbox").is(":checked")){$("button#delete_parts").css("display","none");localStorage.setItem("selectall","no");} if($("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){ if(localStorage.getItem("CommonNodeTreeSuperParentParam") == "Comprehensive Services" || localStorage.getItem("CommonTreeParentParam") == "Complementary Products" || localStorage.getItem("CommonTreeParam") == "Add-On Products"){$("button#delete_parts").css("display","block");}if (localStorage.getItem("selectall") != "yes"){localStorage.setItem("selectall","no")};} if(!$("'+str(table_ids)+' input[name=\'btSelectItem\']:checked").length > 1){$("button#delete_parts").css("display","none");} $(".bs-checkbox input").addClass("custom");});'
                 )
+                dbl_clk_function += (
+                    'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
+                    + str(table_ids)
+                    + '").on("check.bs.table", function (e, row, $element) { checkedRows.push($element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+                    + str(table_ids)
+                    + '").on("check-all.bs.table", function (e) { var table = $("'
+                    + str(table_ids)
+                    + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(4)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+                    + str(table_ids)
+                    + '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
+                    + str(table_ids)
+                    + '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
+                )
             elif RECORD_ID != "SYOBJR-00009":
                 if RECORD_ID == "SYOBJR-95556":
                     local_variable = "PM_FrequencyBulkedit" 
