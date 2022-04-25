@@ -671,8 +671,12 @@ class Entitlements:
 												#dropdownallow[prdvalue["id"]] = dropdownallowlist
 										for attribute in prdvalue["values"]:									
 											attributevalues[str(prdvalue["id"])] = attribute["value"]
-											attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"])	)
-											Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
+											if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+												attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+											else:
+												attr_val = attribute["value"]
+											attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attr_val)	)
+											#Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
 											if attribute["author"] in ("Default","System"):
 												#Trace.Write('524------'+str(prdvalue["id"]))
 												attributedefaultvalue.append(prdvalue["id"])
