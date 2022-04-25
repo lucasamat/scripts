@@ -1587,10 +1587,10 @@ def billingmatrix_create():
 				get_service_val = val.PRDOFR_ID
 				get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =contract_quote_rec_id,qt_rev_id=quote_revision_rec_id,get_service = str(get_service_val).strip()))
 				quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID='{}'".format(contract_quote_rec_id,quote_revision_rec_id,get_service_val))
-                contract_start_date = quotedetails.CONTRACT_VALID_FROM
-                contract_end_date = quotedetails.CONTRACT_VALID_TO		
-               			
-                start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
+				contract_start_date = quotedetails.CONTRACT_VALID_FROM
+				contract_end_date = quotedetails.CONTRACT_VALID_TO		
+						
+				start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
 				if get_billing_cycle:
 					#Log.Info('1431-----')
 					updateentXML = get_billing_cycle.ENTITLEMENT_XML
