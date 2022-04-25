@@ -161,7 +161,7 @@ Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 
 
 start = 1
-end = 25
+end = 10
 L = 1
 
 part_query = ""
@@ -202,8 +202,8 @@ if part_query or ancillary_part_query or fpm_part_query:
 			except:
 				odcc_flag = ['' for r in get_part_query] 
 				str_odcc_flag =''
-			start = start + 25
-			end = end + 25
+			start = start + 10
+			end = end + 10
 			requestdata = ''
 			##for currencies in ('docCurrency','globalCurrency'):
 			currencies='globalCurrency'
