@@ -1115,7 +1115,7 @@ def Related_Sub_Banner(
                         + "'"
                     )
                     Trace.Write("check"+str(ValQuery))
-                elif str(ObjName) == "SAQRIB":
+                elif str(ObjName) == "SAQRIB" and TreeParam != "Billing":
                     Trace.Write("Test668--ObjName----"+str(ObjName)+'--TreeParam----'+str(TreeParam))
                     ValQuery = Sql.GetFirst(
                         "select "
@@ -1123,6 +1123,20 @@ def Related_Sub_Banner(
                         + " from "
                         + str(ObjName)
                         + " where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"' and SERVICE_ID = '"+str(TreeParam)+"'")
+                    Trace.Write("check"+str(ValQuery))
+                elif str(ObjName) == "SAQRIB" and TreeParam == "Billing":
+                    Trace.Write("Test668--ObjName----"+str(ObjName)+'--TreeParam----'+str(TreeParam))
+                    ValQuery = Sql.GetFirst(
+                        "select "
+                        + str(column)
+                        + " from "
+                        + str(ObjName)
+                        + " where "
+                        + str(columns[0])
+                        + " = '"
+                        + str(CurrentRecordId) 
+                        + "'"
+                    )
                     Trace.Write("check"+str(ValQuery))   
                 else:
                     ValQuery = Sql.GetFirst(
