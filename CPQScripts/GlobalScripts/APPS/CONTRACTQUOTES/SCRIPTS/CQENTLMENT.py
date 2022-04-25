@@ -708,6 +708,10 @@ class Entitlements:
 									characteristics_attr_values = Productvalue
 					#Trace.Write("-s"+str(serviceId)+'--tableName---'+str(tableName))
 					#Trace.Write("attributesallowedlst"+str(attributesallowedlst))
+					if tableName in ('SAQSCE','SAQSGE'):
+						get_visible_picklist = Sql.GetList("""SELECT * FROM PREGBV (NOLOCK) WHERE SERVICE_ID = '{}' and GREENBOOK = '{}'""".format( serviceId,self.treeparam ) )
+						get_visible_picklist_list = [pick_list.ENTITLEMENT_ID+'_'+pick_list.ENTITLEMENT_VALUE_CODE for pick_list in get_visible_picklist ]
+						dropdowndisallowlist = [pick_val for pick_val in dropdowndisallowlist if pick_val in get_visible_picklist_list]
 					attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
 					temp_list = []
 					for text_val in attributevalues_textbox:
@@ -977,6 +981,10 @@ class Entitlements:
 										# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 							if Productattribute == "variantConditions":
 								characteristics_attr_values = Productvalue
+				if tableName in ('SAQSCE','SAQSGE'):
+					get_visible_picklist = Sql.GetList("""SELECT * FROM PREGBV (NOLOCK) WHERE SERVICE_ID = '{}' and GREENBOOK = '{}'""".format( serviceId,self.treeparam ) )
+					get_visible_picklist_list = [pick_list.ENTITLEMENT_ID+'_'+pick_list.ENTITLEMENT_VALUE_CODE for pick_list in get_visible_picklist ]
+					dropdowndisallowlist = [pick_val for pick_val in dropdowndisallowlist if pick_val in get_visible_picklist_list]
 				attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
 				temp_list = []
 				for text_val in attributevalues_textbox:
