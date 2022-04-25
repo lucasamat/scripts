@@ -1217,14 +1217,15 @@ def billingmatrix_create():
         Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
         for val in billing_plan_obj:
             if billing_plan_obj:
-                quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID='{}'".format(contract_quote_rec_id,quote_revision_rec_id,get_service_val))		 contract_start_date = quotedetails.CONTRACT_VALID_FROM
+                
+                billing_day = int(val.BILLING_DAY)
+                get_service_val = val.PRDOFR_ID
+                quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID='{}'".format(contract_quote_rec_id,quote_revision_rec_id,get_service_val))
+                contract_start_date = quotedetails.CONTRACT_VALID_FROM
                 contract_end_date = quotedetails.CONTRACT_VALID_TO		
                 #contract_start_date = val.BILLING_START_DATE
                 #contract_end_date = val.BILLING_END_DATE				
                 start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
-                billing_day = int(val.BILLING_DAY)
-                get_service_val = val.PRDOFR_ID
-                
                 get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =contract_quote_rec_id,qt_rev_id=quote_revision_rec_id,get_service = str(get_service_val).strip()))
                 if get_billing_cycle:
                     updateentXML = get_billing_cycle.ENTITLEMENT_XML
