@@ -343,13 +343,13 @@ class EntitlementView():
 			Trace.Write('attributedefaultvalue--325----'+str(attributedefaultvalue))
 			#Trace.Write("validation_dict---"+str(validation_dict))
 			#editability contro strat
-			Trace.Write("disallow count-"+str(len(dropdowndisallowlist)))
+			Trace.Write("disallow count-"+str(len(dropdowndisallowlist))+str(dropdowndisallowlist) )
 			if ObjectName in ('SAQSCE','SAQSGE'):
 				get_visible_picklist = Sql.GetList("""SELECT * FROM PREGBV (NOLOCK) WHERE SERVICE_ID = '{}' and GREENBOOK = '{}'""".format( ProductPartnumber,greenbok ) )
 				get_visible_picklist_list = [pick_list.ENTITLEMENT_ID+'_'+pick_list.ENTITLEMENT_VALUE_CODE for pick_list in get_visible_picklist ]
 				dropdowndisallowlist = [pick_val for pick_val in dropdowndisallowlist if pick_val in get_visible_picklist_list]
 			get_attr_edit_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':overallattributeslist_visible,'action':'get_edit_attr_list'})
-			Trace.Write("disallow count-aftr-"+str(len(dropdowndisallowlist)))
+			Trace.Write("disallow count-aftr-"+str(len(dropdowndisallowlist)) +str(dropdowndisallowlist) )
 			if get_attr_edit_based_list:
 				attributeEditlst = get_attr_edit_based_list[0]
 				Trace.Write('attributeReadonlylst--Z0091----'+str(attributeReadonlylst))
