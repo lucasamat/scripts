@@ -1572,20 +1572,26 @@ def billingmatrix_create():
 	billing_plan_obj = Sql.GetList("SELECT DISTINCT PRDOFR_ID,BILLING_START_DATE,BILLING_END_DATE,BILLING_DAY FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_rec_id))
 	quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_rec_id,quote_revision_rec_id))
 	get_billling_data_dict = {}
-	contract_start_date = quotedetails.CONTRACT_VALID_FROM
-	contract_end_date = quotedetails.CONTRACT_VALID_TO
+	#contract_start_date = quotedetails.CONTRACT_VALID_FROM
+	#contract_end_date = quotedetails.CONTRACT_VALID_TO
 	get_ent_val = get_ent_billing_type_value = get_ent_bill_cycle = get_billing_type = ''
 	if contract_start_date and contract_end_date and billing_plan_obj:
 		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
 		for val in billing_plan_obj:
 			if billing_plan_obj:				
-				contract_start_date = val.BILLING_START_DATE
-				contract_end_date = val.BILLING_END_DATE				
-				start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
+				#contract_start_date = val.BILLING_START_DATE
+				#contract_end_date = val.BILLING_END_DATE				
+				#start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
 				#start_date = str(contract_start_date).split(' ')[0]
 				billing_day = int(val.BILLING_DAY)
 				get_service_val = val.PRDOFR_ID
 				get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =contract_quote_rec_id,qt_rev_id=quote_revision_rec_id,get_service = str(get_service_val).strip()))
+				quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID='{}'".format(contract_quote_rec_id,quote_revision_rec_id,get_service_val))
+                contract_start_date = quotedetails.CONTRACT_VALID_FROM
+                contract_end_date = quotedetails.CONTRACT_VALID_TO		
+                #contract_start_date = val.BILLING_START_DATE
+                #contract_end_date = val.BILLING_END_DATE				
+                start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
 				if get_billing_cycle:
 					#Log.Info('1431-----')
 					updateentXML = get_billing_cycle.ENTITLEMENT_XML
