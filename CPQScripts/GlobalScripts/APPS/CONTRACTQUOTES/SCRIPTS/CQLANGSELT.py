@@ -821,15 +821,62 @@ def _insert_subtotal_by_offerring_quote_table():
 		Quote.SetGlobal('NP', str(total_net_price))
 		Quote.SetGlobal('NEV', str(total_net_value))
 		Quote.SetGlobal('TX', str(total_tax_amt))'''
-	get_quotetotal = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR as netprice,ESTVAL_INGL_CURR as est_val,TAX_AMOUNT_INGL_CURR as taxtotal,TOTAL_AMOUNT_INGL_CURR as totamt from SAQTRV where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	#QC 213 start
+	get_quotetotal = Sql.GetFirst("SELECT SALESORG_ID,NET_VALUE_INGL_CURR as netprice,ESTVAL_INGL_CURR as est_val,TAX_AMOUNT_INGL_CURR as taxtotal,TOTAL_AMOUNT_INGL_CURR as totamt from SAQTRV where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
 	if get_quotetotal:
+		get_address_details = Sql.GetFirst("SELECT ADDRESS1,ADDRESS2,CITY,COMPANY_CODE,COUNTRY,FAX,PHONE,POSTALCODE,STATE,REGION,COMPANY_NAME from SASORG where SALESORG_ID = '"+str(get_quotetotal.SALESORG_ID)+"'")
+		if get_address_details:
+			if get_address_details.ADDRESS1:
+				Quote.SetGlobal('QT_ADDRESS_ONE', str(get_address_details.ADDRESS1))
+			else:
+				Quote.SetGlobal('QT_ADDRESS_ONE', '')
+			if get_address_details.ADDRESS2:
+				Quote.SetGlobal('QT_ADDRESS_TWO', str(get_address_details.ADDRESS2))
+			else:
+				Quote.SetGlobal('QT_ADDRESS_TWO','')
+			if get_address_details.CITY:
+				Quote.SetGlobal('QT_SA_CITY', str(get_address_details.CITY))
+			else:
+				Quote.SetGlobal('QT_SA_CITY', '')
+			if get_address_details.COMPANY_CODE:
+				Quote.SetGlobal('QT_SA_COMCODE', str(get_address_details.COMPANY_CODE))
+			else:
+				Quote.SetGlobal('QT_SA_COMCODE', '')
+			if get_address_details.COUNTRY:
+				Quote.SetGlobal('QT_SA_CTY', str(get_address_details.COUNTRY))
+			else:
+				Quote.SetGlobal('QT_SA_CTY', '')
+			if get_address_details.FAX:
+				Quote.SetGlobal('QT_SA_FAX', str(get_address_details.FAX))
+			else:
+				Quote.SetGlobal('QT_SA_FAX', '')
+			if get_address_details.PHONE:
+				Quote.SetGlobal('QT_SA_PHONE', str(get_address_details.PHONE))
+			else:
+				Quote.SetGlobal('QT_SA_PHONE', '')
+			if get_address_details.POSTALCODE:
+				Quote.SetGlobal('QT_SA_POSTCODE', str(get_address_details.POSTALCODE))
+			else:
+				Quote.SetGlobal('QT_SA_POSTCODE', '')
+			if get_address_details.STATE:
+				Quote.SetGlobal('QT_SA_STATE', str(get_address_details.STATE))
+			else:
+				Quote.SetGlobal('QT_SA_STATE', '')
+			if get_address_details.REGION:
+				Quote.SetGlobal('QT_SA_REGION', str(get_address_details.REGION))
+			else:
+				Quote.SetGlobal('QT_SA_REGION', '')
+			if get_address_details.COMPANY_NAME:
+				Quote.SetGlobal('QT_SA_COMPANY_NAME', str(get_address_details.COMPANY_NAME))
+			else:
+				Quote.SetGlobal('QT_SA_COMPANY_NAME', '')
 		Quote.GetCustomField('doc_net_price').Content = str(get_quotetotal.netprice)
 		Quote.GetCustomField('tot_est').Content = str(get_quotetotal.est_val)
 		if str(get_quotetotal.taxtotal):
 			Quote.GetCustomField('taxtotal').Content = str(get_quotetotal.taxtotal)
 		if str(get_quotetotal.totamt):
 			Quote.GetCustomField('TL_NET_VALUE').Content = str(get_quotetotal.totamt)
-
+	
 	return True
 #Document XML end
 
