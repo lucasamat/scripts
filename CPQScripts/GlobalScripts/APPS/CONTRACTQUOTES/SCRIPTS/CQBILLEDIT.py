@@ -33,6 +33,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,TreeParam,TreeParentParam):
 		Trace.Write('-count---'+str(count))
 		#Trace.Write('edited value-----'+str(BT= value[2].replace(",","")))
 		getannual_amt = getannual_amt.replace(',','')
+		getannual_amt = getannual_amt.split(" ",1)[0]
 		Trace.Write('getannual_amt---32----'+str(getannual_amt))
 		gettotalamt_beforeupdate = Sql.GetFirst("SELECT SUM(BILLING_VALUE) as ANNUAL_BILLING_AMOUNT,SUM(ESTVAL_INGL_CURR) as ESTVAL_INGL_CURR,SERVICE_ID,BILLING_TYPE FROM SAQIBP WHERE  QUOTE_RECORD_ID ='{cq}' and SERVICE_ID = '{service_id_param}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and LINE='{getline}' and EQUIPMENT_ID = '{EID}' and BILLING_DATE NOT IN {BD} GROUP BY SERVICE_ID,BILLING_TYPE".format(cq=str(ContractRecordId),EID=value[0],service_id_param=TreeParam,getline=getline, revision_rec_id = quote_revision_record_id ,BD=str(tuple(get_billig_date_list)).replace(',)',')') ))
 		gettotalamt =0
