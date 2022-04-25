@@ -821,7 +821,7 @@ def _insert_subtotal_by_offerring_quote_table():
 		Quote.SetGlobal('NP', str(total_net_price))
 		Quote.SetGlobal('NEV', str(total_net_value))
 		Quote.SetGlobal('TX', str(total_tax_amt))'''
-	#QC 213 start
+	#QC 213,452 start
 	get_quotetotal = Sql.GetFirst("SELECT SALESORG_ID,BANK_NAME,INCOTERM_NAME,NET_VALUE_INGL_CURR as netprice,ESTVAL_INGL_CURR as est_val,TAX_AMOUNT_INGL_CURR as taxtotal,TOTAL_AMOUNT_INGL_CURR as totamt from SAQTRV where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
 	if get_quotetotal:
 		get_address_details = Sql.GetFirst("SELECT ADDRESS1,ADDRESS2,CITY,COMPANY_CODE,COUNTRY,FAX,PHONE,POSTALCODE,STATE,REGION,COMPANY_NAME from SASORG where SALESORG_ID = '"+str(get_quotetotal.SALESORG_ID)+"'")
@@ -884,6 +884,19 @@ def _insert_subtotal_by_offerring_quote_table():
 			Quote.GetCustomField('taxtotal').Content = str(get_quotetotal.taxtotal)
 		if str(get_quotetotal.totamt):
 			Quote.GetCustomField('TL_NET_VALUE').Content = str(get_quotetotal.totamt)
+	get_customer_details = Sql.GetFirst("SELECT CONTACT_NAME,EMAIL from SAQICT where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_customer_details:
+		if get_customer_details.CONTACT_NAME:
+			Quote.SetGlobal('QT_CT_NAME', str(get_customer_details.CONTACT_NAME))
+		else:
+			Quote.SetGlobal('QT_CT_NAME', '')
+		if get_customer_details.EMAIL:
+			Quote.SetGlobal('QT_CT_EMAIL', str(get_customer_details.EMAIL))
+		else:
+			Quote.SetGlobal('QT_CT_EMAIL', '')
+	else:
+		Quote.SetGlobal('QT_CT_NAME', '')
+		Quote.SetGlobal('QT_CT_EMAIL', '')
 	#QC 213 end
 	return True
 #Document XML end
