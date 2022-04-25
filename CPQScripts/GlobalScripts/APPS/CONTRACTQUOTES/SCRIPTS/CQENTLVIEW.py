@@ -219,21 +219,22 @@ class EntitlementView():
 		# 	where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND FABLOCATION_ID ='"+str(self.treeparam)+"'"					
 		elif EntitlementType == "BUSINESSUNIT":
 			#TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"'")
-			greenbook_val = self.treeparam
+			#greenbook_val = self.treeparam
+			greenbok =self.treeparam
 			service_val = self.treeparentparam
 			if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
-				greenbook_val = self.treeparentparam
+				greenbok = self.treeparentparam
 				par_service_val = self.treesuperparentparam
-				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'")
-				where = " QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'"
+				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbok)+"'")
+				where = " QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbok)+"'"
 				ProductPartnumber = TableObj.SERVICE_ID
 			else:
-				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'")
-				where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbook_val)+"'"
+				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "'  AND GREENBOOK = '"+str(greenbok)+"'")
+				where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbok)+"'"
 			if TableObj is not None:
 				RECORD_ID = str(TableObj.SERVICE_RECORD_ID)
 			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"'"
-			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbook_val)+"'"			
+			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbok)+"'"			
 		elif EntitlementType == "ASSEMBLY":
 			# TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
 			# where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
@@ -342,11 +343,13 @@ class EntitlementView():
 			Trace.Write('attributedefaultvalue--325----'+str(attributedefaultvalue))
 			#Trace.Write("validation_dict---"+str(validation_dict))
 			#editability contro strat
+			Trace.Write("disallow count-"+str(len(dropdowndisallowlist)))
 			if ObjectName in ('SAQSCE','SAQSGE'):
 				get_visible_picklist = Sql.GetList("""SELECT * FROM PREGBV (NOLOCK) WHERE SERVICE_ID = '{}' and GREENBOOK = '{}'""".format( ProductPartnumber,greenbok ) )
 				get_visible_picklist_list = [pick_list.ENTITLEMENT_ID+'_'+pick_list.ENTITLEMENT_VALUE_CODE for pick_list in get_visible_picklist ]
 				dropdowndisallowlist = [pick_val for pick_val in dropdowndisallowlist if pick_val in get_visible_picklist_list]
 				get_attr_edit_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':overallattributeslist_visible,'action':'get_edit_attr_list'})
+			Trace.Write("disallow count-aftr-"+str(len(dropdowndisallowlist)))
 			if get_attr_edit_based_list:
 				attributeEditlst = get_attr_edit_based_list[0]
 				Trace.Write('attributeReadonlylst--Z0091----'+str(attributeReadonlylst))
