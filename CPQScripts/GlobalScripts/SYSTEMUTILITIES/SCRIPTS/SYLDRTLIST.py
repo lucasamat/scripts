@@ -514,7 +514,7 @@ class SYLDRTLIST:
                                 if get_ttl_amt == 'ESTVAL_INDT_CURR' and TreeParam == 'Z0117':
                                     update_billing_val_psma = "UPDATE SAQIBP SET ESTVAL_INDT_CURR ={ab} where QUOTE_RECORD_ID= '{contract_quote_rec_id}' and BILLING_YEAR= '{YEAR}' and SERVICE_ID= '{service_id}' and CpqTableEntryId = '{cpqid}' and QTEREV_RECORD_ID = '{quote_revision_rec_id}' ".format(ab=rem_add_year,contract_quote_rec_id =contract_quote_record_id,YEAR=SubTab,service_id=TreeParam,cpqid=val.cpqid,quote_revision_rec_id=quote_revision_record_id)
                                     Sql.RunQuery(update_billing_val_psma)
-                        elif TreeParam  in ("Z0123"):
+                        elif TreeParam  in ("Z0123","Z0009"):
                             get_round_val = 2
                             getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
                             getcurrencysymbol = Sql.GetFirst("""SELECT ROUNDING_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY_RECORD_ID = '{currencysymbol}' """.format(currencysymbol = getcurrency.GLOBAL_CURRENCY_RECORD_ID))
