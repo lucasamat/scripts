@@ -737,6 +737,7 @@ class SyncFPMQuoteAndHanaDatabase:
 				)
         else:
             msg_txt =""
+        Trace.Write("@@@"+str(msg_txt))
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
 
         return msg_txt
