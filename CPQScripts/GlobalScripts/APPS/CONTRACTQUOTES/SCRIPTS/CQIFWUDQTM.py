@@ -1386,7 +1386,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 						UserId=User.Id, QuoteRecordId=contract_quote_rec_id,
 						RevisionRecordId=quote_revision_rec_id,
 						BillingDate=billing_date,billing_end_date=billing_end_date,
-						get_val=get_val,
+						get_val=get_val,get_round_val=get_round_val,
 						service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 		else:
 			Sql.RunQuery("""INSERT SAQIBP (
@@ -1438,7 +1438,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 						WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'   and SAQRIT.ESTIMATED_VALUE  IS NOT NULL  AND SAQRIT.OBJECT_ID IS NOT NULL )A """.format(
 						UserId=User.Id, QuoteRecordId=contract_quote_rec_id,
 						RevisionRecordId=quote_revision_rec_id,billing_end_date=billing_end_date,
-						BillingDate=billing_date,
+						BillingDate=billing_date,get_round_val=get_round_val,
 						get_val=get_val,
 						service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 			Sql.RunQuery("""INSERT SAQIBP (					
@@ -1490,7 +1490,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 						UserId=User.Id, QuoteRecordId=contract_quote_rec_id,
 						RevisionRecordId=quote_revision_rec_id,
 						BillingDate=billing_date,billing_end_date=billing_end_date,
-						get_val=get_val,
+						get_val=get_val,get_round_val=get_round_val,
 						service_id = service_id,billing_type =get_billing_type,amount_column=amount_column,amount_column_split=amount_column_split))
 		
 		'''Sql.RunQuery("""UPDATE SAQIBP 
