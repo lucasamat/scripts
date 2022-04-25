@@ -9232,7 +9232,7 @@ class SYLDRTLIST:
                             get_bom = Sql.GetFirst("SELECT ASSEMBLY_ID,EQUIPMENT_ID,KIT_ID,KIT_NUMBER,PM_ID,SERVICE_ID FROM SAQSKP where CpqTableEntryId = '"+str(unique_id)+"' ")
                             Qustr = " where "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(get_bom.SERVICE_ID)+"' AND ASSEMBLY_ID = '"+str(get_bom.ASSEMBLY_ID)+"' AND EQUIPMENT_ID = '"+str(get_bom.EQUIPMENT_ID)+"' AND KIT_ID = '"+str(get_bom.KIT_ID)+"' AND KIT_NUMBER = '"+str(get_bom.KIT_NUMBER)+"' AND PM_ID = '"+str(get_bom.PM_ID)+"' "
                         else:
-                            Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+                            Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
                 
                 if str(Qury_str) == "" and str(QuryCount_str) == "":  
                     select_obj_str = select_obj_str.replace("DEFAULT","[DEFAULT]") 
