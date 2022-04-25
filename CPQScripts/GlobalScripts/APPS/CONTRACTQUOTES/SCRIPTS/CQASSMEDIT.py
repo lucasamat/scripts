@@ -396,84 +396,84 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 						get_tooltip_desc = PRODUCT_ATTRIBUTES.ATTRDESC
 					else:
 						get_tooltip_desc = ''
-				if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC:
-					if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','DropDown') and ent_disp_val:
-						Trace.Write('ent_val_code--348--'+str(attrs)+'--ent_disp_val---'+str(ent_disp_val))
-						get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
-						if get_display_val:
-							ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
-					elif PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Check Box') and ent_disp_val and ent_val_code:
-						Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
+					if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC:
+						if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','DropDown') and ent_disp_val:
+							Trace.Write('ent_val_code--348--'+str(attrs)+'--ent_disp_val---'+str(ent_disp_val))
+							get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
+							if get_display_val:
+								ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
+						elif PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Check Box') and ent_disp_val and ent_val_code:
+							Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
+							if type(eval(str(ent_val_code))) is list:
+								ent_val = str(tuple(ent_val_code)).replace(',)',')')
+								get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val ) )
+								if get_display_val:
+									ent_disp_val = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in get_display_val if i.STANDARD_ATTRIBUTE_DISPLAY_VAL]
+									#ent_disp_val = str(ent_disp_val).replace("'", '"')
+									#ent_val_code = str(ent_val_code).replace("'", '"')
+									ent_disp_val = ','.join(ent_disp_val)
+									ent_val_code = ','.join(ent_val_code)
+								else:
+									ent_disp_val = ent_val_code =''						
+							else:						
+								get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
+								if get_display_val:
+									#ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
+									#ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
+									ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL
+									#ent_val_code = ','.join(ent_val_code)
+									Trace.Write('ent_val_code--'+str(ent_disp_val)+'---'+str(ent_val_code))
+						else:
+							#Trace.Write(str(AttributeID)+'---369--attrs---'+str(attrs))
+							Trace.Write('369-NewValue-370----'+str(attrs)+'-----'+str(NewValue)+str(ent_val_code))
+							if attrs == AttributeID:
+								Trace.Write(str(NewValue)+'---372--'+str(attrs)+'372---ent_val_code----'+str(ent_val_code))
+								ent_disp_val = NewValue
+								ent_val_code = NewValue
+						
+					if attrs == "AGS_Z0016_NET_PRICNG":
 						if type(eval(str(ent_val_code))) is list:
 							ent_val = str(tuple(ent_val_code)).replace(',)',')')
 							get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val ) )
 							if get_display_val:
 								ent_disp_val = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in get_display_val if i.STANDARD_ATTRIBUTE_DISPLAY_VAL]
-								#ent_disp_val = str(ent_disp_val).replace("'", '"')
-								#ent_val_code = str(ent_val_code).replace("'", '"')
-								ent_disp_val = ','.join(ent_disp_val)
-								ent_val_code = ','.join(ent_val_code)
+								ent_disp_val = str(ent_disp_val).replace("'", '"')
+								ent_val_code = str(ent_val_code).replace("'", '"')
 							else:
-								ent_disp_val = ent_val_code =''						
-						else:						
+								ent_disp_val = ent_val_code =''
+						else:
 							get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 							if get_display_val:
-								#ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
-								#ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
-								ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL
-								#ent_val_code = ','.join(ent_val_code)
-								Trace.Write('ent_val_code--'+str(ent_disp_val)+'---'+str(ent_val_code))
-					else:
-						#Trace.Write(str(AttributeID)+'---369--attrs---'+str(attrs))
-						Trace.Write('369-NewValue-370----'+str(attrs)+'-----'+str(NewValue)+str(ent_val_code))
-						if attrs == AttributeID:
-							Trace.Write(str(NewValue)+'---372--'+str(attrs)+'372---ent_val_code----'+str(ent_val_code))
-							ent_disp_val = NewValue
-							ent_val_code = NewValue
+								ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
+								ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
+					DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
+					#Log.Info('response2--182----342-')
+					Trace.Write('--ent_disp_val--value code-'+str(attrs)+'--'+str(ent_val_code)+'--'+str(ent_disp_val))
 					
-				if attrs == "AGS_Z0016_NET_PRICNG":
-					if type(eval(str(ent_val_code))) is list:
-						ent_val = str(tuple(ent_val_code)).replace(',)',')')
-						get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val ) )
-						if get_display_val:
-							ent_disp_val = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in get_display_val if i.STANDARD_ATTRIBUTE_DISPLAY_VAL]
-							ent_disp_val = str(ent_disp_val).replace("'", '"')
-							ent_val_code = str(ent_val_code).replace("'", '"')
-						else:
-							ent_disp_val = ent_val_code =''
-					else:
-						get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
-						if get_display_val:
-							ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
-							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
-				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
-				#Log.Info('response2--182----342-')
-				Trace.Write('--ent_disp_val--value code-'+str(attrs)+'--'+str(ent_val_code)+'--'+str(ent_disp_val))
-				
-				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
-				<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-				<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-				<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
-				<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>                    
-				<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-				<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-				<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-				<IS_DEFAULT>{is_default}</IS_DEFAULT>
-				<PRICE_METHOD>{pm}</PRICE_METHOD>
-				<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-				<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-				</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),
-				ent_val_code = ent_val_code,
-				ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',
-				ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.replace("&",";#38").replace(">","&gt;").replace("<","&lt;") ,
-				ent_disp_val = ent_disp_val.replace("&",";#38").replace(">","&gt;").replace("<","&lt;") if HasDefaultvalue==True else '',
-				ct = '',pi = '',
-				is_default = 1 if str(attrs) in attributedefaultvalue else '0',
-				pm = '',cf = '',
-				tool_desc =get_tooltip_desc.replace("'","''").replace("&",";#38").replace(">","&gt;").replace("<","&lt;") )
-				insertservice = insertservice.encode('ascii', 'ignore').decode('ascii')
-				#cpsmatc_incr = int(cpsmatchID) + 1
-				#Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
+					insertservice += """<QUOTE_ITEM_ENTITLEMENT>
+					<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
+					<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+					<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
+					<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>                    
+					<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+					<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+					<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+					<IS_DEFAULT>{is_default}</IS_DEFAULT>
+					<PRICE_METHOD>{pm}</PRICE_METHOD>
+					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+					<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),
+					ent_val_code = ent_val_code,
+					ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',
+					ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.replace("&",";#38").replace(">","&gt;").replace("<","&lt;") ,
+					ent_disp_val = ent_disp_val.replace("&",";#38").replace(">","&gt;").replace("<","&lt;") if HasDefaultvalue==True else '',
+					ct = '',pi = '',
+					is_default = 1 if str(attrs) in attributedefaultvalue else '0',
+					pm = '',cf = '',
+					tool_desc =get_tooltip_desc.replace("'","''").replace("&",";#38").replace(">","&gt;").replace("<","&lt;") )
+					insertservice = insertservice.encode('ascii', 'ignore').decode('ascii')
+					#cpsmatc_incr = int(cpsmatchID) + 1
+					#Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
 			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}',CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = GETDATE(),CONFIGURATION_STATUS = '{}' WHERE {} ".format(table_name, cpsmatc_incr,cpsConfigID,insertservice,User.Id,configuration_status,whereReq)
 			Trace.Write(str(whereReq)+'---Updatecps---'+str(Updatecps))
 			Sql.RunQuery(Updatecps)		
