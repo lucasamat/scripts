@@ -1514,7 +1514,6 @@ class SYLDRTLIST:
                             on_hold_costing = '<img title="CFG-ON HOLD - COSTING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
                             on_hold_pricing = '<img title="PRR-ON HOLD PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>'
                             offline_pricing = '<img title="OFFLINE PRICING" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg>'
-                            1622
                             qt_rec_id = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
                             contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
                             if TreeParentParam == "Quote Items": 
