@@ -4835,19 +4835,15 @@ class SYLDRTLIST:
                 dbl_clk_function += (
                     'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
                     + str(table_ids)
-                    + '").on("check.bs.table", function (e, row, $element) { checkedRows.push($element.closest("tr").find("td:'
-                    + str(cls)
-                    + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+                    + '").on("check.bs.table", function (e, row, $element) { checkedRows.push($element.closest("tr").find("td:nth-child(3)").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
                     + str(table_ids)
                     + '").on("check-all.bs.table", function (e) { var table = $("'
                     + str(table_ids)
-                    + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(4)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+                    + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
                     + str(table_ids)
                     + '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
                     + str(table_ids)
-                    + '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:'
-                    + str(cls)
-                    + '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
+                    + '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:nth-child(3)").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
                 )
             elif RECORD_ID != "SYOBJR-00009":
                 if RECORD_ID == "SYOBJR-95556":
