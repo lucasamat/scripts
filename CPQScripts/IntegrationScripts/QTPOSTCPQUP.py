@@ -72,6 +72,11 @@ try:
 						
 				UpdateTable1=SqlHelper.GetFirst("sp_executesql @T=N'update SAQICO set STATUS =  '''' FROM SAQICO (NOLOCK) JOIN SAQRIO (NOLOCK) ON SAQICO.QUOTE_ID = SAQRIO.QUOTE_ID AND SAQICO.QTEREV_ID = SAQRIO.QTEREV_ID where SAQICO.QUOTE_ID+''-''+ CONVERT(VARCHAR,SAQICO.QTEREV_ID)=''"+ str(QUOTE_ID)+ "'' and SAQRIO.EQUIPMENT_ID = ''"+ str(EQUIPMENT_ID)+ "'' '")
 				
+				UpdateTable1=SqlHelper.GetFirst("sp_executesql @T=N'update SAQRIT set STATUS =  '''' FROM SAQRIT (NOLOCK) JOIN SAQRIO (NOLOCK) ON SAQRIT.QUOTE_ID = SAQRIO.QUOTE_ID AND SAQRIT.QTEREV_ID = SAQRIO.QTEREV_ID where SAQRIT.QUOTE_ID+''-''+ CONVERT(VARCHAR,SAQRIT.QTEREV_ID)=''"+ str(QUOTE_ID)+ "'' and SAQRIO.EQUIPMENT_ID = ''"+ str(EQUIPMENT_ID)+ "'' '")
+                
+				UpdateTable1=SqlHelper.GetFirst("sp_executesql @T=N'update SAQTRV set REVISION_STATUS =  ''CFG-ACQUIRING'',WORKFLOW_STATUS=''ACQUIRING'' FROM SAQTRV (NOLOCK) where SAQTRV.QUOTE_ID+''-''+ CONVERT(VARCHAR,SAQTRV.QTEREV_ID)=''"+ str(QUOTE_ID)+ "'' '")
+
+				
 				sqlqueryinfo = SqlHelper.GetList("SELECT QTEREV_ID,QUOTE_ID FROM SAQICO(NOLOCK) WHERE QUOTE_ID+'-'+ CONVERT(VARCHAR,QTEREV_ID)='"+ str(QUOTE_ID)+ "' ")
 
 				if len(sqlqueryinfo) > 0:
