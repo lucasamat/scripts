@@ -9535,7 +9535,9 @@ class SYLDRTLIST:
                         value1234 = value1234.replace("PRR-ON HOLD PRICING","<img title='PRR-ON HOLD PRICING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
                     if value1234 == "PARTIALLY PRICED":
                         value1234 = value1234.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-                    if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "CFG-ON HOLD - COSTING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED" and value1234 !="PRR-ON HOLD PRICING":                        
+                    if value1234 == "OFFLINE PRICING":
+                       value1234 = value1234.replace("OFFLINE PRICING","<img title='OFFLINE PRICING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/manual_pricing.svg> OFFLINE PRICING") 
+                    if value1234 != "ACQUIRED" and value1234 != "APPROVAL REQUIRED" and value1234 != "ERROR" and value1234 != "ASSEMBLY IS MISSING" and value1234 != "CFG-ON HOLD - COSTING" and value1234 != "PARTIALLY PRICED" and value1234 != "ACQUIRING" and value1234 != "PRICED" and value1234 !="PRR-ON HOLD PRICING" and value1234 != "OFFLINE PRICING" :                        
                         value1234 = value1234
                     if value123 == objRecName:
                         current_rec_id = value1234
