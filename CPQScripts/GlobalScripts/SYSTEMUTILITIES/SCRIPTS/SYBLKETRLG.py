@@ -1020,6 +1020,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQSPT"):
 				Trace.Write('@959')
 				Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}'""".format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParam,qury_str=qury_str))
+				
+				Sql.RunQuery("""UPDATE SAQSPT SET CUSTOMER_ANNUAL_QUANTITY = '1' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_PART_NUMBER IS NOT NULL AND (CUSTOMER_ANNUAL_QUANTITY <= 0 OR CUSTOMER_ANNUAL_QUANTITY IS NULL) """.format(QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id))
 				return ""
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQSPT" and TITLE == "CUSTOMER_ANNUAL_QUANTITY"):
 				Trace.Write('@963 elif')
@@ -1127,7 +1129,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						#Emptied delivery schedule columns when the annual quantity is changed to empty
 						Sql.RunQuery("""UPDATE SAQSPT SET DELIVERY_1 = NULL ,DELIVERY_2 = NULL ,DELIVERY_3 = NULL ,DELIVERY_4 = NULL ,DELIVERY_5 = NULL ,DELIVERY_6 = NULL ,DELIVERY_7 = NULL ,DELIVERY_8 = NULL ,DELIVERY_9 = NULL ,DELIVERY_10 = NULL ,DELIVERY_11 = NULL ,DELIVERY_12 = NULL ,DELIVERY_13 = NULL ,DELIVERY_14 = NULL ,DELIVERY_15 = NULL ,DELIVERY_16 = NULL ,DELIVERY_17 = NULL ,DELIVERY_18 = NULL ,DELIVERY_19 = NULL ,DELIVERY_20 = NULL ,DELIVERY_21 = NULL ,DELIVERY_22 = NULL ,DELIVERY_23 = NULL ,DELIVERY_24 = NULL ,DELIVERY_25 = NULL ,DELIVERY_26 = NULL ,DELIVERY_27 = NULL ,DELIVERY_28 = NULL ,DELIVERY_29 = NULL ,DELIVERY_30 = NULL ,DELIVERY_31 = NULL ,DELIVERY_32 = NULL ,DELIVERY_33 = NULL ,DELIVERY_34 = NULL ,DELIVERY_35 = NULL ,DELIVERY_36 = NULL ,DELIVERY_37 = NULL ,DELIVERY_38 = NULL ,DELIVERY_39 = NULL ,DELIVERY_40 = NULL ,DELIVERY_41 = NULL ,DELIVERY_42 = NULL ,DELIVERY_43 = NULL ,DELIVERY_44 = NULL ,DELIVERY_45 = NULL ,DELIVERY_46 = NULL ,DELIVERY_47 = NULL ,DELIVERY_48 = NULL ,DELIVERY_49 = NULL ,DELIVERY_50 = NULL ,DELIVERY_51 = NULL ,DELIVERY_52 = NULL WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 					else:
-						Sql.RunQuery("""UPDATE SAQSPT SET {column} = {value}  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						Sql.RunQuery("""UPDATE SAQSPT SET {column} = {value}  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID)) 
+
+						Sql.RunQuery("""UPDATE SAQSPT SET CUSTOMER_ANNUAL_QUANTITY = '1' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_PART_NUMBER IS NOT NULL AND (CUSTOMER_ANNUAL_QUANTITY <= 0 OR CUSTOMER_ANNUAL_QUANTITY IS NULL) """.format(QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id))
+
 						
 						get_schedule_values = Sql.GetFirst("SELECT DELIVERY_1,DELIVERY_2,DELIVERY_3,DELIVERY_4,DELIVERY_5,DELIVERY_6,DELIVERY_7,DELIVERY_8,DELIVERY_9,DELIVERY_10,DELIVERY_11,DELIVERY_12,DELIVERY_13,DELIVERY_14,DELIVERY_15,DELIVERY_16,DELIVERY_17,DELIVERY_18,DELIVERY_19,DELIVERY_20,DELIVERY_21,DELIVERY_22,DELIVERY_23,DELIVERY_24,DELIVERY_25,DELIVERY_26,DELIVERY_27,DELIVERY_28,DELIVERY_29,DELIVERY_30,DELIVERY_31,DELIVERY_32,DELIVERY_33,DELIVERY_34,DELIVERY_35,DELIVERY_36,DELIVERY_37,DELIVERY_38,DELIVERY_39,DELIVERY_40,DELIVERY_41,DELIVERY_42,DELIVERY_43,DELIVERY_44,DELIVERY_45,DELIVERY_46,DELIVERY_47,DELIVERY_48,DELIVERY_49,DELIVERY_50,DELIVERY_51,DELIVERY_52 FROM SAQSPT  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' ".format(QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 
@@ -1168,13 +1173,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				elif TITLE.split(',') == ["CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_ACCEPT_PART","CUSTOMER_PARTICIPATE","EXCHANGE_ELIGIBLE"]:
 					value = ALLVALUES[index] if ALLVALUES[index] != '' else 'NULL'
 
-					Trace.Write("val"+str(value) )
-
-					Trace.Write("val1"+str(ALLVALUES1[index]))
-					Trace.Write("val2"+str(ALLVALUES2[index]))
-					Trace.Write("val3"+str(ALLVALUES3[index]))
-					Trace.Write("**"+ str(objh_head))
-									
 					Sql.RunQuery("""UPDATE SAQSPT SET {column} = {val},{column1} = '{value1}',{column2} = '{value2}',{column3} = '{value3}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],val=value,column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],column3=TITLE.split(',')[3],value3 = ALLVALUES3[index],QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 
 					Sql.RunQuery("""UPDATE SAQSPT SET CUSTOMER_ANNUAL_QUANTITY = '1' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_PART_NUMBER IS NOT NULL AND (CUSTOMER_ANNUAL_QUANTITY <= 0 OR CUSTOMER_ANNUAL_QUANTITY IS NULL) """.format(QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id))
