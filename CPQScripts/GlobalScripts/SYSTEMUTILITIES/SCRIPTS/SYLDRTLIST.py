@@ -5206,7 +5206,7 @@ class SYLDRTLIST:
                         string_value = string.replace("PRR-ON HOLD PRICING","<img title='PRR-ON HOLD PRICING' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/pricing_on_hold.svg>")
                     if string == "PARTIALLY PRICED":
                         string_value = string.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-                    if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "CFG-ON HOLD - COSTING" and string != "PARTIALLY PRICED" and string != "ACQUIRING" and string != "PRICED" and string != "PRR-ON HOLD PRICING":                        
+                    if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "CFG-ON HOLD - COSTING" and string != "PARTIALLY PRICED" and string != "ACQUIRING" and string != "PRICED" and string != "PRR-ON HOLD PRICING" and string != "OFFLINE PRICING":                        
                         string_value = string
                     StringValue_lists.append(string_value)
                 DropDownList.append(StringValue_lists)
