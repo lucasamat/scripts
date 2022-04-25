@@ -1816,7 +1816,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 							+ current_obj_value
 							+ '" type="text" title="'
 							+ str(current_obj_value)
-							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
+							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow"  '
 							+ disable
 							+ " style=\'margin-left: -1px\'><option value='Select'>..Select</option>"
 						)
