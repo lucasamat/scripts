@@ -1202,6 +1202,8 @@ def _quote_items_greenbook_summary_insert():
             LEFT JOIN SAQIGS (NOLOCK) ON SAQIGS.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQIGS.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQIGS.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQIGS.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
             WHERE ISNULL(SAQIGS.GREENBOOK_RECORD_ID,'') = ''
     """.format(UserId=User.Id, UserName=User.UserName, QuoteRecordId= contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id, ItemGreenbookSummaryLastLineNo=greenbook_summary_last_line_no))
+    Sql.RunQuery("""UPDATE SAQIGS
+            SET SAQIGS.CONTRACT_VALID_FROM = SAQTSV.CONTRACT_VALID_FROM,SAQIGS.CONTRACT_VALID_TO = SAQTSV.CONTRACT_VALID_TO FROM SAQTSV INNER JOIN SAQIGS ON SAQIGS.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQIGS.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQIGS.SERVICE_ID = SAQTSV.SERVICE_ID WHERE SAQTSV.QUOTE_RECORD_ID='{QuoteRecordId}' and SAQTSV.QTEREV_RECORD_ID='{QuoteRevisionRecordId}'""".format(QuoteRecordId= contract_quote_rec_id,QuoteRevisionRecordId=quote_revision_rec_id))
     return True
 
 def billingmatrix_create():	
