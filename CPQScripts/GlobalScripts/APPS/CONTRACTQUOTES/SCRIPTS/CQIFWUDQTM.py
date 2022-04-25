@@ -1589,8 +1589,7 @@ def billingmatrix_create():
 				quotedetails = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID='{}'".format(contract_quote_rec_id,quote_revision_rec_id,get_service_val))
                 contract_start_date = quotedetails.CONTRACT_VALID_FROM
                 contract_end_date = quotedetails.CONTRACT_VALID_TO		
-                #contract_start_date = val.BILLING_START_DATE
-                #contract_end_date = val.BILLING_END_DATE				
+               			
                 start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
 				if get_billing_cycle:
 					#Log.Info('1431-----')
