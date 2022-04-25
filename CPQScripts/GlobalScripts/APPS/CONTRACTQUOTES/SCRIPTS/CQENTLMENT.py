@@ -723,8 +723,11 @@ class Entitlements:
 						if get_datatype_text:
 							if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
 								if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
-									text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")	
-									text_value = text_val.split('%#')[0]+'%#'+text_value	
+									try:
+										text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+										text_value = text_val.split('%#')[0]+'%#'+text_value	
+									except:
+										text_value = text_val
 						temp_list.append(text_value) 
 					if temp_list:
 						attributevalues_textbox = temp_list
@@ -989,8 +992,11 @@ class Entitlements:
 					if get_datatype_text:
 						if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
 							if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
-								text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")	
-								text_value = text_val.split('%#')[0]+'%#'+text_value	
+								try:
+									text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+									text_value = text_val.split('%#')[0]+'%#'+text_value	
+								except:
+									text_value = text_val	
 					temp_list.append(text_value) 
 				if temp_list:
 					attributevalues_textbox = temp_list
@@ -1231,8 +1237,11 @@ class Entitlements:
 				if get_datatype_text:
 					if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
 						if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
-							text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")	
-							text_value = text_val.split('%#')[0]+'%#'+text_value	
+							try:
+								text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+								text_value = text_val.split('%#')[0]+'%#'+text_value	
+							except:
+								text_value = text_val	
 				temp_list.append(text_value) 
 			if temp_list:
 				attributevalues_textbox = temp_list
@@ -2286,8 +2295,11 @@ class Entitlements:
 								if get_datatype_text:
 									if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
 										if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
-											text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")	
-											text_value = text_val.split('%#')[0]+'%#'+text_value	
+											try:
+												text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+												text_value = text_val.split('%#')[0]+'%#'+text_value	
+											except:
+												text_value = text_val	
 								temp_list.append(text_value) 
 							if temp_list:
 								attributevalues_textbox = temp_list
