@@ -93,7 +93,6 @@ def Dynamic_Status_Bar(quote_item_insert,Text):
 		if 'F' in get_quality_required_list:
 			update_workflow_status_conf = "UPDATE SAQTRV SET REVISION_STATUS = 'CFG-CONFIGURING',WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = quote_revision_record_id)	
 			Sql.RunQuery(update_workflow_status_conf)
-			return status,error_msg 
 		for tserv in get_tool_service_info:
 		
 			if str(tserv.SERVICE_ID) in ('Z0004', 'Z0004W', 'Z0009-TOOL', 'Z0010-TOOL', 'Z0035', 'Z0035W', 'Z0090', 'Z0091', 'Z0091W', 'Z0092', 'Z0092W', 'Z0099'):
