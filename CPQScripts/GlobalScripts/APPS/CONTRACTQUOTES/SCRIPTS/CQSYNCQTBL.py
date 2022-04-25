@@ -2786,6 +2786,10 @@ class SyncQuoteAndCustomTables:
                                     qt_rev_id = get_rev_sales_ifo.QTEREV_ID
                                     qt_id = get_rev_sales_ifo.QUOTE_ID
                                 # get info from revision table end
+                                try:
+                                    self.CreateEntitlements(quote_record_id)
+                                except:
+                                    Log.Info("CreateEntitlements Error")
                                 fpm_service_ids = service_ids
                                 fpm_service_ids += ","
 
@@ -2940,10 +2944,10 @@ class SyncQuoteAndCustomTables:
                                             auth,
                                         )
 
-                                try:
-                                    self.CreateEntitlements(quote_record_id)
-                                except:
-                                    Log.Info("CreateEntitlements Error")
+                                # try:
+                                #     self.CreateEntitlements(quote_record_id)
+                                # except:
+                                #     Log.Info("CreateEntitlements Error")
 
                             if equipment_data:
                                 get_sales_org_data = Sql.GetFirst(
