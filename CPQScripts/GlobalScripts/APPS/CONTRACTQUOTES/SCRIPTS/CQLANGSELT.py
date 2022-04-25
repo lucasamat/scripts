@@ -822,7 +822,7 @@ def _insert_subtotal_by_offerring_quote_table():
 		Quote.SetGlobal('NEV', str(total_net_value))
 		Quote.SetGlobal('TX', str(total_tax_amt))'''
 	#QC 213 start
-	get_quotetotal = Sql.GetFirst("SELECT SALESORG_ID,NET_VALUE_INGL_CURR as netprice,ESTVAL_INGL_CURR as est_val,TAX_AMOUNT_INGL_CURR as taxtotal,TOTAL_AMOUNT_INGL_CURR as totamt from SAQTRV where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	get_quotetotal = Sql.GetFirst("SELECT SALESORG_ID,BANK_NAME,INCOTERM_NAME,NET_VALUE_INGL_CURR as netprice,ESTVAL_INGL_CURR as est_val,TAX_AMOUNT_INGL_CURR as taxtotal,TOTAL_AMOUNT_INGL_CURR as totamt from SAQTRV where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
 	if get_quotetotal:
 		get_address_details = Sql.GetFirst("SELECT ADDRESS1,ADDRESS2,CITY,COMPANY_CODE,COUNTRY,FAX,PHONE,POSTALCODE,STATE,REGION,COMPANY_NAME from SASORG where SALESORG_ID = '"+str(get_quotetotal.SALESORG_ID)+"'")
 		if get_address_details:
@@ -870,6 +870,14 @@ def _insert_subtotal_by_offerring_quote_table():
 				Quote.SetGlobal('QT_SA_COMPANY_NAME', str(get_address_details.COMPANY_NAME))
 			else:
 				Quote.SetGlobal('QT_SA_COMPANY_NAME', '')
+			if get_address_details.BANK_NAME:
+				Quote.SetGlobal('QT_SA_BANK_NAME', str(get_address_details.BANK_NAME))
+			else:
+				Quote.SetGlobal('QT_SA_BANK_NAME', '')
+			if get_address_details.INCOTERM_NAME:
+				Quote.SetGlobal('QT_SA_INC_NAME', str(get_address_details.INCOTERM_NAME))
+			else:
+				Quote.SetGlobal('QT_SA_INC_NAME', '')
 		Quote.GetCustomField('doc_net_price').Content = str(get_quotetotal.netprice)
 		Quote.GetCustomField('tot_est').Content = str(get_quotetotal.est_val)
 		if str(get_quotetotal.taxtotal):
