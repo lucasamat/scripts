@@ -140,23 +140,16 @@ class ContractQuoteDownloadTableData(ContractQuoteSpareOpertion):
 				table_total_rows = total_count_obj.count
 				if table_total_rows:
 					table_records = [data for data in self.get_results(table_total_rows, columns)]
-				
-		return table_columns, table_records		
-	
-	def _message_txt(self):
-
-		Trace.Write("@@")
-		msg_txt = (
+			
+			Trace.Write("@@")
+			msg_txt = (
 					'<div  class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infor_icon_green.svg" alt="Warning">'
 					+ "NUMBER OF PART NUMBER IMPORTED SUCCESSFULLY"
-					+ " : "
-					+ str(parts_imprted)
-					+ " : "
-					+ " PART NUMBER FAILED : "
-					+ str(parts_failed)
-					+ "</label></div></div>"
-				)
-		return msg_txt
+					+ " :  : "
+					+ " PART NUMBER FAILED : </label></div></div>"
+				)	
+
+		return table_columns, table_records, msg_txt		
 		
 	# def _do_opertion(self):
 	# 	table_columns = []
