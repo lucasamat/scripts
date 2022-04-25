@@ -1577,7 +1577,7 @@ def billingmatrix_create():
 	#contract_start_date = quotedetails.CONTRACT_VALID_FROM
 	#contract_end_date = quotedetails.CONTRACT_VALID_TO
 	get_ent_val = get_ent_billing_type_value = get_ent_bill_cycle = get_billing_type = ''
-	if contract_start_date and contract_end_date and billing_plan_obj:
+	if  billing_plan_obj:
 		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=contract_quote_rec_id,RevisionRecordId=quote_revision_rec_id))
 		for val in billing_plan_obj:
 			if billing_plan_obj:				
