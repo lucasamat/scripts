@@ -48,6 +48,8 @@ def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,TreeParam,TreeParentParam):
 			if gettotalamt_beforeupdate:
 				gettotalamt_update = float(gettotalamt_beforeupdate.ESTVAL_INGL_CURR)+float(value[2].replace(",",""))
 		Trace.Write('gettotalamt_update-BILLING_TYPE-----'+str(gettotalamt_beforeupdate.BILLING_TYPE))
+		Trace.Write("gettotalamt_updat+++++++>>>>>>>"+str(gettotalamt_update))
+		Trace.Write("getannual_amt+++++++>>>>>>>"+str(getannual_amt))
 		if float(gettotalamt_update) < float(getannual_amt):
 			if str(gettotalamt_beforeupdate.BILLING_TYPE).upper() == "FIXED":
 				edit_billmatrix = "UPDATE SAQIBP SET BILLING_VALUE = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and SERVICE_ID = '{service_id_param}' and LINE='{getline}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),service_id_param=TreeParam,CT = str(ContractRecordId),EID=value[0],BD = value[1],getline=getline, revision_rec_id = quote_revision_record_id)
