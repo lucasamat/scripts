@@ -4816,7 +4816,7 @@ class SYLDRTLIST:
         else:
             if str(RECORD_ID) == "SYOBJR-98882":#A055S000P01-18196
                 dbl_clk_function += (' const card = document.querySelector("'+str(table_ids)+' > tbody > tr"); card.addEventListener("dblclick",function(event){ var ele = event.target.closest("td"); NSOBulkUpdate(ele,"doubleclick") });') 
-                dbl_clk_function += ('$("'
+                dbl_clk_function += ('localStorage.setItem("cont_table_id","'+str(table_id)+'");$("'
                     + str(table_ids)
                     + ' th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
                     + str(table_ids)
