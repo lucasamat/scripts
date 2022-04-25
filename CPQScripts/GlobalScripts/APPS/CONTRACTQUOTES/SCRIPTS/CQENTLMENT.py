@@ -583,7 +583,6 @@ class Entitlements:
 			if 'Z0046' in AttributeID and serviceId == 'Z0091':
 				serviceId = 'Z0046'
 			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
-			
 			if get_ent_type:
 				if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"] or AttributeID == "AGS_{}_VAL_SVCCMP".format(serviceId):
 					Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,get_attr_datatype,product_obj.PRD_ID)				
@@ -593,7 +592,6 @@ class Entitlements:
 					#Trace.Write("=======>>> attr_mapping_dict"+str(self.attr_code_mapping))
 					if get_datatype:
 						get_tool_desc = get_datatype.ATTRDESC
-
 					'''GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 					if GetDefault.PRICE_METHOD:
 						pricemethodupdate = GetDefault.PRICE_METHOD
@@ -918,7 +916,11 @@ class Entitlements:
 											#dropdownallow[prdvalue["id"]] = dropdownallowlist
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
-										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"])	)
+										if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+											attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+										else:
+											attr_val = attribute["value"]
+										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attr_val))
 										Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
 										if attribute["author"] in ("Default","System"):
 											#Trace.Write('524------'+str(prdvalue["id"]))
@@ -1138,7 +1140,11 @@ class Entitlements:
 									# 		attribute_non_defaultvalue.append(prdvalue["id"])
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
-										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
+										if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+											attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+										else:
+											attr_val = attribute["value"]
+										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attr_val))	
 										#Trace.Write(str(prdvalue["id"])+'-6778--------'+str(attribute["value"]))
 										if attribute["author"] in ("Default","System"):
 											#Trace.Write('524------'+str(prdvalue["id"]))
@@ -1307,7 +1313,7 @@ class Entitlements:
 									Sql.RunQuery("DELETE SAQSKP FROM SAQSKP(NOLOCK) JOIN SAQGPM ON SAQSKP.QTEGBKPME_RECORD_ID = SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID WHERE SAQSKP.QUOTE_RECORD_ID = '{}' AND SAQSKP.QTEREV_RECORD_ID = '{}' AND SAQSKP.SERVICE_ID = '{}' AND SAQSKP.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
 
 									Sql.RunQuery("DELETE SAQGPA FROM SAQGPA(NOLOCK) WHERE SAQGPA.QUOTE_RECORD_ID = '{}' AND SAQGPA.QTEREV_RECORD_ID = '{}' AND SAQGPA.SERVICE_ID = '{}' AND SAQGPA.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
-        
+		
 									##Checking the pm events mapped to many assemnlies or not...
 									pm_events_and_assembly_object = Sql.GetFirst("select SAQGPA.QTEREVPME_RECORD_ID FROM SAQGPM(NOLOCK) JOIN SAQGPA ON SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID = SAQGPA.QTEREVPME_RECORD_ID WHERE SAQGPM.QUOTE_RECORD_ID = '{}' AND SAQGPM.QTEREV_RECORD_ID = '{}' AND SAQGPM.SERVICE_ID = '{}' AND SAQGPA.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
 									if not pm_events_and_assembly_object:
@@ -1356,7 +1362,6 @@ class Entitlements:
 							else:
 								ancillary_object_dict['Z0048'] = "DELETE"
 						#(key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId in ("Z0035")) or
-						
 						elif "GEN_IDLALW" in key:
 							Log.Info("TOOL IDLING VALUE"+str(entitlement_value))
 							if entitlement_value == "Yes":
@@ -2179,7 +2184,11 @@ class Entitlements:
 											for prdvalue in Productvalue:											
 												for attribute in prdvalue["values"]:
 													attributevalues[str(prdvalue["id"])] = attribute["value"]
-													attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
+													if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+														attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+													else:
+														attr_val = attribute["value"]
+													attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attr_val))
 													# if prdvalue["id"] in characteristics_attr_values:
 													# 	characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
 													# else:
