@@ -689,11 +689,11 @@ class Entitlements:
 												#dropdownallow[prdvalue["id"]] = dropdownallowlist
 										for attribute in prdvalue["values"]:									
 											attributevalues[str(prdvalue["id"])] = attribute["value"]
-											if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
-												attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
-											else:
-												attr_val = attribute["value"]
-											attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attr_val)	)
+											# if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+											# 	attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+											# else:
+											# 	attr_val = attribute["value"]
+											attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"])	)
 											#Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
 											if attribute["author"] in ("Default","System"):
 												#Trace.Write('524------'+str(prdvalue["id"]))
@@ -709,6 +709,25 @@ class Entitlements:
 					#Trace.Write("-s"+str(serviceId)+'--tableName---'+str(tableName))
 					#Trace.Write("attributesallowedlst"+str(attributesallowedlst))
 					attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
+					temp_list = []
+					for text_val in attributevalues_textbox:
+						text_value = text_val
+						get_datatype_text = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC,STANDARD_ATTRIBUTE_DATA_TYPE 
+									FROM TAB_PRODUCTS
+									LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+									LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+									LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+									LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+									
+									WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = text_val.split('%#')[0] ))
+						if get_datatype_text:
+							if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
+								if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
+									text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")	
+									text_value = text_val.split('%#')[0]+'%#'+text_value	
+						temp_list.append(text_value) 
+					if temp_list:
+						attributevalues_textbox = temp_list
 					get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 					attributesallowedlst = get_attr_leve_based_list
 					#Trace.Write(str(attributesallowedlst)+"--attributesallowedlst--durgaget_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
@@ -936,11 +955,11 @@ class Entitlements:
 											#dropdownallow[prdvalue["id"]] = dropdownallowlist
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
-										if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
-											attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
-										else:
-											attr_val = attribute["value"]
-										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attr_val))
+										# if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+										# 	attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+										# else:
+										# 	attr_val = attribute["value"]
+										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
 										Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
 										if attribute["author"] in ("Default","System"):
 											#Trace.Write('524------'+str(prdvalue["id"]))
@@ -956,6 +975,25 @@ class Entitlements:
 							if Productattribute == "variantConditions":
 								characteristics_attr_values = Productvalue
 				attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
+				temp_list = []
+				for text_val in attributevalues_textbox:
+					text_value = text_val
+					get_datatype_text = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC,STANDARD_ATTRIBUTE_DATA_TYPE 
+								FROM TAB_PRODUCTS
+								LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+								LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+								LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+								LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+								
+								WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = text_val.split('%#')[0] ))
+					if get_datatype_text:
+						if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
+							if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
+								text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")	
+								text_value = text_val.split('%#')[0]+'%#'+text_value	
+					temp_list.append(text_value) 
+				if temp_list:
+					attributevalues_textbox = temp_list
 				#Trace.Write("-s"+str(serviceId)+'--tableName---'+str(tableName))
 				#Trace.Write("attributesallowedlst"+str(attributesallowedlst))
 				#Trace.Write('attributevalues_textbox---'+str(attributevalues_textbox))
@@ -1160,11 +1198,11 @@ class Entitlements:
 									# 		attribute_non_defaultvalue.append(prdvalue["id"])
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
-										if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
-											attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
-										else:
-											attr_val = attribute["value"]
-										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attr_val))	
+										# if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+										# 	attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+										# else:
+										# 	attr_val = attribute["value"]
+										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))	
 										#Trace.Write(str(prdvalue["id"])+'-6778--------'+str(attribute["value"]))
 										if attribute["author"] in ("Default","System"):
 											#Trace.Write('524------'+str(prdvalue["id"]))
@@ -1179,6 +1217,25 @@ class Entitlements:
 			Trace.Write('524--787-whereReq--configuration_status--'+str(configuration_status))
 			#get
 			attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
+			temp_list = []
+			for text_val in attributevalues_textbox:
+				text_value = text_val
+				get_datatype_text = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC,STANDARD_ATTRIBUTE_DATA_TYPE 
+							FROM TAB_PRODUCTS
+							LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+							LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+							LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+							LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+							
+							WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = text_val.split('%#')[0] ))
+				if get_datatype_text:
+					if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
+						if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
+							text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")	
+							text_value = text_val.split('%#')[0]+'%#'+text_value	
+				temp_list.append(text_value) 
+			if temp_list:
+				attributevalues_textbox = temp_list
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 			#Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
 			if "calc" in AttributeID:
@@ -2204,17 +2261,36 @@ class Entitlements:
 											for prdvalue in Productvalue:											
 												for attribute in prdvalue["values"]:
 													attributevalues[str(prdvalue["id"])] = attribute["value"]
-													if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
-														attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
-													else:
-														attr_val = attribute["value"]
-													attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attr_val))
+													# if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+													# 	attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+													# else:
+													# 	attr_val = attribute["value"]
+													attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
 													# if prdvalue["id"] in characteristics_attr_values:
 													# 	characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
 													# else:
 													# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 							Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
-							attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ]   
+							attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
+							temp_list = []
+							for text_val in attributevalues_textbox:
+								text_value = text_val
+								get_datatype_text = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC,STANDARD_ATTRIBUTE_DATA_TYPE 
+											FROM TAB_PRODUCTS
+											LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+											LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+											LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+											LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+											
+											WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = text_val.split('%#')[0] ))
+								if get_datatype_text:
+									if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
+										if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
+											text_value = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")	
+											text_value = text_val.split('%#')[0]+'%#'+text_value	
+								temp_list.append(text_value) 
+							if temp_list:
+								attributevalues_textbox = temp_list
 							if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 								#try:								
 								Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
