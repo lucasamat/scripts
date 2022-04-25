@@ -854,7 +854,7 @@ def insert_items_billing_plan(total_months=1, billing_date='',billing_end_date =
 			get_billing_cycle = val
 		elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
 			get_billing_type =val
-	#Trace.Write('get_billing_cycle---'+str(get_billing_cycle))
+	Log.Info('contract_quote_rec_id-Qt_id--'+str(Qt_id))
 	if get_billing_cycle == "Monthly":				
 		get_val =12
 	elif str(get_billing_cycle).upper() == "QUARTERLY":			
