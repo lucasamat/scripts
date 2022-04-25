@@ -1542,7 +1542,7 @@ class EntitlementView():
 					##section hide starts..
 					Trace.Write('nott section--'+str(get_tab_attr_length)+'--'+str(tab_get_disallow_list))
 					if len(tab_get_disallow_list) == get_tab_attr_length :
-						Trace.Write("yess----"+str(Section_id))
+						#Trace.Write("yess----"+str(Section_id))
 						section_not_list.append(Section_id)
 						
 					##section hide ends...
@@ -1552,7 +1552,7 @@ class EntitlementView():
 					get_readonly_section_list = [attr for attr in attributeReadonlylst if attr in section_list ]
 					Trace.Write("section_list-"+str(len(section_list))+"get_readonly_section_list-"+str(len(get_readonly_section_list)))
 					if (self.treeparentparam == "Quote Items" or self.treeparam == "Quote Items" or self.treesuperparentparam == "Quote Items" or self.treetopsuperparentparam == "Quote Items") or (len(section_list) == len(get_readonly_section_list) and len(section_list) != 0):
-						Trace.Write("inside non dbl clk")
+						#Trace.Write("inside non dbl clk")
 						dbl_clk_function += ""
 					else:
 						#dbl_clk_function += ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] =  $(this).find('td:nth-child(3) select').children(':selected').attr('id');});$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();});console.log('dict_new-2818--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))}catch{console.log('')}")
