@@ -107,6 +107,12 @@ class Entitlements:
 				Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val = FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(replace(replace(replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; '' ),'' > '','' &gt; '' ),''_>'',''_&gt;''),''_<'',''_&lt;''),''&'','';#38''),''<10%'',''&lt;10%''),''<='',''&lt;='')   as entitlement_xml from "+str(tableName)+"(nolock)  WHERE "+str(where_cond)+"  )A )a SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_ID,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
 				Parentgetdata=Sql.GetList("SELECT * FROM {} ".format(ent_temp))
 				Trace.Write("where------ "+str(where))
+				product_obj = Sql.GetFirst("""SELECT 
+								MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
+							FROM PRODUCTS PDS 
+							INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
+							WHERE SYSTEM_ID ='{SystemId}' 
+							GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(ProductPartnumber)))
 				if Parentgetdata:					
 					response = self.Request_access_token()					
 					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(newConfigurationid)+"/items/1"
@@ -133,7 +139,16 @@ class Entitlements:
 						if get_ent_type:
 							if get_ent_type.ENTITLEMENT_TYPE:
 								ent_type = get_ent_type.ENTITLEMENT_TYPE
-						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and ent_type.upper() not in ('VALUE DRIVER','VALUE DRIVER COEFFICIENT'):
+						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and (ent_type.upper() not in ('VALUE DRIVER','VALUE DRIVER COEFFICIENT') or row.ENTITLEMENT_ID == "AGS_{}_VAL_SVCCMP".format(serviceId)):
+							if product_obj:
+								get_datatype = Sql.GetFirst("""SELECT STANDARD_ATTRIBUTE_DATA_TYPE 
+												FROM TAB_PRODUCTS
+												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+												LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+												LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+												
+												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = row.ENTITLEMENT_ID ))
 							Trace.Write('row--'+str(row.ENTITLEMENT_ID)+str(row.IS_DEFAULT))
 							try:
 								requestdata = '{"characteristics":['								
@@ -145,7 +160,12 @@ class Entitlements:
 										requestdata +=','
 									requestdata +=']},'	
 								else:
-									requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
+									attr_value = str(row.ENTITLEMENT_VALUE_CODE)
+									if get_datatype:
+										if get_datatype.STANDARD_ATTRIBUTE_DATA_TYPE:
+											if get_datatype.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
+												attr_value = datetime.datetime.strptime(attr_value, "%m/%d/%Y").strftime("%Y-%m-%d")
+									requestdata+= '{"value":"' +str(attr_value) + '","selected":true}]},'
 								requestdata += ']}'
 								requestdata = requestdata.replace('},]','}]')
 								#Trace.Write("requestdata--child-- " + str(requestdata))
@@ -166,7 +186,8 @@ class Entitlements:
 		ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		return newConfigurationid,cpsmatchID
 
-	def EntitlementRequest(self,cpsConfigID=None,cpsmatchID=None,AttributeID=None,NewValue=None,field_type=None,product_id = None):
+	def EntitlementRequest(self,cpsConfigID=None,cpsmatchID=None,AttributeID=None,NewValue=None,field_type=None,attr_datatype = None,product_id = None):
+		Trace.Write("attr_datatype-"+str(attr_datatype)+'-'+str(NewValue))
 		if type(NewValue) is 'str' and multiselect_flag != 'true':
 			NewValue = NewValue.replace("'","''")
 			# if NewValue == 'Select':
@@ -243,8 +264,10 @@ class Entitlements:
 				if (not NewValue) and previous_val:					
 					requestdata += '{"value":"'+str(previous_val)+'","selected":false}'
 				else:
+					if attr_datatype.upper() == 'DATE':
+						NewValue = datetime.datetime.strptime(NewValue, "%m/%d/%Y").strftime("%Y-%m-%d")
 					requestdata += '{"value":"' + NewValue + '","selected":true}'
-				#Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
+					Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
 			requestdata += ']}]}'
 			requestdata = requestdata.replace(',]}]}',']}]}')
 			Trace.Write(str(Request_URL)+"---requestdata--166---" + str(requestdata))
@@ -274,11 +297,14 @@ class Entitlements:
 		response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
 		#try:
 		if (not cps_error) and response2:
+			#Trace.Write('iffff---'+str(response2))
 			response_temp = eval(response2)
 			if response_temp['conflicts']:
+				cps_error = str(response_temp['conflicts'])
 				cps_conflict = str(response_temp['conflicts'][0]['explanation']).split('(ID')[0]
 		# except:
 		# 	pass
+		#Trace.Write("cps_error---" + str(cps_error)+'--'+str(cps_conflict))
 		return eval(response2),cpsmatc_incr,attribute_code,cps_error,cps_conflict
 	
 	def get_product_attr_level_cps_pricing(self, characteristics_attr_values=None,serviceId =None):
@@ -339,8 +365,8 @@ class Entitlements:
 		Fullresponse =''
 		cps_error = ''
 		cps_conflict = ''
-		LEVEL = ''
-		VALUE = ''
+		LEVEL = ''##A055S000P01-16862 code starts..
+		VALUE = ''##A055S000P01-16862 code ends..
 		Trace.Write(str(type(NewValue))+'----NewValue')
 		if not type(NewValue) is 'str' and multiselect_flag == 'true':
 			NewValue = list(NewValue)	
@@ -397,8 +423,8 @@ class Entitlements:
 		else:
 			##addon product condition is added
 			if ((self.treesuperparentparam == 'Product Offerings' or (self.treeparentparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements'):
-				LEVEL = "OFFERING LEVEL"
-				VALUE = str(self.treeparam)
+				LEVEL = "OFFERING LEVEL" #A055S000P01-16862 code starts..
+				VALUE = str(self.treeparam) #A055S000P01-16862 code ends..
 				tableName = 'SAQTSE'
 				serviceId = self.treeparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
@@ -409,8 +435,8 @@ class Entitlements:
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)	
 			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
-				LEVEL = "GREENBOOK LEVEL"
-				VALUE = str(self.treeparam)
+				LEVEL = "GREENBOOK LEVEL" #A055S000P01-16862 code starts..
+				VALUE = str(self.treeparam) #A055S000P01-16862 code ends..
 				tableName = 'SAQSGE'
 				parentObj = 'SAQTSE'
 				if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
@@ -429,8 +455,8 @@ class Entitlements:
 				
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
 			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
-				LEVEL = "EQUIPMENT LEVEL"
-				VALUE = str(EquipmentId)
+				LEVEL = "EQUIPMENT LEVEL" #A055S000P01-16862 code starts..
+				VALUE = str(EquipmentId) #A055S000P01-16862 code ends..
 				tableName = 'SAQSCE'
 				serviceId = self.treeparentparam
 				parentObj = 'SAQSGE'
@@ -468,7 +494,9 @@ class Entitlements:
 		attributedefaultvalue = []
 		attribute_non_defaultvalue = get_attr_leve_based_list = []
 		dropdownallowlist_selected = []
+		dropdownallowlist_unselected =[]
 		where = pricemethodupdate = get_tool_desc = ""
+		get_attr_datatype = ''
 		configg_status =''
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
 		if Gettabledata:
@@ -542,14 +570,11 @@ class Entitlements:
 		#get_conflict_message = ''
 		dropdownallowlist = []
 		dropdownallowlist_selected = []
+		dropdownallowlist_unselected =[]
 		dropdowndisallowlist = []
 		attributes_service_sublist = []
 		approval_list = {}
-		if EntitlementType == 'Dropdown':
-			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
-			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
-			#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
-			get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC
+		get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC,STANDARD_ATTRIBUTE_DATA_TYPE 
 												FROM TAB_PRODUCTS
 												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
 												LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
@@ -557,13 +582,30 @@ class Entitlements:
 												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
 												
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
+		get_text_attr = Sql.GetList("""SELECT SYSTEM_ID
+												FROM TAB_PRODUCTS
+												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+												LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+												LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+												
+												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC = 'Free Input, no Matching'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
+		get_text_attr_list = [attr.SYSTEM_ID for attr in get_text_attr]
+		if get_datatype:
+			if get_datatype.STANDARD_ATTRIBUTE_DATA_TYPE:
+				get_attr_datatype = get_datatype.STANDARD_ATTRIBUTE_DATA_TYPE
+		if EntitlementType == 'Dropdown':
+			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
+			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
+			#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
+			
 			#restriction for value driver call to CPS start
 			if 'Z0046' in AttributeID and serviceId == 'Z0091':
 				serviceId = 'Z0046'
 			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
 			if get_ent_type:
-				if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-					Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)				
+				if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"] or AttributeID == "AGS_{}_VAL_SVCCMP".format(serviceId):
+					Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,get_attr_datatype,product_obj.PRD_ID)				
 					Trace.Write("Fullresponse--"+str(Fullresponse))
 					Product.SetGlobal('Fullresponse',str(Fullresponse))
 					#restriction for value driver call to CPS end
@@ -635,6 +677,8 @@ class Entitlements:
 											for i in prdvalue["values"]:
 												if i['value']:
 													dropdownallowlist_selected.append(str(prdvalue["id"])+'_'+str(i['value']))
+										else:
+											dropdownallowlist_unselected.append(str(prdvalue["id"]) )
 										if prdvalue["possibleValues"]:
 											for i in prdvalue["possibleValues"]:
 
@@ -645,8 +689,12 @@ class Entitlements:
 												#dropdownallow[prdvalue["id"]] = dropdownallowlist
 										for attribute in prdvalue["values"]:									
 											attributevalues[str(prdvalue["id"])] = attribute["value"]
+											# if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+											# 	attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+											# else:
+											# 	attr_val = attribute["value"]
 											attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"])	)
-											Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
+											#Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
 											if attribute["author"] in ("Default","System"):
 												#Trace.Write('524------'+str(prdvalue["id"]))
 												attributedefaultvalue.append(prdvalue["id"])
@@ -660,6 +708,33 @@ class Entitlements:
 									characteristics_attr_values = Productvalue
 					#Trace.Write("-s"+str(serviceId)+'--tableName---'+str(tableName))
 					#Trace.Write("attributesallowedlst"+str(attributesallowedlst))
+					# if tableName in ('SAQSCE','SAQSGE'):
+					# 	get_visible_picklist = Sql.GetList("""SELECT * FROM PREGBV (NOLOCK) WHERE SERVICE_ID = '{}' and GREENBOOK = '{}'""".format( serviceId,self.treeparam ) )
+					# 	get_visible_picklist_list = [pick_list.ENTITLEMENT_ID+'_'+pick_list.ENTITLEMENT_VALUE_CODE for pick_list in get_visible_picklist ]
+					# 	dropdowndisallowlist = [pick_val for pick_val in dropdowndisallowlist if pick_val in get_visible_picklist_list]
+					attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
+					temp_list = []
+					for text_val in attributevalues_textbox:
+						text_value = text_val
+						get_datatype_text = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC,STANDARD_ATTRIBUTE_DATA_TYPE 
+									FROM TAB_PRODUCTS
+									LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+									LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+									LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+									LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+									
+									WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = text_val.split('%#')[0] ))
+						if get_datatype_text:
+							if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
+								if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
+									try:
+										text_value = datetime.datetime.strptime(str(text_val.split('%#')[1]), "%Y-%m-%d").strftime("%m/%d/%Y")
+										text_value = text_val.split('%#')[0]+'%#'+text_value	
+									except:
+										text_value = text_val
+						temp_list.append(text_value) 
+					if temp_list:
+						attributevalues_textbox = temp_list
 					get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 					attributesallowedlst = get_attr_leve_based_list
 					#Trace.Write(str(attributesallowedlst)+"--attributesallowedlst--durgaget_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
@@ -799,7 +874,7 @@ class Entitlements:
 				else:
 					Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
 			else:
-				Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+				Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,get_attr_datatype,product_obj.PRD_ID)
 			
 				Trace.Write("Fullresponse--"+str(Fullresponse))
 				Product.SetGlobal('Fullresponse',str(Fullresponse))
@@ -875,6 +950,8 @@ class Entitlements:
 										for i in prdvalue["values"]:
 											if i['value']:
 												dropdownallowlist_selected.append(str(prdvalue["id"])+'_'+str(i['value']))
+									else:
+										dropdownallowlist_unselected.append(str(prdvalue["id"]))
 									if prdvalue["possibleValues"]:
 										for i in prdvalue["possibleValues"]:
 
@@ -885,7 +962,11 @@ class Entitlements:
 											#dropdownallow[prdvalue["id"]] = dropdownallowlist
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
-										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"])	)
+										# if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+										# 	attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+										# else:
+										# 	attr_val = attribute["value"]
+										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
 										Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
 										if attribute["author"] in ("Default","System"):
 											#Trace.Write('524------'+str(prdvalue["id"]))
@@ -900,9 +981,36 @@ class Entitlements:
 										# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 							if Productattribute == "variantConditions":
 								characteristics_attr_values = Productvalue
+				# if tableName in ('SAQSCE','SAQSGE'):
+				# 	get_visible_picklist = Sql.GetList("""SELECT * FROM PREGBV (NOLOCK) WHERE SERVICE_ID = '{}' and GREENBOOK = '{}'""".format( serviceId,self.treeparam ) )
+				# 	get_visible_picklist_list = [pick_list.ENTITLEMENT_ID+'_'+pick_list.ENTITLEMENT_VALUE_CODE for pick_list in get_visible_picklist ]
+				# 	dropdowndisallowlist = [pick_val for pick_val in dropdowndisallowlist if pick_val in get_visible_picklist_list]
+				attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
+				temp_list = []
+				for text_val in attributevalues_textbox:
+					text_value = text_val
+					get_datatype_text = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC,STANDARD_ATTRIBUTE_DATA_TYPE 
+								FROM TAB_PRODUCTS
+								LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+								LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+								LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+								LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+								
+								WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = text_val.split('%#')[0] ))
+					if get_datatype_text:
+						if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
+							if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
+								try:
+									text_value = datetime.datetime.strptime(str(text_val.split('%#')[1]), "%Y-%m-%d").strftime("%m/%d/%Y")
+									text_value = text_val.split('%#')[0]+'%#'+text_value	
+								except:
+									text_value = text_val	
+					temp_list.append(text_value) 
+				if temp_list:
+					attributevalues_textbox = temp_list
 				#Trace.Write("-s"+str(serviceId)+'--tableName---'+str(tableName))
 				#Trace.Write("attributesallowedlst"+str(attributesallowedlst))
-				Trace.Write('attributevalues_textbox---'+str(attributevalues_textbox))
+				#Trace.Write('attributevalues_textbox---'+str(attributevalues_textbox))
 				get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 				attributesallowedlst = get_attr_leve_based_list
 				#Trace.Write(str(attributesallowedlst)+"--attributesallowedlst--durgaget_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
@@ -1104,7 +1212,11 @@ class Entitlements:
 									# 		attribute_non_defaultvalue.append(prdvalue["id"])
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
-										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
+										# if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+										# 	attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+										# else:
+										# 	attr_val = attribute["value"]
+										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))	
 										#Trace.Write(str(prdvalue["id"])+'-6778--------'+str(attribute["value"]))
 										if attribute["author"] in ("Default","System"):
 											#Trace.Write('524------'+str(prdvalue["id"]))
@@ -1118,6 +1230,29 @@ class Entitlements:
 						configuration_status = Gettabledata.CONFIGURATION_STATUS
 			Trace.Write('524--787-whereReq--configuration_status--'+str(configuration_status))
 			#get
+			attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
+			temp_list = []
+			for text_val in attributevalues_textbox:
+				text_value = text_val
+				get_datatype_text = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC,STANDARD_ATTRIBUTE_DATA_TYPE 
+							FROM TAB_PRODUCTS
+							LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+							LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+							LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+							LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+							
+							WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = text_val.split('%#')[0] ))
+				if get_datatype_text:
+					if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
+						if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
+							try:
+								text_value = datetime.datetime.strptime(str(text_val.split('%#')[1]), "%Y-%m-%d").strftime("%m/%d/%Y")
+								text_value = text_val.split('%#')[0]+'%#'+text_value	
+							except:
+								text_value = text_val	
+				temp_list.append(text_value) 
+			if temp_list:
+				attributevalues_textbox = temp_list
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 			#Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
 			if "calc" in AttributeID:
@@ -1225,10 +1360,9 @@ class Entitlements:
 								except Exception as e:
 									Trace.Write("Exception While running CQCRUDOPTN "+str(e))
 						Trace.Write("PMevents changes started "+str(key)+" - "+str(tableName))
-						if key in ( "AGS_{}_NET_PRMALB".format(serviceId)) and str(tableName) in ('SAQTSE'):
+						if key in ( "AGS_{}_NET_PRMALB".format(serviceId)) and str(tableName) in ('SAQTSE'):##A055S000P01-16862 code starts....
 							##To get the quote type of the attribute to delete the events table and their child tables based on the quote type...
 							where_string = ''
-							import re
 							service_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{service_id}' """.format(QuoteRecordId = self.ContractRecordId,RevisionRecordId=self.revision_recordid,service_id = serviceId))
 							if service_entitlement_object is not None:
 								pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -1273,7 +1407,7 @@ class Entitlements:
 									Sql.RunQuery("DELETE SAQSKP FROM SAQSKP(NOLOCK) JOIN SAQGPM ON SAQSKP.QTEGBKPME_RECORD_ID = SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID WHERE SAQSKP.QUOTE_RECORD_ID = '{}' AND SAQSKP.QTEREV_RECORD_ID = '{}' AND SAQSKP.SERVICE_ID = '{}' AND SAQSKP.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
 
 									Sql.RunQuery("DELETE SAQGPA FROM SAQGPA(NOLOCK) WHERE SAQGPA.QUOTE_RECORD_ID = '{}' AND SAQGPA.QTEREV_RECORD_ID = '{}' AND SAQGPA.SERVICE_ID = '{}' AND SAQGPA.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
-        
+		
 									##Checking the pm events mapped to many assemnlies or not...
 									pm_events_and_assembly_object = Sql.GetFirst("select SAQGPA.QTEREVPME_RECORD_ID FROM SAQGPM(NOLOCK) JOIN SAQGPA ON SAQGPM.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID = SAQGPA.QTEREVPME_RECORD_ID WHERE SAQGPM.QUOTE_RECORD_ID = '{}' AND SAQGPM.QTEREV_RECORD_ID = '{}' AND SAQGPM.SERVICE_ID = '{}' AND SAQGPA.EQUIPMENT_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,VALUE))
 									if not pm_events_and_assembly_object:
@@ -1295,7 +1429,7 @@ class Entitlements:
 							except Exception as e:
 								Trace.Write("Exception While running CQCRUDOPTN "+str(e))
 							Trace.Write("script called J")
-
+						##A055S000P01-16862 code ends...
 						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004','Z0009') :
 							#ancillary_object = 'A6200'
 							if entitlement_value.upper() == "YES":
@@ -1322,10 +1456,8 @@ class Entitlements:
 							else:
 								ancillary_object_dict['Z0048'] = "DELETE"
 						#(key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId in ("Z0035")) or
-						elif "AGS_Z0091" in key:
-							Quote.SetGlobal("EntApprovals","Yes")
 						elif "GEN_IDLALW" in key:
-							Trace.Write("1125 entvalue"+str(entitlement_value))
+							Log.Info("TOOL IDLING VALUE"+str(entitlement_value))
 							if entitlement_value == "Yes":
 								Quote.SetGlobal("IdlingAllowed","Yes")
 								GetSAQTDA = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID= '{}'".format(self.revision_recordid))
@@ -1345,6 +1477,7 @@ class Entitlements:
 									if "28 Days" in y or "30 Days" in y:
 										#y = ord(y)
 										a = SqlHelper.GetFirst("sp_executesql @T=N'INSERT SAQTDA( QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, TOLIDLVAL_RECORD_ID, TOOLIDLING_DISPLAY_VALUE, TOOLIDLING_ID, TOOLIDLING_NAME, TOOLIDLING_RECORD_ID, TOOLIDLING_VALUE_CODE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED ) SELECT CONVERT(VARCHAR(4000),NEWID()), ''{}'' AS QUOTE_ID, ''{}'' AS QUOTE_RECORD_ID, ''{}'' AS QTEREV_ID, ''{}'' AS QTEREV_RECORD_ID, PRTIAV.TOLIDLATTVAL_RECORD_ID, PRTIAV.TOOLIDLING_DISPLAY_VALUE, PRTIAV.TOOLIDLING_ID, PRTIAV.TOOLIDLING_NAME, PRTIAV.TOOLIDLING_RECORD_ID, PRTIAV.TOOLIDLING_VALUE_CODE, ''{}'' AS CPQTABLEENTRYADDEDBY, GETDATE() AS CPQTABLEENTRYDATEADDED FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = N''{}'' AND TOOLIDLING_ID = ''{}'' '".format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y.encode('utf-8').decode('utf-8'),x))
+										#Log.Info("sp_executesql @T=N'INSERT SAQTDA( QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, TOLIDLVAL_RECORD_ID, TOOLIDLING_DISPLAY_VALUE, TOOLIDLING_ID, TOOLIDLING_NAME, TOOLIDLING_RECORD_ID, TOOLIDLING_VALUE_CODE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED ) SELECT CONVERT(VARCHAR(4000),NEWID()), ''{}'' AS QUOTE_ID, ''{}'' AS QUOTE_RECORD_ID, ''{}'' AS QTEREV_ID, ''{}'' AS QTEREV_RECORD_ID, PRTIAV.TOLIDLATTVAL_RECORD_ID, PRTIAV.TOOLIDLING_DISPLAY_VALUE, PRTIAV.TOOLIDLING_ID, PRTIAV.TOOLIDLING_NAME, PRTIAV.TOOLIDLING_RECORD_ID, PRTIAV.TOOLIDLING_VALUE_CODE, ''{}'' AS CPQTABLEENTRYADDEDBY, GETDATE() AS CPQTABLEENTRYDATEADDED FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = N''{}'' AND TOOLIDLING_ID = ''{}'' '".format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y.encode('utf-8').decode('utf-8'),x))
 									else:    
 										Sql.RunQuery(""" INSERT SAQTDA(
 											QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
@@ -1376,6 +1509,36 @@ class Entitlements:
 											GETDATE() AS CPQTABLEENTRYDATEADDED
 											FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
 											""".format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y,x))
+										# Log.Info(""" INSERT SAQTDA(
+										# 	QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
+										# 	QUOTE_ID,
+										# 	QUOTE_RECORD_ID,
+										# 	QTEREV_ID,
+										# 	QTEREV_RECORD_ID,
+										# 	TOLIDLVAL_RECORD_ID,
+										# 	TOOLIDLING_DISPLAY_VALUE,
+										# 	TOOLIDLING_ID,
+										# 	TOOLIDLING_NAME,
+										# 	TOOLIDLING_RECORD_ID,
+										# 	TOOLIDLING_VALUE_CODE,
+										# 	CPQTABLEENTRYADDEDBY,
+										# 	CPQTABLEENTRYDATEADDED
+										# 	) SELECT 
+										# 	CONVERT(VARCHAR(4000),NEWID()),
+										# 	'{}' AS QUOTE_ID,
+										# 	'{}' AS QUOTE_RECORD_ID,
+										# 	'{}' AS QTEREV_ID,
+										# 	'{}' AS QTEREV_RECORD_ID,
+										# 	PRTIAV.TOLIDLATTVAL_RECORD_ID,
+										# 	PRTIAV.TOOLIDLING_DISPLAY_VALUE,
+										# 	PRTIAV.TOOLIDLING_ID,
+										# 	PRTIAV.TOOLIDLING_NAME,
+										# 	PRTIAV.TOOLIDLING_RECORD_ID,
+										# 	PRTIAV.TOOLIDLING_VALUE_CODE,
+										# 	'{}' AS CPQTABLEENTRYADDEDBY,
+										# 	GETDATE() AS CPQTABLEENTRYDATEADDED
+										# 	FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
+										# 	""".format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y,x))
 							elif entitlement_value == "No":
 								Quote.SetGlobal("IdlingAllowed","No")
 								Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
@@ -2081,10 +2244,10 @@ class Entitlements:
 						cpsmatc_incr = ''
 						attribute_code = ''
 						if get_ent_type:
-							if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-								Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+							if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"] or AttributeID == "AGS_{}_VAL_SVCCMP".format(serviceId):
+								Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',get_attr_datatype,product_obj.PRD_ID)
 						else:
-							Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+							Fullresponse,cpsmatc_incr,attribute_code,cps_error,cps_conflict = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',get_attr_datatype,product_obj.PRD_ID)
 						if Fullresponse and cpsmatc_incr:
 							Trace.Write("Fullresponse"+str(Fullresponse))
 							Trace.Write("tableName--894---"+str(tableName))
@@ -2095,6 +2258,7 @@ class Entitlements:
 							Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 							Sql.RunQuery(Updatecps)
 							characteristics_attr_values = []
+							attributevalues_textbox = []
 							for rootattribute, rootvalue in Fullresponse.items():
 								# if rootattribute == "conflicts":
 								# 	for conflict in rootvalue:
@@ -2115,13 +2279,42 @@ class Entitlements:
 											for prdvalue in Productvalue:											
 												for attribute in prdvalue["values"]:
 													attributevalues[str(prdvalue["id"])] = attribute["value"]
+													# if AttributeID == prdvalue["id"] and get_attr_datatype.upper() == 'DATE':
+													# 	attr_val = datetime.datetime.strptime(str(attribute["value"]), "%Y-%m-%d").strftime("%m/%d/%Y")
+													# else:
+													# 	attr_val = attribute["value"]
 													attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
 													# if prdvalue["id"] in characteristics_attr_values:
 													# 	characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
 													# else:
 													# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 							Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
-							
+							attributevalues_textbox = [text_attr for text_attr in attributevalues_textbox if text_attr.split('%#')[0] in get_text_attr_list ] 
+							temp_list = []
+							for text_val in attributevalues_textbox:
+								text_value = text_val
+								get_datatype_text = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC,STANDARD_ATTRIBUTE_DATA_TYPE 
+											FROM TAB_PRODUCTS
+											LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+											LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+											LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+											LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+											
+											WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = text_val.split('%#')[0] ))
+								if get_datatype_text:
+									if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE:
+										if get_datatype_text.STANDARD_ATTRIBUTE_DATA_TYPE.upper() == 'DATE':
+											#Trace.Write("text_value-before try-"+str(text_value))
+											try:
+												text_value = datetime.datetime.strptime(str(text_val.split('%#')[1]), "%Y-%m-%d").strftime("%m/%d/%Y")
+												text_value = text_val.split('%#')[0]+'%#'+text_value
+												#Trace.Write("text_value-aftr try-"+str(text_value))	
+											except :
+												#Trace.Write("text_valueexcept try-"+str(text_value))
+												text_value = text_val	
+								temp_list.append(text_value) 
+							if temp_list:
+								attributevalues_textbox = temp_list
 							if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 								#try:								
 								Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
@@ -2284,11 +2477,15 @@ class Entitlements:
 			# 	# 	+ "</label></div></div>"
 			# 	# )
 			try:
-				msg_text = '<div class="emp_notifiy" style="display: none;"><div class="col-md-12 page_alert_notifi" id="PageAlert"><div class="row modulesecbnr brdr" onclick="call_vertical_scrl()" data-toggle="collapse" data-target="#alertnotify" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div id="alertnotify" class="col-md-12  alert-notification  brdr collapse in"><div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '+str(cps_conflict)+' </label></div></div> </div></div></div>'
-			except:
+				msg_text = '<div class="emp_notifiy" style="display: none;"><div class="col-md-12 page_alert_notifi" id="PageAlert"><div class="row modulesecbnr brdr" onclick="call_vertical_scrl()" data-toggle="collapse" data-target=".alertnotify" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div id="alertnotify" class="col-md-12 alertnotify alert-notification  brdr collapse in"><div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '+str(cps_conflict)+' </label></div></div> </div></div></div>'
+			except Exception as e:
+				#Trace.Write("error conf-"+str(e))
 				pass
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
-		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesdisrequired_list,attriburesrequired_list,str(cps_error),str(msg_text)
+		value_driver_attr_qry = Sql.GetList("SELECT ENTITLEMENT_ID FROM PRENTL WHERE ENTITLEMENT_TYPE IN ('VALUE DRIVER','VALUE DRIVER COEFFICIENT') AND  SERVICE_ID = '"+str(serviceId)+"'")
+		value_driver_attr= [val.ENTITLEMENT_ID for val in value_driver_attr_qry]
+		dropdownallowlist_unselected = [dropdown_val for dropdown_val in dropdownallowlist_unselected if dropdown_val not in value_driver_attr ]
+		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesdisrequired_list,attriburesrequired_list,str(cps_error),str(msg_text), dropdownallowlist_unselected
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
@@ -2932,7 +3129,7 @@ except:
 	previous_val =""
 
 try:
-	scheduled_parts = Param.scheduled_parts
+	scheduled_parts = Param.scheduled_parts 
 except:
 	scheduled_parts = ""
 Trace.Write("subtabName : " + str(subtabName)+".. EntitlementType : "+str(EntitlementType)+"Action : "+str(ACTION))

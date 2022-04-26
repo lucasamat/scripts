@@ -457,6 +457,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
         parameter = Sql.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
         primaryQueryItems = Sql.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT SAQASE.SND_EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(contract_quote_id)+"'' as QUOTE_ID, ''"+str(contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM SAQASE (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = SAQASE.QUOTE_REV_SENDING_ACC_FAB_EQUIPMENT_RECORD_ID'")
         
+        
         Sql.RunQuery("""INSERT SAQFEQ (
                                     QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
                                     EQUIPMENT_ID,
@@ -490,6 +491,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                     CpqTableEntryDateModified,
                                     RELOCATION_FAB_TYPE,
                                     RELOCATION_EQUIPMENT_TYPE,
+                                    WARRANTY_END_DATE,
                                     TECHNOLOGY
                                     ) SELECT
                                         CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
@@ -524,6 +526,7 @@ def receiving_equipment_insert(values,all_values,A_Keys,A_Values):
                                         GETDATE() as CpqTableEntryDateModified,
                                         '{relocation_fab_type}' AS RELOCATION_FAB_TYPE,
                                         '{relocation_equp_type}' AS RELOCATION_EQUIPMENT_TYPE,
+                                        null as WARRANTY_END_DATE,
                                         SAQASE.TECHNOLOGY
                                         FROM SYSPBT (NOLOCK)
                                         JOIN SAQASE (NOLOCK) ON SYSPBT.BATCH_RECORD_ID = SAQASE.SND_EQUIPMENT_RECORD_ID AND SYSPBT.QUOTE_RECORD_ID = SAQASE.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQASE.QTEREV_RECORD_ID

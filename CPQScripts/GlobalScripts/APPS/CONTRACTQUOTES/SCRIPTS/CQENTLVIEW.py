@@ -39,7 +39,7 @@ class EntitlementView():
 		TableObj = ""
 		ChangedList = totaldisallowlist = section_not_list = []
 		Trace.Write("EntitlementType"+str(EntitlementType))
-		
+		greenbok = ''
 		attributedefaultvalue = []
 		#Trace.Write('TreeSuperParentParam'+'--'+str(self.treesupertopparentparam)+'--'+str(self.treetopsuperparentparam))
 		objname_ent = "" ##add on product entitilement obj declare
@@ -174,6 +174,7 @@ class EntitlementView():
 		elif EntitlementType == "TOOLS":
 			TableObj = Sql.GetFirst("select * from SAQSCE (NOLOCK) where QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'")
 			ObjectName = "SAQSCE"
+			greenbok = self.treeparam
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
 		elif EntitlementType == "EVENT":
 			# if self.treetopsuperparentparam == 'Product Offerings':
@@ -196,6 +197,7 @@ class EntitlementView():
 			ObjectName = "SAQSGE"
 			#service = self.treesuperparentparam
 			service = self.treeparentparam
+			greenbok = self.treeparam
 			# TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' AND FABLOCATION_ID = '"+ str(self.treeparentparam) + "'")		
 			# where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' AND FABLOCATION_ID = '"+ str(self.treeparentparam) + "'"
 			TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(self.treeparam) + "' ")		
@@ -217,21 +219,22 @@ class EntitlementView():
 		# 	where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND FABLOCATION_ID ='"+str(self.treeparam)+"'"					
 		elif EntitlementType == "BUSINESSUNIT":
 			#TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"'")
-			greenbook_val = self.treeparam
+			#greenbook_val = self.treeparam
+			greenbok =self.treeparam
 			service_val = self.treeparentparam
 			if self.treeparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings':
-				greenbook_val = self.treeparentparam
+				greenbok = self.treeparentparam
 				par_service_val = self.treesuperparentparam
-				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'")
-				where = " QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'"
+				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbok)+"'")
+				where = " QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRVGBK_RECORD_ID = '" + str(RECORD_ID) + "' AND PAR_SERVICE_ID = '" + str(par_service_val) + "'  AND GREENBOOK = '"+str(greenbok)+"'"
 				ProductPartnumber = TableObj.SERVICE_ID
 			else:
-				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "'  AND GREENBOOK = '"+str(greenbook_val)+"'")
-				where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbook_val)+"'"
+				TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "'  AND GREENBOOK = '"+str(greenbok)+"'")
+				where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbok)+"'"
 			if TableObj is not None:
 				RECORD_ID = str(TableObj.SERVICE_RECORD_ID)
 			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"'"
-			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbook_val)+"'"			
+			#where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(service_val) + "' AND GREENBOOK ='"+str(greenbok)+"'"			
 		elif EntitlementType == "ASSEMBLY":
 			# TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
 			# where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
@@ -340,8 +343,13 @@ class EntitlementView():
 			Trace.Write('attributedefaultvalue--325----'+str(attributedefaultvalue))
 			#Trace.Write("validation_dict---"+str(validation_dict))
 			#editability contro strat
-			
+			# Trace.Write("disallow count-"+str(len(dropdowndisallowlist))+str(dropdowndisallowlist) )
+			# if ObjectName in ('SAQSCE','SAQSGE'):
+			# 	get_visible_picklist = Sql.GetList("""SELECT * FROM PREGBV (NOLOCK) WHERE SERVICE_ID = '{}' and GREENBOOK = '{}'""".format( ProductPartnumber,greenbok ) )
+			# 	get_visible_picklist_list = [pick_list.ENTITLEMENT_ID+'_'+pick_list.ENTITLEMENT_VALUE_CODE for pick_list in get_visible_picklist ]
+			# 	dropdowndisallowlist = [pick_val for pick_val in dropdowndisallowlist if pick_val in get_visible_picklist_list]
 			get_attr_edit_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':overallattributeslist_visible,'action':'get_edit_attr_list'})
+			Trace.Write("disallow count-aftr-"+str(len(dropdowndisallowlist)) +str(dropdowndisallowlist) )
 			if get_attr_edit_based_list:
 				attributeEditlst = get_attr_edit_based_list[0]
 				Trace.Write('attributeReadonlylst--Z0091----'+str(attributeReadonlylst))
@@ -579,7 +587,7 @@ class EntitlementView():
 										select_option = ""
 										default = 'selected'
 										selected_option = ' title="Select" '
-									VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
+									VAR1 += '<option id = "'+str(attrSysId)+'_select"  value="select" ' +str(default)+' style= "display:none;"> </option>'
 									for value in STDVALUES:
 										if value.SYSTEM_ID in dropdowndisallowlist:
 											disallow_style = "style = 'display:none'"
@@ -763,7 +771,6 @@ class EntitlementView():
 					tbrow["KB_VERSION"] = Fullresponse["kbKey"]["version"]
 					tbrow["CPQTABLEENTRYADDEDBY"] = userId
 					tbrow["CPQTABLEENTRYDATEADDED"] = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-
 					columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 					values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 					insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)				
@@ -1058,7 +1065,7 @@ class EntitlementView():
 								# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
 								for val in GetXMLsecField:
 									try:
-										val.ENTITLEMENT_DISPLAY_VALUE = val.ENTITLEMENT_DISPLAY_VALUE.replace(';#38','&').replace("&lt;","<").replace("&gt;",">")
+										val.ENTITLEMENT_DISPLAY_VALUE = val.ENTITLEMENT_DISPLAY_VALUE.replace(';#38','&').replace("&lt;","<").replace("&gt;",">").replace('&apos;',"'")
 									except:
 										pass
 									try:
@@ -1090,7 +1097,7 @@ class EntitlementView():
 												default = 'selected'
 											Trace.Write(str(attrSysId)+'--attrSysId----'+str(val.ENTITLEMENT_ID)+'-----982------>'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 											Trace.Write(str(attributes_disallowed_list)+'---dropdowndisallowlist----'+str(dropdowndisallowlist))
-											VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
+											VAR1 += '<option id = "'+str(attrSysId)+'_select" value="select" ' +str(default)+' style= "display:none;"> </option>'
 											for value in standard_attr_values:
 												if value.SYSTEM_ID in dropdowndisallowlist:												
 													disallow_style = "style = 'display:none'"
@@ -1305,17 +1312,17 @@ class EntitlementView():
 											# else:
 											# 	imgstr  = ""
 											if str(attrSysId) in ("AGS_REL_STDATE",'AGS_Z0007_GEN_RELDAT','AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
-												datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
-												if attrSysId == 'AGS_Z0007_GEN_RELDAT':
-													datepicker = "onclick_datepicker('" + attrSysId + "')"
-												elif attrSysId in ('AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
-													datepicker = "onclick_datepicker('" + attrSysId + "')"	
+												#datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
+												#if attrSysId == 'AGS_Z0007_GEN_RELDAT':
+												datepicker = "onclick_datepicker('" + attrSysId + "')"
+												# elif attrSysId in ('AGS_Z0007_PQB_MIL1BD','AGS_Z0007_PQB_MIL2BD','AGS_Z0007_PQB_MIL3BD','AGS_Z0006_PQB_MIL2BD','AGS_Z0006_PQB_MIL1BD','AGS_Z0006_PQB_MIL3BD'):
+												# 	datepicker = "onclick_datepicker('" + attrSysId + "')"	
 												sec_str1 += (
-													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
+													'<input  class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
-													+ '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
+													+ '" type="text"   style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 													+ str(attr_value)
-													+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'
+													+ '" value = "'+str(attr_value)+'" onchange="editent_bt(this)"  title="'+str(attr_value)+'"  disabled>'
 													+ "</input> "
 												)
 												# sec_str1 += (
@@ -1418,7 +1425,7 @@ class EntitlementView():
 											select_option = ""
 											default = 'selected'
 											selected_option = ' title="Select" '
-										VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
+										VAR1 += '<option id = "'+str(attrSysId)+'_select" value="select" ' +str(default)+' style= "display:none;"> </option>'
 										for value in standard_attr_values:
 											selected = ""
 											if value.SYSTEM_ID in dropdowndisallowlist:
@@ -1543,7 +1550,7 @@ class EntitlementView():
 					##section hide starts..
 					Trace.Write('nott section--'+str(get_tab_attr_length)+'--'+str(tab_get_disallow_list))
 					if len(tab_get_disallow_list) == get_tab_attr_length :
-						Trace.Write("yess----"+str(Section_id))
+						#Trace.Write("yess----"+str(Section_id))
 						section_not_list.append(Section_id)
 						
 					##section hide ends...
@@ -1553,7 +1560,7 @@ class EntitlementView():
 					get_readonly_section_list = [attr for attr in attributeReadonlylst if attr in section_list ]
 					Trace.Write("section_list-"+str(len(section_list))+"get_readonly_section_list-"+str(len(get_readonly_section_list)))
 					if (self.treeparentparam == "Quote Items" or self.treeparam == "Quote Items" or self.treesuperparentparam == "Quote Items" or self.treetopsuperparentparam == "Quote Items") or (len(section_list) == len(get_readonly_section_list) and len(section_list) != 0):
-						Trace.Write("inside non dbl clk")
+						#Trace.Write("inside non dbl clk")
 						dbl_clk_function += ""
 					else:
 						#dbl_clk_function += ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] =  $(this).find('td:nth-child(3) select').children(':selected').attr('id');});$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();});console.log('dict_new-2818--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))}catch{console.log('')}")

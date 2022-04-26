@@ -44,6 +44,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             WHEN 'Z5' THEN 'SALES REP'
                             WHEN 'ZCM' THEN 'CONTRACT MANAGER'
                             WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            WHEN 'Z11' THEN 'PRICING PERSON'
                             ELSE 'FOB'
                             END ) AS C4C_PARTNERFUNCTION_ID,
                             (SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -57,6 +58,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             WHEN 'Z5' THEN 'SALES REP'
                             WHEN 'ZCM' THEN 'CONTRACT MANAGER'
                             WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            WHEN 'Z11' THEN 'PRICING PERSON'
                             ELSE 'FOB'
                             END ) AS CRM_PARTNERFUNCTION_ID,
                             (SELECT TOP 1 PARTNERFUNCTION_DESCRIPTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -70,6 +72,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             WHEN 'Z5' THEN 'SALES REP'
                             WHEN 'ZCM' THEN 'CONTRACT MANAGER'
                             WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            WHEN 'Z11' THEN 'PRICING PERSON'
                             ELSE 'FOB'
                             END ) AS PARTNERFUNCTION_DESC,
                             (SELECT TOP 1 PARTNERFUNCTION_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -83,6 +86,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             WHEN 'Z5' THEN 'SALES REP'
                             WHEN 'ZCM' THEN 'CONTRACT MANAGER'
                             WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            WHEN 'Z11' THEN 'PRICING PERSON'
                             ELSE 'FOB'
                             END ) AS PARTNERFUNCTION_ID,
                             (SELECT TOP 1 PARTNERFUNCTION_RECORD_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
@@ -96,6 +100,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             WHEN 'Z5' THEN 'SALES REP'
                             WHEN 'ZCM' THEN 'CONTRACT MANAGER'
                             WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            WHEN 'Z11' THEN 'PRICING PERSON'
                             ELSE 'FOB'
                             END ) AS PARTNERFUNCTION_RECORD_ID,
                             SAEMPL.EMAIL,
@@ -117,7 +122,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
                             QuoteRecordId=quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
                             RevisionId=quote_rev_id,
                             RevisionRecordId=quote_revision_record_id,
-                            is_primary = "1" if employee.get("PRIMARY").upper()=="TRUE" else "0"
+                            is_primary="1" if employee.get("PRIMARY") and employee.get("PRIMARY").upper() == "TRUE" else "0",
                             )
                         )
     Sql.RunQuery(query)
@@ -159,7 +164,7 @@ if 'Param' in globals():
                 if quote_id:
                     payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = '' ORDER BY CpqTableEntryId DESC".format(quote_id))
                     #Log.Info("CpqTableEntryId  ---------------"+str(payload_json_obj.CpqTableEntryId))
-                    Log.Info("CQC4CWBCPQ Called------")
+                    #Log.Info("CQC4CWBCPQ Called------")
                     if payload_json_obj:
                         payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
                         payload_json = eval(payload_json.get('Param'))
@@ -168,14 +173,15 @@ if 'Param' in globals():
                             ##To get the opportunity id from the opportunity table by passing opportunity object id receiving from the c4c...
                             opportunity_object =Sql.GetFirst("SELECT OPPORTUNITY_ID FROM SAOPPR(NOLOCK) WHERE C4C_OPPOBJ_ID = '{c4c_opppbj_id}'".format(c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')) )
                             
-                            ##To get the quote record id and revision record id for the c4c opportunity id...
-                            revision_object = Sql.GetFirst("SELECT SAQTRV.QUOTE_RECORD_ID ,SAQTRV.QTEREV_RECORD_ID,SAQTRV.QTEREV_ID FROM SAQTRV(NOLOCK) JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID JOIN SAOPPR ON SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID WHERE SAOPPR.C4C_OPPOBJ_ID = '{c4c_opppbj_id}'".format(c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')))
+                            ##To get the quote record id and revision record id for the c4c opportunity id.....##HPQC 324 DEFECT ID
+                            revision_object = Sql.GetFirst("SELECT SAQTRV.ACTIVE ,SAQTRV.QUOTE_RECORD_ID ,SAQTRV.QTEREV_RECORD_ID,SAQTRV.QTEREV_ID FROM SAQTRV(NOLOCK) JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID JOIN SAOPPR ON SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID WHERE SAOPPR.C4C_OPPOBJ_ID = '{c4c_opppbj_id}' AND SAQTRV.ACTIVE = 'True'".format(c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')))
                             
                             ##To get the quote details for the sales team update(SAQDLT table insert)...
-                            quote_object = Sql.GetFirst("SELECT QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(revision_object.QUOTE_RECORD_ID))
+                            if revision_object:
+                                quote_object = Sql.GetFirst("SELECT QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(revision_object.QUOTE_RECORD_ID))
                             
-                            ##To delete the SAQDLT table before insert the updated record from c4c...
-                            Sql.RunQuery("DELETE FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}'".format(revision_object.QUOTE_RECORD_ID))
+                            ##To delete the SAQDLT table before insert the updated record from c4c.....##HPQC 324 DEFECT ID
+                            Sql.RunQuery("DELETE FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_ID = '{}'".format(revision_object.QUOTE_RECORD_ID,revision_object.QTEREV_ID))
                         if payload_json.get('SAEMPL'):
                             employee = payload_json.get('SAEMPL')
                             if type(employee) is dict:

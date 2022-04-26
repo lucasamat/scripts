@@ -750,6 +750,46 @@ def _insert_subtotal_by_offerring_quote_table():
 		get_items_details_obj_insert.Save()
 	#insrt_item_details = ("""INSERT QT__QT_SAQRIT (LINE,FABLOCATION_ID,OBJECT_ID,EQUIPMENT_ID,GREENBOOK,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,SERVICE_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,ESTVAL_INGL_CURR,NET_PRICE_INGL_CURR,ownerId, cartId) select SAQRIT.LINE,SAQRIT.FABLOCATION_ID,SAQRIT.OBJECT_ID,SAQRIT.OBJECT_ID as EQUIPMENT_ID,SAQRIT.GREENBOOK,SAQRIT.SERVICE_DESCRIPTION,SAQRIT.SERVICE_RECORD_ID,SAQRIT.SERVICE_ID,SAQRIT.QUOTE_ID,SAQRIT.QUOTE_RECORD_ID,SAQRIT.QTEREV_ID,SAQRIT.QTEREV_RECORD_ID,SAQRIT.ESTVAL_INGL_CURR,SAQRIT.NET_VALUE_INGL_CURR,{UserId} as ownerId,{CartId} as cartId from SAQRIT (NOLOCK)  where SAQRIT.QUOTE_RECORD_ID ='{c4c_quote_id}' and  SAQRIT.QTEREV_RECORD_ID= '{rev_rec_id}'""".format(CartId = cartobj.CART_ID,UserId= cartobj.USERID,c4c_quote_id = contract_quote_record_id,rev_rec_id = quote_revision_record_id))
 	#Sql.RunQuery(insrt_item_details)
+	get_sold_to_details = Sql.GetFirst("SELECT PARTY_NAME,ADDRESS,EMAIL,PHONE from SAQTIP where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}'  and CPQ_PARTNER_FUNCTION='SOLD TO'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_sold_to_details:
+		if str(get_sold_to_details.PARTY_NAME):
+			Quote.GetCustomField('QD_SOLD_PARTY_NAME').Content = str(get_sold_to_details.PARTY_NAME)
+		if str(get_sold_to_details.ADDRESS):
+			Quote.GetCustomField('QD_SOLD_ADDRESS').Content = str(get_sold_to_details.ADDRESS)
+		if str(get_sold_to_details.EMAIL):
+			Quote.GetCustomField('QD_SOLD_PARTY_NAME').Content = str(get_sold_to_details.EMAIL)
+		if str(get_sold_to_details.PHONE):
+			Quote.GetCustomField('QD_SOLD_PHONE').Content = str(get_sold_to_details.PHONE)
+	get_ship_to_details = Sql.GetFirst("SELECT PARTY_NAME,ADDRESS,EMAIL,PHONE from SAQTIP where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}'  and CPQ_PARTNER_FUNCTION='SHIP TO'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_ship_to_details:
+		if str(get_ship_to_details.PARTY_NAME):
+			Quote.GetCustomField('QD_SHIP_PARTY_NAME').Content = str(get_ship_to_details.PARTY_NAME)
+		if str(get_ship_to_details.ADDRESS):
+			Quote.GetCustomField('QD_SHIP_ADDRESS').Content = str(get_ship_to_details.ADDRESS)
+		if str(get_ship_to_details.EMAIL):
+			Quote.GetCustomField('QD_SHIP_PARTY_NAME').Content = str(get_ship_to_details.EMAIL)
+		if str(get_ship_to_details.PHONE):
+			Quote.GetCustomField('QD_SHIP_PHONE').Content = str(get_ship_to_details.PHONE)
+	get_bill_to_details = Sql.GetFirst("SELECT PARTY_NAME,ADDRESS,EMAIL,PHONE from SAQTIP where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}'  and CPQ_PARTNER_FUNCTION='BILL TO'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_bill_to_details:
+		if str(get_bill_to_details.PARTY_NAME):
+			Quote.GetCustomField('QD_BILL_PARTY_NAME').Content = str(get_bill_to_details.PARTY_NAME)
+		if str(get_bill_to_details.ADDRESS):
+			Quote.GetCustomField('QD_BILL_ADDRESS').Content = str(get_bill_to_details.ADDRESS)
+		if str(get_bill_to_details.EMAIL):
+			Quote.GetCustomField('QD_BILL_PARTY_NAME').Content = str(get_bill_to_details.EMAIL)
+		if str(get_bill_to_details.PHONE):
+			Quote.GetCustomField('QD_BILL_PHONE').Content = str(get_bill_to_details.PHONE)
+	get_pay_to_details = Sql.GetFirst("SELECT PARTY_NAME,ADDRESS,EMAIL,PHONE from SAQTIP where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}'  and CPQ_PARTNER_FUNCTION='PAY TO'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_pay_to_details:
+		if str(get_pay_to_details.PARTY_NAME):
+			Quote.GetCustomField('QD_PAY_PARTY_NAME').Content = str(get_pay_to_details.PARTY_NAME)
+		if str(get_pay_to_details.ADDRESS):
+			Quote.GetCustomField('QD_PAY_ADDRESS').Content = str(get_pay_to_details.ADDRESS)
+		if str(get_pay_to_details.EMAIL):
+			Quote.GetCustomField('QD_PAY_PARTY_NAME').Content = str(get_pay_to_details.EMAIL)
+		if str(get_pay_to_details.PHONE):
+			Quote.GetCustomField('QD_PAY_PHONE').Content = str(get_pay_to_details.PHONE)
 
 	get_revision_details = Sql.GetFirst("SELECT REVISION_DESCRIPTION,REV_EXPIRE_DATE,EXCHANGE_RATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,CUSTOMER_NOTES,PAYMENTTERM_NAME,GLOBAL_CURRENCY from SAQTRV where QUOTE_RECORD_ID = '{qt_rec_id}'".format(qt_rec_id = contract_quote_record_id))
 	Quote.GetCustomField('Currency').Content = str(get_revision_details.GLOBAL_CURRENCY)
@@ -781,15 +821,83 @@ def _insert_subtotal_by_offerring_quote_table():
 		Quote.SetGlobal('NP', str(total_net_price))
 		Quote.SetGlobal('NEV', str(total_net_value))
 		Quote.SetGlobal('TX', str(total_tax_amt))'''
-	get_quotetotal = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR as netprice,ESTVAL_INGL_CURR as est_val,TAX_AMOUNT_INGL_CURR as taxtotal,TOTAL_AMOUNT_INGL_CURR as totamt from SAQTRV where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	#QC 213,452 start
+	get_quotetotal = Sql.GetFirst("SELECT SALESORG_ID,BANK_NAME,INCOTERM_NAME,NET_VALUE_INGL_CURR as netprice,ESTVAL_INGL_CURR as est_val,TAX_AMOUNT_INGL_CURR as taxtotal,TOTAL_AMOUNT_INGL_CURR as totamt from SAQTRV where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
 	if get_quotetotal:
+		get_address_details = Sql.GetFirst("SELECT ADDRESS1,ADDRESS2,CITY,COMPANY_CODE,COUNTRY,FAX,PHONE,POSTALCODE,STATE,REGION,COMPANY_NAME from SASORG where SALESORG_ID = '"+str(get_quotetotal.SALESORG_ID)+"'")
+		if get_address_details:
+			if get_address_details.ADDRESS1:
+				Quote.SetGlobal('QT_ADDRESS_ONE', str(get_address_details.ADDRESS1))
+			else:
+				Quote.SetGlobal('QT_ADDRESS_ONE', '')
+			if get_address_details.ADDRESS2:
+				Quote.SetGlobal('QT_ADDRESS_TWO', str(get_address_details.ADDRESS2))
+			else:
+				Quote.SetGlobal('QT_ADDRESS_TWO','')
+			if get_address_details.CITY:
+				Quote.SetGlobal('QT_SA_CITY', str(get_address_details.CITY))
+			else:
+				Quote.SetGlobal('QT_SA_CITY', '')
+			if get_address_details.COMPANY_CODE:
+				Quote.SetGlobal('QT_SA_COMCODE', str(get_address_details.COMPANY_CODE))
+			else:
+				Quote.SetGlobal('QT_SA_COMCODE', '')
+			if get_address_details.COUNTRY:
+				Quote.SetGlobal('QT_SA_CTY', str(get_address_details.COUNTRY))
+			else:
+				Quote.SetGlobal('QT_SA_CTY', '')
+			if get_address_details.FAX:
+				Quote.SetGlobal('QT_SA_FAX', str(get_address_details.FAX))
+			else:
+				Quote.SetGlobal('QT_SA_FAX', '')
+			if get_address_details.PHONE:
+				Quote.SetGlobal('QT_SA_PHONE', str(get_address_details.PHONE))
+			else:
+				Quote.SetGlobal('QT_SA_PHONE', '')
+			if get_address_details.POSTALCODE:
+				Quote.SetGlobal('QT_SA_POSTCODE', str(get_address_details.POSTALCODE))
+			else:
+				Quote.SetGlobal('QT_SA_POSTCODE', '')
+			if get_address_details.STATE:
+				Quote.SetGlobal('QT_SA_STATE', str(get_address_details.STATE))
+			else:
+				Quote.SetGlobal('QT_SA_STATE', '')
+			if get_address_details.REGION:
+				Quote.SetGlobal('QT_SA_REGION', str(get_address_details.REGION))
+			else:
+				Quote.SetGlobal('QT_SA_REGION', '')
+			if get_address_details.COMPANY_NAME:
+				Quote.SetGlobal('QT_SA_COMPANY_NAME', str(get_address_details.COMPANY_NAME))
+			else:
+				Quote.SetGlobal('QT_SA_COMPANY_NAME', '')
+			if get_address_details.BANK_NAME:
+				Quote.SetGlobal('QT_SA_BANK_NAME', str(get_address_details.BANK_NAME))
+			else:
+				Quote.SetGlobal('QT_SA_BANK_NAME', '')
+			if get_address_details.INCOTERM_NAME:
+				Quote.SetGlobal('QT_SA_INC_NAME', str(get_address_details.INCOTERM_NAME))
+			else:
+				Quote.SetGlobal('QT_SA_INC_NAME', '')
 		Quote.GetCustomField('doc_net_price').Content = str(get_quotetotal.netprice)
 		Quote.GetCustomField('tot_est').Content = str(get_quotetotal.est_val)
 		if str(get_quotetotal.taxtotal):
 			Quote.GetCustomField('taxtotal').Content = str(get_quotetotal.taxtotal)
 		if str(get_quotetotal.totamt):
 			Quote.GetCustomField('TL_NET_VALUE').Content = str(get_quotetotal.totamt)
-
+	get_customer_details = Sql.GetFirst("SELECT CONTACT_NAME,EMAIL from SAQICT where QUOTE_RECORD_ID = '{contract_quote_record_id}' and QTEREV_RECORD_ID ='{quote_revision_record_id}' ".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id=quote_revision_record_id))
+	if get_customer_details:
+		if get_customer_details.CONTACT_NAME:
+			Quote.SetGlobal('QT_CT_NAME', str(get_customer_details.CONTACT_NAME))
+		else:
+			Quote.SetGlobal('QT_CT_NAME', '')
+		if get_customer_details.EMAIL:
+			Quote.SetGlobal('QT_CT_EMAIL', str(get_customer_details.EMAIL))
+		else:
+			Quote.SetGlobal('QT_CT_EMAIL', '')
+	else:
+		Quote.SetGlobal('QT_CT_NAME', '')
+		Quote.SetGlobal('QT_CT_EMAIL', '')
+	#QC 213 end
 	return True
 #Document XML end
 

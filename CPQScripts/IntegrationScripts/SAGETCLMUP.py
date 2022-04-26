@@ -160,20 +160,7 @@ try:
 						""
 						+ str(Parameter1.QUERY_CRITERIA_1)
 						+ "  SAQTRV SET CLM_AGREEMENT_NUM=''"+ str(rebuilt_data['CPQ_Columns']['AgreementNumber'])+"'',CLM_AGREEMENT_ID = ''"+ str(rebuilt_data['CPQ_Columns']['AgreementID'])+"'',CLM_AGREEMENT_STATUS = UPPER(''"+ str(rebuilt_data['CPQ_Columns']['AgreementStatus'])+"''),CLM_AGREEMENT_URL = ''"+ str(rebuilt_data ['CPQ_Columns']['AgreementURL'])+"'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +''-''+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"''  ' "
-					)
-
-					primaryQueryItems = SqlHelper.GetFirst(
-						""
-						+ str(Parameter1.QUERY_CRITERIA_1)
-						+ "  SAQTRV SET REVISION_STATUS=''OPD-LEGAL SOW CREATED'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +''-''+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"'' AND ISNULL(CLM_AGREEMENT_STATUS,'''')=''DRAFT'' ' "
-					)
-
-					primaryQueryItems = SqlHelper.GetFirst(
-						""
-						+ str(Parameter1.QUERY_CRITERIA_1)
-						+ "  SAQTRV SET REVISION_STATUS=''OPD-LEGAL SOW ACCEPTED'' FROM SAQTRV (NOLOCK) WHERE SAQTRV.QUOTE_ID +''-''+CONVERT(VARCHAR,SAQTRV.QTEREV_ID) = ''"+ str(Qt_Id)+"'' AND ISNULL(CLM_AGREEMENT_STATUS,'''')=''ACCEPTED'' ' "
-					)
-										
+					)										
 										
 					ToEml = SqlHelper.GetFirst("SELECT ISNULL(OWNER_ID,'X0116954') as OWNER_ID FROM SAQTMT (NOLOCK) WHERE QUOTE_ID +'-'+CONVERT(VARCHAR,QTEREV_ID) = '"+str(Qt_Id)+"'  ")  
 
@@ -247,4 +234,4 @@ try:
 except:
 	Log.Info("SAGETCLMUP ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("SAGETCLMUP ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]}) 
+	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})

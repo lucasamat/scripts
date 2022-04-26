@@ -492,10 +492,11 @@ def POPUPLISTVALUEADDNEW(
 				invs = str(invs).strip()
 				qstring = Header_details.get(str(invs)) or ""
 				if key == 0:
+					data_formatter = "addReceivingFabFtsLink" if str(TreeParam) == "Customer Information" else "MAfablocationKeyHyperLink"
 					sec_str += (
 						'<th data-field="'
 						+ str(invs)
-						+ '" data-formatter="MAfablocationKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ '" data-formatter="'+str(data_formatter)+'" data-sortable="true" data-title-tooltip="'
 						+ str(qstring)
 						+ '" data-filter-control="input">'
 						+ str(qstring)
@@ -2386,16 +2387,16 @@ def POPUPLISTVALUEADDNEW(
 				"GREENBOOK": "GREENBOOK",
 				"DIVISION_ID": "DIVISION",
 				"BUSINESS_UNIT": "BU",
-				#"POSS_NSO_PART_ID": "AGS POSS ID",
-				#"POSS_NSO_DESCRIPTION": "POSS FOR NSO DESCRIPTION"
-			}
+				"PRODUCT_ID": "AGS POSS ID",
+				"PRODUCT_DESCRIPTION": "POSS FOR NSO DESCRIPTION"
+			}#A055S000P01-18196
 			ordered_keys = [
 				"PRICEBOOK_ENTRIES_RECORD_ID",
 				"GREENBOOK",
 				"DIVISION_ID",
 				"BUSINESS_UNIT",
-				#"POSS_NSO_PART_ID",
-				#"POSS_NSO_DESCRIPTION"
+				"PRODUCT_ID",
+				"PRODUCT_DESCRIPTION"
 			]
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -2532,8 +2533,9 @@ def POPUPLISTVALUEADDNEW(
 				Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count
 			)
 			stp_account_id = Product.GetGlobal("stp_account_id")
+			# AND POSS_NSO_PART_ID NOT IN (SELECT POSS_NSO_PART_ID FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'
 			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(PRLPBE.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE GREENBOOK = '{}' AND POSS_NSO_PART_ID NOT IN (SELECT POSS_NSO_PART_ID FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(
+				"SELECT COUNT(PRLPBE.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE GREENBOOK = '{}'".format(
 					ObjectName,Product.GetGlobal("TreeParentLevel0"), contract_quote_record_id,quote_revision_record_id
 				)
 			)
@@ -2555,10 +2557,10 @@ def POPUPLISTVALUEADDNEW(
 				order_by = "order by GREENBOOK ASC"
 
 			pop_val = {}
-
+			# AND  POSS_NSO_PART_ID NOT IN (SELECT POSS_NSO_PART_ID FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'
 			if where_string:
 				where_string += " AND"
-			where_string += """ GREENBOOK = '{}' AND  POSS_NSO_PART_ID NOT IN (SELECT POSS_NSO_PART_ID FROM SAQSCN (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
+			where_string += """ GREENBOOK = '{}'  """.format(
 				Product.GetGlobal("TreeParentLevel0"), contract_quote_record_id, quote_revision_record_id 
 			)
 
@@ -3544,17 +3546,27 @@ def POPUPLISTVALUEADDNEW(
 				Header_details = {
 					"CREDITVOUCHER_RECORD_ID": "KEY",
 					"ZAFTYPE":"ZAF TYPE",
-					"UNBL_INGL_CURR": "CREDIT AMOUNT",
-					"CREDIT_APPLIED": "APPLIED CREDIT",
-					"ZAFNOTE": "NOTES",
+					"ZAFGBOOK": "GREENBOOK",
+					"ZUONR": "CONTRACT IO/SYTEMS SALES ORDER ITEM ID",
+					"GJAHR": "Fiscal Year",
+					"ZAFEXPIRY_DATE": "EXP DATE",
+					"BELNR": "Document Number",
+					"UNBL_INGL_CURR": "VALUE",
+					"CREDIT_APPLIED": "APPLIED VALUE",
+					"ZAFNOTE": "NOTES"
 				}
 				ordered_keys = [
 					#"ADD_ON_PRODUCT_RECORD_ID",
 					"CREDITVOUCHER_RECORD_ID",
 					"ZAFTYPE",
+					"ZAFGBOOK"
+					"ZUONR",
+					"GJAHR",
+					"ZAFEXPIRY_DATE",
+					"BELNR",
 					"UNBL_INGL_CURR",
 					"CREDIT_APPLIED",
-					"ZAFNOTE",
+					"ZAFNOTE"
 				]
 				Objd_Obj = Sql.GetList(
 					"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -5933,7 +5945,7 @@ def POPUPLISTVALUEADDNEW(
 			Header_details = {
 				"MATERIAL_RECORD_ID": "KEY",
 				"SAP_PART_NUMBER": "PART NUMBER",
-				"SAP_DESCRIPTION": "PARTS NAME",
+				"SAP_DESCRIPTION": "PART DESCRIPTION",
 				"MATPRIGRP_ID":"MATERIAL PRICING GROUP ID"
 			}
 			ordered_keys = [

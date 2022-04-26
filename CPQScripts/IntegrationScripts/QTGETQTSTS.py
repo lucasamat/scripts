@@ -68,41 +68,50 @@ try:
 				Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 				if Dirct_record['STATUS_DESCRIPTION'].upper() == "SUCCESS":
 					Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
-					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET REVISION_STATUS = ''BOK-CONTRACT CREATED'',WORKFLOW_STATUS = ''BOOKED'' FROM SAQTRV(NOLOCK)  WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND QTEREV_ID IN (SELECT QTEREV_ID FROM SAQTMT WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' ) '")
 					
-					if 'CONTRACT_ID'  in Dirct_record:
-						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOK-CONTRACT CREATED'',ECC_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID = ''ZWK1'' '")
-						
-						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOK-CONTRACT CREATED'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
-						
-						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET CRM_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
-						
-						Revsioninfoquery = SqlHelper.GetFirst("SELECT QTEREV_ID,QUOTE_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '"+str(Dirct_record['QUOTE_ID'])+"'")
+					if 'QUOTE_ID'  in Dirct_record:
+						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET REVISION_STATUS = ''BOK-CONTRACT CREATED'',WORKFLOW_STATUS = ''BOOKED'' FROM SAQTRV(NOLOCK)  WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND QTEREV_ID IN (SELECT QTEREV_ID FROM SAQTMT WHERE QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' ) '")
+					
+					if 'OPPORTUNITY_ID'  in Dirct_record:
+						primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET CRM_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'', REVISION_STATUS = ''BOK-CONTRACT CREATED'',WORKFLOW_STATUS = ''BOOKED'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID JOIN SAOPQT (NOLOCK) ON SAQTMT.QUOTE_ID = SAOPQT.QUOTE_ID WHERE SIGFP_OPP_ID= ''"+str(Dirct_record['OPPORTUNITY_ID'])+"''  '")
 
-						Qt_id = Revsioninfoquery.QUOTE_ID
-						Rev_id = Revsioninfoquery.QTEREV_ID
-
-
-						LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
-						if LOGIN_CREDENTIALS is not None:
-							Login_Username = str(LOGIN_CREDENTIALS.Username)
-							Login_Password = str(LOGIN_CREDENTIALS.Password)
-							authorization = Login_Username+":"+Login_Password
-							binaryAuthorization = UTF8.GetBytes(authorization)
-							authorization = Convert.ToBase64String(binaryAuthorization)
-							authorization = "Basic " + authorization
-
-
-							webclient = System.Net.WebClient()
-							webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-							webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+					if 'QUOTE_ID'  in Dirct_record:
+					
+						if 'CONTRACT_ID'  in Dirct_record:
+							primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOK-CONTRACT CREATED'',ECC_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID = ''ZWK1'' '")
 							
+							primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTMT SET QUOTE_STATUS = ''BOK-CONTRACT CREATED'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
 							
-							result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
-				  				<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
+							primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)	+ "  SAQTRV SET CRM_CONTRACT_ID = ''"+str(Dirct_record['CONTRACT_ID'])+"'' FROM SAQTMT(NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID AND SAQTMT.QTEREV_ID = SAQTRV.QTEREV_ID WHERE C4C_QUOTE_ID = ''"+str(Dirct_record['QUOTE_ID'])+"'' AND DOCTYP_ID IN( ''ZTBC'',''ZSWC'') '")
 							
-							LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_ECC_RECALL_ASYNC'")
-							response = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
+							Revsioninfoquery = SqlHelper.GetFirst("SELECT QTEREV_ID,QUOTE_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '"+str(Dirct_record['QUOTE_ID'])+"'")
+							
+							if str(Revsioninfoquery) != "None":
+							
+								Qt_id = Revsioninfoquery.QUOTE_ID
+								Rev_id = Revsioninfoquery.QTEREV_ID
+
+
+								LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+								if LOGIN_CREDENTIALS is not None:
+									Login_Username = str(LOGIN_CREDENTIALS.Username)
+									Login_Password = str(LOGIN_CREDENTIALS.Password)
+									authorization = Login_Username+":"+Login_Password
+									binaryAuthorization = UTF8.GetBytes(authorization)
+									authorization = Convert.ToBase64String(binaryAuthorization)
+									authorization = "Basic " + authorization
+
+
+									webclient = System.Net.WebClient()
+									webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+									webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+									
+									
+									result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
+										<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
+									
+									LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_ECC_RECALL_ASYNC'")
+									response = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 				
 				if Dirct_record['STATUS_DESCRIPTION'].upper() == "BOOKED":
 					Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
@@ -199,4 +208,4 @@ try:
 except:		
 	Log.Info("QTGETQTSTS ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("QTGETQTSTS ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})	
+	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})

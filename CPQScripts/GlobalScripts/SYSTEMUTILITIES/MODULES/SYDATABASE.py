@@ -1,61 +1,65 @@
 """This script is used to do the CRUD operations in CPQ Custom Tables."""
-
 # ====================================================================================================
 #   __script_name : SYDATABASE.PY
 #   __script_description : This script is used to do the database operations in CPQ Custom Tables
-#   __primary_author__ : JOE EBENEZER 
+#   __primary_author__ : JOE EBENEZER
+#   __maintainer__ : __Deesh__
 #   __create_date : 12/11/2019
+#   __edited_date__: 08/04/2022
 #   © BOSTON HARBOR CONSULTING INC - ALL RIGHTS RESERVED
 # ====================================================================================================
 
 import datetime
-#import Webcom.Configurator.Scripting.Test.TestProduct
 
-class SQL:
-    """Model to handle custom table transactions."""
 
-    def __init__(self):
-        """Initialize variables."""
-        self.name = "SQL"
-        self.is_user_have_needed_permission_to_tables = False
-        self.enforceObjectPermissions = False
-        self.enforceColumnPermissions = False
-        self.logErrorMessages = True
-        self.exceptMessage = ""
+class _Sql:
+    """Model to handle custom table transactions.
+    :cause:
+        Writing this as a class method as we all the functions are independent of one another
+        so no need to create a new instance.
+    :ref:
+        >> https://iscinumpy.gitlab.io/post/factory-classmethods-in-python/
+    """
 
-    def GetList(self, query):
+    name = "SQL"
+    is_user_have_needed_permission_to_tables = False
+    enforceObjectPermissions = False
+    enforceColumnPermissions = False
+    logErrorMessages = True
+    exceptMessage = ""
+
+    @classmethod
+    def GetList(cls, query):
         """
         Run query and return SqlHelper.GetList with the results.
 
         Param : query: string : sql query to be executed.
         """
         try:
-            Trace.Write("SYDATABASE : GetList : RUNNING QUERY : " + query)
+            Trace.Write("SYDATABASE : GetList : RUNNING QUERY : {}".format(query))
             return SqlHelper.GetList(query)
-        except Exception, e:
-            self.exceptMessage = (
-                "SYDATABASE : GetList : EXCEPTION : UNABLE TO GET LIST : " + query + " : EXCEPTION E : " + str(e)
-            )
-            Trace.Write(self.exceptMessage)
-            return None
+        except Exception as e:
+            cls.exceptMessage = "SYDATABASE : GetList : EXCEPTION : UNABLE TO GET LIST : {} : EXCEPTION E : {}".format(query, e)
+            Trace.Write(cls.exceptMessage)
+            return []
 
-    def GetFirst(self, query):
+    @classmethod
+    def GetFirst(cls, query):
         """
         Run query and return SqlHelper.GetFirst with the results.
 
         Param : query : string : sql query to be executed.
         """
         try:
-            Trace.Write("SYDATABASE : GetFirst : RUNNING QUERY : " + query)
+            Trace.Write("SYDATABASE : GetFirst : RUNNING QUERY : {}".format(query))
             return SqlHelper.GetFirst(query)
-        except Exception, e:
-            self.exceptMessage = (
-                "SYDATABASE : GetFirst : EXCEPTION : UNABLE TO GET FIRST : " + query + " : EXCEPTION E : " + str(e)
-            )
-            Trace.Write(self.exceptMessage)
+        except Exception as e:
+            cls.exceptMessage = "SYDATABASE : GetFirst : EXCEPTION : UNABLE TO GET FIRST : {} : EXCEPTION E : {}".format(query, e)
+            Trace.Write(cls.exceptMessage)
             return None
 
-    def GetTable(self, tableName):
+    @classmethod
+    def GetTable(cls, tableName):
         """
         Get the table information and return SqlHelper.GetTable Info.
 
@@ -63,14 +67,13 @@ class SQL:
         """
         try:
             return SqlHelper.GetTable(tableName)
-        except Exception, e:
-            self.exceptMessage = (
-                "SYDATABASE : GetTable : EXCEPTION : UNABLE TO GET TABLE : " + str(tableName) + " : EXCEPTION E : " + str(e)
-            )
-            Trace.Write(self.exceptMessage)
+        except Exception as e:
+            cls.exceptMessage = "SYDATABASE : GetTable : EXCEPTION : UNABLE TO GET TABLE : {} : EXCEPTION E : {}".format(tableName, e)
+            Trace.Write(cls.exceptMessage)
             return None
 
-    def Upsert(self, tableInfo):
+    @classmethod
+    def Upsert(cls, tableInfo):
         """
         To Add/Insert records in a custom table.
 
@@ -87,41 +90,48 @@ class SQL:
             row.pop("CpqTableEntryModifiedBy", None)
             row.pop("CpqTableEntryDateModified", None)
             row.pop("ADDUSR_RECORD_ID", None)
-            if tableInfo.TableDataRows.Item[rows].CpqTableEntryId == 0:
-                row["CPQTABLEENTRYADDEDBY"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
-                row["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-                row["CpqTableEntryModifiedBy"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
-                row["CpqTableEntryDateModified"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-                #row["ADDUSR_RECORD_ID"] = ScriptExecutor.ExecuteGlobal("SYGETUSDID")
-                row["ADDUSR_RECORD_ID"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
+
+            if not tableInfo.TableDataRows.Item[rows].CpqTableEntryId:
+                row.update(
+                    {
+                        "CPQTABLEENTRYADDEDBY": ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME"),
+                        "CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
+                        "CpqTableEntryModifiedBy": ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID"),
+                        "CpqTableEntryDateModified": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
+                        "ADDUSR_RECORD_ID": ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID"),
+                    }
+                )
             else:
-                row["CpqTableEntryId"] = tableInfo.TableDataRows.Item[rows].CpqTableEntryId
-                row["CpqTableEntryModifiedBy"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
-                row["CpqTableEntryDateModified"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-            newTableInfo = ""
+                row.update(
+                    {
+                        "CpqTableEntryId": tableInfo.TableDataRows.Item[rows].CpqTableEntryId,
+                        "CpqTableEntryModifiedBy": ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID"),
+                        "CpqTableEntryDateModified": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
+                    }
+                )
+
             newTableInfo = SqlHelper.GetTable(tableName)
-            if tableName == 'SYVABL':
+            if tableName == "SYVABL":
                 row["VARIABLE_NAME"] = row["VARIABLE_NAME"].upper()
-            if tableName == 'SACONT':
+            if tableName == "SACONT":
                 row.pop("ADDUSR_RECORD_ID", None)
                 row.pop("CPQTABLEENTRYADDEDBY", None)
-            Trace.Write(str(tableName)+"---tableName---TRACE_TESTZ--102----" + str(row))
+
+            Trace.Write("{} ---tableName---TRACE_TESTZ--102---- {}".format(tableName, row))
             newTableInfo.AddRow(row)
             sqlInfo = SqlHelper.Upsert(newTableInfo)
-            # Syelog.errorMessageEntry(newTableInfo)
             if sqlInfo.Success:
                 continue
             else:
-                self.exceptMessage = (
-                    "SYDATABASE : Upsert : EXCEPTION : UNABLE TO DO SQL UPSERT : "
-                    + str(newTableInfo.TableName)
-                    + str(sqlInfo.Message)
+                cls.exceptMessage = "SYDATABASE : Upsert : EXCEPTION : UNABLE TO DO SQL UPSERT : {} :: {}".format(
+                    newTableInfo.TableName, sqlInfo.Message
                 )
-                Trace.Write(self.exceptMessage)
+                Trace.Write(cls.exceptMessage)
                 return None
-            return True
+        return True
 
-    def Delete(self, tableInfo):
+    @classmethod
+    def Delete(cls, tableInfo):
         """
         To Delete records in a custom table.
 
@@ -129,31 +139,64 @@ class SQL:
         """
         try:
             return SqlHelper.Delete(tableInfo)
-        except Exception, e:
-            self.exceptMessage = (
-                "SYDATABASE : Delete : EXCEPTION : UNABLE TO DELETE : "
-                + str(tableInfo.TableName)
-                + " : EXCEPTION E : "
-                + str(e)
-            )
-            Trace.Write(self.exceptMessage)
+        except Exception as e:
+            cls.exceptMessage = "SYDATABASE : Delete : EXCEPTION : UNABLE TO DELETE : {} : EXCEPTION E : {}".format(tableInfo.TableName, e)
+            Trace.Write(cls.exceptMessage)
             return None
 
-    def RunQuery(self, query):
+    @classmethod
+    def RunQuery(cls, query):
         """
         To Execute a SQL Query.
-
         Param : query : string : Query to be executed
         """
-        QueryStatement = str(query)
-        QueryStatement = QueryStatement.replace("'", "''")
+        QueryStatement = str(query).replace("'", "''")
         try:
-            Trace.Write("SYDATABASE : RunQuery : RUNNING QUERY : " + query)
-            query_result = SqlHelper.GetFirst("sp_executesql @statement = N'" + str(QueryStatement) + "'")
+            Trace.Write("SYDATABASE : RunQuery : RUNNING QUERY : {}".format(query))
+            query_result = SqlHelper.GetFirst("sp_executesql @statement = N'{}'".format(QueryStatement))
             return query_result
-        except Exception, e:
-            self.exceptMessage = (
-                "SYDATABASE : RunQuery : EXCEPTION : UNABLE TO RUNQUERY : " + str(query) + " : EXCEPTION E : " + str(e)
-            )
-            Trace.Write(self.exceptMessage)
+        except Exception as e:
+            cls.exceptMessage = "SYDATABASE : RunQuery : EXCEPTION : UNABLE TO RUNQUERY : {} : EXCEPTION E : {}".format(query, e)
+            Trace.Write(cls.exceptMessage)
             return None
+
+
+class SQL(_Sql):
+    pass
+
+
+# ---------------------- public api to be imported into required place----------------------------------------#
+# -----------------------------no need to import unnecessary methods-----------------------------------------#
+
+
+def sql_get_list(query):
+    """This function is the public api to access the sql get list method"""
+    return _Sql.GetList(query)
+
+
+def sql_get_table(table_name):
+    """This function is the public api to access the sql GetTable method"""
+    return _Sql.GetTable(table_name)
+
+
+def sql_get_first(query):
+    """This function is the public api to access the sql GetFirst method"""
+    return _Sql.GetFirst(query)
+
+
+def sql_upsert(table_info):
+    """This function is the public api to access the sql Upsert method"""
+    return _Sql.Upsert(table_info)
+
+
+def sql_delete(table_info):
+    """This function is the public api to access the sql Delete method"""
+    return _Sql.Delete(table_info)
+
+
+def sql_run_query(query):
+    """This function is the public api to access the sql RunQuery method"""
+    return _Sql.RunQuery(query)
+
+
+# ----------------------------------------- end of public methods------------------------------------------------#

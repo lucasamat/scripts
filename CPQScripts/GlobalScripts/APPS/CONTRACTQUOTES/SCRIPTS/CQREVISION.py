@@ -57,8 +57,9 @@ def create_new_revision(Opertion,cartrev):
 		"SAQTIP":"QUOTE_INVOLVED_PARTY_RECORD_ID",
 		"SAQICT":"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID",
 		"SAQSAP":"QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID",
-		
+		"SAQRDS":"QUOTE_REV_DELIVERY_SCHEDULE_RECORD_ID"
 		}
+	#HPQC defect 332 end
 	#"SAQIBP":"QUOTE_ITEM_BILLING_PLAN_RECORD_ID"
 	# "SAQITM":"QUOTE_ITEM_RECORD_ID",
 	# "SAQIFL":"QUOTE_ITEM_FAB_LOCATION_RECORD_ID",
@@ -120,6 +121,7 @@ def create_new_revision(Opertion,cartrev):
 				"REV_CREATE_DATE":current_date.strftime('%m/%d/%Y'),
 				"REV_EXPIRE_DATE":'',
 				"REVISION_STATUS":"CFG-CONFIGURING",
+				"WORKFLOW_STATUS": "CONFIGURE",
 				"QTEREV_ID":newrev_inc,
 				"QTEREV_RECORD_ID":quote_revision_id, 
 				"REV_APPROVE_DATE":'',
@@ -237,7 +239,13 @@ def create_new_revision(Opertion,cartrev):
 				insertcols += " )"
 				insertcols  = insertcols.replace("PRIMARY","[PRIMARY]")
 				selectcols = selectcols.replace("PRIMARY","[PRIMARY]")
-				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no))
+				
+				# A055S000P01-17876 - Start
+				service_level_where_condition = ''
+				if cloneobjectname == 'SAQTSV':
+					service_level_where_condition = " AND SERVICE_ID != 'Z0105'"
+				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no)) + service_level_where_condition
+				# A055S000P01-17876 - End
 				finalquery=insertval + insertcols +' '+ selectval + selectcols
 				Trace.Write(finalquery)
 				ExecObjQuery = Sql.RunQuery(finalquery)

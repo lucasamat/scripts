@@ -150,7 +150,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 		##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-		time.sleep(5)
+		#time.sleep(5)
 		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	 
 	if Product.GetGlobal("TreeParentLevel2") == "Quote Items":
@@ -802,7 +802,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 						##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 						CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
-						time.sleep(5)
+						#time.sleep(5)
 						CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
 						#A055S000P01-17165 started
 						if get_status.upper() in ("APR-REJECTED","APR-RECALLED","APR-APPROVAL PENDING","APR-APPROVED"):
@@ -816,7 +816,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						if get_status.upper() in ("PRR-ON HOLD PRICING"):
 							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'PRICING REVIEW' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 						if get_status.upper() in ("CFG-CONFIGURING","CFG-ACQUIRING","CFG-ON HOLD -COSTING"):
-							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURATION' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'CONFIGURE' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 						#A055S000P01-17165 Rejected
 						if get_status.upper() == "APR-APPROVED":
 							Sql.RunQuery("UPDATE SAQTRV SET WORKFLOW_STATUS = 'APPROVALS' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
@@ -870,11 +870,12 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						Sql.RunQuery(quote_contract_update)
 						
 						#update dirty flag start
-						get_saqico_data = Sql.GetFirst("SELECT * from SAQICO  WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+						#HP QC -326 start
+						get_saqico_data = Sql.GetFirst("SELECT * from SAQRIT  WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 						if get_saqico_data:
 							if get_saqico_data.CONTRACT_VALID_FROM != product_offering_contract_validity.CONTRACT_VALID_FROM or get_saqico_data.CONTRACT_VALID_TO != product_offering_contract_validity.CONTRACT_VALID_TO:
 								Sql.RunQuery("UPDATE SAQTRV SET DIRTY_FLAG='{}',REVISION_STATUS='CFG-CONFIGURING',WORKFLOW_STATUS='CONFIGURE' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(True,contract_quote_record_id,quote_revision_record_id))
-						#update dirty flag end
+						#update dirty flag end-#HP QC -326 end
 
 
 						
@@ -1217,7 +1218,6 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 
 					else:
-						
 						notification = 'Billing Start Date should be less than Billing End Date'
 						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
 						newdict.update(dictc)
@@ -1240,7 +1240,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 								if data in required_val:
 									for req in required_val:
 										Trace.Write("req_chk_j---"+str(req)+" tablerow_chk_j---"+str(tablerow))
-										if tablerow[req] == "":
+										if (tablerow[req] == "" or tablerow[req] == "Select"):
 											Trace.Write(
 												"955---------------------------"
 												+ str(datas)

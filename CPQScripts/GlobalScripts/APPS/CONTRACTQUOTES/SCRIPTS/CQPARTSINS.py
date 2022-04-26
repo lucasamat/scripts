@@ -119,7 +119,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER!='' THEN TEMP_TABLE.CHILD_PART_NUMBER ELSE MAMTRL.SAP_PART_NUMBER END AS PART_NUMBER,
                                 MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
                                 '' as PRDQTYCON_RECORD_ID,
-                                CASE WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' THEN NULL ELSE TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY END as QUANTITY,
+                                CASE WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' AND TEMP_TABLE.CHILD_PART_NUMBER!='' THEN 1 WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' THEN NULL ELSE TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY END as QUANTITY,
                                 SAQTMT.QUOTE_ID as QUOTE_ID,
                                 SAQTMT.QUOTE_NAME as QUOTE_NAME,
                                 SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
@@ -127,7 +127,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
                                 SAQTSV.SALESORG_ID as SALESORG_ID,
                                 SAQTSV.SALESORG_RECORD_ID as SALESORG_RECORD_ID,
-                                0.00 as SALESUOM_CONVERSION_FACTOR,
+                                1.00 as SALESUOM_CONVERSION_FACTOR,
                                 CASE WHEN MAMSOP.SALESUOM_ID<>'' THEN MAMSOP.SALESUOM_ID ELSE MAMTRL.UNIT_OF_MEASURE END as SALESUOM_ID,
                                 CASE WHEN MAMSOP.SALESUOM_RECORD_ID<>'' THEN MAMSOP.SALESUOM_RECORD_ID ELSE MAMTRL.UOM_RECORD_ID END as SALESUOM_RECORD_ID, 
                                 CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN NULL ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
@@ -246,7 +246,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER!='' THEN TEMP_TABLE.CHILD_PART_NUMBER ELSE MAMTRL.SAP_PART_NUMBER END AS PART_NUMBER,
                                 MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
                                 '' as PRDQTYCON_RECORD_ID,
-                                CASE WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' THEN NULL ELSE TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY END as QUANTITY,
+                                CASE WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' AND TEMP_TABLE.CHILD_PART_NUMBER!='' THEN 1 WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' THEN NULL ELSE TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY END as QUANTITY,
                                 SAQTMT.QUOTE_ID as QUOTE_ID,
                                 SAQTMT.QUOTE_NAME as QUOTE_NAME,
                                 SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
@@ -254,7 +254,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
                                 SAQTSV.SALESORG_ID as SALESORG_ID,
                                 SAQTSV.SALESORG_RECORD_ID as SALESORG_RECORD_ID,
-                                0.00 as SALESUOM_CONVERSION_FACTOR,
+                                1.00 as SALESUOM_CONVERSION_FACTOR,
                                 CASE WHEN MAMSOP.SALESUOM_ID<>'' THEN MAMSOP.SALESUOM_ID ELSE MAMTRL.UNIT_OF_MEASURE END as SALESUOM_ID,
                                 CASE WHEN MAMSOP.SALESUOM_RECORD_ID<>'' THEN MAMSOP.SALESUOM_RECORD_ID ELSE MAMTRL.UOM_RECORD_ID END as SALESUOM_RECORD_ID, 
                                 CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN NULL ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
@@ -283,7 +283,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
                                 CASE WHEN TEMP_TABLE.PROD_INSP_MEMO='' THEN null ELSE TEMP_TABLE.PROD_INSP_MEMO END AS PROD_INSP_MEMO,
                                 CASE WHEN TEMP_TABLE.SHELF_LIFE='' THEN null ELSE TEMP_TABLE.SHELF_LIFE END AS SHELF_LIFE,
-                                '' AS PRICING_STATUS,
+                                'NOT PRICED' AS PRICING_STATUS,
 		                        TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
                                 TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
                                 MAMSOP.MATERIALSTATUS_ID AS MATERIALSTATUS_ID,
@@ -305,7 +305,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                         GLOBALCURR_REC=self.global_curr_recid
                                     )
             )
-            #only child records insert
+            '''#only child records insert
             Sql.RunQuery("""
                             INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,PROD_INSP_MEMO,SHELF_LIFE,PRICING_STATUS,STPACCOUNT_ID, SHPACCOUNT_ID,MATERIALSTATUS_ID,GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
@@ -378,7 +378,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.CHILD_PART_NUMBER!='' THEN TEMP_TABLE.CHILD_PART_NUMBER ELSE MAMTRL.SAP_PART_NUMBER END AS PART_NUMBER,
                                 MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
                                 '' as PRDQTYCON_RECORD_ID,
-                                CASE WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' THEN NULL ELSE TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY END as QUANTITY,
+                                CASE WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' AND TEMP_TABLE.CHILD_PART_NUMBER!='' THEN 1 WHEN TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY='' THEN NULL ELSE TEMP_TABLE.CUSTOMER_ANNUAL_QUANTITY END as QUANTITY,
                                 SAQTMT.QUOTE_ID as QUOTE_ID,
                                 SAQTMT.QUOTE_NAME as QUOTE_NAME,
                                 SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
@@ -386,7 +386,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
                                 SAQTSV.SALESORG_ID as SALESORG_ID,
                                 SAQTSV.SALESORG_RECORD_ID as SALESORG_RECORD_ID,
-                                0.00 as SALESUOM_CONVERSION_FACTOR,
+                                1.00 as SALESUOM_CONVERSION_FACTOR,
                                 CASE WHEN MAMSOP.SALESUOM_ID<>'' THEN MAMSOP.SALESUOM_ID ELSE MAMTRL.UNIT_OF_MEASURE END as SALESUOM_ID,
                                 CASE WHEN MAMSOP.SALESUOM_RECORD_ID<>'' THEN MAMSOP.SALESUOM_RECORD_ID ELSE MAMTRL.UOM_RECORD_ID END as SALESUOM_RECORD_ID, 
                                 CASE WHEN SAQTSV.SERVICE_ID='Z0110' THEN NULL ELSE 'SCHEDULED' END AS SCHEDULE_MODE,
@@ -415,7 +415,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                 CASE WHEN TEMP_TABLE.YEAR_3_DEMAND='' THEN null ELSE TEMP_TABLE.YEAR_3_DEMAND END AS YEAR_3_DEMAND,
                                 CASE WHEN TEMP_TABLE.PROD_INSP_MEMO='' THEN null ELSE TEMP_TABLE.PROD_INSP_MEMO END AS PROD_INSP_MEMO,
                                 CASE WHEN TEMP_TABLE.SHELF_LIFE='' THEN null ELSE TEMP_TABLE.SHELF_LIFE END AS SHELF_LIFE,
-                                'ACQUIRING' AS PRICING_STATUS,
+                                'NOT PRICED' AS PRICING_STATUS,
 		                        TEMP_TABLE.STPACCOUNT_ID as STPACCOUNT_ID,
                                 TEMP_TABLE.SHPACCOUNT_ID as SHPACCOUNT_ID,
                                 MAMSOP.MATERIALSTATUS_ID as MATERIALSTATUS_ID,
@@ -437,6 +437,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                         GLOBALCURR_REC=self.global_curr_recid
                                     )
             )
+            '''
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
             #self.validation_for_arp_carp()
         except Exception:
@@ -455,7 +456,7 @@ class SyncFPMQuoteAndHanaDatabase:
         #update_uom_recs = """UPDATE SAQSPT SET SAQSPT.BASEUOM_ID = M.UNIT_OF_MEASURE,SAQSPT.BASEUOM_RECORD_ID = M.UOM_RECORD_ID FROM SAQSPT S INNER JOIN MAMTRL M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE   S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id,quote_revision_rec_id =self.quote_revision_id)
         #Sql.RunQuery(update_uom_recs)
 
-        update_salesuom_conv= """UPDATE SAQSPT SET SAQSPT.SALESUOM_CONVERSION_FACTOR = M.BASE_QUANTITY FROM SAQSPT S INNER JOIN MAMUOC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE S.BASEUOM_ID=M.BASEUOM_ID AND  S.SALESUOM_ID=M.CONVERSIONUOM_ID AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id ,quote_revision_rec_id =self.quote_revision_id)
+        update_salesuom_conv= """UPDATE SAQSPT SET SAQSPT.SALESUOM_CONVERSION_FACTOR =   CASE WHEN M.BASE_QUANTITY=0.00 THEN 1.00 ELSE M.BASE_QUANTITY END FROM SAQSPT S INNER JOIN MAMUOC M ON S.PART_NUMBER= M.SAP_PART_NUMBER WHERE S.BASEUOM_ID=M.BASEUOM_ID AND  S.SALESUOM_ID=M.CONVERSIONUOM_ID AND S.QUOTE_RECORD_ID = '{quote_rec_id}' AND S.QTEREV_RECORD_ID = '{quote_revision_rec_id}'""".format(quote_rec_id = self.quote_record_id ,quote_revision_rec_id =self.quote_revision_id)
         Sql.RunQuery(update_salesuom_conv)
 
     def insert_delivery_schedule(self):
@@ -567,8 +568,11 @@ class SyncFPMQuoteAndHanaDatabase:
             response=response.replace("No",'0')
             response=response.replace("yes",'1')
             response=response.replace("no",'0')
+            response = re.sub(r"u'Upfront \\u2013","'Upfront -",response)
             response=response.replace("'",'"')
+            response=response.replace("–",'-') 
             response = re.sub(r'\[|\]|\(|\)','',response)
+            #response = re.sub(r'uUpfront','Upfront',response)
             pattern = re.compile(r'(\{[^>]*?\})')
             #pattern2 = re.compile(r'\"([^>]*?)\"\:(\"[^>]*?\")')
             #pattern2 = re.compile(r"\'([^>]*?)\'\s*\:\s*([^>]*?)(?:\,|\})")
@@ -577,6 +581,7 @@ class SyncFPMQuoteAndHanaDatabase:
             self.columns = 'QUOTE_RECORD_ID,QTEREV_RECORD_ID'
             value  = '''(\"{}\",\"{}\"'''.format(self.quote_record_id,self.quote_revision_id)
             col_flag = 0
+            '''
             for record in re.finditer(pattern, response):
                 #rec = re.sub(r'\{|\}','',record.group(1))
                 record_count +=1
@@ -592,7 +597,7 @@ class SyncFPMQuoteAndHanaDatabase:
                     temp_value +=','+ele.group(2) if ele.group(2) !='' else None
                     if ele.group(1) == '"CHILD_PART_NUMBER"':
                         childvalue = str(ele.group(2))
-                        if re.search(r'6000-|W$',childvalue):
+                        if re.search(r'6000-|W"$',childvalue):
                             child_temp_value +=','+"''"
                             child_temp_flag=1
                     else:
@@ -616,8 +621,27 @@ class SyncFPMQuoteAndHanaDatabase:
                 else:
                     self.records += ', '+temp_value
                 temp_value =''
-                
+            ''' 
+            for record in re.finditer(pattern, response):
+                record_count +=1
+                rec = record.group(1)
+                temp_value = value
+                for ele in re.finditer(pattern2,rec):
+                    if col_flag == 0:
+                        self.columns +=','+ele.group(1)
+                    if ele.group(1) == '"PARENT_PART_NUMBER"':
+                        self.part_numbers.append(str(ele.group(2)))
+                    temp_value +=','+ele.group(2) if ele.group(2) !='' else None
+                temp_value +=')'
+                temp_value = re.sub(r"'",'"',temp_value)
+                temp_value = re.sub(r'"',"''",temp_value)
+                if self.records == '':
+                    self.records = temp_value
+                else:
+                    self.records += ', '+temp_value
+                temp_value =''
                 col_flag=1
+            
             Log.Info("Total Records from HANA::"+str(record_count))
             #Log.Info("Total Parts List:: " +str(self.part_numbers))
             if record_count >0:
@@ -697,8 +721,27 @@ class SyncFPMQuoteAndHanaDatabase:
         return msg_app_txt
         
     def CQPARTIFLW_iflow(self):
+
+        Log.Info("CQPARTIFLW inside")        
+        Sql.RunQuery("""UPDATE SAQTRV SET WORKFLOW_STATUS='PRICING REVIEW',REVISION_STATUS='CFG-ACQUIRING' WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID='{rev}'""".format(QuoteRecordId=self.quote_record_id,rev = (self.quote_revision_id)))
+
+        Msg_table_value = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE OBJECT_RECORD_ID ='SYOBJ-00272' and MESSAGE_LEVEL = 'WARNING'")
+        if Msg_table_value:
+            msg_txt = (
+					'<div  class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infor_icon_green.svg" alt="Warning">'
+					+ str(Msg_table_value.MESSAGE_LEVEL)
+					+ " : "
+					+ str(Msg_table_value.MESSAGE_CODE)
+					+ " : "
+					+ str(Msg_table_value.MESSAGE_TEXT)
+					+ "</label></div></div>"
+				)
+        else:
+            msg_txt =""
+        Trace.Write("@@@"+str(msg_txt))
         CQPARTIFLW.iflow_pricing_call(str(User.UserName),str(self.quote_id),str(self.quote_revision_id))
-    
+
+        return msg_txt
        
 Log.Info("CQPARTINS script called --> from CPI")
 Log.Info("Param.CPQ_Column----QuoteID---"+str(Param.CPQ_Columns["QuoteID"]))
@@ -720,7 +763,8 @@ except:
 fpm_obj = SyncFPMQuoteAndHanaDatabase()
 fpm_obj.fetch_quotebasic_info()
 if Parameter["Action"] == 'Price':
-    fpm_obj.CQPARTIFLW_iflow()
+    ApiResponse = ApiResponseFactory.JsonResponse(fpm_obj.CQPARTIFLW_iflow())
+    
 elif Parameter["Action"] == 'Delete':
     if Parameter["Delete_Partlist"]:
         fpm_obj.delete_child_records_6kw_partlist(Parameter["Delete_Partlist"])

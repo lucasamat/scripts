@@ -276,95 +276,50 @@ class DeleteConfirmPopup:
 
     # A055S000P01-1170 Start-Om Shanker
     def DelEquipmentTrace(self, RecordId, ObjName):
-        # Trace.Write("OM.........> CAME TO DelEquipmentTrace")
+        Trace.Write("CAME TO DelEquipmentTrace")
         Trace.Write("OM...RecordId-----> " + str(RecordId))
         Trace.Write("OM...ObjName-----> " + str(ObjName))
+        if TreeParentParam == 'Fab Locations':
+            CheckItem = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+            if CheckItem is None:
+                GetCount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQFEQ WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id,TreeParam))
+                if GetCount.cnt >1:
+                    Trace.Write("More than one equipment")
+                    GetEquipment = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQFEQ WHERE QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = '{}'".format(ObjName.split("#")[1]))
+                    Objects = ["SAQFEQ","SAQFEA","SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQSCE","SAQSAE"]
+                    for obj in Objects:
+                        a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND EQUIPMENT_ID = '{Eq}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),Eq=GetEquipment.EQUIPMENT_ID,quote_revision_record_id=quote_revision_record_id))
+                else:
+                    if GetCount.cnt == 1:
+                        Trace.Write("Only one equipment")
+                        Objects = ["SAQFEQ","SAQFEA","SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQSFB","SAQSCE","SAQSAE","SAQSGE","SAQSFE","SAQSGB"]
+                        for obj in Objects:
+                            a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND FABLOCATION_ID = '{TreeParam}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id,TreeParam=TreeParam))
 
-        if ObjName.startswith("SAQFEA"):
-            Trace.Write("Check")
-            OBJS_TO_DELETE = {
-                "SAQFEA": "IGNORE_CHECK",
-                "SAQFEQ": "SERIAL_NUMBER",
-                "SAQSCA": "SERIAL_NUMBER",
-                "SAQSCO": "SERIAL_NO",
-                "SAQICO": "SERIAL_NO",
-                "SAQICA": "SERIAL_NUMBER"
-            }
-        if ObjName.startswith("SAQSCO"):
-            OBJS_TO_DELETE = {
-                "SAQSCA": "SERIAL_NUMBER",
-                "SAQSCO": "SERIAL_NO",
-                "SAQICO": "SERIAL_NO",
-                "SAQICA": "SERIAL_NUMBER",
-            }
+            else:
+                Sql.RunQuery("UPDATE SAQTRV SET DIRTY_FLAG = 1 WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        elif TreeSuperParentParam == 'Fab Locations':
+            CheckItem = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+            if CheckItem is None:
+                GetCount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQFEQ WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id,TreeParentParam,TreeParam))
+                if GetCount.cnt >1:
+                    Trace.Write("More than one equipment")
+                    GetEquipment = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQFEQ WHERE QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = '{}'".format(ObjName.split("#")[1]))
+                    Objects = ["SAQFEQ","SAQFEA","SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQSCE","SAQSAE"]
+                    for obj in Objects:
+                        a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND EQUIPMENT_ID = '{Eq}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),Eq=GetEquipment.EQUIPMENT_ID,quote_revision_record_id=quote_revision_record_id))
+                else:
+                    if GetCount.cnt == 1:
+                        Trace.Write("Only one equipment")
+                        Objects = ["SAQFEQ","SAQFEA","SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQSFB","SAQSCE","SAQSAE","SAQSGE","SAQSFE","SAQSGB"]
+                        for obj in Objects:
+                            a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND GREENBOOK = '{TreeParam}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id,TreeParentParam=TreeParentParam,TreeParam=TreeParam))
 
-        # GET EQUIPMENT_ID AND SERIAL_NO FROM RECORD_ID
-        if ObjName.startswith("SAQFEA"):
-            EQUIP_ID = RecordId
-            OBJNAME = ObjName.split('#')[0]
-            RECORD_ID = ObjName.split("#")[1]
+            else:
+                Sql.RunQuery("UPDATE SAQTRV SET DIRTY_FLAG = 1 WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        
+
             
-        else:
-            EQUIP_ID = RecordId.split("#")[0]
-            SERIAL_NO = RecordId.split("#")[1]
-            Trace.Write("Del "+str(SERIAL_NO))
-            OBJNAME = RecordId.split('#')[2]
-            RECORD_ID = RecordId.split('#')[3]
-        # GET QUOTE_ID
-        if OBJNAME == 'SAQFEA':
-            QUOTE_ID = Sql.GetFirst("SELECT QUOTE_ID from  SAQFEQ (nolock) where QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = '" + str(RECORD_ID) +"' AND EQUIPMENT_ID ='" + str(EQUIP_ID) + "';")
-        elif OBJNAME == 'SAQSCO':
-            QUOTE_ID = Sql.GetFirst("SELECT QUOTE_ID from  SAQSCO (nolock) where EQUIPMENTCATEGORY_ID ='" + str(EQUIP_ID) + "' AND SERIAL_NO = '"+ str(SERIAL_NO) +"' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+ str(RECORD_ID) +"';")
-        
-        #GET SERVICE ID
-        if OBJNAME != 'SAQFEA':
-            SERVICE_ID = Sql.GetFirst("SELECT SERVICE_ID FROM SAQSCO (nolock) WHERE QUOTE_ID = '{QUOTE_ID}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND EQUIPMENTCATEGORY_ID = '{EQUIPMENT_ID}' AND SERIAL_NO = '{SERIAL_NO}'".format(QUOTE_ID= QUOTE_ID.QUOTE_ID, EQUIPMENT_ID=EQUIP_ID, SERIAL_NO=SERIAL_NO,quote_revision_record_id=quote_revision_record_id))
-        
-        all_sql_statement = ""
-        Trace.Write("TableName "+str(OBJS_TO_DELETE))
-        for tablename in OBJS_TO_DELETE:
-            Trace.Write("Check1")
-            if str(OBJS_TO_DELETE[tablename]) == "IGNORE_CHECK":
-                all_sql_statement += "DELETE FROM {} WHERE EQUIPMENT_ID = '{}' AND QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'; ".format(tablename, EQUIP_ID, QUOTE_ID.QUOTE_ID,quote_revision_record_id)              
-            else:                
-                all_sql_statement += "DELETE FROM {} WHERE EQUIPMENTCATEGORY_ID = '{}' AND {} = '{}' AND QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'; ".format(
-                    tablename, EQUIP_ID, OBJS_TO_DELETE[tablename], SERIAL_NO, QUOTE_ID.QUOTE_ID,quote_revision_record_id
-                )
-        #Trace.Write("OM...SQL_TO_DELETE: " + all_sql_statement)
-        Sql.RunQuery(all_sql_statement)
-
-        # All Records deleted now correct the line item id order in
-        # SAQICO, SAQITM Table
-        # PSEUDO CODE
-        # STEP 1: SELECT ITEM_LINE_ID, EQUIPMENT_ID, QUOTE_ID, WHERE QUOTE_ID = 'CURRENT_QUOTE_ID'
-        # STEP 2: START FROM 10 AND UPDATE ALL LINE ITEM IDS IN SAQICO ABOVE SET BY INCREMENT OF 10
-        # STEP 3: START FROM 10 AND UPDATE ALL LINE ITEM IDS IN SAQITM ABOVE SET BY INCREMENT OF 10
-        
-        all_equip_of_quote = Sql.GetList("SELECT QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, LINE_ITEM_ID FROM SAQICO (nolock) WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QUOTE_ID.QUOTE_ID, SERVICE_ID.SERVICE_ID,quote_revision_record_id))
-        count_of_existing_equipment = Sql.GetFirst("SELECT ISNULL(COUNT(ISNULL(QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,0)),0) AS COUNT_OF_EQUIP FROM SAQICO (nolock) WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(QUOTE_ID.QUOTE_ID, SERVICE_ID.SERVICE_ID,quote_revision_record_id))
-        if all_equip_of_quote is not None:
-            start_line_item_id = 0
-            sql_to_upd_SAQICO_SAQITM_li_item = ""
-            for l_item in all_equip_of_quote:
-                start_line_item_id += 10
-                sql_to_upd_SAQICO_SAQITM_li_item += "UPDATE SAQICO SET EQUIPMENT_LINE_ID = '{}' WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID = '{}' AND QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'; ".format(
-                    start_line_item_id, str(l_item.LINE_ITEM_ID) + " - " + str(start_line_item_id), l_item.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, QUOTE_ID.QUOTE_ID, SERVICE_ID.SERVICE_ID,quote_revision_record_id
-                )
-            # UPDATE SAQITM
-            # if count_of_existing_equipment:
-            #     if int(count_of_existing_equipment.COUNT_OF_EQUIP) > 0:
-            #         sql_to_upd_SAQICO_SAQITM_li_item += "UPDATE SAQITM SET OBJECT_QUANTITY = '{}' WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'; ".format(
-            #             count_of_existing_equipment.COUNT_OF_EQUIP,
-            #             QUOTE_ID.QUOTE_ID,
-            #             SERVICE_ID.SERVICE_ID,
-            #             quote_revision_record_id
-            #         )
-            #     else:
-            #         sql_to_upd_SAQICO_SAQITM_li_item += "DELETE FROM SAQITM WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QUOTE_ID.QUOTE_ID, SERVICE_ID.SERVICE_ID,quote_revision_record_id)
-            # Sql.RunQuery(sql_to_upd_SAQICO_SAQITM_li_item)
-        # else:
-            # all_equip_of_quote is None that means Delete the record in SAQITM
-            # Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QUOTE_ID.QUOTE_ID, SERVICE_ID.SERVICE_ID,quote_revision_record_id))
         return True
 
     def CommonDelete(self, RecordId, ObjName):

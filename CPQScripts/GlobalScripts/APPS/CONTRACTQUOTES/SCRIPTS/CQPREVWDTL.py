@@ -760,7 +760,6 @@ def editcbc(Qt_rec_id, Quote, MODE):
 		#Sql.RunQuery(update_rev_cb_complete_status)
 		# 	
 	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote,quote_revision_record_id)
-	time.sleep(3) #A055S000P01-16535
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote,quote_revision_record_id)
 	return True
 
@@ -799,13 +798,12 @@ def savecbc(Qt_rec_id, Quote_rec_id, MODE):
 	#Added query and condition to restrict calling contract creation webservice based on document type = ZWK1(Scripting logic to prevent ZWK1 quote from being pushed to CRM) - start
 	revision_document_type_object = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote_rec_id,quote_rev_recid = quote_revision_record_id))
 	if revision_document_type_object:
-		if revision_document_type_object.DOCTYP_ID != "ZWK1" and revision_document_type_object.DOCTYP_ID != "":
+		if revision_document_type_object.DOCTYP_ID == "ZTBC" and revision_document_type_object.DOCTYP_ID != "":
 			crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(get_quote_details.QUOTE_ID),'REVISION_ID':str(get_quote_details.QTEREV_ID),'Fun_type':'cpq_to_crm'})
 	#Added query and condition to restrict calling contract creation webservice based on document type = ZWK1(Scripting logic to prevent ZWK1 quote from being pushed to CRM) - end	
 	
 	##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote,quote_revision_record_id)
-	time.sleep(3) #A055S000P01-16535
 	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote,quote_revision_record_id)
 	return True
 #A055S000P01-17166 end
@@ -874,7 +872,7 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 			object_name = sefl.API_NAME
 			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD (NOLOCK) WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
 			data_type = syobjd_obj.DATA_TYPE
-			col_name = Sql.GetFirst("SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
+			col_name = Sql.GetFirst("SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' AND ACTIVE = 1")
 			if col_name:
 				if sefl_api == "CpqTableEntryModifiedBy":
 					current_obj_value = col_name.CpqTableEntryModifiedBy
@@ -1551,7 +1549,7 @@ elif ACTION == "LEGALSOW_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
 		contract_id = Sql.GetFirst("SELECT CONTRACT_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '"+str(contract_record_id)+"'")
-		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
+		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"' AND ACTIVE = 1")
 		Quote = quote_id.QUOTE_RECORD_ID
 	elif TreeParam == "Quote Information":
 		Quote = Quote.GetGlobal("contract_quote_record_id")
@@ -1579,7 +1577,7 @@ elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
 		contract_id = Sql.GetFirst("SELECT CONTRACT_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '"+str(contract_record_id)+"'")
-		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
+		quote_id = Sql.GetFirst("SELECT QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"' AND ACTIVE = 1")
 		Quote = quote_id.QUOTE_RECORD_ID
 	elif TreeParam == "Quote Information":
 		Quote = Quote.GetGlobal("contract_quote_record_id")

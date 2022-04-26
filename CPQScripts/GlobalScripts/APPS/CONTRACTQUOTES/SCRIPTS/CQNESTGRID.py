@@ -385,13 +385,19 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 		#Trace.Write("count---->" + str(QueryCount))
 	parent_obj = Sql.GetList(Qstr)
 	for par in parent_obj:
-		data_id = str(par.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID)        
-		Action_str = (
-			'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+		data_id = str(par.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID) 
+		if TreeParam != 'Fab Locations':       
+			Action_str = (
+				'<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+				+ str(data_id)
+				+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+				'<li><a class="dropdown-item" id="deletebtn" data-target="#cont_CommonModalDelete" data-toggle="modal" onclick="CommonDelete(this, \'SAQFEA#'+ data_id +'\', \'WARNING\')" href="#">DELETE</a></li>'
+			)
+		else:
+			Action_str = ('<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
 			+ str(data_id)
 			+ '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
-			'<li><a class="dropdown-item" id="deletebtn" data-target="#cont_CommonModalDelete" data-toggle="modal" onclick="CommonDelete(this, \'SAQFEA#'+ data_id +'\', \'WARNING\')" href="#">DELETE</a></li>'
-		)
+			'<li style="display:none"><a class="dropdown-item" id="deletebtn" data-target="#cont_CommonModalDelete" data-toggle="modal" onclick="CommonDelete(this, \'SAQFEA#'+ data_id +'\', \'WARNING\')" href="#">DELETE</a></li>')
 		if can_edit.upper() == "TRUE":
 			Action_str += (
 				'<li style="display:none" ><a class="dropdown-item cur_sty" href="#" id="'
@@ -721,7 +727,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	data_list = []
-	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010":
+	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010" or str(TreeSuperParentParam)=="Z0128":
 		obj_idval = "SYOBJ_1177076_SYOBJ_1177076"
 		rec_id = "SYOBJ_1177076"
 		obj_id = "SYOBJ-1177076"
@@ -882,7 +888,7 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(TreeParam)
 			+ "' and (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
-	elif parentlevel4 == "Product Offerings":
+	elif parentlevel4 == "Product Offerings": ##A055S000P01-17959 added the greenbook in query condition to show the records in event level... 
 		Qstr = (
 			"select top "
 			+ str(PerPage)
@@ -891,8 +897,10 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
-			+ str(TreeTopSuperParentParam)
-			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
+			+ str(TreeTopSuperParentParam) 
+			+ "' and GREENBOOK = '"
+			+ str(TreeSuperParentParam) 
+			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -907,9 +915,11 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeTopSuperParentParam)
+			+ "' and GREENBOOK = '"
+			+ str(TreeSuperParentParam) 
 			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
-	elif ObjectName == "SAQGPM" and (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
+	elif ObjectName == "SAQGPM" and (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010" or TreeSuperParentParam == "Z0128"):##A055S000P01-17959 added the greenbook in query condition to show the records in got code level...
 		Qstr = (
 			"select top "
 			+ str(PerPage)
@@ -919,6 +929,8 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
+			+ "' and GREENBOOK = '"
+			+ str(TreeParentParam) 
 			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)+") m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
@@ -934,7 +946,9 @@ def GetEventsMaster(PerPage, PageInform, A_Keys, A_Values):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
-			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
+			+ "' and GREENBOOK = '"
+			+ str(TreeParentParam) 
+			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "+str(where_string)
 		)
 	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals":
 		Qstr = (
@@ -4486,7 +4500,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 	RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	ATTRIBUTE_VALUE_STR = ""
-	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010":
+	if str(TreeSuperParentParam)=="Z0009" or str(TreeSuperParentParam)=="Z0010" or str(TreeSuperParentParam)=="Z0128":
 		rec_id = "SYOBJ_1177076"
 		obj_id = "SYOBJ-1177076"
 		ObjectName = "SAQGPM"
@@ -4565,7 +4579,7 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 		)
 		if Count:
 			QueryCount = Count.cnt
-	elif parentlevel4 == "Product Offerings":
+	elif parentlevel4 == "Product Offerings": ##A055S000P01-17959 added the greenbook in query condition to show the records in event level... 
 		parent_obj = Sql.GetList(
 			"select top "
 			+ str(PerPage)
@@ -4575,7 +4589,9 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeTopSuperParentParam)
-			+ "'  and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m "
+			+ "' and GREENBOOK = '"
+			+ str(TreeSuperParentParam) 
+			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m "
 		)
 
 		Count = Sql.GetFirst(
@@ -4585,12 +4601,14 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeTopSuperParentParam)
+			+ "' and GREENBOOK = '"
+			+ str(TreeSuperParentParam) 
 			+ "' and GOT_CODE = '"+str(TreeParentParam)+"' AND PM_ID = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
 		)
 
 		if Count:
 			QueryCount = Count.cnt
-	elif (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010"):
+	elif (TreeSuperParentParam == "Z0009" or TreeSuperParentParam == "Z0010" or TreeSuperParentParam == "Z0128"):##A055S000P01-17959 added the greenbook in query condition to show the records in got code level...
 		Qstr = (
 			"select top "
 			+ str(PerPage)
@@ -4600,6 +4618,8 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
+			+ "' and GREENBOOK = '"
+			+ str(TreeParentParam) 
 			+ "'  and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
@@ -4615,6 +4635,8 @@ def GetEventsMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeSuperParentParam)
+			+ "' and GREENBOOK = '"
+			+ str(TreeParentParam) 
 			+ "' and GOT_CODE = '"+str(TreeParam)+"' AND (PM_FREQUENCY_EDITABLE = 'True' OR PM_FREQUENCY_EDITABLE = '1') "
 		)
 	elif ObjectName == "ACACST" and str(TreeSuperParentParam)=="Approvals" :
@@ -5502,7 +5524,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			dbl_clk_function += (
 				'function onClickCell(event, field, value, row, $element) { if(localStorage.getItem("InlineEdit")=="YES"){ return ;} var reco_id= localStorage.getItem("multiedit_checkbox_clicked");reco_id= reco_id.split(",");var selectedId = $element.closest("tr").find("td:'	
 				+ str(cls)	
-				+ '").text().trim();reco_id.push(selectedId);reco_id = removeDuplicates(reco_id);console.log("reco_id2--",reco_id);localStorage.setItem("multiedit_save_date", reco_id);localStorage.setItem("PM_selectedId",selectedId);  localStorage.setItem("table_id_RL_edit", "SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63");console.log("field--",field);console.log("value--",value);edit_index = $("'+str(table_ids)+'").find("[data-field="+ field +"]").index()+1;localStorage.setItem("edit_index",edit_index); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger;localStorage.setItem("PM_FrequencyBulkedit","yes");  data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }   var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); }  }); }'
+				+ '").text().trim();reco_id.push(selectedId);reco_id = removeDuplicates(reco_id);console.log("reco_id2--",reco_id);localStorage.setItem("multiedit_save_date", reco_id);localStorage.setItem("PM_selectedId",selectedId);  localStorage.setItem("table_id_RL_edit", "SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63");console.log("field--",field);console.log("value--",value);edit_index = $("'+str(table_ids)+'").find("[data-field="+ field +"]").index()+1;localStorage.setItem("edit_index",edit_index); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger;localStorage.setItem("saqico_title",field); localStorage.setItem("PM_FrequencyBulkedit","yes");  data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }   var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); }  }); }'
 			)
 		dbl_clk_function += ('$(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
 			+ str(table_ids)
@@ -8470,6 +8492,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		"GREENBOOK",
 		"EQUIPMENT_STATUS",
 		"EQUIPMENT_DESCRIPTION",
+		"PLATFORM",
 		"MNT_PLANT_ID",                                   
 		"FABLOCATION_ID",
 		"WARRANTY_START_DATE",
@@ -8522,7 +8545,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,PLATFORM,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -8541,7 +8564,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,PLATFORM,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -8562,7 +8585,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,PLATFORM,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -8582,7 +8605,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,PLATFORM,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "'  and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -8602,7 +8625,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,PLATFORM,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "'  and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -8624,7 +8647,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 				Qstr = (
 					"select top "
 					+ str(PerPage)
-					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,PLATFORM,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 					+ str(ContractRecordId)
 					+ "' and QTEREV_RECORD_ID = '"
 					+ str(RevisionRecordId)
@@ -8643,7 +8666,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 				Qstr = (
 					"select top "
 					+ str(PerPage)
-					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,PLATFORM,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 					+ str(ContractRecordId)
 					+ "'  and QTEREV_RECORD_ID = '"
 					+ str(RevisionRecordId)
@@ -8685,7 +8708,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,PLATFORM,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -8705,7 +8728,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 			Qstr = (
 				"select top "
 				+ str(PerPage)
-				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,PLATFORM,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENTCATEGORY_DESCRIPTION,SNDFBL_ID,TEMP_TOOL from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -8877,6 +8900,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 		)
 		data_dict["EQUIPMENT_ID"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_ID) + '">' + str(par.EQUIPMENT_ID) + "</abbr>") 
 		data_dict["EQUIPMENT_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_DESCRIPTION) + '">' + str(par.EQUIPMENT_DESCRIPTION) + "</abbr>")
+		data_dict["PLATFORM"] = ('<abbr id ="" title="' + str(par.PLATFORM) + '">' + str(par.PLATFORM) + "</abbr>") 
 		data_dict["FABLOCATION_ID"] = ('<abbr id ="" title="' + str(par.SNDFBL_ID) + '">' + str(par.FABLOCATION_ID) + "</abbr>") 
 		data_dict["SNDFBL_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.SNDFBL_ID) + "</abbr>") 
 		data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>") 

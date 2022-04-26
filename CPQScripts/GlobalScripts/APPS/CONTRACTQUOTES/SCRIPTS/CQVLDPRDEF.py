@@ -103,14 +103,14 @@ def equipment_predefined():
 					account_id_query = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"'")
 					account_bluebook_query = Sql.GetFirst("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
 					tools_count_query = Sql.GetFirst("SELECT COUNT(GREENBOOK) AS COUNT FROM SAQSCO (NOLOCK) {} AND FABLOCATION_RECORD_ID = '{}' GROUP BY FABLOCATION_NAME".format(where_condition, rec.FABLOCATION_RECORD_ID))
-					if account_bluebook_query.BLUEBOOK != "DISPLAY":
+					if account_bluebook_query.BLUEBOOK != "DES":
 						if tools_count_query.COUNT > 50:
 							ent_value = '# CSA tools in Fab_>50'
 						elif tools_count_query.COUNT in range(10,51):
 							ent_value = '# CSA tools in Fab_10-50'
 						elif tools_count_query.COUNT < 10:
 							ent_value = '# CSA tools in Fab_<10'
-					elif account_bluebook_query.BLUEBOOK == "DISPLAY":
+					elif account_bluebook_query.BLUEBOOK == "DES":
 						if tools_count_query.COUNT > 7:
 							ent_value = '# CSA tools in Fab_<7'
 						elif tools_count_query.COUNT in range(3,8):
@@ -400,9 +400,8 @@ def equipment_fab_ent_rolldown():
 		get_fab =Sql.GetFirst("SELECT QUALITY_REQUIRED FROM SAQFBL(NOLOCK) {}".format(str(where_condition)))
 		updateentXML = updating_xml(entxmldict,updateentXML,entl_id,get_fab.QUALITY_REQUIRED,rec.SERVICE_ID)
 		#Trace.Write("updateentXML"+str(updateentXML))
-		Sql.RunQuery( "UPDATE SAQSCE SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}' AND EQUIPMENT_RECORD_ID ='{}'".format(updateentXML.replace("'","''"),where_condition ,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID, rec.EQUIPMENT_RECORD_ID))
-
-
+		for roll_obj in ['SAQSCE','SAQSAE']:
+			Sql.RunQuery("UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}' AND EQUIPMENT_RECORD_ID ='{}'".format(roll_obj,updateentXML.replace("'","''"),where_condition ,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID, rec.EQUIPMENT_RECORD_ID))
 
 try:
 	if LEVEL == 'SERVICE_LEVEL':

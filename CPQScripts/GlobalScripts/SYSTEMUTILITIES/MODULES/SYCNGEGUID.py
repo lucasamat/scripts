@@ -6,45 +6,47 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-
-
-from SYDATABASE import SQL
-#import Webcom.Configurator.Scripting.Test.TestProduct
-Sql = SQL()
+from SYDATABASE import sql_get_first
 
 
 class KeyCPQId:
     @staticmethod
-    def GetCPQId(TABLEID, REC_ID):
-        KeyId = ""
-        if TABLEID != "":
+    def GetCPQId(table_id, rec_id):
+        key_id = ""
+        if table_id:
 
-            RecNameObj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH WITH (NOLOCK) WHERE OBJECT_NAME = '" + TABLEID + "'")
-            if RecNameObj is not None:
-                RecName = str(RecNameObj.RECORD_NAME)
-                RecIDObj = Sql.GetFirst(
-                    "SELECT CpqTableEntryId FROM " + TABLEID + " (NOLOCK) WHERE " + RecName + "='" + REC_ID + "' "
+            rec_name_obj = sql_get_first(
+                "SELECT RECORD_NAME FROM SYOBJH WITH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(table_id)
+            )
+            if rec_name_obj:
+                rec_id_obj = sql_get_first(
+                    "SELECT CpqTableEntryId FROM {} (NOLOCK) WHERE {}='{}' ".format(
+                        table_id, rec_name_obj.RECORD_NAME, rec_id
+                    )
                 )
-                if RecIDObj is not None:
-                    CPQID = RecIDObj.CpqTableEntryId
-                    if CPQID != "":
-                        KeyId = str(TABLEID) + "-" + str(CPQID).rjust(5, "0")
-        return KeyId
+                if rec_id_obj:
+                    cpqid = rec_id_obj.CpqTableEntryId
+                    if cpqid:
+                        key_id = "{}-{}".format(table_id, str(cpqid).rjust(5, "0"))
+        return key_id
 
     @staticmethod
-    def GetKEYId(TABLEID, KeyId):
-        RecID = ""
-        if TABLEID != "":
-            RecNameObj = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH WITH (NOLOCK) WHERE OBJECT_NAME = '" + TABLEID + "'")
-            if RecNameObj is not None:
-                CPQID = KeyId.split("-")[1].lstrip("0") if "-" in KeyId else KeyId  ###jira id 6303
-                RecName = str(RecNameObj.RECORD_NAME)
-                RecIDObj = Sql.GetFirst(
-                    "SELECT " + RecName + " AS RECID FROM " + TABLEID + " (NOLOCK) WHERE CpqTableEntryId='" + CPQID + "' "
+    def GetKEYId(table_id, key_id):
+        rec_id = ""
+        if table_id:
+            rec_name_obj = sql_get_first(
+                "SELECT RECORD_NAME FROM SYOBJH WITH (NOLOCK) WHERE OBJECT_NAME = '{}'".format(table_id)
+            )
+            if rec_name_obj:
+                cpqid = key_id.split("-")[1].lstrip("0") if "-" in key_id else key_id  ###jira id 6303
+                rec_id_obj = sql_get_first(
+                    "SELECT {} AS RECID FROM {} (NOLOCK) WHERE CpqTableEntryId='{}' ".format(
+                        rec_name_obj.RECORD_NAME, table_id, cpqid
+                    )
                 )
-                if RecIDObj is not None:
-                    RecID = str(RecIDObj.RECID)
-        return RecID
+                if rec_id_obj:
+                    rec_id = str(rec_id_obj.RECID)
+        return rec_id
 
 
 KeyCPQId = KeyCPQId()

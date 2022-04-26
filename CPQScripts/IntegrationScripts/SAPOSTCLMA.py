@@ -53,7 +53,7 @@ try:
 		dt['ContractEffectiveDate'] = data.ContractEffectiveDate
 		dt['SalesPerson'] = data.SalesPerson
 		dt['BDManager'] = data.BDManager
-		dt['LegalPerson'] = 'clmadmin@waadicm.onmicrosoft.com'
+		dt['LegalPerson'] = 'clmadmin_AppliedMaterials@waadicm.onmicrosoft.com'
 		
 	Timestamp = SqlHelper.GetFirst("select Getdate() as date")
 	result = {

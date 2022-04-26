@@ -430,30 +430,34 @@ def EditItems():
         line.append(str(x.LINE))
     
     return str(line)
-
+# A055S000P01-17863 START
 def LoadQuoteSummary():
     sec_str = ""
-    GetDetails = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR,TAX_AMOUNT_INGL_CURR,ESTVAL_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,CNTMRG_INGL_CURR,TOTAL_MARGIN_PERCENT FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_record_id))
+    GetDetails = Sql.GetFirst("SELECT ISNULL(NET_VALUE_INGL_CURR,0.00) AS NET_VALUE_INGL_CURR,ISNULL(TAX_AMOUNT_INGL_CURR,0.00) AS TAX_AMOUNT_INGL_CURR,ISNULL(ESTVAL_INGL_CURR,0.00) AS ESTVAL_INGL_CURR,ISNULL(TOTAL_AMOUNT_INGL_CURR,0.00) AS TOTAL_AMOUNT_INGL_CURR,ISNULL(CNTMRG_INGL_CURR,0.00) AS CNTMRG_INGL_CURR,ISNULL(TOTAL_MARGIN_PERCENT,0.00) AS TOTAL_MARGIN_PERCENT FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_record_id))
 
-    values = {}
-    values["NET_VALUE_INGL_CURR"] = GetDetails.NET_VALUE_INGL_CURR
-    values["TAX_AMOUNT_INGL_CURR"] = GetDetails.TAX_AMOUNT_INGL_CURR
-    values["ESTVAL_INGL_CURR"] = GetDetails.ESTVAL_INGL_CURR
-    values["TOTAL_AMOUNT_INGL_CURR"] = GetDetails.TOTAL_AMOUNT_INGL_CURR
-    values["CNTMRG_INGL_CURR"] = GetDetails.CNTMRG_INGL_CURR
-    values["TOTAL_MARGIN_PERCENT"] = GetDetails.TOTAL_MARGIN_PERCENT
-    for x,y in values.items():
-        sec_str += (
-                    '<td><input id="'
-                    + str(x)
-                    + '" type="text" value="'
-                    + str(y)
-                    + '" title="'
-                    + str(y)
-                    + ""
-                    + '" class="form-control related_popup_css" disabled></td>'
-                    )
+    values = []
+    values.append("Total Excluding Tax/VAT/GST_" + str(GetDetails.NET_VALUE_INGL_CURR) + " USD")
+    values.append("Total Tax/VAT/GST_" + str(GetDetails.TAX_AMOUNT_INGL_CURR) + " USD")
+    values.append("Total Est Net Val_"+ str(GetDetails.ESTVAL_INGL_CURR) + " USD")
+    values.append("Total Amt_" +str(GetDetails.TOTAL_AMOUNT_INGL_CURR) + " USD")
+    values.append("Total Margin_"+ str(GetDetails.CNTMRG_INGL_CURR) + " USD")
+    values.append("Total Margin Pct_"+ str(GetDetails.TOTAL_MARGIN_PERCENT) + " %")
+    sec_str = """ <div onclick="dyn_main_sec_collapse_arrow(this)" data-bind="attr: {'data-toggle':'collapse','data-target':'.col'+stdAttrCode(), 
+            'id':'dyn'+stdAttrCode(),'class': isWholeRow() ? 'g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer' : 'g1 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer'}" data-target=".sec_5802398A-50DA-40C7-8C80-99149E0C2561" id="dyn1577" data-toggle="collapse" class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"> 
+            <label data-bind="html: hint" class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="5802398A-50DA-40C7-8C80-99149E0C2561" class="dropdown-item" href="#" onclick="QuoteSummaryEdit(this)">EDIT</a></li></ul></div></div>QUOTE SUMMARY</div></label> </div>"""
+    for x in values:
+        sec_str += '''
+        <div id="sec_5802398A-50DA-40C7-8C80-99149E0C2561" class="sec_5802398A-50DA-40C7-8C80-99149E0C2561 collapse in ">
+        <div style="height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;" data-bind="attr: {" id ':'mat '+stdattrcode(),'class ':="" iswholerow()="" ?="" 'g4="" except_sec="" removehorline="" iconhvr '="" :="" 'g1="" } '="" id="mat1578" class="g4  except_sec removeHorLine iconhvr"><div class="col-md-5">	<abbr data-bind="attr:{" title':label} '="" title="'''+x.split("_")[0]+'''"> <label class="col-md-11 pull-left" style="padding: 5px 5px;margin: 0;" data-bind="html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), " pull-left':="" hint()="" } '="">'''+x.split("_")[0]+'''</label> </abbr> <a href="#" title="" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'''+x.split("_")[0]+'''" class="col-md-1 bgcccwth10" style="text-align:right;padding: 7px 5px;color:green;" data-original-title=""><i title="'''+x.split("_")[0]+'''" class="fa fa-info-circle fltlt"></i></a> </div><div class="col-md-3 pad-0"> <input type="text" id="'''+x.split("_")[0]+'''" title="'''+x.split("_")[1]+'''" value="'''+x.split("_")[1]+'''" 'title ':userinput},="" incrementaltabindex,="" enable:="" isenabled'="" class="form-control" style="height: 28px;border-top: 0 !important;border-bottom: 0 !important;" tabindex="" disabled=""> </div>
+        <div class="col-md-3" style="display:none;"> <span class="" data-bind="attr:{" id ':="" $data.name()}'="" id="">  </span></div>
+        <div class="col-md-1" style="float: right;">
+            <div class="col-md-12 editiconright">
+                <a href="#" onclick="editclick_row(this)" class="editclick"> <i class="fa fa-lock" aria-hidden="true"></i></a>
+            </div>
+        </div>
+        </div>'''
     return sec_str	
+# A055S000P01-17863 END
 try:
     SubtabName = Param.SUBTAB
 except:
@@ -496,6 +500,7 @@ try:
 except:
     Trace.Write("except hot")
     Hot = ""
+# A055S000P01-17863 START
 GetPOES = Sql.GetFirst("SELECT POES FROM SAQTMT(NOLOCK) WHERE QTEREV_RECORD_ID  = '{}' AND MASTER_TABLE_QUOTE_RECORD_ID  = '{}' ".format(quote_revision_record_id,quote_record_id))
 
 if GetPOES:
@@ -503,6 +508,7 @@ if GetPOES:
     if SubtabName == "Summary" and (GetPOES.POES == 1):
 
         ApiResponse = ApiResponseFactory.JsonResponse(LoadQuoteSummary())
+# A055S000P01-17863 END
 if Action == "NOTICE ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
     Trace.Write("276")
     ApiResponse = ApiResponseFactory.JsonResponse(NoticeOnChange(IdleNotice))

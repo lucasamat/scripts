@@ -614,6 +614,7 @@ def billingmatrix_create():
 			
 def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	TreeParam = Product.GetGlobal("TreeParam")
+	Trace.Write("TITLE=========="+str(TITLE))
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
 	if "table_event_parent" in CLICKEDID:
@@ -645,7 +646,9 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	#if str(CLICKEDID) == "SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F" and (TreeParentParam != 'Quote Items' and TreeParentParam != ''):
 	#canedit = "FALSE"	
 	Trace.Write("@175----canedit,value-------->"+str(canedit)+','+str(VALUE))
-	if str(Product.GetGlobal("TreeParentLevel0")=="Complementary Products") and TITLE == "CUSTOMER_PART_NUMBER" and str(VALUE)!='':
+	if quote_status.REVISION_STATUS == "BOK-CONTRACT BOOKED":
+		edt_str = "NO"
+	elif str(Product.GetGlobal("TreeParentLevel0")=="Complementary Products") and TITLE == "CUSTOMER_PART_NUMBER" and str(VALUE)!='':
 		###Edit available only for empty value!!!
 		edt_str = "NO"
 	elif objh_obj is not None and str(canedit).upper() == "TRUE":
@@ -670,7 +673,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 				field_lable = str(objd_obj.FIELD_LABEL)
 				datepicker = "onclick_datepicker('" + api_name + "')"
 				if SELECTALL != "noselection":
-					if TITLE not in ("NET_PRICE","PM_FREQUENCY","QUANTITY","CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_PART_NUMBER") and "DELIVERY_" not in TITLE:
+					if TITLE not in ("NET_PRICE","PM_FREQUENCY","QUANTITY","CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_PART_NUMBER","SAPMMP") and "DELIVERY_" not in TITLE:
 						edt_str += (
 							'<div   class="row modulebnr brdr">EDIT '
 							+ str(field_lable).upper()
@@ -684,6 +687,13 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
 						)
 						Trace.Write("list(RECORDID)_CHECK__J "+str(len(list(RECORDID))))
+					elif TITLE == "SAPMMP":
+						edt_str += ('<div   class="row modulebnr brdr">BULK EDIT <button type="button"   class="close fltrt" onclick="multiedit_RL_cancel();">X</button></div>')
+						edt_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+						edt_str += '<table class="wdth100" id="bulk_edit">'
+						edt_str += ('<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'+ str(field_lable)+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
+						)
+
 					if len(list(RECORDID)) > 1:
 						Trace.Write("data_type_CHECK__J "+str(data_type))
 						if data_type.upper() == "TEXT":
@@ -813,10 +823,16 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 								+ str(VALUE)
 								+ '">'
 							)
-					if TITLE not in ('NET_PRICE','DISCOUNT','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY','NEW_PART','CUSTOMER_PART_NUMBER') and "DELIVERY_" not in TITLE:
+					if TITLE not in ('NET_PRICE','DISCOUNT','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY','NEW_PART','CUSTOMER_PART_NUMBER','SAPMMP') and "DELIVERY_" not in TITLE:
+						edt_str += "</div></td></tr></tbody></table>"
+						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>' 	
+					elif TITLE == "SAPMMP":
+						Trace.Write("aaSaqico")
 						edt_str += "</div></td></tr></tbody></table>"
 						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
+
 					else:
+						
 						if quote_status.REVISION_STATUS=='APR-APPROVED':
 							edt_str = "NO"
 						elif obj_obj in('SAQSAP','SAQGPA','SAQGPM'):
@@ -857,6 +873,18 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 								key = str(k.QUOTE_REV_PO_PRODUCT_LIST_ID)
 							# else:
 							# 	edt_str = "NO"
+						elif obj_obj == 'SAQSCN':#A055S000P01-18196
+							field = "Enter Updated Quantity to add to NSO Catalog..."
+							label = "UPDATED QUANTITY" 
+							input_id = "updatedQuantity"
+							input_type = ""
+							k = Sql.GetFirst("SELECT QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID FROM SAQSCN WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
+							apply_all = ''
+							if len(list(RECORDID)) > 1:
+								apply_all = '<div class="col-md-12 pt-0 pb-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">Apply changes to</div><div class="txt-col-sec col-md-6 pl-0"><div class="radio"><input type="radio" name="massOrSingleEdit" id="singleEditRadio" checked="checked"><label for="singleEditRadio">The record clicked</label></div><div class="radio"><input type="radio" name="massOrSingleEdit" id="massEditRadio"><label for="massEditRadio">All selected records</label></div></div></div>'
+							edt_str = '<div class="modal-dialog bg-white" id="edit_decrip"><div class="modal-content"><div class="modal-header revision_edit_decripheader"><span class="modal-title">BULK EDIT</span><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="multiedit_RL_cancel();"><span aria-hidden="true">x</span></button></div><div class="fixed-table-body"><div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr" id="seginnerbnr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"><div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;"><div class="product_txt_child"><abbr title="Bulk Edit">Bulk Edit</abbr></div><div class="product_txt_to_top_child help_text" style="float: left;"><abbr title="'+str(field)+'">'+str(field)+'</abbr></div></div></div></div><div class="col-md-12 pt-0 d-flex align-items-center"><div class="partno-lbl col-md-6 text-right">'+str(label)+'</div><div class="txt-col-sec col-md-6 pl-0"><input id="'+str(input_id)+'" class="light_yellow" '+str(input_type)+' value="'+str(VALUE)+'" ><span class="lbl"></span></div></div>'+str(apply_all)+'</div><div class="modal-footer"><button id="popupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true" onclick="multiedit_RL_cancel();">CANCEL</button><button onclick="NSOMultiEdit(this)" id="'+str(input_id)+'_save" data-dismiss="modal" class="btn btn-list-cust">SAVE</button></div> </div></div>'
+							if k:
+								key = str(k.QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID)
 						elif obj_obj == 'SAQSPT':
 							Trace.Write("@853"+str(RECORDID))
 							k = Sql.GetFirst("SELECT QUOTE_SERVICE_PART_RECORD_ID FROM SAQSPT WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
@@ -926,7 +954,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 	value_list = []
 	VALUE1 = []
 	VALUE2 =[]
-	selected_rows = RECORDID.split(",")
+	try:
+		selected_rows = RECORDID.split(",")
+	except:
+		selected_rows = ""
 	Trace.Write("SELECT_ALL_CHK "+str(SELECTALL))
 	clicked = CLICKEDID.split("_")
 	obj_id = clicked[2] + "-" + clicked[3] + "-" + clicked[4] + "-" + clicked[5] + "-" + clicked[6]
@@ -937,11 +968,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 	selected_rows_cpqid = []
 	rev_rec_id = Quote.GetGlobal("quote_revision_record_id")
 	objh_obj = Sql.GetFirst("select OBJECT_NAME, RECORD_NAME from SYOBJH where RECORD_ID = '" + str(obj_id) + "'")
-	if objh_obj is not None:
+	quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,quote_revision_record_id))
+	if quote_status.REVISION_STATUS !="BOK-CONTRACT BOOKED" and objh_obj is not None:
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
 		item_lines_record_ids = []
-		if obj_name in ('SAQSAP','SAQRSP','SAQSPT','SAQGPA','SAQGPM','SAQRIS','SAQRDS') and (not (TITLE == 'QUANTITY' and obj_name == 'SAQRSP')):
+		if obj_name in ('SAQSAP','SAQRSP','SAQSPT','SAQGPA','SAQGPM','SAQRIS','SAQRDS','SAQSCN') and (not (TITLE == 'QUANTITY' and obj_name == 'SAQRSP')):
 			if obj_name =='SAQGPA':
 				selected_rows = selected_rows
 			else:
@@ -952,15 +984,23 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			if A_Keys!="" and A_Values!="":
 				for key,val in zip(A_Keys,A_Values):
 					if(val!=""):
-						if key in ("QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID","QUOTE_REV_PO_PRODUCT_LIST_ID","QUOTE_SERVICE_PART_RECORD_ID","QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID"):
+						if key in ("QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID","QUOTE_REV_PO_PRODUCT_LIST_ID","QUOTE_SERVICE_PART_RECORD_ID","QUOTE_REV_PO_GRNBK_PM_EVEN_ASSEMBLIES_RECORD_ID","QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID"):
 							key="CpqTableEntryId"
 							val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 						qury_str+=" "+key+" LIKE '%"+val+"%' AND "
+			Trace.Write('Select ALL -->'+str(SELECTALL)+' obj_name-->'+str(obj_name)+' TITLE-->'+str(TITLE))
 			if(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQSAP" and TITLE == "PM_FREQUENCY"):
-				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParam,qury_str=qury_str))
+				if str(TreeTopSuperParentParam)=="Product Offerings":
+					Sql.RunQuery("""UPDATE A SET A.PM_FREQUENCY = {value} FROM SAQSAP A
+					INNER JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID = A.QTESRVCOA_RECORD_ID WHERE {qury_str} A.QUOTE_RECORD_ID = '{QuoteRecordId}' AND A.QTEREV_RECORD_ID = '{rev_rec_id}' AND A.SERVICE_ID = '{service_id}' AND SAQSCA.GREENBOOK = '{greenbook}' AND (A.PM_FREQUENCY_EDITABLE = 'True' OR A.PM_FREQUENCY_EDITABLE = '1') """.format(value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParentParam,greenbook = TreeParam,qury_str=qury_str))
+				else:	
+					Sql.RunQuery("""UPDATE A SAQSAP SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParam,qury_str=qury_str))
 				return ""
 			elif(SELECTALL=="PERIOD_BULKEDIT_ALL" and obj_name == "SAQRDS" and TITLE == "DELIVERY_DATE"):
 				Sql.RunQuery("""UPDATE SAQRDS SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,qury_str=qury_str))
+				return ""
+			elif(SELECTALL=="NSO_BULKEDIT_ALL" and obj_name == "SAQSCN" and TITLE == "QUANTITY"):
+				Sql.RunQuery("""UPDATE SAQSCN SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,qury_str=qury_str))
 				return ""
 			elif(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQGPA" and TITLE == "PM_FREQUENCY"):
 				if str(TreeParam) == "Z0009":
@@ -980,6 +1020,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQSPT"):
 				Trace.Write('@959')
 				Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}' WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}'""".format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,service_id=TreeParam,qury_str=qury_str))
+				
+				Sql.RunQuery("""UPDATE SAQSPT SET CUSTOMER_ANNUAL_QUANTITY = '1' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_PART_NUMBER IS NOT NULL AND (CUSTOMER_ANNUAL_QUANTITY <= 0 OR CUSTOMER_ANNUAL_QUANTITY IS NULL) """.format(QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id))
 				return ""
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQSPT" and TITLE == "CUSTOMER_ANNUAL_QUANTITY"):
 				Trace.Write('@963 elif')
@@ -1083,11 +1125,14 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					Trace.Write('1014---'+str(value))
 					if value==0 or value=='' or value=='0':
 						Trace.Write('lees than 10--')
-						Sql.RunQuery("""UPDATE SAQSPT SET {column} = NULL WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '1' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_PART_NUMBER != '' AND {rec_name} = '{rec_id}' """.format(column=TITLE,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 						#Emptied delivery schedule columns when the annual quantity is changed to empty
 						Sql.RunQuery("""UPDATE SAQSPT SET DELIVERY_1 = NULL ,DELIVERY_2 = NULL ,DELIVERY_3 = NULL ,DELIVERY_4 = NULL ,DELIVERY_5 = NULL ,DELIVERY_6 = NULL ,DELIVERY_7 = NULL ,DELIVERY_8 = NULL ,DELIVERY_9 = NULL ,DELIVERY_10 = NULL ,DELIVERY_11 = NULL ,DELIVERY_12 = NULL ,DELIVERY_13 = NULL ,DELIVERY_14 = NULL ,DELIVERY_15 = NULL ,DELIVERY_16 = NULL ,DELIVERY_17 = NULL ,DELIVERY_18 = NULL ,DELIVERY_19 = NULL ,DELIVERY_20 = NULL ,DELIVERY_21 = NULL ,DELIVERY_22 = NULL ,DELIVERY_23 = NULL ,DELIVERY_24 = NULL ,DELIVERY_25 = NULL ,DELIVERY_26 = NULL ,DELIVERY_27 = NULL ,DELIVERY_28 = NULL ,DELIVERY_29 = NULL ,DELIVERY_30 = NULL ,DELIVERY_31 = NULL ,DELIVERY_32 = NULL ,DELIVERY_33 = NULL ,DELIVERY_34 = NULL ,DELIVERY_35 = NULL ,DELIVERY_36 = NULL ,DELIVERY_37 = NULL ,DELIVERY_38 = NULL ,DELIVERY_39 = NULL ,DELIVERY_40 = NULL ,DELIVERY_41 = NULL ,DELIVERY_42 = NULL ,DELIVERY_43 = NULL ,DELIVERY_44 = NULL ,DELIVERY_45 = NULL ,DELIVERY_46 = NULL ,DELIVERY_47 = NULL ,DELIVERY_48 = NULL ,DELIVERY_49 = NULL ,DELIVERY_50 = NULL ,DELIVERY_51 = NULL ,DELIVERY_52 = NULL WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 					else:
-						Sql.RunQuery("""UPDATE SAQSPT SET {column} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+						Sql.RunQuery("""UPDATE SAQSPT SET {column} = {value}  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID)) 
+
+						Sql.RunQuery("""UPDATE SAQSPT SET CUSTOMER_ANNUAL_QUANTITY = '1' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_PART_NUMBER IS NOT NULL AND (CUSTOMER_ANNUAL_QUANTITY <= 0 OR CUSTOMER_ANNUAL_QUANTITY IS NULL) """.format(QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id))
+
 						
 						get_schedule_values = Sql.GetFirst("SELECT DELIVERY_1,DELIVERY_2,DELIVERY_3,DELIVERY_4,DELIVERY_5,DELIVERY_6,DELIVERY_7,DELIVERY_8,DELIVERY_9,DELIVERY_10,DELIVERY_11,DELIVERY_12,DELIVERY_13,DELIVERY_14,DELIVERY_15,DELIVERY_16,DELIVERY_17,DELIVERY_18,DELIVERY_19,DELIVERY_20,DELIVERY_21,DELIVERY_22,DELIVERY_23,DELIVERY_24,DELIVERY_25,DELIVERY_26,DELIVERY_27,DELIVERY_28,DELIVERY_29,DELIVERY_30,DELIVERY_31,DELIVERY_32,DELIVERY_33,DELIVERY_34,DELIVERY_35,DELIVERY_36,DELIVERY_37,DELIVERY_38,DELIVERY_39,DELIVERY_40,DELIVERY_41,DELIVERY_42,DELIVERY_43,DELIVERY_44,DELIVERY_45,DELIVERY_46,DELIVERY_47,DELIVERY_48,DELIVERY_49,DELIVERY_50,DELIVERY_51,DELIVERY_52 FROM SAQSPT  WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' ".format(QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 
@@ -1127,7 +1172,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					#A055S000P01-14051 end
 				elif TITLE.split(',') == ["CUSTOMER_ANNUAL_QUANTITY","CUSTOMER_ACCEPT_PART","CUSTOMER_PARTICIPATE","EXCHANGE_ELIGIBLE"]:
 					value = ALLVALUES[index] if ALLVALUES[index] != '' else 'NULL'
+
 					Sql.RunQuery("""UPDATE SAQSPT SET {column} = {val},{column1} = '{value1}',{column2} = '{value2}',{column3} = '{value3}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],val=value,column1=TITLE.split(',')[1],value1 = ALLVALUES1[index],column2=TITLE.split(',')[2],value2 = ALLVALUES2[index],column3=TITLE.split(',')[3],value3 = ALLVALUES3[index],QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
+
+					Sql.RunQuery("""UPDATE SAQSPT SET CUSTOMER_ANNUAL_QUANTITY = '1' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_PART_NUMBER IS NOT NULL AND (CUSTOMER_ANNUAL_QUANTITY <= 0 OR CUSTOMER_ANNUAL_QUANTITY IS NULL) """.format(QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id))
 
 					if value==0 or value=='' or value=='0' or value=='NULL':
 						Sql.RunQuery("""UPDATE SAQSPT SET DELIVERY_1 = NULL ,DELIVERY_2 = NULL ,DELIVERY_3 = NULL ,DELIVERY_4 = NULL ,DELIVERY_5 = NULL ,DELIVERY_6 = NULL ,DELIVERY_7 = NULL ,DELIVERY_8 = NULL ,DELIVERY_9 = NULL ,DELIVERY_10 = NULL ,DELIVERY_11 = NULL ,DELIVERY_12 = NULL ,DELIVERY_13 = NULL ,DELIVERY_14 = NULL ,DELIVERY_15 = NULL ,DELIVERY_16 = NULL ,DELIVERY_17 = NULL ,DELIVERY_18 = NULL ,DELIVERY_19 = NULL ,DELIVERY_20 = NULL ,DELIVERY_21 = NULL ,DELIVERY_22 = NULL ,DELIVERY_23 = NULL ,DELIVERY_24 = NULL ,DELIVERY_25 = NULL ,DELIVERY_26 = NULL ,DELIVERY_27 = NULL ,DELIVERY_28 = NULL ,DELIVERY_29 = NULL ,DELIVERY_30 = NULL ,DELIVERY_31 = NULL ,DELIVERY_32 = NULL ,DELIVERY_33 = NULL ,DELIVERY_34 = NULL ,DELIVERY_35 = NULL ,DELIVERY_36 = NULL ,DELIVERY_37 = NULL ,DELIVERY_38 = NULL ,DELIVERY_39 = NULL ,DELIVERY_40 = NULL ,DELIVERY_41 = NULL ,DELIVERY_42 = NULL ,DELIVERY_43 = NULL ,DELIVERY_44 = NULL ,DELIVERY_45 = NULL ,DELIVERY_46 = NULL ,DELIVERY_47 = NULL ,DELIVERY_48 = NULL ,DELIVERY_49 = NULL ,DELIVERY_50 = NULL ,DELIVERY_51 = NULL ,DELIVERY_52 = NULL WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,QuoteRecordId = Qt_rec_id,rev_rec_id = rev_rec_id,rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
@@ -1334,16 +1382,16 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				elif str(TreeTopSuperParentParam) =="Product Offerings":
 					service_id = TreeParentParam 
 				elif str(Product.GetGlobal("TreeParentLevel4"))=="Product Offerings":
-					service_id = TreeTopSuperParentParam 
+					service_id = TreeTopSuperParentParam
+				##A055S000P01-17959 To update saqgpm based on the value of saqgpa....
 				Sql.RunQuery("""
 						UPDATE SAQGPM
 						SET
 						PM_FREQUENCY = assembly.PM_FREQUENCY,
 						SSCM_PM_FREQUENCY = assembly.SSCM_PM_FREQUENCY
 						FROM SAQGPM (NOLOCK)
-						INNER JOIN (select SAQGPA.QUOTE_RECORD_ID,SAQGPA.QTEREV_RECORD_ID,SAQGPA.SERVICE_RECORD_ID,SAQGPA.GOTCODE_RECORD_ID,SAQGPA.PM_RECORD_ID,SAQGPA.DEVICE_NODE,SAQGPA.PROCESS_TYPE,SUM(ISNULL(SAQGPA.PM_FREQUENCY, 0)) as PM_FREQUENCY,SUM(ISNULL(SAQGPA.SSCM_PM_FREQUENCY, 0)) as SSCM_PM_FREQUENCY FROM SAQGPA where SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{service_id}' GROUP BY QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_RECORD_ID,GOTCODE_RECORD_ID,PM_RECORD_ID,DEVICE_NODE,PROCESS_TYPE) assembly ON SAQGPM.QUOTE_RECORD_ID = assembly.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = assembly.QTEREV_RECORD_ID WHERE SAQGPM.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.SERVICE_ID = '{service_id}' """.format(QuoteRecordId=Qt_rec_id,RevisionRecordId=rev_rec_id,service_id=service_id)
+						INNER JOIN (select SAQGPA.QUOTE_RECORD_ID,SAQGPA.GREENBOOK_RECORD_ID,SAQGPA.QTEREV_RECORD_ID,SAQGPA.SERVICE_RECORD_ID,SAQGPA.GOTCODE_RECORD_ID,SAQGPA.PM_RECORD_ID,SAQGPA.DEVICE_NODE,SAQGPA.PROCESS_TYPE,SUM(ISNULL(SAQGPA.PM_FREQUENCY, 0)) as PM_FREQUENCY,SUM(ISNULL(SAQGPA.SSCM_PM_FREQUENCY, 0)) as SSCM_PM_FREQUENCY FROM SAQGPA where SAQGPA.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPA.SERVICE_ID = '{service_id}' GROUP BY QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_RECORD_ID,GOTCODE_RECORD_ID,PM_RECORD_ID,DEVICE_NODE,PROCESS_TYPE,GREENBOOK_RECORD_ID) assembly ON SAQGPM.QUOTE_RECORD_ID = assembly.QUOTE_RECORD_ID AND SAQGPM.QTEREV_RECORD_ID = assembly.QTEREV_RECORD_ID  AND SAQGPM.SERVICE_RECORD_ID = assembly.SERVICE_RECORD_ID AND SAQGPM.GREENBOOK_RECORD_ID = assembly.GREENBOOK_RECORD_ID AND SAQGPM.GOTCODE_RECORD_ID = assembly.GOTCODE_RECORD_ID AND SAQGPM.PM_RECORD_ID = assembly.PM_RECORD_ID WHERE SAQGPM.QUOTE_RECORD_ID = '{QuoteRecordId}' and SAQGPM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQGPM.SERVICE_ID = '{service_id}' """.format(QuoteRecordId=Qt_rec_id,RevisionRecordId=rev_rec_id,service_id=service_id)
 					)
-
 			elif obj_name == "SAQGPM":
 				Sql.RunQuery("""UPDATE SAQGPM SET {column} = {value} WHERE {qury_str} QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND  {rec_name} = '{rec_id}' """.format(column=TITLE,value= ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),qury_str=qury_str,rec_name=objh_head,rec_id=sql_obj.QUOTE_REV_PO_GBK_GOT_CODE_PM_EVENTS_RECORD_ID))
 			else:
@@ -1375,6 +1423,40 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 						Sql.RunQuery("""UPDATE SAQSCN SET {column} = '{value}', EXTENDED_POSS_COST = (POSS_COST * {value}), EXTENDED_POSS_PRICE = (POSS_PRICE * {value}) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID))
 					# else:
 					# 	Sql.RunQuery("""UPDATE SAQSCN SET {column} = {value} , {column1} = '{value1}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,column1=TITLE.split(',')[1],value1 = ALLVALUES1[index] if str(type(ALLVALUES1))=="<type 'ArrayList'>" else ALLVALUES1,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_REV_PO_EQUIPMENT_PARTS_RECORD_ID))
+				elif obj_name =="SAQRCV":
+					Sql = SQL()
+					if len(TITLE.split(','))==1:
+						current_credit_query = Sql.GetFirst("SELECT {column},CREDITVOUCHER_RECORD_ID FROM SAQRCV WHERE {rec_name} = '{rec_id}'".format(column=TITLE.split(',')[0],rec_name = objh_head,rec_id = sql_obj.QUOTE_REV_CREDIT_VOUCHER_RECORD_ID))
+						sacrcv_rec_query = Sql.GetFirst("SELECT CRTAPP_INGL_CURR,UNBL_INGL_CURR FROM SACRVC (NOLOCK) WHERE CREDITVOUCHER_RECORD_ID = '"+str(current_credit_query.CREDITVOUCHER_RECORD_ID)+"'")
+						current_credit = current_credit_query.CREDIT_APPLIED_INGL_CURR
+						Sql.RunQuery("""UPDATE SAQRCV SET {column} = '{value}', CREDIT_APPLIED_INVC_CURR = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_REV_CREDIT_VOUCHER_RECORD_ID))
+						if str(type(ALLVALUES))=="<type 'ArrayList'>":
+							value = ALLVALUES[index]
+						else:
+							value = ALLVALUES
+						# Credit Adjustment while Editing
+						Trace.Write("current_credit--- "+str(current_credit)+"value--- "+str(value))
+						try:
+							if float(current_credit) > float(value):
+								added_balance = float(current_credit) - float(value)
+								credit_applied = sacrcv_rec_query.CRTAPP_INGL_CURR - float(value)
+								Trace.Write("Credit_applied--- "+str(sacrcv_rec_query.UNBL_INGL_CURR)+"added_balance--- "+str(added_balance))
+								unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR + float(added_balance)
+								# Sql.RunQuery("UPDATE SACRVC SET CRTAPP_INGL_CURR = '"+str(credit_applied)+"',UNBL_INGL_CURR = '"+str(unapplied_balance)+"' WHERE CREDITVOUCHER_RECORD_ID = '"+str(current_credit_query.CREDITVOUCHER_RECORD_ID)+"'")
+								# Trace.Write("SACRVC UPDATED")
+							elif float(current_credit) < float(value):
+								added_credit = float(value) - float(current_credit)
+								credit_applied = sacrcv_rec_query.CRTAPP_INGL_CURR + float(added_credit)
+								unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR - float(added_credit)
+							Sql.RunQuery("UPDATE SACRVC SET CRTAPP_INGL_CURR = '{}',UNBL_INGL_CURR = '{}' WHERE CREDITVOUCHER_RECORD_ID = '{}'".format(credit_applied,unapplied_balance,current_credit_query.CREDITVOUCHER_RECORD_ID))
+						except:
+							Trace.Write("Exception at credits--- ")
+
+						# deleted_rec_query = Sql.GetFirst("SELECT CREDIT_APPLIED_INGL_CURR,CREDITVOUCHER_RECORD_ID FROM SAQRCV (NOLOCK) WHERE QUOTE_REV_CREDIT_VOUCHER_RECORD_ID = '"+str(RecordId)+"'")
+						# sacrcv_rec_query = Sql.GetFirst("SELECT CRTAPP_INGL_CURR,UNBL_INGL_CURR FROM SACRVC (NOLOCK) WHERE CREDITVOUCHER_RECORD_ID = '"+str(deleted_rec_query.CREDITVOUCHER_RECORD_ID)+"'")
+						# credit_applied = sacrcv_rec_query.CRTAPP_INGL_CURR - deleted_rec_query.CREDIT_APPLIED_INGL_CURR
+						# unapplied_balance = sacrcv_rec_query.UNBL_INGL_CURR + deleted_rec_query.CREDIT_APPLIED_INGL_CURR
+
 				elif obj_name == "SAQRIS":
 					Sql.RunQuery("""UPDATE SAQRIS SET {column} = '{value}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE.split(',')[0],value= VALUE,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_REV_ITEM_SUMMARY_RECORD_ID))
 
@@ -2061,7 +2143,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			###update SAQFEQ ends
 			else:
 
-				Sql.RunQuery(""" INSERT SAQFEQ ( QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, EQUIPMENT_DESCRIPTION, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERIAL_NUMBER, QUOTE_RECORD_ID, QUOTE_ID, QUOTE_NAME, PLATFORM, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, GREENBOOK, GREENBOOK_RECORD_ID, MNT_PLANT_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, WARRANTY_START_DATE, WARRANTY_END_DATE, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, CUSTOMER_TOOL_ID,QTEFBL_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified )SELECT A.* FROM( SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, SAQSTE.EQUIPMENT_ID, SAQSTE.EQUIPMENT_RECORD_ID, SAQSTE.EQUIPMENT_DESCRIPTION, SAQSTE.FABLOCATION_ID, SAQSTE.FABLOCATION_NAME, SAQSTE.FABLOCATION_RECORD_ID, MAEQUP.SERIAL_NO, SAQSTE.QUOTE_RECORD_ID, SAQSTE.QUOTE_ID, SAQSTE.QUOTE_NAME, MAEQUP.PLATFORM, SAQSTE.EQUIPMENTCATEGORY_RECORD_ID, SAQSTE.EQUIPMENTCATEGORY_ID, SAQSTE.EQUIPMENTCATEGORY_DESCRIPTION, SAQSTE.EQUIPMENT_STATUS, MAEQUP.PBG, SAQSTE.GREENBOOK, SAQSTE.GREENBOOK_RECORD_ID, SAQSTE.MNT_PLANT_RECORD_ID, SAQSTE.MNT_PLANT_ID, SAQSTE.MNT_PLANT_NAME, MAEQUP.WARRANTY_START_DATE, MAEQUP.WARRANTY_END_DATE, MAEQUP.SALESORG_ID, MAEQUP.SALESORG_NAME, MAEQUP.SALESORG_RECORD_ID, MAEQUP.CUSTOMER_TOOL_ID,SAQFBL.QUOTE_FABLOCATION_RECORD_ID as QTEFBL_RECORD_ID,'{UserName}' AS CPQTABLEENTRYADDEDBY,GETDATE() as CPQTABLEENTRYDATEADDED,'{UserId}' as CpqTableEntryModifiedBy,GETDATE() as CpqTableEntryDateModified FROM MAEQUP (NOLOCK)INNER JOIN  SAQSTE on MAEQUP.EQUIPMENT_ID = SAQSTE.EQUIPMENT_ID INNER JOIN SAQFBL on SAQFBL.FABLOCATION_ID = SAQSTE.FABLOCATION_ID AND  SAQFBL.QUOTE_RECORD_ID = SAQSTE.QUOTE_RECORD_ID WHERE SAQSTE.QUOTE_RECORD_ID = '{QuoteRecId}' AND SAQSTE.QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQSTE.FABLOCATION_ID ='{fabid}') A LEFT JOIN SAQFEQ M(NOLOCK) ON A.QUOTE_ID = M.QUOTE_ID AND A.EQUIPMENT_ID = M.EQUIPMENT_ID WHERE M.EQUIPMENT_ID IS NULL""".format(UserName=User.UserName,UserId=User.Id,QuoteRecId=ContractRecordId,fabid=VALUE,quote_revision_record_id=quote_revision_record_id))
+				Sql.RunQuery(""" INSERT SAQFEQ ( QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, EQUIPMENT_DESCRIPTION, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERIAL_NUMBER, QUOTE_RECORD_ID, QUOTE_ID, QUOTE_NAME, PLATFORM, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, GREENBOOK, GREENBOOK_RECORD_ID, MNT_PLANT_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, WARRANTY_START_DATE, WARRANTY_END_DATE, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, CUSTOMER_TOOL_ID,QTEFBL_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified )SELECT A.* FROM( SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, SAQSTE.EQUIPMENT_ID, SAQSTE.EQUIPMENT_RECORD_ID, SAQSTE.EQUIPMENT_DESCRIPTION, SAQSTE.FABLOCATION_ID, SAQSTE.FABLOCATION_NAME, SAQSTE.FABLOCATION_RECORD_ID, MAEQUP.SERIAL_NO, SAQSTE.QUOTE_RECORD_ID, SAQSTE.QUOTE_ID, SAQSTE.QUOTE_NAME, MAEQUP.PLATFORM, SAQSTE.EQUIPMENTCATEGORY_RECORD_ID, SAQSTE.EQUIPMENTCATEGORY_ID, SAQSTE.EQUIPMENTCATEGORY_DESCRIPTION, SAQSTE.EQUIPMENT_STATUS, MAEQUP.PBG, SAQSTE.GREENBOOK, SAQSTE.GREENBOOK_RECORD_ID, SAQSTE.MNT_PLANT_RECORD_ID, SAQSTE.MNT_PLANT_ID, SAQSTE.MNT_PLANT_NAME, MAEQUP.WARRANTY_START_DATE, NULL AS WARRANTY_END_DATE, MAEQUP.SALESORG_ID, MAEQUP.SALESORG_NAME, MAEQUP.SALESORG_RECORD_ID, MAEQUP.CUSTOMER_TOOL_ID,SAQFBL.QUOTE_FABLOCATION_RECORD_ID as QTEFBL_RECORD_ID,'{UserName}' AS CPQTABLEENTRYADDEDBY,GETDATE() as CPQTABLEENTRYDATEADDED,'{UserId}' as CpqTableEntryModifiedBy,GETDATE() as CpqTableEntryDateModified FROM MAEQUP (NOLOCK)INNER JOIN  SAQSTE on MAEQUP.EQUIPMENT_ID = SAQSTE.EQUIPMENT_ID INNER JOIN SAQFBL on SAQFBL.FABLOCATION_ID = SAQSTE.FABLOCATION_ID AND  SAQFBL.QUOTE_RECORD_ID = SAQSTE.QUOTE_RECORD_ID WHERE SAQSTE.QUOTE_RECORD_ID = '{QuoteRecId}' AND SAQSTE.QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQSTE.FABLOCATION_ID ='{fabid}') A LEFT JOIN SAQFEQ M(NOLOCK) ON A.QUOTE_ID = M.QUOTE_ID AND A.EQUIPMENT_ID = M.EQUIPMENT_ID WHERE M.EQUIPMENT_ID IS NULL""".format(UserName=User.UserName,UserId=User.Id,QuoteRecId=ContractRecordId,fabid=VALUE,
+				quote_revision_record_id=quote_revision_record_id))
 			
 			###update SAQFEA starts
 			GETSAQFEA = Sql.GetFirst("""SELECT count(SAQFEA.EQUIPMENT_RECORD_ID) as cnt from SAQFEA (NOLOCK) INNER JOIN SAQSTE (NOLOCK) ON SAQFEA.EQUIPMENT_ID = SAQSTE.EQUIPMENT_ID AND SAQFEA.QUOTE_RECORD_ID = SAQSTE.QUOTE_RECORD_ID where SAQFEA.QUOTE_RECORD_ID = '{quote_record_id}' AND SAQFEA.QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQSTE.CpqTableEntryId in {SAQSTE_cpqid}""".format(quote_record_id = str(ContractRecordId),SAQSTE_cpqid = str(tuple(selected_rows_cpqid)).replace(',)',')'),quote_revision_record_id=quote_revision_record_id)) 
