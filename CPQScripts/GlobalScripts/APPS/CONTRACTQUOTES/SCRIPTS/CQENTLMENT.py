@@ -2258,6 +2258,7 @@ class Entitlements:
 							Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 							Sql.RunQuery(Updatecps)
 							characteristics_attr_values = []
+							attributevalues_textbox = []
 							for rootattribute, rootvalue in Fullresponse.items():
 								# if rootattribute == "conflicts":
 								# 	for conflict in rootvalue:
