@@ -746,6 +746,7 @@ class SyncQuoteAndCustomTables:
                             "COMPANY_RECORD_ID": salesorg_obj.COMPANY_RECORD_ID,
                             "INCOTERM_LOCATION": custom_fields_detail.get("IncotermsLocation"),
                             "HLV_ORG_BUN": "AGS - SSC",
+                            "TRANSACTION_TYPE": "O-QUOTE",
                         }
 
                         if custom_fields_detail.get("AccountAssignmentGroup"):
@@ -1369,7 +1370,6 @@ class SyncQuoteAndCustomTables:
                                     }
                                 if not opportunity_obj:
                                     master_opportunity_table_info = Sql.GetTable("SAOPPR")
-                                    opportunity_type_dictionary = {"101": "NEW","": "111":"CONTRACT RENEWAL":, "121":"CONTRACT AMENDENT"}
                                     master_opportunity_data = {
                                         "OPPORTUNITY_RECORD_ID": str(Guid.NewGuid()).upper(),
                                         "ACCOUNT_ID": custom_fields_detail.get("STPAccountID"),
@@ -1379,7 +1379,7 @@ class SyncQuoteAndCustomTables:
                                         "CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
                                         "OPPORTUNITY_ID": custom_fields_detail.get("OpportunityId"),
                                         "OPPORTUNITY_NAME": self.quote.OpportunityName,
-                                        "OPPORTUNITY_TYPE": opportunity_type_dictionary.get(custom_fields_detail.get("OpportunityType")),
+                                        "OPPORTUNITY_TYPE": custom_fields_detail.get("OpportunityType"),
                                         "SALESORG_ID": salesorg_data.get("SALESORG_ID"),
                                         "SALESORG_NAME": salesorg_data.get("SALESORG_NAME"),
                                         "SALESORG_RECORD_ID": salesorg_data.get("SALESORG_RECORD_ID"),
@@ -1395,9 +1395,6 @@ class SyncQuoteAndCustomTables:
                                     }
                                     master_opportunity_table_info.AddRow(master_opportunity_data)
                                     Sql.Upsert(master_opportunity_table_info)
-                                    salesorg_data.update(
-                                        {"TRANSACTION_TYPE": opportunity_type_dictionary.get(master_opportunity_data.get("OPPORTUNITY_TYPE"))}
-                                    )
                                     opportunity_obj = Sql.GetFirst(
                                         """SELECT OPPORTUNITY_RECORD_ID, OPPORTUNITY_ID, OPPORTUNITY_NAME, OPPORTUNITY_STAGE FROM SAOPPR(NOLOCK) 
                                                             WHERE OPPORTUNITY_RECORD_ID = '{}'""".format(
