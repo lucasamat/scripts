@@ -52,11 +52,13 @@ def bannerdetails(Quoteid,active_tab_name):
 			if active_tab_name == "Contracts":
 				qid=str(Quoteid)
 			Trace.Write('34--qid---'+str(qid))			
+			#SAP performance improvement fix - start
 			try:
 				Quote = QuoteHelper.Edit(str(qid))				
 				Quote.RefreshActions()
 			except Exception:
 				pass
+			#SAP performance improvement fix - end
 			#A055S000P01-8729 start
 			if active_tab_name == "Quotes":
 				get_rev_info = Sql.GetFirst("SELECT QTEREV_ID, QTEREV_RECORD_ID, MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(qid) + "'")
