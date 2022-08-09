@@ -1,0 +1,88 @@
+#===================================================================================================================#======================
+#   __script_name : CQSDELPGPN.PY
+#   __script_description : THIS SCRIPT IS USED TRIGGER EMAIL WHEN QUOTE WORKFLOW STATUS IN PRICING REVIEW  .
+#   __primary_author__ : PONVEL SELVAM
+#   __create_date :02/25/2022
+#   Ã‚Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+# #====================================================================================================================#======================
+from SYDATABASE import SQL
+import Webcom.Configurator.Scripting.Test.TestProduct
+import SYCNGEGUID as CPQ
+from datetime import *
+import sys
+import datetime
+from System.Net import CookieContainer, NetworkCredential, Mail
+from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
+Sql = SQL()
+# Param = Param
+
+
+class qt_pricing_review_mail_trigger:
+    def __init__(self, Quote):
+        self.quote = Quote
+
+    def mailtrigger(self,QUOTE_ID,QTEREV_ID,ACTION):
+        
+        
+        #for quotes in pricing_review:
+        pricing_review = Sql.GetFirst("SELECT MEMBER_ID,MEMBER_NAME,EMAIL,QUOTE_ID FROM SAQDLT WHERE  QUOTE_RECORD_ID = '"+str(QUOTE_ID)+"' AND C4C_PARTNERFUNCTION_ID = 'PRICING PERSON'")
+        if pricing_review:
+            Subject = "Quote Number "+str(pricing_review.QUOTE_ID)+" Pricing Review Status Notification"
+        
+            mailBody = """
+                        Dear """+str(pricing_review.MEMBER_NAME)+""",<br><br>
+                        This is to notify that the Following Quote Number """+str(pricing_review.QUOTE_ID)+""" is in Pricing Review Status.
+                        <br><br>
+                        Thank You
+                        """
+        try:
+            if pricing_review:
+                LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
+                mailClient = SmtpClient("10.150.65.7")
+                # mailClient.Host = "smtp.gmail.com"
+                # mailClient.Port = 587
+                # mailClient.EnableSsl = "true"
+                # mailCred = NetworkCredential()
+                # mailCred.UserName = str(LOGIN_CRE.USER_NAME)
+                # mailCred.Password = str(LOGIN_CRE.PASSWORD)
+                # mailClient.Credentials = mailCred
+                # #toEmail = MailAddress(str(pricing_review.EMAIL))
+                toEmail = ''
+                toEmail += str(userEmail)
+                fromEmail = ''
+                fromEmail += 'noreply@calliduscloud.com'
+                toEmail = MailAddress(to_email)
+                fromEmail = MailAddress(from_email)
+                msg = MailMessage(fromEmail, toEmail)
+                # msg.From = MailAddress(fromEmail)
+                # msg.To.Add(toEmail)
+                #msg.Subject,msg.IsBodyHtml,msg.body = Subject,True,mailBody
+                # copyEmail1 = MailAddress("Ayyappan_Subramaniyan@contractor.amat.com")
+                # copyEmail2 = MailAddress("suriyanarayanan_pazhani@contractor.amat.com")
+                # msg.CC.Add(copyEmail1)
+                # msg.CC.Add(copyEmail2)
+                msg.Subject = str(level)+" Rolldown T-Tenant"
+                msg.IsBodyHtml = True
+                msg.Body = mailBody  
+                mailClient.Send(msg)
+        except Exception as e:
+            self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : "+str(e)
+            Trace.Write(self.exceptMessage)
+
+
+
+try:
+    QUOTE_ID = Param.QUOTE_ID
+except:
+    QUOTE_ID = ''
+try:
+    QTEREV_ID = Param.QTEREV_ID
+except:
+    QTEREV_ID = ''
+try:
+    ACTION = Param.ACTION
+except:
+    ACTION = ''
+obj = qt_pricing_review_mail_trigger(Quote)   
+
+obj.mailtrigger(QUOTE_ID,QTEREV_ID,ACTION)
