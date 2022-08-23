@@ -2586,31 +2586,45 @@ class SyncQuoteAndCustomTables:
                                 is_primary = "1" if employee.get("PRIMARY").upper() == "TRUE" else "0"
                                 )
                             )
-        created_by_master_rec = None
-        created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
-        if created_by_master_rec:
-            saempl_data = Sql.GetFirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = employee.get("EMPLOYEE_ID")))
-            saqdlt_data = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"))+"' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'")
-            if not saqdlt_data:
-                sales_team_table = Sql.GetTable("SAQDLT")
-                sales_team_createdby_insert ={
-                    "QUOTE_REV_DEAL_TEAM_MEMBER_ID": str(Guid.NewGuid()).upper(),
-                    "C4C_PARTNERFUNCTION_ID": created_by_master_rec.C4C_PARTNER_FUNCTION,
-                    "PARTNERFUNCTION_DESC": created_by_master_rec.PARTNERFUNCTION_DESCRIPTION,
-                    "PARTNERFUNCTION_ID": created_by_master_rec.PARTNERFUNCTION_ID,
-                    "PARTNERFUNCTION_RECORD_ID": created_by_master_rec.PARTNERFUNCTION_RECORD_ID,
-                    "EMAIL": saempl_data.EMAIL,
-                    "MEMBER_ID": saempl_data.EMPLOYEE_ID,
-                    "MEMBER_NAME": saempl_data.EMPLOYEE_NAME,
-                    "MEMBER_RECORD_ID": saempl_data.EMPLOYEE_RECORD_ID,
-                    "QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-                    "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-                    "QTEREV_ID": quote_rev_id,
-                    "QTEREV_RECORD_ID": quote_revision_id,
-                    "PRIMARY":"1"
-                }
-                sales_team_table.AddRow(sales_team_createdby_insert)
-                Sql.Upsert(sales_team_table)
+        #INC08596459 A
+        #Updating Employee responsible as Created by 
+        c4c_partner_function = employee.get("C4C_PARTNER_FUNCTION")
+        if c4c_partner_function.upper() == 'EMPLOYEE RESPONSIBLE':
+            created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
+            if created_by_master_rec:
+                saempl_data = Sql.GetFirst(
+                    "SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId=employee.get("EMPLOYEE_ID"))
+                )
+                saqdlt_data = Sql.GetFirst(
+                    "SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '"
+                    + str(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"))
+                    + "' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'"
+                )
+                if not saqdlt_data:
+                    sales_team_table = Sql.GetTable("SAQDLT")
+                    sales_team_createdby_insert = {
+                        "QUOTE_REV_DEAL_TEAM_MEMBER_ID": str(Guid.NewGuid()).upper(),
+                        "C4C_PARTNERFUNCTION_ID": created_by_master_rec.C4C_PARTNER_FUNCTION,
+                        "PARTNERFUNCTION_DESC": created_by_master_rec.PARTNERFUNCTION_DESCRIPTION,
+                        "PARTNERFUNCTION_ID": created_by_master_rec.PARTNERFUNCTION_ID,
+                        "PARTNERFUNCTION_RECORD_ID": created_by_master_rec.PARTNERFUNCTION_RECORD_ID,
+                        "EMAIL": saempl_data.EMAIL,
+                        "MEMBER_ID": saempl_data.EMPLOYEE_ID,
+                        "MEMBER_NAME": saempl_data.EMPLOYEE_NAME,
+                        "MEMBER_RECORD_ID": saempl_data.EMPLOYEE_RECORD_ID,
+                        "QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+                        "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+                        "QTEREV_ID": quote_rev_id,
+                        "QTEREV_RECORD_ID": quote_revision_id,
+                        "PRIMARY": "1",
+                    }
+                    sales_team_table.AddRow(sales_team_createdby_insert)
+                    Sql.Upsert(sales_team_table)
+                #Updating Employee responsible as Quote Owner 
+                employee_object = Sql.GetFirst("SELECT FIRST_NAME,LAST_NAME,EMPLOYEE_ID,EMPLOYEE_NAME,EMPLOYEE_RECORD_ID FROM SAEMPL WHERE EMPLOYEE_ID = '{employee_id}'".format(employee_id=saempl_data.EMPLOYEE_ID))
+                if employee_object is not None:
+                    Sql.RunQuery(""" UPDATE SAQTMT SET OWNER_ID = '{owner_id}',OWNER_NAME = '{owner_name}',OWNER_RECORD_ID = '{owner_record_id}' WHERE QUOTE_ID = '{Quote_Id}' """.format(Quote_Id=contract_quote_data.get("C4C_QUOTE_ID"),owner_id= employee_object.EMPLOYEE_ID,owner_name=employee_object.EMPLOYEE_NAME,owner_record_id=employee_object.EMPLOYEE_RECORD_ID))
+        #INC08596459 A
 
     ##A055S000P01-8690 starts..
 sync_obj = SyncQuoteAndCustomTables(Quote)
