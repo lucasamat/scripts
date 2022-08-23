@@ -1764,17 +1764,17 @@ class SyncQuoteAndCustomTables:
                                             Sql.RunQuery(c4c_employee_update)
                                         #Log.Info("select QUOTE_ID from SAQDLT(NOLOCK) where QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
                                         self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
-                            # Replacing Employee Responsible details as Contract Manager
+                            # # Replacing Employee Responsible details as Contract Manager
 
-                            sales_team_data = Sql.GetFirst("Select MEMBER_ID from SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER'".format(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),quote_revision_id))
-                            saempl_dataquery = Sql.GetFirst("SELECT EMAIL,EMPLOYEE_ID,EMPLOYEE_NAME,EMPLOYEE_RECORD_ID FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{}'".format(sales_team_data.MEMBER_ID))
-                            update_employee_responsible = "UPDATE SAQDLT SET EMAIL = '{}',MEMBER_ID = '{}',MEMBER_NAME = '{}',MEMBER_RECORD_ID = '{}' WHERE C4C_PARTNERFUNCTION_ID = 'Employee Responsible' AND  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(saempl_dataquery.EMAIL,saempl_dataquery.EMPLOYEE_ID,saempl_dataquery.EMPLOYEE_NAME,saempl_dataquery.EMPLOYEE_RECORD_ID,contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),quote_revision_id)
-                            Sql.RunQuery(update_employee_responsible)
+                            # sales_team_data = Sql.GetFirst("Select MEMBER_ID from SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER'".format(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),quote_revision_id))
+                            # saempl_dataquery = Sql.GetFirst("SELECT EMAIL,EMPLOYEE_ID,EMPLOYEE_NAME,EMPLOYEE_RECORD_ID FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{}'".format(sales_team_data.MEMBER_ID))
+                            # update_employee_responsible = "UPDATE SAQDLT SET EMAIL = '{}',MEMBER_ID = '{}',MEMBER_NAME = '{}',MEMBER_RECORD_ID = '{}' WHERE C4C_PARTNERFUNCTION_ID = 'Employee Responsible' AND  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(saempl_dataquery.EMAIL,saempl_dataquery.EMPLOYEE_ID,saempl_dataquery.EMPLOYEE_NAME,saempl_dataquery.EMPLOYEE_RECORD_ID,contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),quote_revision_id)
+                            # Sql.RunQuery(update_employee_responsible)
 
-                            # Replacing Employee Responsible - Ends
-                            employee_object = Sql.GetFirst("SELECT FIRST_NAME,LAST_NAME,EMPLOYEE_ID,EMPLOYEE_RECORD_ID,EMPLOYEE_NAME FROM SAEMPL (nolock) WHERE EMPLOYEE_ID = '{employee_id}'".format(employee_id= custom_fields_detail.get('EmployeeResponsibleID')))
-                            if employee_object is not None:
-                                Sql.RunQuery("""UPDATE SAQTMT SET OWNER_ID ='{owner_id}',OWNER_NAME = '{owner_name}',OWNER_RECORD_ID = '{owner_record_id}' WHERE QUOTE_ID = '{Quote_Id}'""".format(Quote_Id = contract_quote_data.get('C4C_QUOTE_ID'),owner_id = employee_object.EMPLOYEE_ID,owner_name = employee_object.EMPLOYEE_NAME,owner_record_id = employee_object.EMPLOYEE_RECORD_ID))
+                            # # Replacing Employee Responsible - Ends
+                            # employee_object = Sql.GetFirst("SELECT FIRST_NAME,LAST_NAME,EMPLOYEE_ID,EMPLOYEE_RECORD_ID,EMPLOYEE_NAME FROM SAEMPL (nolock) WHERE EMPLOYEE_ID = '{employee_id}'".format(employee_id= custom_fields_detail.get('EmployeeResponsibleID')))
+                            # if employee_object is not None:
+                            #     Sql.RunQuery("""UPDATE SAQTMT SET OWNER_ID ='{owner_id}',OWNER_NAME = '{owner_name}',OWNER_RECORD_ID = '{owner_record_id}' WHERE QUOTE_ID = '{Quote_Id}'""".format(Quote_Id = contract_quote_data.get('C4C_QUOTE_ID'),owner_id = employee_object.EMPLOYEE_ID,owner_name = employee_object.EMPLOYEE_NAME,owner_record_id = employee_object.EMPLOYEE_RECORD_ID))
                         ##A055S000P01-8690 endss..
                         # if payload_json.get("SAQTIP"):
                         #     Log.Info("SAQTIP--- "+str(payload_json.get("SAQTIP")))
