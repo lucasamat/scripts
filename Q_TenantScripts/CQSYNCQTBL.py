@@ -2589,7 +2589,7 @@ class SyncQuoteAndCustomTables:
         #INC08596459 A
         #Updating Employee responsible as Created by 
         c4c_partner_function = employee.get("C4C_PARTNER_FUNCTION")
-        if c4c_partner_function.upper() == 'EMPLOYEE RESPONSIBLE':
+        if c4c_partner_function == '39':
             created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
             if created_by_master_rec:
                 saempl_data = Sql.GetFirst(
