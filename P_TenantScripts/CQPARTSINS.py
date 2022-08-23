@@ -48,7 +48,7 @@ class SyncFPMQuoteAndHanaDatabase:
             spare_parts_temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(spare_parts_temp_table_name)+"'' ) BEGIN DROP TABLE "+str(spare_parts_temp_table_name)+" END  ' ")
 
             spare_parts_temp_table_bkp = SqlHelper.GetFirst("sp_executesql @T=N'SELECT "+str(self.columns)+" INTO "+str(spare_parts_temp_table_name)+" FROM (SELECT DISTINCT "+str(self.columns)+" FROM (VALUES "+str(self.records)+") AS TEMP("+str(self.columns)+")) OQ ' ")
-            
+            # INC08593801 - Start - M
             insert_qry = """
                             INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, RETURN_TYPE, ODCC_FLAG,ODCC_FLAG_DESCRIPTION, PAR_PART_NUMBER, EXCHANGE_ELIGIBLE, CUSTOMER_ELIGIBLE,CUSTOMER_PARTICIPATE, CUSTOMER_ACCEPT_PART,YEAR_1_DEMAND,YEAR_2_DEMAND,YEAR_3_DEMAND,PROD_INSP_MEMO,SHELF_LIFE,PRICING_STATUS,STPACCOUNT_ID, SHPACCOUNT_ID,MATERIALSTATUS_ID,GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
                             SELECT DISTINCT 
@@ -169,7 +169,7 @@ class SyncFPMQuoteAndHanaDatabase:
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
                             JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.SERVICE_ID = '{ServiceId}'
                             JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
-                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') NOT IN('05','02') AND TEMP_TABLE.PARENT_PART_NUMBER NOT IN(SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')) IQ
+                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') NOT IN('05','02') AND TEMP_TABLE.PARENT_PART_NUMBER NOT IN(SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')) IQ
                             """.format(
                                         TempTable=spare_parts_temp_table_name,
                                         ServiceId=self.service_id,									
@@ -182,6 +182,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                         SHIPTO=self.primaryShipto['SHIP TO']
 
                                 )
+                            
             Sql.RunQuery(insert_qry)
             #only child records insert
             Sql.RunQuery("""
@@ -304,7 +305,7 @@ class SyncFPMQuoteAndHanaDatabase:
                             JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = TEMP_TABLE.QUOTE_RECORD_ID
                             JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.SERVICE_ID = '{ServiceId}'
                             JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
-                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') NOT IN('05','02') AND ISNULL(TEMP_TABLE.CHILD_PART_NUMBER,'') <>'' AND NOT EXISTS(SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND TEMP_TABLE.CHILD_PART_NUMBER = PART_NUMBER)) IQ
+                            WHERE TEMP_TABLE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND TEMP_TABLE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND ISNULL(MAMSOP.MATERIALSTATUS_ID,'') NOT IN('05','02') AND ISNULL(TEMP_TABLE.CHILD_PART_NUMBER,'') <>'' AND NOT EXISTS(SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND TEMP_TABLE.CHILD_PART_NUMBER = PART_NUMBER)) IQ
                             """.format(
                                         TempTable=spare_parts_temp_table_name,
                                         ServiceId=self.service_id,									
@@ -315,6 +316,7 @@ class SyncFPMQuoteAndHanaDatabase:
                                         GLOBALCURR_REC=self.global_curr_recid
                                     )
             )
+            # INC08593801 - End - M
             self.spare_parts_temp_table_name = spare_parts_temp_table_name
         except Exception as e:
             Log.Info("EXCEPTION E : " + str(e))
@@ -640,6 +642,10 @@ class SyncFPMQuoteAndHanaDatabase:
             self.requestdata = "client_id=application&grant_type=client_credentials&username=6844eae5-0abc-4444-ac1e-e90dab8ec0eb&password=oYvfEeKkBC0ohWP2KcuSRg9ufv&scope=ytenantfpmsafe"
             self.authorization = "Basic Njg0NGVhZTUtMGFiYy00NDQ0LWFjMWUtZTkwZGFiOGVjMGViOm9ZdmZFZUtrQkMwb2hXUDJLY3VTUmc5dWZ2"
             self.oauthURL='https://oauth2.c-68c90e5.kyma.ondemand.com/oauth2/token'
+        elif (self.domain).lower() == 'appliedmaterials_prd':
+            self.requestdata = "client_id=80f033a4-1fea-466b-8bfa-ea6296951431&grant_type=client_credentials&client_secret=mA2ex2xw5Ltp6uokbYQFR8A0_R&scope=fpmpartssafeaccess"
+            self.authorization = ""
+            self.oauthURL='https://oauth2.c-3ae981f.kyma.ondemand.com/oauth2/token'
     
     def oauth_token(self):
         self.req_data()
