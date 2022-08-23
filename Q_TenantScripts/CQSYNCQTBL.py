@@ -2375,6 +2375,14 @@ class SyncQuoteAndCustomTables:
                         payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
                         payload_table_info.AddRow(payload_table_data)
                         Sql.Upsert(payload_table_info)
+                        #INC08592203 - Start
+                        try:
+                            Log.Info('@@@Get object id for involved parties-->'+str(Quote.GetGlobal("contract_quote_record_id")))
+                            input_data = {"ACTION":"GET_OBJECTID"}
+                            CQCPQC4CWB.writeback_to_c4c("involved_parties",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"),input_data)
+                        except:
+                            Log.Info('@@@Error occured for CPI call')
+                        #INC08592203 - End
 
                     ##Calling the iflow for quote header writeback to cpq to c4c code starts..
                     CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
@@ -2394,12 +2402,6 @@ class SyncQuoteAndCustomTables:
         except Exception:   
             Log.Info("SYPOSTINSG ERROR---->:" + str(sys.exc_info()[1]))
             Log.Info("SYPOSTINSG ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))        
-        try:
-            Log.Info('@@@Get object id for involved parties-->'+str(Quote.GetGlobal("contract_quote_record_id")))
-            input_data = {"ACTION":"GET_OBJECTID"}
-            CQCPQC4CWB.writeback_to_c4c("involved_parties",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"),input_data)
-        except:
-            Log.Info('@@@Error occured for CPI call')
         sync_end_time = time.time()
         quote_end_time = time.time()
         # Log.Info("SALETYPE_J "+str(SalesType.get(payload_json.get("SalesType"))))
