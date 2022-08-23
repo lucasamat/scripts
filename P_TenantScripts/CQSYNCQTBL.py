@@ -1604,12 +1604,23 @@ class SyncQuoteAndCustomTables:
                                     role_name = "PAYER"
                                 elif employees.get("CPQ_PARTNER_FUNCTION") == "31":
                                     role_name = "SOLD TO"
-                                if custom_fields_detail.get("STPAccountID"):
-                                    get_customer_segment =Sql.GetFirst("Select AGS_CUST_SGMT,ADDRESS_1,EMAIL,PHONE FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID ='{account_id}'".format(account_id=custom_fields_detail.get("STPAccountID")))
-                                    if get_customer_segment and role_name =="SOLD TO":
-                                        customer_level = str(get_customer_segment.AGS_CUST_SGMT).upper()
-                                    else:
-                                        customer_level =""
+                                get_customer_segment =Sql.GetFirst("Select AGS_CUST_SGMT,ISNULL(ADDRESS_1,'') AS ADDRESS_1,ISNULL(CITY,'') as CITY,ISNULL(STATE,'') as STATE,ISNULL(COUNTRY,'') as COUNTRY,ISNULL(POSTAL_CODE,'') as POSTAL_CODE,EMAIL,PHONE FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID ='{account_id}'".format(account_id=employees.get("PARTY_ID")))
+                                if get_customer_segment and role_name =="SOLD TO":
+                                    customer_level = str(get_customer_segment.AGS_CUST_SGMT).upper()
+                                else:
+                                    customer_level =""
+                                address = ''
+                                if get_customer_segment:              
+                                    if get_customer_segment.ADDRESS_1:
+                                        address += get_customer_segment.ADDRESS_1 
+                                    if get_customer_segment.CITY:
+                                        address += ","+ get_customer_segment.CITY 
+                                    if get_customer_segment.STATE:
+                                        address += ","+ get_customer_segment.STATE 
+                                    if get_customer_segment.COUNTRY:
+                                        address += ","+ get_customer_segment.COUNTRY 
+                                    if get_customer_segment.POSTAL_CODE:
+                                        address += ","+ get_customer_segment.POSTAL_CODE
                                 involved_party_update_info = {
                                     "QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
                                     "QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
