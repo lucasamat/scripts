@@ -2374,7 +2374,14 @@ class SyncQuoteAndCustomTables:
                         payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
                         payload_table_info.AddRow(payload_table_data)
                         Sql.Upsert(payload_table_info)
-
+                    #INC08592203 A
+                    try:
+                        Log.Info('@@@Get object id for involved parties-->'+str(Quote.GetGlobal("contract_quote_record_id")))
+                        input_data = {"ACTION":"GET_OBJECTID"}
+                        CQCPQC4CWB.writeback_to_c4c("involved_parties",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"),input_data)
+                    except:
+                        Log.Info('@@@Error occured for CPI call')
+                    #INC08592203 A
                     ##Calling the iflow for quote header writeback to cpq to c4c code starts..
                     CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
                     time.sleep(3) #A055S000P01-16535
