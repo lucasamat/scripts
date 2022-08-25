@@ -730,6 +730,7 @@ class SyncQuoteAndCustomTables:
                             "QT_PAYMENTTERMS_ID": payid,
                             "QT_PAYMENTTERM_NAME": pay_name,
                             "PAYMENTTERM_RECORD_ID":payrec,
+                            "EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
                             "CANCELLATION_PERIOD":"180", 
                             "CANCELLATION_PERIOD_NOTPER":"",
                             "COMPANY_ID":salesorg_obj.COMPANY_ID,
@@ -740,39 +741,7 @@ class SyncQuoteAndCustomTables:
                             "TRANSACTION_TYPE":"O-QUOTE",
                             "EXCHANGE_RATE_DATE":created_date.split(' ')[0] if created_date else ""
                         }
-                        #INC08614363 - A
-                        rt_acc_id = custom_fields_detail.get('STPAccountID')
-                        rt_distribution_channel = custom_fields_detail.get('DistributionChannel')
-                        rt_divisionid = custom_fields_detail.get('Division')
-                        rt_salesorgid = custom_fields_detail.get('SalesOrgID')
-                        if rt_acc_id and rt_distribution_channel and rt_divisionid and rt_salesorgid:
-                            get_exchgrate = Sql.GetFirst("SELECT SDFI_EXCHRATE FROM SASAAC WHERE ACCOUNT_ID = '{}' AND DISTRIBUTIONCHANNEL_ID = '{}' AND DIVISION_ID = '{}' AND SALESORG_ID = '{}' ".format(rt_acc_id,rt_distribution_channel,rt_divisionid,rt_salesorgid))
-                            if get_exchgrate.SDFI_EXCHRATE:
-                                exchange_rate = Sql.GetFirst("SELECT BANK_ID, BANK_NAME,EXCRATTYP_ID FROM PRERTY WHERE SDFI_EXCHRATE = '{}' ".format(get_exchgrate.SDFI_EXCHRATE))
-                                exchange_ratetyp = exchange_rate.EXCRATTYP_ID
-                                if AccountAssignmentGroup in ('AMK','AMC'):
-                                    salesorg_data.update(
-                                        {
-                                            "BANK_ID": exchange_rate.BANK_ID,
-                                            "BANK_NAME": exchange_rate.BANK_NAME
-                                        }
-                                    )
-                            else:
-                                exchange_ratetyp = 'M'
-                            salesorg_data.update(
-                                {
-                                    "EXCHANGE_RATE_TYPE": exchange_ratetyp
-                                }
-                            )
-                        # if AccountAssignmentGroup in ('AMK','AMC'):
-                        #     bank_details = Sql.GetFirst("SELECT BANK_ID, BANK_NAME FROM PRERTY WHERE REGION = '"+str(AccountAssignmentGroup)+"' ")
-                        #     salesorg_data.update(
-                        #         {
-                        #             "BANK_ID": bank_details.BANK_ID,
-                        #             "BANK_NAME": bank_details.BANK_NAME
-                        #         }
-                        #     )
-                        #INC08614363 - A
+                        
                         if custom_fields_detail.get('AccountAssignmentGroup'):
                             region_object = Sql.GetFirst(
                                     "SELECT REGION_RECORD_ID FROM SAREGN (NOLOCK) WHERE EXTERNAL_ID = '{}'".format(
@@ -780,7 +749,15 @@ class SyncQuoteAndCustomTables:
                                     )
                                 )
                             if region_object:
-                                salesorg_data['REGION_RECORD_ID'] = region_object.REGION_RECORD_ID    
+                                salesorg_data['REGION_RECORD_ID'] = region_object.REGION_RECORD_ID
+                        exchange_rate_type_object = None
+                        if custom_fields_detail.get('AccountAssignmentGroup'):
+                            exchange_rate_type_object = Sql.GetFirst(
+                                "SELECT BANK_ID, BANK_NAME, EXCRATTYP_ID, EXCHANGE_RATE_RECORD_ID FROM PRERTY (NOLOCK) WHERE REGION = '{}'".format(AccountAssignmentGroup)
+                            )						
+                            if exchange_rate_type_object:								
+                                salesorg_data.update({"BANK_ID":exchange_rate_type_object.BANK_ID,"BANK_NAME":exchange_rate_type_object.BANK_NAME,"BANK_RECORD_ID":exchange_rate_type_object.EXCHANGE_RATE_RECORD_ID,"EXCHANGE_RATE_TYPE":exchange_rate_type_object.EXCRATTYP_ID})
+                                
                         # UPDATE REVISION DETAILS TO SAQTMT
                         contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
                                                     "QTEREV_ID":quote_rev_id })
@@ -848,16 +825,7 @@ class SyncQuoteAndCustomTables:
                                     # If condition commented for FPM scenario - getting currency = NTD, global currency = USD and exchnage rate tyep = ZC07. There is no record for this combination in PREXRT so we update exchange rate as 1 and exchange rate as current date 
                                     #if contract_quote_data.get("GLOBAL_CURRENCY") == salesorg_currency.CURRENCY:
                                     createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-                                    #INC08614363 - A
-                                    if contract_quote_data.get("GLOBAL_CURRENCY")==salesorg_currency.CURRENCY:
-                                        salesorg_data.update(
-                                            {
-                                                "EXCHANGE_RATE": 1.00,
-                                            }
-                                        )
-                                Log.Info("@@@Quote --> "+str(salesorg_data.get("QUOTE_ID"))+" Exchange Rate, Exchange Rate : "+str(salesorg_data.get("EXCHANGE_RATE"))+","+str(salesorg_data.get("EXCHANGE_RATE_TYPE")))
-                                #INC08614363 - A
-
+                                    salesorg_data.update({'EXCHANGE_RATE':1.00})
                                     
 
                                 ##Commented the below code already we updated the exchange rate details in the above code..
