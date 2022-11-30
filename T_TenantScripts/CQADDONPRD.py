@@ -10,6 +10,7 @@ Sql = SQL()
 from datetime import datetime
 import re
 import SYCNGEGUID as CPQID
+Log.Info("Test")
 
 User_name = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
 User_Id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
