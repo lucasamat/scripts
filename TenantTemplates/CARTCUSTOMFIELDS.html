@@ -1,0 +1,587 @@
+<!-- CARTCUSTOMFIELDS TEMPLATE-->
+
+@using WebSite.Controllers
+
+<style>
+.dot {
+  height: 25px;  width: 25px;
+  background-color: white;  border-radius: 50%;
+  display: initial !important;  padding-left:5px;
+}
+.other_custom_26 .prdt_opt.collapse.in {    display: table;		}
+#gross_total{	padding:0px;	}
+.section_title.Oppt_header.audit_info_header_cart_pg.audit_info_header_cart_pg { margin-top: -5px!important; }
+
+#custsales {  padding-top: 6px;	}
+#custsales select {
+	color: #000!important;
+    text-decoration: none;   
+}
+.aud_info .hint_icon_req {
+	width: 45px;
+}
+
+
+span#other_custom_fld table[id^='OPTIONAL PRODUCTS'] thead tr th {
+	width: 90px!important;
+}
+  
+span#other_custom_fld table[id^='OPTIONAL PRODUCTS'] thead tr th.cart-table-column.QT-COL-OPTIONAL_PRODUCTS-LINE_ITEM_NUMBER, span#other_custom_fld table[id^='OPTIONAL PRODUCTS'] thead tr th.cart-table-column.QT-COL-OPTIONAL_PRODUCTS-LIST_PRICE{
+	width: 80px!important;
+}
+  
+span#other_custom_fld table[id^='OPTIONAL PRODUCTS'] thead tr th.cart-table-column.QT-COL-OPTIONAL_PRODUCTS-PART_NUMBER{
+	width: 110px!important;
+}
+  
+span#other_custom_fld table[id^='OPTIONAL PRODUCTS'] thead tr th.cart-table-column.QT-COL-OPTIONAL_PRODUCTS-QTY{
+   width: 60px!important;
+}
+  
+
+  
+span#other_custom_fld table[id^='OPTIONAL PRODUCTS'] thead tr th.cart-table-column.QT-COL-OPTIONAL_PRODUCTS-CURRENCY{
+	text-align:right;  
+}
+  
+ div#cartContainer .table-overflow.cpq-scroll table tbody tr td.fiori3-input-group ul.clearfix > div {
+	font-family: "72",'Calibri', Arial,sans-serif, -apple-system, Helvetica, sans-serif;
+}
+  
+  table[id^='OPTIONAL PRODUCTS'] tbody tr td.fiori3-input-group.PART.NUMBER ul > div {
+    height: 30px !important;
+    padding: 13px 5px !important;
+  }
+
+div#cartContainer .table-overflow.cpq-scroll table tbody tr td.fiori3-input-group ul.clearfix div:nth-child(3) {
+	padding: 0px!important;
+    height: 0px!important;
+}
+  
+table[id^='OPTIONAL PRODUCTS'] tbody tr td.fiori3-input-group.ISPARENT ul > div, table[id^='OPTIONAL PRODUCTS'] tbody tr td.fiori3-input-group.PARENT_ID ul > div{
+	padding-top: 13px!important;
+}
+  
+.table-overflow.cpq-scroll table.Partner_Information thead tr th {
+    height: 62px !important;    
+}
+  
+</style>
+ 
+<div class="row sub_tab_ctn detailstab active" id="cust_fields_div" style="display:none">
+    <div id="custom-fields-section" style="height: 30px;" class="fiori3-cart-section clearfix" data-bind="css: { 'section-toggled': isSectionCollapsed('custom-fields-section') }">
+        @*Custom fields*@        
+<div class="">
+       <div class="col-md-6 p-0">
+			<div class="dyn_main_head master_manufac glyphicon pointer quote_tab ">
+			   <div id="ctr_drop" class="btn-group dropdown">
+				  <div class="dropdown">
+					 <i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i>
+					 <ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">
+						<li class="edit_list"><a id="quotesummaryedit" class="dropdown-item" onclick="QuoteItemsIdlingEdit()">EDIT</a></li>
+					 </ul>
+				  </div>
+			   </div>
+			   <span>TOOL IDLING</span>
+			</div>
+			<div class = "quote_sec" id="quote_sec_tool"></div>
+			</div>
+			<div class="dumy_split_custom"></div>
+			<div class="col-md-6 p-0">
+				<div class="quote_summary_outer">
+                    <div class="quote_summary_sec">
+                        <div class="dyn_main_head master_manufac glyphicon pointer glyphicon-chevron-down quote_summary_tab" onclick="dyn_main_sec_collapse_arrow(this)" data-toggle="collapse" data-target=".quote_summary">
+                            <div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="QuoteSummaryEdit" class="dropdown-item" onclick="QuoteSummaryEdit(this)">EDIT</a></li></ul></div></div>
+                            <span>QUOTE SUMMARY</span>
+                            <!-- <span class="more-less glyphicon pointer glyphicon-chevron-down" style="float: right;"></span> -->
+                        </div>
+
+                        <div style="padding-left: 0 !important;padding-right: 5px !important;" class="disp_none col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Sales Price</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <a target="_blank" class="oppo_link" id="total_sales_price"></a>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+                        <div style="padding-left: 0 !important;padding-right: 5px !important;" class="disp_none col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Discount %</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <input id="discount" class="oppo_link hyper_link_text" style="border:none;background: transparent;" disabled>
+                                <!-- <a target="_blank" class="oppo_link hyper_link_text" id = "discount"></a>-->
+                                <i class="fa fa-pencil" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+
+                        <div style="padding-left: 0 !important;padding-right: 5px !important;" class="disp_none col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Discount Amount</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <a target="_blank" class="oppo_link" id="total_discount_amount"></a>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+
+                        <div style="padding-left: 0 !important;padding-right: 5px !important;" class="disp_none col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Credit</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <input id="total_credit_amount" onclick="total_credit(this)" class="oppo_link hyper_link_text" style="border:none;background: transparent;" disabled>
+                                <!--<a target="_blank" class="oppo_link hyper_link_text" id = "total_credit_amount"></a>-->
+                                <i class="fa fa-pencil" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+
+                        <!--   <div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+           <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+               <label title="" style="display: inline-block;">Total Excluding Tax/VAT</label>
+           </div>
+           <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+               <span class="hint_icon_req">
+                   <i class="fa fa-info-circle autoClosePopover"></i>
+                   <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+               </span>
+
+               <span class="required" style="display:none;">*</span>
+               <a target="_blank" class="oppo_link" id="total_excluding_amount"></a>
+               <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+           </div>
+       </div>
+
+       <div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+           <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+               <label title="" style="display: inline-block;">Tax/VAT</label>
+           </div>
+           <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+               <span class="hint_icon_req">
+                   <i class="fa fa-info-circle autoClosePopover"></i>
+                   <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+               </span>
+
+               <span class="required" style="display:none;">*</span>
+               <a target="_blank" class="oppo_link" id="tax_vat"></a>
+               <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+           </div>
+       </div>-->
+
+                        <div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Excluding Tax/VAT/GST</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <a target="_blank" class="oppo_link" id="total_excluding_tax"></a>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+
+
+
+
+                        <div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Tax/VAT/GST</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <a target="_blank" class="oppo_link" id="total_tax"></a>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+
+
+                        <div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Est Net Val</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <a target="_blank" class="oppo_link" id="total_est_net"></a>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+
+
+                        <!--<div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Net Val</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <a target="_blank" class="oppo_link" id="net_price"></a>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>-->
+
+
+                        <div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Amt</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <a target="_blank" class="oppo_link" id="total_amt"></a>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+
+                        <div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Margin</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <a target="_blank" class="oppo_link" id="total_margin"></a>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+                        <div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in">
+                            <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label title="" style="display: inline-block;">Total Margin Pct</label>
+                            </div>
+                            <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                                <span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                                </span>
+
+                                <span class="required" style="display:none;">*</span>
+                                <a target="_blank" class="oppo_link" id="total_margin_pct"></a>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+                    </div>
+					
+					<div id="quotesummarysavecancel" class="col-md-12" style="display:none;"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="quotesummaryCancel()">CANCEL</button><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="quotesummarysave()">SAVE</button></div>
+				</div>
+			
+			
+				<!--<div data-bind="visible: customFieldsAndQuoteTables().length > 0">
+            <div class="col-md-12 clearfix no-padding fiori3-quote-section-container fiori3-custom-fields-container p-0"> 
+                <div data-bind="foreach: customFieldsAndQuoteTables" class="custom-fields xxx">
+				<div class="quote_summary_outer">-->
+					
+                  	<!-- ko if:  $data.name == 'TOTAL_COST' || $data.name == 'MODEL_PRICE' || $data.name == 'TARGET_PRICE' || $data.name == 'BD_PRICE' || $data.name == 'DISCOUNT' || $data.name == 'CEILING_PRICE' ||  $data.name == 'TOTAL_NET_PRICE'  || $data.name == 'TAX' || $data.name == 'TOTAL_NET_VALUE' -->
+					<!--<div class = "quote_summary_sec">-->
+                        <!-- ko if: $data.name == 'TOTAL_COST' -->
+                           <!-- <div class="dyn_main_head master_manufac glyphicon pointer glyphicon-chevron-down quote_summary_tab" onclick="dyn_main_sec_collapse_arrow(this)" data-toggle="collapse" data-target=".quote_summary"><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="QuoteSummaryEdit" class="dropdown-item" onclick="QuoteSummaryEdit(this)">EDIT</a></li></ul></div></div>
+                                <span>QUOTE SUMMARY</span>-->
+								<!-- <span class="more-less glyphicon pointer glyphicon-chevron-down" style="float: right;"></span> -->
+                            <!--</div>-->
+                        <!-- /ko -->	
+						<!-- ko if: $data.name == 'TARGET_PRICE' || $data.name == 'BD_PRICE' || $data.name == 'CEILING_PRICE'  || $data.name == 'TOTAL_NET_PRICE' || $data.name == 'TAX' || $data.name == 'TOTAL_NET_VALUE' -->
+                        
+                  		<!--<div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in" data-bind="attr:{'id':$data.name}">
+							<div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">-->
+                              <!--<span style="display:none;" id="aabb" data-bind="text: console.log('test 44---',stdAttrCode())"></span>-->
+                            <!--  <label data-bind="html: label" title="" style="display: inline-block;"/>
+                              <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>
+                          </div>
+                          <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                            <span class="hint_icon_req">
+                              <i class="fa fa-info-circle autoClosePopover"></i>
+                              <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                            </span>
+                            
+                              <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>
+                              <a target="_blank" class="oppo_link"><span data-bind="text: content" tabindex="6"></span></a>
+                              <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                          </div>
+                         </div>-->
+						<!-- /ko -->
+						
+						<!-- ko if: $data.name == 'DISCOUNT' -->
+                        
+                  		<!--<div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in" data-bind="attr:{'id':$data.name}">
+							<div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">-->
+                              <!--<span style="display:none;" id="aabb" data-bind="text: console.log('test 44---',stdAttrCode())"></span>-->
+                             <!-- <label data-bind="html: label" title="" style="display: inline-block;"/>
+                              <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>
+                          </div>
+                          <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                            <span class="hint_icon_req summary_edit_i_icon">
+                              <i class="fa fa-info-circle autoClosePopover"></i>
+                              <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                            </span>
+                            
+                              <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>-->
+                              <!-- <a target="_blank" class="oppo_link"><span data-bind="text: content" tabindex="6"></span></a> -->
+							<!--  <input data-bind="value: content, enable: editable, incrementalTabIndex: 'customFields', attr:{'id':$data.name}" class="form-control edit_field summary_edit_input" tabindex="6"/>
+                              <i class="fa fa-pencil" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                          </div>
+                         </div>-->
+						<!-- /ko -->
+						
+						<!-- ko ifnot: $data.name == 'TOTAL_COST' || $data.name == 'MODEL_PRICE' || $data.name == 'TARGET_PRICE' || $data.name == 'BD_PRICE' || $data.name == 'DISCOUNT' || $data.name == 'CEILING_PRICE'|| $data.name == 'TOTAL_NET_PRICE' || $data.name == 'TAX' || $data.name == 'TOTAL_NET_VALUE' -->
+                      <!--  <div  style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new opportunity_info collapse in" data-bind="attr:{'id':'oppt'+$data.id}">
+                            <div class="col-md-6 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label data-bind="html: label" style="display: inline-block;"/>
+                                <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                              	<span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft">*</span>
+                                </span>
+                                <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>-->
+								<!--<a href="#" target="_blank" class="oppo_link"><span style="color: #0a6ed1 !important;" data-bind="text: content" tabindex="6"></span></a>-->
+                              <!--  <input data-bind="value: content, enable: editable, incrementalTabIndex: 'customFields'" class="form-control" tabindex="6"/>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: left;color: #cccaca !important;"></i>
+                            </div>
+                        </div>-->
+						<!-- /ko -->	
+						<!--</div>-->
+                    <!-- /ko -->
+					
+					
+				<!--	<div id="quotesummarysavecancel" class="col-md-12" style="display:none;"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="quotesummaryCancel()">CANCEL</button><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="quotesummarysave()">SAVE</button></div>
+					
+					</div>
+                  
+                  	
+                  
+                  			  
+                </div>
+				
+            </div>
+            <br />
+        </div>-->
+		</div>	
+		</div>
+    </div>
+</div>
+
+
+
+<div class="row sub_tab_ctn detailstab active" id="contract_cust_fields_div" style="display:none">
+    <div id="custom-fields-section" style="height: 30px;" class="fiori3-cart-section clearfix" data-bind="css: { 'section-toggled': isSectionCollapsed('custom-fields-section') }">
+        @*Custom fields*@        
+
+        <div class="">
+			<div class="col-md-6 p-0">
+			<div class="dyn_main_head master_manufac glyphicon pointer contract_tab ">
+			   <div id="ctr_drop" class="btn-group dropdown">
+				  <div class="dropdown">
+					 <i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i>
+					 <ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">
+						<li class="edit_list"><a id="contractsummaryedit" class="dropdown-item" onclick="QuoteItemsIdlingEdit()">EDIT</a></li>
+					 </ul>
+				  </div>
+			   </div>
+			   <span>TOOL IDLING</span>
+			</div>
+			<div class = "contract_sec" id="contract_sec_tool"></div>
+			</div>
+			<div class="dumy_split_custom"></div>
+			<div class="col-md-6 p-0">
+				<div data-bind="visible: customFieldsAndQuoteTables().length > 0">
+            <div class="col-md-12 clearfix no-padding fiori3-quote-section-container fiori3-custom-fields-container p-0 "> 
+                <div data-bind="foreach: customFieldsAndQuoteTables" class="custom-fields xxx">
+				<div class="quote_summary_outer">
+					
+                  	<!-- ko if: $data.name == 'TOTAL_COST' || $data.name == 'MODEL_PRICE' || $data.name == 'TARGET_PRICE' || $data.name == 'BD_PRICE' || $data.name == 'DISCOUNT' || $data.name == 'CEILING_PRICE' ||  $data.name == 'TOTAL_NET_PRICE'  || $data.name == 'TAX' || $data.name == 'TOTAL_NET_VALUE' -->
+					<div class = "Contract_quote_summary_sec">
+                        <!-- ko if: $data.name == 'TOTAL_COST' -->
+                            <div class="dyn_main_head master_manufac glyphicon pointer glyphicon-chevron-down quote_summary_tab" onclick="dyn_main_sec_collapse_arrow(this)" data-toggle="collapse" data-target=".quote_summary"><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="QuoteSummaryEdit" class="dropdown-item" onclick="(this)">EDIT</a></li></ul></div></div>
+                                <span>QUOTE SUMMARY</span>
+								<!-- <span class="more-less glyphicon pointer glyphicon-chevron-down" style="float: right;"></span> -->
+                            </div>
+                        <!-- /ko -->	
+						<!-- ko if: $data.name == 'TARGET_PRICE' || $data.name == 'BD_PRICE' || $data.name == 'CEILING_PRICE'  || $data.name == 'TOTAL_NET_PRICE' || $data.name == 'TAX' || $data.name == 'TOTAL_NET_VALUE' -->
+                        
+                  		<div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in" data-bind="attr:{'id':$data.name}">
+							<div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                              <!--<span style="display:none;" id="aabb" data-bind="text: console.log('test 44---',stdAttrCode())"></span>-->
+                              <label data-bind="html: label" title="" style="display: inline-block;"/>
+                              <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>
+                          </div>
+                          <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                            <span class="hint_icon_req">
+                              <i class="fa fa-info-circle autoClosePopover"></i>
+                              <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                            </span>
+                            
+                              <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>
+                              <a target="_blank" class="oppo_link"><span data-bind="text: content" tabindex="6"></span></a>
+                              <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                          </div>
+                         </div>
+						<!-- /ko -->
+						
+						<!-- ko if: $data.name == 'DISCOUNT' -->
+                        
+                  		<div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in" data-bind="attr:{'id':$data.name}">
+							<div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                              <!--<span style="display:none;" id="aabb" data-bind="text: console.log('test 44---',stdAttrCode())"></span>-->
+                              <label data-bind="html: label" title="" style="display: inline-block;"/>
+                              <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>
+                          </div>
+                          <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                            <span class="hint_icon_req summary_edit_i_icon">
+                              <i class="fa fa-info-circle autoClosePopover"></i>
+                              <span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span>
+                            </span>
+                            
+                              <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>
+                              <!-- <a target="_blank" class="oppo_link"><span data-bind="text: content" tabindex="6"></span></a> -->
+							  <input data-bind="value: content, enable: editable, incrementalTabIndex: 'customFields', attr:{'id':$data.name}" class="form-control edit_field summary_edit_input" tabindex="6"/>
+                              <i class="fa fa-pencil" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i>
+                          </div>
+                         </div>
+						<!-- /ko -->
+						
+						<!-- ko ifnot: $data.name == 'TOTAL_COST' || $data.name == 'MODEL_PRICE' || $data.name == 'TARGET_PRICE' || $data.name == 'BD_PRICE' || $data.name == 'DISCOUNT' || $data.name == 'CEILING_PRICE'|| $data.name == 'TOTAL_NET_PRICE' || $data.name == 'TAX' || $data.name == 'TOTAL_NET_VALUE' -->
+                        <div  style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new opportunity_info collapse in" data-bind="attr:{'id':'oppt'+$data.id}">
+                            <div class="col-md-6 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                                <label data-bind="html: label" style="display: inline-block;"/>
+                                <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+                              	<span class="hint_icon_req">
+                                    <i class="fa fa-info-circle autoClosePopover"></i>
+                                    <span class="req-field mrg_lft_ft_lft">*</span>
+                                </span>
+                                <span data-bind="visible: isRequiredIndicatorVisible" class="required">*</span>
+								<!--<a href="#" target="_blank" class="oppo_link"><span style="color: #0a6ed1 !important;" data-bind="text: content" tabindex="6"></span></a>-->
+                                <input data-bind="value: content, enable: editable, incrementalTabIndex: 'customFields'" class="form-control" tabindex="6"/>
+                                <i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: left;color: #cccaca !important;"></i>
+                            </div>
+                        </div>
+						<!-- /ko -->	
+						</div>
+                    <!-- /ko -->
+					
+					
+					<div id="quotesummarysavecancel" class="col-md-12" style="display:none;"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="quotesummaryCancel()">CANCEL</button><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="quotesummarysave()">SAVE</button></div>
+					
+					</div>
+                  
+                  	
+                  
+                  			  
+                </div>
+				
+            </div>
+            <br />
+        </div>
+			</div>
+		</div>
+		
+    </div>
+</div>
+
+
+
+<script>
+
+   function convertInt(content){
+   val=content();
+ 
+    if(val!=parseInt(val) && val !=''){
+       if(! Number.isInteger(val)) {
+           val=parseInt(val);           
+           content(Math.floor(Math.random() * 100) + 1);
+       }
+    }
+   
+   return content;
+ }
+</script>  
+
+@Html.PartialWithNameAsComment("Templates/CartCustomFieldTemplates")
+
+@if (CartController.HasQuoteTablesOnCurrentTab())
+{
+    @Html.PartialWithNameAsComment("Templates/CartTableTemplate")
+    @Html.PartialWithNameAsComment("Templates/CartTableCellTemplates")
+}
+
+
+<button id="trigger_tc_btn" class="btnconfig" data-target="#totalcerditpopup" data-toggle="modal" style="display:none"></button>                      
+<div class="modal fade" tabindex="-1" role="dialog" id="totalcerditpopup" aria-hidden="true">
+			<div class="modal-dialog bg-white" id="edit_decrip" style="width: 1024px;">
+				<div class="modal-content">     
+					<div class="modal-header revision_edit_decripheader">
+						<span class="modal-title sales-org-modal-header">TOTAL CREDIT</span>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="fixed-table-body">						
+							<div class="row pad-10 brdr">
+								<img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/Secondary Icon.svg">
+								<div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;">
+									<div class="product_txt_child"><abbr title="TOTAL CREDIT">TOTAL CREDIT</abbr></div>
+									<div class="product_txt_to_top_child help_text" style="float: left;"><abbr title="Use the grid below to add credit to this offering...">Use the grid below to add credit to this offering...</abbr></div>
+								</div>
+								<div class="modal-footer b-0">              
+									<button id ="cerdit_save" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true">CANCEL</button>
+									<button onclick="()" id="bulkaddsave" data-dismiss="modal" class="btn btn-list-cust">SAVE</button>
+								</div>
+							</div>
+							<div class="totalcerdit_bind"></div>
+						
+					</div>
+					  
+				</div>
+			</div>
+		</div>					  

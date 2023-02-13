@@ -1,0 +1,552 @@
+<!-- Template Name = CartListPage -->
+	<script>
+	  $( document ).ready(function() {
+		localStorage.setItem('TemplateName',"CPQ Quotes");
+      CQEPHPTABS();
+	  });
+      function numberWithCommas(val) {
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+   
+	function reset_pagination()
+	{
+		
+		 setTimeout(function(){
+		var dropdown_val=$( "#myselect option:selected" ).text();
+		var datas=$('#recordtotal').html().replace(',','');
+
+		if(parseInt(datas)>parseInt(dropdown_val))
+		{
+		$('#pagefromto').text("1 - "+dropdown_val+" of ");
+	   
+		
+		if (datas > "10")
+	{
+    //  console.log("dataaboveoverflow" + datas)
+	 //$('#quotelist').css('overflow-y', 'auto') 
+	}
+	else if (datas < "10")
+	{
+	 console.log("dataabovehidden" + datas)
+	// $('#quotelist').css('overflow-y', 'hidden') 
+	 $('.searched_button').click()
+	}
+	
+	 
+		}
+		else if(parseInt(dropdown_val)>parseInt(datas))
+		{
+		$('#pagefromto').text("1 - "+numberWithCommas(datas)+" of ");
+		
+		
+		if (datas < "10")
+	{
+     console.log("databelowoverflow" + datas)
+	 //$('#quotelist').css('overflow-y', 'auto') 
+	}
+	else if (datas > "10")
+	{
+	 console.log("databelowhidden" + datas)
+	// $('#quotelist').css('overflow-y', 'hidden') 
+	 $('.searched_button').click()
+	}
+	
+      
+		
+		}
+		
+		else if (parseInt(dropdown_val)==parseInt(datas))
+		
+		{
+		$('#pagefromto').text("1 - "+dropdown_val+" of ");
+		}
+      $('#pagenum').text("page 1");
+   var total=$('#recordtotal').text();
+   $('#recordtotal').text(numberWithCommas(total));
+
+		 }, 2200);
+		setTimeout(function(){
+			//console.log('99999999988888888777777777777');
+			
+			if($('table#quote_list_page tbody tr'))
+			{
+				//console.log('999999999888888887777777777776666666');
+				var len = $('div#quotelist table#quote_list_page tbody tr[id^=rw]').length;
+				//console.log('cart---page---len---'+len);
+				
+				if(len == 0)
+				{
+					//var a = $('.col-md-12.quote_alert').html();
+					//var a = '<i class="fa fa-exclamation-circle"></i> No Records To Display';
+					var b = '<tr id="err_msg_quote"><td colspan="10"><i class="fa fa-exclamation-circle"></i> No Records To Display</td></tr>';
+					$('table#quote_list_page tbody').html(b);
+					$('tr#err_msg_quote').css('cssText','display:table !Important');
+				}
+				else
+				{
+					$('tr#err_msg_quote').css('cssText','display:none !Important');
+				}
+			}
+		}, 1000);
+	}
+      
+      
+      function CQEPHPTABS()
+      {
+        cpq.server.executeScript("CQEPHPTABS", {}, function (datas) {
+        var data = datas[0];
+        var firsttab = datas[1];
+        $('#tab_Name').append(data);
+
+        cartPagePHPClick = localStorage.getItem("cartPagePHPClick") 
+		sales_current_tab = localStorage.getItem("sales_current_tab");
+        if (sales_current_tab) {
+			$('#tab_Name li#'+sales_current_tab).addClass('active')
+		} else {
+			$('#tab_Name li#'+firsttab).addClass('active')  
+		}
+		<!-- console.log("sales_current_tab-----",sales_current_tab) -->
+		<!-- cpq.server.executeScript("CQEPHPTABS", {'sales_current_tab': sales_current_tab}, function (datas) { -->
+		<!-- var data = datas[0]; -->
+		<!-- //var firsttab = datas[1]; -->
+		<!-- $('#tab_Name').append(data); -->
+		<!-- cartPagePHPClick = localStorage.getItem("cartPagePHPClick")  -->
+		<!-- $('#tab_Name li#'+sales_current_tab).addClass('active') -->
+        }); 
+      } 
+	</script>
+	
+	<div id="cartListContainer" class="w960 user-page-container load-quote-page-container" data-bind="visible: isInitialized">
+		@if (!Webcom.Configurator.UserEnvironment.LandedFromC4C)
+		{
+			<div class="cart-list fiori3-cart-list">
+			
+			<div class="row tabsfiled">
+	
+		<div class="tabbable show-large btnmodule">
+			<ul>
+			<!--LEFT SIDE MENU LIST START-->
+				<li>
+						<a onclick="wholeModules(this)" class="dropdown-toggle" data-toggle="dropdown" href="/Catalogue/CategoryTree.aspx">
+							<img src="/mt/APPLIEDMATERIALS_PRD/images/attributeimages/tabicon.png" />
+						</a>
+						<div class="col-md-12 dropdown-menu left homedrop" role="menu" id="ul_bind"></div>
+                    </li>
+				<!--LEFT SIDE MENU LIST END-->
+				<!--PAGE ICON AND TAB NAME START-->
+				<li class="mopduleheader" id="ModName" style="color: rgb(23, 67, 142);">
+					<img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/contract_quotes.svg" id="ModuleIcons" style="display: inline-block;">
+					<span class="main_ban_mod" id="ModuleName1" style="display: inline-block;">Sales</span>
+				</li>
+				<!--PAGE ICON AND TAB NAME END-->
+			</ul>
+		</div>
+		
+		<div id="tab_Name" class="tabbable show-large tabsmenu"  >
+			<ul id="carttabs_head" class="nav-tabs" style="display:none">
+				<li   href="#"   class="Quotes">
+					<a href="#"  >
+						<span >Quotes</span>
+					</a>
+				</li>
+				<li   href="#"   class="Contracts">
+					<a href="#"  >
+						<span >Contracts</span>
+					</a>
+				</li>  
+				
+					
+			</ul>
+		</div>
+	
+	</div>
+			
+			<div class="TabContainerFull" id="TabContainerFull"></div>
+
+			<div class="cartlist_fixedheader">
+			 
+				  <div class="dropdown fiori3-dropdown">
+						   <div class="fiori3-dropdown-menu-wrapper open">
+								<!--<button href="#" class="dropdown-toggle fiori3-icon-button btn" data-toggle="dropdown"><span class="fa fa-sort-desc"></span></button>-->
+								<!--<ul class="dropdown-menu" data-bind="foreach: tabs">
+									<li data-bind="css: { active: isActive }, click: activate">
+										<a href="#tabsimple1" data-toggle="tab" class="active-border">
+											<span data-bind="text: name"></span>
+										</a>
+									</li>
+								</ul>-->
+	<!--<span style="display;none" data-bind = "text:console.log('LISTTTTTTTT', $root)"></span> -->
+								
+								<!--<span data-bind="foreach: tabs">-->
+								<span>
+									<!-- ko foreach: tabs -->
+										<!-- ko if:$data.name() == 'My Quotes' -->
+										<span data-bind="css: { active: isActive }, click: activate" onclick="reset_pagination()">
+											<a href="#tabsimple1" data-toggle="tab" class="active-border">
+												<button data-bind="text: name, attr: {class : $root.activeTab().name == name ? 'active_quote_list' : 'active_quote_list'}" style="text-transform:capitalize"></button>
+											</a>
+										</span>
+									<!-- /ko -->
+									<!-- /ko -->
+									
+									<!-- ko foreach: tabs -->
+										<!-- ko if:$data.name() == 'All Quotes' -->
+										<span data-bind="css: { active: isActive }, click: activate" onclick="reset_pagination()">
+											<a href="#tabsimple1" data-toggle="tab" class="active-border">
+												<button data-bind="text: name, attr: {class : $root.activeTab().name == name ? 'active_quote_list' : 'active_quote_list'}" style="text-transform:capitalize"></button>
+											</a>
+										</span>
+									<!-- /ko -->
+									<!-- /ko -->
+									
+									<!-- ko foreach: tabs -->
+										<!-- ko if:$data.name() == 'Waiting for My Approval' -->
+										<span data-bind="css: { active: isActive }, click: activate" onclick="reset_pagination()">
+											<a href="#tabsimple1" data-toggle="tab" class="active-border">
+												<button data-bind="text: name, attr: {class : $root.activeTab().name == name ? 'active_quote_list' : 'active_quote_list'}" style="text-transform:capitalize"></button>
+											</a>
+										</span>
+									<!-- /ko -->
+									<!-- /ko -->
+								</span>
+
+							</div>
+								<!--<span data-bind="text: activeTab().name" class="fiori3-active-tab"></span>-->
+							 <!--<a onclick="activequotelist(this);" id="subtab_list1" class="subtab_list1 subtab_list_all active" href="#">My Quotes</a>
+							<a onclick="activequotelist(this);" id="subtab_list2" class="subtab_list2 subtab_list_all" href="#">All Quotes</a>
+							<a onclick="activequotelist(this);" id="subtab_list3" class="subtab_list3 subtab_list_all" href="#">Waiting for My Approval</a>-->
+                   <div class="subtab_inner">
+                                <div class="product_txt_div">
+                      </div>
+                    </div>
+						</div>
+				  </div>
+			  
+				<div class="col-md-12 clearfix clear-padding">
+
+					<!-- ko with: filter -->
+					<!--data-bind="click: changeVisibility"-->
+					<div class="col-md-12 col-sm-12 col-xs-12 clear-padding">
+						<div class="col-sm-12  clear-padding input-group filter-content">
+							<!--<input type="text" class="form-control" placeholder="@Translation.Get("CartList.SearchByQuoteNumber")" data-bind="valueUpdatedOnEnter: $root.filter.quoteNumber">-->
+						  <input type="text" class="form-control" placeholder="@Translation.Get("CartList.SearchByQuoteNumber")" data-bind="onchange: $root.filter.quoteNumber">
+							<div class="input-group-btn">
+								<button data-toggle="dropdown" role="button" class="btn btn-default"><i class="fa fa-filter" data-bind="css: { 'color-change': hasActiveFilters() }" data-original-title="" title=""></i></button>
+								<div class="dropdown-menu stayOpen pull-right col-md-12 col-sm-12 col-xs-12" role="menu">
+									<div class="filter-scroll">
+									  <div class="form-group clearfix">
+										<input type="button" value = "SEARCH"/>
+									  </div>
+								  
+										<!-- ko foreach: additionalFields -->
+										<!-- ko template : { name : templateName } -->
+										<!-- /ko -->
+										<!-- /ko -->
+										<!-- ko with: statuses -->
+										<div class="form-group clearfix">
+											<label for="Status Filter">@Translation.Get("Msg.FilterByStatus")</label>
+											<div class="col-sm-12  clear-padding">
+												<select multiple="" class="form-control" data-bind="select2: selectedValues, options: availableValues, optionsValue: 'id', optionsText: 'value'" tabindex="-1" style="display: block; width: 100%;"><option value></option></select>
+											</div>
+										</div>
+										<!-- /ko -->									
+										
+									</div>
+									<div class="fixed-footer">
+										<button data-bind="click: $parent.saveSettings" data-toggle="dropdown" role="button" class="visible-xs visible-sm btn btn-default save-filter pull-right">@Translation.Get("Msg.SaveFilters")</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /ko -->
+					<button data-bind="click: filter.saveSettings" class="visible-md visible-lg btn btn-default save-filter">@Translation.Get("Msg.SaveFilters")</button>
+				</div>
+				<div style="clear: both;"></div>
+				<div data-bind="visible: filter.hasActiveFilters()">
+					<ul class="breadcrumb mobile-breadcrumbs">
+						<!-- ko foreach: filter.activeFilters -->
+						<li>
+							<span class="filter-pills">
+								<!-- ko template : { name : templateName } -->
+								<!-- /ko -->
+							</span>
+						</li>
+						<!-- /ko -->
+
+						<li><a data-bind="click: filter.clearAllFilters" href="#" class="clear-filters" onclick = "clear_filters()">@Translation.Get("Msg.ClearAll")</a></li>
+					</ul>
+				</div>
+				<br class="visible-lg visible-md" />
+			   <!--<div class="dropdown fiori3-dropdown">
+				   <div class="fiori3-dropdown-menu-wrapper">
+						<button href="#" class="dropdown-toggle fiori3-icon-button btn" data-toggle="dropdown"><span class="fa fa-sort-desc"></span></button>
+						<ul class="dropdown-menu" data-bind="foreach: tabs">
+							<li data-bind="css: { active: isActive }, click: activate">
+								<a href="#tabsimple1" data-toggle="tab" class="active-border">
+									<span data-bind="text: name"></span>
+								</a>
+							</li>
+						</ul>
+
+					</div>
+						<span data-bind="text: activeTab().name" class="fiori3-active-tab"></span>
+				   
+				</div>-->
+				<div data-bind="visible: isInitialized" style="display: none">
+					<!-- ko with: mainGrid -->
+					@Html.PartialWithNameAsComment("Grid")
+					<div class="row col-md-12" data-bind="visible: hasData() && !isInViewMode()">
+						<button data-bind="visible: hasData() && !isInViewMode(), click: $root.saveData" class="btn btn-primary">@Translation.Get("Msg.Save")</button>
+						<button data-bind="visible: hasData() && !isInViewMode(), click: setViewMode" class="btn btn-default">@Translation.Get("Msg.Cancel")</button>
+					</div>
+					<!-- /ko -->
+					<div data-bind="visible: activeTab().id() === 2">
+						<!-- ko if: loadDelegatedApprover -->
+						<!-- ko with: delegatedApproverGrid -->
+						<h4>@Translation.Get("CartList.QuotesMyTeamNeedsToApprove")</h4>
+						@Html.PartialWithNameAsComment("Grid")
+						<!-- /ko -->
+						<!-- /ko -->
+					</div>
+
+				</div>
+			</div>
+			<div class="clearfix"></div>
+		}
+		else
+		{
+			<!-- <label class="message_error" style="text-align:center;">@Translation.Get("C4C.LoadQuoteDisabledWhenLadningFromC4C")</label> -->
+			<!-- C4C ONLY -->
+			<div class="cart-list fiori3-cart-list">
+			
+			<div class="row tabsfiled">
+	
+		<div class="tabbable show-large btnmodule">
+			<ul>
+			<!--LEFT SIDE MENU LIST START-->
+				<li>
+						<a onclick="wholeModules(this)" class="dropdown-toggle" data-toggle="dropdown" href="/Catalogue/CategoryTree.aspx">
+							<img src="/mt/APPLIEDMATERIALS_PRD/images/attributeimages/tabicon.png" />
+						</a>
+						<div class="col-md-12 dropdown-menu left homedrop" role="menu" id="ul_bind"></div>
+                    </li>
+				<!--LEFT SIDE MENU LIST END-->
+				<!--PAGE ICON AND TAB NAME START-->
+				<li class="mopduleheader" id="ModName" style="color: rgb(23, 67, 142);">
+					<img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/contract_quotes.svg" id="ModuleIcons" style="display: inline-block;">
+					<span class="main_ban_mod" id="ModuleName1" style="display: inline-block;">Sales</span>
+				</li>
+				<!--PAGE ICON AND TAB NAME END-->
+			</ul>
+		</div>
+		
+		<div id="tab_Name" class="tabbable show-large tabsmenu"  >
+			<ul id="carttabs_head" class="nav-tabs" style="display:none">
+				<li   href="#"   class="Quotes">
+					<a href="#"  >
+						<span >Quotes</span>
+					</a>
+				</li>
+				<li   href="#"   class="Contracts">
+					<a href="#"  >
+						<span >Contracts</span>
+					</a>
+				</li>  
+				
+					
+			</ul>
+		</div>
+	
+	</div>
+			
+			<div class="TabContainerFull" id="TabContainerFull"></div>
+
+			<div class="cartlist_fixedheader">
+			 
+				  <div class="dropdown fiori3-dropdown">
+						   <div class="fiori3-dropdown-menu-wrapper open">
+								<!--<button href="#" class="dropdown-toggle fiori3-icon-button btn" data-toggle="dropdown"><span class="fa fa-sort-desc"></span></button>-->
+								<!--<ul class="dropdown-menu" data-bind="foreach: tabs">
+									<li data-bind="css: { active: isActive }, click: activate">
+										<a href="#tabsimple1" data-toggle="tab" class="active-border">
+											<span data-bind="text: name"></span>
+										</a>
+									</li>
+								</ul>-->
+	<!--<span style="display;none" data-bind = "text:console.log('LISTTTTTTTT', $root)"></span> -->
+								
+								<!--<span data-bind="foreach: tabs">-->
+								<span>
+									<!-- ko foreach: tabs -->
+										<!-- ko if:$data.name() == 'My Quotes' -->
+										<span data-bind="css: { active: isActive }, click: activate" onclick="reset_pagination()">
+											<a href="#tabsimple1" data-toggle="tab" class="active-border">
+												<button data-bind="text: name, attr: {class : $root.activeTab().name == name ? 'active_quote_list' : 'active_quote_list'}" style="text-transform:capitalize"></button>
+											</a>
+										</span>
+									<!-- /ko -->
+									<!-- /ko -->
+									
+									<!-- ko foreach: tabs -->
+										<!-- ko if:$data.name() == 'All Quotes' -->
+										<span data-bind="css: { active: isActive }, click: activate" onclick="reset_pagination()">
+											<a href="#tabsimple1" data-toggle="tab" class="active-border">
+												<button data-bind="text: name, attr: {class : $root.activeTab().name == name ? 'active_quote_list' : 'active_quote_list'}" style="text-transform:capitalize"></button>
+											</a>
+										</span>
+									<!-- /ko -->
+									<!-- /ko -->
+									
+									<!-- ko foreach: tabs -->
+										<!-- ko if:$data.name() == 'Waiting for My Approval' -->
+										<span data-bind="css: { active: isActive }, click: activate" onclick="reset_pagination()">
+											<a href="#tabsimple1" data-toggle="tab" class="active-border">
+												<button data-bind="text: name, attr: {class : $root.activeTab().name == name ? 'active_quote_list' : 'active_quote_list'}" style="text-transform:capitalize"></button>
+											</a>
+										</span>
+									<!-- /ko -->
+									<!-- /ko -->
+								</span>
+
+							</div>
+								<!--<span data-bind="text: activeTab().name" class="fiori3-active-tab"></span>-->
+							 <!--<a onclick="activequotelist(this);" id="subtab_list1" class="subtab_list1 subtab_list_all active" href="#">My Quotes</a>
+							<a onclick="activequotelist(this);" id="subtab_list2" class="subtab_list2 subtab_list_all" href="#">All Quotes</a>
+							<a onclick="activequotelist(this);" id="subtab_list3" class="subtab_list3 subtab_list_all" href="#">Waiting for My Approval</a>-->
+                   <div class="subtab_inner">
+                                <div class="product_txt_div">
+                      </div>
+                    </div>
+						</div>
+				  </div>
+			  
+				<div class="col-md-12 clearfix clear-padding">
+
+					<!-- ko with: filter -->
+					<!--data-bind="click: changeVisibility"-->
+					<div class="col-md-12 col-sm-12 col-xs-12 clear-padding">
+						<div class="col-sm-12  clear-padding input-group filter-content">
+							<!--<input type="text" class="form-control" placeholder="@Translation.Get("CartList.SearchByQuoteNumber")" data-bind="valueUpdatedOnEnter: $root.filter.quoteNumber">-->
+						  <input type="text" class="form-control" placeholder="@Translation.Get("CartList.SearchByQuoteNumber")" data-bind="onchange: $root.filter.quoteNumber">
+							<div class="input-group-btn">
+								<button data-toggle="dropdown" role="button" class="btn btn-default"><i class="fa fa-filter" data-bind="css: { 'color-change': hasActiveFilters() }" data-original-title="" title=""></i></button>
+								<div class="dropdown-menu stayOpen pull-right col-md-12 col-sm-12 col-xs-12" role="menu">
+									<div class="filter-scroll">
+									  <div class="form-group clearfix">
+										<input type="button" value = "SEARCH"/>
+									  </div>
+								  
+										<!-- ko foreach: additionalFields -->
+										<!-- ko template : { name : templateName } -->
+										<!-- /ko -->
+										<!-- /ko -->
+										<!-- ko with: statuses -->
+										<div class="form-group clearfix">
+											<label for="Status Filter">@Translation.Get("Msg.FilterByStatus")</label>
+											<div class="col-sm-12  clear-padding">
+												<select multiple="" class="form-control" data-bind="select2: selectedValues, options: availableValues, optionsValue: 'id', optionsText: 'value'" tabindex="-1" style="display: block; width: 100%;"><option value></option></select>
+											</div>
+										</div>
+										<!-- /ko -->									
+										
+									</div>
+									<div class="fixed-footer">
+										<button data-bind="click: $parent.saveSettings" data-toggle="dropdown" role="button" class="visible-xs visible-sm btn btn-default save-filter pull-right">@Translation.Get("Msg.SaveFilters")</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /ko -->
+					<button data-bind="click: filter.saveSettings" class="visible-md visible-lg btn btn-default save-filter">@Translation.Get("Msg.SaveFilters")</button>
+				</div>
+				<div style="clear: both;"></div>
+				<div data-bind="visible: filter.hasActiveFilters()">
+					<ul class="breadcrumb mobile-breadcrumbs">
+						<!-- ko foreach: filter.activeFilters -->
+						<li>
+							<span class="filter-pills">
+								<!-- ko template : { name : templateName } -->
+								<!-- /ko -->
+							</span>
+						</li>
+						<!-- /ko -->
+
+						<li><a data-bind="click: filter.clearAllFilters" href="#" class="clear-filters" onclick = "clear_filters()">@Translation.Get("Msg.ClearAll")</a></li>
+					</ul>
+				</div>
+				<br class="visible-lg visible-md" />
+			   <!--<div class="dropdown fiori3-dropdown">
+				   <div class="fiori3-dropdown-menu-wrapper">
+						<button href="#" class="dropdown-toggle fiori3-icon-button btn" data-toggle="dropdown"><span class="fa fa-sort-desc"></span></button>
+						<ul class="dropdown-menu" data-bind="foreach: tabs">
+							<li data-bind="css: { active: isActive }, click: activate">
+								<a href="#tabsimple1" data-toggle="tab" class="active-border">
+									<span data-bind="text: name"></span>
+								</a>
+							</li>
+						</ul>
+
+					</div>
+						<span data-bind="text: activeTab().name" class="fiori3-active-tab"></span>
+				   
+				</div>-->
+				<div data-bind="visible: isInitialized" style="display: none">
+					<!-- ko with: mainGrid -->
+					@Html.PartialWithNameAsComment("Grid")
+					<div class="row col-md-12" data-bind="visible: hasData() && !isInViewMode()">
+						<button data-bind="visible: hasData() && !isInViewMode(), click: $root.saveData" class="btn btn-primary">@Translation.Get("Msg.Save")</button>
+						<button data-bind="visible: hasData() && !isInViewMode(), click: setViewMode" class="btn btn-default">@Translation.Get("Msg.Cancel")</button>
+					</div>
+					<!-- /ko -->
+					<div data-bind="visible: activeTab().id() === 2">
+						<!-- ko if: loadDelegatedApprover -->
+						<!-- ko with: delegatedApproverGrid -->
+						<h4>@Translation.Get("CartList.QuotesMyTeamNeedsToApprove")</h4>
+						@Html.PartialWithNameAsComment("Grid")
+						<!-- /ko -->
+						<!-- /ko -->
+					</div>
+
+				</div>
+			</div>
+			<div class="clearfix"></div>
+		}
+		<div id="templates" style="display: none">
+			@Html.PartialWithNameAsComment("Editors/AdditionalFieldTemplate/AdditionalFieldTextBoxTemplate")
+			@Html.PartialWithNameAsComment("Editors/AdditionalFieldTemplate/AdditionalFieldDatePickerTemplate")
+			@Html.PartialWithNameAsComment("Editors/AdditionalFieldTemplate/AdditionalFieldDateIntervalTemplate")
+			@Html.PartialWithNameAsComment("Editors/AdditionalFieldTemplate/AdditionalFieldNumberIntervalTemplate")
+			@Html.PartialWithNameAsComment("Editors/CellTemplate/CellWithActionTemplate")
+			@Html.PartialWithNameAsComment("Editors/CellTemplate/DatePickerTemplate")
+			@Html.PartialWithNameAsComment("Editors/CellTemplate/LabelTemplate")
+			@Html.PartialWithNameAsComment("Editors/CellTemplate/ListBoxTemplate")
+			@Html.PartialWithNameAsComment("Editors/CellTemplate/TextBoxTemplate")
+			@Html.PartialWithNameAsComment("Editors/SelectedFilterTemplate/SelectedFilterAdditionalFieldTextTemplate")
+			@Html.PartialWithNameAsComment("Editors/SelectedFilterTemplate/SelectedFilterDateRangeTemplate")
+			@Html.PartialWithNameAsComment("Editors/SelectedFilterTemplate/SelectedFilterTextTemplate")
+			@Html.PartialWithNameAsComment("Dialogs/ReassignCartDialogTemplate")
+			@Html.PartialWithNameAsComment("PagerTemplate")
+		</div>
+	</div>
+	
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/AdditionalJSFile/CV.js'></script>
+	<script type="text/html" id="actionsTemplate">		
+		<ul data-bind="foreach: actions" class="dropdown-menu-cart">
+			<li>
+				<button class="btn btn-sm cart-list-action-button" data-bind="text: name === 'Edit' ? 'View' : name , click: activate, css: { 'btn-default': name != 'Edit', 'btn-primary': name == 'Edit' },attr: { id: 'cartlist_'+name}"></button>
+			</li>
+	   </ul>
+	 <!-- <ul class="dropdown-menu-cart">
+			<li>
+				<button class="btn btn-sm cart-list-action-button" onclick="Gotoapproval()">GO TO APPROVALS</button>
+			
+			</li>
+	   </ul>-->
+	  
+			
+	</script>
+
+	@Html.Partial("~/Views/Approvals/RetractApprovalCommentTemplate.cshtml")
+

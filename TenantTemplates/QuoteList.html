@@ -1,0 +1,18 @@
+<!-- QuoteList Template -->
+<div data-bind="visible: !hasData()">
+    <div class="alert alert-warning">
+        @Translation.Get("Msg.NoQuotesFound")
+        <!-- ko if: $root.filter.hasActiveFilters -->
+        <a href="#" data-bind="click: $root.filter.clearAllFilters">@Translation.Get("Msg.ClearAllFilters")</a>
+        <!-- /ko -->
+    </div>
+</div>
+<div class="clearfix" data-bind="visible: hasData() && !isInViewMode()">
+    <div class="pull-left">
+        <button data-bind="visible: hasData() && !isInViewMode(), click: $root.saveData" class="btn btn-primary fiori3-btn-primary">@Translation.Get("Msg.Save")</button>
+        <button data-bind="visible: hasData() && !isInViewMode(), click: setViewMode" class="btn btn-secondary fiori3-btn-secondary">@Translation.Get("Msg.Cancel")</button>
+    </div>
+</div>
+<div id="no-more-tables" class="table-responsive col-md-12 mobile-grid cpq-scroll" data-bind="visible: hasData()">
+    
+</div>

@@ -1,0 +1,137 @@
+<!--ACTIONVIEW-->
+@using Webcom.API.RD.Configurator
+<div class="conftop display_none" id="actionsContainer" >
+    
+	<div class="col-md-12 clear-padding">
+        <!--ERROR MSG SECTION START-->
+        @*error messages*@
+        <div data-bind="visible: errorMessages().length > 0" class="display_none"  >
+			<div class="alert alert-danger">
+				<div>
+					<div> <i class="fa fa-exclamation-circle"></i>
+					</div>
+					<div>
+						<ul data-bind="foreach: errorMessages"  class="display_inline">
+							<li data-bind="html: $data"></li>
+							<!-- must use html binding because binded data might contain html (e.g. <br >/>) -->
+						</ul>
+					</div>
+				</div>
+			</div>
+        </div>
+        <!--ERROR MSG SECTION END-->
+        <!--NOTIFICATION SECTION START-->
+        @*notification failed validations message*@
+		<div data-bind="visible: failedValidations().length > 0" class="display_none"  >
+			<div class="alert alert-warning">
+				<div>
+					<div> <i class="fa fa-exclamation-circle"></i>
+					</div>
+					<div>
+						<ul data-bind="foreach: failedValidations" class="display_inline">
+							<li data-bind="html: $data"></li>
+							<!-- must use html binding because binded data might contain html (e.g. <br >/>) -->
+						</ul>
+					</div>
+				</div>
+			</div>
+			<br />
+        </div>
+        <!--NOTIFICATION SECTION END-->
+		<div data-bind="visible: isInFavoriteEditMode()">
+			<h4 class="display_none" >@Translation.Get("ActionView.EditingFavorite")<span data-bind="text: favoriteName()"></span></h4>
+        </div>
+        <!--BUTTON AND STATUS START-->
+        <div class="actions-and-statuses mobile-white display_none" data-bind="visible: isVisible" >
+            @*left actions*@
+			<div class="left-actions display_none" data-bind="visible : isVisible" >
+				<button class="btnstyle" data-bind="click: addToCart, visible : !isNestedProduct() && canAddToQuote() && !isInFavoriteEditMode()"><i class="fa fa-shopping-cart"></i>&nbsp;<span data-bind="    text: cartExists() ? '@Translation.GetJS(" Configurator.UpdateQuote ")    ' : '@Translation.GetJS("Configurator.AddToQuote ")    '"></span>
+				</button>
+				<button class="btnstyle" data-bind="click : cancelAndReturnToCart, visible : !isNestedProduct() && cartExists() && !isInFavoriteEditMode()"><i class="fa fa-times"></i>&nbsp;@Translation.Get("Configurator.CancelAndReturnToQuote")</button>
+				<button class="btnstyle" data-bind="click: saveAndExitNestedProduct, visible : isNestedProduct()"><i class="fa fa-save"></i>&nbsp;<span data-bind="    text: 'Save'"></span>
+				</button>
+				<button class="btnstyle" data-bind="click: exitNestedProduct, visible : isNestedProduct()"><i class="fa fa-times"></i>&nbsp;<span data-bind="    text : 'Cancel'"></span>
+                </button>
+                @if (ConfiguratorController.FavoritesEnabled) {
+				<div data-bind="visible:isInFavoriteEditMode() && !isNestedProduct()">
+					<button data-bind="click: saveFavorite" class="btnstyle">@Translation.Get("Msg.SaveFavorite")</button>
+					<button class="btnstyle" data-bind="click: close">@Translation.Get("Msg.CancelSavingFavorite")</button>
+				</div> <span class="favorites-icons visible-sm-inline-block visible-lg-inline-block visible-md-inline-block">
+                        <a href="#" data-bind="click: showFavoritesForProduct, visible:!isInFavoriteEditMode(),  tooltip: { title: '@Translation.GetJS("Msg.ViewFavorites")', placement: 'top' }"><i class="fa fa-clipboard"></i></a>
+                        <a href="#" data-bind="click: handleClickOnFavorites, visible:!isInFavoriteEditMode(), css: { 'in-favorites': isAddedToFavorites(), 'no-favorite': !isAddedToFavorites() },  tooltip: { title: favoritesTooltipTitle }"><i class="fa fa-star"></i></a>
+                    </span>
+                }
+            </div>
+                @*Status*@
+			<div data-bind="visible: isVisible" class="info-label col-md-2 display_none"  >
+				<label class="sts_lbl" >@Translation.Get("xsltStatuss")</label><span class="label-complete display_none" data-bind="visible: completed"  >@Translation.Get("Msg.Complete")</span>
+				<span id="incompleteIndicator" class="label-incomplete pull-left display_none" data-bind="visible: !completed()"  >@Translation.Get("Msg.Incomplete")</span>
+				<a id="showMeWhy" class="pull-right" data-bind="click: toggleHighlightIncomplete, visible: !completed(), popover: { elementId: 'incompleteList', autoClose: false, placement: 'bottom'}"><i class="fa fa-question-circle" data-bind="tooltip: { title: 'See why' }"></i></a>
+				<div class="clear_both"></div> <span data-bind="visible: hasIncompleteChildren" class="label-incomplete"><span>@Translation.Get("ActionView.HasIncompleteChild")</span></span>
+				<div  class="display_none" id="incompleteList">
+					<h3 class="incomplete-popover-title" data-bind="visible: lineIncompleteMessages().length > 0">Required Fields</h3>
+					<ul class="incomplete" data-bind="foreach: lineIncompleteMessages, visible: lineIncompleteMessages().length > 0">
+						<li data-bind="html: $data"></li>
+					</ul>
+					<h3 class="incomplete-popover-title" data-bind="visible: lineInvalidMessages().length > 0">Invalid Fields</h3>
+					<ul class="incomplete" data-bind="foreach: lineInvalidMessages, visible: lineInvalidMessages().length > 0">
+						<li data-bind="html: $data"></li>
+					</ul>
+				</div>
+            </div> 
+            <span class="favorites-icons visible-xs-inline-block">
+                <a href="#" data-bind="click: showFavoritesForProduct, visible:!isInFavoriteEditMode(),  tooltip: { title: '@Translation.GetJS("Msg.ViewFavorites")', placement: 'top' }"><i class="fa fa-clipboard"></i></a>
+                <a href="#" data-bind="click: handleClickOnFavorites, visible:!isInFavoriteEditMode(), css: { 'in-favorites': isAddedToFavorites(), 'no-favorite': !isAddedToFavorites() },  tooltip: { title: favoritesTooltipTitle }"><i class="fa fa-star"></i></a>
+            </span>
+			@*right actions*@
+			<div class="info-label total col-md-2 display_none" data-bind="visible: isVisible"  >
+				<label>@Translation.Get("xsltTotal:")</label>
+				<!-- ko if: $data.responderModule.totalPriceMissingError --> <span class="label-incomplete" data-bind="tooltip: { title: $data.responderModule.totalPriceMissingError }"><i class="fa fa-exclamation-circle"></i></span>
+				<!-- /ko -->
+				<a href="#" role="button" data-bind="click : showResponder"> <span data-bind="html: totalPrice, tooltip: { title: 'Open Responder' }"></span>
+				</a> <a href="#" class="pull-right visible-sm visible-lg visible-md" data-bind="click: reset, tooltip: { title: 'Reset Configuration' }"><i class="fa fa-undo"></i></a>
+				@if (ConfiguratorController.IsConfigurable || ConfiguratorController.IsParentChild) {
+                    <div class="configTreeLabel">
+                        <a href="#" role="button" data-bind="click : showConfigurationTree"> <span data-bind="html: '@Translation.Get(" ActionsView.ConfigurationTree ")', tooltip: { title: 'Open Configuration Tree' }"></span>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+        <!--BUTTON AND STATUS END-->
+    </div>  
+	<div class="clear_both"></div>@Html.Partial("~/Views/Favourites/AddToFavoritesDialogTemplate.cshtml")</div>
+<script type="text/html" id="ResponderModalTemplate">
+	<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="responderModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                    <h3 id="myModalLabel">@Translation.Get("ActionsView.ConfigurationSummary")</h3>
+	                </div>
+	                <div class="modal-body" data-bind="template : { name : responderTemplateName }">
+	                </div>
+	                <div class="modal-footer center">
+	                    <button class="btn btn-default" data-dismiss="modal">@Translation.Get("Msg.Close")</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+</script>
+<script type="text/html" id="ConfigurationTreeModalTemplate">
+	<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="configurationTreeModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                    <h3 id="myModalLabel">@Translation.Get("ActionsView.ConfigurationTree")</h3>
+	                </div>
+	                <div class="modal-body" data-bind="template: { name: 'configurationTreeTemplate' }">
+	                </div>
+	                <div class="modal-footer center">
+	                    <button class="btn btn-default" data-dismiss="modal">@Translation.Get("Msg.Close")</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+</script>

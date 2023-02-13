@@ -1,0 +1,558 @@
+<!-- Template Name = AMAT_APPROVAL -->
+<style>
+    body h3{display:none;}
+    .overlay{display:none !important;}
+  #pageloader{display:none !important;}
+  .usermenuicon{display:none;}
+   
+  .select2-container.select2-container--open {
+    border-radius: 0px !important;
+    z-index: 999 !important; 
+}
+
+  body header{
+    display: none;
+}
+div#Apprvl_dtls {
+    margin-top: 10px;
+}
+div#approvalContainer .approvals.cart-content .center button#dyn_btn_Reject {
+    background: red !important;
+    color: #fff !important;
+}
+#wrap.wrap-when-landing-C4C .user-page-container {
+    width: calc(100vw -1px)!important;    
+}
+.cart-content .center {
+    padding: 4px;
+}
+  </style>
+  <!-- DELETE MODAL POPUP STARTS -->
+       <div class="modal fade pop__view_page_hide in" data-backdrop="static" id="approval_matr_pop" role="dialog" >
+            <div class="modal-dialog" style="width: 40% !important;top:25% !important;">
+                 <div class="modal_vh_div">
+                      <div class="modal-content">
+                           <div class="modal-body" id="DEL_MODAL_SECTION" style="padding: 0px;">
+                                <div class="modulesecbnr brdr" style="margin-bottom: 0;"> 
+                                     <span id="relatedDelete">DELETE</span>
+                                     <button type="button" class="close changebg" data-dismiss="modal">X</button>
+                                </div>
+                                <span class="tri_sybl" style="padding:15px !important;">
+                                     <i class="fa fa-exclamation-triangle" style="color:#ffa500 !important;font-size: 32px !important;"></i>
+                                </span>
+                                <span id="txt_area_cont" style="padding:20px 0px 0 10px !important;text-overflow:unset!important;overflow:visible !important" >This will delete the entire quote, not the revision. Are you sure want to proceed?</span>
+                           </div>
+                           <div class="modal-footer">
+                                <div class="col-md-12" style="padding:0px !important;float:none !important">
+                                     <button type="button" id="Cancel_Delete_Quote_Master" class="sec_btn_rg" data-dismiss="modal" style="float:none !important">CANCEL</button>
+                                     <button type="button" id="Delete_Quote_Master" onclick="DelRevFunc()" class="sec_btn_rg" style="float:none !important">CONFIRM</button>
+                                </div>
+                           </div>
+                      </div>
+                 </div>
+            </div>
+       </div>  
+  <!-- DELETE MODAL POPUP ENDS -->
+  
+  <div role="main" id="main" class="w960">
+          
+       <!-- Header-content 'Start' -->
+        <div class="col-md-12" style="padding:0">
+   
+          <!-- Header-content 'End' -->
+       
+  <!-- Reject-Modal for the comments 'Begin'-->
+  <div class="modal fade pop__view_page_hide in" data-backdrop="static" id="reject_cmd_bx" role="dialog">
+       <div class="modal-dialog" style="width: 40% !important;">
+            <div class="modal_vh_div">
+                 <div class="modal-content">
+                      <div class="modal-body" id="DEL_MODAL_SECTION" style="padding: 0px;">
+                           <div class="modulesecbnr brdr" style="margin-bottom: 0;"> <span id="relatedDelete">REJECT</span>
+                                <button type="button" class="close changebg" data-dismiss="modal">X</button>
+                           </div>
+                           <span class="tri_sybl">
+                                <i class="fa fa-exclamation-triangle"></i>
+                           </span>
+                           <span id="txt_area_cont">COMMENTS</span>
+                           <div class="mod_txt_ara">
+                                <textarea rows="2" onkeyup="kyprs(this)" data-bind="value: commentToApprover" style="background-color:lightyellow"></textarea>
+                                <!-- <textarea tabindex="0" data-bind="value: approverComment" class="form-control"></textarea> -->
+                           </div>
+                      </div>
+                      <div class="modal-footer">
+                           <button type="button" style="float:none !important;" data-dismiss="modal" class="changebg">CANCEL</button>
+                           <button type="button" style="float:none !important;" data-dismiss="modal" class="changebg" onclick="rej_sv()">Reject</button>
+                      </div>
+                 </div>
+            </div>
+       </div>
+  </div>
+  <!-- Reject-Modal for the comments 'End'-->
+  
+  <!-- Approval-Modal for the comments 'Begin'-->
+  <div class="modal fade pop__view_page_hide in" data-backdrop="static" id="approval_cmd_bx" role="dialog">
+       <div class="modal-dialog" style="width: 40% !important;">
+            <div class="modal_vh_div">
+                 <div class="modal-content">
+                      <div class="modal-body" id="DEL_MODAL_SECTION" style="padding: 0px;">
+                           <div class="modulesecbnr brdr" style="margin-bottom: 0;"> <span id="relatedDelete">APPROVAL</span>
+                                <button type="button" class="close changebg" data-dismiss="modal">X</button>
+                           </div>
+                           <span class="tri_sybl">
+                                <i class="fa fa-exclamation-triangle"></i>
+                           </span>
+                           <span id="txt_area_cont">COMMENTS</span>
+                           <div class="mod_txt_ara">
+                                <textarea rows="2" onkeyup="kyprs(this)" data-bind="value: commentToApprover" style="background-color:lightyellow;"></textarea>
+                                <!-- <textarea  tabindex="0" data-bind="value: commentToApprover, disable: $root.areRulesExpired()" class="form-control"></textarea> -->
+                           </div>
+                      </div>
+                      <div class="modal-footer">
+                           <button type="button" style="float:none !important;" data-dismiss="modal" class="changebg">CANCEL</button>
+                           <button type="button" id="popUpBtn" style="float:none !important;" data-dismiss="modal" class="changebg" onclick="appr_sv()">SAVE</button>
+                      </div>
+                 </div>
+            </div>
+       </div>
+  </div>
+  <!-- Approval-Modal for the comments 'End'-->
+  <!--<div class="row brdr material_btn_bg buttonbnr Segment_inner_ban_details secondary_highlight_panel self_approve" id="seginnerbnr" style="display: block;padding: 10px 10px 8px 1px !important;"><div class="product_icon"><img class="pull-left" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/product_shp.svg"></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Approvals">Approvals</abbr></div><div class="product_txt_to_top_child"><abbr title="All">All</abbr></div></div>
+       <button type="button" id="approval_act_btn" class="btnconfig viewvalidate flt_n_mart10" onclick="iframe2ApproveBtn()">Approve</button>
+     
+     </div>-->
+     
+                    
+               </div>
+       <div class="row" style="background-color:padding: 0px;">       
+            <div id="approvalContainer" class="col-xs-12 col-md-12 col-sm-12 user-page-container" data-bind="visible: isInitialized" style="display: none">                 
+                 <div class="row" style="display: none">
+                      <div class="alert alert-warning" data-bind="visible: message()">
+                           <div>
+                                <div><i class="fa fa-exclamation-circle"></i></div>
+                                <div>
+                                     <p tabindex="0" data-bind="html: message"></p>
+                                </div>
+                           </div>
+                      </div>
+                 </div>
+                 <div class="clearfix approvals cart-content">
+                    <h3 tabindex="0">@Translation.GetRaw("xsltApprovals")</h3>
+		<div class="row brdr material_btn_bg buttonbnr Segment_inner_ban_details secondary_highlight_panel self_approve" id="seginnerbnr_appr">
+			<div class="product_icon">
+				<img class="pull-left" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/Approvals_Icon.svg">
+			</div>
+			<div class="product_txt_div_child secondary_highlight" style="display: block;">
+				<div class="product_txt_child"><abbr title="Approvals">Approvals</abbr></div>
+				<div class="product_txt_to_top_child plaintxt">
+					<abbr title="Submit your quote for approval if needed or Approve / Reject the quote that is waiting for your approval">Submit your quote for approval if needed or Approve / Reject the quote that is waiting for your approval</abbr>
+				</div>
+			
+				   
+			</div>
+			 <div class="center" style="float: right;"> 
+                <button type="button" id="approval_act_btn" class="btn btnconfig viewvalidate flt_n_mart10" onclick="iframeApproveBtn()">Approve</button>
+				<button type="button" id="monapproval_self_btn" class="btn btnconfig viewvalidate flt_n_mart10" onclick="iframeMonSelfApproveBtn()">Approve</button>
+                           <span id="isappedis" data-bind="visible: isApproveDisabled()">
+                                <button tabindex="0" type="button" class="btn btn-default" data-bind="attr: { id:approveActionName,title: approveActionName }, text: approveActionName" disabled="disabled">
+                                </button>
+                           </span> 
+                           <span data-bind="foreach: actions">
+                                <span data-bind="if: id != 25 && id != 53">
+                                 
+                                     <span onclick="submitApproval()">
+                                     <button tabindex="0" type="button" data-bind="attr: { title: name, 'class': cssClass,'id': 'dyn_btn_'+name}, text: name, click: execute, disable: $root.areRulesExpired()"></button>
+                                     </span>
+                                  
+                                </span>
+                           </span> 
+                           <span onclick="submitApproval()">
+                           <button id="submit_appr"  tabindex="0" type="button" class="btn btn-primary" data-bind="visible: areActionsVisible() && isSubmitActionAvailable() && conditions().length > 0, disable: areRulesExpired(),click: submitForApproval">
+                                @Translation.GetRaw("Project.SubmitForApproval")
+                           </button>
+                           </span>
+                           <button id="submit_appr_hd" style="display:none !important;" tabindex="0" type="button" class="btn btn-primary" data-bind="click: submitForApproval">
+                                @Translation.GetRaw("Project.SubmitForApproval")
+                           </button> 
+                           <button tabindex="0" onclick="recall_nm(this)" id="retractButton" type="button" class="btn btn-danger" data-bind="visible: areActionsVisible() && isRetractApprovalProcessAvailable(), click: retractApprovalProcess">
+                                 
+                                RECALL
+                           </button> 
+                    </div> 
+		</div>
+
+                      <div class="clearfix col-md-12" id="app_frt_grd">
+                           <div id="no-more-tables" class="table-responsive tab_content_1" data-bind="visible: areRulesExpired">
+                                <h4 tabindex="0" class="resp_tlt">@Translation.GetRaw("xsltRulesHaveToBeRetracted")</h4>
+                                <div class="alert alert-warning">
+                                     <div>
+                                          <div><i class="fa fa-exclamation-circle"></i></div>
+                                          <div>
+                                               <p tabindex="0">@Translation.GetRaw("xsltRejectedRulesNeedToBeRetracted")</p>
+                                          </div>
+                                     </div>
+                                </div>
+                              
+                                <table class="table table-bordered" id="app_tb_1">
+                                     <thead>
+                                          <tr>
+                                               <th tabindex="0" title="APPROVAL RULE">@Translation.GetRaw("xsltApprovalRule")</th>
+                                               <th tabindex="0" title="APPROVAL RULE DESCRIPTION">Approval Rule Description</th>
+                                               <th tabindex="0" title="RESPONSIBLE APPROVER">@Translation.GetRaw("xsltResponsibleApprover")</th>
+                                               <th  tabindex="0" title="COMMENT TO APPROVER" data-bind="visible: allowSubmittersComment()">
+                                                    @Translation.GetRaw("xsltCommentToApprover")
+                                               </th>
+                                          </tr>
+                                     </thead>
+                                     <tbody data-bind="foreach: expiredConditions">
+                                          <tr>
+                                               <td tabindex="0" data-bind="html: name" data-title="@Translation.GetRaw("xsltApprovalRule")" ></td>
+                                               <td tabindex="0" data-bind="html: conditionDescription,attr: {title: conditionDescription}" data-title="@Translation.GetRaw("xsltApprovalRuleDescription")"></td>
+                                               <td tabindex="0" data-title="@Translation.GetRaw("xsltResponsibleApprover")">
+                                                    <span data-bind="foreach: approvers">
+                                                         <span data-bind="text: displayValue"></span>
+                                                         
+                                                    </span> 
+                                               </td>
+                                               <td tabindex="0" data-bind="visible: $root.allowSubmittersComment()">
+                                                    <textarea data-bind="value: commentToApprover" class="form-control" disabled="disabled"></textarea>
+                                               </td>
+                                          </tr>
+                                     </tbody>
+                                </table>
+                              
+                           </div>
+                      </div>  
+                    
+                     <div data-bind="visible: pendingResponsibilities().length > 0" class="col-md-12 col-xs-12" id="Apprvl_dtls" >
+                           <div class="section_title botnoborder" onclick="cart_cont_collap_exp(this)" data-toggle="collapse" data-target="#app_trd_grd" style="display: inline-block !important;" aria-expanded="true">
+                              <span>MY APPROVAL</span>
+                              <span class="more-less glyphicon pointer glyphicon-chevron-down" style="float: right;"></span>
+                           </div>
+                      </div>
+  
+                      <div data-bind="visible: pendingResponsibilities().length > 0" id="app_trd_grd" class="col-md-12 clearfix collapse in"  >
+                           <h4 tabindex="0" class="resp_tlt" data-bind="text: $root.pendingResponsibilitiesTitle"></h4>
+                           <div class="alert alert-warning">
+                                <div>
+                                     <div><i class="fa fa-exclamation-circle"></i></div>
+                                     <div>
+                                          <p tabindex="0">@Translation.GetRaw("xsltSelectRulesForApproveReject")</p>
+                                     </div>
+                                </div>
+                           </div>
+                           
+                           <div id="no-more-tables" class="table-responsive tab_content_3">
+                                <table class="table table-bordered" id="app_tb_3">
+                                     <thead>
+                                          <tr>
+                                               <th style="width:60px!important;text-align: center;" title="Select">
+                                                    <!-- <a href="#" data-bind="click: selectAll" style="margin-bottom:5px;display:block;">@Translation.Get("xsltSelectAll")</a> -->
+                                                    <!-- <a href="#" data-bind="click: deselectAll">@Translation.GetRaw("xsltDeselectAll")</a> -->
+                                                    Select
+                                               </th>
+                                               <th tabindex="0" style="width: 10%;" title="ACTION">ACTION</th>
+                                               <th tabindex="0" style="width: 10%;" title="ACTION DATE">ACTION DATE</th>
+                                               <!-- <th tabindex="0">@Translation.GetRaw("xsltViolatedBy")</th> -->
+                                               <th tabindex="0" style="width: 9%;" title="USER">USER</th>
+                                               <th tabindex="0" style="width: 13%;" title="APPROVAL RULE">@Translation.GetRaw("xsltApprovalRule")</th>
+                                               <th tabindex="0" style="width: 30% !important;" title="APPROVAL RULE DESCRIPTION">APPROVAL RULE DESCRIPTION</th>
+                                              
+                                               <th tabindex="0" style="display:none;" title="REQUESTOR COMMENTS">REQUESTOR COMMENTS</th>
+                                               <th tabindex="0">APPROVER COMMENTS</th>
+                                          </tr>
+                                     </thead>
+                                     <tbody data-bind="foreach: pendingResponsibilities">
+                              
+                                          <tr>
+                                               <td data-title="@Translation.GetRaw("xsltSelect")" style="text-align:center;">
+                                                    <input tabindex="0" type="checkbox" data-bind="checked: isSelected"/>
+                                               </td>
+                                               <td data-title="@Translation.GetRaw("xsltStatus")">
+                                                    <i data-bind="css: statusImageClass"></i>
+                                                    <span tabindex="0" data-bind="textOrNbsp: status,attr: {title: status}"></span>
+                                               </td>
+                                               <td tabindex="0" data-bind="text: dateSubmitted,attr: {title: dateSubmitted}" data-title="@Translation.GetRaw("xsltSubmitionDate")"></td>
+                                               <!-- <td tabindex="0" data-bind="text: sentBy, css: {'blocked-user-color': isSubmitterBlocked}" data-title="@Translation.GetRaw("xsltViolatedBy")"></td> -->
+                                                <td tabindex="0" data-bind="text: approverName,attr: {title: approverName}, css: {'blocked-user-color': isApproverBlocked}" data-title="@Translation.GetRaw("xsltApprover")"></td>
+                                               <td tabindex="0" data-bind="html: conditionName,attr: {title: conditionName}" data-title="@Translation.GetRaw("xsltApprovalRule")"></td>
+                                               <td tabindex="0" data-bind="html: conditionDescription,attr: {title: conditionDescription}" data-title="@Translation.GetRaw("xsltApprovalRuleDescription")"></td>
+                                              
+                                               <td tabindex="0" style="display:none;" data-bind="text: requestorComment,attr: {title: requestorComment}" data-title="@Translation.GetRaw("xsltRequstorsComment")"></td>
+                                                <td data-title="@Translation.GetRaw("xsltCommentsToRequstor")">
+                                                    <textarea tabindex="0" data-bind="value: approverComment" class="form-control" id="approval_comment_longtext"></textarea>
+                                               </td>
+                                          </tr>
+                                  
+                                     </tbody>
+                                </table>
+                           </div>
+                           
+                      </div>
+                      
+                      
+                      <div class="col-md-12 col-xs-12" id="Apprvl_hd" data-bind="visible: conditions().length > 0">
+                           <div class="section_title" onclick="cart_cont_collap_exp(this)" data-toggle="collapse" data-target=".appr_sec_grd" style="display: inline-block !important;" aria-expanded="true">
+                              <span>REMAINING APPROVALS</span>
+                              <span class="more-less glyphicon pointer glyphicon-chevron-down" style="float: right;"></span>
+                           </div>
+                      </div>
+                      
+                      <div class="clearfix col-md-12 appr_sec_grd collapse in" id="app_sec_grd">
+                           <div id="no-more-tables" class="table-responsive tab_content_2"  data-bind="visible: conditions().length > 0">
+                                <h4 tabindex="0" class="resp_tlt" data-bind="text: $root.conditionsTitle"></h4>
+                                
+                                <div class="alert alert-warning" data-bind="visible: containsBlockedApprovers()">
+                                     <div>
+                                          <div><i class="fa fa-exclamation-circle"></i></div>
+                                          <div>
+                                               <p>@Translation.GetRaw("Msg.ApproverBlockedFromDeletion")</p>
+                                          </div>
+                                     </div>
+                                </div>
+                                <table class="table table-bordered" id="app_tb_2">
+                                     <thead>
+                                          <tr>
+                                               <th tabindex="0" title="APPROVAL RULE">@Translation.GetRaw("xsltApprovalRule")</th>
+                                               <th tabindex="0" title="APPROVAL RULE DESCRIPTION">APPROVAL RULE DESCRIPTION</th>
+											   <!--<th tabindex="0" title="APPROVAL STATUS">APPROVAL STATUS</th>-->
+                                               <th tabindex="0" title="RESPONSIBLE APPROVER">@Translation.GetRaw("xsltResponsibleApprover")</th>
+											   <!--<th tabindex="0" title="C4C PARTNER FUNCTION">C4C PARTNER FUNCTION</th>-->
+                                               <th tabindex="0" title="COMMENT TO APPROVER" data-bind="visible: allowSubmittersComment()">
+                                                    @Translation.GetRaw("xsltCommentToApprover")
+                                               </th>
+                                      <!--<th tabindex="0" title="COMPETITOR" data-bind="visible: allowSubmittersComment()">
+                                                  COMPETITOR
+                                               </th>-->
+                                      <!--<th tabindex="0"  title="JUSTIFICATION COMMENTS" data-bind="visible: allowSubmittersComment()">
+                                                  JUSTIFICATION COMMENTS
+                                             </th>-->
+                                      <!--<th tabindex="0"  title="APPROVAL REFERENCE ID" data-bind="visible: allowSubmittersComment()">
+                                        APPROVAL REFERENCE ID
+                                    </th>-->
+                                              
+                                               <!-- <th style="display:none !important;" tabindex="0"> -->
+                                                    <!-- @Translation.GetRaw("xsltCommentToApprover") -->
+                                               <!-- </th> -->
+                                          </tr>
+                                     </thead>
+                                     <tbody data-bind="foreach: conditions">
+                                     <!-- ko if: $data.name != 'Multiple Sales Orgs' -->
+                                          <tr>
+                                               <td tabindex="0" data-bind="html: name,attr: {title: name}" data-title="@Translation.GetRaw("xsltApprovalRule")" ></td>
+                                               <td tabindex="0" data-bind="html: conditionDescription,attr: {title: conditionDescription}" data-title="@Translation.GetRaw("xsltApprovalRuleDescription")"></td>
+                                               <!--<td></td>-->
+											   <td data-title="@Translation.GetRaw("xsltResponsibleApprover")" class="paddHor">
+                                                    <!-- ko if: canChooseApprover == 0 -->
+                                                         <span data-bind="foreach: approvers">
+                                                              <span tabindex="0" data-bind="html: displayValue,attr: {title: displayValue}, css: {'blocked-user-color': IsBlocked}"></span>
+                                                             
+                                                         </span>
+                                                    <!-- /ko -->
+                                                    <!-- ko if: canChooseApprover == 1 -->
+                                                         <select multiple class="form-control" data-bind="select2: selectedValues, options: approvers, optionsValue: 'id', optionsText: 'displayValue', disable: $root.areRulesExpired()" tabindex="-1" style="display: block; width: 100%;">
+                                                         </select>
+                                                    <!-- /ko -->
+                                                    <!-- ko if: canChooseApprover == 2 -->
+                                                         <select class="form-control" data-bind="select2: selectedValues, options: approvers, optionsValue: 'id', optionsText: 'displayValue', optionsCaption: 'Select approver...', disable: $root.areRulesExpired()" style="display: block; width: 100%;">
+                                                         </select>
+                                                    <!-- /ko -->
+                                               </td>
+											   <!--<td></td>-->
+                                                <td class="paddHor appr_tooltip" data-bind="visible: $root.allowSubmittersComment()" data-title="@Translation.GetRaw("xsltCommentToApprover")"> 
+												<a href="#" onclick="showApprcomment()" id="Apprcomment">Comments</a>
+                                                     <!--<textarea  id="txt_cmd_sub_app" tabindex="0" data-bind="value: commentToApprover, disable: $root.areRulesExpired(),attr: {title: commentToApprover}" class="form-control" onkeypress="CommentsApprove()"></textarea> -->
+                                                       <span class="appr_tooltiptext">Self Approve Comments should be min 25 characters</span>
+                                                </td>
+												<!--<td class="paddHor" id="comp" data-bind="visible: $root.allowSubmittersComment()" data-title="">
+                                                  <textarea  id="COMPETITOR" tabindex="0" class="form-control" maxlength="500"  onmouseup="textareaFun()" onmousedown="textareaFun()"></textarea>
+                                                 </td>-->
+                                        <!--<td class="paddHor" id="just" data-bind="visible: $root.allowSubmittersComment()" title="">
+                                                  <textarea  id="JUSTIFICATION_COMMENTS" tabindex="0" class="form-control"  onmouseup="textareaFuntwo()" onmousedown="textareaFuntwo()" maxlength="1000"></textarea>
+                                                  
+                                                  </td>-->
+                                       <!-- <td class="paddHor appr_tooltip"  id="ref" data-bind="visible: $root.allowSubmittersComment()" title="">
+                                        <textarea  id="APPROVAL_REFERENCE_ID" tabindex="0" class="form-control" onmouseup="textareaFunthree()" onmousedown="textareaFunthree()" onkeyup="approvalReference()" maxlength="10" ></textarea>
+                                        <span class="appr_tooltiptext">Approval Reference Id can be a maximum of 10 characters</span>
+                                    </td>-->
+                                               <!-- <td style="display:none !important;" data-title="@Translation.GetRaw("xsltCommentToApprover")">
+                                                    <textarea  tabindex="0" id="txt_cmd_sub_app" class="form-control"></textarea>
+                                               </td> -->
+                                          </tr>
+                                          <!-- /ko -->
+                                     </tbody>
+                                </table>
+                           </div>
+                           <!-- <div class="center"> -->
+                                <!-- <button tabindex="0" type="button" class="btn btn-default" data-bind="visible: responsibilities().length == 0 || (ownerId() == visitorId()), click: close"> -->
+                                     <!-- @Translation.GetRaw("Msg.Cancel") -->
+                                <!-- </button> -->
+                                <!-- <button tabindex="0" type="button" class="btn btn-primary" data-bind="visible: areActionsVisible() && isSubmitActionAvailable() && conditions().length > 0, click: submitForApproval, disable: areRulesExpired()"> -->
+                                     <!-- @Translation.GetRaw("Project.SubmitForApproval") -->
+                                <!-- </button> -->
+                                <!-- <button tabindex="0" id="retractButton" type="button" class="btn btn-danger" data-bind="visible: areActionsVisible() && isRetractApprovalProcessAvailable(), click: retractApprovalProcess"> -->
+                                     <!-- @Translation.GetRaw("Project.RetractApprovalProcess") -->
+                                <!-- </button> -->
+                           <!-- </div> -->
+                      </div>
+                      
+                      <div class="center" style="display:none;">
+                           <!-- <button tabindex="0" type="button" class="btn btn-default" data-bind="click: closeResp"> -->
+                                <!-- @Translation.GetRaw("xsltCancel") -->
+                           <!-- </button> -->
+  
+                           <span id="isappedis" data-bind="visible: isApproveDisabled()">
+                                <button tabindex="0" type="button" class="btn btn-default" data-bind="attr: {id:approveActionName, title: approveActionName }, text: approveActionName" disabled="disabled">
+                                </button>
+                           </span>
+                           
+                           <span data-bind="foreach: actions">
+                                <span data-bind="if: id != 25 && id != 53">
+                                     <button tabindex="0" type="button" data-bind="attr: {id:name, title: name, 'class': cssClass }, text: name, click: execute, disable: $root.areRulesExpired()"></button>
+                                </span>
+                           </span>
+                           
+                           <!--<button tabindex="0" id = "cancelBtn" type="button" style="display: none;" class="btn btn-default" data-bind="visible: responsibilities().length == 0 || (ownerId() == visitorId()), click: close">
+                                @Translation.GetRaw("Msg.Cancel")
+                           </button>-->
+                           
+                           <button id="submit_appr" tabindex="0" type="button" class="btn btn-primary" data-bind="visible: areActionsVisible() && isSubmitActionAvailable() && conditions().length > 0, click: submitForApproval, disable: areRulesExpired()">
+                                @Translation.GetRaw("Project.SubmitForApproval")
+                           </button>
+                           
+                           <button tabindex="0" onclick="recall_nm(this)" id="retractButton" type="button" class="btn btn-danger" data-bind="visible: areActionsVisible() && isRetractApprovalProcessAvailable(), click: retractApprovalProcess">
+                                <!-- @Translation.GetRaw("Project.RetractApprovalProcess") -->
+                                RECALL
+                           </button>
+                           <!-- <button type="button" class="btn btn-danger" data-bind="click: retractExpiredApprovalRules"> -->
+                                <!-- @Translation.Get("xsltRetractExpiredApprovalRules") -->
+                                <!-- RECALL -->
+                           <!-- </button> -->
+                           
+                      </div>
+                      
+                      <div class="col-md-12 col-xs-12" id="hist_hd">
+                           <div class="section_title" onclick="cart_cont_collap_exp(this)" data-toggle="collapse" data-target="#QTAppHistry" style="display: inline-block !important;" aria-expanded="true">
+                              <span>APPROVAL HISTORY</span>
+                              <span class="more-less glyphicon pointer glyphicon-chevron-down" style="float: right;"></span>
+                           </div>
+                      </div>
+                      
+                      <div id="QTAppHistry" class="properties collapse in"  style = "padding: 0px 10px;margin: 0px;"> </div>
+                      
+                      <div data-bind="visible: responsibilities().length > 0"  id="app_frth_grd" class="col-md-12 clearfix collapse in">
+                            
+                           <h4 tabindex="0" class="resp_tlt" data-bind="text: $root.approvalHistoryTitle"></h4>
+                            
+                           <div id="no-more-tables" class="table-responsive tab_content_4" style="display:none">
+                                <table class="table table-bordered" id="app_tb_4">
+                                     <thead>
+                                          <tr>
+                                               <!-- <th tabindex="0">@Translation.GetRaw("xsltStatus")</th> -->
+                                               <!-- <th tabindex="0">@Translation.GetRaw("xsltSubmitionDate")</th> -->
+                                               <!-- <th tabindex="0">@Translation.GetRaw("xsltViolatedBy")</th> -->
+                                               <th tabindex="0" title="ACTION">ACTION</th>
+                                               <th tabindex="0" title="ACTION DATE">ACTION DATE</th>
+                                               <th tabindex="0" title="ACTIONED BY">ACTIONED BY</th>
+                                               <th tabindex="0" title="APPROVAL RULE">@Translation.GetRaw("xsltApprovalRule")</th>
+                                               <!-- <th tabindex="0">@Translation.GetRaw("xsltApprovalRuleDescription")</th> -->
+                                               <th tabindex="0" title="APPROVAL RULE DESCRIPTION">APPROVAL RULE DESCRIPTION</th>
+                                               <!-- <th tabindex="0">@Translation.GetRaw("xsltPerformedBy")</th> -->
+                                               
+                                               <th tabindex="0" title="REQUESTOR COMMENTS">REQUESTOR COMMENTS</th>
+                                               <th tabindex="0" title="COMMENTS">@Translation.GetRaw("xsltComments")</th>
+                                          </tr>
+                                     </thead>
+                                     <tbody data-bind="foreach: responsibilities">
+                                      
+                                          <tr>
+                                          <!--<span data-bind="text:console.log('approval rule cond....', $data.conditions)" ></span>
+                                          <span data-bind="text:console.log('approval rule....', $data)" ></span>-->
+                                               <td data-title="@Translation.GetRaw("xsltStatus")">
+                                                    <i data-bind="css: statusImageClass"></i>
+                                                    <span tabindex="0" data-bind="textOrNbsp: status,attr: {title: status}"></span>
+                                               </td>
+                                               <td tabindex="0" data-bind="text: dateSubmitted" data-title="@Translation.GetRaw("xsltSubmitionDate")"></td>
+                                               <td tabindex="0" data-bind="text: performedBy" data-title="@Translation.GetRaw("xsltPerformedBy")"></td>
+                                               <!-- <td tabindex="0" data-bind="text: sentBy, css: {'blocked-user-color': isSubmitterBlocked}" data-title="@Translation.GetRaw("xsltViolatedBy")"></td> -->
+                                               <td tabindex="0" data-bind="html: conditionName,attr: {title: conditionName}" data-title="@Translation.GetRaw("xsltApprovalRule")"></td>
+                                               <td tabindex="0" data-bind="html: conditionDescription,attr: {title: conditionDescription}" data-title="@Translation.GetRaw("xsltApprovalRuleDescription")"></td>
+                                               
+                                               <td tabindex="0" data-bind="text: approverName, css: {'blocked-user-color': isApproverBlocked}" data-title="@Translation.GetRaw("xsltApprover")"></td>
+                                               <td tabindex="0" data-bind="text: comment,attr: {title: comment}" data-title="@Translation.GetRaw("xsltComments")"></td>
+                                          </tr>
+                                
+                                     </tbody>
+                                </table>
+                           </div>
+                      </div>
+                 </div>
+            </div>
+       </div>
+        </div>
+  </div>
+  
+  
+<!-- NOTIFICATION MODAL POPUP STARTS -->
+<div class="modal fade pop__view_page_hide in" data-backdrop="static" id="approval_notify_pop" role="dialog" >
+<div class="modal-dialog" style="width: 65% !important;top:25% !important;left: 0px;">
+<div class="modal_vh_div">
+<div class="modal-content">
+    <div class="modal-body" id="NOTIFY_MODAL_SECTION" style="padding: 0px;">
+        <div class="modulesecbnr brdr" style="margin-bottom: 0;padding: 5px;">
+            <span id="relatedDelete" class="fontfamilyBold">APPROVAL NOTIFICATION</span>
+            <button type="button" class="close changebg" data-dismiss="modal">X</button>
+        </div>
+        <div class="" style="margin-top:10px;">
+            <span class="tri_sybl" style="padding:0px 5px !important;">
+                <i class="fa fa-exclamation-triangle" style="color:#ffa500 !important;font-size: 32px !important;"></i>
+            </span>
+            <span id="txt_area_cont_appr" style="padding:20px 0px 0 10px !important;text-overflow:unset!important;overflow:visible !important; float:left;" > This is a sample Approval Notification message sample.</span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="col-md-12" style="padding:0px !important;float:none !important">
+            <!--<button type="button" id="Cancel_Delete_Quote_Master" class="sec_btn_rg" data-dismiss="modal" style="float:none !important">CANCEL</button>-->
+            <button type="button" id="appr_notify_button" data-dismiss="modal" class="sec_btn_rg" style="float:none !important">OK</button>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- NOTIFICATION MODAL POPUP ENDS -->
+<!-- NOTIFICATION MODAL POPUP STARTS -->
+<div class="modal fade pop__view_page_hide in" data-backdrop="static" id="approval_comments_pop" role="dialog" >
+<div class="modal-dialog" style="width: 50% !important;left: 0px;">
+<div class="modal_vh_div">
+<div class="modal-content">
+    <div class="modal-body" id="NOTIFY_MODAL_SECTION" style="padding: 0px;">
+        <div class="modulesecbnr brdr" style="margin-bottom: 0;padding: 5px;">
+            <span   class="fontfamilyBold">COMMENT TO APPROVER</span>
+            <button type="button" class="close changebg" data-dismiss="modal">X</button>
+        </div>
+        <div class="" style="margin:10px;">
+            <textarea  id="txt_cmd_sub_app" tabindex="0" data-bind="value: commentToApprover, disable: $root.areRulesExpired(),attr: {title: commentToApprover}" class="form-control" onkeypress="CommentsApprove()"></textarea>              
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="col-md-12" style="padding:0px !important;float:none !important">
+             
+            <button type="button" onclick="gettincomments()" id="appr_comm_add" data-dismiss="modal" class="sec_btn_rg" style="float:none !important">OK</button>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- NOTIFICATION MODAL POPUP ENDS -->
+<script>
+ function showApprcomment() { 
+     $("#approval_comments_pop").modal("show");
+ }
+  function gettincomments() { 
+     var app_commt= $("#txt_cmd_sub_app").val();
+	 $('#Apprcomment').text(app_commt);
+ }
+</script>
+  @Html.Partial("~/Views/Approvals/RetractApprovalCommentTemplate.cshtml")
+<script type="text/javascript" src="/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/AdditionalJSFile/AL.js"></script>

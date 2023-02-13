@@ -1,0 +1,34 @@
+ 
+<script type="text/html" id="ApprovalTemplate">
+    <!--<p>@Translation.GetRaw("xsltApprovalRequired")</p>-->
+    <ul>
+        <!-- ko foreach: conditions -->
+        <li> 
+             <span class="error_notify_top_cls">
+				<img src="../mt/APPLIEDMATERIALS_PRD/Additionalfiles/notifi_Approve.svg" />
+			</span>
+			Following approval rule(s) has to be Approved. @Translation.GetRaw("xsltResponsibleApprover"): <span data-bind="html: approvers"></span> 
+             <br>
+<span class="doticonindent">&#8226;</span>
+          <span data-bind="  html: description.replaceAll('|','<br><span class=\'doticonindent\'>&#8226;</span> ')"></span>
+            <!-- ko if: $data.slider -->
+            @Translation.GetRaw("xsltApprovalProbability"): 
+            <!-- ko with: $data.slider -->
+            <div style="display: inline-block" data-bind="style: { 'background-color': bgColor }">
+                <!-- ko if: isEditable -->
+                <a href="#" data-bind="popover: { templateId: 'SliderTemplate', moduleFactory: getSlider, autoClose: true, placement: 'auto right', title: '@(Translation.GetJS("Cart.Adjust_approval_probability"))' }" class="editable-column">
+                    <img data-bind="attr: { src: bgImage }, visible: bgImage" />
+                </a>
+                <!-- /ko -->
+                <!-- ko ifnot: isEditable -->
+                <img data-bind="attr: { src: bgImage }, visible: bgImage" />
+                <!-- /ko -->
+            </div>
+
+            <!-- /ko -->
+            <!-- /ko -->
+        </li>
+        <!-- /ko -->
+    </ul>
+</script>
+

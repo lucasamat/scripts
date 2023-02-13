@@ -1,0 +1,1138 @@
+<!-- CARTPAGE -->
+<style>
+    th, td {
+        white-space: nowrap;
+    }
+
+    div.dataTables_wrapper {
+        width: 800px;
+        margin: 0 auto;
+    }
+
+    .clearfix.cart-wrapper {
+        padding: 0;
+    }
+
+    .col-md-12.row.content-row {
+        padding: 0;
+    }
+</style>
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.2/bootstrap-table.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.11.3/fc-4.0.1/datatables.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+<script type="text/javascript" src='@Url.MTContent("AdditionalFiles/AMAT/AdditionalJSFile/css/bootstrap-multiselect.js")'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/quotation/user_templates/jqxallcore.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/bootstrap-datepicker.min.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/AdditionalJSFile/SY.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/AdditionalJSFile/TV.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/AdditionalJSFile/CF.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/AdditionalJSFile/SA.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/AdditionalJSFile/CQ.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/AdditionalJSFile/AC.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/AdditionalJSFile/CV.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/quotation/user_templates/colresizable.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/quotation/user_templates/col_resize.js'></script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/quotation/user_templates/bootstrap-treeview-min.js'></script>
+
+
+<script>
+    cpq.ready(function () {
+        CQEPHPTABS();
+        primary_banner();
+
+    });
+    cpq.events.sub("API:cart:updated", function (data) {
+        //CQEPHPTABS();
+    });
+    function CQEPHPTABS() {
+        sales_current_tab = localStorage.getItem("sales_current_tab");
+        console.log("sales_current_tab-----", sales_current_tab)
+        cpq.server.executeScript("CQEPHPTABS", { 'sales_current_tab': sales_current_tab }, function (datas) {
+            var data = datas[0];
+            //var firsttab = datas[1];
+            $("#tab_Name ul#carttabs_head").remove();
+            $('#tab_Name').append(data);
+
+            cartPagePHPClick = localStorage.getItem("cartPagePHPClick")
+            if (sales_current_tab) {
+                $('#tab_Name li#' + sales_current_tab).addClass('active');
+            } else {
+                $('#tab_Name li#Quotes').addClass('active');
+            }
+
+            CommonLeftTreeView('commontreeview');
+            var path = window.location.pathname;
+            var cartpg = path.split("/")[2];
+            if (cartpg == 'Cart.aspx') {
+                $('div#head_highlight').css('cssText', 'top:-12px;')
+            }
+        });
+    }
+
+
+</script>
+<script>
+    var gridViewScroll = null;
+    window.onload = function () {
+        gridViewScroll = new GridViewScroll({
+            elementID: "SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F",
+
+            freezeColumn: true,
+            freezeFooter: true,
+            freezeColumnCssClass: "annual_fixed_trFreeze",
+            freezeFooterCssClass: "GridViewScrollFooterFreeze",
+            freezeHeaderRowCount: 2,
+            freezeColumnCount: 3,
+            onscroll: function (scrollTop, scrollLeft) {
+                console.log(scrollTop + " - " + scrollLeft);
+            }
+        });
+        gridViewScroll.enhance();
+    }
+    function getScrollPosition() {
+        var position = gridViewScroll.scrollPosition;
+        alert("scrollTop: " + position.scrollTop + ", scrollLeft: " + position.scrollLeft);
+    }
+    function setScrollPosition() {
+        var scrollPosition = { scrollTop: 50, scrollLeft: 50 };
+
+        gridViewScroll.scrollPosition = scrollPosition;
+    }
+</script>
+@using WebSite.Controllers
+
+
+
+<style>
+
+    #jqxSplitter {
+        /*margin-top: 60px;*/
+    }
+
+    #cartHeader {
+        display: none;
+    }
+</style>
+
+
+
+<div class="materialMainBan cart_page">
+    <div class="row tabsfiled">
+
+        <div class="tabbable show-large btnmodule">
+            <ul>
+                <!--LEFT SIDE MENU LIST START-->
+                <li>
+                    <a onclick="wholeModules(this)" class="dropdown-toggle" data-toggle="dropdown" href="/Catalogue/CategoryTree.aspx">
+                        <img src="/mt/APPLIEDMATERIALS_PRD/images/attributeimages/tabicon.png" />
+                    </a>
+                    <div class="col-md-12 dropdown-menu left homedrop" role="menu" id="ul_bind"></div>
+                </li>
+                <!-- <ul class="col-md-12 dropdown-menu left homedrop" role="menu" id="ul_bind">
+                <li class="col-md-4 mainicon" title="SYSTEM ADMIN"><a onclick="SYSTEM_ADMIN()" href="/Configurator.aspx?pid=2239" class="row mainiconinner"   name="SYSTEM ADMIN"><div class="row sysadminicon"><img src="/mt/OCTANNER_DEV/Additionalfiles/sys_admin.svg" class="sysadminmain confviewicon"><img src="/mt/OCTANNER_DEV/Additionalfiles/sys_admin_hover.svg" class="sysadminmain_hvr confviewicon"></div> <div class="row icontext">SYSTEM ADMIN</div></a></li>
+                 </ul> -->
+                <!--LEFT SIDE MENU LIST END-->
+                <!--PAGE ICON AND TAB NAME START-->
+                <li class="mopduleheader" id="ModName" style="color: rgb(23, 67, 142);">
+                    <img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/contract_quotes.svg" id="ModuleIcons" style="display: inline-block;">
+                    <span class="main_ban_mod" id="ModuleName1" style="display: inline-block;">Sales</span>
+                </li>
+                <!--PAGE ICON AND TAB NAME END-->
+            </ul>
+        </div>
+        <!--CONFIGURATOR TABS START-->
+        <div id="tab_Name" class="tabbable show-large tabsmenu">
+            <ul id="carttabs_head" class="nav-tabs" style="display:none">
+                <li href="#" class="Quotes">
+                    <a href="#">
+                        <span>Quotes</span>
+                    </a>
+                </li>
+
+
+            </ul>
+        </div>
+        <!--CONFIGURATOR TABS END-->
+    </div>
+    <!--Primary banner surendar start-->
+    <!-- <div class="current_quote_header primary_quote_panel" id="Primary_Panel" style="display:block">
+    </div> -->
+    <div class="material_btn col-md-12 col-sm-12 col-xs-12 col-lg-12 p-0">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 brdr material_btn_bg">
+            <div class="product_tab_icon" id="php_banner_image">
+                <img style="height: 40px;margin-top: -1px;    margin-left: -1px;" />
+            </div>
+            <div class="product_txt_div" style="display:none">
+                <p class="product_txt"></p>
+                <p style="display:none;" class="product_txt_to_top"></p>
+                <p class="product_txt_to_top_banner"></p>
+            </div>
+            <div class="segment_revision_trans_type php_com_class" style="display:none">
+                <P class="segment_revision_trans_type_heading"></P>
+                <P class="segment_revision_trans_type_text"><abbr></abbr></P>
+            </div>
+            <div class="segment_part_number php_com_class" style="display:block">
+                <p class="segment_part_number_heading"></p>
+                <p class="segment_part_number_text"><abbr></abbr></p>
+            </div>
+            <div class="segment_part_description_tree php_com_class" style="display:block">
+                <p class="segment_part_heading"></p>
+                <p class="segment_part_text"><abbr></abbr></p>
+            </div>
+            <div class="segment_quote_id php_com_class" style="display:block">
+                <P class="segment_quote_heading"></P>
+                <P class="segment_quote_text"><abbr></abbr></P>
+            </div>
+            <div class="segment_revision_Acc php_com_class" style="display:block">
+                <P class="segment_revision_Acc_heading"></P>
+                <P class="segment_revision_Acc_text"><abbr></abbr></P>
+            </div>
+            <div class="segment_revision_Sale php_com_class" style="display:none">
+                <P class="segment_revision_Sale_heading"></P>
+                <P class="segment_revision_Sale_text"><abbr></abbr></P>
+            </div>
+
+            <div class="segment_revision_doc_type php_com_class" style="display:none">
+                <P class="segment_revision_doc_type_heading"></P>
+                <P class="segment_revision_doc_type_text"><abbr></abbr></P>
+            </div>
+
+            <div class="segment_revision_account_name php_com_class" style="display:none">
+                <P class="segment_revision_account_name_heading"></P>
+                <P class="segment_revision_account_name_text"><abbr></abbr></P>
+            </div>
+
+            <div class="segment_revision_status php_com_class" style="display:none">
+                <P class="segment_revision_status_heading"></P>
+                <P class="segment_revision_status_text"><abbr></abbr></P>
+            </div>
+
+            <div class="segment_revision_id php_com_class" style="display:block">
+                <P class="segment_revision_heading"></P>
+                <P class="segment_revision_text"><abbr></abbr></P>
+            </div>
+
+            <div class="segment_revision_sale_id php_com_class" style="display:none">
+                <P class="segment_revision_sale_id_heading"></P>
+                <P class="segment_revision_sale_id_text"><abbr></abbr></P>
+            </div>
+
+            <div class="segment_revision_sale_org php_com_class" style="display:none">
+                <P class="segment_revision_sale_org_heading"></P>
+                <P class="segment_revision_sale_org_text"><abbr></abbr></P>
+            </div>
+
+            <div class="segment_revision_quote_owner php_com_class" style="display:none">
+                <P class="segment_revision_quote_owner_heading"></P>
+                <P class="segment_revision_quote_owner_text"><abbr></abbr></P>
+            </div>
+
+
+
+            <div class="segment_revision_poes php_com_class" style="display:none">
+                <P class="segment_revision_poes_heading"></P>
+                <P class="segment_revision_poes_text"><abbr></abbr></P>
+            </div>
+
+            <div class="segment_revision_low php_com_class" style="display:none">
+                <P class="segment_revision_low_heading"></P>
+                <P class="segment_revision_low_text"><abbr></abbr></P>
+            </div>
+
+
+            <div class="order_mgmt_date php_com_class" style="display:block">
+                <P class="order_mgmt_date_heading"></P>
+                <P class="order_mgmt_date_text"><abbr title=""></abbr></P>
+            </div>
+
+            <div class="quote_revision_expiration php_com_class" style="display:none">
+                <P class="quote_revision_expiration_heading"></P>
+                <P class="quote_revision_expiration_text"><abbr title=""></abbr></P>
+            </div>
+
+
+
+            <div class="pull-right">
+                <!-- <button type="button" id="Newrevision" class="btnconfig" onclick="BacktoList(this)">BACK TO LIST</button> -->
+                <button type="button" id="Newrevision1" class="btnconfig" onclick="CreateSow(this)" style="display:none">CREATE SOW</button>
+
+                <button type="button" id="Completesowbtn" class="btnconfig" onclick="CompleteSow(this)" style="display:none">COMPLETE SOW</button>
+                <!-- <button type="button" id="Newrevision" class="btnconfig"><a href="https://rssandbox.webcomcpq.com/QUOTATION/LOADQUOTE.ASPX">BACK TO LIST</a></button> -->
+            </div>
+        </div>
+    </div>
+    <!--Primary banner end-->
+    <!--primary highlighted pannel progress bar starts here  -->
+    <div class="col-lg-12 col-md-12 col-sm-12 progress_bar_header pl-0 pr-0">
+        <div class="row progress-bar-outer">
+            <div class="col progress-bar-step active" id="step1">
+                <!-- complete-->
+                <div class="progress">
+                    <div class="progress-bar" title="Configure" id="configure">Configure</div>
+                </div>
+                <a href="#" class="progress-bar-dot pro-complete-outer bar_tick_img" style="display:none"><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/tick.svg" /></a>
+                <a href="#" class="progress-bar-dot on-process in-active bar_number">1</a>
+            </div>
+            <div class="col progress-bar-step disabled" id="step2">
+                <!-- complete-->
+                <!-- complete -->
+                <div class="progress">
+                    <div class="progress-bar" title="Pricing Review" id="pricing_review">Pricing Review</div>
+                </div>
+                <a href="#" class="progress-bar-dot pro-complete-outer bar_tick_img" style="display:none"><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/tick.svg" /></a>
+                <a href="#" class="progress-bar-dot on-process in-active bar_number">2</a> <!--on-process -->
+            </div>
+            <div class="col progress-bar-step disabled" id="step3">
+                <!-- active-->
+                <!-- complete -->
+                <div class="progress">
+                    <div class="progress-bar" title="Pricing" id="pricing">Pricing</div>
+                </div>
+                <a href="#" class="progress-bar-dot pro-complete-outer bar_tick_img" style="display:none"><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/tick.svg" /></a>
+                <a href="#" class="progress-bar-dot on-process in-active bar_number">3</a>
+            </div>
+            <div class="col progress-bar-step disabled" id="step4">
+                <!-- active -->
+                <div class="progress">
+                    <div class="progress-bar" title="Approvals" id="approval">Approvals</div>
+                </div>
+                <a href="#" class="progress-bar-dot pro-complete-outer bar_tick_img" style="display:none"><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/tick.svg" /></a>
+                <a href="#" class="progress-bar-dot on-process in-active bar_number">4</a>
+            </div>
+            <div class="col progress-bar-step disabled" id="step5">
+                <!-- active -->
+                <div class="progress">
+                    <div class="progress-bar" title="Output Documents" id="quote_documents">Output Documents</div>
+                </div>
+                <a href="#" class="progress-bar-dot pro-complete-outer bar_tick_img" style="display:none"><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/tick.svg" /></a>
+                <a href="#" class="progress-bar-dot on-process in-active bar_number">5</a>
+            </div>
+            <div class="col progress-bar-step disabled" id="step6">
+                <!-- active -->
+                <div class="progress">
+                    <div class="progress-bar" title="Legal Sow" id="legal_sow">Legal Sow</div>
+                </div>
+                <a href="#" class="progress-bar-dot pro-complete-outer bar_tick_img" style="display:none"><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/tick.svg" /></a>
+                <a href="#" class="progress-bar-dot on-process in-active bar_number">6</a>
+            </div>
+
+            <div class="col progress-bar-step disabled" id="step7">
+                <!-- active -->
+                <div class="progress">
+                    <div class="progress-bar" title="Clean Booking Checklist" id="clean_booking_checklist">Clean Booking Checklist</div>
+                </div>
+                <a href="#" class="progress-bar-dot on-process in-active bar_number" id="approve_status_numb"><span>7</span></a>
+                <a href="#" class="progress-bar-dot pro-complete-outer bar_tick_img" id="approve_status_compl" style="display:none"><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/tick.svg" /></a>
+                <a href="#" class="progress-bar-dot pro-complete-outer" id="approve_status_reject" style="display:none"><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/red_cross_icon.svg" /></a>
+
+            </div>
+
+            <div class="col progress-bar-step disabled" id="step8">
+                <!-- active -->
+                <div class="progress">
+                    <div class="progress-bar" title="Booked" id="booked">Booked </div>
+                </div>
+                <a href="#" class="progress-bar-dot on-process in-active bar_number">8</a>
+            </div>
+            <!--
+            <div class="col progress-bar-step disabled">
+
+                <div class="progress">
+                    <div class="progress-bar" title="Contract Converted">CONTRACT CONVERTED</div>
+                </div>
+                <a href="#" class="progress-bar-dot on-process in-active">9</a>
+            </div>-->
+
+
+            <div class="col progress-bar-step active">
+                <div class="progress">
+                    <a onclick="complete_stage(this)" class="mark_btn">
+                        <div class="progress-bar" style="text-indent: 10px;" title="Mark Stage as Complete" id="mark_stage_as_complete">
+                            COMPLETE STAGE
+                        </div>
+                    </a>
+                    <a href="#" class="progress-bar-dot pro-complete-outer" style="
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            display: block;
+
+            top: 16px;
+            right: 0;
+            margin-top: -16px;
+            margin-left: -15px;
+            border-radius: 50%;
+            z-index: 1;
+            text-align: center;
+            font-family: 'Arial-Black';
+        ">
+                        <!-- <img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/Blue_circle_tick.svg"></a> -->
+                        <img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/tick.svg">
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!--primary highlighted pannel progress bar ends here  -->
+    <!--Notification Banner starts here -->
+    <!-- <div class="emp_notifiy" style="display: none;">
+    <div class="col-md-12 page_alert_notifi"   id="PageAlert">
+        <div class="row modulesecbnr brdr" onclick="call_vertical_scrl()" data-toggle="collapse" data-target="#alertnotify" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i>
+        </div>
+        <div  id="alertnotify" class="col-md-12  alert-notification  brdr collapse in" >
+        </div>
+    </div>
+        </div>  -->
+    <!--Notification Banner ends here -->
+    <div class="col-md-12 row content-row">
+        <div class="row cart sectiontemp" id="cartContainer" data-bind="css: { 'no-action-images': !cartActionsModel().displayImagesForCartActions() } ">
+            <div class="row row-offcanvas row-offcanvas-left quote-page-main-container collapsed-actions-visible" data-bind="visible: isInitalized, css: { 'active': areActionsActive }">
+                <div class="clearfix cart-wrapper" data-bind="css: { 'cart-view-mode': isInViewMode }">
+                    @Html.PartialWithNameAsComment("Sections/Notifications")
+                    <div id='jqxSplitter'>
+                        <div class="col-md-2 col-lg-2 pad-8 a1 " id="content1234" style="position: relative;height: auto !important;background-color: #fff">
+                            <div class="control treeview" id="lefttreepan">
+                                <div class="row modulesecbnr brdr">
+                                    <div id="header_label_left"></div>
+                                </div>
+                                <div id="commontreeview"></div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-10 col-lg-10 pad-8" id="content12345" style="background-color: #fff">
+                            <div class="downarrow">
+                                <span onclick="iconhide()" class="iconhide icon expand-icon" style="display: none;"><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/expand_icon.svg"></span>
+                                <span onclick="iconshow()" class="iconshow icon expand-icon" style=""><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/collpase_icon.svg"></span>
+                            </div>
+                            <!--<div class="Dummysplitter iconhide" onclick="iconhide()"></div>
+                            <div class="Dummysplitter iconshow" onclick="iconshow()"></div>-->
+                            <div class="row modulesecbnr brdr" id="FirstSecInformation">
+                                <div id="header_label"></div>
+                            </div>
+                            <div class="row brdr material_btn_bg buttonbnr Segment_inner_ban_details secondary_highlight_panel" id="seginnerbnr">
+                                <div class="product_tab_icon">
+                                    <!--<img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/revision.svg"/>-->
+                                </div>
+                                <div class="product_txt_div_child secondary_highlight" style="display: block;">
+                                    <P class="product_txt_child"></P>
+                                    <P class="product_txt_to_top_child"></P>
+                                </div>
+                                <div class="segment_part_number_child secondary_highlight">
+                                    <P class="segment_part_number_heading_child"></P>
+                                    <P class="segment_part_number_text_child">
+                                        <abbr title=""></abbr>
+                                    </P>
+                                </div>
+                                <div class="segment_part_description_child secondary_highlight">
+                                    <P class="segment_part_heading_child"></P>
+                                    <P class="segment_part_text_child">
+                                        <abbr title="OC Tanner"></abbr>
+                                    </P>
+                                </div>
+                                <div class="segment_plantid_child secondary_highlight">
+                                    <P class="segment_forth_heading_child"></P>
+                                    <P class="segment_forth_text_child"></P>
+                                </div>
+
+                                <div class="segment_price_rules_main secondary_highlight">
+                                    <P class="segment_fifth_rules_heading"></P>
+                                    <P class="segment_fifth_rules_txt"></P>
+                                </div>
+                            </div>
+                            <div class="row tabsmenu2" id="COMMON_TABS" style="display:none">
+                                <ul class="nav nav-tabs"></ul>
+                            </div>
+
+                            <div class="segment_table_outer col-lg-12 p-0 margtop10">
+                                <iframe src="../../quotation/Approvals.aspx" loading="lazy" height="800px" width="100%" id="approvalIframe" title="Approve Iframe" style="display:none"></iframe>
+                                <div class="col-lg-12 segment_table pl-0 pr-0" id="div_CTR_quote_prevw" style="display:none"></div>
+
+                                <div class="pull-right display_gird" id="anual_pick" onchange="edit_annual_pick()" style="display:none">
+                                    <span>View</span>
+                                    <select id="anual_grid_picklist">
+                                        <option id="anual_contract_info">Contract Information</option>
+                                        <option id="anual_pricing_manual">Pricing Review - Manual Information</option>
+                                        <option id="anual_pricing_summary">Pricing - Summary Information</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-12 segment_table pl-0 pr-0" id="div_CTR_related_list" style="display:none"></div>
+
+                                <div class="col-lg-12 segment_table pl-0 pr-0" id="div_CTR_related_list1" style="display:none"></div>
+
+                                <!--<div class="col-md-12 col-lg-12 pr-0">-->
+                                <div class="col-md-12 col-lg-12 brd0_pad0" id="TREE_div" style="display:none"></div>
+                                <div class="col-md-12 col-lg-12 brd0_pad0 pad_top10" id="iframe_catalog" style="display:none"></div>
+
+
+                                <div class="cartContainer">
+                                    @Html.PartialWithNameAsComment("Sections/CustomFields")
+
+
+                                </div>
+
+                            </div>
+                            <!--</div>	-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.PartialWithNameAsComment("Templates/CellTemplates")
+@Html.PartialWithNameAsComment("SliderTemplate")
+@Html.PartialWithNameAsComment("Templates/TotalsTemplate")
+@Html.PartialWithNameAsComment("/Views/CartList/Dialogs/ReassignCartDialogTemplate.cshtml")
+@Html.PartialWithNameAsComment("/Views/Cart/Dialogs/CreatePartialOrderDialogTemplate.cshtml")
+@Html.PartialWithNameAsComment("Templates/QuoteFilterTemplates")
+@Html.PartialWithNameAsComment("Dialogs/UpgradeProductsProgressBarTemplate")
+@Html.PartialWithNameAsComment("/Views/Cart/Dialogs/PricebookMissingForMarketDialogTemplate.cshtml")
+<!-- VIEW MODAL 'BEGINS' -->
+<div class="modal fade in pop__view_page_hide" data-backdrop="static" id="cont_viewModalSection" role="dialog">
+    <div class="modal-dialog">
+        <!-- style="width: 1020px;" -->
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="VIEW_MODAL_SECTION">
+                    <div id="VIEW_DIV_ID"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- VIEW MODAL 'ENDS' -->
+<!-- VIEW MODAL 'BEGINS' -->
+<div class="modal fade in pop__view_page_hide" data-backdrop="static" id="SUBMIT_MODAL_SECTION" role="dialog">
+    <div class="modal-dialog" style="width: 1020px;">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="VIEW_MODAL_SECTION">
+                    <div id="VIEW_DIV_ID"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- VIEW MODAL 'ENDS' -->
+<!-- DELETE MODAL 'BEGINS' -->
+<div class="modal fade pop__view_page_hide" data-backdrop="static" id="cont_CommonModalDelete" role="dialog">
+    <div class="modal-dialog" style="width: 550px!important;">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="COMMON_DELETE_MODAL" style="padding: 0px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- DELETE MODAL 'ENDS' -->
+<div class="modal fade in pop__view_page_hide" data-backdrop="static" id="container_service" role="dialog">
+    <div class="modal-dialog" style="width: 550px !important;">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="VIEW_MODAL_SECTION">
+                    <div id="VIEW_DIV_ID"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- RELATED LIST MULTI-EDIT MODAL 'BEGINS' -->
+<div class="modal fade in pop__view_page_hide" data-backdrop="static" id="cont_multiEditModalSection" role="dialog">
+    <div class="modal-dialog" style="width: 550px;">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="VIEW_MODAL_SECTION">
+                    <div id="RL_EDIT_DIV_ID"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- RELATED LIST MULTI-EDIT MODAL 'ENDS'  -->
+<!-- VIEW PROGRESS BAR MODAL 'BEGINS'   -->
+<div class="modal fade" data-backdrop="static" id="progress_bar_modal" role="dialog">
+    <div class="modal-dialog" style="width: 550px !important;">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="PROGRESS_MODAL" style="padding: 10px 10px 0;">
+                    <div id="progress-bar-model-text" style="text-align:left;padding-bottom: 10px;"></div>
+                    <div class="progress">
+                        <div id="dynamic" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height:20px;">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- VIEW PROGRESS BAR MODAL 'ENDS'   -->
+<!--bulk add popup for simple products start here -->
+<div class="modal fade" tabindex="-1" role="dialog" id="progress_bar_sscm_popup" aria-hidden="true">
+    <div class="modal-dialog bg-white" id="edit_decrip">
+        <div class="modal-content">
+            <div class="modal-header revision_edit_decripheader">
+                <span class="modal-title sales-org-modal-header">ACQURING EVENTA FROM SSCM</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="fixed-table-body">
+
+                <div class="col-md-12 progress_out">
+                    <div class="partno-lbl col-md-12 pl-0 pr-0"><p>Please wait while events are acquired from SSCM</p></div>
+                    <div class="progress col-md-12 pos-relative p-0" style="height: auto;">
+                        <div id="progress_sscm_dynamic" class="progress-bar progress-bar active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height:20px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button id="progress_bar_save" data-dismiss="modal" class="btn btn-list-cust">ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--bulk add popup for simple products ends here -->
+<!-- VIEW PROGRESS BAR MODAL 'BEGINS'   -->
+<div class="modal fade" data-backdrop="static" id="progress_bar_modal" role="dialog">
+    <div class="modal-dialog" style="width: 550px !important;">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="PROGRESS_MODAL" style="padding: 10px 10px 0;">
+                    <div id="progress-bar-model-text" style="text-align:left;padding-bottom: 10px;"></div>
+                    <div class="progress">
+                        <div id="dynamic" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height:20px;">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- VIEW PROGRESS BAR MODAL 'ENDS'   -->
+<!--CBC popup start here -->
+<button id="trigger_cbc_btn" class="btnconfig" data-target="#cbcpopup" data-toggle="modal" style="display:none"></button>
+<div class="modal fade" tabindex="-1" role="dialog" id="cbcpopup" aria-hidden="true">
+    <div class="modal-dialog bg-white" id="edit_decrip" style="width: 1020px;">
+        <div class="modal-content">
+            <div class="modal-header revision_edit_decripheader">
+                <span class="modal-title sales-org-modal-header">CONFIRMATION</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="fixed-table-body">
+                <div class="col-md-12">
+                    <div class="row pad-10 d-flex align-items-center">
+                        <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/confirmation-icon.svg">
+
+
+                        <div class="product_txt_to_top_child help_text" style="float: left;">
+                            <abbr title="The Clean Booking Checklist is completed. By marking the stage complete, the quote will be automatically booked. Are you sure you would like to proceed?">The Clean Booking Checklist is completed. By marking the stage complete, the quote will be automatically booked. Are you sure you would like to proceed?</abbr>
+                        </div>
+                    </div>
+
+                </div>
+                <!--<div class="col-md-12 d-flex align-items-center">
+                  <div class="partno-lbl col-md-3">Part Numbers</div>
+                  <div class="txt-col-sec col-md-7"><textarea id="partnumbers" class="light_yellow txtarea-bulkadd" rows="3" style="width: 100%;" onkeyup="funcBulkAddNotEmpty(this)"></textarea></div>
+                </div>-->
+            </div>
+            <div class="modal-footer">
+                <button id="cbccancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true">NO</button>
+                <button onclick="cbcpop_save(this)" id="cbcsave" data-dismiss="modal" class="btn btn-list-cust">YES</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--CBC popup ends here -->
+<!--bulk add popup for simple products start here -->
+<div class="modal fade" tabindex="-1" role="dialog" id="bulkaddpopup" aria-hidden="true">
+    <div class="modal-dialog bg-white" id="edit_decrip">
+        <div class="modal-content">
+            <div class="modal-header revision_edit_decripheader">
+                <span class="modal-title sales-org-modal-header">BULK ADD PARTS</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="fixed-table-body">
+                <div class="col-md-12">
+                    <div class="row pad-10 bg-lt-wt brdr" id="seginnerbnr">
+                        <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/Secondary Icon.svg">
+                        <div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;">
+                            <div class="product_txt_child"><abbr title="Simple Products Bulk Add">Bulk Add Parts</abbr></div>
+                            <div class="product_txt_to_top_child help_text" style="float: left;"><abbr title="Enter part numbers to add your Parts List...">Enter part numbers to add your Parts List...</abbr></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 d-flex align-items-center">
+                    <div class="partno-lbl col-md-3">Part Numbers</div>
+                    <div class="txt-col-sec col-md-7"><textarea id="partnumbers" class="light_yellow txtarea-bulkadd" rows="3" style="width: 100%;" onkeyup="funcBulkAddNotEmpty(this)"></textarea></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="bulkaddpopupcancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true">CANCEL</button>
+                <button onclick="bulkAddSpareParts()" id="bulkaddsave" data-dismiss="modal" class="btn btn-list-cust">SAVE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--bulk add popup for simple products ends here -->
+<!-- Revision Edit Decription Starts Here  -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="revision_edit_decrip" aria-hidden="true">
+    <div class="modal-dialog bg-white" id="edit_decrip">
+        <div class="modal-content">
+            <div class="modal-header revision_edit_decripheader">
+                <span class="modal-title sales-org-modal-header">EDIT REVISION DESCRIPTION</span>
+                <button type="button" class="close" onclick="salesorgclose()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="fixed-table-body">
+                <div class="col-md-3">
+                    <p>Revision Description</p>
+                </div>
+                <div class="col-md-9">
+                    <textarea id="revision_edit_decrip_text" class="light_yellow" rows="5" style="width: 100%;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="revision_edit_decrip_cancle" class="btn btn-list-cust" data-dismiss="modal" onclick="salesorgclose()" aria-hidden="true">CANCEL</button>
+                <button onclick="revision_edit_decrip()" id="revision_edit_decrip_save" data-dismiss="modal" class="btn btn-list-cust">SAVE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revision Edit Decription Ends Here-->
+<!-- Document Decription Starts Here -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="doc_revision_edit_decrip" aria-hidden="true">
+    <div class="modal-dialog bg-white" id="edit_decrip">
+        <div class="modal-content">
+            <div class="modal-header revision_edit_decripheader">
+                <span class="modal-title sales-org-modal-header">EDIT DESCRIPTION</span>
+                <button type="button" class="close" onclick="doc_desc_close()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="fixed-table-body d-flex align-items-center">
+                <div class="col-md-3 col-md-offset-1 pr-0 text-right">
+                    <p>Document Description</p>
+                </div>
+                <div class="col-md-6">
+                    <textarea id="doc_revision_edit_decrip_text" class="light_yellow" rows="4" style="width: 100%;margin-top:5px;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="doc_revision_edit_decrip_cancle" class="btn btn-list-cust" data-dismiss="modal" onclick="doc_desc_close()" aria-hidden="true">CANCEL</button>
+                <button onclick="doc_revision_edit_decrip()" id="revision_edit_decrip_save" data-dismiss="modal" class="btn btn-list-cust">SAVE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Document Decription Ends Here -->
+<!-- Reject Starts Here-->
+<div class="modal fade in pop__view_page_hide" data-backdrop="static" id="reject_statement" role="dialog">
+    <div class="modal-dialog" style="width:40%">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="reject_statement_body">
+                    <div id="reject_statement_content">
+                        <div class="modal-header revision_edit_decripheader">
+                            <span class="modal-title sales-org-modal-header">Rejection Comment</span>
+                            <button type="button" class="close" onclick="doc_desc_close()" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="fixed-table-body d-flex align-items-center">
+                            <div class="col-md-3 col-md-offset-1 pr-0 text-right">
+                                <p>Comment</p>
+                            </div>
+                            <div class="col-md-6">
+                                <textarea id="doc_revision_edit_decrip_text" class="light_yellow" rows="4" style="width: 100%;margin-top:5px;"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="doc_revision_edit_decrip_cancle" class="btn btn-list-cust" data-dismiss="modal" onclick="doc_desc_close()" aria-hidden="true">CANCEL</button>
+                            <button onclick="customer_rejected(this)" id="reject_description_save" data-dismiss="modal" class="btn btn-list-cust">SAVE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Reject Ends Here-->
+<!-- Preview Approval Starts Here-->
+<div class="modal fade in pop__view_page_hide" data-backdrop="static" id="preview_approval" role="dialog">
+    <div class="modal-dialog" style="width:40%">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="PREVIEW_APPROVAL_BODY">
+                    <div id="PREVIEW_APPROVAL_CONTENT"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Preview Approval Ends Here-->
+<!-- VIEW BILLING MATRIX MODAL 'BEGINS'-->
+<div class="modal fade in pop__view_page_hide" data-backdrop="static" id="billing_matrix_viewModal" role="dialog">
+    <div class="modal-dialog" style="width: 30%">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="billing_matrix_section">
+                    <div id="billing_matrix_section_view_id">
+                        <div class="row modulebnr brdr ma_mar_btm">EDIT MODE</div>
+                        <div class="col-md-12 date_change">
+
+
+
+                            <label class="col-md-4 pl-0 text-right">Billing Date</label>
+                            <input id="BILLING_DATE" type="text" onclick="onclick_datepicker_billing_matrix('BILLING_DATE')" onchange="onchangedatepicker('BILLING_DATE')" class="form-control light_yellow datePickerField wth157fltltbrdbt" readonly="readonly"></input>
+
+                        </div>
+                        <div class="col-md-12 date_change" style="display:None;">
+                            <label class="col-md-4  text-right">Billing Date</label>
+                            <input id="BILLING_DATE_ORIGINAL" type="text" class="form-control light_yellow datePickerField wth157fltltbrdbt"></input>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer col-md-12">
+                    <button type="button" data-dismiss="modal">Cancel</button>
+                    <button type="button" style="margin-right: 6px;" onclick="billing_matrix_date_change()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in pop__view_page_hide" data-backdrop="static" id="delivery_viewModal" role="dialog">
+    <div class="modal-dialog" style="width: 30%">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="delivery_section">
+                    <div id="delivery_section_view_id">
+                        <div class="row modulebnr brdr ma_mar_btm">EDIT MODE</div>
+                        <div class="col-md-12 date_change">
+
+
+
+                            <label class="col-md-4 pl-0 text-right">Delivery Date</label>
+                            <input id="DELIVERY_SCHED_DATE" type="text" onclick="onclick_datepicker_delivery_matrix('DELIVERY_SCHED_DATE')" onchange="onchangedatepicker('DELIVERY_SCHED_DATE')" class="form-control light_yellow datePickerField wth157fltltbrdbt" readonly="readonly"></input>
+
+                        </div>
+                        <div class="col-md-12 date_change" style="display:None;">
+                            <label class="col-md-4  text-right">Delivery Date</label>
+                            <input id="DELIVERY_DATE_ORIGINAL" type="text" class="form-control light_yellow datePickerField wth157fltltbrdbt"></input>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer col-md-12">
+                    <button type="button" data-dismiss="modal">Cancel</button>
+                    <button type="button" style="margin-right: 6px;" onclick="delivery_matrix_date_change()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  VIEW BILLING MATRIX MODAL 'ENDS'-->
+<!--Attachment popup start here-->
+<div class="modal fade" tabindex="-1" role="dialog" id="attachmentPopup" aria-hidden="true">
+    <div class="modal-dialog bg-white" id="edit_decrip">
+        <div class="modal-content">
+            <div class="modal-header revision_edit_decripheader">
+                <span class="modal-title sales-org-modal-header">UPLOAD ATTACHMENT</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="fixed-table-body">
+                <div class="col-md-12">
+                    <div class="row pad-10 bg-lt-wt brdr" id="seginnerbnr">
+                        <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/Secondary Icon.svg">
+                        <div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;">
+                            <div class="product_txt_child"><abbr title="Upload Attachment">Upload Attachment</abbr></div>
+                            <div class="product_txt_to_top_child help_text" style="float: left;"><abbr title="Please click on the file upload icon to add an attachment to your quote revision...">Please click on the file upload icon to add an attachment to your quote revision...</abbr></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 d-flex align-items-center p-0">
+                    <div class="col-md-12 d-flex align-items-center upload_attachment p-0">
+                        <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt">
+                            <label style="display:inline-block">Attachment File Name</label>
+                        </div>
+                        <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val d-flex align-items-center">
+                            <div class="col-md-2">
+                                <span class="hint_icon_req"><i class="fa fa-info-circle autoClosePopover"></i></span>
+                                <span class="required" style="display:none;">*</span>
+                            </div>
+                            <div class="col-md-9 pl-0">
+                                <div id="divDocAttachement"></div>
+                                <!-- <label class="upload_attachment_label"><img class="upload_icon" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/document_upload_icon.svg" width="20px"> <input class="upload_icon_file" type="file" id="my_file" style="display:none;" value="test.pdf" oninput="OnChangeAttachFile()"></label> -->
+                            </div>
+                            <div class="col-md-1"><i class="fa fa-pencil" aria-hidden="true" style="font-size:13px;float:right;color:#cccaca!important"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="Saveattachfilecancel" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true">CANCEL</button>
+                <button onclick="Saveattachfile(this)" id="Saveattachfile" data-dismiss="modal" class="btn btn-list-cust">SAVE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Attachment popup ends here-->
+
+
+
+
+
+<div class="modal fade in pop__view_page_hide" data-backdrop="static" id="replace_account" role="dialog">
+    <div class="modal-dialog bg-white" style="width: 50%;">
+        <div class="modal_vh_div">
+            <div class="modal-content">
+                <div class="modal-body" id="delivery_section">
+                    <div id="delivery_section_view_id">
+                        <div class="row modulebnr brdr ma_mar_btm">REPLACE ACCOUNT</div>
+                        <div class="col-md-12 d-flex align-items-center">
+                            <div class="col-md-1 m-0 text-right pl-5" style="margin: auto;">
+                                <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/warning1.svg">
+                            </div>
+                            <div class="col-md-11">
+                                <p>Replacing this account from your Quote will also replace the account from the CRM Opportunity. Additionally, replacing this account will prevent the account from being displayed in the Customer Facing Document. Are you sure would link to replace this account?</p>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="modal-footer col-md-12">
+                    <button type="button" data-dismiss="modal">Cancel</button>
+                    <button type="button" style="margin-right: 6px;" onclick="cont_openaddnew(this,'')" data-toggle="modal" data-dismiss="modal" data-target="#cont_viewModalSection">Replace</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  VIEW BILLING MATRIX MODAL 'ENDS'-->
+<!-- create Attachment popup Start -->
+<!-- <div class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" id="" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+
+
+<div style="padding-left:0!important;padding-right:5px!important" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in upload_attachment">
+   <div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt"><label style="display:inline-block">Attachment File Name</label></div>
+   <div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val">
+      <div class="col-md-2"><span class="hint_icon_req"><i class="fa fa-info-circle autoClosePopover"></i></span> <span class="required" style="display:none;">*</span></div>
+      <div class="col-md-9">
+         <div id="divDocAttachement"></div>
+         <label class="upload_attachment_label"><img class="upload_icon" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/document_upload_icon.svg" width="20px"> <input class="upload_icon_file" type="file" id="my_file" style="display:none;" value="test.pdf" oninput="OnChangeAttachFile()"></label>
+      </div>
+      <div class="col-md-1"><i class="fa fa-pencil" aria-hidden="true" style="font-size:13px;float:right;color:#cccaca!important"></i></div>
+   </div>
+</div>
+<div class="modal-footer col-md-12"><button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button> <button type="button" id="add-offerings" class="btnconfig" onclick="Saveattachfile()" data-dismiss="modal">SAVE</button></div>
+        </div>
+    </div>
+</div> -->
+<!--create Attachment popup End -->
+
+
+
+
+
+<button id="trigger_document_btn" class="btnconfig" data-target="#document_attach_popup" data-toggle="modal" style="display:none"></button>
+<div class="modal fade" tabindex="-1" role="dialog" id="document_attach_popup" aria-hidden="true">
+    <div class="modal-dialog bg-white" id="edit_decrip" style="width: 1024px;">
+        <div class="modal-content">
+            <div class="modal-header revision_edit_decripheader">
+                <span class="modal-title sales-org-modal-header">UPLOAD ATTACHMENT</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="fixed-table-body">
+                <div class="row pad-10 brdr">
+                    <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/Secondary Icon.svg">
+                    <div class="product_txt_div_child secondary_highlight text-left wid75" style="display: block;">
+                        <div class="product_txt_child"><abbr title=""></abbr></div>
+                        <div class="product_txt_to_top_child help_text" style="float: left;"></div>
+                    </div>
+                    <div class="modal-footer b-0 text-right">
+                        <button id="document_attach_save" class="btn btn-list-cust" data-dismiss="modal" aria-hidden="true">CANCEL</button>
+                        <button onclick="()" id="bulkaddsave" data-dismiss="modal" class="btn btn-list-cust">SAVE</button>
+                    </div>
+                </div>
+                <div class="document_attach_bind"></div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div id="kpirolldowndiv"></div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#jqxSplitter').jqxSplitter({ width: '100%', height: '85.5vh', panels: [{ size: '15%' }, { size: '75%' }] });
+
+        $(".cart_page").parents('html').css("overflow", "hidden");
+        $(".wrap-when-landing-C4C").parents('html').css("overflow", "hidden");
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        //debugger;
+        $("#commontreeview ul li.node-commontreeview:has(.leftside-bar-icons)").addClass("minus_drop");
+        $(document).on("click", ".MultiCheckBox", function () {
+            var detail = $(this).next();
+            detail.show();
+        });
+
+        $(document).on("click", ".MultiCheckBoxDetailHeader input", function (e) {
+            e.stopPropagation();
+            //debugger;
+            var hc = $(this).prop("checked");
+            var val_id = $(this).closest(".MultiCheckBoxDetailHeader").attr("id");
+            $(this).closest(".MultiCheckBoxDetail").find(".MultiCheckBoxDetailBody input").prop("checked", hc);
+            $(this).closest(".MultiCheckBoxDetail").next().UpdateSelect(val_id);
+        });
+
+        $(document).on("click", ".MultiCheckBoxDetailHeader", function (e) {
+            var inp = $(this).find("input");
+            var chk = inp.prop("checked");
+            var val_id = $(this).closest(".MultiCheckBoxDetailHeader").attr("id");
+            //debugger;
+            inp.prop("checked", !chk);
+            $(this).closest(".MultiCheckBoxDetail").find(".MultiCheckBoxDetailBody input").prop("checked", !chk);
+            $(this).closest(".MultiCheckBoxDetail").next().UpdateSelect(val_id);
+        });
+
+        $(document).on("click", ".MultiCheckBoxDetail .cont input", function (e) {
+            e.stopPropagation();
+            var val_id = $(this).closest(".MultiCheckBoxDetail").attr("id");
+            //debugger;
+            $(this).closest(".MultiCheckBoxDetail").next().UpdateSelect(val_id);
+
+            var val = ($(".MultiCheckBoxDetailBody input:checked").length == $(".MultiCheckBoxDetailBody input").length)
+            $(".MultiCheckBoxDetailHeader input").prop("checked", val);
+        });
+
+        $(document).on("click", ".MultiCheckBoxDetail .cont", function (e) {
+            var inp = $(this).find("input");
+            var chk = inp.prop("checked");
+            inp.prop("checked", !chk);
+            var val_id = $(this).closest(".MultiCheckBoxDetail").attr("id");
+            var multiCheckBoxDetail = $(this).closest(".MultiCheckBoxDetail");
+            var multiCheckBoxDetailBody = $(this).closest(".MultiCheckBoxDetailBody");
+            multiCheckBoxDetail.next().UpdateSelect(val_id);
+
+            var val = ($(".MultiCheckBoxDetailBody input:checked").length == $(".MultiCheckBoxDetailBody input").length)
+            $(".MultiCheckBoxDetailHeader input").prop("checked", val);
+        });
+
+        $(document).mouseup(function (e) {
+            var container = $(".MultiCheckBoxDetail");
+            if (!container.is(e.target) && container.has(e.target).length === 0) {
+                container.hide();
+            }
+        });
+    });
+
+    var defaultMultiCheckBoxOption = { width: '220px', defaultText: 'Select Below', height: '200px', attr_id: '' };
+
+    jQuery.fn.extend({
+        CreateMultiCheckBox: function (options) {
+
+            var localOption = {};
+            localOption.width = (options != null && options.width != null && options.width != undefined) ? options.width : defaultMultiCheckBoxOption.width;
+            localOption.defaultText = (options != null && options.defaultText != null && options.defaultText != undefined) ? options.defaultText : defaultMultiCheckBoxOption.defaultText;
+            localOption.height = (options != null && options.height != null && options.height != undefined) ? options.height : defaultMultiCheckBoxOption.height;
+            localOption.attr_id = (options != null && options.attr_id != null && options.attr_id != undefined) ? options.attr_id : defaultMultiCheckBoxOption.attr_id;
+            this.hide();
+            this.attr("multiple", "multiple");
+            var divSel = $("<div class='MultiCheckBox' id ='" + localOption.attr_id + "'><span>" + localOption.defaultText + "</span><span class='k-icon k-i-arrow-60-down'><img src='/mt/APPLIEDMATERIALS_PRD/Additionalfiles/select_icon.svg' class='MultiCheckBox_dorparrow'></span></div>").insertBefore(this);
+            divSel.css({ "width": localOption.width, "pointer-events": "none" });
+
+            var detail = $("<div class='MultiCheckBoxDetail' id ='" + localOption.attr_id + "'><div class='MultiCheckBoxDetailHeader' id ='" + localOption.attr_id + "' style ='display:none'></div><div class='MultiCheckBoxDetailBody'></div></div>").insertAfter(divSel);
+            detail.css({ "width": parseInt(options.width) + 10, "max-height": localOption.height });
+
+            var multiCheckBoxDetailBody = detail.find(".MultiCheckBoxDetailBody");
+            //<div class='MultiCheckBoxDetailBody'></div>
+            this.find("option").each(function () {
+                var val = $(this).attr("value");
+                var val_id = $(this).attr("id");
+                if (val == undefined)
+                    val = '';
+                if (val_id == undefined)
+                    val_id = '';
+                try {
+                    if ($(this).attr("selected") == 'selected') {
+                        add_class = 'checked'
+                    }
+                    else {
+                        add_class = ''
+                    }
+                }
+                catch {
+                    console.log('')
+                }
+                multiCheckBoxDetailBody.append("<div class='cont'><div><input type='checkbox' class='mulinput' id='" + val_id + "' value='" + val + "' " + add_class + "/></div><div>" + $(this).text() + "</div></div>");
+
+
+            });
+
+            multiCheckBoxDetailBody.css("max-height", (parseInt($(".MultiCheckBoxDetail").css("max-height")) - 28) + "px");
+        },
+        UpdateSelect: function (attr_id = "") {
+            var arr = [];
+            var arr_val = ""
+
+            this.prev().find(".mulinput:checked").each(function () {
+                arr.push($(this).val());
+            });
+
+            this.val(arr);
+            console.log('arr------', arr)
+            console.log('attr_id---update--', attr_id)
+            Entitlement_multiselect(this, arr);
+            if (arr == "") {
+                arr_val = "Select Below"
+            }
+            else {
+                arr_val = arr
+            }
+            document.querySelector(".MultiCheckBox#" + attr_id).innerHTML = '<span>' + arr_val + '</span><span class="k-icon k-i-arrow-60-down"><img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/select_icon.svg" class="MultiCheckBox_dorparrow"></svg></span>'
+            /* $(arr).each(function (index) {
+                 document.querySelector(".MultiCheckBox").innerHTML += "<span>"+ arr[index] +"</span>"
+             }); */
+
+
+        },
+    });
+
+
+
+
+
+
+</script>

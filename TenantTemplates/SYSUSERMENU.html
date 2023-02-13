@@ -1,0 +1,132 @@
+<!--UserMenu-->
+@using Webcom.Configurator
+@using Webcom.Configurator.Crm.SalesForce
+<li class="@(SFEnvironment.UserCameFromSF ? " userdrop " : "hide-userdrop fix-color ")">
+	<a class="dropdown-toggle customer-menu" data-toggle="dropdown" href="#">
+		<div class="customer-menu-closing-div" data-bind="click: turnOffIcon, visible: iconClicked"></div> <span class="customer-icon" onclick="customerIcon(this)" data-bind="click: toggleIcon, css: {'icon-clicked': iconClicked}">&#xe082;</span>
+	</a>
+	<ul class="dropdown-menu pull-right customer-menu-dropdown" role="menu">
+        <!--USER MENU START-->
+		<li class="list-header"> 
+            <span class="initials" data-bind="text: getUserInitials('@HttpUtility.JavaScriptStringEncode(UserEnvironment.Current.User.Name)')"></span>
+			<div class="user-info"> 
+                <span class="user-name">@UserEnvironment.Current.User.Name</span>
+                <span class="user-position">@UserEnvironment.Current.User.UserType.Name</span> 
+            </div>
+		</li>
+		<li><a href="/multiusers/UserPersonalizationPage.aspx">@Translation.Get("Default.master.UserPage")</a></li>
+        <li class="divider hidden"></li>
+        @if (UserEnvironment.CanBulkReassignQuotes) {
+        <li><a href="/multiusers/BulkQuoteReassign.aspx">@Translation.Get("Multiusers.master.BulkQuoteReassign")</a></li>
+        } 
+        @if (UserEnvironment.CanManageCompaniesLocaly) {
+        <li><a href="/multiusers/UserAdministerCompaniesList.aspx">@Translation.Get("Multiusers.master.AdministerCompanies")</a></li>
+        } 
+        @if (UserEnvironment.CanManageGlobalTemplates) {
+        <li><a href="/multiusers/DocumentGenerationGlobalTemplateList.aspx">@Translation.Get("DocumentGenerationTemplates.ManageGlobalDocumentTemplates")</a></li>
+        } 
+        @if (UserEnvironment.CanManageDocumentTemplates) {
+        <li><a href="/multiusers/DocumentGenerationContentList.aspx">@Translation.Get("DocumentGenerationTemplates.ManageContentDocuments")</a></li>
+        }
+        <li><a href="/multiusers/UserManageCustomer.aspx">@Translation.Get("Multiusers.master.ManageCustomers")</a></li>
+        @if (UserEnvironment.CanManageDocumentTemplates) {
+        <li><a href="/multiusers/DocumentGenerationTemplateList.aspx">@Translation.Get("DocumentGenerationTemplates.ManageDocumentTemplates")</a></li>
+        }
+        <li><a href="/multiusers/ManageGeneratedQuotes.aspx">@Translation.Get("Multiusers.master.ManageGeneratedQuotes")</a></li>
+        @if (UserEnvironment.CanManagePricebooks) {
+        <li><a href="/multiusers/PricebookTableList.aspx">@Translation.Get("PricebookTableList.ManagePricebooks")</a></li>
+        } 
+        @if (UserEnvironment.CanManageProducts) {
+        <li><a href="/multiusers/ProductList.aspx">@Translation.Get("multiusers.ManageProducts")</a></li>
+        } 
+        @if (UserEnvironment.CanManageCustomTables) {
+        <li><a href="/multiusers/CustomTablesList.aspx">@Translation.Get("multiusers.CustomTablesList.Title")</a></li>
+        } 
+        @if (UserEnvironment.CanManageUsersLocaly) {
+        <li><a href="/multiusers/UserAdministerUsersList.aspx">@Translation.Get("Multiusers.master.AdministerUsers")</a></li>
+        }
+        <li><a href="/multiusers/QuoteLayout.aspx">@Translation.Get("multiusers.QuoteLayout")</a></li>
+        @if (UserEnvironment.CanUseReportModule) {
+        <li><a href="/stats/ReportModule.aspx">@Translation.Get("Multiusers.master.Reports")</a></li>
+        }
+        <!--SETUP MENU START-->
+		<li id="setupmenu">
+			<a data-toggle="dropdown" href="#">	<i class="fa fa-caret-left"></i> &nbsp;@Translation.Get("Menu.Setup")&nbsp;</a>
+			<ul role="menu" id="setupmenulist">
+				<li><a href="/admin/AdminTransfer.aspx?Log=1">@Translation.Get("Menu.Setup")</a>
+				</li>
+				<!-- <li data-toggle="modal" data-target="#loderModal2"><a  href="/Configurator.aspx?pid=271" onclick="modconf(this)" >MODULE CONFIGURATION </a></li>-->
+				<li><a href="/DeveloperConsole" target="_blank">@Translation.Get("Menu.DeveloperConsole")</a>
+				</li>
+				<li><a href="/ScriptWorkbench" target="_blank">@Translation.Get("Menu.ScriptWorkbench")</a>
+				</li>
+				<li><a href="https://s21.webcomcpq.com/SetupSpa/event-log" target="_blank">@Translation.Get("Menu.Log")</a>
+				</li>
+			</ul>
+        </li>
+        <!--SETUP MENU END-->
+		<li class="divider hidden"></li>
+        <li><a href="/Logoff.aspx">@Translation.Get("View.CartSummery.LogOut")</a></li>
+        <!--USER MENU END-->
+	</ul>
+</li>
+<!-- SPINNER START-->
+<div class="modal fade in" id="loderModal2" role="dialog" aria-hidden="false" style="overflow-y: hidden;">
+	<div class="modal-dialog" style="width: 100%;">
+		<div class="modal-content" style="height: 100% !important;width: 90px;background-color: transparent;margin-left: 45% !important;box-shadow: none !important;border: 0 !important;position: fixed !important;">
+			<div class="modal-header" style="background-color: transparent;border: 0 !important;box-shadow: none !important;">
+				<!-- <img src="/mt/APPLIEDMATERIALS_PRD/images/attributeimages/OCT-ROTATE.gif" alt="Smiley face" /> -->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- SPINNER END-->
+<script>
+	function modconf(txt){
+	  	$('.overlay').css('display','block');
+	  	 
+	  	var mod_heading = $(txt).text();
+  		mod_heading = mod_heading.replace(/  +/g, ' ');
+		var mod_title_split_1,mod_title_split_1_1,mod_title;
+	  	if(mod_heading.indexOf(' ') > -1)
+		{
+			var mod_title_split = mod_heading.split(' ');
+			mod_title_split_1 = mod_title_split[0].substring(0,1).toUpperCase();
+			mod_title_split_1_1 = mod_title_split[0].substring(1).toLowerCase();
+			var mod_title_split_2 = mod_title_split[1].substring(0,1).toUpperCase();
+			var mod_title_split_2_1 = mod_title_split[1].substring(1).toLowerCase();
+			mod_title = mod_title_split_1+mod_title_split_1_1+' '+mod_title_split_2+mod_title_split_2_1;
+		}
+		else
+		{
+			mod_title_split_1 = mod_heading.substring(0,1).toUpperCase();
+			mod_title_split_1_1 = mod_heading.substring(1).toLowerCase();
+			mod_title = mod_title_split_1+mod_title_split_1_1;
+		}
+	  	localStorage.setItem("module_main_txt", mod_title);
+	  	localStorage.setItem("mod_cof_id", "");
+	  }
+</script>
+<script>
+	function customerIcon(customer)
+	{
+		setTimeout(function(){
+	  		 
+			var customer_class = $(customer).attr('class');
+			 
+			if(customer_class)
+			{
+				var cust_cls = customer_class.indexOf('icon-clicked');
+				if(cust_cls >=0)
+				{
+					$('.tabsfiled').css('z-index','2');
+					$('.material_btn_bg').css('z-index','2');
+				}
+				else{
+					$('.tabsfiled').css('z-index','9');
+					$('.material_btn_bg').css('z-index','9');
+				}
+			}
+	  	}, 100);
+	}
+</script>

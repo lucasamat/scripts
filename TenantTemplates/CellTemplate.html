@@ -1,0 +1,265 @@
+<script type="text/html" id="valueCellTemplate">
+    <span class="description-cell ellipsis example tooltip-if-long" data-bind="textOrNbsp: value, tooltip: { title: value, placement: 'auto top' }"></span>
+</script>
+
+<script type="text/html" id="editableCellTemplate">
+    <input type="text" class="form-control numberCell" data-bind="numericValue: value, onEnterKey: $root.calculate, selectFocusOnRender: isFocused" />
+</script>
+
+<script type="text/html" id="readonlyEditableCellTemplate">
+    <div class="numberCell">
+        <span data-bind="text: $root.currencySign, visible: isPrice"></span>
+        <span data-bind="text: value"></span>
+        <span data-bind="visible: isDiscount">%</span>
+    </div>
+</script>
+<!-- ko if: $root && $root.keydownEditableGroupsCellHandler  -->
+<script type="text/html" id="textMathCellTemplate">
+    <div data-bind="css: { 'input-group col-md-12 clear-padding': hasModifiedComputedField }" class="fiori3-input-group">
+        <span class="input-group-addon" data-bind="visible: hasModifiedComputedField, tooltip: { title: modifiedComputedFieldMsg }" tabindex="0"><span class="sap-icon">&#xe094;</span></span>
+        <input type="text" class="form-control" data-bind="textInput: value, css: { hasError: errorMessage, 'has-modified-computed-field': hasModifiedComputedField }, attr: { title: errorMessage() ? errorMessage() : '', id: tabId + '_' + editableGroup  }, selectFocusOnRender: isFocused, executeOnEnter: $root.calculate, event: { blur: function(){ if($data.autoCalculate) $root.calculate(); }, keydown:  $parentContext.$root.keydownEditableGroupsCellHandler },  hasFocus: id == window.lastActiveElementId" />
+    </div>
+</script>
+<!-- /ko -->
+<!-- ko ifnot: $root && $root.keydownEditableGroupsCellHandler  -->
+<script type="text/html" id="textMathCellTemplate">
+    <div data-bind="css: { 'input-group col-md-12 clear-padding': hasModifiedComputedField }" class="fiori3-input-group">
+        <span class="input-group-addon" data-bind="visible: hasModifiedComputedField, tooltip: { title: modifiedComputedFieldMsg }" tabindex="0"><span class="sap-icon">&#xe094;</span></span>
+        <input type="text" class="form-control" data-bind="textInput: value, css: { hasError: errorMessage }, attr: { title: errorMessage() ? errorMessage() : '', id: tabId + '_' + editableGroup  }, selectFocusOnRender: isFocused, executeOnEnter: $root.calculate, event: { blur: function(){ if($data.autoCalculate) $root.calculate(); }}" />
+    </div>
+</script>
+<!-- /ko -->
+<script type="text/html" id="textareaMathCellTemplate">
+    <textarea data-bind="value: value, event: { change: function(caller) { if($root.onChange) { $root.onChange(caller) } } }, css: { hasError: errorMessage }, attr: { title: errorMessage() ? errorMessage() : '', id: tabId + '_' + editableGroup }" class="form-control"></textarea>
+</script>
+
+<script type="text/html" id="attributeCellTemplate">
+    <select class="form-control" data-bind="select2: { selectedOptions: selectedRow, ajax: getSearchResults, onSelect: function(e){ onSelect(e); $root.calculate(); }, onUnselect: function(e){ onUnselect(e); $root.calculate(); }, placeholder: placeholder, allowClear: true, minimumInputLength: 0, closeOnSelect: true }, attr: { id: tabId + '_' + editableGroup }" style="display: block; width: 100%;">
+    </select>
+</script>
+
+<script type="text/html" id="dropDownCellTemplate">
+    <select class="form-control" data-bind="options: availableOptions(), optionsText:function(item){return item.selectedText}, value: selectedValue, event: { change:  function(){ if( $data.isDirty() ){ $root.calculate()} } }"></select>
+</script>
+
+<!-- ko if: $root && $root.keydownEditableGroupsCellHandler  -->
+<script type="text/html" id="numericMathCellTemplate">
+	<!--ko if: $data.column['name'] != 'NET_PRICE' && $data.column['name'] != 'DISCOUNT'-->
+		<div data-bind="css: { 'input-group col-md-12 clear-padding': hasModifiedComputedField }" class="fiori3-input-group">
+			<!--<span class="input-group-addon" data-bind="visible: hasModifiedComputedField, tooltip: { title: modifiedComputedFieldMsg  }"><span class="sap-icon">&#xe094;</span></span>-->
+			<input type="text" class="form-control numberCell" data-bind="validateInput: { val: value, event: 'keypress input blur' }, numericValue: value, onEnterKey: function() { $root.calculate(); updateCellFocus(tabId + '_' + editableGroup); }, css: { hasError: errorMessage, 'has-modified-computed-field': hasModifiedComputedField }, attr: { title: errorMessage() ? errorMessage() : '', id: tabId + '_' + editableGroup }, selectFocusOnRender: isFocused, event: { blur: function(){ if($data.autoCalculate) $root.calculate(); }, keydown:  $parentContext.$root.keydownEditableGroupsCellHandler }, hasFocus: id == window.lastActiveElementId" />
+		</div>
+	<!-- /ko -->
+	<!--ko if: $data.column['name'] == 'NET_PRICE' -->
+		<div data-bind="css: { 'input-group col-md-12 clear-padding': hasModifiedComputedField }" class="fiori3-input-group">
+			<!--<span class="input-group-addon" data-bind="visible: hasModifiedComputedField, tooltip: { title: modifiedComputedFieldMsg  }"><span class="sap-icon">&#xe094;</span></span>-->
+			<input type="text" class="form-control numberCell" data-bind="validateInput: { val: value, event: 'keypress input blur' }, numericValue: value, onEnterKey: function() { $root.calculate(); updateCellFocus(tabId + '_' + editableGroup); }, css: { hasError: errorMessage, 'has-modified-computed-field': hasModifiedComputedField }, attr: { title: errorMessage() ? errorMessage() : '', id: tabId + '_' + editableGroup }, selectFocusOnRender: isFocused, event: { blur: function(){ if($data.autoCalculate) $root.calculate(); }, keydown:  $parentContext.$root.keydownEditableGroupsCellHandler }, hasFocus: id == window.lastActiveElementId" readonly ondblclick="salespriceeditablity(this)"/>
+		</div>
+	<!-- /ko -->
+	<!--ko if: $data.column['name'] == 'DISCOUNT' -->
+		<div data-bind="css: { 'input-group col-md-12 clear-padding': hasModifiedComputedField }" class="fiori3-input-group">
+			<!--<span class="input-group-addon" data-bind="visible: hasModifiedComputedField, tooltip: { title: modifiedComputedFieldMsg  }"><span class="sap-icon">&#xe094;</span></span>-->
+			<input type="text" class="form-control numberCell" data-bind="validateInput: { val: value, event: 'keypress input blur' }, numericValue: value, onEnterKey: function() { $root.calculate(); updateCellFocus(tabId + '_' + editableGroup); }, css: { hasError: errorMessage, 'has-modified-computed-field': hasModifiedComputedField }, attr: { title: errorMessage() ? errorMessage() : '', id: tabId + '_' + editableGroup }, selectFocusOnRender: isFocused, event: { blur: function(){ if($data.autoCalculate) $root.calculate(); }, keydown:  $parentContext.$root.keydownEditableGroupsCellHandler }, hasFocus: id == window.lastActiveElementId" readonly ondblclick="discounteditablity(this)"/>
+		</div>
+	<!-- /ko -->
+</script>
+<!-- /ko -->
+<!-- ko ifnot: $root && $root.keydownEditableGroupsCellHandler  -->
+<script type="text/html" id="numericMathCellTemplate">
+    <div data-bind="css: { 'input-group col-md-12 clear-padding': hasModifiedComputedField }" class="fiori3-input-group">
+        <span class="input-group-addon" data-bind="visible: hasModifiedComputedField, tooltip: { title: modifiedComputedFieldMsg  }"><span class="sap-icon">&#xe094;</span></span>
+        <input type="text" class="form-control numberCell" data-bind="validateInput: { val: value, event: 'keypress input blur' }, numericValue: value, onEnterKey: function() { $root.calculate(); updateCellFocus(tabId + '_' + editableGroup); }, css: { hasError: errorMessage }, attr: { title: errorMessage() ? errorMessage() : '', id: tabId + '_' + editableGroup }, selectFocusOnRender: isFocused, event: { blur: function(){ if($data.autoCalculate) $root.calculate(); }}" />
+    </div>
+</script>
+<!-- /ko -->
+
+
+<script type="text/html" id="readModeForMathCellTemplate">
+    <div data-bind="css : { numberCell: isNumber }">
+        <!--ko if: isDropDown -->
+        <span data-bind="text: $root.currencySign, visible: isPrice"></span>
+        <span data-bind="text: selectedValue() ? selectedValue().displayText : '' "></span>
+        <!--/ko-->
+        <!--ko ifnot: isDropDown-->
+        <span data-bind="text: $root.currencySign, visible: isPrice && value"></span>
+		
+        <span data-bind="textOrNbsp: value, css: { hasError: errorMessage }, tooltip: { title: errorMessage() ? errorMessage() : '' }"></span>
+        <!--/ko-->
+        <!--ko if: isPrice && $data.column && $data.column.isMRC && $parent.recurringCostPeriod && $parent.recurringPricePeriod-->
+        <!--ko if: isCost && $parent.recurringCostPeriodDisplay()-->
+        <span>/</span> <span data-bind="text: $parent.recurringCostPeriodDisplay"></span>
+        <!--/ko-->
+        <!--ko if: !isCost && $parent.recurringPricePeriodDisplay()-->
+        <span>/</span> <span data-bind="text: $parent.recurringPricePeriodDisplay"></span>
+        <!--/ko-->
+        <!--/ko-->
+        <span data-bind="visible: isDiscount">%</span>
+    </div>
+</script>
+
+<script type="text/html" id="readModeForEditableMathCellTemplate">
+    <div class="text-right" data-bind="css : { numberCell: isNumber }, click: function(){ if($data.isFocused) $data.isFocused(true) }">
+        <!--<span data-bind="visible: hasModifiedComputedField, tooltip: { title: modifiedComputedFieldMsg  }"><span class="sap-icon">&#xe094;</span></span>-->
+      <!--   <span data-bind="text: $root.currencySign, visible: isPrice"></span> -->
+        <!--ko if: isDropDown -->
+        <!--<a href="#" class="editable-column" data-bind="text: selectedValue() ? selectedValue().displayText : '' , css: { hasError: errorMessage, empty: !selectedValue() }, tooltip: { title: errorMessage() ? errorMessage() : 'Click to edit' }, click: function() { startEditing(tabId + '_' + editableGroup) }, attr: { id: tabId + '_' + editableGroup }"></a>-->
+        <a href="#" class="editable-column" data-bind="text: selectedValue() ? selectedValue().displayText : '' , css: { hasError: errorMessage, empty: !selectedValue() },  click: function() { startEditing(tabId + '_' + editableGroup) }, attr: { id: tabId + '_' + editableGroup }"></a>
+        <!--/ko-->
+        <!--ko ifnot: isDropDown-->
+		<!--ko if: $data.column['name'] == 'NET_PRICE' -->
+			<div data-bind="css: { 'input-group col-md-12 clear-padding': hasModifiedComputedField }" class="fiori3-input-group">
+				<input type="text" class="form-control numberCell" data-bind="validateInput: { val: value, event: 'keypress input blur' }, numericValue: value, onEnterKey: function() { $root.calculate(); updateCellFocus(tabId + '_' + editableGroup); }, css: { hasError: errorMessage, 'has-modified-computed-field': hasModifiedComputedField }, attr: { title: errorMessage() ? errorMessage() : '', id: tabId + '_' + editableGroup }, selectFocusOnRender: isFocused, event: { blur: function(){ if($data.autoCalculate) $root.calculate(); }, keydown:  $parentContext.$root.keydownEditableGroupsCellHandler }, hasFocus: id == window.lastActiveElementId" readonly ondblclick="salespriceeditablity(this)"/>
+				<span class="input-group-addon cust_dolor" data-bind="visible: hasModifiedComputedField"><span class="sap-icon">$</span></span>
+			</div>
+		<!-- /ko -->
+		<!--ko if: $data.column['name'] == 'DISCOUNT' -->
+			<div data-bind="css: { 'input-group col-md-12 clear-padding': hasModifiedComputedField }" class="fiori3-input-group">
+				<!--<span class="input-group-addon" data-bind="visible: hasModifiedComputedField, tooltip: { title: modifiedComputedFieldMsg  }"><span class="sap-icon">&#xe094;</span></span>-->
+				<input type="text" class="form-control numberCell" data-bind="validateInput: { val: value, event: 'keypress input blur' }, numericValue: value, onEnterKey: function() { $root.calculate(); updateCellFocus(tabId + '_' + editableGroup); }, css: { hasError: errorMessage, 'has-modified-computed-field': hasModifiedComputedField }, attr: { title: errorMessage() ? errorMessage() : '', id: tabId + '_' + editableGroup }, selectFocusOnRender: isFocused, event: { blur: function(){ if($data.autoCalculate) $root.calculate(); }, keydown:  $parentContext.$root.keydownEditableGroupsCellHandler }, hasFocus: id == window.lastActiveElementId" readonly ondblclick="discounteditablity(this)"/>
+			</div>
+		<!-- /ko -->
+		<!--ko if: $data.column['name'] != 'NET_PRICE' && $data.column['name'] != 'DISCOUNT' -->
+			<a href="#" class="editable-column" data-bind="text: value() ? value() : 'empty', css: { hasError: errorMessage, empty: !value() },  click: function() { startEditing(tabId + '_' + editableGroup) }, attr: { id: tabId + '_' + editableGroup }"></a>
+		<!-- /ko -->
+        <!--/ko-->
+        <!--ko if: isPrice && $data.column && $data.column.isMRC && $parent.recurringCostPeriod && $parent.recurringPricePeriod-->
+        <!--ko if: isCost && $parent.recurringCostPeriodDisplay()-->
+        <span>/</span> <span data-bind="text: $parent.recurringCostPeriodDisplay"></span>
+        <!--/ko-->
+        <!--ko if: !isCost && $parent.recurringPricePeriodDisplay()-->
+        <span>/</span> <span data-bind="text: $parent.recurringPricePeriodDisplay"></span>
+        <!--/ko-->
+        <!--/ko-->
+        <span data-bind="visible: isDiscount">%</span>
+    </div>
+</script>
+
+<script type="text/html" id="marginHealthEditableCellTemplate">
+    <div class="margin-health">
+        <a href="#" data-bind="popover: { templateId: 'SliderTemplate', moduleFactory: getSlider, autoClose: true, viewport: '.cart-wrapper', placement: $root.getViewportWidth() > 800 ? 'auto top' : 'auto left', container: 'body', title: '@(Translation.GetJS("Cart.Adjust_margin_health"))' }" class="editable-column autoClosePopover" data-original-title="">
+            <img data-bind="attr: { src: imageUrl }, visible: imageUrl" />
+        </a>
+    </div>
+</script>
+
+<script type="text/html" id="marginHealthReadonlyCellTemplate">
+    <div class="margin-health">
+        <img data-bind="attr: { src: imageUrl }, visible: imageUrl" />
+    </div>
+</script>
+
+<script type="text/html" id="itemTypeEditableCellTemplate">
+    <a href="#" class="editable-column item-type-column" data-bind="popover: { templateId: 'ItemTypeEditTemplate', moduleFactory: $parent.createItemTypeEditModel , autoClose: true, placement: 'top', title: '@Translation.GetJS("ItemTypes.Title")', container: 'body' }, attr: { id: 'itemTypeEdit_' + $parent.id }">
+        <span data-bind="text: itemTypeName"></span>
+        <span data-bind="visible: baseItemNumber">&nbsp;for&nbsp;<span data-bind="text: baseItemNumber"></span></span>
+    </a>
+</script>
+
+<script type="text/html" id="itemTypeReadonlyCellTemplate">
+    <span>
+        <span data-bind="text: itemTypeName"></span>
+        <span data-bind="visible: baseItemNumber">&nbsp;for&nbsp;<span data-bind="text: baseItemNumber"></span></span>
+    </span>
+</script>
+<!-- ko if: $root && $root.keydownEditableGroupsCellHandler  -->
+<script type="text/html" id="dateCellTemplate">
+    <div class="input-group date-field fiori3-input-group">
+        <span class="input-group-addon" data-bind="visible: hasModifiedComputedField, tooltip: { title: modifiedComputedFieldMsg }"><span class="sap-icon">&#xe094;</span></span>
+        <input type="text" class="form-control" data-bind="
+               value: value,
+               textInput: value,
+               validateInput: { val: value, event: 'keypress input blur' },
+               executeOnEnter: $root.calculate,
+               event: { change: function(){ if($data.autoCalculate) $root.calculate(); },
+               keydown:  $parentContext.$root.keydownEditableGroupsCellHandler },
+               onEnterKey: $root.calculate,
+               attr: { id: tabId + '_' + editableGroup, placeholder: '@Environment.DateFormatString' },
+               hasFocus: id == window.lastActiveElementId,
+               css: { 'has-modified-computed-field': hasModifiedComputedField, 'validation-error': value.isValid && !value.isValid(), 'validation-initial': !document.dirtyList.has($element.id) }">
+        <a tabindex="-1" class="input-group-addon btn btn-default" id="dp4" data-date-format="@Environment.DateFormatString" data-bind="datepicker: value, event: { change: function(){ if ($data.autoCalculate) $root.calculate(); } }">
+            <span class="sap-icon">&#xe0ae;</span>
+        </a>
+    </div>
+</script>
+<!-- /ko -->
+<!-- ko ifnot: $root && $root.keydownEditableGroupsCellHandler  -->
+<script type="text/html" id="dateCellTemplate">
+    <div class="input-group date-field fiori3-input-group">
+        <span class="input-group-addon" data-bind="visible: hasModifiedComputedField, tooltip: { title: modifiedComputedFieldMsg }"><span class="sap-icon">&#xe094;</span></span>
+        <input type="text" class="form-control" data-bind="
+               value: value,
+               textInput: value,
+               validateInput: { val: value, event: 'keypress input blur' },
+               executeOnEnter: $root.calculate,
+               event: { change: function() { if ($data.autoCalculate) $root.calculate(); } },
+               onEnterKey: $root.calculate,
+               attr: { id: tabId + '_' + editableGroup, placeholder: '@Environment.DateFormatString' },
+               hasFocus: id == window.lastActiveElementId,
+               css: { 'validation-error': value.isValid && !value.isValid(), 'validation-initial': !document.dirtyList.has($element.id) }">
+        <a tabindex="-1" class="input-group-addon btn btn-default" id="dp4" data-date-format="@Environment.DateFormatString" data-bind="datepicker: value, event: { change: function(){ if($data.autoCalculate) $root.calculate(); } }">
+            <span class="sap-icon">&#xe0ae;</span>
+        </a>
+    </div>
+</script>
+<!-- /ko -->
+
+<script type="text/html" id="ItemTypeEditTemplate">
+    <div class="item-type-popover">
+        <ul class="chckqty">
+            <li data-bind="visible: showBaseItemType" class="clearfix">
+                <label class="fiori3-radio-button">
+                    <input type="radio" name="itemTypeOpton" data-bind="checked: selectedItemType, value: baseItemType" />
+                    <span>@Translation.Get("ItemType.Base.Label")</span>
+                </label>
+            </li>
+            <!-- ko if: showAlternativeItemType -->
+            <li class="clearfix">
+                <div class="col-md-12 clear-padding">
+                    <div class="col-md-8 clear-padding">
+                        <label class="fiori3-radio-button">
+                            <input type="radio" name="itemTypeOpton" data-bind="checked: selectedItemType, value: alternativeItemType" />
+                            <span>@Translation.Get("ItemType.Alternative.Label")</span>
+                        </label>
+                    </div>
+                    <div class="col-md-4 clear-padding">
+                        <input type="text" class="no-padding-input numberCell" data-bind="numericValue: selectedAlternativeBaseItem, enable: selectedItemType() === alternativeItemType" />
+                    </div>
+                </div>
+            </li>
+            <!-- /ko -->
+            <!-- ko if: showVariantItemType -->
+            <li class="clearfix">
+                <div class="col-md-12 clear-padding">
+                    <div class="col-md-8 clear-padding">
+                        <label class="fiori3-radio-button">
+                            <input type="radio" name="itemTypeOpton" data-bind="checked: selectedItemType, value: variantItemType" />
+                            <span>@Translation.Get("ItemType.Variant.Label")</span>
+                        </label>
+                    </div>
+                    <div class="col-md-4 clear-padding">
+                        <input type="text" class="no-padding-input numberCell" data-bind="numericValue: selectedVariantBaseItem, enable: selectedItemType() === variantItemType" />
+                    </div>
+                </div>
+            </li>
+            <!-- /ko -->
+            <li data-bind="visible: showOptonalItemType" class="clearfix">
+                <label class="fiori3-radio-button">
+                    <input type="radio" name="itemTypeOpton" data-bind="checked: selectedItemType, value: optonalItemType" />
+                    <span>@Translation.Get("ItemType.Optional.Label")</span>
+                </label>
+            </li>
+        </ul>
+        <div class="center">
+            <button class="btn btn-primary fiori3-btn-primary" data-bind="click: apply">@Translation.Get("ItemTypes.Save")</button>
+            <button class="btn btn-secondary fiori3-btn-secondary" data-bind="click: close">@Translation.Get("ItemTypes.Cancel")</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="customFieldSummaryCellTemplate">
+    <div class="numberCell">
+        <span data-bind="text: $root.currencySign, visible: isCurrency"></span>
+        <span data-bind="textOrNbsp: summaryValue" tabindex="0"></span>
+    </div>
+</script>
+	

@@ -1,0 +1,1976 @@
+<!--CARTITEM TABLE TEMPLATE-->
+<link rel="stylesheet" href="https://jqwidgets.com/public/jqwidgets/styles/jqx.base.css" type="text/css" />
+<link rel="stylesheet" href="https://jqwidgets.com/public/jqwidgets/styles/jqx.energyblue.css" type="text/css" />
+<link href="https://cdn.syncfusion.com/16.4.0.52/js/web/bootstrap-theme/ej.web.all.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.2/bootstrap-table.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css">
+
+
+<style>
+     *{box-sizing: border-box;}
+    table{border-collapse:collapse;}
+   
+</style>
+
+
+
+@using WebSite.Models
+@model CartItemTableViewModel
+
+<div  class="quote_summary_new" id="prd_item_tb">
+<div id="no-more-tables" class="table-responsive cpq-scroll
+    fiori3-items-table fiori3-items-table-sticky" data-bind="css: {
+    'fiori3-quote2-table': $root.useNewQuoteEngine, 'no-reorder':
+    !$root.allowReorderingItems && !$root.useNewQuoteEngine, 'no-delete':
+    !canDeleteAnyItems() || $root.useNewQuoteEngine, 'reorder-no-delete':
+    $root.allowReorderingItems && !canDeleteAnyItems() &&
+    !$root.useNewQuoteEngine }">
+
+    <!--<div class="section_title Oppt_header trans_hide_line enable_custom_fld
+        line_item_header car_lt_itm" onclick="cart_cont_collap_exp(this)"
+        data-toggle="collapse" data-target=".list_item_tb" style="display:
+        block;">
+         <div id="ctr_drop" class="btn-group dropdown">
+            <div class="dropdown">
+                <i data-toggle="dropdown" class="fa fa-sort-desc
+                    dropdown-toggle"></i>
+                <ul class="dropdown-menu left"
+                    aria-labelledby="dropdownMenuButton">
+                    <li class="edit_list" id= 'ad_prd_btn'>
+                        <a class="dropdown-item" onclick="Clickprod()"
+                            id="addprdtclick">Add Product</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <span>Line ITEMS</span>
+        <span class="more-less glyphicon pointer glyphicon-chevron-down"
+            style="float: right;"></span>
+    </div> -->
+    <div class="list_item_tb collapse in">
+            
+    </div>
+    <div class="row list_item_tb collapse in cartpager">
+        <!-- ko template: { name: 'CartPagerTemplate', data : pager, if: areItemsPaged } -->
+        <!-- /ko -->
+
+    </div>
+</div>
+
+</div>
+
+<!-- conf stmt Start-->
+<div id="confdi_stmt_cudt_fld">
+<div class="row quote_info sub_tab_ctn active enable_custom_fld
+    quote_summary_new" id="rev_id_cust_fld">
+
+    <div class="col-md-12 col-xs-12" id="nw_cust_fld_rev">
+        <div class="col-md-12 col-xs-12 clear-padding"
+            id="nw_cust_fld_rev_cols1">
+            <div class="section_title txt_ar" style="display: inline-block
+                !important;">
+                <span>CONFIDENTIALITY STATEMENT</span>
+            </div>
+            <textarea rows="4" style="width:100%;">
+
+            </textarea>
+        </div>
+
+        <div class="col-md-6 col-xs-12 clear-padding"
+            id="nw_cust_fld_rev_cols2" style="display:none;">
+            <div class="section_title txt_ar" style="display: inline-block
+                !important;">
+                <span>TOTALS</span>
+            </div>
+            <div class="row property_row">
+                <div class="fiori3-input-group col-md-12 col-xs-12 clearfix
+                    clear-padding">
+                    <div data-bind="visible: customFields().length> 0">
+                        <div data-bind="foreach:
+                            customFields.filterByProperty('id',247)">
+                            <div class="row property_row">
+                                <div class="col-md-12 clear-padding">
+                                    <div class="fiori3-input-group col-md-12
+                                        col-xs-12 clearfix row_container"
+                                        style="border-bottom:0px;">
+                                        <div class="col-md-4 col-sm-4
+                                            col-xs-6 label_div">
+                                            <label data-bind="html: label"
+                                                style="display:
+                                                inline-block;color: #000
+                                                !important"></label>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8
+                                            col-xs-6 value_div">
+                                            <span class="hint_icon_req">
+                                                <i class="fa fa-info-circle
+                                                    autoClosePopover"></i>
+                                                
+                                            </span>
+
+                                            <span data-bind="visible:
+                                                isRequiredIndicatorVisible"
+                                                class="required"
+                                                style="display: none;">*</span>
+                                            <!--<input disabled data-bind="valueUpdatedOnEnter: content, attr: { id: $index() + '_' + id, 'aria-labelledby': 'Label_' + $index() + '_' + id}" class="form-control"/>-->
+                                            <i class="fa fa-lock"
+                                                aria-hidden="true"
+                                                style="font-size:
+                                                13px;float: left;color:
+                                                #cccaca !important;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row property_row">
+                <div class="fiori3-input-group col-md-12 col-xs-12 clearfix
+                    clear-padding">
+                    <div data-bind="visible: customFields().length> 0">
+                        <div data-bind="foreach:
+                            customFields.filterByProperty('id',199)">
+                            <div class="row property_row">
+                                <div class="col-md-12 clear-padding">
+                                    <div class="fiori3-input-group col-md-12
+                                        col-xs-12 clearfix row_container"
+                                        style="border-bottom:0px;">
+                                        <div class="col-md-4 col-sm-4
+                                            col-xs-6 label_div">
+                                            <label data-bind="html: label"
+                                                style="display:
+                                                inline-block;color: #000
+                                                !important"></label>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8
+                                            col-xs-6 value_div">
+                                            <span class="hint_icon_req">
+                                                <i class="fa fa-info-circle
+                                                    autoClosePopover"></i>
+                                                
+                                            </span>
+
+                                            <span data-bind="visible:
+                                                isRequiredIndicatorVisible"
+                                                class="required"
+                                                style="display: none;">*</span>
+                                            <input disabled
+                                                data-bind="valueUpdatedOnEnter:
+                                                content, attr: { id:
+                                                $index() + '_' + id,
+                                                'aria-labelledby': 'Label_'
+                                                + $index() + '_' + id}"
+                                                class="form-control" />
+                                            <i class="fa fa-lock"
+                                                aria-hidden="true"
+                                                style="font-size:
+                                                13px;float: left;color:
+                                                #cccaca !important;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row property_row">
+                <div class="fiori3-input-group col-md-12 col-xs-12 clearfix
+                    clear-padding">
+                    <div data-bind="visible: customFields().length> 0">
+                        <div data-bind="foreach:
+                            customFields.filterByProperty('id',253)">
+                            <div class="row property_row">
+                                <div class="col-md-12 clear-padding">
+                                    <div class="fiori3-input-group col-md-12
+                                        col-xs-12 clearfix row_container"
+                                        style="border-bottom:0px;">
+                                        <div class="col-md-4 col-sm-4
+                                            col-xs-6 label_div">
+                                            <label data-bind="html: label"
+                                                style="display:
+                                                inline-block;color: #000
+                                                !important"></label>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8
+                                            col-xs-6 value_div">
+                                            <span class="hint_icon_req">
+                                                <i class="fa fa-info-circle
+                                                    autoClosePopover"></i>
+                                                
+                                            </span>
+
+                                            <span data-bind="visible:
+                                                isRequiredIndicatorVisible"
+                                                class="required"
+                                                style="display: none;">*</span>
+                                            <input disabled
+                                                data-bind="valueUpdatedOnEnter:
+                                                content, attr: { id:
+                                                $index() + '_' + id,
+                                                'aria-labelledby': 'Label_'
+                                                + $index() + '_' + id}"
+                                                class="form-control" />
+                                            <i class="fa fa-lock"
+                                                aria-hidden="true"
+                                                style="font-size:
+                                                13px;float: left;color:
+                                                #cccaca !important;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+<!-- conf stmt End-->
+
+<script type="text/html" id="itemTemplate">
+            <tr data-bind="attr:{'id': 'ln_row_num'+$data.cartItem},visible: isVisible, css: {firstInSystem: isFirstInSystem, lastInSystem: isLastInSystem, inSystem: isInSystem, isSearchMatch: isSearchMatch}" class="itemtablemainitems">				
+    
+                <!-- <td class="act_btn_td"> -->
+                    <!-- <div class="btn-group dropdown"> -->
+                        <!-- <div class="dropdown" id="ctr_drop"> -->
+                            <!-- <i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i> -->
+                            <!-- <ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"> -->
+                                <!-- <li class="lt_dp_li" style="display:none;"> -->
+                                    <!-- <a class="dropdown-item" href="#" > -->
+                                        <!-- VIEW -->
+                                    <!-- </a> -->
+                                <!-- </li> -->
+                                <!-- <li class="lt_dp_li" style="display:none;"> -->
+                                    <!-- <a class="dropdown-item" href="#" > -->
+                                        <!-- EDIT -->
+                                    <!-- </a> -->
+                                <!-- </li> -->
+                                <!-- <li class="lt_dp_li"> -->
+                                    <!-- <a class="dropdown-item" href="#"> -->
+                                        <!-- DELETE -->
+                                    <!-- </a> -->
+                                <!-- </li> -->
+                            <!-- </ul> -->
+                        <!-- </div> -->
+                    <!-- </div> -->
+                <!-- </td> -->
+                <td data-bind="css: { 'hidden-xs new-quote-manage-items-width': $root.useNewQuoteEngine, 'no-reorder-manage-items': !$root.allowReorderingItems && !$root.useNewQuoteEngine, 'view-mode-sticky-edge': $root.isInViewMode() }, visible: $root.displayFirstColumn" class="item-actions-sticky">
+                    <div class="manage-items" data-bind="visible: !$root.isInViewMode()">
+                        <div class="hidden-xs" style="cursor: move" data-bind="css: { handle : canBeMoved }, visible: canBeMoved && !$root.useNewQuoteEngine">
+                            <span class="sap-icon-extended drag-icon">&#xf177;</span>
+                        </div>
+                        <label class="fiori3-checkbox-group" data-bind="visible: !$root.useNewQuoteEngine && canBeDeleted">
+                            <input type="checkbox" data-bind="checked: isSelected" />
+                            <span></span>
+                        </label>
+                        <div onclick="lin_itm_act_btn(this)" data-bind="css: { 'no-actions-width': !hasAnyActon }" class="column-with-actions dropdown">
+                            <div class="btn-group dropdown" data-bind="visible: hasAnyActon">
+                                <div data-bind="event: { keydown: $parent.onKeypressItemsActionsHandler }, popover: { templateId: 'itemActionsTemplate', autoClose: true, placement: 'auto bottom', container: 'body', closeOnClick: true }, attr: { id: hasAnyActon ? 'itemAction' + id : '', tabindex: hasAnyActon ? '0' : '-1' }" class="fiori3-icon-button dropdown-toggle item-action-button-cart">
+                                    <i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<i class="fa fa-usd-circle yellowcir" data-bind="attr: {'data-toggle':'collapse','data-target':'.extratable_'+$data.cartItem}"  ></i>-->
+                        
+                        
+                    </div>
+                </td>
+                
+                <!--<td class="bs-checkbox">
+                    <input data-index="0" name="btSelectItem" type="checkbox" class="custom"/>
+                    <span class="lbl"></span>
+                </td>-->
+                @for (int i = 0; i < 1; i++)
+                {	
+                        <!--<td class="item-column item-column-sticky" data-title="@Model.Cells[i].CellLabel" data-bind = "css: @i == 1 ? { 'new-quote-item-column-sticky': $root.useNewQuoteEngine, 'no-first-column-sticky': !$root.displayFirstColumn(), 'no-reorder': !$root.allowReorderingItems || $root.useNewQuoteEngine, 'no-delete': (!canBeDeleted && !$root.canDeleteAnyItems()) || $root.useNewQuoteEngine, 'view-mode-sticky': $root.isInViewMode() } : {}, attr:{'class': hasChildren == true ? values[@i].column.headerLabel : values[@i].column.headerLabel,'id':values[@i].column.name}"> 		-->
+                        
+                        <!-- ko if: values[0].column.name === 'RolledUpCartItem' -->
+                        <td data-title="@Model.Cells[0].CellLabel" data-bind = "attr:{'class': hasChildren == true ? values[0].column.headerLabel : values[0].column.headerLabel,'id':values[0].column.name}" title="">						
+                                <div class="item-number-wrapper" id="part_icon">
+                                <div data-bind="style: { 'paddingLeft': 5 + (nestingLevel * 5) + 'px' }, css: { 'item-number-margin-right': !hasChildren }" class="fiori3-input-group">
+                                    
+                                     
+                                    <a tabindex="0" data-bind="visible: hasChildren, click: toggleExpanded, clickBubble: false, event: {keypress: function() { window.lastActiveElementId = document.activeElement.id; $parent.clickOnEnter(event)} }, attr: { id: 'expandToggle' + id }, hasFocus: ('expandToggle' + id) == window.lastActiveElementId" class="tree-view-icons">
+                                        <div class="sap-icon" data-bind="visible: !isExpanded()">&#xe066;</div>
+                                        <div class="sap-icon" data-bind="visible: isExpanded()">&#xe1e2;</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- ko template : { name : values[0].template, data: values[0] }  -->
+                        
+                            <!-- /ko -->
+                        
+                        </td>
+                        <!-- /ko -->
+                        <!-- ko if: values[0].column.name !== 'RolledUpCartItem' -->
+                        <td data-title="@Model.Cells[i].CellLabel" data-bind = "attr:{'class': hasChildren == true ? values[@i].column.headerLabel : values[@i].column.headerLabel,'id':values[@i].column.name}" title=""> 		
+                            <!-- ko template : { name : values[@i].template, data: values[@i] }  -->
+                            <!-- /ko -->
+              
+                            
+                        </td>
+                        <!-- /ko -->
+                    
+                }
+    
+                <!-- default Description 'Start' -->
+                 <!--<td id="PartNumber" class="item-column item-column-sticky Part Number Quantity_edit" data-bind="css: { 'new-quote-item-column-sticky': $root.useNewQuoteEngine, 'no-first-column-sticky': !$root.displayFirstColumn(), 'no-reorder': !$root.allowReorderingItems || $root.useNewQuoteEngine, 'no-delete': (!canBeDeleted && !$root.canDeleteAnyItems()) || $root.useNewQuoteEngine, 'view-mode-sticky': $root.isInViewMode() }">-->
+                 <td class="item-column item-column-sticky" data-bind="css: { 'new-quote-item-column-sticky': $root.useNewQuoteEngine, 'no-first-column-sticky': !$root.displayFirstColumn(), 'no-reorder': !$root.allowReorderingItems || $root.useNewQuoteEngine, 'no-delete': (!canBeDeleted && !$root.canDeleteAnyItems()) || $root.useNewQuoteEngine, 'view-mode-sticky': $root.isInViewMode() }">
+                    <div class="clearfix">
+                        <div class="item-number-wrapper" style="display:none" >
+                            <div data-bind="style: { 'paddingLeft': 5 + (nestingLevel * 5) + 'px' }, css: { 'item-number-margin-right': !hasChildren }" class="fiori3-input-group">
+                                <span class="item-number" data-bind="text: itemNumber, visible: !isItemNumberEditable()"></span>
+                                <input type="text" class="item-number-input form-control" data-bind="value: itemNumber, visible: isItemNumberEditable()" />
+                                <a tabindex="0" data-bind="visible: hasChildren, click: toggleExpanded, clickBubble: false, event: {keypress: function() { window.lastActiveElementId = document.activeElement.id; $parent.clickOnEnter(event)} }, attr: { id: 'expandToggle' + id }, hasFocus: ('expandToggle' + id) == window.lastActiveElementId, tooltip: { title: '@Translation.GetJS("Cart.ExpandCollapseItem")' }" class="tree-view-icons">
+                                    <div class="sap-icon" data-bind="visible: !isExpanded()">&#xe066;</div>
+                                    <div class="sap-icon" data-bind="visible: isExpanded()">&#xe1e2;</div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="fiori3-item-wrapper">
+                        <div>
+                            <div id="part_shortdesc" data-bind="css: {'partnumber-input' : isPartNumberEditable }" class="item-part-number-wrapper flex">
+                                <a href="#" data-bind="visible: !isPartNumberEditable() && canBeEdited && itemDescription.partNumber">
+                                    <!--<span data-bind="text:console.log('CCCAAAAAARRTTTTT', $data)" style="display:none"></span>-->
+                                    <span  onclick="Commonteree_view_RL(this)" data-bind="text: itemDescription.partNumber, attr: { title: itemDescription.partNumber, placement: 'auto top' }" class="tooltip-if-long item-part-number"></span>
+                                </a>
+                                <span  id="line_one" data-bind="visible: !isPartNumberEditable() && !canBeEdited, text: itemDescription.partNumber, tooltip: { title: itemDescription.partNumber, placement: 'auto top' }" class="tooltip-if-long item-part-number"></span>
+                                <!-- ko if : isPartNumberEditable --> @*we are using if instead of visibility to avoid typeahead initialization if its not needed*@
+                                <div class="partnumber-input-holder fiori3-input-group">
+                                    <input  type="text" autocomplete="off" class="form-control" data-bind="click: applyHigherZIndex, typeahead: { url: partNumberSuggestionUrl, value: itemDescription.partNumber }" />
+                                </div>
+                                <!-- /ko -->
+                                <span data-bind="visible: isIncomplete || (isInvalid && isSapItem), tooltip: { title: getItemTooltipMessage }" class="sap-icon" tabindex="0">&#xe053;</span>
+                                <span data-bind="visible: isInconsistent, tooltip: { title: '@Translation.GetJS("CartItem.InconsistentFromCPS")' }" class="alert-warning warning-icon-color no-background sap-icon-extended" tabindex="0">&#xf200;</span>
+                                <a data-bind="visible: itemDescription.comment, tooltip: { title: '@Translation.GetJS("CartItem.HasComment")' }, click: editComment, attr: { id: 'cartComment_' + id }" href="#"><span class="sap-icon">&#xe0b2;</span></a>
+                                <!-- <i class="fa fa-info-circle bluecir" data-bind="attr: {'data-toggle':'collapse','data-target':'.extratable_'+$data.cartItem}">
+                                    <span class="infobg"></span>
+                                </i> -->
+                                <span class="bluecir" onclick="bluecir(this)" data-bind="attr: {'data-toggle':'collapse','data-target':'.extratable_'+$data.cartItem}"></span>
+                                <!--<span class="blueciractive"  onclick="blueciractive()" data-bind="attr: {'data-toggle':'collapse','data-target':'.extratable_'+$data.cartItem}"></span> -->
+                            </div>
+                            <label style="display:none;" class="label label-success fiori3-product-type-label tooltip-if-long" data-bind="tooltip: { title: productTypeName, placement: 'auto top' }"><span data-bind="text: productTypeName"></span></label>
+                        </div>
+                            <div class="clearfix" data-bind="visible: itemDescription.partNumber"></div>
+                            <div class="clearfix"></div>
+                            <p  id="part_longdesc" class="description item-description pull-left ellipsis example tooltip-if-long" data-bind="css: { 'margin-top' : isPartNumberEditable }">
+                            
+                                    <span data-bind="html: itemDescription.description,attr:{'title':itemDescription.description}"></span>
+                                
+                            </p>
+                            
+                        </div>
+                        <div class="allocate-section fiori3-allocate-section" data-bind="visible: !isRestricted && $root.dealViewEnabled, dropdown: { event: 'mouseenter focus', menu: '.tooltip-content', position: 'fixed', isOpen: titleOpened, closeEvents: ['focusout', 'mouseleave'] }, css: { 'allocated': section(), 'unallocated': !section() }">
+                            <button data-toggle-button="dropdown" class="btn btn-tertiary" data-bind="click: $root.setItemToAllocate, attr: { id: 'allocateSuggestionsTrigger' + '_' + id }"></button>
+                            <div class="tooltip-content">
+                                <span data-bind="text: sectionTitle"></span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <!-- Default Description 'End' -->
+    
+                @for (int i = 1; i < Model.Cells.Count; i++)
+                {	
+                        <!--<td class="item-column item-column-sticky" data-title="@Model.Cells[i].CellLabel" data-bind = "css: @i == 1 ? { 'new-quote-item-column-sticky': $root.useNewQuoteEngine, 'no-first-column-sticky': !$root.displayFirstColumn(), 'no-reorder': !$root.allowReorderingItems || $root.useNewQuoteEngine, 'no-delete': (!canBeDeleted && !$root.canDeleteAnyItems()) || $root.useNewQuoteEngine, 'view-mode-sticky': $root.isInViewMode() } : {}, attr:{'class': hasChildren == true ? values[@i].column.headerLabel : values[@i].column.headerLabel,'id':values[@i].column.name}"> 		-->
+                        <td data-title="@Model.Cells[i].CellLabel" data-bind = "attr:{'class': hasChildren == true ? values[@i].column.headerLabel : values[@i].column.headerLabel,'id':values[@i].column.name, 'title':values[@i].column.headerLabel}"> 		
+                              <!-- ko template : { name : values[@i].template, data: values[@i] }  -->
+                            <!-- /ko -->
+              
+                            <span data-bind="text:(function(){
+                                //console.log('TTTTTTTTEEEEEEEEESSSSSSSSSSSSTTTTTTTT');
+                                //console.log(values[@i]);			 
+                                var clsnm = values[@i].column.headerLabel;
+                                //console.log('class....name....'+clsnm);
+                                if(clsnm)
+                                {
+                                    //console.log('zzzzzxxxxxxxx');
+                                    
+                                    if(clsnm == 'Shipping and Warranty Notes' || clsnm == 'Part Description')
+                                    {
+                                        //console.log('clsnm...'+clsnm);
+                                        var cls = '[class^=\''+clsnm+'\']';
+                                        //console.log('cls...'+cls);
+                                        $(cls).html('<a style= \'margin-left:3px !important\' title=\'empty\' onclick=\'note_fun(this)\' id=\'cartitemNotes\' data-toggle=\'modal\' data-target=\'#notesMod\'>empty</a>');
+                                    }
+                                    
+                                    else if(clsnm == 'Line Comments')
+                                    {
+                                        var cls = '[class^=\''+clsnm+'\']';
+                                        var rw_num = 'tr#ln_row_num'+$data.cartItem;
+                                        var ln_itm_add = $(rw_num).children(cls).children('div').children('span:nth-child(2)').text().trim();
+                                        if(ln_itm_add == '')
+                                        {
+                                            $(rw_num).children(cls).html('<a style= \'margin-left:3px !important\' title=\'empty\' onclick=\'note_fun(this)\' id=\'cartitemNotes\' data-toggle=\'modal\' data-target=\'#notesMod\'>empty</a>');
+                                        }
+                                        else
+                                        {
+                                            ln_itm_add = 'Comments Included...';
+                                            var bd_val = '<a style= \'margin-left:3px !important\' title=\'Comments Included...\'  onclick=\'note_fun(this)\' id=\'cartitemNotes\' data-toggle=\'modal\' data-target=\'#notesMod\'>'+ln_itm_add+'</a>';
+                                            
+                                            $(rw_num).children(cls).html(bd_val);
+                                        }
+                                    }
+                                    
+                                    else if(clsnm == 'Comments')
+                                    {
+                                        var cls = '[class^=\''+clsnm+'\']';
+                                        var rw_num = 'tr#ln_row_num'+$data.cartItem;
+                                        var ln_itm_add = $(rw_num).children(cls).children('div').children('span:nth-child(2)').text().trim();
+                                        
+                                        if(ln_itm_add == '')
+                                        {
+                                            $(rw_num).children(cls).html('<a onclick=\'note_fun(this)\' title=\'empty\' id=\'cartitemcomment\' data-toggle=\'modal\' data-target=\'#notesMod\'>empty</a>');
+                                        }
+                                        else
+                                        {
+                                            ln_itm_add = 'Comments Included...';
+                                            var bd_val = '<a onclick=\'note_fun(this)\' title=\'Comments Included...\'  id=\'cartitemcomment\' data-toggle=\'modal\' data-target=\'#notesMod\'>'+ln_itm_add+'</a>';
+                                            
+                                            $(rw_num).children(cls).html(bd_val);
+                                        }
+                                    }
+                                    if (clsnm == 'Part Number')
+                                    {
+                                        var cls = '[class^=\''+clsnm+'\']';
+                                        $(cls).css('display','none');
+                                    }
+                                    var sts_value = $('p#hd_status').text();
+                    //console.log('sts_value....559999..'+sts_value);
+                    var view_editqte = localStorage.getItem('vieweditqte');                   
+                    //console.log('view_editqteeeee'+view_editqte);
+                    if(sts_value == 'Approved' || sts_value == 'Level 1 Approval Requested' || sts_value == 'Level 2 Approval Requested' || sts_value == 'Rejected' || sts_value == 'Expired')
+                    {
+                         $('button#HTML_EditQuote').css('display', 'none !important');                     
+                        $('tbody#itemsTable tr td#Notes a,tbody#itemsTable tr td#Comments a,div#comentdiv a#quotecomments').css('cssText','border-bottom:0 !important;margin-left: 3px !important;color: #000;');
+                        $('tbody#itemsTable tr td#Notes,tbody#itemsTable tr td#Comments,div#comentdiv a#quotecomments').css('cssText','pointer-events:none');
+                    }
+                    else if(sts_value == 'Preparing Revision' )
+                       {
+                       $('button#bk_to_lst').css('display', 'block');
+                        localStorage.setItem('vieweditqte', 'edit');                     
+                        if(view_editqte == 'edit'){						                                             
+                         $('#no-more-tables  .section_title #ctr_drop').css('display', 'inline-block');
+                         $('#nw_cust_fld_rev_cols1 .section_title #ctr_drop').css('display', 'inline-block');
+                                             $('#nw_cust_fld_rev #nw_cust_fld_rev_cols1 #ld_rev_cols1 .section_title #ctr_drop').css('display', 'none');
+                         $('button#bk_to_lst').css('display', 'block');
+                        $('button#HTML_AddProduct').css('display', 'block');                     
+                        $('tbody#itemsTable tr td#Currency input').css('cssText','background-color: transparent !important;');
+                        $('tbody#itemsTable tr td#Currency').css('cssText','pointer-events:none');
+                        
+                        $('tbody#itemsTable tr td#Notes a,tbody#itemsTable tr td#DiscountPercent a,tbody#itemsTable tr td#Quantity a,tbody#itemsTable tr td#Extended_sale_price a,tbody#itemsTable tr td#DiscountAmount a,tbody#itemsTable tr td#Comments a,tbody#itemsTable tr td#Gross_Margin_Perc a,div#comentdiv a#quotecomments').removeClass('prepare_nonedit')
+                        
+                        $('tbody#itemsTable tr td#Notes,tbody#itemsTable tr td#DiscountPercent ,tbody#itemsTable tr td#Quantity ,tbody#itemsTable tr td#Extended_sale_price ,tbody#itemsTable tr td#DiscountAmount ,tbody#itemsTable tr td#Comments ,tbody#itemsTable tr td#Gross_Margin_Perc ,div#comentdiv a#quotecomments').removeClass('prepare_nonedittd')
+                        $('div#notesdiv a#special_notes').removeClass('prepare_nonedittd')
+                        $('div#notesdiv a#special_notes').removeClass('prepare_nonedit')
+                        $('tbody#itemsTable tr td').removeClass('prepare_nonedittd');
+                        $('tbody#itemsTable tr td a,div#custom-fields-section a').removeClass('prepare_nonedit');
+                        $('table#ProductTypeTable tbody#ProductTypeTablebody tr td,.OPTIONAL_PRODUCTS td,.section_cust_fld_val').removeClass('prepare_nonedittd');
+                        $('table#ProductTypeTable tbody#ProductTypeTablebody tr td a').removeClass('prepare_nonedit');
+                        $('table#ProductTypeTable tbody#ProductTypeTablebody tr td#ExtSle input,table#ProductTypeTable tbody#ProductTypeTablebody tr td#GmPer input,.OPTIONAL_PRODUCTS td input').removeClass('prepare_noneditinput');
+                         $('#cart_contant_pg .editfield').addClass('fa-pencil');
+                         $('tbody#itemsTable tr td#ListPrice a').addClass('prepare_nonedit');
+                         $('tbody#itemsTable tr td#ListPrice').addClass('prepare_nonedittd');
+                        $('#cart_contant_pg .editfield').removeClass('fa-lock'); 
+                      }
+                    
+                    }
+                }
+                                
+                            })();"></span>
+                            
+                        </td>
+                        
+                    
+                }
+    
+                <td data-bind="if: !$root.isInViewMode() && $root.isMobileReady()" class="column-with-actions show-all fiori3-item-actions-small-screen">
+                    <button class="btn btn-primary btn-sm" data-bind="tooltip: { title: '@Translation.GetJS("CartItem.MoveUpTitle")' }, click: moveUp, visible: canBeMoved"><span class="sap-icon">&#xe04b;</span></button>
+                    <button class="btn btn-primary btn-sm" data-bind="tooltip: { title: '@Translation.GetJS("CartItem.MoveDownTitle")' }, click: moveDown, visible: canBeMoved"><span class="sap-icon">&#xe04e;</span></button>
+    
+                    <!-- ko foreach: actions -->
+                    <button class="btn btn-sm" data-bind="tooltip: { title: name, 'class': 'itemaction' + id }, click: execute">
+                        <span class="sap-icon" data-bind="html: id == '4' ? '&#xe03d;' : id == '3' ? '&#xe245;' : id == '2' ? '&#xe038;' : id == '6' ? '&#xe065;' : id == '5' ? '&#xe010;' : id == '7' ? '&#xe04b;' : ''"></span>
+                    </button>
+                    <!-- /ko -->
+                    <button class="btn btn-primary btn-sm" data-bind="tooltip: { title: '@Translation.GetJS("CartItem.CommentTitle")' }, click: editComment, visible: itemDescription.isCommentEditable() || itemDescription.comment()"><span class="sap-icon">&#xe0b2;</span></button>
+                </td>
+            </tr>
+        
+            <tr  data-bind="attr:{'class': 'collapse extratable_'+$data.cartItem}" class="extratable collapse">
+        
+        <td colspan="19" class="extrarow">
+            <div id="filllevel_container">
+                 <ul class="nav nav-tabs" >
+                    <!--<li class="active"><a data-toggle="tab" href=".home">Editable Conditions</a></li>-->
+                    <li><a data-toggle="tab" href=".menu1">All Conditions</a></li>
+                       <li><a data-toggle="tab" href=".menu2">Comments</a></li>
+                    <li><a data-toggle="tab" href=".menu3">Additional Information</a></li>
+                   
+                  </ul>
+                  <div class="tab-content">
+                    <div class="tab-pane fade in active home">						  
+                      <table class="table table-bordered"  id="lineinneritems"> 
+                <thead>
+                    <!--<th>PART NUMBER</th>
+                        <th>QUANTITY</th>-->
+                        <th class="textalign" title="STEP NO">STEP NO</th>
+                        <!--<th class = "textalign" title="CONDITION COUNTER">CONDITION COUNTER</th>-->
+                        <th class="textalign" title="TYPE">TYPE</th>
+                        <th class="textalign" title="DESCRIPTION">DESCRIPTION</th>
+                        <th class="numberalign" title="RATE">RATE</th>
+                        <th class="textalign" title="CURRENCY">CURRENCY</th>
+                        <th class="numberalign" title="UNIT VALUE">UNIT VALUE</th>
+                        <th class="numberalign" title="VALUE">VALUE</th>
+                        <th class="textalign" title="UNIT">UNIT</th>
+                        <th class="textalign" title="STATISTICAL">STATISTICAL</th>
+                        <th class="textalign" title="CALCULATION">CALCULATION</th>
+                        <!--<th class="textalign" title="VARCOND">VARCOND</th>-->
+                        <th class="numberalign" title="BASE">BASE</th>
+                          
+                        <!--<th class="textalign" title="FACTOR">FACTOR</th>-->
+                       <!-- <th class="centeralign" title="IN-ACTIVE">INACTIVE FLAG</th>-->
+                      <!--<th class="textalign" title="VARCOND">VARCOND</th>-->
+                      <!--<th class="centeralign" title="STATUS">STATUS</th>-->
+                    
+                </thead>
+                <tbody  data-bind="attr: {'id':'dyn_'+$data.cartItem}" class="qtbody">
+                
+                </tbody>
+            </table>
+                    </div>
+                    <div class="tab-pane fade menu1">						  
+                      <table class="table table-bordered"  id="lineinneritems"> 
+                <thead>
+                    <!--<th>PART NUMBER</th>
+                        <th>QUANTITY</th>-->
+                        <th class="textalign" title="STEP NO">STEP NO</th>
+                        <!--<th class = "textalign" title="CONDITION COUNTER">CONDITION COUNTER</th>-->
+                        <th class="textalign" title="TYPE">TYPE</th>
+                        <th class="textalign" title="DESCRIPTION">DESCRIPTION</th>
+                        <th class="numberalign" title="RATE">RATE</th>
+                        <th class="textalign" title="CURRENCY">CURRENCY</th>
+                        <th class="numberalign" title="UNIT VALUE">UNIT VALUE</th>
+                        <th class="numberalign" title="VALUE">VALUE</th>
+                        <th class="textalign" title="UNIT">UNIT</th>
+                        <th class="textalign" title="STATISTICAL">STATISTICAL</th>
+                        <th class="textalign" title="CALCULATION">CALCULATION</th>
+                        <!--<th class="textalign" title="VARCOND">VARCOND</th>-->
+                        <th class="numberalign" title="BASE">BASE</th>
+                          
+                        <!--<th class="textalign" title="FACTOR">FACTOR</th>-->
+                        <!--<th class="centeralign" title="IN-ACTIVE">INACTIVE FLAG</th>-->
+                      <!--<th class="textalign" title="VARCOND">VARCOND</th>-->
+                      <!--<th class="centeralign" title="STATUS">STATUS</th>-->
+                    
+                </thead>
+                <tbody  data-bind="attr: {'id':'dyn_'+$data.cartItem}" class="qtbody">
+                
+                </tbody>
+            </table>
+                    </div>
+                    <div class="tab-pane fade menu2">						  
+                     <div onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_lineitemcommnets" id="dyn1577" data-toggle="collapse" class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"> 
+            
+        <label  class="onlytext"><div class="quote-info-heading-sec-content"><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="editcmtline items" class="dropdown-item" href="#" onclick="QuoteinformationcommentsEDIT(this)">EDIT</a></li></ul></div></div>LINE ITEM COMMENTS</div></label> </div>
+                       <div class="sec_lineitemcommnets" id = "comment_inneritems"><div   data-bind="attr: {'id':'dyn_'+$data.cartItem}" class="qtbody" > 
+                       
+                        </div>
+                         <div  class='g4 sec_commentslineitemsedit collapse in except_sec removeHorLine iconhvr sec_edit_sty'>
+                           <button id='hideQTsave' style = 'display:none;' class='btnconfig btnMainBanner sec_edit_sty_btn' onclick='LineITemcommentsCancel()'>CANCEL</button>
+                           <button id='hideQTsavecancel' style = 'display:none;' class='btnconfig btnMainBanner sec_edit_sty_btn' onclick='LineITemcommentsSave()'>SAVE</button>
+                         </div>
+                    </div>
+                    </div>
+                  </div>
+            </div>				
+            </td>
+            </tr>
+            <!-- ko if: $root.itemToAllocate() == $data -->
+            <tr></tr>
+            <tr class="baseItem section-options">
+                <td></td>
+                <td class="item-column" style="border-right: none">
+                    <div style="text-align: right">
+                        <div style="display: inline-block;">
+                            <span style="padding: 15px">@Translation.GetJS("DealStructure.AllocateTo")</span>
+                        </div>
+                        <!-- ko ifnot: $root.relocateSectionParent() -->
+                        <div class="fiori3-input-group search-input" style="position: relative; display: inline-block; width: 300px" data-bind="dropdown: { event: 'mouseenter focus', position: 'fixed', menu: '.sections-suggestions' }">
+                            <input id="relocateSuggestionsSearch" data-toggle-button="dropdown" type="text" class="form-control" style="display: inline-block" data-bind="textInput: $root.searchNewSectionName" placeholder="@Translation.GetJS("DealStructure.SectionLabel")" />
+                            <div class="custom-dropdown-menu sections-suggestions cpq-scroll">
+                                <table id="relocateSuggestionsDropdown" data-bind="visible: $root.relocateSuggestions().length">
+                                    <tbody data-bind="foreach: $root.relocateSuggestions">
+                                        <tr style="cursor: pointer" data-bind="click: function() { $root.relocateSectionParent($data); $root.searchNewSectionName('') }">
+                                            <td class="section-path" data-bind="text: $root.resolveSectionSuggestionName(sectionPath() || sectionName()), event: { keyup: function() { $root.relocateSectionParentOnEnter(event, $data); } }" tabindex="0"></td>
+                                            <td class="hierarchy" data-bind="text: hierarchyId"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: $root.relocateSectionParent() -->
+                        <div class="allocation-parent-section" data-bind="with: $root.relocateSectionParent">
+                            <div class="section-title">
+                                <span data-bind="text: hierarchyId"></span>
+                                <span data-bind="text: sectionName"></span>
+                            </div>
+                            <button id="relocateSectionCancel" class="btn-tertiary icon-sys-cancel pull-right" data-bind="click: $root.cancelRelocate"></button>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                </td>
+                <td colspan="100%" style="border-left: none">
+                    <button class="btn btn-tertiary fiori3-btn-tertiary" data-bind="enable: section() || $root.relocateSectionParent(), click: function () { $root.allocateSection('allocateSuggestionsTrigger' + '_' + id) }">@Translation.GetJS("DealStructure.Allocate")</button>
+                    <button class="btn btn-tertiary fiori3-btn-tertiary" data-bind="click: function() { $root.cancelAllocate('allocateSuggestionsTrigger' + '_' + id); }">@Translation.GetJS("DealStructure.Cancel")</button>
+                </td>
+            </tr>
+            <!-- /ko -->
+            <!-- ko template : { name : 'itemTemplate', foreach: childItems }  -->
+            <!-- /ko -->
+        </script>
+<!-- DESCRIPTION- MODAL -txtMod- 'SATRT' -->
+<div class="modal fade pop__view_page_hide in" data-backdrop="static"
+id="descmodal" role="dialog">
+<div class="modal-dialog" style="width: 40% !important;" id="descmoddialog">
+    <div class="modal_vh_div">
+        <div class="modal-content">
+            <div class="modal-body" id="DEL_MODAL_SECTION" style="padding:
+                0px;">
+                <div class="modulesecbnr brdr" style="margin-bottom: 0;">
+                    <span id="relatedDelete">EDIT</span>
+                    <button type="button" class="close changebg"
+                        data-dismiss="modal">X</button>
+                </div>
+                <span class="tri_sybl" style="display:none;">
+                    <i class="fa fa-exclamation-triangle"></i>
+                </span>
+                <span id="txt_area_cont">Description</span>
+                <div class="mod_txt_ara">
+                    <textarea rows="2" style="background-color:lightyellow"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" style="float:none !important;"
+                    data-dismiss="modal" class="changebg">CANCEL</button>
+                <button type="button" onclick="desc_sav_btn_fun_txtsave()"
+                    style="float: none !important;margin-left: 2px;"
+                    data-dismiss="modal">SAVE</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- DESCRIPTION- MODAL -txtMod- 'END' -->
+
+<!-- Quantity- MODAL -TEXTAREA- 'SATRT' -->
+<div class="modal fade pop__view_page_hide in" data-backdrop="static"
+id="quantityMod" role="dialog">
+<div class="modal-dialog" style="width: 40% !important;" id="moddialog">
+    <div class="modal_vh_div">
+        <div class="modal-content">
+            <div class="modal-body" id="DEL_MODAL_SECTION" style="padding:
+                0px;">
+                <div class="modulesecbnr brdr" style="margin-bottom: 0;">
+                    <span>Notification</span>
+                </div>
+                <span class="tri_sybl">
+                    <i class="fa fa-exclamation-triangle"
+                        style="color:#ffa500 !important;font-size: 32px
+                        !important;"></i>
+                </span>
+                <p id="txt_area_cont" style="padding:20px 0px 0 10px
+                    !important;text-overflow:unset!important;overflow:visible
+                    !important">You have set the quantity to zero. All items
+                    in the cart must have a minimum quantity of 1. If you do
+                    not wish to include the product in the cart, please
+                    delete the product. The product quantity will be reset
+                    to 1.</p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="hidemodel();" style="float:
+                    none !important;margin-left: 2px;" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- Quantity- MODAL -TEXTAREA- 'END' -->
+
+<!-- NOTES- MODAL -TEXTAREA- 'SATRT' -->
+<div class="modal fade pop__view_page_hide in" data-backdrop="static"
+id="notesMod" role="dialog">
+<div class="modal-dialog" style="width: 40% !important;" id="moddialog">
+    <div class="modal_vh_div">
+        <div class="modal-content">
+            <div class="modal-body" id="DEL_MODAL_SECTION" style="padding:
+                0px;">
+                <div class="modulesecbnr brdr" style="margin-bottom: 0;">
+                    <span id="relatedDelete">EDIT</span>
+                    <button type="button" class="close changebg"
+                        data-dismiss="modal">X</button>
+                </div>
+                <span class="tri_sybl">
+                    <i class="fa fa-exclamation-triangle"></i>
+                </span>
+                <span id="txt_area_cont">Line Comments</span>
+                <div class="mod_txt_ara">
+                    <textarea rows="2" style="background-color:lightyellow"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="cancl_btn_fun_txt()"
+                    style="float:none !important;" data-dismiss="modal"
+                    class="changebg">CANCEL</button>
+                <button type="button" onclick="sav_btn_fun()" style="float:
+                    none !important;margin-left: 2px;" data-dismiss="modal">SAVE</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- NOTES- MODAL -TEXTAREA- 'END' -->
+
+<!-- NOTES- MODAL -txtMod- 'SATRT' -->
+<div class="modal fade pop__view_page_hide in" data-backdrop="static"
+id="txtMod" role="dialog">
+<div class="modal-dialog" style="width: 40% !important;">
+    <div class="modal_vh_div">
+        <div class="modal-content">
+            <div class="modal-body" id="DEL_MODAL_SECTION" style="padding:
+                0px;">
+                <div class="modulesecbnr brdr" style="margin-bottom: 0;">
+                    <span id="relatedDelete">EDIT</span>
+                    <button type="button" class="close changebg"
+                        data-dismiss="modal">X</button>
+                </div>
+                <span class="tri_sybl">
+                    <i class="fa fa-exclamation-triangle"></i>
+                </span>
+                <span id="txt_area_cont">NOTES</span>
+                <div class="mod_txt_ara">
+                    <input type="text" class="modal_txtbx" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" style="float:none !important;"
+                    data-dismiss="modal" class="changebg">CANCEL</button>
+                <button type="button" onclick="sav_btn_fun_txt()"
+                    style="float: none !important;margin-left: 2px;"
+                    data-dismiss="modal">SAVE</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- NOTES- MODAL -txtMod- 'END' -->
+
+
+
+    <script type="text/html" id="itemCommentTemplate">
+            <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog fiori3-modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close fiori3-icon-button" data-dismiss="modal" aria-hidden="true">&#xe03e;</button>
+                            <h3>@Translation.Get("xsltItemComment")</h3>
+                        </div>
+                        <div class="modal-body">
+                            <p data-bind="text: comment, visible: !isCommentEditable"></p>
+                            <textarea data-bind="value: comment, visible: isCommentEditable" class="form-control fiori3-textarea"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary fiori3-btn-primary" data-bind="click: save, visible: isCommentEditable">@Translation.Get("Msg.Save")</button>
+                            <button class="btn btn-tertiary fiori3-btn-tertiary" data-dismiss="modal" aria-hidden="true">@Translation.Get("Msg.Cancel")</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </script>
+    <script type="text/html" id="itemActionsTemplate">
+            <ul class="dropdown-menu-cart fiori3-dropdown-menu fiori3-dropdown-icons-menu" id="itemActionsDropdown">
+                <li tabindex="0" data-bind="visible: canBeMoved, click: moveUp, attr: { id: 'moveUp_' + id }">
+                    <span class="sap-icon">&#xe04b;</span>
+                    <span class="vertical-align" data-bind="text: '@Translation.GetJS("CartItem.MoveUpTitle")'"></span>
+                </li>
+                <li tabindex="0" data-bind="visible: canBeMoved, click: moveDown, attr: { id: 'moveDown_' + id }">
+                    <span class="sap-icon">&#xe04e;</span>
+                    <span class="vertical-align" data-bind="text: '@Translation.GetJS("CartItem.MoveDownTitle")'"></span>
+                </li>
+                
+            
+                <!-- ko foreach: actions -->
+                <li tabindex="0" data-bind="click: execute">
+                    <span class="sap-icon"
+                          data-bind="html: id == '4' ? '&#xe03d;' : id == '3' ? '&#xe245;' : id == '2' ? '&#xe038;' : id == '6' ? '&#xe065;' : id == '5' ? '&#xe010;' : id == '7' ? '&#xe04b;' : ''">
+                    </span>
+                    <!-- ko if: $data.name == "Delete" -->
+                     <span class="vertical-align" data-bind="text: name" onclick = "Summarycalculation()"></span>
+                    <!-- /ko -->
+                      <!-- ko if: $data.name != "Delete" -->
+                    <span class="vertical-align" onclick="edit_config(this)" data-bind="text: name == 'Edit' ? 'Edit Config' : name "></span>
+                    <!-- /ko -->
+                </li>
+                <!-- /ko -->
+                
+                <li tabindex="0" data-bind="click:desc_txt_aras('inuty')" onclick="ed_desc(this)" data-toggle="modal" data-target="#descmodal">
+                    <span class="sap-icon">&#xe04e;</span>
+                    <span class="vertical-align">EDIT DESC</span> 
+                        <input type="hidden" id ="inuty" data-bind="html: itemDescription.description,attr:{'value':itemDescription.description}" />
+                </li>
+                
+                <li tabindex="0" data-bind="visible: favoritesEnabled, click: showFavoritesForProduct">
+                    <span class="sap-icon">&#xe065;</span>
+                    <span class="vertical-align">@Translation.GetJS("Msg.ViewFavorites")</span>
+                </li>
+                <li tabindex="0" data-bind="visible: itemDescription.isCommentEditable() || itemDescription.comment(), click: editComment">
+                    <span class="sap-icon">&#xe0d3;</span>
+                    <span class="vertical-align">@Translation.GetJS("CartItem.CommentTitle")</span>
+                </li>
+                <li tabindex="0" data-bind="visible: !$root.useNewQuoteEngine, click: openCollaborationDialog, attr: { id: 'collaborationComments_' + id }">
+                    <span class="sap-icon">&#xe0b2;</span>
+                    <span class="vertical-align">@Translation.GetJS("CartItem.CollaborationCommentTitle")</span>
+                </li>
+            </ul>
+        </script>
+    <script type="text/html" id="itemDescriptionTemplate">
+            <div class="description-popover" data-bind="html: itemDescription.description">
+            </div>
+        </script>
+    <script>
+      function bluecir(ele){
+         overrideval()
+            $(".bluecir").each(function(){
+            setTimeout(function(){
+            console.log("toggleicon");
+                $(ele).toggleClass('blueciractive');
+                //$('.blueciractive').css('display','block');				
+                    var linetbody = $("#lineinneritems tbody");
+                    if (linetbody.children().length == 0) {					
+                            linetbody.html("<tr><td colspan='13'><p> No Records Found </p></td></tr>");
+
+                        }
+                },500);		
+                });						
+            }
+        
+        $('.line_item_col_hdr th').each(function (){
+            var getThTitle = $(this).find('abbr').attr('title');  //			console.log(getThTitle);
+            if(getThTitle == 'TAX PCT' || getThTitle == 'TAX AMT'){  //			console.log('123');
+                $(this).find('.col_line_head').css('text-align', 'right');
+            }	
+        });
+         
+          function note_fun(ele)
+          {
+            lst_prc_dis_prc_per();			//console.log('note_fun......');
+            $(ele).attr('id','txtareaval');
+            var current_notes = $(ele).parent().attr('id');
+            //$(ele).parent('td').css('background-color', 'lightyellow');			//console.log('note_fun.current_notes.....'+current_notes);
+          
+            var current_notes_cls = $(ele).parent().attr('class');
+            $('span#txt_area_cont').text(current_notes_cls);
+            $('.mod_txt_ara textarea').val('');
+            
+            var Rolled_up_num = $(ele).parent().siblings('td#RolledUpCartItem').text();
+            if(Rolled_up_num){
+                Rolled_up_num = Rolled_up_num.trim();				//console.log('Rolled_up_num..........'+Rolled_up_num);
+            }
+            
+            localStorage.setItem("Rolled_up_value", Rolled_up_num);
+            localStorage.setItem("current_notes_itm", current_notes);
+            
+            cpq.server.executeScript("LNITMVALUE", {'rollup':Rolled_up_num,'itmtxt':current_notes,'txar':''}, function (data) {				
+                if(data == 'empty'){			$('div#notesMod .mod_txt_ara textarea').val('');				}
+                else				{			$('div#notesMod .mod_txt_ara textarea').val(data);				}				
+            });
+             $('a#txtareaval').text(data);
+        
+            setTimeout(function(){		  lst_prc_dis_prc_per();	  }, 1000);
+          }	
+          
+        function sav_btn_fun(){
+            lst_prc_dis_prc_per();
+            var Rolled_up_num = localStorage.getItem("Rolled_up_value");
+            var current_notes = localStorage.getItem("current_notes_itm");
+            var txar = $('div#notesMod .mod_txt_ara textarea').val();
+            $('tbody#itemsTable tr td').css('background-color', '#fff');
+      
+            var txt_ara = $('div#notesMod .mod_txt_ara textarea').val();	//console.log('txt_ara....'+txt_ara);
+            if (txt_ara != ""){
+                $('a#txtareaval').text('Comments Included...');
+                $('a#txtareaval').attr('title','Comments Included...');	  //$('a#txtareaval').text(txt_ara);	 //$('a#txtareaval').attr('title',txt_ara);
+              $('a#txtareaval').removeAttr('id');
+              $('.close').trigger('click');
+              cpq.server.executeScript("LNITMVALUE", {'rollup':Rolled_up_num,'itmtxt':current_notes,'txar':txar}, function (data) {	  });			  
+            }	else	{
+                txt_ara = txar = 'empty';
+                $('a#txtareaval').text('Comments Included...');
+                //$('a#txtareaval').text(txt_ara);		//$('a#txtareaval').attr('title',txt_ara);
+                $('a#txtareaval').removeAttr('id');
+                $('.close').trigger('click');
+                cpq.server.executeScript("LNITMVALUE", {'rollup':Rolled_up_num,'itmtxt':current_notes,'txar':txar}, function (data) {	});
+            }
+            $('a#txtareaval').text(txt_ara);
+             localStorage.setItem("textareanote", txar);
+             setTimeout(function(){
+                  lst_prc_dis_prc_per();
+              }, 1000);
+        }		
+            
+         function cancl_btn_fun_txt(){
+            lst_prc_dis_prc_per();
+            var txar = $('div#notesMod .mod_txt_ara textarea').val();
+            var txt_ara = $('div#notesMod .mod_txt_ara textarea').val();
+            $('a#txtareaval').removeAttr('id');
+            $('.close').trigger('click');
+
+            setTimeout(function(){
+              lst_prc_dis_prc_per();
+            }, 1000);
+         }		  
+          
+        function sav_btn_fun_txt()
+        {
+            var Rolled_up_num = localStorage.getItem("Rolled_up_value");
+            var current_notes = localStorage.getItem("current_notes_itm");
+            var txar = $('div#txtMod .mod_txt_ara input.modal_txtbx').val();
+            
+            $('tbody#itemsTable tr td').css('background-color', '#fff');
+            
+            $('.close').trigger('click');
+            cpq.server.executeScript("LNITMVALUE", {'rollup':Rolled_up_num,'itmtxt':current_notes,'txar':txar}, function (data) {				
+                var get_id_val_txt = localStorage.getItem("get_id_val");
+                if (data == ""){	$('input#'+get_id_val_txt).val(txar);		}
+                else{				$('input#'+get_id_val_txt).val(data);		}
+            });
+        }
+        </script>
+    <script>
+        function sec_lin_item_edit(){		
+            $('.car_lt_itm').wrapAll('<div class="header_section_div header_section_div_pad_bt10 col-md-12"></div>');
+            $('.header_section_div table.car_lt_itm').after('<div class="g4  except_sec removeHorLine iconhvr sec_edit_sty"><button class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="sec_lin_itm_cancel(this)">CANCEL</button><button class="btnconfig btnMainBanner sec_edit_sty_btn_inh" onclick="sec_lin_itm_save(this)">SAVE</button></div>');
+          
+            $('tbody#itemsTable tr td a').each(function(index){		});	
+      
+            $('td#Quantity input,td#DiscountPercent input,td#DiscountAmount input').each(function(index){
+                $(this).closest('td').css('cssText','pointer-events:all;background-color:lightyellow !important;');
+                $(this).css('cssText','background-color:lightyellow !important;');
+                /*	<!-- $(this).attr('data-toggle','modal'); -->
+                <!-- $(this).attr('data-target','#txtMod'); -->
+                <!-- $(this).attr('onclick','txtMod_fun(this)'); --> */
+            });
+        }
+    
+        function sec_lin_itm_cancel(ele){			
+            $('.header_section_div .sec_edit_sty').remove();
+            $('.car_lt_itm').unwrap();
+          
+            $('td#Quantity input,td#DiscountPercent input,td#DiscountAmount input').each(function(index){
+                $(this).closest('td').css('cssText','pointer-events:none;');
+                $(this).css('cssText','background-color:#fff !important;');	
+            });				
+    
+            $('tbody#itemsTable tr td a').each(function(index){
+                $(this).closest('td').css('cssText','pointer-events:none;');
+            });
+        }
+    
+        function sec_lin_itm_save(ele){			
+            $('.header_section_div .sec_edit_sty').remove();
+            $('.car_lt_itm').unwrap();
+          
+            $('td#Quantity input,td#DiscountPercent input,td#DiscountAmount input').each(function(index){
+                $(this).closest('td').css('cssText','pointer-events:none;');
+                $(this).css('cssText','background-color:#fff !important;');
+            });			
+    
+            $('tbody#itemsTable tr td a').each(function(index){
+                $(this).closest('td').css('cssText','pointer-events:none;');
+            });
+            $('#save_click').click();
+        }
+        </script>
+    <script>
+      //setTimeout(function(){		  overrideval();	  }, 3000);
+        function desc_txt_aras(desc){
+            var type= $('#'+desc).val();
+            $('div#descmodal textarea').val(type);
+        }
+        
+        function desc_txt_ara(ele){		
+            var current_notes = $(ele).parent().attr('id');
+            var current_notes_cls = $(ele).parent().attr('class');
+            var txt_val = $('div#descmodal textarea').val();		  
+            
+            $('span#txt_area_cont').text("Description");
+            $('.mod_txt_ara textarea').val('');
+            
+            var Rolled_up_num = $(ele).closest('td').siblings('td#RolledUpCartItem').text();			
+            if(Rolled_up_num){
+                Rolled_up_num = Rolled_up_num.trim();				
+            }
+            
+            localStorage.setItem("Rolled_up_value1", Rolled_up_num);
+            
+            setTimeout(function(){				
+                var desc_txt = $(ele).children('span').text();
+                $(ele).children('span').attr('id','txt_in');				
+                $('div#descmodal textarea').val(desc_txt);
+            }, 500);
+            
+            cpq.server.executeScript("LNITMVALUE", {'rollup':Rolled_up_num,'itmtxt':"Description",'txar':txt_val}, function (data) {	});			
+        }
+        
+        function desc_sav_btn_fun_txtsave()
+        {
+            var Rolled_up_num = localStorage.getItem("Rolledup").trim();
+            $('span#txt_area_cont').text("Description")
+            var textarea =  $('div#descmodal textarea').val();		 
+
+            cpq.server.executeScript("LNPRODDESC", {'rollup':Rolled_up_num,'itmtxt':"Description",'txar':textarea}, function (data) {				  
+            $('#inuty').val(textarea);
+            });
+                  
+            $('#save_click').click();
+            $('#save_click').click();
+        }		
+        
+        
+        function desc_sav_btn_fun_txt()
+        {
+            var Rolled_up_num = localStorage.getItem("Rolled_up_value1");			
+            var txt_val = $('div#descmodal textarea').val();			
+            if (txt_val != ""){
+              $('span#txt_in').text(txt_val);
+              $('span#txt_in').attr('title',txt_val);
+              $('span#txt_in').removeAttr('id');	
+              cpq.server.executeScript("LNITMVALUE", {'rollup':Rolled_up_num,'itmtxt':"Description",'txar':txt_val}, function (data) {	  });
+            }	 
+        }
+        
+        function Summarycalculation(){	
+            setTimeout(function(){	cpq.server.executeScript("QTLINIMDEL", {}, function (data) {  });	  }, 500);
+        }
+    
+    /*	<!-- function lin_itm_act_btn(ele) -->
+        <!-- { -->
+            <!-- console.log('lin_itm_act_btn...1111'); -->
+            <!-- $('ul#itemActionsDropdown li span.vertical-align').each(function(){ -->
+            
+                <!-- var btn_txt = $(this).text(); -->
+                <!-- //console.log('btn_txt....'+btn_txt); -->
+                <!-- if(btn_txt != 'Move up' && btn_txt != 'Move down' && btn_txt != 'Delete' && btn_txt != 'Edit') -->
+                <!-- { -->
+                    <!-- $(this).parent().css('display','none'); -->
+                <!-- } -->
+                
+            <!-- }); -->
+        <!-- } --> */
+    
+        function lin_itm_act_btn(ele){			
+            var curr_of_st = $(ele).offset().top;			
+            
+            var z = $(ele).closest('td').siblings('td#RolledUpCartItem').text();
+             localStorage.setItem("Rolledup",z);			
+            var sub_val = 100;
+            if(z.indexOf('.') == -1){
+                sub_val = 180;
+            }
+            
+            var val_tp = curr_of_st - sub_val;			
+            var val_tp_st = val_tp +'px';			
+            $('.popover.fade.top.in').css('top',val_tp_st);			
+            localStorage.setItem("act_btn_lin_itm","1");			
+            var pop_id = localStorage.getItem("popId");			
+            var item_id = localStorage.getItem("itemId");			
+            if(pop_id){
+                var pop_rm = 'div#'+pop_id;
+                $(pop_rm).remove();
+            }
+            
+            var pop_up_id = $(ele).children('div').children('div').attr('aria-describedby');			
+            var item_ln_id = $(ele).children('div').children('div').attr('id');		
+            localStorage.setItem("popId",pop_up_id);
+            localStorage.setItem("itemId",item_ln_id);
+            
+            localStorage.setItem("itemId_pg",item_ln_id);
+            
+            $('ul#itemActionsDropdown li span.vertical-align').each(function(){
+                var btn_txt = $(this).text();
+                if(btn_txt != 'Edit Config' && btn_txt != 'EDIT DESC' && btn_txt !='Delete'){
+                    $(this).parent().css('display','none');
+                }
+            });
+          
+          var sts_value = $('p#hd_status').text();		
+        if(sts_value == "Approved" || sts_value =="Closed Won" || sts_value =="Closed Lost" || sts_value == "Level 1 Approval Requested" || sts_value == "Level 2 Approval Requested" || sts_value == "Rejected" || sts_value == "Expired"){
+            $('ul#itemActionsDropdown li[data-target="#descmodal"], ul#itemActionsDropdown li[data-target="#descmodal"] span').css('cssText','pointer-events: none;background-color: lightgray !important;color: #9fa0a1 !important;');
+        }
+        }
+    
+        $('div#cart_contant_pg').scroll(function() {
+        var pop_id = localStorage.getItem("popId");
+            if(pop_id){
+                var a = 'div#'+pop_id;
+                $(a).remove();
+                
+            }
+        });
+          
+        function ad_simp_mat(Start,end,Fetch_Count){
+            StartandEnd = Start + "_" + end
+            cpq.server.executeScript("SIMMATLKUP", {'Fetch_Count': parseInt(Fetch_Count),
+                   'StartandEnd': StartandEnd}, function (data) {				
+                $('div#Simp_Mat_pop_up_table').html(data[0]);				
+                $('div#Simp_Mat_pop_up_table').append(data[1])
+            });
+    
+            setTimeout(function(){ 
+              document.querySelectorAll('input.w3-input').forEach(function(el,idx){
+              el.addEventListener('keyup', function(e){
+                filterTable(e, idx);
+              }, false);		  
+            });
+            }, 2000);	
+        }
+    
+        function ad_user(Start,end,Fetch_Count)
+        {
+            StartandEnd = Start + "_" + end
+            cpq.server.executeScript("QTUSRPOPUP", {'Fetch_Count': parseInt(Fetch_Count),
+                   'StartandEnd': StartandEnd}, function (data) {				
+                $('div#Simp_Mat_pop_up_table').html(data[0]);				
+                $('div#Simp_Mat_pop_up_table').append(data[1])
+            });
+    
+            setTimeout(function(){
+                document.querySelectorAll('input.w3-input').forEach(function(el,idx){
+                  el.addEventListener('keyup', function(e){
+                    filterTable(e, idx);
+                  }, false);				  
+                });
+            }, 2000);	
+        }
+        </script>
+    <script>
+        function GetFirstResultFunction_CM_ADDNEW_MODEL() {
+           var showResultCount = $("#ShowResultCounts option:selected").text();	   //ad_simp_mat('1', showResultCount, showResultCount)
+           ad_user('1', showResultCount, showResultCount)
+        }
+    
+        function GetPreviuosResultFunction_CM_ADDNEW_MODEL() {
+           var showResultCount = $("#ShowResultCounts option:selected").text();
+           GetNavi = $('#Rec_Start_End').text().split(' ')
+           EndCount = parseInt(GetNavi[0]) - 1
+           Startcnt = (EndCount - showResultCount) + 1
+           pagecnt = $('#page_count').text()
+           if (pagecnt != 1) {	  // ad_simp_mat(Startcnt, EndCount, showResultCount)
+              ad_user(Startcnt, EndCount, showResultCount)
+           }	
+        }
+    
+        function GetNextResultFunction_CM_ADDNEW_MODEL() {
+           var showResultCount = $("#ShowResultCounts option:selected").text();
+           var GetNavi = $('#Rec_Start_End').text()
+           GetNavisplit = GetNavi.split(' ')
+           Startcnt = parseInt(GetNavisplit[2]) + 1
+           Endcnt = parseInt(showResultCount) + parseInt(GetNavisplit[2])	   //ad_simp_mat(Startcnt, Endcnt, showResultCount);
+           ad_user(Startcnt, Endcnt, showResultCount);
+        }
+    
+        function GetLastResultFunction_CM_ADDNEW_MODEL() {
+           var selected_val = $("#ShowResultCounts option:selected").text();
+           var Total_Rows = parseInt($('#TotalRecCount').text());
+           PageCount = Math.ceil(Total_Rows / selected_val);
+           var end_count = (PageCount * selected_val);
+           var start_count = (end_count - selected_val) + 1;	   //ad_simp_mat(start_count, end_count, selected_val)
+           ad_user(start_count, end_count, selected_val)
+        }
+        function ShowResultCountFunction_CM_ADDNEW_MODEL(ele) {
+            var recordEnd = $('#ShowResultCounts').val()		//ad_simp_mat(1, recordEnd, recordEnd);
+            ad_user(1, recordEnd, recordEnd);
+        }
+    
+        function Reassign(){
+            var part =[];
+            var grid = document.getElementById("simp_mat_pop_up");
+            var checkBoxes = grid.getElementsByTagName("INPUT");
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    var row = checkBoxes[i].parentNode.parentNode;
+                    part.push( row.cells[1].innerText); 
+                }
+            }
+            cpq.server.executeScript("QTREASSIGN", {'part' : part}, function (part) {   	});		
+            window.location.href = " https://sandbox.webcomcpq.com/quotation/LoadQuote.aspx";
+        }
+                
+        function savepopup() {
+            var part =[];
+            var grid = document.getElementById("simp_mat_pop_up");
+            var checkBoxes = grid.getElementsByTagName("INPUT");
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    var row = checkBoxes[i].parentNode.parentNode;
+                    part.push( row.cells[1].innerText);		
+                }
+            }
+                                                  
+            cpq.server.executeScript("QTSMELNITM", {'part' : part}, function (part){	 	});		  
+                                                  
+            $("#simple_matr_pop .close").click();                  
+            setTimeout(function(){ 		$('#save_click').click(); 	$('#save_click').click(); 		}, 0);  						
+        }
+          
+         function DelRev(){
+            var HeaderQuoteNum = localStorage.getItem('HeaderQuotename');
+            HeaderQuoteNum = HeaderQuoteNum.toString();
+            localStorage.setItem('DeleteRevision',HeaderQuoteNum);
+            window.location.href = " https://sandbox.webcomcpq.com/quotation/LoadQuote.aspx";			
+            
+            setTimeout(function()	{ 
+              cpq.server.executeScript("DELREVISON", {'QuoteId' : JSON.stringify(HeaderQuoteNum)}, function(QuoteId) {	  });
+            }, 50);
+         }			   
+        </script>
+    <script>
+        function overrideval(){
+                  console.log('1776-------')
+             cpq.server.executeScript("CQUPDLNITM", {'LoadAction':'LOADQT'}, function(data) {
+      				console.log('1776---data----',data)
+                  
+                  	data1 = data[0];
+                  
+                   	console.log('data2__check--'+data1)
+                  
+                
+     			$('#lineinneritems #dyn_1').html(JSON.stringify(data1));
+     
+      
+            
+                    //for (key in data1){
+                      //  dict = data1[key];
+                       // for (k in dict)	{
+                        // console.log('1719----------------',JSON.stringify(dict[k]));
+                          //$('#'+k).append(JSON.stringify(dict[k]));
+                                       // $('#lineinneritems #'+k).append(dict[k]);
+
+
+                       // }
+                   // }
+      
+   
+                
+         });
+            setTimeout(function(){ 
+                /*$('tbody#itemsTable tr td#Gross_Margin_Perc').each(function(index){				    
+                    var Gross_Margin_Perc = $(this).find('input').val();
+                    var Gross_Margin_Perc2 = $(this).children('.numberCell').children('a').text();				    
+                    if(Gross_Margin_Perc == '100.00' || Gross_Margin_Perc2 == '100.00' || Gross_Margin_Perc == '100' || Gross_Margin_Perc2 == '100'){						
+                        $(this).find('.redcircleitem').css('cssText','display:block !Important');  
+                    }	else	{
+                        $(this).find('.redcircleitem').css('cssText','display:none !Important');
+                    }					
+                });*/
+                  
+                  $('tbody#itemsTable tr td#Gross_Margin_Perc').each(function(index){
+                var Gross_Margin_Perc =$(this).children('.numberCell').children('.spantag').text();	
+                var Gross_Margin_Perc2 = $(this).children('.numberCell').children('a').text();
+                //console.log(Gross_Margin_Perc + "  ")
+                if(Gross_Margin_Perc == '100.00' || Gross_Margin_Perc2 == '100.00' || Gross_Margin_Perc == '100' || Gross_Margin_Perc2 == '100' || Gross_Margin_Perc == '100.00%'){
+                //console.log(Gross_Margin_Perc + "  ")
+                $(this).siblings('td#GM_HEALTH').html('<img class="fa fa-exclamation-circle redcircleitem" title="Item standard cost is zero. So Gross Margin Percentage is equal to 100%." src="/mt/BOSTONHARBOR1_UAT/Additionalfiles/info_icon.svg" style="display:block;width: 19px;height: 19px;margin: 0 auto;margin-top:13px;"/>')
+                }
+                });
+          
+                $('tbody#itemsTable tr td#Override').each(function(index){				   
+                    var overridecolum = $(this).children('.numberCell').children('span:nth-child(2)').text();				   
+                    if(overridecolum == '0.00'){						
+                        $(this).siblings('td#ListPrice').find('a').css('cssText','border-bottom: 0 !important;color: #000 !important;');
+                        $(this).siblings('td#ListPrice').find('input').css('cssText','text-decoration: none;color: #000 !important;');  
+                        $(this).siblings('td#ListPrice').css('cssText','pointer-events: none;cursor: default;');   
+                    }
+                    else{}
+                });
+                $('tbody#itemsTable tr td#ListPrice').each(function(index){				   
+                    var ListPricecolum = $(this).children('.numberCell').children('a').text();				   
+                    if(ListPricecolum == '0.00'){	}
+                    else{}
+                });
+                $('tbody#itemsTable tr td#NegativeListPrc').each(function(index){				   
+                    var NegativeListPrcecolum = $(this).children('.numberCell').children('span:nth-child(2)').text();				   
+                    if(NegativeListPrcecolum == '1.00'){						
+                        $(this).siblings('td#DiscountPercent').find('a').css('cssText','text-decoration: none;color: #000 !important;border-bottom: 0 ');
+                        $(this).siblings('td#DiscountPercent').find('input').css('cssText','text-decoration: none;color: #000 !important;border-bottom: 0 ');  
+                        $(this).siblings('td#DiscountPercent').css('cssText','pointer-events: none;cursor: default;');			
+                        $(this).siblings('td#DiscountAmount').find('a').css('cssText','text-decoration: none;color: #000;border-bottom: 0 !important;');
+                        $(this).siblings('td#DiscountAmount').find('input').css('cssText','text-decoration: none;color: #000 !important;border-bottom: 0 ');
+                        $(this).siblings('td#DiscountAmount').css('cssText','pointer-events: none;cursor: default;');
+                        $(this).siblings('td#Extended_sale_price').find('a').css('cssText','border-bottom: 0 !important;color: #000 !important;');
+                        $(this).siblings('td#Extended_sale_price').find('input').css('cssText','text-decoration: none;color: #000 !important;border-bottom: 0 ');						
+                        $(this).siblings('td#Extended_sale_price').css('cssText','pointer-events: none;cursor: default;');
+                    }
+                    else{	}
+                });
+                $('tbody#itemsTable tr td#Exclude_GM').each(function(index){				   
+                    var Exclude_GMecolum = $(this).children('.numberCell').children('span:nth-child(2)').text();				   
+                    if(Exclude_GMecolum == '1.00'){						
+                        $(this).siblings('td#Gross_Margin_Perc').find('a').text('NA');
+                        $(this).siblings('td#Gross_Margin_Perc').find('input').val('NA');
+                        $(this).siblings('td#Gross_Margin_Perc').find('.discgmpct').css('cssText','display:none');
+                        $(this).siblings('td#Gross_Margin_Perc').find('.disPercent').css('cssText','display:none');  
+                        $(this).siblings('td#Gross_Margin_Perc').css('cssText','pointer-events: none;cursor: default;');			
+                        $(this).siblings('td#Gross_Margin_Perc').find('a').css('cssText','text-decoration: none;color: #000;border-bottom: 0 !important;');
+                        $(this).siblings('td#Gross_Margin_Perc').find('input').css('cssText','text-decoration: none;color: #000;border-bottom: 0 !important;');						
+                    }
+                    else{	}				
+                    });				
+                }, 2000);
+            }
+            function lst_prc_dis_prc_per() {
+                overrideval()
+                  $('tbody#itemsTable tr td#ListPrice').each(function(index){				
+                      var lst_prc_vl = $(this).children('.numberCell').children('span:nth-child(2)').text();				
+                      if(lst_prc_vl == 0) {	  }
+                  });
+          }
+              
+            $( window ).load(function() {
+      console.log('class..1797------------------------..name....');
+                //$(".modal-dialog").draggable();
+                overrideval()
+                      console.log('class..1797------------------------..name....');
+                $('tbody#itemsTable tr td .text-right.numberCell > a').each(function(index){									$(this).attr('onclick','cell_edit_lnk(this)');			});
+                $('tbody#itemsTable tr td .fiori3-input-group input.form-control.numberCell').each(function(index){				$(this).attr('onclick','cell_edit_inp(this)');			});
+                setTimeout(function(){ 
+                     $('tbody#itemsTable tr td .fiori3-input-group input.form-control.numberCell').css("padding-top","2px");					
+                    $("table.items-table.car_lt_itm").colResizable({ disable : true });
+                    $("table.items-table.car_lt_itm").colResizable({ liveDrag:true });					
+                }, 2000);
+            });
+            
+            function  hidemodel(){	
+                $('#quantityMod').hide();
+            }
+            function CheckQuantity(ele, value){
+                id = $(ele).attr('id').match(/Quantity+/);
+                if (id){
+                    var val = $(ele).val();
+                    var keycode = (event.keyCode ? event.keyCode : event.which);
+                      if(value){
+                        if(val == 0){
+                            $('#quantityMod').show();
+                        }
+                      } else{
+                        if(keycode == '13' && val == 0){
+                            $('#quantityMod').show();
+                        }
+                      }
+                    }
+                      currentPage = cpq.models.cart.pager.currentPage();
+                    localStorage.setItem("CurrPage",currentPage);
+            }
+            
+            function cell_edit_lnk(ele){
+                    // below quote select
+                    $('.section_cust_fld_val input:enabled').css("display", "none");
+                    $('.section_cust_fld_val a').css("display", "block");
+
+                    // single select  product type summary
+                    $('tbody#ProductTypeTablebody tr td.cell_edit_cl, tbody#itemsTable tr td.cell_edit_cl').each(function(index){
+                        $(this).removeClass('cell_edit_cl');
+                    });
+                    // single  select for sale price
+                    $('tbody#ProductTypeTablebody tr td#ExtSle').each(function(index){
+                        $(this).css("cssText","background-color:transparent; text-align:right;");
+                        $(this).find('input').css("cssText","background-color:transparent; text-align:right;");
+                    });
+                    // single  select for GMT
+                    $('tbody#ProductTypeTablebody tr td#ExtSle').next().each(function(index){
+
+                        $(this).css("cssText","background-color:transparent; text-align:right;");
+                        $(this).find('input').css("cssText","background-color:transparent; text-align:right;");
+                    });
+
+                    $('td.cell_edit_cl').removeClass('cell_edit_cl');
+                    $(ele).closest('td').addClass('cell_edit_cl');
+                              
+                    var cur_inp = $(ele).attr('id');					
+                    localStorage.setItem("current_cell_inp", cur_inp);
+          
+                setTimeout(function(){ 					
+                    $('tbody#itemsTable tr td .fiori3-input-group input.form-control.numberCell').each(function(index){						
+                        $(this).attr('onclick','cell_edit_inp(this)');
+                    });
+                    $('tbody#itemsTable tr td .text-right.numberCell > a').each(function(index){					
+                        $(this).attr('onclick','cell_edit_lnk(this)');
+                    });
+                }, 2000);
+                var a = $(ele).closest('tr');				
+                var q = 0;
+                  setInterval(function(){
+                      if(q < 30){  lst_prc_dis_prc_per();  q = q + 1;  }
+                  }, 100);
+            }
+            function ed_desc(ele){				
+                $('tbody#itemsTable tr').css('cssText','');				
+                var lg_dp_dw = localStorage.getItem("itemId");				
+                var id_dyn = 'div#'+lg_dp_dw;				
+            }
+            function cell_edit_inp(ele)
+            {
+                    $('.section_cust_fld_val input:enabled').css("display", "none");
+                    $('.section_cust_fld_val a').css("display", "block");
+
+                    // single select  product type summary
+                    $('tbody#ProductTypeTablebody tr td.cell_edit_cl, tbody#itemsTable tr td.cell_edit_cl').each(function(index){
+                        $(this).removeClass('cell_edit_cl');
+                    });
+                    // single  select for sale price
+                    $('tbody#ProductTypeTablebody tr td#ExtSle').each(function(index){
+                        $(this).css("cssText","background-color:transparent; text-align:right;");
+                        $(this).find('input').css("cssText","background-color:transparent; text-align:right;");
+                    });
+                    // single  select for GMT
+                    $('tbody#ProductTypeTablebody tr td#ExtSle').next().each(function(index){
+                        $(this).css("cssText","background-color:transparent; text-align:right;");
+                        $(this).find('input').css("cssText","background-color:transparent; text-align:right;");
+                    });	
+                
+                    $('tbody#itemsTable tr').css('cssText','');
+                    $('td.cell_edit_cl').removeClass('cell_edit_cl');					
+                    $('tbody#itemsTable tr td .fiori3-input-group input.form-control.numberCell').css("padding-top","2px");
+                    
+                    var cur_inp = $(ele).attr('id');				
+                    
+                    var curr_lg_id = localStorage.getItem("current_cell_inp");			
+                    
+                    $(ele).closest('td').addClass('cell_edit_cl');
+                    localStorage.setItem("current_cell_inp", cur_inp);
+                    
+                    setTimeout(function(){ 						
+                        $('tbody#itemsTable tr td .fiori3-input-group input.form-control.numberCell').each(function(index){						
+                            $(this).attr('onclick','cell_edit_inp(this)');
+                        });
+                        $('tbody#itemsTable tr td .text-right.numberCell > a').each(function(index){							
+                            $(this).attr('onclick','cell_edit_lnk(this)');
+                        });		
+                    }, 2000);			
+    
+                    var q = 0;
+                    setInterval(function(){   if(q < 30){   lst_prc_dis_prc_per();   q = q + 1;   }  }, 100);
+            }
+          
+            cpq.events.sub("cart:updated",function(){
+            overrideval()				
+                //$('#Gross_Margin_Perc .editable-column').after('<span>%</span>');
+                var status = $('#field_140').val();
+                    if (status == "Approved" || status == "Closed Won" || status == "Closed Lost" || status=="Expired"){					
+                    $('a#PartNumber').css('cursor', 'not-allowed');					
+                    $('a#Notes').css('cursor', 'not-allowed');
+                    $('a#cartitemNotes').text(localStorage.getItem("textareanote"));					
+                    $('#Comments').css('cursor', 'not-allowed');					
+                    $('#DiscPerc').css({'text-decoration':'none','color':'#736f6f'});
+                    $('#totdisc').css({'text-decoration':'none','color':'#736f6f'});
+                    $('#TotQte').css({'text-decoration':'none','color':'#736f6f'});
+                    $('#MaxBudget').css({'text-decoration':'none','color':'#736f6f'});
+                    $('#GMPerc').css({'text-decoration':'none','color':'#736f6f'});		  
+                    $('#ad_prd_btn').css('cursor', 'not-allowed'); $('#addprdtclick').css('pointer-events', 'none');
+                    $('a#PartNumber').css('cursor', 'not-allowed');$('a#cartitemdesc').css('pointer-events', 'none');
+                    $('a#Notes').css('cursor', 'not-allowed');$('a#cartitemNotes').css('pointer-events', 'none');
+                    $('#Comments').css('cursor', 'not-allowed');$('#cartitemcomment').css('pointer-events', 'none');
+                  }	  
+            });
+    
+            cpq.events.sub("cart:updated",function(){
+                $('tbody#itemsTable tr td#ListPrice div span:nth-child(2)').each(function(index){
+                var indxlen = $('tbody#itemsTable tr td#ListPrice div span:nth-child(2)').length;
+                var texto = $(this).text();
+                var index =  $(this).closest('tr').index();				
+                LISTPRICE = texto.replace(/,/g , '');
+                if (parseFloat(LISTPRICE) == 0){				
+                    $('tbody#itemsTable tr:nth('+index+') td#Gross_Margin_Perc div a').text("NA");
+                    $('tbody#itemsTable tr:nth('+index+') td#Gross_Margin_Perc div a').css('pointer-events','none');
+                }
+    
+                });
+                setTimeout(function(){ 
+                    var sts_value = $('p#hd_status').text();					
+                    if(sts_value == "Approved" || sts_value == "Closed Won" || sts_value == "Closed Lost" || sts_value == "Rejected" || sts_value == "Level 1 Approval Requested" || sts_value == "Level 2 Approval Requested" || sts_value == "Expired")
+                    {
+                        $('tbody#itemsTable tr td#Notes a,tbody#itemsTable tr td#Comments a,tbody#itemsTable tr td#DiscountPercent a,tbody#itemsTable tr td#DiscountAmount a,div#comentdiv a#quotecomments').css('cssText','pointer-events:none;border-bottom:0 !important;margin-left: 3px !important;color: #000;');
+                        $('.numberCell span.hasError, .error_message').css('cssText','color:#000 !important;');
+                        $('tbody#itemsTable tr td#Notes').css('cssText','pointer-events:none;color: #000 !important;');
+                        $('tbody#itemsTable tr td#Comments').css('cssText','pointer-events:none;color:#000 !important;');
+                        $('.fiori3-pagination').css('pointer-events','none');
+                        $('#cartPager_firstPage').css('color','#000');
+                        $('#cartPager_previousPage').css('color','#000');
+                        $('#cartPager_nextPage').css('color','#000');
+                        $('#cartPager_lastPage').css('color','#000');
+                        $('#itemsPerPageDropdown').css('pointer-events','none');
+                        
+                    }
+                    lst_prc_dis_prc_per();
+                     $('td.cell_edit_cl').removeClass('cell_edit_cl');
+                }, 2000);
+          
+              currentPage = localStorage.getItem("CurrPage");            
+            if (currentPage != "" || currentPage != null){
+                currpage = localStorage.getItem("CurrPage")
+                cpq.models.cart.pager.currentPage(currpage)
+                localStorage.setItem("CurrPage","")
+            }
+                 
+            });
+    
+            /*setTimeout(function(){ 
+                  var tempname=localStorage.getItem('TemplateName');
+                  
+                  var tot_pg_num = $('div#bottom_pager ul.pagination.pagination li.pages input').val();
+                  //console.log('tot_pg_num......'+tot_pg_num);
+                  var set_tot_pg_num = 'Page '+ tot_pg_num;
+                  $('div#bottom_pager div#pagenum').text(set_tot_pg_num);
+              
+                  var pagenumber=$('#pagenum').html();
+                //  console.log('pagenumber------'+pagenumber);
+                  
+                  var pagefulltext = pagenumber.split(" ");
+                //  console.log('pagefulltext------'+pagefulltext);
+                  
+                  var str_pagetext=pagefulltext[0];
+                  //console.log('str_pagetext------'+str_pagetext);
+                  
+                  var str_pagenumber=pagefulltext[1];
+                 // console.log('str_pagenumber------'+str_pagenumber);
+                  
+                  var str_finalpagenumber=parseInt(str_pagenumber);
+                //  console.log('str_finalpagenumber------'+str_finalpagenumber);
+                  
+                  $('#pagenum').text("page "+str_finalpagenumber); 
+                 
+                  
+                  var dropdown_val=$( "#myselect option:selected" ).text();
+                  // console.log('dropdown_val------'+dropdown_val);
+                   
+                  var frm=parseInt(str_pagenumber)*parseInt(dropdown_val)-parseInt(dropdown_val)+1;
+                 // console.log('frm------'+frm);
+                  var to=parseInt(str_pagenumber)*parseInt(dropdown_val);
+                 // console.log('to------'+to);
+                  var tolast=pagenumber=$('#recordtotal').html();
+                //  console.log('tolast------'+tolast);
+                  //if(frm >= tolast)
+                  //{
+                    //frm = 1;
+                  //}
+                  if(parseInt(to)>parseInt(tolast))
+                  {
+                     // console.log('aaaaa---if111');
+                    $('#pagefromto').text(frm+" - "+tolast+" of ");
+                  }
+                  else
+                  {
+                      //console.log('aaaaa---if111');
+                    $('#pagefromto').text(frm+" - "+to+" of ");
+                  }
+              
+                },3000);*/
+                        
+          $('.UserChkBx').on('change', function() {
+                $('.UserChkBx').not(this).prop('checked', false);  
+          });			
+            
+            
+        function subtotal(){
+      console.log('19999---------------')
+        $('tbody#itemsTable tr td#LastChild div span:nth-child(2)').each(function(index){
+          var indxlen = $('tbody#itemsTable tr td#LastChild div span:nth-child(2)').length;
+          var texto = $(this).text();
+          var index =  $(this).closest('tr').index();
+          if (texto == 1){
+          Ext_list_ttl = $('tbody#itemsTable tr:nth('+index+') td#Ext_list_Total div span:nth-child(2)').text();
+          Currency = $('tbody#itemsTable tr:nth('+index+') td#Currency div span:nth-child(2)').text();
+          var newRow = $('<tr><td><div><span></span></div></td><td><div><span></span></div></td><td><div><span></span></div></td><td><div><span></span></div></td><td><div><span></span></div></td><td><div><span>'+Currency+'</span></div></td><td><div><span></span></div></td><td><div style="float: right;padding-top:5px;"><span>'+Ext_list_ttl+'</span></div></td><td><div><span></span></div></td><td><div><span></span></div></td><td><div><span></span></div></td><td><div><span></span></div></td><td><div><span></span></div></td><td><div><span></span>%</div></td><td><div><span></span></div></td></tr>');
+          newRow.insertAfter($('#JColResizer0 tbody tr:nth('+index+')'));
+          }
+          });
+        
+        }
+        </script>
+    <script>
+         $(function() {  
+       // $(".modal-dialog").draggable();
+        //$("#descmoddialog").draggable();        
+      });  
+</script>
+    <script>
+function edit_config(ele){	
+    var ed_cof = $(ele).text();	
+    if(ed_cof == 'Edit Config'){	localStorage.setItem("lastname", "Edit Config");	}
+    else{							localStorage.setItem("lastname", "");				}
+}
+function ed_prd_dir(){	
+    localStorage.setItem("lastname", "Edit Config");	
+}
+</script>
+    <script type="text/html" id="cartPagerTemplate">
+  <div class="col-md-12 bottom_pager" id="bottom_pager">
+    <div class="col-md-4 col-sm-4 clear-margin pad-0" data-bind="visible: totalItemCount">
+       <!-- <label class="pager-number-of-items-item">@Translation.Get("GenericTable.Number of items"): </label>-->
+      <label id="pagefromto" class="pager-number-of-items-item num_row_disp" style="float:left">1 - 5 of </label>
+        <label id="recordtotal" class="pager-number-of-items-item" data-bind="text: totalItemCount" style="float:left"></label>
+       <!-- ko if: showPageSizeOptions -->
+        <div class="clear col-sm-4 col-md-4 cart_show">
+           <div id="pagedetails"style="vertical-align:middle; text-align: left;" class="pull-left"><select id="myselect" onchange="page_drp_dw()" data-bind="options: pageSizeOptions, stringToNumericValue: pageSize" style="width: 65px; vertical-align:middle; display: inline-block; margin-left: 5px" class="form-control"></select> </div>
+        </div>
+            <!-- /ko -->
+       </div>
+    
+    <div class="col-md-8 col-sm-8 col-xs-9 clear-margin clear-padding" style="display:inline-block" data-bind="visible: totalItemCount" class="clearfix">
+        
+        <div class="clear-padding col-xs-8 col-sm-6 col-md-6 bottom_arrows">
+        <ul class="pagination pagination">
+            <li data-bind="css: { disabled: isOnFirstPage() }">
+                <a href="#" data-bind="click: goToFirstPage, css: { disabledPage : isOnFirstPage() }" class="cart_arrow" onclick="page_details('F')"><i class="fa fa-caret-left"></i><i class="fa fa-caret-left"></i></a>
+            </li>
+            <li data-bind="css: { disabled: !hasPrevPage() }" class="single_arrow">
+                <a href="#" data-bind="click: goToPreviousPage, css: { disabledPage: !hasPrevPage() }" class="cart_arrow" onclick="page_details('P')"><i class="fa fa-caret-left"></i>PREVIOUS</a>
+            </li>
+            <li class="pages" style="display:none;">
+                <input aria-label="@Translation.Get("PagerTemplate.CurrentPage")" data-bind="valueUpdatedOnEnter: currentPage, attr: { id: pagerId + '_currentPage' }" class="active current-page-input" />&nbsp;/&nbsp;<span data-bind="text: lastPage"></span>
+            </li>
+            <li data-bind="css: { disabled: !hasNextPage() }" class="single_arrow">
+                <a href="#" data-bind="click: goToNextPage, css: { disabledPage: !hasNextPage() }" class="cart_arrow" onclick="page_details('N')">NEXT<i class="fa fa-caret-right"></i></a>
+
+            </li>
+            <li  data-bind="css: { disabled: isOnLastPage() }">
+                <a href="#" data-bind="click: goToLastPage, css: { disabledPage : isOnLastPage() }" class="cart_arrow" onclick="page_details('L')"><i class="fa fa-caret-right"></i><i class="fa fa-caret-right"></i></a>
+            </li>
+        </ul>
+        </div>
+         
+          <div id="pagenum" class="col-md-6 col-xs-4 col-sm-6 page_txt_withnum">page 1</div>
+      <span data-bind="text:(function(){
+                        setTimeout(function(){
+                            $('table.table.fiori3-table.items-table.car_lt_itm').each(function(index){
+                                
+                                var len_cnt = $('.itemtablemainitems').length;
+                                //console.log('uicheck1',len_cnt)
+                                var a = '1 - '+ len_cnt +' of ';
+                                //console.log('uicheck2',a)
+                                
+                         $('div#bottom_pager .col-md-4.col-sm-4.clear-margin.pad-0 label.pager-number-of-items-item.num_row_disp').text(a);
+                         });
+                            
+                            $('table.table.fiori3-table.items-table.car_lt_itm').each(function(index){
+                                
+                                var len_cnt = $('.itemtablemainitems').length;
+                                //console.log('uicheck3',len_cnt)
+                                var a = '1 - '+ len_cnt +' of ';
+                                //console.log('uicheck4',a)
+                                $('div#bottom_pager .col-md-4.col-sm-4.clear-margin.pad-0 label.pager-number-of-items-item.num_row_disp').each(function(ind){
+                                    if(index == ind)
+                                    {
+                                        
+                                        $(this).text(a);
+                                    }
+                                });
+                            });
+                        }, 3500);                       
+                        })();"></span>
+          
+    </div>
+    </div>
+    <div class="clearfix"></div>
+</script>
+    <script>
+  $('table.table.fiori3-table.items-table.car_lt_itm thead').each(function(){
+            var currentRow=$(this).closest("tr");          
+         var col1=currentRow.find("th:eq(14)").text(); // get current row 1st TD value
+         col1 = undefined;
+  }); 
+function page_details(Action)
+{ 
+setTimeout(function(){ 
+ var id=Action;
+  if(id=='F')
+  {
+  var dropdown_val=$( "#myselect option:selected" ).text();
+  $('#pagefromto').text("1 - "+dropdown_val+" of ");
+  $('#pagenum').text("page 1");
+  }
+  if(id=='P')
+  {
+  var from=$('#pagefromto').html();
+  var ret = from.split("-");
+  var str1=ret[0];
+  var str2=ret[1];
+  var strfinal = str2.split(" ");
+  var str3=strfinal[0];
+  var str4=strfinal[1];
+  var dropdown_val=$( "#myselect option:selected" ).text();
+  var initial_val = parseInt(str1)-parseInt(dropdown_val); 
+  var final_val=parseInt(initial_val)-1+parseInt(dropdown_val);
+  $('#pagefromto').text(initial_val+" - "+final_val+" of ");
+  var pagenumber=$('#pagenum').html();
+  var pagefulltext = pagenumber.split(" ");
+  var str_pagetext=pagefulltext[0];
+  var str_pagenumber=pagefulltext[1];
+  var str_finalpagenumber=parseInt(str_pagenumber)-1;
+   $('#pagenum').text("page "+str_finalpagenumber);
+ }
+  if(id=='N')
+  {
+  var pagenumber=$('#pagenum').html();
+  var pagefulltext = pagenumber.split(" ");
+  var str_pagetext=pagefulltext[0];
+  var str_pagenumber=pagefulltext[1];
+  var str_finalpagenumber=parseInt(str_pagenumber)+1;
+   $('#pagenum').text("page "+str_finalpagenumber); 
+  var dropdown_val=$( "#myselect option:selected" ).text();
+  var frm=parseInt(str_pagenumber)*parseInt(dropdown_val)+1;
+  var to=parseInt(str_pagenumber)*parseInt(dropdown_val)+parseInt(dropdown_val);
+  var tolast=pagenumber=$('#recordtotal').html();
+  if(parseInt(to)>parseInt(tolast))
+  {
+  $('#pagefromto').text(frm+" - "+tolast+" of ");
+  }
+  else
+  {
+  $('#pagefromto').text(frm+" - "+to+" of ");
+  }
+  
+  }
+  if(id=='L')
+  {
+    var pagenumber=$('#pagenum').html();
+    var pagefulltext = pagenumber.split(" ");
+    var str_pagetext=pagefulltext[0];
+    var str_pagenumber=pagefulltext[1];
+    var str_finalpagenumber=parseInt(str_pagenumber)+1;
+
+    var dropdown_val=$( "#myselect option:selected" ).text();
+    var tolast=pagenumber=$('#recordtotal').html();
+    var count=parseInt(tolast)/parseInt(dropdown_val)+1;
+    var frm=parseInt(count)*parseInt(dropdown_val)-parseInt(dropdown_val)+1;
+    var to=parseInt(count)*parseInt(dropdown_val)+parseInt(dropdown_val);
+  
+    $('#pagenum').text("page "+count.toString().split(".")[0]); 
+    if(parseInt(to)>parseInt(tolast)){
+        $('#pagefromto').text(frm+" - "+tolast+" of ");
+    }  else  {
+        $('#pagefromto').text(frm+" - "+to+" of ");
+    }  
+  }
+  },0); 
+  
+setTimeout(function(){  
+   $('table.table.fiori3-table.items-table .car_lt_itm thead tr > :last-child').remove();
+   $('tbody#itemsTable tr td > :last-child').remove();
+   $('tbody#itemsTable > tr#dynmic').remove();
+   $('tbody#itemsTable tr td#LastChild div span:nth-child(2)').each(function(index){
+      var indxlen = $('tbody#itemsTable tr td#LastChild div span:nth-child(2)').length;
+      var texto = $(this).text();
+      var index =  $(this).closest('tr').index();
+      if (texto == 1){		
+          Ext_list_ttl = $('tbody#itemsTable tr:nth('+index+') td#Ext_list_Total div span:nth-child(2)').text();
+          Ttl_Disc_Amt = $('tbody#itemsTable tr:nth('+index+') td#Ttl_Disc_Amt div span:nth-child(2)').text();
+          Ttl_GM = $('tbody#itemsTable tr:nth('+index+') td#Ttl_GM div span:nth-child(2)').text();
+          Ttl_Sale = $('tbody#itemsTable tr:nth('+index+') td#Ttl_Sale div span:nth-child(2)').text();
+          Ttl_ExtSale = $('tbody#itemsTable tr:nth('+index+') td#Total div span:nth-child(2)').text();
+          Currency = $('tbody#itemsTable tr:nth('+index+') td#Currency div span:nth-child(2)').text();
+          Ttl_Disc_Perc =  $('tbody#itemsTable tr:nth('+index+') td#Ttl_Disc_Perc div span:nth-child(2)').text();
+          Ttl_ListPric =  $('tbody#itemsTable tr:nth('+index+') td#Ttl_ListPric div span:nth-child(2)').text();
+          Ttl_PartNumber =  $('tbody#itemsTable tr:nth('+index+') td#Ttl_PartNumber div span:nth-child(2)').text();	  
+          var newRow = $('<tr id="dynmic" style="background: #f1f1f1d9;"><td><div><span></span></div></td><td><div><span></span></div></td><td><div style="padding: 10px 5px;font-weight: bold;"><span>'+Ttl_PartNumber+' Subtotal</span></div></td><td><div><span></span></div></td><td><div><span></span></div></td><td id="Currency"><div style="padding: 0 5px;font-weight: bold;"><span>'+Currency+'</span></div></td><td><div style="float: right;padding-top:12px;"><span></span></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span>'+Ext_list_ttl+'</span></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span>'+Ttl_Disc_Perc+' %</span></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span>'+Ttl_Disc_Amt+'</span></div></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span></span></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span>'+Ttl_ExtSale+'</span></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span>'+Ttl_GM+' %</span></div></td><td><div><span></span></div></td></tr>');
+            var index = 0
+          newRow.insertAfter($('#JColResizer0 tbody tr:nth('+index+')'));
+      }
+  });
+
+  var tot_pg_num = $('div#bottom_pager ul.pagination.pagination li.pages input').val();  
+  var set_tot_pg_num = 'Page '+ tot_pg_num;
+  $('div#bottom_pager div#pagenum').text(set_tot_pg_num);  
+  },2000);  
+}
+function page_drp_dw(){
+    setTimeout(function(){
+        $('table.table.fiori3-table.items-table.car_lt_itm').each(function(index){			
+            var len_cnt = $('.itemtablemainitems').length;			
+            var a = '1 - '+ len_cnt +' of ';			
+        });		
+        $('table.table.fiori3-table.items-table.car_lt_itm').each(function(index){			
+            var len_cnt = $('.itemtablemainitems').length;			
+            var a = '1 - '+ len_cnt +' of ';			
+            $('div#bottom_pager .col-md-4.col-sm-4.clear-margin.pad-0 label.pager-number-of-items-item.num_row_disp').each(function(ind){
+                if(index == ind){		//$(this).text(a);
+                }
+            });
+        });      
+    }, 2500);
+    
+    /*setTimeout(function(){ 
+      var tempname=localStorage.getItem('TemplateName');
+      
+      var tot_pg_num = $('div#bottom_pager ul.pagination.pagination li.pages input').val();	 // console.log('tot_pg_num......'+tot_pg_num);
+      var set_tot_pg_num = 'Page '+ tot_pg_num;
+      $('div#bottom_pager div#pagenum').text(set_tot_pg_num);  
+      var pagenumber=$('#pagenum').html();	 // console.log('pagenumber------'+pagenumber);	  
+      var pagefulltext = pagenumber.split(" ");	  //console.log('pagefulltext------'+pagefulltext);	  
+      var str_pagetext=pagefulltext[0];	  //console.log('str_pagetext------'+str_pagetext);	  
+      var str_pagenumber=pagefulltext[1];	 // console.log('str_pagenumber------'+str_pagenumber);	  
+      var str_finalpagenumber=parseInt(str_pagenumber);	 // console.log('str_finalpagenumber------'+str_finalpagenumber);	  
+      $('#pagenum').text("page "+str_finalpagenumber);  
+      var dropdown_val=$( "#myselect option:selected" ).text();	 //  console.log('dropdown_val------'+dropdown_val);	   
+      var frm=parseInt(str_pagenumber)*parseInt(dropdown_val)-parseInt(dropdown_val)+1;	 // console.log('frm------'+frm);
+      var to=parseInt(str_pagenumber)*parseInt(dropdown_val);	 // console.log('to------'+to);
+      var tolast=pagenumber=$('#recordtotal').html();	 // console.log('tolast------'+tolast);
+      //if(frm >= tolast)	  //{		//frm = 1;	  //}
+      if(parseInt(to)>parseInt(tolast))	  {		//  console.log('aaaaa---if111');		$('#pagefromto').text(frm+" - "+tolast+" of ");	  }
+      else	  {		//  console.log('aaaaa---if111');		$('#pagefromto').text(frm+" - "+to+" of ");  }  
+    },3000);*/
+  
+  setTimeout(function(){  
+  $('tbody#itemsTable > tr#dynmic').remove();
+  $('tbody#itemsTable tr td#LastChild div span:nth-child(2)').each(function(index){
+      var indxlen = $('tbody#itemsTable tr td#LastChild div span:nth-child(2)').length;
+      var texto = $(this).text();
+      var index =  $(this).closest('tr').index();
+      if (texto == 1){		
+      Ext_list_ttl = $('tbody#itemsTable tr:nth('+index+') td#Ext_list_Total div span:nth-child(2)').text();
+      Ttl_Disc_Amt = $('tbody#itemsTable tr:nth('+index+') td#Ttl_Disc_Amt div span:nth-child(2)').text();
+      Ttl_GM = $('tbody#itemsTable tr:nth('+index+') td#Ttl_GM div span:nth-child(2)').text();
+      Ttl_Sale = $('tbody#itemsTable tr:nth('+index+') td#Ttl_Sale div span:nth-child(2)').text();
+      Ttl_ExtSale = $('tbody#itemsTable tr:nth('+index+') td#Total div span:nth-child(2)').text();
+      Currency = $('tbody#itemsTable tr:nth('+index+') td#Currency div span:nth-child(2)').text();
+      Ttl_Disc_Perc =  $('tbody#itemsTable tr:nth('+index+') td#Ttl_Disc_Perc div span:nth-child(2)').text();
+      Ttl_ListPric =  $('tbody#itemsTable tr:nth('+index+') td#Ttl_ListPric div span:nth-child(2)').text();
+      Ttl_PartNumber =  $('tbody#itemsTable tr:nth('+index+') td#Ttl_PartNumber div span:nth-child(2)').text();	  
+      var newRow = $('<tr id="dynmic" style="background: #f1f1f1d9;"><td><div><span></span></div></td><td><div><span></span></div></td><td><div style="padding: 10px 5px;font-weight: bold;"><span>'+Ttl_PartNumber+' Subtotal</span></div></td><td><div><span></span></div></td><td><div><span></span></div></td><td id="Currency"><div style="padding: 0 5px;font-weight: bold;"><span>'+Currency+'</span></div></td><td><div style="float: right;padding-top:12px;"><span></span></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span>'+Ext_list_ttl+'</span></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span>'+Ttl_Disc_Perc+' %</span></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span>'+Ttl_Disc_Amt+'</span></div></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span></span></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span>'+Ttl_ExtSale+'</span></div></td><td><div style="float: right;padding-top:12px;font-weight: bold;"><span>'+Ttl_GM+' %</span></div></td><td><div><span></span></div></td></tr>');
+
+      newRow.insertAfter($('#JColResizer0 tbody tr:nth('+index+')'));
+      }
+  });  
+  },2000);    
+}
+
+</script>
+    <script type="text/html" id="CartPagerTemplate">
+    <!-- ko if: totalItemCount() !== 0 -->
+    <div class="fiori3-pagination-container vertical-align">
+        <!-- ko if: showPageSizeOptions -->
+        <div class="fiori3-items-per-page-container" data-bind="attr: { id: pagerId }">
+            <div id="itemsPerPageDropdown" data-toggle="dropdown" data-bind="click: checkDropdownPosition, event: { keyup: function(){ pagerDropdownFocus(event); } }">
+                <a   class="pager-items-per-page-number" href="#" data-bind="attr: { 'aria-label': pageSize() + ' ' + '@Translation.Get("Pager.ItemsPerPage")', id: pagerId + '_pagerDropDown' }"><span data-bind="text: pageSize" class="items-per-page-number"></span></a>
+            </div>
+            <span>@Translation.Get("Pager.ItemsPerPage")</span>
+            <div class="dropdown-menu" role="menu" data-bind="attr: { id: pagerId + '_itemsPerPageDropdownMenu'}">
+                <ul data-bind="foreach: pageSizeOptions">
+                    <li   data-bind="click: function() { $parent.pageSize($data); }, event: { keyup: function() { $parent.selectPageSizeOnEnter(event, $data); }}, css: { 'selected': $parent.pageSize() === $data }" tabindex="0">
+                        <a onclick="page_drp_dw()" data-bind="text: $data, attr: { 'aria-label': $data }"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- /ko -->
+        <!-- ko if: showNumberOfItems -->
+        <div class="pager-number-of-items-message" data-bind="visible: totalItemCount" tabindex="0">
+            <label class="pager-number-of-items-item">@Translation.Get("GenericTable.Number of items"): </label>
+            <label class="pager-number-of-items-item" data-bind="text: totalItemCount"></label>
+        </div>
+        <!-- /ko -->
+        <ul class="fiori3-pagination fiori3-input-group">
+            <li   data-bind="css: { disabled: isOnFirstPage() }">
+            <span class="sap-icon-extended" data-bind="click: goToFirstPage, css: { disabledPage: isOnFirstPage() }">
+                <a onclick="page_drp_dw()" href="#" data-bind="attr: { id: pagerId + '_firstPage'}" aria-label="@Translation.Get("PagerTemplate.FirstPage")">&#xf162;</a>
+            </span>
+            </li>
+            <li  data-bind="css: { disabled: !hasPrevPage() }">
+                <span class="sap-icon" data-bind="click: goToPreviousPage, css: { disabledPage: !hasPrevPage() }">
+                    <a onclick="page_drp_dw()" href="#" data-bind="attr: { id: pagerId + '_previousPage'}" aria-label="@Translation.Get("PagerTemplate.PreviousPage")">&#xe067;</a>
+                </span>
+            </li>
+
+            <li class="pages">
+                <input aria-label="@Translation.Get("PagerTemplate.CurrentPage")" data-bind="valueUpdatedOnEnter: currentPage, attr: { id: pagerId + '_currentPage' }" class="active current-page-input" />&nbsp;/&nbsp;<span data-bind="text: lastPage"></span>
+            </li>
+
+            <li  data-bind="css: { disabled: !hasNextPage() }">
+            <span class="sap-icon" data-bind="click: goToNextPage, css: { disabledPage: !hasNextPage() }">
+                <a onclick="page_drp_dw()" href="#" data-bind="attr: { id: pagerId + '_nextPage'}" aria-label="@Translation.Get("PagerTemplate.NextPage")">&#xe066;</a>
+            </span>
+            </li>
+            <li data-bind="css: { disabled: isOnLastPage() }">
+            <span class="sap-icon-extended" data-bind="click: goToLastPage, css: { disabledPage: isOnLastPage() }">
+                <a onclick="page_drp_dw()" href="#" data-bind="attr: { id: pagerId + '_lastPage'}" aria-label="@Translation.Get("PagerTemplate.LastPage")">&#xf163;</a>
+            </span>
+            </li>
+        </ul>
+    </div>
+    <!-- /ko -->
+</script>
+
+
+<script>
+function ProcessReq(ele)
+{
+PN = $(ele).parent('td').siblings('td.td_partnumber').text().trim();
+ConditionType = $(ele).parent('td').siblings('td.contype').text().trim();
+discount = $(ele).val();
+if ($('#ymax_val').length) {
+YMAX_Rate = $('#ymax_val').text(); }
+else { YMAX_Rate = '0.00' }
+console.log("cpq request process!!!!!!!!!!!!");
+cpq.server.executeScript("QTDISCCALC", {'prd':PN,'discount':discount, 'contype':ConditionType, 'ymax':YMAX_Rate}, function (data) {				
+$("[id='field_Save Quote'] span").click();					
+});
+
+}
+
+
+function msgshow(){
+  console.log('page loaded---')
+  }
+</script>
+
+
+<script>
+$(function() {
+    var pressed = false;
+    var start = undefined;
+    var startX, startWidth;
+    
+    $("table th").mousedown(function(e) {
+        start = $(this);
+        pressed = true;
+        startX = e.pageX;
+        startWidth = $(this).width();
+        $(start).addClass("resizing");
+    });
+    
+    $(document).mousemove(function(e) {
+        if(pressed) {
+            $(start).width(startWidth+(e.pageX-startX));
+        }
+    });
+    
+    $(document).mouseup(function() {
+        if(pressed) {
+            $(start).removeClass("resizing");
+            pressed = false;
+        }
+    });
+});
+</script>
+

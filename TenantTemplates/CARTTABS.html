@@ -1,0 +1,43 @@
+<!-- CARTTABS Template -->
+@using WebSite.Controllers
+<div id="cartHeader" class="fiori3-cart-header clearfix" style="display:none">
+     <div class="cart-header-div">
+        
+	     <div class="flex">
+		     @if (CartController.LoadActionsOnAllTabs(Request.Url.LocalPath.ToLowerInvariant()))
+             {
+	             @Html.PartialWithNameAsComment("~/Views/Cart/Sections/CartActions.cshtml")
+             }
+		     
+		     <div class="predictive-and-collaboration cart-actions-container">
+			     <div class="recommendations-btn-div">
+				     <div>
+					     <span id="customerComments" data-trigger="hover focus" class="btn btn-customer-feedback" data-bind="click: tabsData.customerFeedback.showCustomerFeedback, event: { keyup: function() { tabsData.customerFeedback.openCustomerComments(event, $data); } }, tooltip: { title: '@Translation.GetJS("Cart.CustomerFeedback.Title")', placement: 'auto top'}" tabindex="0">&#xe0b2;</span>
+				     </div>
+				     <div style="display: none">
+					     @Html.PartialWithNameAsComment("~/Views/Cart/Dialogs/CustomerFeedbackDialogTemplate.cshtml")
+				     </div>
+			     </div>
+			     <div class="recommendations-btn-div" style="display: none" data-bind="visible: recommendationsData.showPredictive">
+				     <div>
+					     <button data-trigger="hover" class="btn btn-predictive btn-recommendations" data-bind="enable: recommendationsData.enabled, click: recommendationsData.showRecommendations, tooltip: { title: '@Translation.GetJS("Cart.Predictive.RecommendationsTitle")', placement: 'bottom'}">
+						     <span>&#xe024;</span>
+						     <!-- ko if: recommendationsData.inProgress -->
+						     <span class="spinner"></span>
+						     <!-- /ko -->
+					     </button>
+				     </div>
+				     <div style="display: none">
+					     @Html.PartialWithNameAsComment("PagerTemplate")
+					     @Html.PartialWithNameAsComment("~/Views/Cart/Dialogs/RecommendationsDialogTemplate.cshtml")
+				     </div>
+			     </div>
+		     </div>
+	     </div>
+     </div>
+   
+</div>
+
+ 
+
+@Html.PartialWithNameAsComment("~/Views/Cart/Templates/CellTemplates.cshtml")

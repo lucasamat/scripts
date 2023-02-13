@@ -1,0 +1,151 @@
+# =========================================================================================================================================
+#   __script_name : SYPARCEFMA.PY
+#   __script_description : THIS SCRIPT IS USED TO PARSE THE FORMULA LOGIC FOR ALL THE FORMULA FIELDS IN  SYOBJD TABLE
+#   __primary_author__ : LEO JOSEPH
+#   __create_date :
+# ==========================================================================================================================================
+
+from SYDATABASE import SQL
+import Webcom.Configurator.Scripting.Test.TestProduct
+Sql = SQL()
+
+getval = ""
+class ParseFormula:
+    def __init__(self):
+        self.exceptMessage = ""
+
+    def Parse_Formula(self, Object, API_Name, API_Value, FROM_CURR, ACTION):
+        Parsed_List = []
+        getapinamevalue = ''
+        Trace.Write("function called--" + str(Object) + "-API_Name:" + str(API_Name) + "-API_Value:" + str(API_Value))
+        # Trace.Write("select OBJECT_NAME,API_NAME,DATA_TYPE,LOOKUP_OBJECT,FORMULA_LOGIC FROM  SYOBJD where OBJECT_NAME ='"+str(Object).strip()+"' and DATA_TYPE='FORMULA'and FORMULA_LOGIC like '%"+str(API_Name)+"%'")
+        TABLE_OBJS = Sql.GetList(
+            "select OBJECT_NAME,API_NAME,DATA_TYPE,LOOKUP_OBJECT,FORMULA_LOGIC FROM  SYOBJD where OBJECT_NAME ='"
+            + str(Object).strip()
+            + "' and DATA_TYPE='FORMULA' and FORMULA_LOGIC like '%"
+            + str(API_Name)
+            + "%'"
+        )
+        Trace.Write(
+            "select OBJECT_NAME,API_NAME,DATA_TYPE,LOOKUP_OBJECT,FORMULA_LOGIC FROM  SYOBJD (NOLOCK) where OBJECT_NAME ='"
+            + str(Object).strip()
+            + "' and DATA_TYPE='FORMULA' and FORMULA_LOGIC like '%"
+            + str(API_Name)
+            + "%' "
+        )
+        try:
+            # ACTION = Param.ACTION
+            
+            if ACTION == "UICALL":
+                
+                Parsed_List.append({"API_NAME": str(API_Name), "FORMULA_RESULT": str(API_Value)})
+        except:
+            Trace.Write("ACTION Inside Except"+str(API_Value))
+            ACTION = ""
+        if TABLE_OBJS is not None:
+            
+            for TABLE_OBJ in TABLE_OBJS:
+                val_dict = {}
+                
+
+                if TABLE_OBJ.DATA_TYPE != "":
+                    DATA_TYPE = str(TABLE_OBJ.DATA_TYPE)
+                    #Trace.Write(str(API_Value)+"------100------------API_Value---------Table API_Name---Parse Formula--- " + str(TABLE_OBJ.API_NAME))
+                    #if Product.Attributes.GetByName("QSTN_SYSEFL_SY_00001"):
+                        #API_Value = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00001").GetValue()
+                    
+                    
+
+                    #Trace.Write(str(getval)+"-----------56--------"+str(API_Value)+"Parse Formula---API_Name" + str(API_Name) + "-FORMULA_LOGIC" + str(TABLE_OBJ.FORMULA_LOGIC))
+                    if DATA_TYPE == "FORMULA" and API_Name in str(TABLE_OBJ.FORMULA_LOGIC):
+                        #Trace.Write(str(API_Value)+"Parse Formula---FORMULA_LOGIC---" + str(TABLE_OBJ.FORMULA_LOGIC))
+                        FORMULA = str(TABLE_OBJ.FORMULA_LOGIC)
+                        #Trace.Write(str(API_Name)+str(API_Value)+"--------API_Name----------Parse Formula---FORMULA_LOGIC2-------60---" + str(FORMULA))
+                        FORMULA = FORMULA.replace("{" + API_Name + "}", API_Value)
+                        if str(Object) == 'SAQTIP':
+                            Trace.Write("API_Name--" + str(API_Name))
+                            FORMULA = FORMULA.replace("{"+"objname}", "SAACNT")
+                        if str(Object) == 'SYOBJC' and str(TABLE_OBJ.API_NAME) == "OBJECTFIELD_APINAME":
+                            #Trace.Write("Parse Formula---FORMULA_LOGIC2----------61-----" + str(FORMULA))
+                            getapiname = Sql.GetFirst("SELECT API_NAME FROM SYOBJD WHERE RECORD_ID = '"+str(API_Value)+"'")
+                            if getapiname:
+                                getapinamevalue = getapiname.API_NAME
+                                #Trace.Write(str(getapinamevalue)+"--getapinamevalue--FORMULA----75---------->" + str(FORMULA))
+                        # FORMULA_RESULT=Formula_Parser(FORMULA)
+                        if str(Object) == 'SAQTRV' and str(TABLE_OBJ.API_NAME) == "DOC_CURRENCY":
+                            getapiname = Sql.GetFirst("SELECT CURRENCY FROM SASBCU WHERE SALES_ORG_BLACKBOOK_CURRENCY_RECORD_ID = '"+str(API_Value)+"'")
+                            if getapiname:
+                                getapinamevalue = getapiname.CURRENCY
+                        FORMULA_RESULT = Product.ParseString("<* TABLE ( " + str(FORMULA) + " ) *>")               
+                        Trace.Write("FORMULA-------------->" + str(FORMULA))
+                        Trace.Write("Parse Formula---RESULT" + str(FORMULA_RESULT))
+                        val_dict["API_NAME"] = str(TABLE_OBJ.API_NAME)
+                        if (
+                            str(TABLE_OBJ.API_NAME) == "PROMOTION_START_DATE"
+                            or str(TABLE_OBJ.API_NAME) == "PROMOTION_END_DATE"
+                        ):
+                            valueformula = FORMULA_RESULT.split(" ")
+                            val_dict["FORMULA_RESULT"] = valueformula[0]
+                        else:
+                            val_dict["FORMULA_RESULT"] = FORMULA_RESULT.encode("ASCII", "ignore")
+                        if str(Object) == 'SYOBJC' and str(TABLE_OBJ.API_NAME) == "OBJECTFIELD_APINAME":
+                            val_dict["FORMULA_RESULT"] =getapinamevalue
+                        if str(Object) == 'SAQTRV' and str(TABLE_OBJ.API_NAME) == "DOC_CURRENCY":
+                          val_dict["FORMULA_RESULT"] =getapinamevalue
+                        Parsed_List.append(val_dict)
+
+        Trace.Write("Parsed_List--" + str(Parsed_List))
+        return Parsed_List
+
+
+prsfor = ParseFormula()
+
+Object = Param.Object
+API_Name = Param.API_Name
+API_Value = Param.API_Value
+try:
+    if str(Quote.GetGlobal("TreeParam")) == "Receiving Equipment":
+        Object = "SAQFEQ"
+        API_Name= "FABLOCATION_ID"
+except Exception:
+    pass
+Trace.Write("The object is---" + str(Object))
+Trace.Write("The API_Names s is---" + str(API_Name))
+Trace.Write("The API_Value is---" + str(API_Value))
+
+
+try:
+    ACTION = Param.ACTION
+    Trace.Write("ACTIONv" + str(ACTION))
+except:
+    ACTION = ""
+
+try:
+    FROM_CURR = Param.FROM_CURRENCY
+    Trace.Write("The From_Currency is---TRY" + str(FROM_CURR))
+except:
+    FROM_CURR = ""
+    Trace.Write("The From_Currency is---EXCEPT" + str(FROM_CURR))
+Trace.Write("The From_Currency is---" + str(FROM_CURR))
+
+if str(ACTION) == "UICALL":
+    Trace.Write(
+        "select API_NAME FROM  SYOBJD where OBJECT_NAME ='"
+        + str(Object).strip()
+        + "'  and LOOKUP_API_NAME = '"
+        + str(API_Name)
+        + "'"
+    )
+    Getapi_Name = Sql.GetFirst(
+        "select API_NAME FROM  SYOBJD where OBJECT_NAME ='"
+        + str(Object).strip()
+        + "'  and LOOKUP_API_NAME = '"
+        + str(API_Name)
+        + "'"
+    )
+    if Getapi_Name is not None:
+        API_Name = str(Getapi_Name.API_NAME)
+        Trace.Write("The API_Names is---" + str(API_Name))
+        ApiResponse = ApiResponseFactory.JsonResponse(prsfor.Parse_Formula(Object, API_Name, API_Value, FROM_CURR, ACTION))
+else:
+    Result = prsfor.Parse_Formula(Object, API_Name, API_Value, FROM_CURR, ACTION)

@@ -1,0 +1,489 @@
+<!-- CATALOGPAGE Template -->
+@using Webcom.API.RD.Catalog
+@using CatalogController = Webcom.API.RD.Catalog.CatalogController
+<style>
+.alert-warning {
+    display: block;
+}
+  </style>
+<div role="main" id="main" class="row">
+  
+  <div class="modal fade in" id="loderModal" role="dialog" aria-hidden="false" style="overflow-y: hidden;">
+        <div class="modal-dialog" style="width: 100%;display: block !important;">
+            <div class="modal-content" style="height: 100% !important;width: 90px;background-color: transparent;margin-top: 20% !important;margin-left: 46.5% !important;box-shadow: none !important;border: 0 !important;position: unset !important;">
+                <div class="modal-header" style="background-color: transparent;border: 0 !important;box-shadow: none !important;">
+                    <!--<img src="/mt/APPLIEDMATERIALS_PRD/images/attributeimages/OCT-ROTATE.gif" alt="Smiley face"/>-->
+                  	<div class="fd-spinner" aria-hidden="false" aria-label="Loading">
+                      <div>
+                      </div>
+            		</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="">
+            <div id="catalogContainer">
+                <div class="row catalog" data-bind="visible: isInitialized" style="display: none">
+                    @*Top bar*@
+                    <div class="row" data-bind="css: { 'active': areCategoriesActive }">
+                        <div class="col-md-12" style="    padding-bottom: 0;">
+                             @*Breadcrumbs*@
+                                <ul id="breadcrumbsContainer" class="breadcrumb mobile-breadcrumbs">
+                                    
+                                    <li>
+                                        <a href="/Catalogue/CategoryTree.aspx" class="clear-filters" >HOME</a>
+                                    </li>
+                                </ul>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 " style="    padding-top: 0;">
+
+                            @*show/hide categories menu*@
+								
+                            <div class="catalog-products col-md-12" >
+
+                               
+                               
+                               
+                                @*ProductComparison*@
+                                <div data-bind="visible: compareProductsEnabled && comparisonProducts().length > 0" class="compare-products affix-top">
+                                    <div data-bind="visible: comparisonProducts().length > 0">
+                                        <ul class="breadcrumb mobile-breadcrumbs">
+                                            <li>
+                                                <label>@Translation.Get("Catalogue.SelectedProductComparison"):</label>
+                                            </li>
+                                            <!-- ko foreach : comparisonProducts -->
+                                            <li>
+                                                <span class="filter-pills"><span data-bind="text: value"></span><a href="#" data-bind="    click: remove">&nbsp;<i class="fa fa-times"></i></a></span>
+                                            </li>
+                                            <!-- /ko -->
+                                            <li>
+                                                <button class="btn btn-primary btn-xs" data-bind="click: compareProducts">@Translation.Get("Catalogue.ProductComparison")</button>&nbsp;
+                                              <a href="#" class="clear-filters" data-bind="click: clearComparison">[@Translation.Get("Catalogue.ClearCompareSelection")]</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                       
+                                @*Categories*@
+                                <div class="catalog-main">
+                                    @*ABS*@
+                                    <div class="btn-group btn-xs pull-right" data-bind="visible: abs().length > 0">
+                                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                            Guided Selling&nbsp;<span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu pull-right" role="menu" data-bind="foreach: abs">
+                                            <li data-bind="css: { activeAbs: isActive }">
+                                                <a href="#" data-bind="text: name, click: activateAbs"></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                   
+                                    <!-- ko if : shouldShowProducts() && hasProducts() -->
+                                    
+                                
+									
+									
+                                    <div class="clearfix"></div>
+                                    <div class="col-md-12 clearfix paging">
+                                        @*Products paging*@
+                                        <ul class="pagination">
+                                            <li data-bind="css: { disabled: !hasPreviousPage() }"><a data-bind="    click: firstPage" href="#">&laquo;&laquo;</a></li>
+                                            <li data-bind="css: { disabled: !hasPreviousPage() }"><a data-bind="    click: previousPage" href="#">&laquo;</a></li>
+                                            <li class="active"><span data-bind="text: pageNumber"></span></li>
+                                            <li data-bind="css: { disabled: !hasNextPage() }"><a data-bind="    click: nextPage" href="#">&raquo;</a></li>
+                                            <li data-bind="css: { disabled: !hasNextPage() }"><a data-bind="    click: lastPage" href="#">&raquo;&raquo;</a></li>
+                                        </ul>
+                                        <div style="vertical-align: middle; margin: 5px 0;" class="pull-right">
+                                            <span>@Translation.Get("Report.PageSize")</span>
+                                            <select id="PageSize1" data-bind="stringToNumericValue: pageSize" class="form-control" style="width: 65px; vertical-align: middle; display: inline-block;">
+                                                <option>@Translation.Get("xslt5")</option>
+                                                <option>@Translation.Get("xslt10")</option>
+                                                <option>@Translation.Get("xslt20")</option>
+                                                <option>@Translation.Get("xslt50")</option>
+                                                <option>@Translation.Get("xslt100")</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- /ko -->
+                                    <div class="clearfix"></div>
+                                    <div class="alert alert-warning" data-bind="visible: shouldAlertThatNoProductAreFound">
+                                        <i class="fa fa-exclamation-circle"></i>&nbsp;No products found. <a href="#" data-bind="visible: categoryId, click: goHome">@Translation.Get("Msg.GoHome")</a> <a href="#" data-bind="    visible: hasFilterApplied, click: clearAllFilters">Clear all filters.</a>
+                                    </div>
+
+                                    <div class="alert alert-warning" data-bind="visible: shouldAlertThatNoProductAreInCategory">
+                                        <i class="fa fa-exclamation-circle"></i>&nbsp;This category has no products nor subcategories.
+                                    </div>
+                                    @*Categories*@
+                                    <div data-bind="visible: shouldShowSubcategories() && subCategories().length > 0">
+                                        @if (!AppParams["HIDE_CATEGORIES_WITHIN_CATALOG"].AsBool && AppParams["DISPLAY_PRODUCTS_FIRST"].AsBool)
+                                        { 
+                                            <div class="clearfix"></div>
+                                         
+                                            <!-- ko ifnot : shouldShowProducts -->
+                                           
+                                            <!-- /ko -->
+                                            <div class="clearfix"></div>
+                                            <div class="col-md-12 category_temp">
+                                                <!-- ko template: { name: 'categoriesTemplate' } -->
+                                                <!-- /ko -->
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @Html.Partial("~/Views/Favourites/AddToFavoritesDialogTemplate.cshtml")
+
+                @if (AppParams["ALLOW_CATALOGUE_COMPARING"].AsBool &&
+                    (CatalogViewDetailsSettings)AppParams["CATALOGUE_ALLOW_VIEW_DETAIL"].AsInt == CatalogViewDetailsSettings.InModalPopup)
+                {
+                    <script type="text/html" id="CompareProductsModal">
+                        <div class="modal fade" tabindex="-1" role="dialog" id="AddRowModal" aria-labelledby="AddRowModalLabel" aria-hidden="true">
+                            <div class="modal-dialog compare-page">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h3>@Translation.Get("ProductComparison.Title")</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="compare-container">
+                                            @Html.PartialWithNameAsComment("~/Views/CompareProducts/CompareProductsTemplate.cshtml")
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-default" data-dismiss="modal">@Translation.Get("Msg.Close")</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </script>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="product-listTemplate">
+    <div data-bind="foreach: products" class="col-md-12 clearfix">
+        <div class="catalog-table col-md-12 row" data-bind="css: { 'add-to-compare': selectedForCompare}">
+            <div class="col-md-7 col-sm-6 col-xs-9">
+                <div class="image-on-hover clearfix pull left">
+                    <!-- ko if: $parent.viewDetailsEnabled -->
+                    <a href="#" class="product-title" data-bind="text: name, click: viewDetails"></a>
+                    <!-- /ko -->
+                    <!-- ko ifnot: $parent.viewDetailsEnabled -->
+                    <span class="product-title" data-bind="text: name"></span>
+                    <!-- /ko -->
+                    <span data-bind="visible: partNumber">(<span data-bind="    html: partNumber"></span>)</span>
+                    <img class="img-thumbnail" data-bind="visible: imageUrl, attr: { src: imageUrl }" />
+                </div>
+                <p data-bind="htmlOrNbsp: description" class="clearfix description visible-lg visible-md"></p>
+
+                <!-- ko if: isInPromotion && productPromotions -->
+                <div data-bind="attr: {'id': 'promosInfo_' + id}">
+                    <span data-bind="html: productPromotions()[0].tooltip"></span>
+                    <!-- ko if: productPromotions().length > 1 -->
+                    <div class="panel-collapse collapse" data-bind="attr: {'id': 'showMorePromoInfoList_' + id}, foreach: productPromotions">
+                        <!-- ko if: $index() != 0 -->
+                        <div style="margin-top: 2px" data-bind="html: tooltip"></div>
+                        <!-- /ko -->
+                    </div>
+                    <span><a data-toggle="collapse" data-bind="attr : {'href': '#showMorePromoInfoList_' + id }, text: showAllPromotions() ? '@Translation.Get("View.CatalogPage.CollapsePromo")' : '@Translation.Get("View.CatalogPage.ExpandPromo")', click: togglePromos" data-parent="#promosInfo" aria-expanded="true" aria-controls="showMorePromoInfoList"></a></span>
+                    <!-- /ko -->
+                </div>
+                <!-- /ko -->
+
+            </div>
+            <div class="col-md-1 col-sm-1 col-xs-3 clearfix favorites-column">
+                @if (CatalogController.FavoritesEnabled)
+                {
+                    <span data-bind="visible: !isDiscontinued && !isReplaced">
+                        <a class="product-title" href="#" data-bind="click: showFavoritesForProduct, tooltip: { title: '@Translation.GetJS("Msg.ViewFavorites")    ', placement: 'top' }"><i class="fa fa-clipboard"></i></a>&nbsp;
+                        <a href="#" class="product-title" data-bind="click: handleClickOnFavorites, css: { 'in-favorites': isAddedToFavorites(), 'no-favorite': !isAddedToFavorites() }, tooltip: { title:  favoritesTooltipTitle, placement: 'top' }"><i class="fa fa-star"></i></a>
+                    </span>
+                }
+            </div>
+            <div class="col-sm-2 col-md-2 col-xs-12">
+                <p data-bind="visible: price && !isDiscontinued && !isReplaced">
+                    <label data-title="Price" data-bind="text: price" class="label label-success mobile-price"></label>
+                </p>
+                <p class="details-column" data-bind="visible: categoryName"><span>@Translation.Get("Msg.Category")</span> <a href="#" data-bind="    text: categoryName, click: activateCategory"></a></p>
+                <p class="details-column" data-bind="visible: productTypeName"><span>@Translation.Get("Msg.Type")</span> <span data-bind="    text: productTypeName"></span></p>
+            </div>
+            <div class="col-md-2 action-column col-xs-12 col-sm-12" data-bind="visible: !isDiscontinued && !isReplaced">
+                <div data-bind="visible: isCompareable" class="pull-right compare">
+                    <label class="small middle">
+                        <input class="custom compare-checkbox" type="checkbox" data-bind="checked: selectedForCompare">
+                        <span class="lbl">@Translation.Get("xsltAddToCompare")</span>
+                    </label>
+                </div>
+                <div class="clearfix"></div>
+                <div class="input-group qty pull-right col-md-1 col-xs-1" data-bind="tooltip: { title: addBtnDisabpledExplanation, html: true }" data-container="body">
+                    <input class="form-control" type="text" data-bind="value: quantity, enable: canAlterQuantity" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" data-bind="click: addToQuote, css: { disabled: !canAddToQuote }">@Translation.Get("Msg.Add")</button>
+                    </span>
+                </div>
+                <div class="configure"><a class="btn btn-default" data-bind="attr: { href: configuratorUrl }, visible: canConfigure">@Translation.Get("Msg.Configure")</a></div>
+            </div>
+            <div class="col-md-2 action-column col-sm-12 col-xs-12 alert alert-warning small" data-bind="visible: isDiscontinued">@Translation.Get("Catalogue.DiscontinuedProduct")</div>
+            <div class="col-md-2 action-column  col-sm-12 col-xs-12 alert alert-warning small" data-bind="visible: isReplaced">
+                @Translation.Get("Catalogue.ProductReplacement")
+                <br />
+                <a href="#" data-bind="click: viewReplacement">@Translation.Get("Catalogue.LinkToProductReplacement")</a>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="product-tabularTemplate">
+    <div data-bind="foreach: products" class="col-md-3">
+        <div class="g1 product-detail-view center">
+            <div class="g4 product-box hide-mobile" data-bind="css: { 'add-to-compare': selectedForCompare}">
+                <div class="clearfix"></div>
+
+                <a href="#" class="btn btn-default pull-left"  data-bind="attr: { href: configuratorUrl }, visible: canConfigure" style="padding: 0;border: none;"><img data-bind="visible: imageUrl, attr: { src: imageUrl }" class="imgproduct" style="    border-radius: 7px;"/></a>
+            </div>
+           
+        </div>
+       
+    </div>
+  
+  <!-- prd img-->
+  
+
+        
+  
+  
+  
+</script>
+
+<script type="text/html" id="tabularProductInfo">
+    <div class="product-details-popover">
+        <span class="product-title" data-bind="text: name"></span><span data-bind="    visible: partNumber">(<span data-bind="    html: partNumber"></span>)</span>
+        <p class="clearfix small" data-bind="html: description"></p>
+        <p class="details-column" data-bind="visible: categoryName"><span>@Translation.Get("Msg.Category")</span> <a href="#" class="dismissesPopover" data-bind="    text: categoryName, click: activateCategory"></a></p>
+        <p class="details-column" data-bind="visible: productTypeName"><span>@Translation.Get("Msg.Type")</span> <span data-bind="    text: productTypeName"></span></p>
+    </div>
+</script>
+
+<script type="text/html" id="categoriesTemplate">
+    <!-- ko if: shouldShowSubcategories -->
+    <!-- ko template: { name: 'categories-' + currentTemplate() } -->
+    <!-- /ko -->
+    <!-- /ko -->
+</script>
+
+<script type="text/html" id="categories-listTemplate">
+    <div class="row">
+        <ul class="navCat" data-bind="foreach: subCategories">
+            <li>
+                <div class="image-on-hover clearfix pull left">
+                    <a href="#" data-bind="text: name, click: activate" class="categoryName"></a>
+                    <img class="img-thumbnail" data-bind="visible: imageUrl, attr: { src: imageUrl }" />
+                </div>
+            </li>
+        </ul>
+    </div>
+</script>
+
+<script type="text/html" id="categories-tabularTemplate">
+      <div class="col-md-12" id="Hpro_bind123">
+	  
+									</div>
+                                   
+</script>
+
+<script type="text/html" id="favorites-region-tabular">
+    @if (CatalogController.FavoritesEnabled)
+    {
+        <span class="pull-right" data-bind="visible: !isDiscontinued && !isReplaced">
+            <a class="product-title" href="#" data-bind="click: showFavoritesForProduct, tooltip: { title: '@Translation.GetJS("Msg.ViewFavorites")    ', placement: 'top' }"><i class="fa fa-clipboard"></i></a>&nbsp;
+             <a href="#" class="product-title" data-bind="click: handleClickOnFavorites, css: { 'in-favorites': isAddedToFavorites(), 'no-favorite': !isAddedToFavorites() }, tooltip: { title: favoritesTooltipTitle, placement: 'top' }"><i class="fa fa-star"></i></a>
+        </span>
+    }
+</script>
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $(".catalog").toggleClass("toggled");
+    });
+</script>
+
+
+<script>
+cpq.events.sub("API:configurator:updated", function(data) {  
+ cpq.server.executeScript("SYLDMDMENU", {'test':'test'}, function(data) {
+  
+  text1 = ''
+  for (i = 0; i < data.length; i++) { 
+  	product = data[i].split('|')[0]
+  product_url = data[i].split('|')[1]
+        text1 += ' <div class="col-md-3 product-box hide-mobile"><a onclick="prodHeader(this)" href="'+ product_url +'"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/Modules.jpg/" class="imgproduct" style="    border-radius: 7px; "/></div><div class="row text-center">' + product + '</div></a></div>'
+    }
+                           
+							  if(document.getElementById('Hpro_bind123')) {
+		document.getElementById('Hpro_bind123').innerHTML = text1; }
+   });
+  
+}); 
+function setintervalfun(text1) {
+    
+ if(document.getElementById('Hpro_bind123')) {
+		document.getElementById('Hpro_bind123').innerHTML = text1; 
+		
+		}
+} 
+ 
+                             
+$(function(){ 	
+console.log("CATALOGPAGE ===> href00000", window.location.href);
+console.log("CATALOGPAGE ===> search00000", window.location.search);
+var queryString = window.location.search;
+var opportunityData = queryString.match(/OpportunityID=([0-9]*)/);
+console.log("******* opportunityData 00000", opportunityData)
+localStorage.setItem('C4COpportunityId','');
+if (opportunityData){
+  console.log("******* opportunityData 11111", opportunityData[1])
+  localStorage.setItem('C4COpportunityId',opportunityData[1]);
+  var newURL = (window.location.href).replace(queryString, "Configurator.aspx?pid=273");					
+  console.log("Catalog ==> New URL ", newURL)
+  //window.history.pushState("", "",  newURL);
+  window.location.replace(newURL);
+  return;
+}   
+                            
+                              
+cpq.server.executeScript("SYLDMDMENU", {'test':'test'}, function(data) {       
+  text1 = ''
+  if (data.length == 0) {
+                              $('.alert-warning').css('display','block');
+                              
+                    $(".catalog-products").append('<div class="col-md-12"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#SegAlert_notifcation" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="SegAlert_notifcation" class="col-md-12  alert-notification  brdr collapse in" ><div class="col-md-12 alert-warning"   ><label ><i class="fa fa-exclamation-circle" aria-hidden="true"></i> WARNING : XXXXXX : You need at least one App assigned to your user Profile in order to use the system.  Please see your System Administrator in order to proceed.</label></div></div></div>')
+                }                            
+                              
+  
+  for (i = 0; i < data.length; i++) { 
+  product	 = data[i].split('|')[0]
+  productid=product.replace(/ /g,"_");
+  product_url  = data[i].split('|')[1]
+  
+  console.log('product......configurator...update...  '+product);
+  
+  if(product=='MATERIALS'){ 
+  
+  text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2" ><a onclick="prodHeader(this)" id="'+productid+'" href="'+ product_url +'"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/material.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" style="border-radius: 7px; "/></div></a></div>'
+  }
+  else if(product=='PRICE MODELS'){
+		 
+        text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"  ><a onclick="prodHeader(this)" id="'+productid+'" href="'+ product_url +'"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/price_models_admin.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" style="border-radius: 7px; "/></div></a></div>'
+		}
+		else if(product=='PRICE AGREEMENTS'){
+			 
+			if(product_url.endsWith("id=398"))
+			{
+				text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"  ><a onclick="prodHeader(this)" id="'+productid+'" href="'+ product_url +'"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/segments.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" style="border-radius: 7px; "/></div></a></div>'
+  				/*catalog codde 'begin'*/
+                <!-- text1 += '<div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"><a href="/quotation/LoadQuote.aspx"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/catalogs.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" style="border-radius: 7px; "/></div></a></div>'
+                /*catalog codde 'end'*/ -->
+			}
+			
+		}
+		else if(product=='CONFIGURABLE MATERIALS'){ 
+        text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"><a onclick="prodHeader(this)" id="'+productid+'" href="'+ product_url +'"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/configurable_materials.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" style="border-radius: 7px; "/></div></a></div>'
+		}
+		else if(product=='QUOTAS'){ 
+		
+        text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"><a onclick="prodHeader(this)" id="'+productid+'" href="'+ product_url +'"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/TerritoriesAndQuotes_catalog.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" style="border-radius: 7px; "/></div></a></div>'
+		}
+		else if(product=='ORDER MANAGEMENT'){ 
+		
+        text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"><a onclick="prodHeader(this)" id="'+productid+'" href="'+ product_url +'"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/order_management_new.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" style="border-radius: 7px; "/></div></a></div>'
+		}
+		else if (product == 'SERVICES') {
+                        text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"><a onclick="prodHeader(this)" id="' + productid + '" href="' + product_url + '"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/Services.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" /></div></a></div>'
+         }
+  		else if(product=='SYSTEM ADMIN'){ 
+		
+        text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"><a onclick="prodHeader(this)" id="' + productid + '" href="' + product_url + '"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/SYSTEM_ADMIN.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" style="border-radius: 7px; "/></div></a></div>'
+		}
+		else if (product == 'CATALOGS') {
+		text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"><a onclick="prodHeader(this)" id="' + productid + '" href="' + product_url + '"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/catalogs.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct"/></div></a></div>'
+		}
+          else if (product == 'CONTRACT QUOTES') {
+		text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"><a onclick="prodHeader(this)" id="' + productid + '" href="' + product_url + '"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/Quotesapp.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct"/></div></a></div>'
+		}
+		 else if (product == 'SALES') {
+		text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"><a onclick="prodHeader(this)" id="' + productid + '" href="' + product_url + '"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/Salesorg.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct"/></div></a></div>'
+		}
+		else { 
+        text1 += ' <div class="col-md-2 product-box hide-mobile col-xs-2 col-sm-2 col-lg-2"><a onclick="prodHeader(this)" id="'+productid+'" href="'+ product_url +'"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/Approval_center.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" style="border-radius: 7px; "/></div></a></div>'
+		}
+    }
+	
+	//text1 += '<div class="col-md-2 product-box hide-mobile"  ><a href="/quotation/LoadQuote.aspx"><div class="row text-center"><img  src="/mt/APPLIEDMATERIALS_PRD/images/productimages/catalogs.jpg/" data-toggle="modal" data-target="#loderModal" class="imgproduct" style="border-radius: 7px; "/></div></a></div>'
+
+                              
+		 
+		setTimeout(setintervalfun(text1), 9000);
+   });
+ }); 
+ 
+</script>
+  
+<script>
+function prodHeader(checking)
+{
+  localStorage.setItem('avoid_loading','0');
+
+	var home_id_txt = $(checking).attr("id");
+	
+	var txt_val_val ='';
+	if(home_id_txt.indexOf('_') > 0)
+	{
+		var a = home_id_txt.split('_');
+		console.log(a);
+		var b = a[0].slice(0,1);
+		console.log(b);
+		var txt_val_remain_01 = a[0].slice(1).toLowerCase();
+		console.log(txt_val_remain_01);
+		var txt_val_remain_0 = b.toUpperCase();
+		console.log(txt_val_remain_0);
+		
+		var c = a[1].slice(0,1);
+		console.log(c);
+		var txt_val_remain_sec_1 = a[1].slice(1).toLowerCase();
+		console.log(txt_val_remain_sec_1);
+		var txt_val_remain_sec_0 = c.toUpperCase();
+		console.log(txt_val_remain_sec_0);
+		
+		
+		
+		txt_val_val = txt_val_remain_0 + txt_val_remain_01 +' '+txt_val_remain_sec_0 + txt_val_remain_sec_1;
+		
+		console.log('----- '+txt_val_val);
+	}
+	else
+	{
+		var txt_val_first = home_id_txt.slice(0,1);
+		var txt_val_remain = home_id_txt.slice(1).toLowerCase();
+		txt_val_val = txt_val_first+txt_val_remain;
+		//console.log('---222-- '+txt_val_val);
+	}
+	console.log('---222-3333- '+txt_val_val);
+	localStorage.setItem("module_main_txt", txt_val_val);
+	localStorage.setItem("record_id_number", "");
+	var loc_mod_txt_123 = localStorage.getItem("module_main_txt");
+	 
+	
+	localStorage.setItem('hide_details_related_tab','1');
+	$('.row.tabsmenu2.tabdyn').css('display','none');
+}
+
+</script>

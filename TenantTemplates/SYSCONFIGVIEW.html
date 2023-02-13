@@ -1,0 +1,171 @@
+<!--CONFIGURATORVIEW-->
+
+@using WebSite.Controllers
+<div id="attributesContainer" class="row configurator " data-bind="visible: isInitialized" style="display: none">
+	<div class="row attr_section b-0">
+		<div class="row tabsfiled">
+			<div class="tabbable show-large btnmodule">
+				<ul>
+                    <!--LEFT SIDE MENU LIST START-->
+					<li>
+						<a onclick="wholeModules(this)" class="dropdown-toggle" data-toggle="dropdown" href="/Catalogue/CategoryTree.aspx">
+							<img src="/mt/APPLIEDMATERIALS_PRD/images/attributeimages/tabicon.png" />
+						</a>
+						<div class="col-md-12 dropdown-menu left homedrop" role="menu" id="ul_bind"></div>
+                    </li>
+                    <!--LEFT SIDE MENU LIST END-->
+                    <!--PAGE ICON AND TAB NAME START-->
+					<li class="mopduleheader"   id="ModName">
+						<img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/pricebook.svg" id="ModuleIcons"  />
+						<img src="/mt/APPLIEDMATERIALS_PRD/Additionalfiles/TerritoriesAndQuotes.png" id="commission_black"  />	
+						<i class="fa fa-tasks" aria-hidden="true" id="ModuleIcons1"></i>
+						<span class="main_ban_mod" id="ModuleName1">System Admin</span>
+						<span class="main_ban_mod1" id="ModuleName"  >Price Models</span>
+                    </li>
+                    <!--PAGE ICON AND TAB NAME END-->
+				</ul>
+            </div>
+            <!--CONFIGURATOR TABS START-->
+			<div class="tabbable show-large tabsmenu" data-bind="visible: tabs().length > 0">
+					
+				<ul data-bind="foreach: tabs" id="carttabs_head" class="nav-tabs" onclick="cartTabsClick(this)">
+					
+					<span data-bind="text:displayName" style="display:none;"></span>
+					
+					<li data-bind="attr: { href: '#tab-' + name(), id:'tab_' + name().replace(' ','_'),class:'tab_' + name().replace(' ','_') }, click: activateTab, css: { active: isSelected, requiredtab: shouldHaveRequiredIndicator }">
+						<span data-bind="text:displayName" style="display:none;"></span>
+						<span data-bind="text:(function(){
+						})();"></span>
+						<span data-bind="text:(function(){
+						})();"></span>
+						<span data-bind="text:(function(){
+						})();"></span>
+						<a href="#" onclick="closecreate(this)">
+							<span data-bind="text: displayName">
+							</span>
+						</a>
+					</li>
+				</ul>
+            </div>
+            <!--CONFIGURATOR TABS END-->
+		</div>
+		<div>
+          
+            
+        <div class="modal fade pop__view_page_hide" data-backdrop="static" id="cont_CommonModalDelete" role="dialog">
+          <div class="modal-dialog" style="width: 40% !important;">
+            <div class="modal_vh_div">
+              <div class="modal-content">
+                <div class="modal-body" id="COMMON_DELETE_MODAL" style="padding: 0px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+          
+        	<!-- ko if : currentTab -->
+			<div class="show-small">
+				<div class="row">
+					<div class="nav-mobile clearfix">
+						<ul class="nav pull-left">
+							<li data-bind="css: { requiredtab: currentTab().shouldHaveRequiredIndicator() }">
+								<a href="#">	<span data-bind="text: currentTab().displayName"></span>
+								</a>
+							</li>
+						</ul>@*Show tab picker button only if there is more than one tab*@
+						<button data-bind="visible: tabs().length > 1" data-target=".tabs-collapse" data-toggle="collapse" class="navbar-toggle collapsed pull-right" type="button">	<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					</div>
+					<div class="tabs-collapse collapse row clearfix">
+						<div class="navbar-inner">
+							<ul class="nav" data-bind="foreach: tabs">
+								<li data-bind="attr: { href: '#tab-' + id(),title:id(),name:'#tab-' + id() }, click: activateTab, css: { active: isSelected, requiredtab: isIncomplete && $root.highlightIncomplete() }">
+									<a href="#">	<span data-bind="text: displayName"></span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /ko -->
+			<!-- ko template: currentTemplateName()-->
+			<!-- /ko -->@if(AppParams["ShowNextAndPreviousButtonsInProductConfiguration"].AsBool) {
+			<!-- ko if : tabs().length > 0 -->
+			<hr class="line" />
+			<div class="row bottomnav">
+				<!--bottom actions -->
+				<div class="spawn3">
+					<button class="btn btn-default" data-bind="click: previousTab, css: { disabled: !hasPreviousTab() }"><i class=" fa fa-chevron-left"></i> @Translation.Get("Configurator.PreviousTab")</button>
+				</div>
+				<div class="spawn3">&nbsp;@*save button*@</div>
+				<div class="spawn3"><span class="pull-right"><button class="btn btn-default" data-bind="click: nextTab, css: { disabled: !hasNextTab() }">@Translation.Get("Configurator.NextTab") <i class="fa fa-chevron-right"></i></button></span>
+				</div>
+			</div>
+			<!-- /ko -->}</div>
+		<div class="row">@Html.PartialWithNameAsComment("Debugger")</div>
+	</div>
+</div>@* here will tabs and attributes be generated dynamically *@
+<div id="templates"  >
+  @* we are loading all custom tab templates at once because we cannot figure out what tab templates we will need(Parent/Child -> Child can have their own tab layout)*@
+	<script type='text/html' id='Tab'>
+		@Html.PartialWithNameAsComment("Tab")
+	</script>@foreach (string customTemplateName in ConfiguratorController.GetAllTabsCustomTemplateNames()) {
+	<script type='text/html' id='@customTemplateName'>
+		@Html.PartialCustomTemplate(customTemplateName)
+	</script>
+  } 
+  @Html.PartialWithNameAsComment("Editors/LabelTemplate") 
+  @Html.PartialWithNameAsComment("Editors/AttributeQuantityTemplate") 
+  @Html.PartialWithNameAsComment("Editors/DropDownTemplate") 
+  @Html.PartialWithNameAsComment("Editors/RadioButtonTemplate") 
+  @Html.PartialWithNameAsComment("Editors/CheckboxTemplate") 
+  @Html.PartialWithNameAsComment("Editors/ImageButtonTemplate") 
+  @Html.PartialWithNameAsComment("Editors/ListBoxTemplate") 
+  @Html.PartialWithNameAsComment("Editors/ListBoxMultiSelectTemplate") 
+  @Html.PartialWithNameAsComment("Editors/DisplayOnlyTextTemplate") 
+  @Html.PartialWithNameAsComment("Editors/TextboxTemplate") 
+  @Html.PartialWithNameAsComment("Editors/ButtonTemplate") 
+  @Html.PartialWithNameAsComment("Editors/MultilineTextBoxTemplate") 
+  @Html.PartialWithNameAsComment("Editors/DatePickerTemplate") 
+  @Html.PartialWithNameAsComment("Editors/AttachmentTemplate") 
+  @Html.PartialWithNameAsComment("Editors/ConfigurationImportTemplate"); 
+  @Html.PartialWithNameAsComment("Editors/AutoCompleteInputTemplate"); 
+  @Html.PartialWithNameAsComment("Editors/DrillDown/DrillDownTemplate"); 
+  @Html.PartialWithNameAsComment("Editors/DrillDown/DrillDownDropDownTemplate"); 
+  @Html.PartialWithNameAsComment("Editors/DrillDown/DrillDownRadioButtonTemplate"); 
+  @Html.PartialWithNameAsComment("Editors/DrillDown/DrillDownImageButtonTemplate"); 
+  @Html.PartialWithNameAsComment("PagerTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerCheckboxTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerDropDownTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerLabelTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerMultilineTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerRadioTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerRowSelectorTemplate")
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerListBoxTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerTextBoxTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerDatePickerTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerAutocompleteTemplate") 
+  @Html.PartialWithNameAsComment("Editors/Container/AddContainerRowModalTemplate"); 
+  @Html.PartialWithNameAsComment("Editors/Container/ContainerCopyRowModalTemplate");
+</div>
+
+<script>   	
+  cpq.ready(function () {  
+  	console.log("===> SYSCONFIGVIEW href", window.location.href)
+  	console.log("===> SYSCONFIGVIEW ready", $("#BTN_SYACTI_QT_00001_BACKTOLIST").length)
+    cpq.events.sub("API:configurator:updated", function (data) { 
+      console.log("===> SYSCONFIGVIEW updated")
+      var queryString = window.location.search;
+      var opportunityData = queryString.match(/OpportunityID=([0-9]*)/);
+      if (opportunityData){
+  		if ($("#BTN_SYACTI_QT_00001_BACKTOLIST").length > 0){
+          $("#BTN_SYACTI_QT_00001_BACKTOLIST").click();
+  		}
+      }
+    })  	
+  })  
+</script>
+<script type="text/javascript" src='/mt/APPLIEDMATERIALS_PRD/AdditionalFiles/AMAT/AdditionalJSFile/CV.js'></script>

@@ -1,3 +1,0 @@
-ATTR_VAL=Param.ATTR_VAL
-Trace.Write("ATTR_VALATTR_VALATTR_VAL"+str(ATTR_VAL))
-Product.SetGlobal('ATTR_VAL',ATTR_VAL)

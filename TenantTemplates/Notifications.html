@@ -1,0 +1,85 @@
+<!-- Template Name = AMAT_Notifications -->
+
+<div class="row padt-10 notificatsection" data-bind="visible: messageTitle() || approval.conditions().length > 0 || cartUsage().length > 0 ||  landingMessages().length > 0 || approval.errorMessage">
+    <div class="section_title collapsed modulesecbnr brdr" onclick="notify_collap_exp(this)" data-toggle="collapse" data-target="#notify">
+        <span>NOTIFICATIONS</span>
+        <!-- <span class="appr_icon bnricon" data-bind="style : { display: approval.conditions().length > 0 ? 'inline-block' : 'none' }">
+               <img src='../mt/APPLIEDMATERIALS_PRD/Additionalfiles/notifi_Approve.svg'/><span class="applen_val lengbox"></span>
+             </span>
+           <span class="err_icon bnricon" data-bind="visible: approval.errorMessage "><img src="../mt/APPLIEDMATERIALS_PRD/Additionalfiles/notifi_error.svg"><span class="errlen_val lengbox"></span></span>
+           <span class="info_icon bnricon" data-bind="style: { display: scriptingMessages().length > 0 ? 'inline-block' : 'none' }"><img src="../mt/APPLIEDMATERIALS_PRD/Additionalfiles/notifi_infoblue.svg"><span class="infolen_val lengbox"></span></span>
+           <span class="warning_icon bnricon" data-bind="style : { display: messageTitle() ? 'inline-block' : 'none' }"><sap class="sap-icon">&#xe053;</sap><span class="warnlen_val lengbox"></span></span>
+         -->
+        <span class="more-less glyphicon pointer glyphicon-chevron-down" style="float: right;"></span>
+    </div>
+</div>
+
+<div class="row collapse " id="notify">
+
+	<div class="cpq_notification_div fiori3-alert-warning" style="padding:10px 10px 0px 10px; display:none; ">
+        <div class="cpq_cust_warning" style="padding:10px; display:none"></div>
+        <div class="cpq_cust_notify" style="display:none !important"></div>
+    </div>
+    <div class="fiori3-alert fiori3-alert-danger brdr" data-bind="visible: approval.errorMessage ">
+        <span class="erroricon"><img src="../mt/APPLIEDMATERIALS_PRD/Additionalfiles/notifi_error.svg"></span>
+        <p data-bind="visible: approval.errorMessage, html: approval.errorMessage"></p>
+    </div>
+    <div class="fiori3-alert fiori3-alert-warning brdr" data-bind="visible: messageTitle() || approval.conditions().length > 0 || cartUsage().length > 0  || landingMessages().length > 0 || errorMessage()">
+
+        <div>
+            <i class="fa fa-exclamation-circle" aria-hidden="true" style="float: left;padding: 10px;font-size: 17px;color: #c04f7e !important;display:none"></i>
+
+            <!--<div class="cart-warning-group" data-bind="style : { display: landingMessageTitle() ? 'block' : 'none' }">
+                <p data-bind="html: landingMessageTitle"></p>
+                <ul data-bind="foreach: landingMessages">
+                    <li><span data-bind="text: title"></span><span data-bind="if: description">: </span><span data-bind="text: description"></span></li>
+                </ul>
+            </div>-->
+            <div class="cart-warning-group" data-bind="style : { display: messageTitle() ?  'block' : 'none' }">
+
+                <p data-bind="html: messageTitle"></p>
+                <sap class="sap-icon">&#xe053;</sap>
+                <ul data-bind="foreach: messageItems">
+                    <li><span data-bind="text: title"></span>: <span data-bind="    text: description"></span></li>
+                </ul>
+            </div>
+            <div class="cart-warning-group approval_msg" data-bind="style : { display: approval.conditions().length > 0 ? 'block' : 'none' }">
+
+                <!-- ko template: { name: 'ApprovalTemplate', data: approval }  -->
+                <!--/ko -->
+            </div>
+            <div class="cart-warning-group" data-bind="style : { display: cartUsage().length > 0 ? 'block' : 'none' }">
+
+                <p>@Translation.Get("Cart.RecentlyOpened")</p>
+                <sap class="sap-icon">&#xe053;</sap>
+                <ul data-bind="foreach: cartUsage">
+                    <li><span data-bind="text: user"></span>(<span data-bind="    text: openedMinutesAgo"></span>)</li>
+                </ul>
+            </div>
+            <div class="notify_info_top_cls" style="display:none">
+                <p class="alert-infosection">
+                    <span class="infoicon"><img src="../mt/APPLIEDMATERIALS_PRD/Additionalfiles/notifi_infoblue.svg"></span>
+                    <span class="messagecontent"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.PartialWithNameAsComment("Templates/ApprovalTemplate")
+
+
+<script>
+    function notify_collap_exp(ele) {
+        $(ele).children('.more-less').toggleClass('glyphicon-chevron-up glyphicon-chevron-down');
+
+    }
+
+    $(".notificatsection").click(function () {
+        if ($('ul.notify_ul_grp li').length == 0 && $('.notify_info_top_cls .alert-infosection').length > 1) {
+            $('.alert-infosection:first-child .infoicon').css('margin-left', '-10px');
+        } else {
+
+        }
+    });
+</script>

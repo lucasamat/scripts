@@ -1,0 +1,87 @@
+<!-- CartAction Template -->
+@using WebSite.Controllers
+
+<div class="action-items-container" data-bind="with: cartActionsModel">
+    @*Primary actions*@
+    <!-- ko if: areActionsVisibleOnSide() -->
+    <!-- ko if: primaryActions()[0] -->
+    <div class="action-row">
+        <a href="#" data-bind="click: primaryActions()[0].execute" class="btn-primary fiori3-btn-primary">
+            <!-- ko if : displayImagesForCartActions && !areActionsVisibleOnSide() -->
+            <img data-bind="attr: { src: primaryActions()[0].imageUrl }, visible: primaryActions()[0].imageUrl, tooltip: { title: primaryActions()[0].name, placement: 'right' }" />
+            <!-- /ko -->
+            <span data-bind="text: primaryActions()[0].name"></span>
+        </a>
+    </div>
+    <!-- /ko -->
+    <!-- ko if: primaryActions()[1] -->
+    <div class="action-row">
+        <a href="#" data-bind="click: primaryActions()[1].execute,attr:{ 'id':'field_'+primaryActions()[1].name.replace(' ','_')}" class="btn-tertiary fiori3-btn-tertiary">
+            <!-- ko if : displayImagesForCartActions && !areActionsVisibleOnSide() -->
+            <img data-bind="attr: { src: primaryActions()[1].imageUrl }, visible: primaryActions()[1].imageUrl, tooltip: { title: primaryActions()[1].name, placement: 'right' }" />
+            <!-- /ko -->
+            <span data-bind="text: primaryActions()[1].name"></span>
+        </a>
+    </div>
+    <!-- /ko -->
+    <!-- ko if: primaryActions()[2] -->
+    <div class="action-row">
+        <a href="#" id = "qtn_save" data-bind="click: primaryActions()[2].execute" class="btn-tertiary fiori3-btn-tertiary">
+            <!-- ko if : displayImagesForCartActions && !areActionsVisibleOnSide() -->
+            <img data-bind="attr: { src: primaryActions()[2].imageUrl }, visible: primaryActions()[2].imageUrl, tooltip: { title: primaryActions()[2].name, placement: 'right' }" />
+            <!-- /ko -->
+            <span data-bind="text: primaryActions()[2].name"></span>
+        </a>
+    </div>
+    <!-- /ko -->
+		 <!-- ko if: primaryActions()[3] -->
+    <div class="action-row">
+        <a href="#" id = "qtn_save" data-bind="click: primaryActions()[3].execute,attr:{ 'id':'field_'+primaryActions()[3].name.replace(' ','_')}" class="btn-tertiary fiori3-btn-tertiary">
+            <!-- ko if : displayImagesForCartActions && !areActionsVisibleOnSide() -->
+            <img data-bind="attr: { src: primaryActions()[3].imageUrl }, visible: primaryActions()[3].imageUrl, tooltip: { title: primaryActions()[2].name, placement: 'right' }" />
+            <!-- /ko -->
+            <span data-bind="text: primaryActions()[3].name"></span>
+        </a>
+    </div>
+    <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko if: (areActionsVisibleOnSide() && (primaryActions().length > 4 || nonPrimaryActions().length > 0)) || (!areActionsVisibleOnSide() && (primaryActions().length > 0 || nonPrimaryActions().length > 0)) -->
+    <div id="cartActionsDropdownMenu" class="dropdown actions-dropdown fiori3-dropdown">
+        <a href="#" id="actionsDropdown" data-toggle="dropdown" class="fiori3-icon-button" data-bind="tooltip: { title: '@Translation.GetJS("ActionsList.Title")', placement: 'auto top' }">
+            <span class="sap-icon">&#xe1f2;</span>
+        </a>
+        <div id="cartActionsDropdownMenuContainer" class="dropdown-menu slide-down" aria-labelledby="actionsDropdown">
+            <ul class="cpq-scroll">
+                <!-- ko template : { name : 'actionsTemplate', data: areActionsVisibleOnSide() ? primaryActions.slice(3) : primaryActions }  -->
+                <!-- /ko -->
+                <!-- ko if: canUndo -->
+                <li class="action-row">
+                    <!-- ko if : displayImagesForCartActions -->
+                    <a href="#"><img src="@CartController.DefaultActionImageUrl" data-bind="click: undo, tooltip: { title: '@Translation.GetJS("xsltUndo")', placement: 'right'}" /><span data-bind="click: undo">@Translation.Get("xsltUndo")</span></a>
+                    <!-- /ko -->
+                    <!-- ko ifnot : displayImagesForCartActions -->
+                    <a href="#"><span data-bind="click: undo">@Translation.Get("xsltUndo")</span></a>
+                    <!-- /ko -->
+                </li>
+                <!-- /ko -->
+                <!-- ko if: canRedo-->
+                <li class="action-row">
+                    <!-- ko if : displayImagesForCartActions -->
+                    <a href="#"><img src="@CartController.DefaultActionImageUrl" data-bind="click: redo, tooltip: { title: '@Translation.GetJS("xsltRedo")', placement: 'right'}" /><span data-bind="click: redo">@Translation.Get("xsltRedo")</span></a>
+                    <!-- /ko -->
+                    <!-- ko ifnot : displayImagesForCartActions -->
+                    <a href="#"><span>@Translation.Get("xsltRedo")</span></a>
+                    <!-- /ko -->
+                </li>
+                <!-- /ko -->
+                @*Non primary actions*@
+                <!-- ko template : { name : 'actionsTemplate', data: nonPrimaryActions }  -->
+                <!-- /ko -->
+            </ul>
+        </div>
+    </div>
+    <!-- /ko -->
+</div>
+
+@Html.PartialWithNameAsComment("~/Views/Cart/Templates/ActionsTemplate.cshtml")
+@Html.Partial("ScriptLocalization", new[] { "CartActionsModel" })
