@@ -16,7 +16,8 @@ from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 webclient = System.Net.WebClient()
-Trace.Write("test")
+Trace.Write("this is feature1")
+
 
 try:
     current_prod = Product.Name
