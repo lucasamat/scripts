@@ -6065,7 +6065,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
                             # pm_event_flag=1
                     if self.tree_param in ('Z0009','Z0128','Z0010') and quote_type_attribute_value and ((pm_event_attribute_value or cm_labor) or self.tree_param in ('Z0128','Z0010')):
                         # quote_type_attribute_value =re.findall(pattern_name,sub_string)
-                        if quote_type_attribute_value.upper() != 'TOOL BASED':##Checking the Quote type before calling the events insert....
+                        if quote_type_attribute_value.upper() != 'TOOL BASED':##Checking the Quote type before calling the events insert.....
                             additional_where = ""
                             if self.tree_param == 'Z0010' or self.tree_param == 'Z0128':
                                 self.tools_from_ui = "No"
